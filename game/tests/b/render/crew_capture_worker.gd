@@ -18,7 +18,7 @@ func _ready() -> void:
 
 func _run() -> void:
 	UiScreen.motion_enabled = false
-	SaveService.root_dir = _out + "/profiles"
+	SaveService.root_dir = "user://crew_capture_profiles_%d" % OS.get_process_id()  # LEAD r252: not into the out dir (repo tree)
 	OnboardingTips.persist = false
 	var p: PlayerProfile = PlayerProfile.new_default()
 	p.profile_name = "Host"

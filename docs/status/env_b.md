@@ -3,6 +3,42 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## To the LEAD: (updated 2026-10-21 05:00; send_message to you is refused, so read this)
+-2. **New: GPU-9 review (gpu/renders/b): fixed on env/b-content.**
+   - 1080p real-input OF (13 shots): clean. Loud OF HUD (6 shots): the Turret Van event marker clamped to the left
+     edge drew its label off-screen ("URRET VAN") -> labels of objective and assault-event markers now stay inside the
+     screen (ObjectiveMarkers.label_x; test_assault_events).
+   - Loud payday at 720p: the third achievement description ran under the fold -> payday descriptions cap at 2 lines
+     with an ellipsis (the trimmed tail repeats the REWARD line). Evidence _review/r252_gpu_review (before/after).
+   - The 6 "QA ISSUE overlap" lines (payday title / Heist complete x the achievement toast) are rect false positives:
+     full-width labels under the toast, no text overlap in the shots.
+   - of_run_capture + crew_capture now keep profiles under user:// (they wrote profiles/ into the out dir).
+   - For A (not B): with a saw running on the cash-cage padlock the prompt says "Press F to open / Can't do that right
+     now" (ui.blocked.state); a device-running reason fits better, and B's ui.blocked.device_running string reads "The
+     drill is running", so a per-device key (or a neutral "Already being cut") is needed if A switches to it.
+-1. **New: D-144 next-heist prep notes (RT + Afterhours)**: `game/content/docs/next_heist_prep_rt_ah.md`. Both heists
+   have only menu stubs on B's side (hidden heist_list entries, board, accents) plus objective strings for every doc
+   tag (13 / 12); loot defs and contacts exist. Missing: everything map-derived (no world dir yet: intel, blueprint),
+   voice lines (0), achievements (0), briefing step strings, music, def values. Order of work listed there.
+0. **New: D-145 DB Tense on A's revive fix 0f317b90 + trunk e91fa3c0: 1/3, revives now land** (player revived 3/4/4).
+   s2 PASS 1126 s; s1 custody 451 s and s3 custody 513 s, both after the player's three downs (not unrevived
+   bleed-outs). Tense on DB now fails on player damage, not revive logic. r252 merged (c94bed27): briefing_intel 14,
+   heist_text_audit 5, heist_readiness 9, of_payday_e2e 5, heist_achievements 13 all green on the final OF art.
+1. **OF payday / achievement / progression e2e: PASS, no B data gaps.** New `tests/b/test_of_payday_e2e.gd` (5 tests):
+   HeistRuntime-shaped results through PayoutCalculator, apply_heist_payout (XpCurve) and Achievements.on_payday on a
+   fresh profile, every difficulty. Contract = $80k x (1 / 2 / 2.6 / 4.2 / 7.2 / 9.2) = the briefing preview; loot from
+   the LootDef values; stash + spending = total; XP grows with difficulty; the stealth clear banks OF's x1.25.
+   Stealth clear unlocks Quiet Weekend / No Harm Done / Bank Holiday (+ OF Cataclysm on d5) and grants vault_bolts,
+   limestone, guilloche (+ vault_dial); loud breach with every bag unlocks Burn and Hoist / Clearing House (bronze,
+   keystone); a failure pays and unlocks nothing (D-120); a second clear grants nothing twice.
+   Numbers (stealth, 4 cash + 2 bonds, level-1 profile): d0 $138.6k / 4,550 XP / level 9 ... d5 $1.275M / 63,700 XP /
+   level 29 (+ Offshore Million). **PO balance note:** one first OF clear takes a new player to level 9 (Routine) /
+   21 (Hazardous) / 29 (Cataclysm): the XP curve and xp_mult, not a data gap.
+2. **D-145 DB Tense on A's revive fix (df866e99 + trunk c04cb710): 1/3** (s3 PASS 1085 s; s1 custody 331 s, crew wipe;
+   s2 custody 753 s). Sent to A: revive sessions open at <= 1.2 m but never complete (bot 3 held `sess=true` ~16 s on
+   the downed player in s2; bot 2 ~8 s in s1). Re-run after A's next fix. Routine on r251 was 3/3 (entry below).
+3. Windowed command lines for the PO's GPU box: entry 2026-10-21 00:30 below.
+
 ## 2026-10-21 02:00: D-145 DB cells on trunk r251 c04cb710 (headless auto_loud x1.0, solo + 3 bots)
 - Routine: 3/3 PASS, player downs 2 / 0 / 0 (median 0 <= 2), no nav give-ups (A's doorway fixes hold).
   s1 926 s police 218 (bulwark 19); s2 1040 s police 135; s3 916 s police 103.

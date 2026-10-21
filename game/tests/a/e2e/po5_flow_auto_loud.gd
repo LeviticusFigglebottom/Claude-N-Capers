@@ -79,6 +79,9 @@ func play(flow: Node) -> int:
 	EventBus.heist_ended.connect(func(r: Dictionary) -> void:
 		_ended = true
 		f.note("EVENT heist_ended %s" % [r]))
+	EventBus.interaction_cancelled.connect(_note_bot_interaction.bind(&"cancelled"))
+	EventBus.interaction_started.connect(func(nid: int, slot: int, _k: StringName) -> void:
+		_note_bot_interaction(nid, slot, &"started"))
 	EventBus.objective_updated.connect(func(id: StringName, st: int, _d: Dictionary) -> void:
 		f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
 	EventBus.loot_secured.connect(func(_b: int, l: StringName, v: int) -> void:
@@ -759,10 +762,25 @@ func _note_bot_revives() -> void:
 		if b == null:
 			continue
 		var tgt: CrewController = b.revive_target
+		var sess: Dictionary = rt.interaction.session(c.slot) if rt.interaction != null else {}
+		var comp: InteractableComponent = sess.get("comp") as InteractableComponent if not sess.is_empty() else null
 		parts.append("%d:%s st%d tgt=%s %.1fm sess=%s" % [c.slot, CrewAiBrain.Mode.keys()[b.mode], c.crew_state,
 			tgt.slot if tgt != null else -1, c.global_position.distance_to(p.crew.global_position),
-			not rt.interaction.session(c.slot).is_empty() if rt.interaction != null else false])
+			"-" if comp == null else "%s %.1f/%.1f" % [comp.kind, float(sess["progress"]), float(sess["duration"])]])
 	f.note("bots while down: " + ", ".join(parts))
+
+
+## While the pilot is down: every bot interaction start / cancel, with the bot's speed and mode (B's DB Tense: revive
+## sessions open but never complete).
+func _note_bot_interaction(nid: int, slot: int, what: StringName) -> void:
+	if p == null or p.crew.crew_state == Enums.CrewState.NORMAL:
+		return
+	var c: CrewController = rt.crew_controller(slot) as CrewController
+	var b: CrewAiBrain = CrewAiBrain.of(c) if c != null and c.is_ai else null
+	if b == null:
+		return
+	f.note("bot %d interaction %s on %d: speed %.2f st%d %s" % [slot, what, nid,
+		Vector2(c.velocity.x, c.velocity.z).length(), c.crew_state, CrewAiBrain.Mode.keys()[b.mode]])
 
 
 ## While downed, keep shooting the nearest enemy in sight like a player (PD2 / L2.12: police only cuff a downed

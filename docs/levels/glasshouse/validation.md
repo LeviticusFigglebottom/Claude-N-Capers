@@ -103,7 +103,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1412 polygons, cell 0.10/0.10 m
+- navmesh: 1552 polygons, cell 0.10/0.10 m
 - 140 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -224,8 +224,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 119 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 259 eye samples, 20979 rays, sky yes, 0 void ray(s)
+- 148 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 281 eye samples, 22761 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget

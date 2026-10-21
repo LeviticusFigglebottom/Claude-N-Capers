@@ -83,3 +83,11 @@ func test_captain_panel_clears_the_events_line() -> void:
 	EventBus.assault_event_ended.emit(&"turret_van", 91)
 	await wait_frames(4)
 	assert_near(_hud.captain.get_global_rect().position.y, base_top, 1.0, "back to its spot without events")
+
+
+## r252 GPU loud run: an edge-clamped event marker drew "URRET VAN" off the left edge; labels stay on screen.
+func test_marker_labels_stay_on_screen() -> void:
+	assert_eq(ObjectiveMarkers.label_x(10.0, 120.0, 1280.0), 6.0, "left edge: label starts at the margin")
+	assert_eq(ObjectiveMarkers.label_x(1275.0, 120.0, 1280.0), 1280.0 - 120.0 - 6.0, "right edge: ends at the margin")
+	assert_eq(ObjectiveMarkers.label_x(640.0, 120.0, 1280.0), 580.0, "mid screen: centred as before")
+	assert_eq(ObjectiveMarkers.label_x(640.0, 2000.0, 1280.0), 6.0, "wider than the screen: starts at the margin")

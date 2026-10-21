@@ -24,6 +24,12 @@ var _heist_list: UiHeistList = null
 var _shot: int = 0
 var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
+## --po5-hitch-ms: log every heist frame (rendered or not) longer than this (ms; 0 = off), with the NPCs spawned in it.
+var _render_hitch_ms: float = 0.0
+var _render_hitches: int = 0
+var _heist_worst_ms: float = 0.0
+var _heist_frames: int = 0
+var _spawned_this_frame: PackedStringArray = PackedStringArray()
 var _last_frame_us: int = 0
 var _was_rendering: bool = true
 ## Engine.get_frames_drawn() at the last _process: a HITCH line says how many frames were drawn in it (fast mode
@@ -49,6 +55,8 @@ func _run() -> void:
 			_budget_s = a.substr(13).to_float()
 		elif a.begins_with("--po5-crew-dmg="):  # D-133 harness-only dev option, named in the evidence
 			HeistLauncher.dev_options["crew_damage_taken_mult"] = a.substr(15).to_float()
+		elif a.begins_with("--po5-hitch-ms="):  # LEAD (OF loud GPU hitches): rendered frames too, from this many ms
+			_render_hitch_ms = a.substr(15).to_float()
 	if _budget_s > 0.0:
 		_watchdog.call_deferred()
 	if not await enter_heist():
@@ -57,6 +65,12 @@ func _run() -> void:
 	EventBus.heist_ended.connect(func(r: Dictionary) -> void: outcome[0] = 1 if bool(r.get("success", false)) else 0)
 	stats = Po5Stats.new()
 	stats.start(self, rt)
+	rt.npc_spawned.connect(func(n: NpcBase) -> void:
+		_spawned_this_frame.append(String(n.enemy_def.id).trim_prefix("enemy.") if n.enemy_def != null else String(n.name)))
+	EventBus.heist_ended.connect(func(_r: Dictionary) -> void:
+		if _render_hitch_ms > 0.0:
+			note("HITCHES %d of %d heist frames over %.0f ms, worst %.0f ms" % [_render_hitches, _heist_frames,
+				_render_hitch_ms, _heist_worst_ms]))
 	EventBus.heist_ended.connect(func(_r: Dictionary) -> void: note(stats.summary()))
 	match runner_flow:
 		"dump":
@@ -161,6 +175,19 @@ func _process(_delta: float) -> void:
 			note("HITCH frame=%.0fms t=%.1f drawn=%d nodes=%d enemies=%d top: %s" % [frame_ms, rt.heist_time_s,
 				drawn - _last_drawn, Performance.get_monitor(Performance.OBJECT_NODE_COUNT), _alive_in(G.ENEMY),
 				FrameProf.top(10)])
+		if _render_hitch_ms > 0.0 and rt != null and is_instance_valid(rt):
+			_heist_frames += 1
+			_heist_worst_ms = maxf(_heist_worst_ms, frame_ms)
+			if frame_ms > _render_hitch_ms:
+				_render_hitches += 1
+				note("HITCH frame=%.0fms t=%.1f process=%.1fms physics=%.1fms draws=%d objects=%d nodes=%d enemies=%d spawned=%s top: %s"
+					% [frame_ms, rt.heist_time_s, Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
+					Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
+					Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+					Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME),
+					Performance.get_monitor(Performance.OBJECT_NODE_COUNT), _alive_in(G.ENEMY), _spawned_this_frame,
+					FrameProf.top(8)])
+	_spawned_this_frame.clear()
 	FrameProf.reset_frame()
 	_was_rendering = rendering
 	_last_frame_us = now

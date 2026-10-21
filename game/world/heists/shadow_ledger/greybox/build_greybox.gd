@@ -1470,9 +1470,8 @@ func _close_barred_doorways() -> void:
 		obstruct(Transform3D(yaw_basis(float(d[3])), o), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.6, 0.6)))
 
 
-## Bakes the walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40,
-## cell 0.1 / 0.1) from the Geometry colliders. Props and prefab bodies are projected obstructions.
-## Doors stay open except the BARRED / VAULT doorways (_close_barred_doorways).
+## Bakes the walkable navmesh (heist_map.md §3: agent 0.3 / 1.8, climb 0.3, slope 40, cell 0.1 / 0.1) from the Geometry
+## colliders; props, prefab bodies, door throats: projected obstructions; BARRED / VAULT doorways closed (_close_barred_doorways).
 func _bake(nav: NavigationRegion3D) -> int:
 	var nm: NavigationMesh = NavigationMesh.new()
 	nm.agent_radius = 0.3
@@ -1493,6 +1492,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
 	for o: Array in obstructions:
 		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
+	preload("res://world/heists/shared/door_nav_clearance.gd").add(src, map_root, nm)
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	holder.queue_free()
 	await process_frame

@@ -5,6 +5,46 @@ Newest entry first, keep the last 10.
 
 
 
+**To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, round 253, pushed as env/c-worlds ac0f4ce7: (1) is DONE.
+  - On env/c-worlds: the 3 GI .res (213ca05d), the GPU-6 final 34 + burnt shots (78e1f2a1), and trunk r252 merged.
+  - (3) The other heists' door jambs were already done in 94d9b79a (see the next item).
+  - (2) Burnt set: NOT as intended, and fixed in this push (pending your Job C).
+    - Intended and present: the ember rim, the glow and the slab debris.
+    - Missing: the scorch. The two scorch rings sat 4 mm above the TW carpet and 2 mm under the VT soffit, so as
+      alpha-blended surfaces they lost the depth test at camera distance and drew nothing.
+    - Fix (of_burn.gd): two projected Decals, ScorchTW onto the TW floor and ScorchVT onto the VT soffit. Charcoal at
+      the cut, fading out 0.9 m past it. A procedural square-falloff gradient, no texture asset. Forward+ draws them
+      (Compatibility skips decals).
+    - Please run Job C for the burnt set: the of_burn_variant + review_shots commands in RENDER_SPLIT.md Job B,
+      `--cameras=rc_vault_hole,rc_teller_workroom` with `--out=.../g2/fix/burn_scorch`.
+    - The 34 unburnt shots are unaffected: BurnThrough stays hidden until the burn.
+  - Ran: OF regen twice identical (navmesh 4165, unchanged); validate OF final PASS; c ostrander 14, test_of_ 6 and
+    determinism 1 all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
+- 2026-10-21, round 252, item (c) DONE on env/c-worlds 94d9b79a (GI .res in 213ca05d): door jambs on GH/ND/GN/DB/SL (nav bake only).
+  - Survey (the OF test's pattern, new `game/tests/c/test_door_clearance_maps.gd`): every heist failed on the old
+    bakes. Door/approach misses: GH 14, ND 11, GN 16, DB 6, SL 34.
+  - Fix: one shared helper, `game/world/heists/shared/door_nav_clearance.gd`, called from each generator's `_bake`:
+    - carved jamb boxes give every Door a straight throat centred on its frame;
+    - each throat edge is snapped inward to the 0.1 m world grid, since some door centres sit 5 cm off it;
+    - it uses `effective_width()`, because many doors leave `width_m` at 0;
+    - it sets `edge_max_error` 0.9 on those bakes (Godot's default 1.3 cells erased one-cell jamb notches wherever the
+      throat edge lines up with a corridor wall).
+  - Result: 0 misses on all five. Navmesh polygons go up 7-13% from the finer contours: GH 1412->1552,
+    ND 1851->2024, GN 2542->2870, DB 2270->2464, SL 1835->2058.
+  - Walkthrough: 15 routes that stood at 2.88-3.00x now read 3.00-3.03x (paths cross doors on the centre line). They
+    are whitelisted with that reason (GH 1, GN 7, SL 7); ND and DB had none.
+  - Test changes: test_gh_fire_escape_window's stair-foot bound `a.y < 0.2` became `< 0.5`. The point now reads
+    0.201; the path is unchanged. The OF clearance test now shares `_door_clearance_base.gd`.
+  - OF is untouched apart from the GPU-5 GI .res files, merged from gpu/renders (96dcf2ce).
+  - Ran:
+    - c tests: dockside_burn 28, gallery_night 17, glasshouse 17, night_deposit 21, shadow_ledger 17, test_gh_ 7
+      (1 skip, as before), test_gn_ 1, test_sl_ 1, test_of_ 6, determinism 1, test_door_clearance_maps 5. All pass.
+    - gn_regen_twice is identical.
+    - validate final: GH, ND, GN, DB and SL all PASS.
+    - gdlint, ownership and banned are clean.
+  - GPU-6 final shots: I reviewed the contact sheet and see no blockers. rc_manager_office now frames the office.
+
 ## 2026-10-21 (OF final switch; lead session_014E3p2DmSYTneJjytGwKKfc)
 
 **To the LEAD: OF is at stage FINAL on env/c-worlds (validate_level final, all variants: PASS). Please run GPU Job A,

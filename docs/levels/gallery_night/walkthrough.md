@@ -7,234 +7,234 @@ Result: **PASS** (0 failure(s))
 
 | spawn | target | kind | straight m | path m | ratio | status |
 |---|---|---|---|---|---|---|
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 32.9 | 50.5 | 1.53 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 32.1 | 52.7 | 1.64 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.1 | 61.7 | 2.12 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.8 | 70.7 | 2.45 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 31.3 | 76.8 | 2.45 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 32.0 | 51.8 | 1.62 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.0 | 68.2 | 2.43 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 32.6 | 36.8 | 1.13 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 32.3 | 36.4 | 1.13 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 30.2 | 36.3 | 1.20 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 28.7 | 30.4 | 1.06 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.3 | 28.6 | 1.01 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.7 | 33.1 | 1.16 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 29.0 | 35.1 | 1.21 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 31.0 | 38.2 | 1.23 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 33.8 | 41.1 | 1.22 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 30.5 | 40.8 | 1.33 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 30.3 | 34.4 | 1.13 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 26.3 | 26.4 | 1.00 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 40.0 | 42.3 | 1.06 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 32.9 | 52.1 | 1.58 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 32.1 | 54.4 | 1.69 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.1 | 63.3 | 2.17 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.8 | 70.0 | 2.43 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 31.3 | 76.4 | 2.44 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 32.0 | 53.4 | 1.67 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.0 | 67.5 | 2.41 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 32.6 | 38.3 | 1.17 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 32.3 | 37.6 | 1.17 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 30.2 | 37.0 | 1.23 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 28.7 | 31.1 | 1.09 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.3 | 29.3 | 1.03 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.7 | 34.0 | 1.19 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 29.0 | 36.0 | 1.24 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 31.0 | 39.4 | 1.27 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 33.8 | 42.3 | 1.25 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 30.5 | 41.0 | 1.34 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 30.3 | 35.6 | 1.18 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 26.3 | 26.9 | 1.02 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 40.0 | 45.2 | 1.13 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 29.5 | 34.2 | 1.16 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 5.8 | 5.8 | 1.00 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 5.8 | 5.8 | 1.00 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 5.8 | 6.3 | 1.08 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 5.8 | 5.8 | 1.01 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 12.3 | 14.5 | 1.18 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 33.1 | 52.5 | 1.59 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 32.3 | 51.9 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 29.5 | 46.2 | 1.56 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 28.9 | 49.8 | 1.72 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.8 | 52.8 | 1.83 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.2 | 49.9 | 1.71 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 31.5 | 47.4 | 1.51 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 34.2 | 49.9 | 1.46 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 30.5 | 46.2 | 1.52 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 29.2 | 45.4 | 1.56 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.8 | 45.4 | 1.52 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 27.7 | 45.9 | 1.66 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 18.0 | 47.5 | 2.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 33.1 | 54.2 | 1.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 32.3 | 52.5 | 1.63 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 29.5 | 46.7 | 1.58 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 28.9 | 50.6 | 1.75 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.8 | 53.5 | 1.86 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.2 | 50.2 | 1.72 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 31.5 | 47.5 | 1.51 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 34.2 | 50.1 | 1.46 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 30.5 | 46.5 | 1.53 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 29.2 | 45.6 | 1.56 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.8 | 45.4 | 1.53 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 27.7 | 46.0 | 1.66 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 18.0 | 47.5 | 2.65 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 22.5 | 50.7 | 2.25 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 14.0 | 53.0 | 3.80 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 34.6 | 60.5 | 1.75 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 39.1 | 43.4 | 1.11 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterCalloway` | objective | 24.4 | 41.8 | 1.71 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.4 | 41.8 | 1.71 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 14.0 | 53.5 | 3.84 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 34.6 | 62.1 | 1.80 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 39.1 | 46.3 | 1.18 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterCalloway` | objective | 24.4 | 42.0 | 1.72 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.4 | 42.0 | 1.72 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterTreasury` | objective | 22.5 | 50.7 | 2.25 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 22.5 | 50.7 | 2.25 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterArtDoor` | objective | 29.5 | 34.2 | 1.16 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 29.5 | 34.2 | 1.16 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 14.7 | 34.2 | 2.34 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 18.4 | 34.0 | 1.84 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 14.7 | 34.3 | 2.34 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 18.4 | 34.0 | 1.85 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 22.2 | 36.7 | 1.65 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 24.5 | 35.1 | 1.43 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 23.9 | 36.2 | 1.52 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 9.0 | 64.3 | 7.10 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 7.9 | 64.4 | 8.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 8.6 | 60.4 | 7.03 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 10.9 | 56.6 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG1` | loot_spawn | 21.7 | 31.1 | 1.44 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 21.7 | 31.1 | 1.44 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG2` | loot_spawn | 19.5 | 28.4 | 1.46 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 19.5 | 28.4 | 1.46 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC1` | loot_spawn | 22.5 | 38.2 | 1.70 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 22.5 | 38.2 | 1.70 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC2` | loot_spawn | 20.9 | 41.5 | 1.99 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 20.9 | 41.5 | 1.99 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 9.0 | 64.4 | 7.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 7.9 | 64.7 | 8.23 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 8.6 | 60.8 | 7.07 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 10.9 | 56.9 | 5.24 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG1` | loot_spawn | 21.7 | 32.4 | 1.49 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 21.7 | 32.4 | 1.49 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG2` | loot_spawn | 19.5 | 29.7 | 1.52 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 19.5 | 29.7 | 1.52 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC1` | loot_spawn | 22.5 | 39.5 | 1.76 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 22.5 | 39.5 | 1.76 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC2` | loot_spawn | 20.9 | 42.8 | 2.05 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 20.9 | 42.8 | 2.05 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyEG1` | loot_spawn | 25.7 | 26.8 | 1.04 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 25.7 | 26.8 | 1.04 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyEG2` | loot_spawn | 30.7 | 34.3 | 1.12 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 30.7 | 34.3 | 1.12 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyEB1` | loot_spawn | 24.1 | 34.1 | 1.41 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 24.1 | 34.1 | 1.41 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 31.2 | 50.1 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 31.2 | 50.1 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 28.8 | 46.3 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 28.8 | 46.3 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 18.4 | 59.6 | 3.24 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 18.4 | 59.6 | 3.24 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 15.0 | 60.0 | 4.01 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 15.0 | 60.0 | 4.01 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 20.0 | 47.9 | 2.40 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 20.0 | 47.9 | 2.40 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 31.2 | 50.2 | 1.61 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 31.2 | 50.2 | 1.61 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 28.8 | 46.4 | 1.61 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 28.8 | 46.4 | 1.61 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 18.4 | 59.8 | 3.24 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 18.4 | 59.8 | 3.24 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 15.0 | 60.2 | 4.02 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 15.0 | 60.2 | 4.02 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 20.0 | 48.0 | 2.40 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 20.0 | 48.0 | 2.40 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 25.7 | 53.4 | 2.08 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 25.7 | 53.4 | 2.08 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 24.1 | 75.4 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 24.1 | 75.4 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 24.5 | 76.2 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 24.5 | 76.2 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.5 | 73.5 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.5 | 73.5 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 21.9 | 76.4 | 3.48 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 21.9 | 76.4 | 3.48 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 21.9 | 75.7 | 3.46 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 21.9 | 75.7 | 3.46 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.6 | 77.9 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.6 | 77.9 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 24.5 | 75.6 | 3.09 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 24.5 | 75.6 | 3.09 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.4 | 73.3 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.4 | 73.3 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker1` | objective | 27.0 | 78.3 | 2.90 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 27.0 | 78.3 | 2.90 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker2` | objective | 24.3 | 79.9 | 3.29 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 24.3 | 79.9 | 3.29 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker3` | objective | 25.6 | 78.8 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 25.6 | 78.8 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker4` | objective | 23.0 | 81.2 | 3.54 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 23.0 | 81.2 | 3.54 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker5` | objective | 27.0 | 78.3 | 2.90 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 27.0 | 78.3 | 2.90 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker6` | objective | 24.3 | 79.9 | 3.29 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 24.3 | 79.9 | 3.29 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker7` | objective | 25.6 | 78.8 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 25.6 | 78.8 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker8` | objective | 23.0 | 81.2 | 3.54 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 23.0 | 81.2 | 3.54 | detour (whitelisted) |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe` | objective | 35.4 | 56.9 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 35.4 | 56.9 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 35.4 | 56.9 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 35.4 | 56.9 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 35.4 | 56.9 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 19.4 | 55.2 | 2.85 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 23.6 | 56.4 | 2.38 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 7.4 | 19.5 | 2.63 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 11.1 | 16.9 | 1.53 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 32.2 | 34.2 | 1.06 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/ArgusTerminal` | objective | 33.8 | 54.0 | 1.60 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.8 | 54.0 | 1.60 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerKeypad` | objective | 29.2 | 48.9 | 1.67 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 29.2 | 48.9 | 1.67 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerDoorDrill` | objective | 29.0 | 49.9 | 1.72 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 29.0 | 49.9 | 1.72 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/TreasuryReader` | objective | 23.4 | 51.4 | 2.19 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 23.4 | 51.4 | 2.19 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultReader` | objective | 28.3 | 69.9 | 2.47 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.3 | 69.9 | 2.47 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultDrill` | objective | 28.3 | 68.2 | 2.41 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.3 | 68.2 | 2.41 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 24.1 | 77.7 | 3.22 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 24.1 | 77.7 | 3.22 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 24.5 | 75.6 | 3.08 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 24.5 | 75.6 | 3.08 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.5 | 72.9 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.5 | 72.9 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 21.9 | 78.5 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 21.9 | 78.5 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 21.9 | 77.8 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 21.9 | 77.8 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.6 | 77.7 | 3.97 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.6 | 77.7 | 3.97 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 24.5 | 75.0 | 3.07 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 24.5 | 75.0 | 3.07 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.4 | 72.7 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.4 | 72.7 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker1` | objective | 27.0 | 77.7 | 2.88 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 27.0 | 77.7 | 2.88 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker2` | objective | 24.3 | 79.3 | 3.27 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 24.3 | 79.3 | 3.27 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker3` | objective | 25.6 | 78.2 | 3.05 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 25.6 | 78.2 | 3.05 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker4` | objective | 23.0 | 80.7 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 23.0 | 80.7 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker5` | objective | 27.0 | 77.7 | 2.88 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 27.0 | 77.7 | 2.88 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker6` | objective | 24.3 | 79.3 | 3.27 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 24.3 | 79.3 | 3.27 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker7` | objective | 25.6 | 78.2 | 3.05 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 25.6 | 78.2 | 3.05 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker8` | objective | 23.0 | 80.7 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 23.0 | 80.7 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe` | objective | 35.4 | 58.0 | 1.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 35.4 | 58.0 | 1.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 35.4 | 58.0 | 1.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 35.4 | 58.0 | 1.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 35.4 | 58.0 | 1.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 19.4 | 55.3 | 2.85 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 23.6 | 56.4 | 2.39 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 7.4 | 19.6 | 2.64 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 11.1 | 17.2 | 1.55 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 32.2 | 35.2 | 1.09 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/ArgusTerminal` | objective | 33.8 | 54.7 | 1.62 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.8 | 54.7 | 1.62 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerKeypad` | objective | 29.2 | 49.2 | 1.68 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 29.2 | 49.2 | 1.68 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerDoorDrill` | objective | 29.0 | 50.2 | 1.73 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 29.0 | 50.2 | 1.73 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/TreasuryReader` | objective | 23.4 | 51.4 | 2.20 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 23.4 | 51.4 | 2.20 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultReader` | objective | 28.3 | 69.2 | 2.44 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.3 | 69.2 | 2.44 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultDrill` | objective | 28.3 | 67.5 | 2.38 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.3 | 67.5 | 2.38 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Devices/ArtDoorReader` | objective | 30.5 | 35.7 | 1.17 | ok |
 | `Spawns/PlayerPortico1` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 30.5 | 35.7 | 1.17 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 11.1 | 18.0 | 1.62 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.0 | 33.3 | 1.01 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.2 | 32.0 | 1.06 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 35.2 | 41.9 | 1.19 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 33.0 | 55.4 | 1.68 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 33.7 | 51.4 | 1.52 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 32.5 | 58.0 | 1.78 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 16.7 | 49.1 | 2.93 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 31.4 | 34.9 | 1.11 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 18.1 | 51.4 | 2.84 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 7.2 | 7.2 | 1.00 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Lifts/ArtLift` | objective | 31.0 | 38.1 | 1.23 | ok |
-| `Spawns/PlayerPortico1` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 31.0 | 38.1 | 1.23 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 11.1 | 18.1 | 1.63 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.0 | 34.2 | 1.03 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.2 | 33.3 | 1.10 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 35.2 | 43.6 | 1.24 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 33.0 | 56.7 | 1.72 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 33.7 | 52.1 | 1.54 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 32.5 | 58.5 | 1.80 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 16.7 | 49.3 | 2.94 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 31.4 | 35.8 | 1.14 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 18.1 | 51.4 | 2.85 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 7.2 | 7.5 | 1.04 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Lifts/ArtLift` | objective | 31.0 | 39.4 | 1.27 | ok |
+| `Spawns/PlayerPortico1` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 31.0 | 39.4 | 1.27 | ok |
 | `Spawns/PlayerPortico1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 26.0 | 26.8 | 1.03 | ok |
 | `Spawns/PlayerPortico1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 26.0 | 26.8 | 1.03 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 14.5 | 33.6 | 2.32 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 14.5 | 33.6 | 2.32 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 31.6 | 50.8 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 32.0 | 51.7 | 1.61 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 28.0 | 33.2 | 1.19 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 28.0 | 33.2 | 1.19 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 32.9 | 55.0 | 1.67 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 32.9 | 55.0 | 1.67 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 31.3 | 47.9 | 1.53 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 31.3 | 47.9 | 1.53 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 30.9 | 37.4 | 1.21 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 32.8 | 44.9 | 1.37 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 32.8 | 44.9 | 1.37 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 45.2 | 48.8 | 1.08 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 40.7 | 44.9 | 1.10 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 31.0 | 33.7 | 1.09 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 30.2 | 32.8 | 1.09 | ok |
-| `Spawns/PlayerPortico1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 31.7 | 33.7 | 1.06 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 14.5 | 33.6 | 2.33 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 14.5 | 33.6 | 2.33 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 31.6 | 51.3 | 1.62 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 32.0 | 52.2 | 1.63 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 28.0 | 33.3 | 1.19 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 28.0 | 33.3 | 1.19 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 32.9 | 55.5 | 1.69 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 32.9 | 55.5 | 1.69 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 31.3 | 48.5 | 1.55 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 31.3 | 48.5 | 1.55 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 30.9 | 38.7 | 1.25 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 32.8 | 44.7 | 1.36 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 32.8 | 44.7 | 1.36 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 45.2 | 51.7 | 1.14 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 40.7 | 47.8 | 1.18 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 31.0 | 36.6 | 1.18 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 30.2 | 35.7 | 1.18 | ok |
+| `Spawns/PlayerPortico1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 31.7 | 36.6 | 1.15 | ok |
 | `Spawns/PlayerPortico1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 31.0 | 35.7 | 1.15 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 33.4 | 51.6 | 1.54 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 32.5 | 53.9 | 1.66 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.3 | 62.9 | 2.14 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.7 | 71.9 | 2.50 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 31.0 | 78.0 | 2.51 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 32.5 | 52.9 | 1.63 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.0 | 69.4 | 2.48 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 33.2 | 38.0 | 1.15 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 33.4 | 52.0 | 1.55 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 32.5 | 54.2 | 1.67 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.3 | 60.9 | 2.08 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.7 | 69.9 | 2.44 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 31.0 | 76.3 | 2.46 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 32.5 | 53.2 | 1.64 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.0 | 67.4 | 2.41 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 33.2 | 38.2 | 1.15 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 32.8 | 37.5 | 1.14 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 30.5 | 36.6 | 1.20 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 28.8 | 30.7 | 1.06 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.3 | 28.9 | 1.02 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.5 | 33.4 | 1.17 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 28.8 | 35.4 | 1.23 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 30.8 | 38.5 | 1.25 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 33.5 | 41.4 | 1.24 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 30.2 | 41.1 | 1.36 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 30.5 | 36.9 | 1.21 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 28.8 | 31.0 | 1.07 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.3 | 29.2 | 1.03 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.5 | 33.9 | 1.19 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 28.8 | 35.9 | 1.24 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 30.8 | 39.3 | 1.28 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 33.5 | 42.1 | 1.26 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 30.2 | 40.8 | 1.35 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 30.8 | 35.5 | 1.15 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 26.4 | 26.8 | 1.01 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 39.5 | 42.0 | 1.07 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 28.9 | 33.9 | 1.18 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 6.1 | 6.1 | 1.00 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 39.5 | 45.0 | 1.14 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 28.9 | 34.0 | 1.18 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 6.1 | 6.8 | 1.12 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 5.7 | 5.7 | 1.00 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 11.7 | 14.2 | 1.22 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 33.6 | 53.6 | 1.60 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 32.7 | 51.8 | 1.58 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 29.8 | 46.1 | 1.55 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 29.0 | 49.7 | 1.71 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.8 | 52.6 | 1.83 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.0 | 49.8 | 1.71 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 31.2 | 47.3 | 1.51 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 33.9 | 49.8 | 1.47 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 30.2 | 46.1 | 1.53 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 29.5 | 45.3 | 1.54 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.5 | 45.2 | 1.54 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 27.1 | 45.8 | 1.69 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 17.3 | 47.3 | 2.74 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 21.7 | 50.5 | 2.32 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 13.2 | 52.9 | 4.01 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 35.1 | 61.6 | 1.75 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 38.7 | 43.1 | 1.11 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterCalloway` | objective | 24.8 | 41.7 | 1.68 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.8 | 41.7 | 1.68 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterTreasury` | objective | 21.7 | 50.5 | 2.32 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 21.7 | 50.5 | 2.32 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterArtDoor` | objective | 28.9 | 33.9 | 1.18 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 28.9 | 33.9 | 1.18 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 13.7 | 34.0 | 2.47 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 17.5 | 33.7 | 1.93 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 21.3 | 36.5 | 1.72 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 23.6 | 34.9 | 1.48 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 11.7 | 14.3 | 1.22 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 33.6 | 54.6 | 1.63 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 32.7 | 52.4 | 1.60 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 29.8 | 46.6 | 1.57 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 29.0 | 50.4 | 1.74 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.8 | 53.4 | 1.85 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.0 | 50.1 | 1.72 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 31.2 | 47.4 | 1.52 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 33.9 | 50.0 | 1.47 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 30.2 | 46.4 | 1.54 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 29.5 | 45.5 | 1.54 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.5 | 45.3 | 1.54 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 27.1 | 45.9 | 1.69 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 17.3 | 47.4 | 2.74 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 21.7 | 50.6 | 2.33 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 13.2 | 53.4 | 4.05 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 35.1 | 61.9 | 1.76 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 38.7 | 46.1 | 1.19 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterCalloway` | objective | 24.8 | 41.8 | 1.68 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.8 | 41.8 | 1.68 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterTreasury` | objective | 21.7 | 50.6 | 2.33 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 21.7 | 50.6 | 2.33 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterArtDoor` | objective | 28.9 | 34.0 | 1.18 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 28.9 | 34.0 | 1.18 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 13.7 | 34.1 | 2.48 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 17.5 | 33.8 | 1.94 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 21.3 | 36.6 | 1.72 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 23.6 | 35.0 | 1.48 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 22.9 | 36.0 | 1.57 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 9.6 | 64.1 | 6.69 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 8.0 | 64.3 | 8.04 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 8.2 | 60.3 | 7.32 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 10.2 | 56.4 | 5.54 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 9.6 | 64.3 | 6.71 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 8.0 | 64.6 | 8.08 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 8.2 | 60.6 | 7.36 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 10.2 | 56.7 | 5.57 | detour (whitelisted) |
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyWG1` | loot_spawn | 22.3 | 32.3 | 1.44 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 22.3 | 32.3 | 1.44 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyWG2` | loot_spawn | 20.1 | 29.6 | 1.47 | ok |
@@ -243,503 +243,503 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 23.3 | 39.4 | 1.69 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyDC2` | loot_spawn | 21.8 | 42.6 | 1.95 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 21.8 | 42.6 | 1.95 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEG1` | loot_spawn | 25.2 | 26.5 | 1.05 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 25.2 | 26.5 | 1.05 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEG1` | loot_spawn | 25.2 | 26.6 | 1.06 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 25.2 | 26.6 | 1.06 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEG2` | loot_spawn | 30.0 | 34.1 | 1.14 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 30.0 | 34.1 | 1.14 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEB1` | loot_spawn | 23.2 | 33.8 | 1.46 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 23.2 | 33.8 | 1.46 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 31.7 | 50.0 | 1.58 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 31.7 | 50.0 | 1.58 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 29.3 | 46.2 | 1.58 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 29.3 | 46.2 | 1.58 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 19.3 | 59.5 | 3.08 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 19.3 | 59.5 | 3.08 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 15.8 | 59.8 | 3.78 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 15.8 | 59.8 | 3.78 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 19.3 | 47.8 | 2.48 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 19.3 | 47.8 | 2.48 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 24.8 | 53.2 | 2.14 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 24.8 | 53.2 | 2.14 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 24.4 | 76.6 | 3.14 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 24.4 | 76.6 | 3.14 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 24.2 | 77.4 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 24.2 | 77.4 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.4 | 74.6 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.4 | 74.6 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.2 | 77.5 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.2 | 77.5 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.1 | 76.8 | 3.47 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.1 | 76.8 | 3.47 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.5 | 79.1 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.5 | 79.1 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 24.2 | 76.8 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 24.2 | 76.8 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.3 | 74.4 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.3 | 74.4 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker1` | objective | 26.6 | 79.4 | 2.98 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 26.6 | 79.4 | 2.98 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker2` | objective | 23.9 | 81.1 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 23.9 | 81.1 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker3` | objective | 25.2 | 79.9 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 25.2 | 79.9 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker4` | objective | 22.5 | 82.4 | 3.66 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 22.5 | 82.4 | 3.66 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker5` | objective | 26.6 | 79.4 | 2.98 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 26.6 | 79.4 | 2.98 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker6` | objective | 23.9 | 81.1 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 23.9 | 81.1 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker7` | objective | 25.2 | 79.9 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 25.2 | 79.9 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker8` | objective | 22.5 | 82.4 | 3.66 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 22.5 | 82.4 | 3.66 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe` | objective | 35.7 | 56.7 | 1.59 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 35.7 | 56.7 | 1.59 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 35.7 | 56.7 | 1.59 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 35.7 | 56.7 | 1.59 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 35.7 | 56.7 | 1.59 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 18.5 | 55.1 | 2.97 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 22.7 | 56.2 | 2.47 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 8.1 | 19.5 | 2.40 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 10.3 | 16.7 | 1.62 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 32.5 | 34.6 | 1.06 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArgusTerminal` | objective | 33.6 | 53.8 | 1.60 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.6 | 53.8 | 1.60 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerKeypad` | objective | 29.1 | 48.8 | 1.68 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 29.1 | 48.8 | 1.68 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerDoorDrill` | objective | 28.8 | 49.7 | 1.73 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 28.8 | 49.7 | 1.73 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEB1` | loot_spawn | 23.2 | 33.9 | 1.46 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 23.2 | 33.9 | 1.46 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 31.7 | 50.1 | 1.58 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 31.7 | 50.1 | 1.58 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 29.3 | 46.3 | 1.58 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 29.3 | 46.3 | 1.58 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 19.3 | 59.7 | 3.09 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 19.3 | 59.7 | 3.09 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 15.8 | 60.0 | 3.80 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 15.8 | 60.0 | 3.80 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 19.3 | 47.9 | 2.48 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 19.3 | 47.9 | 2.48 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 24.8 | 53.3 | 2.15 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 24.8 | 53.3 | 2.15 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 24.4 | 77.5 | 3.18 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 24.4 | 77.5 | 3.18 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 24.2 | 75.6 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 24.2 | 75.6 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.4 | 72.9 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.4 | 72.9 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.2 | 78.4 | 3.53 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.2 | 78.4 | 3.53 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.1 | 77.7 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.1 | 77.7 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.5 | 77.6 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.5 | 77.6 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 24.2 | 75.0 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 24.2 | 75.0 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.3 | 72.7 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.3 | 72.7 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker1` | objective | 26.6 | 77.6 | 2.92 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 26.6 | 77.6 | 2.92 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker2` | objective | 23.9 | 79.3 | 3.32 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 23.9 | 79.3 | 3.32 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker3` | objective | 25.2 | 78.2 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 25.2 | 78.2 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker4` | objective | 22.5 | 80.6 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 22.5 | 80.6 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker5` | objective | 26.6 | 77.6 | 2.92 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 26.6 | 77.6 | 2.92 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker6` | objective | 23.9 | 79.3 | 3.32 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 23.9 | 79.3 | 3.32 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker7` | objective | 25.2 | 78.2 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 25.2 | 78.2 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker8` | objective | 22.5 | 80.6 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 22.5 | 80.6 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe` | objective | 35.7 | 57.9 | 1.62 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 35.7 | 57.9 | 1.62 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 35.7 | 57.9 | 1.62 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 35.7 | 57.9 | 1.62 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 35.7 | 57.9 | 1.62 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 18.5 | 55.1 | 2.98 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 22.7 | 56.3 | 2.48 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 8.1 | 19.6 | 2.41 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 10.3 | 17.0 | 1.64 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 32.5 | 35.0 | 1.08 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArgusTerminal` | objective | 33.6 | 54.6 | 1.62 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.6 | 54.6 | 1.62 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerKeypad` | objective | 29.1 | 49.1 | 1.69 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 29.1 | 49.1 | 1.69 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerDoorDrill` | objective | 28.8 | 50.0 | 1.74 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 28.8 | 50.0 | 1.74 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Devices/TreasuryReader` | objective | 22.6 | 51.3 | 2.27 | ok |
 | `Spawns/PlayerPortico2` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 22.6 | 51.3 | 2.27 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultReader` | objective | 28.3 | 71.1 | 2.51 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.3 | 71.1 | 2.51 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultDrill` | objective | 28.3 | 69.4 | 2.45 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.3 | 69.4 | 2.45 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArtDoorReader` | objective | 29.9 | 35.4 | 1.19 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 29.9 | 35.4 | 1.19 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 11.8 | 18.0 | 1.52 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.1 | 33.6 | 1.02 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.3 | 32.4 | 1.07 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 35.6 | 43.1 | 1.21 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 33.3 | 55.3 | 1.66 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 33.9 | 51.2 | 1.51 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 31.9 | 57.9 | 1.82 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 16.0 | 49.0 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 31.6 | 35.2 | 1.11 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 17.3 | 51.2 | 2.97 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 7.5 | 7.5 | 1.00 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Lifts/ArtLift` | objective | 30.8 | 38.5 | 1.25 | ok |
-| `Spawns/PlayerPortico2` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 30.8 | 38.5 | 1.25 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultReader` | objective | 28.3 | 69.1 | 2.45 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.3 | 69.1 | 2.45 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultDrill` | objective | 28.3 | 67.4 | 2.38 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.3 | 67.4 | 2.38 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArtDoorReader` | objective | 29.9 | 35.5 | 1.19 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 29.9 | 35.5 | 1.19 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 11.8 | 18.0 | 1.53 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.1 | 34.0 | 1.03 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.3 | 33.2 | 1.09 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 35.6 | 43.5 | 1.22 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 33.3 | 56.6 | 1.70 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 33.9 | 51.9 | 1.53 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 31.9 | 58.4 | 1.83 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 16.0 | 49.1 | 3.07 | detour (whitelisted) |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 31.6 | 35.7 | 1.13 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 17.3 | 51.3 | 2.97 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 7.5 | 8.0 | 1.07 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Lifts/ArtLift` | objective | 30.8 | 39.3 | 1.28 | ok |
+| `Spawns/PlayerPortico2` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 30.8 | 39.3 | 1.28 | ok |
 | `Spawns/PlayerPortico2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 26.0 | 26.7 | 1.03 | ok |
 | `Spawns/PlayerPortico2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 26.0 | 26.7 | 1.03 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 13.6 | 33.3 | 2.45 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 13.6 | 33.3 | 2.45 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 31.1 | 50.7 | 1.63 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 31.5 | 51.6 | 1.64 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 27.3 | 33.0 | 1.21 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 27.3 | 33.0 | 1.21 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 32.3 | 54.8 | 1.70 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 32.3 | 54.8 | 1.70 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 31.5 | 47.8 | 1.52 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 31.5 | 47.8 | 1.52 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 13.6 | 33.5 | 2.46 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 13.6 | 33.5 | 2.46 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 31.1 | 51.2 | 1.64 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 31.5 | 52.0 | 1.65 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 27.3 | 33.1 | 1.21 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 27.3 | 33.1 | 1.21 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 32.3 | 55.3 | 1.71 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 32.3 | 55.3 | 1.71 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 31.5 | 48.4 | 1.54 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 31.5 | 48.4 | 1.54 | ok |
 | `Spawns/PlayerPortico2` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 31.6 | 38.6 | 1.22 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 33.6 | 44.3 | 1.32 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 33.6 | 44.3 | 1.32 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 44.8 | 48.5 | 1.08 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 40.3 | 44.7 | 1.11 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 30.4 | 33.4 | 1.10 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 29.7 | 32.6 | 1.10 | ok |
-| `Spawns/PlayerPortico2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 31.2 | 33.4 | 1.07 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 33.6 | 45.7 | 1.36 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 33.6 | 45.7 | 1.36 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 44.8 | 51.5 | 1.15 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 40.3 | 47.7 | 1.18 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 30.4 | 36.4 | 1.20 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 29.7 | 35.5 | 1.20 | ok |
+| `Spawns/PlayerPortico2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 31.2 | 36.4 | 1.17 | ok |
 | `Spawns/PlayerPortico2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 30.4 | 35.5 | 1.17 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 34.0 | 51.6 | 1.52 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 33.0 | 53.8 | 1.63 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.6 | 62.8 | 2.12 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.6 | 71.8 | 2.51 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 30.8 | 77.9 | 2.53 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 33.0 | 52.9 | 1.60 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.0 | 69.3 | 2.47 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 33.7 | 37.9 | 1.13 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 34.0 | 52.0 | 1.53 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 33.0 | 54.2 | 1.64 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.6 | 61.1 | 2.06 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.6 | 70.1 | 2.45 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 30.8 | 76.4 | 2.48 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 33.0 | 53.2 | 1.61 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.0 | 67.6 | 2.41 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 33.7 | 38.2 | 1.13 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 33.3 | 37.5 | 1.13 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 30.9 | 36.6 | 1.18 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 29.0 | 30.7 | 1.06 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.4 | 28.8 | 1.02 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.4 | 33.4 | 1.18 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 28.7 | 35.4 | 1.23 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 30.5 | 38.5 | 1.26 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 33.2 | 41.4 | 1.25 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 29.8 | 41.0 | 1.38 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 30.9 | 36.9 | 1.19 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 29.0 | 31.0 | 1.07 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.4 | 29.2 | 1.03 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.4 | 33.9 | 1.19 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 28.7 | 35.9 | 1.25 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 30.5 | 39.3 | 1.29 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 33.2 | 42.1 | 1.27 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 29.8 | 40.8 | 1.37 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 31.3 | 35.5 | 1.13 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 26.5 | 26.7 | 1.01 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 39.0 | 42.0 | 1.08 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 28.3 | 33.9 | 1.20 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 26.5 | 26.8 | 1.01 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 39.0 | 45.0 | 1.15 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 28.3 | 34.0 | 1.20 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 6.5 | 6.5 | 1.00 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 5.8 | 5.8 | 1.00 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 11.2 | 14.2 | 1.27 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 34.1 | 53.6 | 1.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 33.2 | 51.8 | 1.56 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 30.0 | 46.0 | 1.53 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 29.2 | 49.6 | 1.70 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.8 | 52.6 | 1.82 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.9 | 49.7 | 1.72 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 31.0 | 47.3 | 1.52 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 33.6 | 49.7 | 1.48 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 29.8 | 46.1 | 1.54 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 29.8 | 45.3 | 1.52 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.2 | 45.2 | 1.55 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 26.6 | 45.8 | 1.72 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 16.6 | 47.3 | 2.84 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 20.9 | 50.5 | 2.41 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 12.5 | 52.9 | 4.24 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 35.7 | 61.6 | 1.73 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 38.3 | 43.1 | 1.12 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterCalloway` | objective | 25.3 | 41.7 | 1.65 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 25.3 | 41.7 | 1.65 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterTreasury` | objective | 20.9 | 50.5 | 2.41 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 20.9 | 50.5 | 2.41 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterArtDoor` | objective | 28.3 | 33.9 | 1.20 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 28.3 | 33.9 | 1.20 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 12.8 | 33.9 | 2.64 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 16.5 | 33.7 | 2.04 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 20.3 | 36.4 | 1.79 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 22.7 | 34.8 | 1.54 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 21.9 | 35.9 | 1.64 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 10.2 | 64.1 | 6.29 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 8.2 | 64.2 | 7.80 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 8.0 | 60.3 | 7.54 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 9.6 | 56.4 | 5.88 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG1` | loot_spawn | 23.1 | 32.2 | 1.40 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 23.1 | 32.2 | 1.40 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG2` | loot_spawn | 20.7 | 29.5 | 1.43 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 20.7 | 29.5 | 1.43 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyDC1` | loot_spawn | 24.2 | 39.3 | 1.62 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 24.2 | 39.3 | 1.62 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 11.2 | 14.3 | 1.28 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 34.1 | 54.6 | 1.60 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 33.2 | 52.4 | 1.58 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 30.0 | 46.6 | 1.55 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 29.2 | 50.4 | 1.73 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.8 | 53.4 | 1.85 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.9 | 50.1 | 1.73 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 31.0 | 47.4 | 1.53 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 33.6 | 50.0 | 1.49 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 29.8 | 46.4 | 1.56 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 29.8 | 45.5 | 1.53 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.2 | 45.3 | 1.55 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 26.6 | 45.9 | 1.72 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 16.6 | 47.4 | 2.85 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 20.9 | 50.6 | 2.42 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 12.5 | 53.4 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 35.7 | 61.9 | 1.74 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 38.3 | 46.1 | 1.20 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterCalloway` | objective | 25.3 | 41.8 | 1.66 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 25.3 | 41.8 | 1.66 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterTreasury` | objective | 20.9 | 50.6 | 2.42 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 20.9 | 50.6 | 2.42 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterArtDoor` | objective | 28.3 | 34.0 | 1.20 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 28.3 | 34.0 | 1.20 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 12.8 | 34.1 | 2.66 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 16.5 | 33.8 | 2.05 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 20.3 | 36.6 | 1.80 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 22.7 | 35.0 | 1.54 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 21.9 | 36.0 | 1.64 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 10.2 | 64.3 | 6.31 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 8.2 | 64.6 | 7.84 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 8.0 | 60.6 | 7.59 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 9.6 | 56.7 | 5.92 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG1` | loot_spawn | 23.1 | 32.3 | 1.40 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 23.1 | 32.3 | 1.40 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG2` | loot_spawn | 20.7 | 29.6 | 1.43 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 20.7 | 29.6 | 1.43 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyDC1` | loot_spawn | 24.2 | 39.4 | 1.63 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 24.2 | 39.4 | 1.63 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyDC2` | loot_spawn | 22.8 | 42.6 | 1.87 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 22.8 | 42.6 | 1.87 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG1` | loot_spawn | 24.7 | 26.5 | 1.07 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 24.7 | 26.5 | 1.07 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG2` | loot_spawn | 29.3 | 34.0 | 1.16 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 29.3 | 34.0 | 1.16 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEB1` | loot_spawn | 22.3 | 33.8 | 1.51 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 22.3 | 33.8 | 1.51 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 32.3 | 49.9 | 1.55 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 32.3 | 49.9 | 1.55 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 29.7 | 46.1 | 1.55 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 29.7 | 46.1 | 1.55 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 20.2 | 59.5 | 2.94 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 20.2 | 59.5 | 2.94 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 16.7 | 59.8 | 3.59 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 16.7 | 59.8 | 3.59 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 18.6 | 47.8 | 2.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 18.6 | 47.8 | 2.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 24.0 | 53.2 | 2.22 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 24.0 | 53.2 | 2.22 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 24.6 | 76.5 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 24.6 | 76.5 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 24.0 | 77.3 | 3.22 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 24.0 | 77.3 | 3.22 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.4 | 74.6 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.4 | 74.6 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.5 | 77.5 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.5 | 77.5 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.4 | 76.8 | 3.43 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.4 | 76.8 | 3.43 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.5 | 79.0 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.5 | 79.0 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 24.0 | 76.7 | 3.20 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 24.0 | 76.7 | 3.20 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.3 | 74.4 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.3 | 74.4 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker1` | objective | 26.3 | 79.4 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 26.3 | 79.4 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker2` | objective | 23.5 | 81.0 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 23.5 | 81.0 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker3` | objective | 24.9 | 79.9 | 3.21 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 24.9 | 79.9 | 3.21 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker4` | objective | 22.1 | 82.3 | 3.72 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 22.1 | 82.3 | 3.72 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker5` | objective | 26.3 | 79.4 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 26.3 | 79.4 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker6` | objective | 23.5 | 81.0 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 23.5 | 81.0 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker7` | objective | 24.9 | 79.9 | 3.21 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 24.9 | 79.9 | 3.21 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker8` | objective | 22.1 | 82.3 | 3.72 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 22.1 | 82.3 | 3.72 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe` | objective | 36.1 | 56.7 | 1.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 36.1 | 56.7 | 1.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 36.1 | 56.7 | 1.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 36.1 | 56.7 | 1.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 36.1 | 56.7 | 1.57 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 17.7 | 55.1 | 3.12 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 21.8 | 56.2 | 2.58 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG1` | loot_spawn | 24.7 | 26.6 | 1.08 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 24.7 | 26.6 | 1.08 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG2` | loot_spawn | 29.3 | 34.1 | 1.16 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 29.3 | 34.1 | 1.16 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEB1` | loot_spawn | 22.3 | 33.9 | 1.52 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 22.3 | 33.9 | 1.52 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 32.3 | 50.1 | 1.55 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 32.3 | 50.1 | 1.55 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 29.7 | 46.3 | 1.56 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 29.7 | 46.3 | 1.56 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 20.2 | 59.7 | 2.95 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 20.2 | 59.7 | 2.95 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 16.7 | 60.1 | 3.60 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 16.7 | 60.1 | 3.60 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 18.6 | 47.9 | 2.58 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 18.6 | 47.9 | 2.58 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 24.0 | 53.3 | 2.22 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 24.0 | 53.3 | 2.22 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 24.6 | 77.5 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 24.6 | 77.5 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 24.0 | 75.7 | 3.16 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 24.0 | 75.7 | 3.16 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.4 | 73.0 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.4 | 73.0 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.5 | 78.4 | 3.49 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.5 | 78.4 | 3.49 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.4 | 77.7 | 3.47 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.4 | 77.7 | 3.47 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.5 | 77.7 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.5 | 77.7 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 24.0 | 75.1 | 3.13 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 24.0 | 75.1 | 3.13 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.3 | 72.8 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.3 | 72.8 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker1` | objective | 26.3 | 77.8 | 2.96 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 26.3 | 77.8 | 2.96 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker2` | objective | 23.5 | 79.4 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 23.5 | 79.4 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker3` | objective | 24.9 | 78.3 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 24.9 | 78.3 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker4` | objective | 22.1 | 80.8 | 3.65 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 22.1 | 80.8 | 3.65 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker5` | objective | 26.3 | 77.8 | 2.96 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 26.3 | 77.8 | 2.96 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker6` | objective | 23.5 | 79.4 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 23.5 | 79.4 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker7` | objective | 24.9 | 78.3 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 24.9 | 78.3 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker8` | objective | 22.1 | 80.8 | 3.65 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 22.1 | 80.8 | 3.65 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe` | objective | 36.1 | 57.9 | 1.61 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 36.1 | 57.9 | 1.61 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 36.1 | 57.9 | 1.61 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 36.1 | 57.9 | 1.61 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 36.1 | 57.9 | 1.61 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 17.7 | 55.2 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 21.8 | 56.3 | 2.58 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 8.9 | 19.7 | 2.21 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 9.6 | 16.6 | 1.73 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 32.7 | 34.5 | 1.06 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArgusTerminal` | objective | 33.5 | 53.8 | 1.61 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.5 | 53.8 | 1.61 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerKeypad` | objective | 28.9 | 48.7 | 1.68 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 28.9 | 48.7 | 1.68 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerDoorDrill` | objective | 28.7 | 49.7 | 1.73 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 28.7 | 49.7 | 1.73 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/TreasuryReader` | objective | 21.8 | 51.2 | 2.35 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 21.8 | 51.2 | 2.35 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultReader` | objective | 28.2 | 71.0 | 2.52 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.2 | 71.0 | 2.52 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultDrill` | objective | 28.3 | 69.3 | 2.45 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.3 | 69.3 | 2.45 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArtDoorReader` | objective | 29.3 | 35.4 | 1.21 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 29.3 | 35.4 | 1.21 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 9.6 | 17.0 | 1.77 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 32.7 | 35.0 | 1.07 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArgusTerminal` | objective | 33.5 | 54.6 | 1.63 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.5 | 54.6 | 1.63 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerKeypad` | objective | 28.9 | 49.1 | 1.70 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 28.9 | 49.1 | 1.70 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerDoorDrill` | objective | 28.7 | 50.0 | 1.74 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 28.7 | 50.0 | 1.74 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/TreasuryReader` | objective | 21.8 | 51.3 | 2.36 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 21.8 | 51.3 | 2.36 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultReader` | objective | 28.2 | 69.3 | 2.45 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.2 | 69.3 | 2.45 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultDrill` | objective | 28.3 | 67.6 | 2.38 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.3 | 67.6 | 2.38 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArtDoorReader` | objective | 29.3 | 35.5 | 1.21 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 29.3 | 35.5 | 1.21 | ok |
 | `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 12.6 | 18.1 | 1.44 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.2 | 33.6 | 1.01 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.5 | 32.4 | 1.06 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 36.0 | 43.0 | 1.20 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 33.7 | 55.2 | 1.64 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 34.0 | 51.2 | 1.50 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 31.2 | 57.9 | 1.85 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 15.3 | 49.0 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 31.9 | 35.2 | 1.10 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 16.5 | 51.2 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.2 | 34.0 | 1.02 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.5 | 33.2 | 1.09 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 36.0 | 43.5 | 1.21 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 33.7 | 56.6 | 1.68 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 34.0 | 51.9 | 1.53 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 31.2 | 58.4 | 1.87 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 15.3 | 49.1 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 31.9 | 35.7 | 1.12 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 16.5 | 51.3 | 3.11 | detour (whitelisted) |
 | `Spawns/PlayerPortico3` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 7.9 | 7.9 | 1.00 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Lifts/ArtLift` | objective | 30.5 | 38.4 | 1.26 | ok |
-| `Spawns/PlayerPortico3` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 30.5 | 38.4 | 1.26 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 26.0 | 26.7 | 1.02 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 26.0 | 26.7 | 1.02 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 12.7 | 33.3 | 2.61 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 12.7 | 33.3 | 2.61 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 30.7 | 50.7 | 1.65 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 31.1 | 51.6 | 1.66 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 26.5 | 33.0 | 1.24 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 26.5 | 33.0 | 1.24 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 31.7 | 54.8 | 1.73 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 31.7 | 54.8 | 1.73 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 31.7 | 47.7 | 1.50 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 31.7 | 47.7 | 1.50 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 32.3 | 38.5 | 1.19 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 34.4 | 44.3 | 1.29 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 34.4 | 44.3 | 1.29 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 44.4 | 48.5 | 1.09 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 39.9 | 44.7 | 1.12 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 29.9 | 33.4 | 1.12 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 29.1 | 32.5 | 1.12 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 30.6 | 33.4 | 1.09 | ok |
-| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 29.9 | 35.4 | 1.19 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 34.5 | 51.7 | 1.50 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 33.5 | 54.0 | 1.61 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.8 | 63.0 | 2.11 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.6 | 72.0 | 2.52 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 30.6 | 78.1 | 2.55 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 33.6 | 53.0 | 1.58 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.1 | 69.5 | 2.47 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 34.3 | 38.1 | 1.11 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 33.8 | 37.6 | 1.11 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 31.4 | 36.7 | 1.17 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 29.3 | 30.8 | 1.05 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.5 | 29.0 | 1.02 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.3 | 33.5 | 1.18 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 28.5 | 35.5 | 1.25 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 30.3 | 38.6 | 1.27 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 32.9 | 41.5 | 1.26 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 29.5 | 41.2 | 1.40 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 31.9 | 35.6 | 1.12 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 26.7 | 26.9 | 1.01 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 38.5 | 42.1 | 1.09 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 27.8 | 34.0 | 1.22 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 7.0 | 7.0 | 1.00 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Lifts/ArtLift` | objective | 30.5 | 39.3 | 1.29 | ok |
+| `Spawns/PlayerPortico3` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 30.5 | 39.3 | 1.29 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 26.0 | 26.7 | 1.03 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 26.0 | 26.7 | 1.03 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 12.7 | 33.5 | 2.63 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 12.7 | 33.5 | 2.63 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 30.7 | 51.2 | 1.67 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 31.1 | 52.1 | 1.68 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 26.5 | 33.1 | 1.25 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 26.5 | 33.1 | 1.25 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 31.7 | 55.3 | 1.74 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 31.7 | 55.3 | 1.74 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 31.7 | 48.4 | 1.52 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 31.7 | 48.4 | 1.52 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 32.3 | 38.6 | 1.19 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 34.4 | 44.7 | 1.30 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 34.4 | 44.7 | 1.30 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 44.4 | 51.5 | 1.16 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 39.9 | 47.7 | 1.19 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 29.9 | 36.4 | 1.22 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 29.1 | 35.5 | 1.22 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 30.6 | 36.4 | 1.19 | ok |
+| `Spawns/PlayerPortico3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 29.9 | 35.5 | 1.19 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 34.5 | 52.2 | 1.51 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 33.5 | 54.4 | 1.62 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 29.8 | 61.3 | 2.05 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 28.6 | 70.3 | 2.46 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 30.6 | 76.7 | 2.51 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 33.6 | 53.5 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 28.1 | 67.8 | 2.41 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 34.3 | 38.4 | 1.12 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 33.8 | 37.7 | 1.12 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 31.4 | 37.1 | 1.18 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 29.3 | 31.2 | 1.07 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 28.5 | 29.4 | 1.03 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 28.3 | 34.1 | 1.20 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 28.5 | 36.1 | 1.27 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 30.3 | 39.5 | 1.30 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 32.9 | 42.4 | 1.29 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 29.5 | 41.0 | 1.39 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 31.9 | 35.7 | 1.12 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 26.7 | 27.0 | 1.01 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 38.5 | 45.2 | 1.17 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 27.8 | 34.2 | 1.23 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 7.0 | 7.1 | 1.01 | ok |
 | `Spawns/PlayerPortico4` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 6.0 | 6.0 | 1.00 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 10.7 | 14.3 | 1.34 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 34.7 | 53.7 | 1.55 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 33.7 | 51.9 | 1.54 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 30.3 | 46.2 | 1.52 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 29.3 | 49.8 | 1.70 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.9 | 52.7 | 1.82 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.8 | 49.9 | 1.73 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 30.8 | 47.4 | 1.54 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 33.4 | 49.9 | 1.49 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 29.6 | 46.2 | 1.56 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 30.1 | 45.4 | 1.51 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.0 | 45.3 | 1.57 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 26.1 | 45.9 | 1.76 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 16.0 | 47.4 | 2.96 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 20.2 | 50.6 | 2.51 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 11.8 | 53.0 | 4.49 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 36.2 | 61.7 | 1.70 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 38.0 | 43.2 | 1.14 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterCalloway` | objective | 25.7 | 41.8 | 1.62 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 25.7 | 41.8 | 1.62 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterTreasury` | objective | 20.2 | 50.6 | 2.51 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 20.2 | 50.6 | 2.51 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterArtDoor` | objective | 27.8 | 34.0 | 1.22 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 27.8 | 34.0 | 1.22 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 11.9 | 34.1 | 2.85 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 15.6 | 33.8 | 2.17 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 19.4 | 36.6 | 1.89 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 21.7 | 35.0 | 1.61 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 21.0 | 36.1 | 1.72 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 10.9 | 64.2 | 5.92 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 8.6 | 64.4 | 7.49 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 7.9 | 60.4 | 7.68 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 9.0 | 56.5 | 6.25 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG1` | loot_spawn | 23.8 | 32.4 | 1.36 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 23.8 | 32.4 | 1.36 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG2` | loot_spawn | 21.3 | 29.7 | 1.39 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 21.3 | 29.7 | 1.39 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC1` | loot_spawn | 25.1 | 39.5 | 1.57 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 25.1 | 39.5 | 1.57 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC2` | loot_spawn | 23.7 | 42.7 | 1.80 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 23.7 | 42.7 | 1.80 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG1` | loot_spawn | 24.3 | 26.6 | 1.10 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 24.3 | 26.6 | 1.10 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG2` | loot_spawn | 28.7 | 34.1 | 1.19 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 28.7 | 34.1 | 1.19 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEB1` | loot_spawn | 21.4 | 33.9 | 1.58 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 21.4 | 33.9 | 1.58 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 32.9 | 50.1 | 1.52 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 32.9 | 50.1 | 1.52 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 30.2 | 46.3 | 1.53 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 30.2 | 46.3 | 1.53 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 21.2 | 59.6 | 2.82 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 21.2 | 59.6 | 2.82 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 17.5 | 59.9 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 17.5 | 59.9 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 17.9 | 47.9 | 2.68 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 17.9 | 47.9 | 2.68 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 23.2 | 53.3 | 2.30 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 23.2 | 53.3 | 2.30 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 25.0 | 76.7 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 25.0 | 76.7 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 23.8 | 77.5 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 23.8 | 77.5 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.5 | 74.7 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.5 | 74.7 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.8 | 77.6 | 3.40 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.8 | 77.6 | 3.40 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.7 | 76.9 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.7 | 76.9 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.6 | 79.2 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.6 | 79.2 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 23.8 | 76.9 | 3.23 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 23.8 | 76.9 | 3.23 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.4 | 74.5 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.4 | 74.5 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker1` | objective | 26.0 | 79.5 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 26.0 | 79.5 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker2` | objective | 23.2 | 81.2 | 3.51 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 23.2 | 81.2 | 3.51 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker3` | objective | 24.6 | 80.1 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 24.6 | 80.1 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker4` | objective | 21.8 | 82.5 | 3.79 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 21.8 | 82.5 | 3.79 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker5` | objective | 26.0 | 79.5 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 26.0 | 79.5 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker6` | objective | 23.2 | 81.2 | 3.51 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 23.2 | 81.2 | 3.51 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker7` | objective | 24.6 | 80.1 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 24.6 | 80.1 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker8` | objective | 21.8 | 82.5 | 3.79 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 21.8 | 82.5 | 3.79 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe` | objective | 36.4 | 56.8 | 1.56 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 36.4 | 56.8 | 1.56 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 36.4 | 56.8 | 1.56 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 36.4 | 56.8 | 1.56 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 36.4 | 56.8 | 1.56 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 16.8 | 55.2 | 3.28 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 20.9 | 56.4 | 2.69 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 10.7 | 14.5 | 1.36 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 34.7 | 54.9 | 1.58 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 33.7 | 52.6 | 1.56 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 30.3 | 46.8 | 1.54 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 29.3 | 50.6 | 1.73 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 28.9 | 53.6 | 1.85 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.8 | 50.3 | 1.74 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 30.8 | 47.6 | 1.55 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 33.4 | 50.2 | 1.50 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 29.6 | 46.6 | 1.58 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 30.1 | 45.7 | 1.52 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 29.0 | 45.5 | 1.57 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 26.1 | 46.1 | 1.76 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 16.0 | 47.6 | 2.97 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 20.2 | 50.8 | 2.52 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 11.8 | 53.6 | 4.55 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 36.2 | 62.1 | 1.72 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 38.0 | 46.3 | 1.22 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterCalloway` | objective | 25.7 | 42.1 | 1.63 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 25.7 | 42.1 | 1.63 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterTreasury` | objective | 20.2 | 50.8 | 2.52 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 20.2 | 50.8 | 2.52 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterArtDoor` | objective | 27.8 | 34.2 | 1.23 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 27.8 | 34.2 | 1.23 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 11.9 | 34.3 | 2.87 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowS2/UsePoint` | use_point | 15.6 | 34.0 | 2.18 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 19.4 | 36.8 | 1.90 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 21.7 | 35.2 | 1.62 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 21.0 | 36.3 | 1.73 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 10.9 | 64.5 | 5.94 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 8.6 | 64.8 | 7.54 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 7.9 | 60.8 | 7.73 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 9.0 | 57.0 | 6.29 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG1` | loot_spawn | 23.8 | 32.5 | 1.37 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 23.8 | 32.5 | 1.37 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG2` | loot_spawn | 21.3 | 29.8 | 1.40 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 21.3 | 29.8 | 1.40 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC1` | loot_spawn | 25.1 | 39.6 | 1.58 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 25.1 | 39.6 | 1.58 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC2` | loot_spawn | 23.7 | 42.9 | 1.81 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 23.7 | 42.9 | 1.81 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG1` | loot_spawn | 24.3 | 26.8 | 1.11 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 24.3 | 26.8 | 1.11 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG2` | loot_spawn | 28.7 | 34.3 | 1.20 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 28.7 | 34.3 | 1.20 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEB1` | loot_spawn | 21.4 | 34.1 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 21.4 | 34.1 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 32.9 | 50.3 | 1.53 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 32.9 | 50.3 | 1.53 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 30.2 | 46.5 | 1.54 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 30.2 | 46.5 | 1.54 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 21.2 | 59.9 | 2.83 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 21.2 | 59.9 | 2.83 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 17.5 | 60.3 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 17.5 | 60.3 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 17.9 | 48.1 | 2.69 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 17.9 | 48.1 | 2.69 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 23.2 | 53.5 | 2.31 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 23.2 | 53.5 | 2.31 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 25.0 | 77.7 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 25.0 | 77.7 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 23.8 | 75.9 | 3.19 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 23.8 | 75.9 | 3.19 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 23.5 | 73.2 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 23.5 | 73.2 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.8 | 78.6 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.8 | 78.6 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.7 | 77.9 | 3.43 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.7 | 77.9 | 3.43 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.6 | 78.0 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.6 | 78.0 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 23.8 | 75.3 | 3.17 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 23.8 | 75.3 | 3.17 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 23.4 | 73.0 | 3.13 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 23.4 | 73.0 | 3.13 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker1` | objective | 26.0 | 78.0 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 26.0 | 78.0 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker2` | objective | 23.2 | 79.6 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 23.2 | 79.6 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker3` | objective | 24.6 | 78.5 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 24.6 | 78.5 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker4` | objective | 21.8 | 81.0 | 3.72 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 21.8 | 81.0 | 3.72 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker5` | objective | 26.0 | 78.0 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 26.0 | 78.0 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker6` | objective | 23.2 | 79.6 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 23.2 | 79.6 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker7` | objective | 24.6 | 78.5 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 24.6 | 78.5 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker8` | objective | 21.8 | 81.0 | 3.72 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 21.8 | 81.0 | 3.72 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe` | objective | 36.4 | 58.1 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 36.4 | 58.1 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 36.4 | 58.1 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 36.4 | 58.1 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 36.4 | 58.1 | 1.59 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 16.8 | 55.4 | 3.29 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 20.9 | 56.5 | 2.70 | ok |
 | `Spawns/PlayerPortico4` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 9.7 | 19.9 | 2.05 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 9.0 | 16.8 | 1.87 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 33.0 | 34.7 | 1.05 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArgusTerminal` | objective | 33.4 | 54.0 | 1.62 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.4 | 54.0 | 1.62 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerKeypad` | objective | 28.8 | 48.9 | 1.70 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 28.8 | 48.9 | 1.70 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerDoorDrill` | objective | 28.7 | 49.8 | 1.74 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 28.7 | 49.8 | 1.74 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/TreasuryReader` | objective | 21.0 | 51.4 | 2.45 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 21.0 | 51.4 | 2.45 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultReader` | objective | 28.2 | 71.2 | 2.52 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.2 | 71.2 | 2.52 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultDrill` | objective | 28.4 | 69.5 | 2.45 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.4 | 69.5 | 2.45 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArtDoorReader` | objective | 28.7 | 35.5 | 1.24 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 28.7 | 35.5 | 1.24 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 13.4 | 18.3 | 1.37 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.3 | 33.7 | 1.01 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.7 | 32.5 | 1.06 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 36.4 | 43.2 | 1.19 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 34.1 | 55.4 | 1.62 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 34.2 | 51.4 | 1.50 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 30.6 | 58.0 | 1.89 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 14.7 | 49.1 | 3.34 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 32.2 | 35.3 | 1.10 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 15.7 | 51.3 | 3.27 | detour (whitelisted) |
-| `Spawns/PlayerPortico4` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 8.4 | 8.4 | 1.00 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Lifts/ArtLift` | objective | 30.3 | 38.6 | 1.27 | ok |
-| `Spawns/PlayerPortico4` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 30.3 | 38.6 | 1.27 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 26.1 | 26.8 | 1.03 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 26.1 | 26.8 | 1.03 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 11.9 | 33.4 | 2.80 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 11.9 | 33.4 | 2.80 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 30.2 | 50.8 | 1.68 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 30.6 | 51.7 | 1.69 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 25.7 | 33.1 | 1.29 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 25.7 | 33.1 | 1.29 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 31.2 | 55.0 | 1.76 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 31.2 | 55.0 | 1.76 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 32.0 | 47.9 | 1.50 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 32.0 | 47.9 | 1.50 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 33.0 | 38.7 | 1.17 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 35.2 | 44.4 | 1.26 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 35.2 | 44.4 | 1.26 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 44.0 | 48.6 | 1.10 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 39.5 | 44.8 | 1.13 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 29.4 | 33.5 | 1.14 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 28.6 | 32.7 | 1.14 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 30.1 | 33.5 | 1.11 | ok |
-| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 29.3 | 35.6 | 1.21 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 24.3 | 62.4 | 2.56 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 22.3 | 64.7 | 2.90 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 15.6 | 73.7 | 4.71 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.4 | 82.7 | 6.64 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 12.2 | 88.8 | 7.28 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 23.4 | 63.7 | 2.72 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.3 | 80.2 | 6.01 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 24.0 | 48.7 | 2.03 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 22.7 | 47.5 | 2.09 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 18.6 | 42.5 | 2.28 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 14.5 | 36.5 | 2.52 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 12.5 | 32.5 | 2.59 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.7 | 27.5 | 2.35 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 12.0 | 25.5 | 2.13 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 11.4 | 22.4 | 1.96 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 10.5 | 19.7 | 1.88 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 9.0 | 17.2 | 1.92 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 33.0 | 35.3 | 1.07 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArgusTerminal` | objective | 33.4 | 54.8 | 1.64 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 33.4 | 54.8 | 1.64 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerKeypad` | objective | 28.8 | 49.3 | 1.71 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 28.8 | 49.3 | 1.71 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerDoorDrill` | objective | 28.7 | 50.2 | 1.75 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 28.7 | 50.2 | 1.75 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/TreasuryReader` | objective | 21.0 | 51.5 | 2.45 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 21.0 | 51.5 | 2.45 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultReader` | objective | 28.2 | 69.5 | 2.46 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 28.2 | 69.5 | 2.46 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultDrill` | objective | 28.4 | 67.8 | 2.39 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 28.4 | 67.8 | 2.39 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArtDoorReader` | objective | 28.7 | 35.7 | 1.24 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 28.7 | 35.7 | 1.24 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 13.4 | 18.4 | 1.38 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 33.3 | 34.2 | 1.03 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 30.7 | 33.4 | 1.09 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 36.4 | 43.7 | 1.20 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 34.1 | 56.8 | 1.67 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 34.2 | 52.2 | 1.52 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 30.6 | 58.6 | 1.91 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 14.7 | 49.3 | 3.36 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 32.2 | 35.9 | 1.11 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 15.7 | 51.5 | 3.28 | detour (whitelisted) |
+| `Spawns/PlayerPortico4` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 8.4 | 8.5 | 1.01 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Lifts/ArtLift` | objective | 30.3 | 39.5 | 1.30 | ok |
+| `Spawns/PlayerPortico4` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 30.3 | 39.5 | 1.30 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 26.1 | 26.9 | 1.03 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 26.1 | 26.9 | 1.03 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 11.9 | 33.7 | 2.82 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 11.9 | 33.7 | 2.82 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 30.2 | 51.4 | 1.70 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 30.6 | 52.3 | 1.71 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 25.7 | 33.3 | 1.29 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 25.7 | 33.3 | 1.29 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 31.2 | 55.5 | 1.78 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 31.2 | 55.5 | 1.78 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 32.0 | 48.6 | 1.52 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 32.0 | 48.6 | 1.52 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 33.0 | 38.8 | 1.17 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 35.2 | 45.0 | 1.28 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 35.2 | 45.0 | 1.28 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 44.0 | 51.7 | 1.18 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 39.5 | 47.9 | 1.21 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 29.4 | 36.6 | 1.24 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 28.6 | 35.8 | 1.25 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 30.1 | 36.6 | 1.22 | ok |
+| `Spawns/PlayerPortico4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 29.3 | 35.8 | 1.22 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 24.3 | 64.1 | 2.63 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 22.3 | 66.4 | 2.98 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 15.6 | 75.4 | 4.82 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.4 | 84.4 | 6.78 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 12.2 | 90.7 | 7.44 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 23.4 | 65.4 | 2.79 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.3 | 81.9 | 6.14 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 24.0 | 50.3 | 2.10 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 22.7 | 49.1 | 2.16 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 18.6 | 42.7 | 2.29 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 14.5 | 36.7 | 2.54 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 12.5 | 32.7 | 2.61 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.7 | 27.7 | 2.37 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 12.0 | 25.7 | 2.15 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 11.4 | 22.5 | 1.96 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 10.5 | 19.9 | 1.89 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 14.5 | 21.4 | 1.47 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 23.4 | 47.5 | 2.03 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 14.8 | 34.2 | 2.32 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 17.5 | 18.2 | 1.04 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 23.4 | 48.1 | 2.05 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 14.8 | 35.1 | 2.38 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 17.5 | 18.5 | 1.06 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 21.2 | 24.8 | 1.17 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 34.7 | 52.4 | 1.51 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 34.4 | 51.2 | 1.49 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 30.5 | 42.6 | 1.40 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 24.6 | 45.5 | 1.85 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 22.5 | 47.7 | 2.12 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 16.6 | 55.7 | 3.35 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 14.4 | 59.7 | 4.14 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 13.4 | 62.7 | 4.70 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 12.9 | 66.7 | 5.17 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.7 | 71.8 | 5.67 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 11.8 | 74.8 | 6.33 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 14.8 | 67.6 | 4.56 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 17.7 | 54.7 | 3.10 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 14.5 | 66.7 | 4.60 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 21.8 | 67.3 | 3.09 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 30.0 | 68.8 | 2.29 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 32.3 | 72.0 | 2.23 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 34.1 | 74.4 | 2.18 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 26.8 | 34.7 | 1.30 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 24.6 | 46.3 | 1.88 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 22.5 | 48.1 | 2.13 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 16.6 | 56.1 | 3.37 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 14.4 | 60.1 | 4.16 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 13.4 | 63.1 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 12.9 | 67.1 | 5.20 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.7 | 72.4 | 5.72 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 11.8 | 75.3 | 6.38 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 14.8 | 73.4 | 4.95 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 17.7 | 55.1 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 14.5 | 72.1 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 21.8 | 70.6 | 3.24 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 30.0 | 72.1 | 2.40 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 32.3 | 75.3 | 2.33 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 34.1 | 78.1 | 2.29 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 26.8 | 34.8 | 1.30 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 12.7 | 12.8 | 1.00 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterCalloway` | objective | 23.0 | 61.2 | 2.66 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 23.0 | 61.2 | 2.66 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterTreasury` | objective | 32.3 | 72.0 | 2.23 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 32.3 | 72.0 | 2.23 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterCalloway` | objective | 23.0 | 61.8 | 2.69 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 23.0 | 61.8 | 2.69 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterTreasury` | objective | 32.3 | 75.3 | 2.33 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 32.3 | 75.3 | 2.33 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterArtDoor` | objective | 21.2 | 24.8 | 1.17 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 21.2 | 24.8 | 1.17 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 35.6 | 44.3 | 1.25 | ok |
@@ -747,171 +747,171 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerMews1` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 38.5 | 43.8 | 1.14 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 36.3 | 41.9 | 1.16 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 38.0 | 43.1 | 1.13 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 35.7 | 83.6 | 2.34 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.0 | 85.8 | 2.45 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.7 | 81.8 | 2.36 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.9 | 77.9 | 2.23 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG1` | loot_spawn | 30.2 | 50.6 | 1.68 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 30.2 | 50.6 | 1.68 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG2` | loot_spawn | 28.2 | 48.1 | 1.71 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 28.2 | 48.1 | 1.71 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC1` | loot_spawn | 36.8 | 57.6 | 1.57 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 36.8 | 57.6 | 1.57 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC2` | loot_spawn | 39.6 | 60.9 | 1.54 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 39.6 | 60.9 | 1.54 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 35.7 | 84.2 | 2.36 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.0 | 88.0 | 2.51 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.7 | 85.3 | 2.46 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.9 | 81.4 | 2.33 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG1` | loot_spawn | 30.2 | 51.3 | 1.70 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 30.2 | 51.3 | 1.70 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG2` | loot_spawn | 28.2 | 48.8 | 1.73 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 28.2 | 48.8 | 1.73 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC1` | loot_spawn | 36.8 | 58.3 | 1.58 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 36.8 | 58.3 | 1.58 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC2` | loot_spawn | 39.6 | 61.5 | 1.55 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 39.6 | 61.5 | 1.55 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Loot/StudyEG1` | loot_spawn | 20.4 | 30.1 | 1.47 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 20.4 | 30.1 | 1.47 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Loot/StudyEG2` | loot_spawn | 25.2 | 30.1 | 1.20 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 25.2 | 30.1 | 1.20 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Loot/StudyEB1` | loot_spawn | 35.1 | 40.8 | 1.16 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 35.1 | 40.8 | 1.16 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 25.5 | 69.5 | 2.73 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 25.5 | 69.5 | 2.73 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 21.6 | 65.7 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 21.6 | 65.7 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 39.9 | 79.0 | 1.98 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 39.9 | 79.0 | 1.98 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 38.0 | 79.3 | 2.09 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 38.0 | 79.3 | 2.09 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 30.5 | 69.3 | 2.27 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 30.5 | 69.3 | 2.27 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 33.6 | 74.7 | 2.22 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 33.6 | 74.7 | 2.22 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 19.9 | 87.4 | 4.39 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 19.9 | 87.4 | 4.39 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.9 | 88.2 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.9 | 88.2 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 17.6 | 85.4 | 4.84 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 17.6 | 85.4 | 4.84 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 21.5 | 88.3 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 21.5 | 88.3 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 21.1 | 87.6 | 4.15 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 21.1 | 87.6 | 4.15 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 21.5 | 89.9 | 4.18 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 21.5 | 89.9 | 4.18 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.7 | 87.6 | 4.94 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.7 | 87.6 | 4.94 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 17.7 | 85.2 | 4.81 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 17.7 | 85.2 | 4.81 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker1` | objective | 17.3 | 90.2 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 17.3 | 90.2 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker2` | objective | 20.1 | 91.9 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 20.1 | 91.9 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker3` | objective | 18.7 | 90.7 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 18.7 | 90.7 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker4` | objective | 21.4 | 93.2 | 4.34 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 21.4 | 93.2 | 4.34 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker5` | objective | 17.3 | 90.2 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 17.3 | 90.2 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker6` | objective | 20.1 | 91.9 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 20.1 | 91.9 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker7` | objective | 18.7 | 90.7 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 18.7 | 90.7 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker8` | objective | 21.4 | 93.2 | 4.34 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 21.4 | 93.2 | 4.34 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe` | objective | 17.8 | 53.0 | 2.97 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 17.8 | 53.0 | 2.97 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 17.8 | 53.0 | 2.97 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 17.8 | 53.0 | 2.97 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 17.8 | 53.0 | 2.97 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 35.5 | 76.6 | 2.15 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 37.5 | 77.7 | 2.07 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 35.7 | 57.6 | 1.61 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.3 | 45.1 | 1.36 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 13.8 | 40.2 | 2.91 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/ArgusTerminal` | objective | 9.2 | 71.0 | 7.70 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.2 | 71.0 | 7.70 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerKeypad` | objective | 13.1 | 67.7 | 5.18 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.1 | 67.7 | 5.18 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.1 | 66.7 | 5.10 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.1 | 66.7 | 5.10 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/TreasuryReader` | objective | 32.6 | 72.8 | 2.23 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 32.6 | 72.8 | 2.23 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultReader` | objective | 12.9 | 81.9 | 6.36 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 12.9 | 81.9 | 6.36 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultDrill` | objective | 13.1 | 80.2 | 6.14 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.1 | 80.2 | 6.14 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 25.5 | 70.0 | 2.75 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 25.5 | 70.0 | 2.75 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 21.6 | 66.3 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 21.6 | 66.3 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 39.9 | 79.6 | 2.00 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 39.9 | 79.6 | 2.00 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 38.0 | 80.0 | 2.11 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 38.0 | 80.0 | 2.11 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 30.5 | 72.5 | 2.38 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 30.5 | 72.5 | 2.38 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 33.6 | 78.0 | 2.32 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 33.6 | 78.0 | 2.32 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 19.9 | 88.3 | 4.44 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 19.9 | 88.3 | 4.44 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.9 | 90.0 | 5.02 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.9 | 90.0 | 5.02 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 17.6 | 87.3 | 4.95 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 17.6 | 87.3 | 4.95 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 21.5 | 90.5 | 4.21 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 21.5 | 90.5 | 4.21 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 21.1 | 89.9 | 4.26 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 21.1 | 89.9 | 4.26 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 21.5 | 92.1 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 21.5 | 92.1 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.7 | 89.4 | 5.05 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.7 | 89.4 | 5.05 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 17.7 | 87.1 | 4.92 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 17.7 | 87.1 | 4.92 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker1` | objective | 17.3 | 92.1 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 17.3 | 92.1 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker2` | objective | 20.1 | 93.7 | 4.67 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 20.1 | 93.7 | 4.67 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker3` | objective | 18.7 | 92.6 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 18.7 | 92.6 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker4` | objective | 21.4 | 95.1 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 21.4 | 95.1 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker5` | objective | 17.3 | 92.1 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 17.3 | 92.1 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker6` | objective | 20.1 | 93.7 | 4.67 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 20.1 | 93.7 | 4.67 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker7` | objective | 18.7 | 92.6 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 18.7 | 92.6 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker8` | objective | 21.4 | 95.1 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 21.4 | 95.1 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe` | objective | 17.8 | 53.5 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 17.8 | 53.5 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 17.8 | 53.5 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 17.8 | 53.5 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 17.8 | 53.5 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 35.5 | 79.8 | 2.25 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 37.5 | 81.0 | 2.16 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 35.7 | 59.5 | 1.67 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.3 | 45.4 | 1.36 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 13.8 | 42.1 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/ArgusTerminal` | objective | 9.2 | 71.6 | 7.76 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.2 | 71.6 | 7.76 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerKeypad` | objective | 13.1 | 68.1 | 5.21 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.1 | 68.1 | 5.21 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.1 | 67.1 | 5.13 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.1 | 67.1 | 5.13 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/TreasuryReader` | objective | 32.6 | 76.0 | 2.33 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 32.6 | 76.0 | 2.33 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultReader` | objective | 12.9 | 83.6 | 6.49 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 12.9 | 83.6 | 6.49 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultDrill` | objective | 13.1 | 81.9 | 6.27 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.1 | 81.9 | 6.27 | detour (whitelisted) |
 | `Spawns/PlayerMews1` | `Gameplay/Devices/ArtDoorReader` | objective | 22.1 | 25.0 | 1.13 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 22.1 | 25.0 | 1.13 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 34.1 | 55.8 | 1.64 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 9.0 | 36.8 | 4.08 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 12.4 | 38.0 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 17.7 | 52.6 | 2.97 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 18.8 | 51.6 | 2.74 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 12.1 | 60.5 | 4.99 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 24.5 | 79.4 | 3.25 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 31.6 | 70.5 | 2.23 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 15.1 | 40.9 | 2.70 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 33.2 | 72.7 | 2.19 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 34.1 | 57.7 | 1.69 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 9.0 | 38.7 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 12.4 | 40.2 | 3.25 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 17.7 | 54.9 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 18.8 | 52.3 | 2.78 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 12.1 | 61.3 | 5.06 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 24.5 | 85.4 | 3.49 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 31.6 | 73.8 | 2.34 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 15.1 | 42.7 | 2.82 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 33.2 | 76.0 | 2.29 | ok |
 | `Spawns/PlayerMews1` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 33.5 | 51.8 | 1.55 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Lifts/ArtLift` | objective | 11.3 | 22.6 | 1.99 | ok |
-| `Spawns/PlayerMews1` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 11.3 | 22.6 | 1.99 | ok |
-| `Spawns/PlayerMews1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 14.8 | 50.8 | 3.43 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 14.8 | 50.8 | 3.43 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Gameplay/Lifts/ArtLift` | objective | 11.3 | 22.6 | 2.00 | ok |
+| `Spawns/PlayerMews1` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 11.3 | 22.6 | 2.00 | ok |
+| `Spawns/PlayerMews1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 14.8 | 49.9 | 3.36 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 14.8 | 49.9 | 3.36 | detour (whitelisted) |
 | `Spawns/PlayerMews1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 34.1 | 43.8 | 1.28 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 34.1 | 43.8 | 1.28 | ok |
-| `Spawns/PlayerMews1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 18.2 | 72.2 | 3.97 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 18.8 | 73.1 | 3.90 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 18.2 | 78.2 | 4.30 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 18.8 | 79.0 | 4.21 | detour (whitelisted) |
 | `Spawns/PlayerMews1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 29.4 | 33.3 | 1.13 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 29.4 | 33.3 | 1.13 | ok |
-| `Spawns/PlayerMews1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 21.6 | 76.3 | 3.53 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 21.6 | 76.3 | 3.53 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 15.4 | 57.0 | 3.70 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 15.4 | 57.0 | 3.70 | detour (whitelisted) |
-| `Spawns/PlayerMews1` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 30.7 | 54.7 | 1.78 | ok |
-| `Spawns/PlayerMews1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 34.8 | 61.1 | 1.75 | ok |
-| `Spawns/PlayerMews1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 34.8 | 61.1 | 1.75 | ok |
+| `Spawns/PlayerMews1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 21.6 | 82.3 | 3.80 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 21.6 | 82.3 | 3.80 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 15.4 | 57.8 | 3.75 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 15.4 | 57.8 | 3.75 | detour (whitelisted) |
+| `Spawns/PlayerMews1` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 30.7 | 55.2 | 1.80 | ok |
+| `Spawns/PlayerMews1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 34.8 | 61.7 | 1.77 | ok |
+| `Spawns/PlayerMews1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 34.8 | 61.7 | 1.77 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 15.6 | 15.6 | 1.00 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 13.3 | 13.3 | 1.00 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 19.0 | 22.4 | 1.18 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 19.6 | 23.3 | 1.19 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 19.9 | 22.7 | 1.14 | ok |
 | `Spawns/PlayerMews1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 20.6 | 23.5 | 1.14 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 25.2 | 61.5 | 2.44 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 23.1 | 63.7 | 2.76 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 16.3 | 72.7 | 4.47 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.5 | 81.7 | 6.53 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 11.8 | 87.8 | 7.43 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 24.3 | 62.8 | 2.59 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.6 | 79.2 | 5.83 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 24.8 | 47.8 | 1.92 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 23.6 | 46.5 | 1.97 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 19.4 | 41.5 | 2.14 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 15.1 | 35.5 | 2.36 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 12.9 | 31.5 | 2.44 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.7 | 26.5 | 2.27 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 11.8 | 24.5 | 2.08 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 11.0 | 21.5 | 1.94 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 9.9 | 18.8 | 1.90 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 25.2 | 63.2 | 2.51 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 23.1 | 65.5 | 2.83 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 16.3 | 74.4 | 4.57 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.5 | 83.4 | 6.66 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 11.8 | 89.8 | 7.60 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 24.3 | 64.5 | 2.66 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.6 | 80.9 | 5.95 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 24.8 | 49.4 | 1.99 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 23.6 | 48.1 | 2.04 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 19.4 | 41.8 | 2.15 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 15.1 | 35.8 | 2.38 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 12.9 | 31.8 | 2.46 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.7 | 26.8 | 2.29 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 11.8 | 24.8 | 2.10 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 11.0 | 21.5 | 1.95 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 9.9 | 18.9 | 1.92 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 14.0 | 20.5 | 1.46 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 24.2 | 46.5 | 1.92 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 15.2 | 33.3 | 2.20 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 16.5 | 17.3 | 1.05 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 24.2 | 47.2 | 1.95 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 15.2 | 34.1 | 2.25 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 16.5 | 17.5 | 1.06 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 20.5 | 23.9 | 1.16 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 34.8 | 51.4 | 1.48 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 34.5 | 50.2 | 1.46 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 34.5 | 50.3 | 1.46 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 30.4 | 41.7 | 1.37 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 25.4 | 46.4 | 1.83 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 23.4 | 48.7 | 2.08 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 17.3 | 56.7 | 3.28 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 14.9 | 60.7 | 4.07 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 13.6 | 63.7 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 12.9 | 67.7 | 5.25 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.3 | 67.9 | 5.52 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 11.3 | 70.3 | 6.24 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 14.4 | 66.7 | 4.64 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 18.3 | 55.7 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 14.2 | 65.8 | 4.65 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 21.3 | 66.4 | 3.12 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 29.8 | 67.9 | 2.28 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 31.8 | 71.1 | 2.23 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 33.9 | 73.5 | 2.16 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 27.6 | 35.6 | 1.29 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 25.4 | 47.2 | 1.86 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 23.4 | 49.0 | 2.10 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 17.3 | 57.0 | 3.30 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 14.9 | 61.0 | 4.09 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 13.6 | 64.0 | 4.69 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 12.9 | 68.0 | 5.27 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.3 | 73.4 | 5.97 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 11.3 | 76.3 | 6.77 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 14.4 | 70.2 | 4.88 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 18.3 | 56.0 | 3.05 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 14.2 | 69.0 | 4.87 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 21.3 | 69.6 | 3.27 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 29.8 | 71.1 | 2.39 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 31.8 | 74.3 | 2.34 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 33.9 | 77.2 | 2.27 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 27.6 | 35.7 | 1.30 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 11.8 | 11.8 | 1.00 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterCalloway` | objective | 23.6 | 62.2 | 2.64 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 23.6 | 62.2 | 2.64 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterTreasury` | objective | 31.8 | 71.1 | 2.23 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 31.8 | 71.1 | 2.23 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterCalloway` | objective | 23.6 | 62.7 | 2.66 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 23.6 | 62.7 | 2.66 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterTreasury` | objective | 31.8 | 74.3 | 2.34 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 31.8 | 74.3 | 2.34 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterArtDoor` | objective | 20.5 | 23.9 | 1.16 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 20.5 | 23.9 | 1.16 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 35.3 | 43.4 | 1.23 | ok |
@@ -919,171 +919,171 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerMews2` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 38.1 | 42.8 | 1.13 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 35.7 | 41.0 | 1.15 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 37.5 | 42.1 | 1.12 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 36.0 | 84.6 | 2.35 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.2 | 84.8 | 2.41 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.8 | 80.9 | 2.33 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.8 | 77.0 | 2.21 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG1` | loot_spawn | 30.8 | 49.7 | 1.61 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 30.8 | 49.7 | 1.61 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG2` | loot_spawn | 28.8 | 47.2 | 1.64 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 28.8 | 47.2 | 1.64 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC1` | loot_spawn | 37.5 | 56.7 | 1.51 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 37.5 | 56.7 | 1.51 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC2` | loot_spawn | 40.2 | 60.0 | 1.49 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 40.2 | 60.0 | 1.49 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 36.0 | 85.2 | 2.37 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.2 | 88.9 | 2.53 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.8 | 84.4 | 2.43 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.8 | 80.5 | 2.31 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG1` | loot_spawn | 30.8 | 50.3 | 1.63 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 30.8 | 50.3 | 1.63 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG2` | loot_spawn | 28.8 | 47.8 | 1.66 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 28.8 | 47.8 | 1.66 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC1` | loot_spawn | 37.5 | 57.3 | 1.53 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 37.5 | 57.3 | 1.53 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC2` | loot_spawn | 40.2 | 60.6 | 1.51 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 40.2 | 60.6 | 1.51 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Loot/StudyEG1` | loot_spawn | 20.0 | 29.2 | 1.46 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 20.0 | 29.2 | 1.46 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Loot/StudyEG2` | loot_spawn | 24.5 | 29.2 | 1.19 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 24.5 | 29.2 | 1.19 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Loot/StudyEB1` | loot_spawn | 34.6 | 39.9 | 1.15 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 34.6 | 39.9 | 1.15 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 26.3 | 70.4 | 2.68 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 26.3 | 70.4 | 2.68 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 22.4 | 66.6 | 2.98 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 22.4 | 66.6 | 2.98 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 40.4 | 80.0 | 1.98 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 40.4 | 80.0 | 1.98 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 38.4 | 80.3 | 2.09 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 38.4 | 80.3 | 2.09 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 30.1 | 68.4 | 2.27 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 30.1 | 68.4 | 2.27 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 33.1 | 73.8 | 2.23 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 33.1 | 73.8 | 2.23 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 20.4 | 86.4 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 20.4 | 86.4 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.8 | 87.2 | 4.91 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.8 | 87.2 | 4.91 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 17.8 | 84.5 | 4.75 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 17.8 | 84.5 | 4.75 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 21.9 | 87.4 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 21.9 | 87.4 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 21.5 | 86.7 | 4.03 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 21.5 | 86.7 | 4.03 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 21.6 | 88.9 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 21.6 | 88.9 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.6 | 86.6 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.6 | 86.6 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 17.9 | 84.3 | 4.72 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 17.9 | 84.3 | 4.72 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker1` | objective | 17.0 | 89.3 | 5.26 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 17.0 | 89.3 | 5.26 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker2` | objective | 19.8 | 90.9 | 4.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 19.8 | 90.9 | 4.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker3` | objective | 18.4 | 89.8 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 18.4 | 89.8 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker4` | objective | 21.2 | 92.2 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 21.2 | 92.2 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker5` | objective | 17.0 | 89.3 | 5.26 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 17.0 | 89.3 | 5.26 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker6` | objective | 19.8 | 90.9 | 4.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 19.8 | 90.9 | 4.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker7` | objective | 18.4 | 89.8 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 18.4 | 89.8 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker8` | objective | 21.2 | 92.2 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 21.2 | 92.2 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe` | objective | 18.7 | 54.0 | 2.88 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 18.7 | 54.0 | 2.88 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 18.7 | 54.0 | 2.88 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 18.7 | 54.0 | 2.88 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 18.7 | 54.0 | 2.88 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 35.2 | 75.7 | 2.15 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 37.1 | 76.8 | 2.07 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 35.9 | 56.6 | 1.58 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.2 | 44.2 | 1.33 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 14.6 | 39.3 | 2.69 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/ArgusTerminal` | objective | 9.1 | 71.9 | 7.94 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.1 | 71.9 | 7.94 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerKeypad` | objective | 13.0 | 68.7 | 5.29 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.0 | 68.7 | 5.29 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.1 | 67.7 | 5.18 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.1 | 67.7 | 5.18 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/TreasuryReader` | objective | 32.2 | 71.8 | 2.23 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 32.2 | 71.8 | 2.23 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultReader` | objective | 13.0 | 80.9 | 6.22 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.0 | 80.9 | 6.22 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultDrill` | objective | 13.3 | 79.2 | 5.94 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.3 | 79.2 | 5.94 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 26.3 | 71.0 | 2.70 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 26.3 | 71.0 | 2.70 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 22.4 | 67.2 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 22.4 | 67.2 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 40.4 | 80.6 | 1.99 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 40.4 | 80.6 | 1.99 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 38.4 | 81.0 | 2.11 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 38.4 | 81.0 | 2.11 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 30.1 | 71.6 | 2.38 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 30.1 | 71.6 | 2.38 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 33.1 | 77.0 | 2.33 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 33.1 | 77.0 | 2.33 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 20.4 | 87.4 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 20.4 | 87.4 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.8 | 89.1 | 5.01 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.8 | 89.1 | 5.01 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 17.8 | 86.4 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 17.8 | 86.4 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 21.9 | 89.6 | 4.09 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 21.9 | 89.6 | 4.09 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 21.5 | 88.9 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 21.5 | 88.9 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 21.6 | 91.1 | 4.21 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 21.6 | 91.1 | 4.21 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.6 | 88.5 | 5.04 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.6 | 88.5 | 5.04 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 17.9 | 86.2 | 4.82 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 17.9 | 86.2 | 4.82 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker1` | objective | 17.0 | 91.1 | 5.37 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 17.0 | 91.1 | 5.37 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker2` | objective | 19.8 | 92.8 | 4.70 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 19.8 | 92.8 | 4.70 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker3` | objective | 18.4 | 91.7 | 5.00 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 18.4 | 91.7 | 5.00 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker4` | objective | 21.2 | 94.1 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 21.2 | 94.1 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker5` | objective | 17.0 | 91.1 | 5.37 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 17.0 | 91.1 | 5.37 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker6` | objective | 19.8 | 92.8 | 4.70 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 19.8 | 92.8 | 4.70 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker7` | objective | 18.4 | 91.7 | 5.00 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 18.4 | 91.7 | 5.00 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker8` | objective | 21.2 | 94.1 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 21.2 | 94.1 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe` | objective | 18.7 | 54.5 | 2.91 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 18.7 | 54.5 | 2.91 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 18.7 | 54.5 | 2.91 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 18.7 | 54.5 | 2.91 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 18.7 | 54.5 | 2.91 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 35.2 | 78.9 | 2.24 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 37.1 | 80.0 | 2.16 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 35.9 | 58.6 | 1.63 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.2 | 44.5 | 1.34 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 14.6 | 41.1 | 2.81 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/ArgusTerminal` | objective | 9.1 | 72.5 | 8.01 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.1 | 72.5 | 8.01 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerKeypad` | objective | 13.0 | 69.0 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.0 | 69.0 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.1 | 68.0 | 5.20 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.1 | 68.0 | 5.20 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/TreasuryReader` | objective | 32.2 | 75.1 | 2.33 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 32.2 | 75.1 | 2.33 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultReader` | objective | 13.0 | 82.6 | 6.35 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.0 | 82.6 | 6.35 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultDrill` | objective | 13.3 | 80.9 | 6.07 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.3 | 80.9 | 6.07 | detour (whitelisted) |
 | `Spawns/PlayerMews2` | `Gameplay/Devices/ArtDoorReader` | objective | 21.5 | 24.1 | 1.12 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 21.5 | 24.1 | 1.12 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 34.4 | 54.8 | 1.59 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 9.7 | 35.9 | 3.71 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 13.0 | 37.1 | 2.86 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 18.7 | 51.7 | 2.77 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 19.6 | 52.5 | 2.68 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 12.8 | 61.5 | 4.79 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 23.7 | 78.5 | 3.30 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 31.3 | 69.6 | 2.22 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 15.9 | 39.9 | 2.51 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 32.9 | 71.8 | 2.18 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 34.4 | 56.8 | 1.65 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 9.7 | 37.7 | 3.90 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 13.0 | 39.3 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 18.7 | 54.0 | 2.89 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 19.6 | 53.2 | 2.71 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 12.8 | 62.3 | 4.86 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 23.7 | 82.1 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 31.3 | 72.9 | 2.32 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 15.9 | 41.8 | 2.63 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 32.9 | 75.0 | 2.28 | ok |
 | `Spawns/PlayerMews2` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 33.7 | 50.9 | 1.51 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Lifts/ArtLift` | objective | 10.9 | 21.6 | 1.98 | ok |
-| `Spawns/PlayerMews2` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 10.9 | 21.6 | 1.98 | ok |
-| `Spawns/PlayerMews2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 15.1 | 49.9 | 3.31 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 15.1 | 49.9 | 3.31 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Gameplay/Lifts/ArtLift` | objective | 10.9 | 21.7 | 1.98 | ok |
+| `Spawns/PlayerMews2` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 10.9 | 21.7 | 1.98 | ok |
+| `Spawns/PlayerMews2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 15.1 | 48.9 | 3.24 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 15.1 | 48.9 | 3.24 | detour (whitelisted) |
 | `Spawns/PlayerMews2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 33.9 | 42.9 | 1.27 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 33.9 | 42.9 | 1.27 | ok |
-| `Spawns/PlayerMews2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 17.6 | 71.3 | 4.06 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 18.1 | 72.2 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 17.6 | 74.9 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 18.1 | 75.8 | 4.18 | detour (whitelisted) |
 | `Spawns/PlayerMews2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 28.8 | 32.4 | 1.12 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 28.8 | 32.4 | 1.12 | ok |
-| `Spawns/PlayerMews2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 20.9 | 75.4 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 20.9 | 75.4 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 16.1 | 58.0 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 16.1 | 58.0 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerMews2` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 31.5 | 53.7 | 1.71 | ok |
-| `Spawns/PlayerMews2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 35.7 | 60.1 | 1.69 | ok |
-| `Spawns/PlayerMews2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 35.7 | 60.1 | 1.69 | ok |
+| `Spawns/PlayerMews2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 20.9 | 79.1 | 3.78 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 20.9 | 79.1 | 3.78 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 16.1 | 58.7 | 3.65 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 16.1 | 58.7 | 3.65 | detour (whitelisted) |
+| `Spawns/PlayerMews2` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 31.5 | 54.3 | 1.72 | ok |
+| `Spawns/PlayerMews2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 35.7 | 60.8 | 1.70 | ok |
+| `Spawns/PlayerMews2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 35.7 | 60.8 | 1.70 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 14.6 | 14.6 | 1.00 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 12.3 | 12.3 | 1.00 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 18.3 | 21.5 | 1.17 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 19.0 | 22.4 | 1.18 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 19.2 | 21.7 | 1.13 | ok |
 | `Spawns/PlayerMews2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 19.9 | 22.6 | 1.14 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 26.1 | 60.6 | 2.32 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 24.0 | 62.8 | 2.62 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 16.9 | 71.8 | 4.24 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.7 | 80.8 | 6.37 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 11.5 | 86.9 | 7.54 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 25.1 | 61.8 | 2.46 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.9 | 78.3 | 5.62 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 25.7 | 46.9 | 1.82 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 24.5 | 45.6 | 1.86 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 20.2 | 40.6 | 2.01 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 15.7 | 34.6 | 2.20 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 13.4 | 30.6 | 2.29 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.8 | 25.6 | 2.17 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 11.7 | 23.6 | 2.02 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 26.1 | 62.3 | 2.39 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 24.0 | 64.5 | 2.69 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 16.9 | 73.5 | 4.34 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.7 | 82.5 | 6.51 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 11.5 | 88.9 | 7.71 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 25.1 | 63.5 | 2.53 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.9 | 80.0 | 5.75 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 25.7 | 48.5 | 1.88 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 24.5 | 47.2 | 1.93 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 20.2 | 40.9 | 2.02 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 15.7 | 34.9 | 2.22 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 13.4 | 30.9 | 2.31 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.8 | 25.9 | 2.19 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 11.7 | 23.9 | 2.04 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 10.7 | 20.6 | 1.92 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 9.3 | 17.9 | 1.91 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 9.3 | 18.0 | 1.93 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 13.5 | 19.6 | 1.45 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 25.1 | 45.6 | 1.82 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 15.6 | 32.4 | 2.07 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 15.6 | 16.3 | 1.05 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 25.1 | 46.3 | 1.85 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 15.6 | 33.2 | 2.13 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 15.6 | 16.6 | 1.07 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 19.9 | 22.9 | 1.15 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 35.0 | 50.5 | 1.44 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 34.6 | 49.3 | 1.42 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 30.3 | 40.7 | 1.34 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 26.3 | 47.4 | 1.80 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 24.2 | 49.7 | 2.05 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 18.0 | 57.7 | 3.21 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 15.4 | 61.7 | 3.99 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 14.0 | 64.7 | 4.61 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 13.0 | 68.7 | 5.29 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.0 | 66.9 | 5.57 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 10.8 | 69.4 | 6.44 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 14.0 | 65.7 | 4.69 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 19.0 | 56.7 | 2.98 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 13.9 | 64.9 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 20.8 | 65.4 | 3.15 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 29.5 | 67.0 | 2.27 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 31.4 | 70.2 | 2.23 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 33.8 | 72.5 | 2.15 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 28.4 | 36.6 | 1.29 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 30.3 | 40.8 | 1.34 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 26.3 | 48.2 | 1.83 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 24.2 | 50.0 | 2.06 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 18.0 | 58.0 | 3.23 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 15.4 | 62.0 | 4.02 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 14.0 | 65.0 | 4.64 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 13.0 | 69.0 | 5.32 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.0 | 70.2 | 5.85 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 10.8 | 72.8 | 6.75 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 14.0 | 69.2 | 4.94 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 19.0 | 57.0 | 2.99 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 13.9 | 68.1 | 4.91 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 20.8 | 68.7 | 3.30 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 29.5 | 70.2 | 2.38 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 31.4 | 73.4 | 2.34 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 33.8 | 76.2 | 2.26 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 28.4 | 36.7 | 1.29 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 10.9 | 10.9 | 1.00 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterCalloway` | objective | 24.2 | 63.1 | 2.61 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.2 | 63.1 | 2.61 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterTreasury` | objective | 31.4 | 70.2 | 2.23 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 31.4 | 70.2 | 2.23 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterCalloway` | objective | 24.2 | 63.7 | 2.64 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.2 | 63.7 | 2.64 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterTreasury` | objective | 31.4 | 73.4 | 2.34 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 31.4 | 73.4 | 2.34 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterArtDoor` | objective | 19.9 | 22.9 | 1.15 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 19.9 | 22.9 | 1.15 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 35.1 | 42.5 | 1.21 | ok |
@@ -1091,171 +1091,171 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerMews3` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 37.6 | 41.9 | 1.11 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 35.3 | 40.0 | 1.14 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 37.0 | 41.2 | 1.11 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 36.3 | 85.6 | 2.36 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.3 | 83.9 | 2.38 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.8 | 80.0 | 2.30 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.8 | 76.1 | 2.19 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG1` | loot_spawn | 31.5 | 48.8 | 1.55 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 31.5 | 48.8 | 1.55 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG2` | loot_spawn | 29.3 | 46.3 | 1.58 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 29.3 | 46.3 | 1.58 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC1` | loot_spawn | 38.1 | 55.8 | 1.46 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 38.1 | 55.8 | 1.46 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC2` | loot_spawn | 40.8 | 59.0 | 1.45 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 40.8 | 59.0 | 1.45 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 36.3 | 86.2 | 2.38 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.3 | 87.4 | 2.47 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.8 | 83.5 | 2.40 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.8 | 79.6 | 2.29 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG1` | loot_spawn | 31.5 | 49.4 | 1.57 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 31.5 | 49.4 | 1.57 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG2` | loot_spawn | 29.3 | 46.9 | 1.60 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 29.3 | 46.9 | 1.60 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC1` | loot_spawn | 38.1 | 56.4 | 1.48 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 38.1 | 56.4 | 1.48 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC2` | loot_spawn | 40.8 | 59.7 | 1.46 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 40.8 | 59.7 | 1.46 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Loot/StudyEG1` | loot_spawn | 19.6 | 28.3 | 1.44 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 19.6 | 28.3 | 1.44 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Loot/StudyEG2` | loot_spawn | 23.8 | 28.3 | 1.19 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 23.8 | 28.3 | 1.19 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Loot/StudyEB1` | loot_spawn | 34.1 | 39.0 | 1.14 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 34.1 | 39.0 | 1.14 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 27.1 | 71.4 | 2.63 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 27.1 | 71.4 | 2.63 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 23.1 | 67.6 | 2.93 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 23.1 | 67.6 | 2.93 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 41.0 | 81.0 | 1.98 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 41.0 | 81.0 | 1.98 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 38.9 | 81.3 | 2.09 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 38.9 | 81.3 | 2.09 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 29.8 | 67.5 | 2.26 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 29.8 | 67.5 | 2.26 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 32.6 | 72.9 | 2.23 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 32.6 | 72.9 | 2.23 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 21.0 | 85.5 | 4.08 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 21.0 | 85.5 | 4.08 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.6 | 86.3 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.6 | 86.3 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 18.0 | 83.6 | 4.64 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 18.0 | 83.6 | 4.64 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.4 | 86.4 | 3.86 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.4 | 86.4 | 3.86 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.0 | 85.8 | 3.90 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.0 | 85.8 | 3.90 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 21.8 | 88.0 | 4.04 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 21.8 | 88.0 | 4.04 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.5 | 85.7 | 4.90 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.5 | 85.7 | 4.90 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 18.1 | 83.4 | 4.61 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 18.1 | 83.4 | 4.61 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker1` | objective | 16.7 | 88.3 | 5.30 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 16.7 | 88.3 | 5.30 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker2` | objective | 19.5 | 90.0 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 19.5 | 90.0 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker3` | objective | 18.1 | 88.9 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 18.1 | 88.9 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker4` | objective | 20.9 | 91.3 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 20.9 | 91.3 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker5` | objective | 16.7 | 88.3 | 5.30 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 16.7 | 88.3 | 5.30 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker6` | objective | 19.5 | 90.0 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 19.5 | 90.0 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker7` | objective | 18.1 | 88.9 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 18.1 | 88.9 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker8` | objective | 20.9 | 91.3 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 20.9 | 91.3 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe` | objective | 19.6 | 54.9 | 2.80 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 19.6 | 54.9 | 2.80 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 19.6 | 54.9 | 2.80 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 19.6 | 54.9 | 2.80 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 19.6 | 54.9 | 2.80 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 34.9 | 74.7 | 2.14 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 36.6 | 75.9 | 2.07 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 36.2 | 55.7 | 1.54 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.1 | 43.3 | 1.31 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 15.4 | 38.4 | 2.48 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/ArgusTerminal` | objective | 9.0 | 72.9 | 8.10 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.0 | 72.9 | 8.10 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerKeypad` | objective | 13.0 | 69.7 | 5.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.0 | 69.7 | 5.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.2 | 68.7 | 5.22 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.2 | 68.7 | 5.22 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/TreasuryReader` | objective | 31.7 | 70.9 | 2.23 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 31.7 | 70.9 | 2.23 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultReader` | objective | 13.2 | 80.0 | 6.05 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.2 | 80.0 | 6.05 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultDrill` | objective | 13.7 | 78.3 | 5.73 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.7 | 78.3 | 5.73 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 27.1 | 72.0 | 2.66 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 27.1 | 72.0 | 2.66 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 23.1 | 68.2 | 2.95 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 23.1 | 68.2 | 2.95 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 41.0 | 81.6 | 1.99 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 41.0 | 81.6 | 1.99 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 38.9 | 81.9 | 2.11 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 38.9 | 81.9 | 2.11 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 29.8 | 70.7 | 2.37 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 29.8 | 70.7 | 2.37 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 32.6 | 76.1 | 2.33 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 32.6 | 76.1 | 2.33 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 21.0 | 86.5 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 21.0 | 86.5 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.6 | 88.1 | 5.00 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.6 | 88.1 | 5.00 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 18.0 | 85.4 | 4.74 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 18.0 | 85.4 | 4.74 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.4 | 88.7 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.4 | 88.7 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.0 | 88.0 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.0 | 88.0 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 21.8 | 90.2 | 4.14 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 21.8 | 90.2 | 4.14 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.5 | 87.5 | 5.01 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.5 | 87.5 | 5.01 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 18.1 | 85.2 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 18.1 | 85.2 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker1` | objective | 16.7 | 90.2 | 5.41 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 16.7 | 90.2 | 5.41 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker2` | objective | 19.5 | 91.9 | 4.71 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 19.5 | 91.9 | 4.71 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker3` | objective | 18.1 | 90.8 | 5.02 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 18.1 | 90.8 | 5.02 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker4` | objective | 20.9 | 93.2 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 20.9 | 93.2 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker5` | objective | 16.7 | 90.2 | 5.41 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 16.7 | 90.2 | 5.41 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker6` | objective | 19.5 | 91.9 | 4.71 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 19.5 | 91.9 | 4.71 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker7` | objective | 18.1 | 90.8 | 5.02 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 18.1 | 90.8 | 5.02 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker8` | objective | 20.9 | 93.2 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 20.9 | 93.2 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe` | objective | 19.6 | 55.5 | 2.83 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 19.6 | 55.5 | 2.83 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 19.6 | 55.5 | 2.83 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 19.6 | 55.5 | 2.83 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 19.6 | 55.5 | 2.83 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 34.9 | 78.0 | 2.24 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 36.6 | 79.1 | 2.16 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 36.2 | 57.6 | 1.59 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.1 | 43.6 | 1.32 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 15.4 | 40.2 | 2.60 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/ArgusTerminal` | objective | 9.0 | 73.5 | 8.17 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.0 | 73.5 | 8.17 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerKeypad` | objective | 13.0 | 70.0 | 5.39 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.0 | 70.0 | 5.39 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.2 | 69.0 | 5.24 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.2 | 69.0 | 5.24 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/TreasuryReader` | objective | 31.7 | 74.1 | 2.34 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 31.7 | 74.1 | 2.34 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultReader` | objective | 13.2 | 81.7 | 6.18 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.2 | 81.7 | 6.18 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultDrill` | objective | 13.7 | 80.0 | 5.86 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.7 | 80.0 | 5.86 | detour (whitelisted) |
 | `Spawns/PlayerMews3` | `Gameplay/Devices/ArtDoorReader` | objective | 20.8 | 23.2 | 1.11 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 20.8 | 23.2 | 1.11 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 34.8 | 53.9 | 1.55 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 10.4 | 35.0 | 3.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 13.7 | 36.2 | 2.65 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 19.6 | 50.7 | 2.59 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 20.5 | 53.5 | 2.61 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 13.6 | 62.5 | 4.60 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 23.1 | 77.6 | 3.36 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 31.1 | 68.7 | 2.21 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 16.7 | 39.0 | 2.33 | ok |
-| `Spawns/PlayerMews3` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 32.6 | 70.9 | 2.17 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 34.8 | 55.8 | 1.60 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 10.4 | 36.8 | 3.54 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 13.7 | 38.3 | 2.81 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 19.6 | 53.1 | 2.71 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 20.5 | 54.2 | 2.65 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 13.6 | 63.3 | 4.66 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 23.1 | 81.2 | 3.52 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 31.1 | 72.0 | 2.31 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 16.7 | 40.9 | 2.44 | ok |
+| `Spawns/PlayerMews3` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 32.6 | 74.1 | 2.27 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 33.9 | 49.9 | 1.47 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Lifts/ArtLift` | objective | 10.6 | 20.7 | 1.95 | ok |
 | `Spawns/PlayerMews3` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 10.6 | 20.7 | 1.95 | ok |
-| `Spawns/PlayerMews3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 15.4 | 49.0 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 15.4 | 49.0 | 3.18 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 15.4 | 48.0 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 15.4 | 48.0 | 3.11 | detour (whitelisted) |
 | `Spawns/PlayerMews3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 33.7 | 42.0 | 1.25 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 33.7 | 42.0 | 1.25 | ok |
-| `Spawns/PlayerMews3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 17.0 | 70.4 | 4.14 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 17.5 | 71.2 | 4.07 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 17.0 | 74.0 | 4.36 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 17.5 | 74.9 | 4.28 | detour (whitelisted) |
 | `Spawns/PlayerMews3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 28.2 | 31.5 | 1.12 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 28.2 | 31.5 | 1.12 | ok |
-| `Spawns/PlayerMews3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 20.3 | 74.5 | 3.68 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 20.3 | 74.5 | 3.68 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 16.8 | 59.0 | 3.50 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 16.8 | 59.0 | 3.50 | detour (whitelisted) |
-| `Spawns/PlayerMews3` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 32.3 | 52.8 | 1.63 | ok |
-| `Spawns/PlayerMews3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 36.5 | 59.2 | 1.62 | ok |
-| `Spawns/PlayerMews3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 36.5 | 59.2 | 1.62 | ok |
+| `Spawns/PlayerMews3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 20.3 | 78.1 | 3.86 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 20.3 | 78.1 | 3.86 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 16.8 | 59.7 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 16.8 | 59.7 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerMews3` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 32.3 | 53.4 | 1.65 | ok |
+| `Spawns/PlayerMews3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 36.5 | 59.8 | 1.64 | ok |
+| `Spawns/PlayerMews3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 36.5 | 59.8 | 1.64 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 13.6 | 13.6 | 1.00 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 11.3 | 11.3 | 1.00 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 17.7 | 20.6 | 1.16 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 18.4 | 21.5 | 1.17 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 18.6 | 20.8 | 1.12 | ok |
 | `Spawns/PlayerMews3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 19.3 | 21.7 | 1.13 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 26.9 | 59.6 | 2.21 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 24.8 | 61.9 | 2.49 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 17.6 | 70.9 | 4.02 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.9 | 79.9 | 6.19 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 11.3 | 86.0 | 7.61 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.0 | 60.9 | 2.34 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 14.3 | 77.4 | 5.41 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 26.6 | 46.0 | 1.73 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.4 | 44.7 | 1.76 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 21.1 | 39.7 | 1.89 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 16.4 | 33.7 | 2.05 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 13.9 | 29.7 | 2.14 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 12.0 | 24.7 | 2.06 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 11.7 | 22.7 | 1.94 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 10.5 | 19.7 | 1.87 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 8.9 | 16.9 | 1.91 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 26.9 | 61.4 | 2.28 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 24.8 | 63.6 | 2.56 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 17.6 | 72.6 | 4.12 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 12.9 | 81.6 | 6.32 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 11.3 | 88.0 | 7.78 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.0 | 62.6 | 2.41 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 14.3 | 79.1 | 5.53 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 26.6 | 47.6 | 1.79 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.4 | 46.3 | 1.83 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 21.1 | 40.0 | 1.90 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 16.4 | 34.0 | 2.07 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 13.9 | 30.0 | 2.16 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 12.0 | 25.0 | 2.09 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 11.7 | 23.0 | 1.96 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 10.5 | 19.7 | 1.88 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 8.9 | 17.1 | 1.93 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 13.1 | 18.7 | 1.43 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 25.9 | 44.7 | 1.73 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 16.1 | 31.5 | 1.95 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 14.7 | 15.4 | 1.05 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 25.9 | 45.4 | 1.75 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 16.1 | 32.3 | 2.00 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 14.7 | 15.7 | 1.07 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 19.4 | 22.0 | 1.14 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 35.2 | 49.6 | 1.41 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 34.8 | 48.4 | 1.39 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 30.3 | 39.8 | 1.31 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 27.2 | 48.4 | 1.78 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 25.1 | 50.6 | 2.02 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 18.7 | 58.6 | 3.14 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 16.0 | 62.6 | 3.91 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 14.4 | 65.6 | 4.55 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 13.1 | 69.6 | 5.30 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 11.8 | 66.0 | 5.60 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 10.4 | 68.5 | 6.60 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 13.7 | 64.8 | 4.73 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 19.8 | 57.6 | 2.92 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 13.7 | 64.0 | 4.68 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 20.4 | 64.5 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 29.3 | 66.1 | 2.25 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 31.0 | 69.3 | 2.23 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 33.7 | 71.6 | 2.13 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 29.3 | 37.6 | 1.28 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 27.2 | 49.2 | 1.81 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 25.1 | 51.0 | 2.03 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 18.7 | 59.0 | 3.16 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 16.0 | 63.0 | 3.93 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 14.4 | 66.0 | 4.57 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 13.1 | 70.0 | 5.33 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 11.8 | 69.3 | 5.87 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 10.4 | 71.9 | 6.93 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 13.7 | 68.3 | 4.99 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 19.8 | 58.0 | 2.93 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 13.7 | 67.2 | 4.92 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 20.4 | 67.8 | 3.33 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 29.3 | 69.3 | 2.36 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 31.0 | 72.5 | 2.34 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 33.7 | 75.3 | 2.24 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 29.3 | 37.7 | 1.29 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 10.0 | 10.0 | 1.00 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterCalloway` | objective | 24.8 | 64.1 | 2.58 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.8 | 64.1 | 2.58 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterTreasury` | objective | 31.0 | 69.3 | 2.23 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 31.0 | 69.3 | 2.23 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterCalloway` | objective | 24.8 | 64.7 | 2.61 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 24.8 | 64.7 | 2.61 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterTreasury` | objective | 31.0 | 72.5 | 2.34 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 31.0 | 72.5 | 2.34 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterArtDoor` | objective | 19.4 | 22.0 | 1.14 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 19.4 | 22.0 | 1.14 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 34.9 | 41.6 | 1.19 | ok |
@@ -1263,171 +1263,171 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerMews4` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 37.2 | 41.0 | 1.10 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 34.8 | 39.1 | 1.12 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 36.6 | 40.3 | 1.10 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 36.6 | 86.5 | 2.37 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.5 | 83.0 | 2.34 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.9 | 79.0 | 2.27 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.7 | 75.2 | 2.16 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG1` | loot_spawn | 32.1 | 47.9 | 1.49 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 32.1 | 47.9 | 1.49 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG2` | loot_spawn | 29.9 | 45.4 | 1.52 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 29.9 | 45.4 | 1.52 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC1` | loot_spawn | 38.8 | 54.9 | 1.41 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 38.8 | 54.9 | 1.41 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC2` | loot_spawn | 41.4 | 58.1 | 1.40 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 41.4 | 58.1 | 1.40 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 36.6 | 87.2 | 2.38 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 35.5 | 86.5 | 2.44 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 34.9 | 82.6 | 2.37 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 34.7 | 78.7 | 2.27 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG1` | loot_spawn | 32.1 | 48.5 | 1.51 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 32.1 | 48.5 | 1.51 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG2` | loot_spawn | 29.9 | 46.0 | 1.54 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 29.9 | 46.0 | 1.54 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC1` | loot_spawn | 38.8 | 55.5 | 1.43 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 38.8 | 55.5 | 1.43 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC2` | loot_spawn | 41.4 | 58.8 | 1.42 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 41.4 | 58.8 | 1.42 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Loot/StudyEG1` | loot_spawn | 19.2 | 27.4 | 1.42 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 19.2 | 27.4 | 1.42 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Loot/StudyEG2` | loot_spawn | 23.2 | 27.4 | 1.18 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 23.2 | 27.4 | 1.18 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Loot/StudyEB1` | loot_spawn | 33.6 | 38.1 | 1.13 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 33.6 | 38.1 | 1.13 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 27.9 | 72.4 | 2.59 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 27.9 | 72.4 | 2.59 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 23.9 | 68.6 | 2.87 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 23.9 | 68.6 | 2.87 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 41.5 | 81.9 | 1.97 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 41.5 | 81.9 | 1.97 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 39.4 | 82.2 | 2.09 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 39.4 | 82.2 | 2.09 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 29.5 | 66.5 | 2.25 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 29.5 | 66.5 | 2.25 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 32.1 | 72.0 | 2.24 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 32.1 | 72.0 | 2.24 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 21.5 | 84.6 | 3.93 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 21.5 | 84.6 | 3.93 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.6 | 85.4 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.6 | 85.4 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 18.3 | 82.6 | 4.52 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 18.3 | 82.6 | 4.52 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.9 | 85.5 | 3.73 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.9 | 85.5 | 3.73 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.5 | 84.9 | 3.78 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.5 | 84.9 | 3.78 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 22.0 | 87.1 | 3.95 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 22.0 | 87.1 | 3.95 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.5 | 84.8 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.5 | 84.8 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 18.3 | 82.5 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 18.3 | 82.5 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker1` | objective | 16.4 | 87.4 | 5.32 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 16.4 | 87.4 | 5.32 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker2` | objective | 19.3 | 89.1 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 19.3 | 89.1 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker3` | objective | 17.9 | 88.0 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 17.9 | 88.0 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker4` | objective | 20.7 | 90.4 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 20.7 | 90.4 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker5` | objective | 16.4 | 87.4 | 5.32 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 16.4 | 87.4 | 5.32 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker6` | objective | 19.3 | 89.1 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 19.3 | 89.1 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker7` | objective | 17.9 | 88.0 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 17.9 | 88.0 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker8` | objective | 20.7 | 90.4 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 20.7 | 90.4 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe` | objective | 20.5 | 55.9 | 2.73 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 20.5 | 55.9 | 2.73 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 20.5 | 55.9 | 2.73 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 20.5 | 55.9 | 2.73 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 20.5 | 55.9 | 2.73 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 34.6 | 73.8 | 2.14 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 36.2 | 75.0 | 2.07 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 36.5 | 54.8 | 1.50 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.0 | 42.4 | 1.28 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 16.3 | 37.5 | 2.30 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/ArgusTerminal` | objective | 9.1 | 73.9 | 8.16 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.1 | 73.9 | 8.16 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerKeypad` | objective | 13.1 | 70.6 | 5.41 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.1 | 70.6 | 5.41 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.3 | 69.6 | 5.23 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.3 | 69.6 | 5.23 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/TreasuryReader` | objective | 31.3 | 70.0 | 2.24 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 31.3 | 70.0 | 2.24 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultReader` | objective | 13.5 | 79.1 | 5.85 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.5 | 79.1 | 5.85 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultDrill` | objective | 14.1 | 77.4 | 5.51 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 14.1 | 77.4 | 5.51 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 27.9 | 72.9 | 2.61 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 27.9 | 72.9 | 2.61 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 23.9 | 69.2 | 2.90 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 23.9 | 69.2 | 2.90 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 41.5 | 82.5 | 1.99 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 41.5 | 82.5 | 1.99 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 39.4 | 82.9 | 2.10 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 39.4 | 82.9 | 2.10 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 29.5 | 69.8 | 2.36 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 29.5 | 69.8 | 2.36 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 32.1 | 75.2 | 2.34 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 32.1 | 75.2 | 2.34 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 21.5 | 85.6 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 21.5 | 85.6 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.6 | 87.2 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.6 | 87.2 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 18.3 | 84.5 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 18.3 | 84.5 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 22.9 | 87.8 | 3.83 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 22.9 | 87.8 | 3.83 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 22.5 | 87.1 | 3.88 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 22.5 | 87.1 | 3.88 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 22.0 | 89.3 | 4.05 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 22.0 | 89.3 | 4.05 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.5 | 86.6 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.5 | 86.6 | 4.96 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 18.3 | 84.3 | 4.60 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 18.3 | 84.3 | 4.60 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker1` | objective | 16.4 | 89.3 | 5.43 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 16.4 | 89.3 | 5.43 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker2` | objective | 19.3 | 91.0 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 19.3 | 91.0 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker3` | objective | 17.9 | 89.9 | 5.03 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 17.9 | 89.9 | 5.03 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker4` | objective | 20.7 | 92.3 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 20.7 | 92.3 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker5` | objective | 16.4 | 89.3 | 5.43 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 16.4 | 89.3 | 5.43 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker6` | objective | 19.3 | 91.0 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 19.3 | 91.0 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker7` | objective | 17.9 | 89.9 | 5.03 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 17.9 | 89.9 | 5.03 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker8` | objective | 20.7 | 92.3 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 20.7 | 92.3 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe` | objective | 20.5 | 56.5 | 2.75 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 20.5 | 56.5 | 2.75 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 20.5 | 56.5 | 2.75 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 20.5 | 56.5 | 2.75 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 20.5 | 56.5 | 2.75 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 34.6 | 77.1 | 2.23 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 36.2 | 78.2 | 2.16 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 36.5 | 56.7 | 1.55 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 33.0 | 42.7 | 1.29 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 16.3 | 39.3 | 2.41 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/ArgusTerminal` | objective | 9.1 | 74.5 | 8.22 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 9.1 | 74.5 | 8.22 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerKeypad` | objective | 13.1 | 71.0 | 5.43 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 13.1 | 71.0 | 5.43 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.3 | 70.0 | 5.26 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.3 | 70.0 | 5.26 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/TreasuryReader` | objective | 31.3 | 73.2 | 2.34 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 31.3 | 73.2 | 2.34 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultReader` | objective | 13.5 | 80.8 | 5.98 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.5 | 80.8 | 5.98 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultDrill` | objective | 14.1 | 79.1 | 5.63 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 14.1 | 79.1 | 5.63 | detour (whitelisted) |
 | `Spawns/PlayerMews4` | `Gameplay/Devices/ArtDoorReader` | objective | 20.2 | 22.3 | 1.10 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 20.2 | 22.3 | 1.10 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 35.2 | 53.0 | 1.50 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 11.2 | 34.1 | 3.05 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 14.4 | 35.3 | 2.46 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 20.5 | 49.8 | 2.43 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 21.3 | 54.5 | 2.56 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 14.3 | 63.4 | 4.42 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 22.4 | 76.6 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 30.9 | 67.7 | 2.19 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 17.6 | 38.1 | 2.17 | ok |
-| `Spawns/PlayerMews4` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 32.4 | 70.0 | 2.16 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 35.2 | 54.9 | 1.56 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 11.2 | 35.9 | 3.22 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 14.4 | 37.4 | 2.61 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 20.5 | 52.2 | 2.54 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 21.3 | 55.2 | 2.59 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 14.3 | 64.2 | 4.48 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 22.4 | 80.3 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 30.9 | 71.0 | 2.30 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 17.6 | 40.0 | 2.28 | ok |
+| `Spawns/PlayerMews4` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 32.4 | 73.2 | 2.26 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 34.1 | 49.0 | 1.44 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Lifts/ArtLift` | objective | 10.4 | 19.8 | 1.90 | ok |
 | `Spawns/PlayerMews4` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 10.4 | 19.8 | 1.90 | ok |
-| `Spawns/PlayerMews4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 15.8 | 48.1 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 15.8 | 48.1 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 15.8 | 47.1 | 2.98 | ok |
+| `Spawns/PlayerMews4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 15.8 | 47.1 | 2.98 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 33.5 | 41.1 | 1.23 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 33.5 | 41.1 | 1.23 | ok |
-| `Spawns/PlayerMews4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 16.4 | 69.4 | 4.22 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 16.9 | 70.3 | 4.16 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 16.4 | 73.1 | 4.45 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 16.9 | 74.0 | 4.37 | detour (whitelisted) |
 | `Spawns/PlayerMews4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 27.6 | 30.5 | 1.11 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 27.6 | 30.5 | 1.11 | ok |
-| `Spawns/PlayerMews4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 19.6 | 73.6 | 3.75 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 19.6 | 73.6 | 3.75 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 17.6 | 59.9 | 3.41 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 17.6 | 59.9 | 3.41 | detour (whitelisted) |
-| `Spawns/PlayerMews4` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 33.2 | 51.9 | 1.56 | ok |
-| `Spawns/PlayerMews4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 37.4 | 58.3 | 1.56 | ok |
-| `Spawns/PlayerMews4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 37.4 | 58.3 | 1.56 | ok |
+| `Spawns/PlayerMews4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 19.6 | 77.2 | 3.94 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 19.6 | 77.2 | 3.94 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 17.6 | 60.7 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 17.6 | 60.7 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerMews4` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 33.2 | 52.5 | 1.58 | ok |
+| `Spawns/PlayerMews4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 37.4 | 58.9 | 1.58 | ok |
+| `Spawns/PlayerMews4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 37.4 | 58.9 | 1.58 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 12.6 | 12.6 | 1.00 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 10.4 | 10.4 | 1.00 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 17.1 | 19.7 | 1.15 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 17.8 | 20.6 | 1.15 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 17.9 | 19.9 | 1.11 | ok |
 | `Spawns/PlayerMews4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 18.6 | 20.8 | 1.11 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 15.6 | 43.4 | 2.78 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 14.5 | 45.7 | 3.15 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 13.6 | 54.6 | 4.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 17.9 | 63.6 | 3.56 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 21.9 | 69.7 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 15.0 | 44.7 | 2.98 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 16.3 | 61.1 | 3.75 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 12.2 | 33.0 | 2.69 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 11.4 | 34.2 | 3.00 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 9.2 | 39.2 | 4.24 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 9.9 | 45.2 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 12.1 | 49.2 | 4.08 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 15.8 | 54.2 | 3.43 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 17.5 | 54.5 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 19.7 | 51.4 | 2.61 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 21.5 | 48.7 | 2.27 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 15.6 | 43.6 | 2.80 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 14.5 | 45.9 | 3.16 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 13.6 | 54.9 | 4.05 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 17.9 | 63.9 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 21.9 | 70.3 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 15.0 | 44.9 | 3.00 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 16.3 | 61.4 | 3.76 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 12.2 | 33.2 | 2.71 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 11.4 | 34.5 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 9.2 | 39.4 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 9.9 | 45.4 | 4.60 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 12.1 | 49.4 | 4.10 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 15.8 | 54.4 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 17.5 | 54.8 | 3.13 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 19.7 | 51.5 | 2.62 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 21.5 | 48.9 | 2.27 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 22.6 | 50.5 | 2.23 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 11.4 | 35.4 | 3.10 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 11.7 | 49.0 | 4.18 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 30.8 | 47.2 | 1.53 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 11.4 | 35.9 | 3.14 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 11.7 | 49.5 | 4.23 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 30.8 | 47.5 | 1.54 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 28.0 | 53.8 | 1.92 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 26.1 | 62.4 | 2.40 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 26.8 | 62.2 | 2.32 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 26.6 | 64.2 | 2.41 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 9.1 | 20.5 | 2.27 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 7.0 | 22.8 | 3.24 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 4.2 | 30.8 | 7.37 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 7.0 | 34.8 | 4.94 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 9.7 | 37.8 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 13.5 | 41.8 | 3.09 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 17.9 | 46.9 | 2.62 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 19.9 | 49.8 | 2.51 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 19.7 | 48.1 | 2.45 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 4.0 | 29.8 | 7.53 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 18.4 | 46.8 | 2.54 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 25.2 | 55.7 | 2.21 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 27.4 | 62.8 | 2.29 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 32.3 | 66.7 | 2.07 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 29.5 | 68.3 | 2.32 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 26.1 | 62.8 | 2.41 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 26.8 | 62.6 | 2.34 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 26.6 | 64.6 | 2.42 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 9.1 | 21.2 | 2.34 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 7.0 | 23.0 | 3.27 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 4.2 | 31.0 | 7.41 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 7.0 | 35.0 | 4.97 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 9.7 | 38.0 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 13.5 | 42.0 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 17.9 | 47.3 | 2.65 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 19.9 | 50.2 | 2.53 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 19.7 | 48.3 | 2.46 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 4.0 | 30.0 | 7.58 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 18.4 | 47.0 | 2.55 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 25.2 | 56.2 | 2.23 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 27.4 | 63.2 | 2.30 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 32.3 | 67.2 | 2.08 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 29.5 | 69.3 | 2.35 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 9.7 | 9.7 | 1.00 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 26.9 | 41.8 | 1.55 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterCalloway` | objective | 7.9 | 36.2 | 4.59 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 7.9 | 36.2 | 4.59 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterTreasury` | objective | 32.3 | 66.7 | 2.07 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 32.3 | 66.7 | 2.07 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterCalloway` | objective | 7.9 | 36.7 | 4.64 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 7.9 | 36.7 | 4.64 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterTreasury` | objective | 32.3 | 67.2 | 2.08 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 32.3 | 67.2 | 2.08 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterArtDoor` | objective | 28.0 | 53.8 | 1.92 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 28.0 | 53.8 | 1.92 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 33.3 | 73.4 | 2.20 | ok |
@@ -1435,171 +1435,171 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerRoof1` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 39.0 | 72.8 | 1.87 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 38.2 | 70.9 | 1.86 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 39.3 | 72.1 | 1.83 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 23.9 | 58.7 | 2.45 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 24.9 | 62.4 | 2.51 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 26.5 | 66.3 | 2.51 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 28.5 | 71.9 | 2.52 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG1` | loot_spawn | 16.8 | 45.4 | 2.70 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 16.8 | 45.4 | 2.70 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG2` | loot_spawn | 15.9 | 46.3 | 2.91 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 15.9 | 46.3 | 2.91 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC1` | loot_spawn | 22.4 | 50.5 | 2.25 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 22.4 | 50.5 | 2.25 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC2` | loot_spawn | 25.3 | 53.8 | 2.13 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 25.3 | 53.8 | 2.13 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 23.9 | 59.2 | 2.47 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 24.9 | 62.9 | 2.53 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 26.5 | 66.8 | 2.52 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 28.5 | 72.6 | 2.55 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG1` | loot_spawn | 16.8 | 46.1 | 2.74 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 16.8 | 46.1 | 2.74 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG2` | loot_spawn | 15.9 | 46.9 | 2.94 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 15.9 | 46.9 | 2.94 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC1` | loot_spawn | 22.4 | 51.6 | 2.30 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 22.4 | 51.6 | 2.30 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC2` | loot_spawn | 25.3 | 54.9 | 2.17 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 25.3 | 54.9 | 2.17 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyEG1` | loot_spawn | 24.8 | 59.2 | 2.38 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 24.8 | 59.2 | 2.38 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyEG2` | loot_spawn | 32.1 | 59.2 | 1.84 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 32.1 | 59.2 | 1.84 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyEB1` | loot_spawn | 37.1 | 69.9 | 1.88 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 37.1 | 69.9 | 1.88 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 9.3 | 44.5 | 4.78 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 9.3 | 44.5 | 4.78 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 5.6 | 40.7 | 7.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 5.6 | 40.7 | 7.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 24.4 | 54.1 | 2.21 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 24.4 | 54.1 | 2.21 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 23.4 | 54.4 | 2.32 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 23.4 | 54.4 | 2.32 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 29.2 | 63.2 | 2.17 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 29.2 | 63.2 | 2.17 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 35.1 | 67.9 | 1.94 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 35.1 | 67.9 | 1.94 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 14.8 | 68.4 | 4.63 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 14.8 | 68.4 | 4.63 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 21.7 | 69.1 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 21.7 | 69.1 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 17.6 | 66.4 | 3.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 17.6 | 66.4 | 3.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 15.9 | 69.3 | 4.37 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 15.9 | 69.3 | 4.37 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 16.0 | 68.6 | 4.30 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 16.0 | 68.6 | 4.30 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.4 | 70.9 | 3.66 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.4 | 70.9 | 3.66 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 21.2 | 68.5 | 3.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 21.2 | 68.5 | 3.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 17.8 | 66.2 | 3.72 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 17.8 | 66.2 | 3.72 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker1` | objective | 23.6 | 71.2 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 23.6 | 71.2 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker2` | objective | 24.3 | 72.8 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 24.3 | 72.8 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker3` | objective | 23.9 | 71.7 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 23.9 | 71.7 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker4` | objective | 24.8 | 74.2 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 24.8 | 74.2 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker5` | objective | 23.6 | 71.2 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 23.6 | 71.2 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker6` | objective | 24.3 | 72.8 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 24.3 | 72.8 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker7` | objective | 23.9 | 71.7 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 23.9 | 71.7 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker8` | objective | 24.8 | 74.2 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 24.8 | 74.2 | 2.99 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe` | objective | 6.2 | 28.0 | 4.55 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 6.2 | 28.0 | 4.55 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 6.2 | 28.0 | 4.55 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 6.2 | 28.0 | 4.55 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 6.2 | 28.0 | 4.55 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 33.7 | 71.3 | 2.12 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 37.4 | 72.4 | 1.94 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.4 | 60.3 | 2.37 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 29.3 | 66.7 | 2.28 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 9.5 | 48.9 | 5.16 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/ArgusTerminal` | objective | 15.4 | 46.0 | 2.98 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 15.4 | 46.0 | 2.98 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerKeypad` | objective | 14.5 | 42.8 | 2.95 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 14.5 | 42.8 | 2.95 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.5 | 41.8 | 3.09 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.5 | 41.8 | 3.09 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/TreasuryReader` | objective | 33.1 | 67.6 | 2.04 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 33.1 | 67.6 | 2.04 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultReader` | objective | 17.3 | 62.8 | 3.62 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 17.3 | 62.8 | 3.62 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultDrill` | objective | 16.3 | 61.1 | 3.75 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 16.3 | 61.1 | 3.75 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 9.3 | 45.0 | 4.83 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 9.3 | 45.0 | 4.83 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 5.6 | 41.2 | 7.33 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 5.6 | 41.2 | 7.33 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 24.4 | 54.5 | 2.23 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 24.4 | 54.5 | 2.23 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 23.4 | 54.9 | 2.34 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 23.4 | 54.9 | 2.34 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 29.2 | 63.7 | 2.18 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 29.2 | 63.7 | 2.18 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 35.1 | 68.6 | 1.96 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 35.1 | 68.6 | 1.96 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 14.8 | 69.2 | 4.69 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 14.8 | 69.2 | 4.69 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 21.7 | 69.5 | 3.21 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 21.7 | 69.5 | 3.21 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 17.6 | 66.8 | 3.80 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 17.6 | 66.8 | 3.80 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 15.9 | 70.1 | 4.42 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 15.9 | 70.1 | 4.42 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 16.0 | 69.4 | 4.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 16.0 | 69.4 | 4.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 19.4 | 71.6 | 3.70 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 19.4 | 71.6 | 3.70 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 21.2 | 68.9 | 3.25 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 21.2 | 68.9 | 3.25 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 17.8 | 66.6 | 3.74 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 17.8 | 66.6 | 3.74 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker1` | objective | 23.6 | 71.6 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 23.6 | 71.6 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker2` | objective | 24.3 | 73.2 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 24.3 | 73.2 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker3` | objective | 23.9 | 72.1 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 23.9 | 72.1 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker4` | objective | 24.8 | 74.6 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 24.8 | 74.6 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker5` | objective | 23.6 | 71.6 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 23.6 | 71.6 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker6` | objective | 24.3 | 73.2 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 24.3 | 73.2 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker7` | objective | 23.9 | 72.1 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 23.9 | 72.1 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker8` | objective | 24.8 | 74.6 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 24.8 | 74.6 | 3.00 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe` | objective | 6.2 | 28.5 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 6.2 | 28.5 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 6.2 | 28.5 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 6.2 | 28.5 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 6.2 | 28.5 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 33.7 | 71.8 | 2.13 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 37.4 | 73.0 | 1.95 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.4 | 60.7 | 2.39 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 29.3 | 67.3 | 2.30 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 9.5 | 49.4 | 5.21 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/ArgusTerminal` | objective | 15.4 | 46.5 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 15.4 | 46.5 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerKeypad` | objective | 14.5 | 43.0 | 2.97 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 14.5 | 43.0 | 2.97 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerDoorDrill` | objective | 13.5 | 42.0 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 13.5 | 42.0 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/TreasuryReader` | objective | 33.1 | 68.2 | 2.06 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 33.1 | 68.2 | 2.06 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultReader` | objective | 17.3 | 63.1 | 3.64 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 17.3 | 63.1 | 3.64 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultDrill` | objective | 16.3 | 61.4 | 3.77 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 16.3 | 61.4 | 3.77 | detour (whitelisted) |
 | `Spawns/PlayerRoof1` | `Gameplay/Devices/ArtDoorReader` | objective | 29.5 | 54.1 | 1.83 | ok |
 | `Spawns/PlayerRoof1` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 29.5 | 54.1 | 1.83 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 22.9 | 58.5 | 2.56 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 12.0 | 53.5 | 4.47 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 10.4 | 47.0 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 10.6 | 40.1 | 3.80 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 4.8 | 26.6 | 5.54 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 6.8 | 35.6 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 30.7 | 60.0 | 1.96 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 28.4 | 64.5 | 2.27 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 9.1 | 49.5 | 5.42 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 30.8 | 66.7 | 2.16 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 24.7 | 61.7 | 2.50 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Lifts/ArtLift` | objective | 19.5 | 51.6 | 2.64 | ok |
-| `Spawns/PlayerRoof1` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 19.5 | 51.6 | 2.64 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 11.4 | 48.4 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 11.4 | 48.4 | 4.23 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 22.9 | 58.9 | 2.58 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 12.0 | 54.2 | 4.53 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 10.4 | 47.6 | 4.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 10.6 | 40.4 | 3.82 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 4.8 | 27.2 | 5.66 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 6.8 | 36.3 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 30.7 | 60.3 | 1.97 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 28.4 | 65.0 | 2.29 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 9.1 | 50.1 | 5.48 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 30.8 | 67.1 | 2.18 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 24.7 | 62.2 | 2.51 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Lifts/ArtLift` | objective | 19.5 | 51.6 | 2.65 | ok |
+| `Spawns/PlayerRoof1` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 19.5 | 51.6 | 2.65 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 11.4 | 49.0 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 11.4 | 49.0 | 4.28 | detour (whitelisted) |
 | `Spawns/PlayerRoof1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 31.8 | 72.9 | 2.29 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 31.8 | 72.9 | 2.29 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 24.4 | 52.8 | 2.17 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 25.2 | 53.7 | 2.13 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 24.4 | 53.1 | 2.18 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 25.2 | 54.0 | 2.14 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 34.3 | 62.3 | 1.82 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 34.3 | 62.3 | 1.82 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 28.4 | 57.0 | 2.01 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 28.4 | 57.0 | 2.01 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 4.3 | 32.1 | 7.53 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 4.3 | 32.1 | 7.53 | detour (whitelisted) |
-| `Spawns/PlayerRoof1` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 16.9 | 41.7 | 2.47 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 20.6 | 48.1 | 2.34 | ok |
-| `Spawns/PlayerRoof1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 20.6 | 48.1 | 2.34 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 28.4 | 57.2 | 2.02 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 28.4 | 57.2 | 2.02 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 4.3 | 32.7 | 7.67 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 4.3 | 32.7 | 7.67 | detour (whitelisted) |
+| `Spawns/PlayerRoof1` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 16.9 | 42.7 | 2.53 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 20.6 | 49.2 | 2.39 | ok |
+| `Spawns/PlayerRoof1` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 20.6 | 49.2 | 2.39 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 31.7 | 45.7 | 1.44 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 28.1 | 42.6 | 1.52 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 27.0 | 51.5 | 1.90 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 27.1 | 52.3 | 1.93 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 28.3 | 51.7 | 1.82 | ok |
 | `Spawns/PlayerRoof1` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 28.4 | 52.6 | 1.85 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 17.4 | 46.4 | 2.67 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 16.0 | 48.6 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 13.2 | 57.6 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 16.0 | 66.6 | 4.17 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 19.6 | 72.7 | 3.71 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 16.6 | 47.7 | 2.87 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 14.8 | 64.1 | 4.34 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 14.4 | 36.0 | 2.49 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 13.5 | 37.2 | 2.76 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 10.3 | 42.2 | 4.09 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 9.1 | 48.2 | 5.31 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 10.3 | 52.2 | 5.06 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 13.5 | 57.2 | 4.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 15.0 | 56.2 | 3.75 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 17.1 | 53.2 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 18.9 | 50.5 | 2.68 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 17.4 | 46.6 | 2.68 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 16.0 | 48.9 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 13.2 | 57.9 | 4.38 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 16.0 | 66.9 | 4.18 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 19.6 | 73.2 | 3.73 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 16.6 | 47.9 | 2.88 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 14.8 | 64.4 | 4.36 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 14.4 | 36.2 | 2.50 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 13.5 | 37.5 | 2.78 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 10.3 | 42.4 | 4.11 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 9.1 | 48.4 | 5.33 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 10.3 | 52.4 | 5.08 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 13.5 | 58.5 | 4.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 15.0 | 56.5 | 3.76 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 17.1 | 53.2 | 3.12 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 18.9 | 50.6 | 2.68 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 19.9 | 52.2 | 2.63 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 13.4 | 38.4 | 2.87 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 10.2 | 52.0 | 5.09 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 28.0 | 49.0 | 1.75 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 13.4 | 38.9 | 2.91 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 10.2 | 52.5 | 5.14 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 28.0 | 49.2 | 1.76 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 25.3 | 55.6 | 2.20 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 25.4 | 65.4 | 2.58 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 25.8 | 65.1 | 2.52 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 24.9 | 67.2 | 2.69 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 11.9 | 23.5 | 1.98 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 9.7 | 25.8 | 2.65 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 3.8 | 33.8 | 8.88 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 4.7 | 37.8 | 7.97 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 7.0 | 40.8 | 5.80 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 10.7 | 44.8 | 4.20 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 15.0 | 49.9 | 3.33 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 17.0 | 52.8 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 16.7 | 51.1 | 3.05 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 4.3 | 32.8 | 7.59 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 15.5 | 49.8 | 3.21 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 22.3 | 58.7 | 2.63 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 25.2 | 65.8 | 2.61 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 29.8 | 69.7 | 2.34 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 27.6 | 71.3 | 2.58 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 25.4 | 65.8 | 2.60 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 25.8 | 65.6 | 2.54 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 24.9 | 67.5 | 2.71 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 11.9 | 24.2 | 2.04 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 9.7 | 26.0 | 2.67 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 3.8 | 34.0 | 8.93 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 4.7 | 38.0 | 8.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 7.0 | 41.0 | 5.82 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 10.7 | 45.0 | 4.22 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 15.0 | 50.3 | 3.36 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 17.0 | 53.2 | 3.14 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 16.7 | 51.3 | 3.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 4.3 | 33.0 | 7.63 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 15.5 | 50.0 | 3.23 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 22.3 | 59.2 | 2.65 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 25.2 | 66.2 | 2.63 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 29.8 | 70.2 | 2.36 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 27.6 | 72.2 | 2.62 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 12.7 | 12.7 | 1.00 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 24.3 | 43.5 | 1.79 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterCalloway` | objective | 8.7 | 39.2 | 4.51 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 8.7 | 39.2 | 4.51 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterTreasury` | objective | 29.8 | 69.7 | 2.34 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 29.8 | 69.7 | 2.34 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterCalloway` | objective | 8.7 | 39.7 | 4.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 8.7 | 39.7 | 4.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterTreasury` | objective | 29.8 | 70.2 | 2.36 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 29.8 | 70.2 | 2.36 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterArtDoor` | objective | 25.3 | 55.6 | 2.20 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 25.3 | 55.6 | 2.20 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 31.4 | 75.1 | 2.39 | ok |
@@ -1607,171 +1607,171 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerRoof2` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 36.8 | 74.5 | 2.03 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 35.8 | 72.7 | 2.03 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 37.0 | 73.8 | 2.00 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 23.6 | 61.7 | 2.61 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 24.1 | 65.4 | 2.71 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 25.2 | 69.3 | 2.74 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 26.9 | 74.9 | 2.78 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG1` | loot_spawn | 18.1 | 48.4 | 2.67 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 18.1 | 48.4 | 2.67 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG2` | loot_spawn | 16.7 | 49.3 | 2.96 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 16.7 | 49.3 | 2.96 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC1` | loot_spawn | 24.0 | 53.5 | 2.23 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 24.0 | 53.5 | 2.23 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC2` | loot_spawn | 26.7 | 56.8 | 2.13 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 26.7 | 56.8 | 2.13 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 23.6 | 62.2 | 2.63 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 24.1 | 65.9 | 2.73 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 25.2 | 69.8 | 2.76 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 26.9 | 75.6 | 2.81 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG1` | loot_spawn | 18.1 | 49.0 | 2.71 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 18.1 | 49.0 | 2.71 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG2` | loot_spawn | 16.7 | 49.8 | 2.99 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 16.7 | 49.8 | 2.99 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC1` | loot_spawn | 24.0 | 54.6 | 2.27 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 24.0 | 54.6 | 2.27 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC2` | loot_spawn | 26.7 | 57.9 | 2.17 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 26.7 | 57.9 | 2.17 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyEG1` | loot_spawn | 22.2 | 60.9 | 2.74 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 22.2 | 60.9 | 2.74 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyEG2` | loot_spawn | 29.3 | 60.9 | 2.08 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 29.3 | 60.9 | 2.08 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyEB1` | loot_spawn | 34.7 | 71.6 | 2.07 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 34.7 | 71.6 | 2.07 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 12.0 | 47.5 | 3.96 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 12.0 | 47.5 | 3.96 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 7.7 | 43.7 | 5.71 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 7.7 | 43.7 | 5.71 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 25.6 | 57.0 | 2.23 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 25.6 | 57.0 | 2.23 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 24.1 | 57.4 | 2.38 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 24.1 | 57.4 | 2.38 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 26.8 | 66.2 | 2.47 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 26.8 | 66.2 | 2.47 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 32.5 | 70.9 | 2.18 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 32.5 | 70.9 | 2.18 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 14.5 | 71.3 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 14.5 | 71.3 | 4.93 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 19.6 | 72.1 | 3.69 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 19.6 | 72.1 | 3.69 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 16.1 | 69.4 | 4.31 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 16.1 | 69.4 | 4.31 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 15.5 | 72.3 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 15.5 | 72.3 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 15.5 | 71.6 | 4.63 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 15.5 | 71.6 | 4.63 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 18.0 | 73.8 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 18.0 | 73.8 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 19.1 | 71.5 | 3.74 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 19.1 | 71.5 | 3.74 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 16.3 | 69.2 | 4.26 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 16.3 | 69.2 | 4.26 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker1` | objective | 21.2 | 74.2 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 21.2 | 74.2 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker2` | objective | 22.1 | 75.8 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 22.1 | 75.8 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker3` | objective | 21.6 | 74.7 | 3.46 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 21.6 | 74.7 | 3.46 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker4` | objective | 22.6 | 77.1 | 3.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 22.6 | 77.1 | 3.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker5` | objective | 21.2 | 74.2 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 21.2 | 74.2 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker6` | objective | 22.1 | 75.8 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 22.1 | 75.8 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker7` | objective | 21.6 | 74.7 | 3.46 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 21.6 | 74.7 | 3.46 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker8` | objective | 22.6 | 77.1 | 3.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 22.6 | 77.1 | 3.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe` | objective | 8.1 | 31.0 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 8.1 | 31.0 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 8.1 | 31.0 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 8.1 | 31.0 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 8.1 | 31.0 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 31.5 | 74.3 | 2.36 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 35.0 | 75.4 | 2.16 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.2 | 63.3 | 2.51 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 27.6 | 69.7 | 2.52 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 9.4 | 51.9 | 5.49 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/ArgusTerminal` | objective | 12.6 | 49.0 | 3.88 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 12.6 | 49.0 | 3.88 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerKeypad` | objective | 11.6 | 45.8 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 11.6 | 45.8 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerDoorDrill` | objective | 10.7 | 44.8 | 4.20 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 10.7 | 44.8 | 4.20 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/TreasuryReader` | objective | 30.6 | 70.6 | 2.31 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 30.6 | 70.6 | 2.31 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultReader` | objective | 15.6 | 65.8 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 15.6 | 65.8 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultDrill` | objective | 14.7 | 64.1 | 4.35 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 14.7 | 64.1 | 4.35 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 12.0 | 47.9 | 4.00 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 12.0 | 47.9 | 4.00 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 7.7 | 44.2 | 5.77 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 7.7 | 44.2 | 5.77 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 25.6 | 57.5 | 2.25 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 25.6 | 57.5 | 2.25 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 24.1 | 57.9 | 2.40 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 24.1 | 57.9 | 2.40 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 26.8 | 66.7 | 2.49 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 26.8 | 66.7 | 2.49 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 32.5 | 71.6 | 2.20 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 32.5 | 71.6 | 2.20 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 14.5 | 72.2 | 4.99 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 14.5 | 72.2 | 4.99 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 19.6 | 72.5 | 3.71 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 19.6 | 72.5 | 3.71 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 16.1 | 69.8 | 4.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 16.1 | 69.8 | 4.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 15.5 | 73.0 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 15.5 | 73.0 | 4.72 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 15.5 | 72.4 | 4.68 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 15.5 | 72.4 | 4.68 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 18.0 | 74.6 | 4.15 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 18.0 | 74.6 | 4.15 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 19.1 | 71.9 | 3.76 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 19.1 | 71.9 | 3.76 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 16.3 | 69.6 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 16.3 | 69.6 | 4.28 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker1` | objective | 21.2 | 74.6 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 21.2 | 74.6 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker2` | objective | 22.1 | 76.2 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 22.1 | 76.2 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker3` | objective | 21.6 | 75.1 | 3.48 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 21.6 | 75.1 | 3.48 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker4` | objective | 22.6 | 77.6 | 3.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 22.6 | 77.6 | 3.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker5` | objective | 21.2 | 74.6 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 21.2 | 74.6 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker6` | objective | 22.1 | 76.2 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 22.1 | 76.2 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker7` | objective | 21.6 | 75.1 | 3.48 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 21.6 | 75.1 | 3.48 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker8` | objective | 22.6 | 77.6 | 3.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 22.6 | 77.6 | 3.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe` | objective | 8.1 | 31.5 | 3.90 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 8.1 | 31.5 | 3.90 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 8.1 | 31.5 | 3.90 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 8.1 | 31.5 | 3.90 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 8.1 | 31.5 | 3.90 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 31.5 | 74.8 | 2.38 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 35.0 | 76.0 | 2.17 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.2 | 63.7 | 2.53 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 27.6 | 70.3 | 2.54 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 9.4 | 52.4 | 5.55 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/ArgusTerminal` | objective | 12.6 | 49.5 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 12.6 | 49.5 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerKeypad` | objective | 11.6 | 46.0 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 11.6 | 46.0 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerDoorDrill` | objective | 10.7 | 45.0 | 4.21 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 10.7 | 45.0 | 4.21 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/TreasuryReader` | objective | 30.6 | 71.2 | 2.33 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 30.6 | 71.2 | 2.33 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultReader` | objective | 15.6 | 66.1 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 15.6 | 66.1 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultDrill` | objective | 14.7 | 64.4 | 4.37 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 14.7 | 64.4 | 4.37 | detour (whitelisted) |
 | `Spawns/PlayerRoof2` | `Gameplay/Devices/ArtDoorReader` | objective | 26.7 | 55.8 | 2.09 | ok |
 | `Spawns/PlayerRoof2` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 26.7 | 55.8 | 2.09 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 23.0 | 61.5 | 2.68 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 10.6 | 56.5 | 5.36 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 9.3 | 50.0 | 5.37 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 12.0 | 43.1 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 7.0 | 29.6 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 5.5 | 38.6 | 7.00 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 27.7 | 63.0 | 2.27 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 26.3 | 67.4 | 2.57 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 9.4 | 52.5 | 5.61 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 28.7 | 69.7 | 2.43 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 24.1 | 64.7 | 2.69 | ok |
-| `Spawns/PlayerRoof2` | `Gameplay/Lifts/ArtLift` | objective | 16.9 | 53.3 | 3.15 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 16.9 | 53.3 | 3.15 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 9.3 | 51.4 | 5.55 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 9.3 | 51.4 | 5.55 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 23.0 | 61.9 | 2.70 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 10.6 | 57.2 | 5.42 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 9.3 | 50.6 | 5.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 12.0 | 43.4 | 3.62 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 7.0 | 30.2 | 4.32 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 5.5 | 39.2 | 7.12 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 27.7 | 63.3 | 2.28 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 26.3 | 68.0 | 2.59 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 9.4 | 53.1 | 5.66 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 28.7 | 70.1 | 2.45 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 24.1 | 65.2 | 2.71 | ok |
+| `Spawns/PlayerRoof2` | `Gameplay/Lifts/ArtLift` | objective | 16.9 | 53.4 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 16.9 | 53.4 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 9.3 | 52.0 | 5.61 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 9.3 | 52.0 | 5.61 | detour (whitelisted) |
 | `Spawns/PlayerRoof2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 29.9 | 74.6 | 2.49 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 29.9 | 74.6 | 2.49 | ok |
-| `Spawns/PlayerRoof2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 21.4 | 55.8 | 2.61 | ok |
-| `Spawns/PlayerRoof2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 22.3 | 56.7 | 2.54 | ok |
+| `Spawns/PlayerRoof2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 21.4 | 56.1 | 2.62 | ok |
+| `Spawns/PlayerRoof2` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 22.3 | 56.9 | 2.56 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 31.6 | 64.1 | 2.03 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 31.6 | 64.1 | 2.03 | ok |
-| `Spawns/PlayerRoof2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 25.4 | 60.0 | 2.36 | ok |
-| `Spawns/PlayerRoof2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 25.4 | 60.0 | 2.36 | ok |
-| `Spawns/PlayerRoof2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 3.9 | 35.1 | 9.00 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 3.9 | 35.1 | 9.00 | detour (whitelisted) |
-| `Spawns/PlayerRoof2` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 19.2 | 44.7 | 2.32 | ok |
-| `Spawns/PlayerRoof2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 23.1 | 51.1 | 2.21 | ok |
-| `Spawns/PlayerRoof2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 23.1 | 51.1 | 2.21 | ok |
+| `Spawns/PlayerRoof2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 25.4 | 60.2 | 2.37 | ok |
+| `Spawns/PlayerRoof2` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 25.4 | 60.2 | 2.37 | ok |
+| `Spawns/PlayerRoof2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 3.9 | 35.7 | 9.16 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 3.9 | 35.7 | 9.16 | detour (whitelisted) |
+| `Spawns/PlayerRoof2` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 19.2 | 45.7 | 2.38 | ok |
+| `Spawns/PlayerRoof2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 23.1 | 52.2 | 2.26 | ok |
+| `Spawns/PlayerRoof2` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 23.1 | 52.2 | 2.26 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 29.1 | 47.5 | 1.63 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 25.4 | 44.4 | 1.75 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 24.2 | 53.2 | 2.19 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 24.4 | 54.1 | 2.22 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 25.5 | 53.4 | 2.09 | ok |
 | `Spawns/PlayerRoof2` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 25.6 | 54.3 | 2.12 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 19.4 | 49.4 | 2.54 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 17.9 | 51.6 | 2.89 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 13.6 | 60.6 | 4.47 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 14.5 | 69.6 | 4.80 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 17.5 | 75.7 | 4.32 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 18.6 | 50.7 | 2.73 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.7 | 67.1 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 16.9 | 39.0 | 2.31 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 15.8 | 40.2 | 2.54 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 12.1 | 45.2 | 3.75 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 9.2 | 51.2 | 5.54 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 9.2 | 55.2 | 5.97 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.4 | 60.2 | 5.27 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 12.7 | 59.0 | 4.63 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 14.6 | 55.9 | 3.83 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 16.3 | 53.2 | 3.26 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 19.4 | 49.6 | 2.55 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 17.9 | 51.9 | 2.91 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 13.6 | 60.9 | 4.49 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 14.5 | 69.9 | 4.81 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 17.5 | 76.2 | 4.35 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 18.6 | 50.9 | 2.74 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.7 | 67.4 | 4.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 16.9 | 39.2 | 2.32 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 15.8 | 40.4 | 2.56 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 12.1 | 45.4 | 3.77 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 9.2 | 51.4 | 5.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 9.2 | 55.4 | 5.99 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 11.4 | 61.2 | 5.36 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 12.7 | 59.3 | 4.65 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 14.6 | 56.0 | 3.83 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 16.3 | 53.4 | 3.27 | detour (whitelisted) |
 | `Spawns/PlayerRoof3` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 17.3 | 54.9 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 15.6 | 41.4 | 2.64 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 9.4 | 55.0 | 5.82 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 25.3 | 51.7 | 2.05 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 15.6 | 41.9 | 2.68 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 9.4 | 55.5 | 5.88 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 25.3 | 52.0 | 2.06 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 22.6 | 58.3 | 2.58 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 25.0 | 68.4 | 2.73 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 25.2 | 68.1 | 2.70 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 23.5 | 70.1 | 2.98 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 14.7 | 26.5 | 1.80 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 12.5 | 28.8 | 2.29 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 5.4 | 36.8 | 6.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 3.7 | 40.8 | 11.11 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 4.7 | 43.8 | 9.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 7.9 | 47.8 | 6.04 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.1 | 52.9 | 4.38 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 14.1 | 55.8 | 3.96 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 13.8 | 54.1 | 3.91 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 6.3 | 35.8 | 5.68 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 12.6 | 52.8 | 4.19 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 19.5 | 61.6 | 3.15 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 23.2 | 68.8 | 2.97 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 27.4 | 72.7 | 2.65 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 26.0 | 74.3 | 2.86 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 25.0 | 68.8 | 2.75 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 25.2 | 68.5 | 2.72 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 23.5 | 70.5 | 3.00 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 14.7 | 27.2 | 1.84 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 12.5 | 29.0 | 2.31 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 5.4 | 37.0 | 6.81 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 3.7 | 41.0 | 11.17 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 4.7 | 43.9 | 9.28 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 7.9 | 47.9 | 6.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 12.1 | 53.3 | 4.42 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 14.1 | 56.2 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 13.8 | 54.2 | 3.93 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 6.3 | 36.0 | 5.71 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 12.6 | 53.0 | 4.20 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 19.5 | 62.2 | 3.18 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 23.2 | 69.2 | 2.99 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 27.4 | 73.2 | 2.67 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 26.0 | 75.2 | 2.90 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 15.7 | 15.7 | 1.00 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 21.6 | 46.3 | 2.14 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterCalloway` | objective | 10.3 | 42.2 | 4.08 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 10.3 | 42.2 | 4.08 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterTreasury` | objective | 27.4 | 72.7 | 2.65 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 27.4 | 72.7 | 2.65 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterCalloway` | objective | 10.3 | 42.7 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 10.3 | 42.7 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterTreasury` | objective | 27.4 | 73.2 | 2.67 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 27.4 | 73.2 | 2.67 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterArtDoor` | objective | 22.6 | 58.3 | 2.58 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 22.6 | 58.3 | 2.58 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 29.7 | 77.9 | 2.62 | ok |
@@ -1779,171 +1779,171 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerRoof3` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 34.6 | 77.3 | 2.23 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 33.5 | 75.4 | 2.25 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 34.7 | 76.6 | 2.21 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 23.7 | 64.7 | 2.73 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 23.7 | 68.4 | 2.89 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 24.3 | 72.3 | 2.97 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 25.6 | 77.9 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG1` | loot_spawn | 19.8 | 51.4 | 2.60 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 19.8 | 51.4 | 2.60 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG2` | loot_spawn | 17.9 | 52.3 | 2.92 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 17.9 | 52.3 | 2.92 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC1` | loot_spawn | 25.9 | 56.5 | 2.18 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 25.9 | 56.5 | 2.18 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC2` | loot_spawn | 28.4 | 59.8 | 2.11 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 28.4 | 59.8 | 2.11 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 23.7 | 65.1 | 2.75 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 23.7 | 68.9 | 2.91 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 24.3 | 72.8 | 2.99 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 25.6 | 78.6 | 3.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG1` | loot_spawn | 19.8 | 52.0 | 2.63 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 19.8 | 52.0 | 2.63 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG2` | loot_spawn | 17.9 | 52.8 | 2.96 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 17.9 | 52.8 | 2.96 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC1` | loot_spawn | 25.9 | 57.6 | 2.23 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 25.9 | 57.6 | 2.23 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC2` | loot_spawn | 28.4 | 60.9 | 2.15 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 28.4 | 60.9 | 2.15 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyEG1` | loot_spawn | 19.7 | 63.6 | 3.23 | detour (whitelisted) |
 | `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 19.7 | 63.6 | 3.23 | detour (whitelisted) |
 | `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyEG2` | loot_spawn | 26.6 | 63.6 | 2.39 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 26.6 | 63.6 | 2.39 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyEB1` | loot_spawn | 32.3 | 74.4 | 2.30 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 32.3 | 74.4 | 2.30 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 14.8 | 50.5 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 14.8 | 50.5 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 10.2 | 46.7 | 4.59 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 10.2 | 46.7 | 4.59 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 27.0 | 60.0 | 2.22 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 27.0 | 60.0 | 2.22 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 25.2 | 60.3 | 2.40 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 25.2 | 60.3 | 2.40 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 24.6 | 69.2 | 2.81 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 24.6 | 69.2 | 2.81 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 30.0 | 73.9 | 2.47 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 30.0 | 73.9 | 2.47 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 14.8 | 74.3 | 5.02 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 14.8 | 74.3 | 5.02 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.7 | 75.1 | 4.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.7 | 75.1 | 4.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 15.0 | 72.4 | 4.82 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 15.0 | 72.4 | 4.82 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 15.7 | 75.3 | 4.80 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 15.7 | 75.3 | 4.80 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 15.5 | 74.6 | 4.81 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 15.5 | 74.6 | 4.81 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 17.0 | 76.8 | 4.51 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 17.0 | 76.8 | 4.51 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.3 | 74.5 | 4.30 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.3 | 74.5 | 4.30 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 15.1 | 72.2 | 4.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 15.1 | 72.2 | 4.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker1` | objective | 19.1 | 77.2 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 19.1 | 77.2 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker2` | objective | 20.0 | 78.8 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 20.0 | 78.8 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker3` | objective | 19.5 | 77.7 | 3.99 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 19.5 | 77.7 | 3.99 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker4` | objective | 20.6 | 80.1 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 20.6 | 80.1 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker5` | objective | 19.1 | 77.2 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 19.1 | 77.2 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker6` | objective | 20.0 | 78.8 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 20.0 | 78.8 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker7` | objective | 19.5 | 77.7 | 3.99 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 19.5 | 77.7 | 3.99 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker8` | objective | 20.6 | 80.1 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 20.6 | 80.1 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe` | objective | 10.5 | 34.0 | 3.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 10.5 | 34.0 | 3.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 10.5 | 34.0 | 3.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 10.5 | 34.0 | 3.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 10.5 | 34.0 | 3.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 29.4 | 77.3 | 2.63 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 32.7 | 78.4 | 2.40 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.3 | 66.3 | 2.62 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 26.2 | 72.7 | 2.77 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 10.3 | 54.9 | 5.31 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/ArgusTerminal` | objective | 10.0 | 52.0 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 10.0 | 52.0 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerKeypad` | objective | 8.8 | 48.8 | 5.53 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 8.8 | 48.8 | 5.53 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerDoorDrill` | objective | 7.9 | 47.8 | 6.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 7.9 | 47.8 | 6.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/TreasuryReader` | objective | 28.2 | 73.6 | 2.61 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 28.2 | 73.6 | 2.61 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultReader` | objective | 14.2 | 68.8 | 4.84 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 14.2 | 68.8 | 4.84 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultDrill` | objective | 13.7 | 67.1 | 4.90 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.7 | 67.1 | 4.90 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 14.8 | 50.9 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 14.8 | 50.9 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 10.2 | 47.2 | 4.63 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 10.2 | 47.2 | 4.63 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 27.0 | 60.5 | 2.24 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 27.0 | 60.5 | 2.24 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 25.2 | 60.9 | 2.42 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 25.2 | 60.9 | 2.42 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 24.6 | 69.7 | 2.83 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 24.6 | 69.7 | 2.83 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 30.0 | 74.6 | 2.49 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 30.0 | 74.6 | 2.49 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 14.8 | 75.2 | 5.08 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 14.8 | 75.2 | 5.08 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 17.7 | 75.5 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 17.7 | 75.5 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 15.0 | 72.8 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 15.0 | 72.8 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 15.7 | 76.0 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 15.7 | 76.0 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 15.5 | 75.3 | 4.86 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 15.5 | 75.3 | 4.86 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 17.0 | 77.6 | 4.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 17.0 | 77.6 | 4.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 17.3 | 74.9 | 4.33 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 17.3 | 74.9 | 4.33 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 15.1 | 72.6 | 4.79 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 15.1 | 72.6 | 4.79 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker1` | objective | 19.1 | 77.6 | 4.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 19.1 | 77.6 | 4.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker2` | objective | 20.0 | 79.2 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 20.0 | 79.2 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker3` | objective | 19.5 | 78.1 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 19.5 | 78.1 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker4` | objective | 20.6 | 80.6 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 20.6 | 80.6 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker5` | objective | 19.1 | 77.6 | 4.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 19.1 | 77.6 | 4.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker6` | objective | 20.0 | 79.2 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 20.0 | 79.2 | 3.96 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker7` | objective | 19.5 | 78.1 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 19.5 | 78.1 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker8` | objective | 20.6 | 80.6 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 20.6 | 80.6 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe` | objective | 10.5 | 34.4 | 3.29 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 10.5 | 34.4 | 3.29 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 10.5 | 34.4 | 3.29 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 10.5 | 34.4 | 3.29 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 10.5 | 34.4 | 3.29 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 29.4 | 77.8 | 2.65 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 32.7 | 79.0 | 2.41 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.3 | 66.7 | 2.64 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 26.2 | 73.3 | 2.79 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 10.3 | 55.4 | 5.36 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/ArgusTerminal` | objective | 10.0 | 52.5 | 5.25 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 10.0 | 52.5 | 5.25 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerKeypad` | objective | 8.8 | 48.9 | 5.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 8.8 | 48.9 | 5.56 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerDoorDrill` | objective | 7.9 | 47.9 | 6.05 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 7.9 | 47.9 | 6.05 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/TreasuryReader` | objective | 28.2 | 74.2 | 2.64 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 28.2 | 74.2 | 2.64 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultReader` | objective | 14.2 | 69.1 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 14.2 | 69.1 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultDrill` | objective | 13.7 | 67.4 | 4.92 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.7 | 67.4 | 4.92 | detour (whitelisted) |
 | `Spawns/PlayerRoof3` | `Gameplay/Devices/ArtDoorReader` | objective | 24.0 | 58.5 | 2.44 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 24.0 | 58.5 | 2.44 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 23.4 | 64.5 | 2.75 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 9.9 | 59.5 | 6.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 9.1 | 53.0 | 5.83 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 13.9 | 46.1 | 3.32 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 9.6 | 32.6 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 5.7 | 41.6 | 7.32 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 24.8 | 66.0 | 2.66 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 24.4 | 70.4 | 2.89 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 10.5 | 55.5 | 5.29 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 26.6 | 72.7 | 2.73 | ok |
-| `Spawns/PlayerRoof3` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 23.8 | 67.7 | 2.85 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 23.4 | 64.9 | 2.77 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 9.9 | 60.2 | 6.09 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 9.1 | 53.6 | 5.89 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 13.9 | 46.3 | 3.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 9.6 | 33.2 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 5.7 | 42.2 | 7.44 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 24.8 | 66.3 | 2.67 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 24.4 | 71.0 | 2.91 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 10.5 | 56.1 | 5.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 26.6 | 73.1 | 2.75 | ok |
+| `Spawns/PlayerRoof3` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 23.8 | 68.1 | 2.87 | ok |
 | `Spawns/PlayerRoof3` | `Gameplay/Lifts/ArtLift` | objective | 14.5 | 56.1 | 3.88 | detour (whitelisted) |
 | `Spawns/PlayerRoof3` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 14.5 | 56.1 | 3.88 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 7.7 | 54.4 | 7.10 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 7.7 | 54.4 | 7.10 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 7.7 | 54.9 | 7.18 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 7.7 | 54.9 | 7.18 | detour (whitelisted) |
 | `Spawns/PlayerRoof3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 28.2 | 77.3 | 2.74 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 28.2 | 77.3 | 2.74 | ok |
-| `Spawns/PlayerRoof3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 18.5 | 58.8 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 19.3 | 59.7 | 3.09 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 18.5 | 59.1 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 19.3 | 59.9 | 3.10 | detour (whitelisted) |
 | `Spawns/PlayerRoof3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 29.0 | 66.8 | 2.31 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 29.0 | 66.8 | 2.31 | ok |
-| `Spawns/PlayerRoof3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 22.5 | 63.0 | 2.80 | ok |
-| `Spawns/PlayerRoof3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 22.5 | 63.0 | 2.80 | ok |
-| `Spawns/PlayerRoof3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 5.5 | 38.1 | 6.93 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 5.5 | 38.1 | 6.93 | detour (whitelisted) |
-| `Spawns/PlayerRoof3` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 21.7 | 47.7 | 2.19 | ok |
-| `Spawns/PlayerRoof3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 25.7 | 54.1 | 2.11 | ok |
-| `Spawns/PlayerRoof3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 25.7 | 54.1 | 2.11 | ok |
+| `Spawns/PlayerRoof3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 22.5 | 63.2 | 2.81 | ok |
+| `Spawns/PlayerRoof3` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 22.5 | 63.2 | 2.81 | ok |
+| `Spawns/PlayerRoof3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 5.5 | 38.7 | 7.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 5.5 | 38.7 | 7.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof3` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 21.7 | 48.7 | 2.24 | ok |
+| `Spawns/PlayerRoof3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 25.7 | 55.2 | 2.15 | ok |
+| `Spawns/PlayerRoof3` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 25.7 | 55.2 | 2.15 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 26.5 | 50.2 | 1.89 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 22.8 | 47.1 | 2.07 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 21.5 | 55.9 | 2.60 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1/UsePoint` | use_point | 21.6 | 56.8 | 2.62 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2` | loot_spawn | 22.8 | 56.2 | 2.47 | ok |
 | `Spawns/PlayerRoof3` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy2/UsePoint` | use_point | 22.9 | 57.0 | 2.49 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 21.7 | 52.4 | 2.41 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 20.0 | 54.6 | 2.73 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 14.5 | 63.6 | 4.38 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 13.6 | 72.6 | 5.36 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 15.7 | 78.7 | 5.01 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 20.8 | 53.7 | 2.58 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.3 | 70.1 | 5.28 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 19.5 | 42.0 | 2.15 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 18.4 | 43.2 | 2.35 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 14.2 | 48.2 | 3.39 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 10.3 | 54.2 | 5.25 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 9.1 | 58.2 | 6.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 9.9 | 63.2 | 6.40 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 10.8 | 61.9 | 5.71 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 12.4 | 58.8 | 4.75 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 14.0 | 56.1 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/StairDoorB/UsePoint` | use_point | 21.7 | 52.6 | 2.42 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 20.0 | 54.9 | 2.74 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/FrameStoreDoor/UsePoint` | use_point | 14.5 | 63.9 | 4.40 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/QuarantineDoor/UsePoint` | use_point | 13.6 | 72.9 | 5.38 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorB/UsePoint` | use_point | 15.7 | 79.2 | 5.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 20.8 | 53.9 | 2.59 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ArtStoreVaultDoor/UsePoint` | use_point | 13.3 | 70.4 | 5.30 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/StairDoorG/UsePoint` | use_point | 19.5 | 42.2 | 2.16 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 18.4 | 43.4 | 2.36 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/StaffWCDoor/UsePoint` | use_point | 14.2 | 48.4 | 3.40 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 10.3 | 54.4 | 5.27 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/RegistrarDoor/UsePoint` | use_point | 9.1 | 58.4 | 6.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 9.9 | 64.2 | 6.50 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 10.8 | 62.2 | 5.74 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorGS/UsePoint` | use_point | 12.4 | 58.9 | 4.75 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorGE/UsePoint` | use_point | 14.0 | 56.3 | 4.02 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 14.8 | 57.9 | 3.91 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 18.1 | 44.4 | 2.45 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 9.6 | 58.0 | 6.04 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 22.6 | 54.6 | 2.42 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ArtHandlingDoor/UsePoint` | use_point | 18.1 | 44.9 | 2.47 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/StaffDoor/UsePoint` | use_point | 9.6 | 58.5 | 6.09 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/DockPersonnelDoor/UsePoint` | use_point | 22.6 | 54.9 | 2.43 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Doors/ArtDoorEG/UsePoint` | use_point | 20.0 | 61.2 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 25.0 | 71.4 | 2.85 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 25.0 | 71.1 | 2.85 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 22.4 | 73.1 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 17.6 | 29.5 | 1.67 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 15.4 | 31.8 | 2.06 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 7.9 | 39.7 | 5.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 4.7 | 43.7 | 9.23 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 3.7 | 46.7 | 12.75 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 5.4 | 50.7 | 9.35 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 9.3 | 55.9 | 6.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 11.3 | 58.8 | 5.19 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 11.0 | 57.0 | 5.21 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 8.9 | 38.8 | 4.37 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 9.8 | 55.8 | 5.70 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 16.8 | 64.6 | 3.84 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 21.4 | 71.8 | 3.36 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 25.2 | 75.7 | 3.00 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 24.6 | 77.3 | 3.15 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 25.0 | 71.8 | 2.87 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 25.0 | 71.5 | 2.86 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/GiftShopDoor/UsePoint` | use_point | 22.4 | 73.5 | 3.28 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/StairDoorU/UsePoint` | use_point | 17.6 | 30.2 | 1.71 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/CuratorDoor/UsePoint` | use_point | 15.4 | 32.0 | 2.07 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/AdminDoor/UsePoint` | use_point | 7.9 | 39.9 | 5.05 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/UpperWCDoor/UsePoint` | use_point | 4.7 | 43.9 | 9.27 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/FrameStoreUDoor/UsePoint` | use_point | 3.7 | 46.9 | 12.80 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 5.4 | 50.9 | 9.39 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorUS/UsePoint` | use_point | 9.3 | 56.3 | 6.08 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/LiftLandingDoorUE/UsePoint` | use_point | 11.3 | 59.2 | 5.23 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/StudioDoor/UsePoint` | use_point | 11.0 | 57.2 | 5.22 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/BalconyDoorW/UsePoint` | use_point | 8.9 | 39.0 | 4.39 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/BalconyDoorE/UsePoint` | use_point | 9.8 | 55.9 | 5.72 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/StudioGalleryDoor/UsePoint` | use_point | 16.8 | 65.2 | 3.88 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/AttendantDoorN/UsePoint` | use_point | 21.4 | 72.2 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 25.2 | 76.2 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/AttendantDoorW/UsePoint` | use_point | 24.6 | 78.2 | 3.19 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 18.7 | 18.7 | 1.00 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 19.1 | 49.2 | 2.57 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterCalloway` | objective | 12.5 | 45.2 | 3.62 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 12.5 | 45.2 | 3.62 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterTreasury` | objective | 25.2 | 75.7 | 3.00 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 25.2 | 75.7 | 3.00 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterCalloway` | objective | 12.5 | 45.7 | 3.66 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterCalloway/UsePoint` | use_point | 12.5 | 45.7 | 3.66 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterTreasury` | objective | 25.2 | 76.2 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterTreasury/UsePoint` | use_point | 25.2 | 76.2 | 3.02 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterArtDoor` | objective | 20.0 | 61.2 | 3.07 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Doors/ShutterArtDoor/UsePoint` | use_point | 20.0 | 61.2 | 3.07 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Windows/BenefactorsWindowS1/UsePoint` | use_point | 28.2 | 80.8 | 2.87 | ok |
@@ -1951,120 +1951,120 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerRoof4` | `Gameplay/Windows/BenefactorsWindowS3/UsePoint` | use_point | 32.6 | 80.2 | 2.46 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Windows/BenefactorsWindowE1/UsePoint` | use_point | 31.3 | 78.3 | 2.50 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Windows/BenefactorsWindowE2/UsePoint` | use_point | 32.6 | 79.5 | 2.44 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 24.1 | 67.7 | 2.81 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 23.6 | 71.4 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 23.8 | 75.3 | 3.17 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 24.6 | 80.9 | 3.29 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG1` | loot_spawn | 21.7 | 54.4 | 2.50 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 21.7 | 54.4 | 2.50 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG2` | loot_spawn | 19.5 | 55.3 | 2.84 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 19.5 | 55.3 | 2.84 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC1` | loot_spawn | 27.9 | 59.5 | 2.13 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 27.9 | 59.5 | 2.13 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC2` | loot_spawn | 30.2 | 62.8 | 2.08 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 30.2 | 62.8 | 2.08 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow1/UsePoint` | use_point | 24.1 | 68.1 | 2.83 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow2/UsePoint` | use_point | 23.6 | 71.9 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow3/UsePoint` | use_point | 23.8 | 75.7 | 3.19 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Windows/LoggiaWindow4/UsePoint` | use_point | 24.6 | 81.6 | 3.32 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG1` | loot_spawn | 21.7 | 55.0 | 2.53 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG1/UsePoint` | use_point | 21.7 | 55.0 | 2.53 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG2` | loot_spawn | 19.5 | 55.8 | 2.87 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyWG2/UsePoint` | use_point | 19.5 | 55.8 | 2.87 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC1` | loot_spawn | 27.9 | 60.6 | 2.17 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC1/UsePoint` | use_point | 27.9 | 60.6 | 2.17 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC2` | loot_spawn | 30.2 | 63.9 | 2.11 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyDC2/UsePoint` | use_point | 30.2 | 63.9 | 2.11 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyEG1` | loot_spawn | 17.3 | 66.5 | 3.84 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyEG1/UsePoint` | use_point | 17.3 | 66.5 | 3.84 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyEG2` | loot_spawn | 23.9 | 66.5 | 2.78 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyEG2/UsePoint` | use_point | 23.9 | 66.5 | 2.78 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyEB1` | loot_spawn | 30.1 | 77.3 | 2.56 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyEB1/UsePoint` | use_point | 30.1 | 77.3 | 2.56 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 17.7 | 53.5 | 3.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 17.7 | 53.5 | 3.03 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 12.9 | 49.7 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 12.9 | 49.7 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 28.7 | 63.0 | 2.20 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 28.7 | 63.0 | 2.20 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 26.5 | 63.3 | 2.39 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 26.5 | 63.3 | 2.39 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 22.6 | 72.2 | 3.20 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 22.6 | 72.2 | 3.20 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 27.6 | 76.9 | 2.79 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 27.6 | 76.9 | 2.79 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 15.7 | 77.3 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 15.7 | 77.3 | 4.92 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 16.2 | 78.1 | 4.83 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 16.2 | 78.1 | 4.83 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 14.5 | 75.4 | 5.19 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 14.5 | 75.4 | 5.19 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 16.4 | 78.3 | 4.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 16.4 | 78.3 | 4.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 16.1 | 77.6 | 4.81 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 16.1 | 77.6 | 4.81 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 16.6 | 79.8 | 4.82 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 16.6 | 79.8 | 4.82 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 15.9 | 77.5 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 15.9 | 77.5 | 4.89 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 14.6 | 75.2 | 5.16 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 14.6 | 75.2 | 5.16 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker1` | objective | 17.2 | 80.2 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 17.2 | 80.2 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker2` | objective | 18.2 | 81.8 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 18.2 | 81.8 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker3` | objective | 17.6 | 80.7 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 17.6 | 80.7 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker4` | objective | 18.8 | 83.1 | 4.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 18.8 | 83.1 | 4.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker5` | objective | 17.2 | 80.2 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 17.2 | 80.2 | 4.67 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker6` | objective | 18.2 | 81.8 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 18.2 | 81.8 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker7` | objective | 17.6 | 80.7 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 17.6 | 80.7 | 4.58 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker8` | objective | 18.8 | 83.1 | 4.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 18.8 | 83.1 | 4.41 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe` | objective | 13.2 | 37.0 | 2.82 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 13.2 | 37.0 | 2.82 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 13.2 | 37.0 | 2.82 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 13.2 | 37.0 | 2.82 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 13.2 | 37.0 | 2.82 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 27.5 | 80.3 | 2.92 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 30.5 | 81.4 | 2.67 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.8 | 69.3 | 2.69 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 25.1 | 75.7 | 3.01 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 11.9 | 57.9 | 4.86 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/ArgusTerminal` | objective | 7.6 | 55.0 | 7.24 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 7.6 | 55.0 | 7.24 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerKeypad` | objective | 6.2 | 51.7 | 8.33 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 6.2 | 51.7 | 8.33 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerDoorDrill` | objective | 5.5 | 50.7 | 9.30 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 5.5 | 50.7 | 9.30 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/TreasuryReader` | objective | 25.9 | 76.6 | 2.96 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 25.9 | 76.6 | 2.96 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultReader` | objective | 13.4 | 71.8 | 5.35 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.4 | 71.8 | 5.35 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultDrill` | objective | 13.2 | 70.1 | 5.29 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.2 | 70.1 | 5.29 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1a` | loot_spawn | 17.7 | 53.9 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1a/UsePoint` | use_point | 17.7 | 53.9 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1b` | loot_spawn | 12.9 | 50.2 | 3.89 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG1b/UsePoint` | use_point | 12.9 | 50.2 | 3.89 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2a` | loot_spawn | 28.7 | 63.5 | 2.22 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2a/UsePoint` | use_point | 28.7 | 63.5 | 2.22 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2b` | loot_spawn | 26.5 | 63.9 | 2.41 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG2b/UsePoint` | use_point | 26.5 | 63.9 | 2.41 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3a` | loot_spawn | 22.6 | 72.7 | 3.22 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3a/UsePoint` | use_point | 22.6 | 72.7 | 3.22 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3b` | loot_spawn | 27.6 | 77.6 | 2.81 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StudyUG3b/UsePoint` | use_point | 27.6 | 77.6 | 2.81 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy1` | loot_spawn | 15.7 | 78.2 | 4.98 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy1/UsePoint` | use_point | 15.7 | 78.2 | 4.98 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy2` | loot_spawn | 16.2 | 78.5 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy2/UsePoint` | use_point | 16.2 | 78.5 | 4.85 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy3` | loot_spawn | 14.5 | 75.8 | 5.22 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy3/UsePoint` | use_point | 14.5 | 75.8 | 5.22 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy4` | loot_spawn | 16.4 | 79.0 | 4.81 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy4/UsePoint` | use_point | 16.4 | 79.0 | 4.81 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy5` | loot_spawn | 16.1 | 78.3 | 4.86 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy5/UsePoint` | use_point | 16.1 | 78.3 | 4.86 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy6` | loot_spawn | 16.6 | 80.5 | 4.86 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy6/UsePoint` | use_point | 16.6 | 80.5 | 4.86 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy7` | loot_spawn | 15.9 | 77.9 | 4.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy7/UsePoint` | use_point | 15.9 | 77.9 | 4.91 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy8` | loot_spawn | 14.6 | 75.6 | 5.18 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/StoreStudy8/UsePoint` | use_point | 14.6 | 75.6 | 5.18 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker1` | objective | 17.2 | 80.6 | 4.69 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker1/UsePoint` | use_point | 17.2 | 80.6 | 4.69 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker2` | objective | 18.2 | 82.2 | 4.52 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker2/UsePoint` | use_point | 18.2 | 82.2 | 4.52 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker3` | objective | 17.6 | 81.1 | 4.60 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker3/UsePoint` | use_point | 17.6 | 81.1 | 4.60 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker4` | objective | 18.8 | 83.6 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker4/UsePoint` | use_point | 18.8 | 83.6 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker5` | objective | 17.2 | 80.6 | 4.69 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker5/UsePoint` | use_point | 17.2 | 80.6 | 4.69 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker6` | objective | 18.2 | 82.2 | 4.52 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker6/UsePoint` | use_point | 18.2 | 82.2 | 4.52 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker7` | objective | 17.6 | 81.1 | 4.60 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker7/UsePoint` | use_point | 17.6 | 81.1 | 4.60 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker8` | objective | 18.8 | 83.6 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/Locker8/UsePoint` | use_point | 18.8 | 83.6 | 4.43 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe` | objective | 13.2 | 37.4 | 2.85 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/UsePoint` | use_point | 13.2 | 37.4 | 2.85 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint` | use_point | 13.2 | 37.4 | 2.85 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint` | use_point | 13.2 | 37.4 | 2.85 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint` | use_point | 13.2 | 37.4 | 2.85 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/TreasuryVitrineW/UsePoint` | use_point | 27.5 | 80.8 | 2.94 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/TreasuryVitrineE/UsePoint` | use_point | 30.5 | 82.0 | 2.68 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/CloakroomCashBox/UsePoint` | use_point | 25.8 | 69.7 | 2.71 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Loot/GiftShopTill/UsePoint` | use_point | 25.1 | 76.3 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 11.9 | 58.4 | 4.90 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/ArgusTerminal` | objective | 7.6 | 55.5 | 7.30 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/ArgusTerminal/UsePoint` | use_point | 7.6 | 55.5 | 7.30 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerKeypad` | objective | 6.2 | 51.9 | 8.36 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerKeypad/UsePoint` | use_point | 6.2 | 51.9 | 8.36 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerDoorDrill` | objective | 5.5 | 50.9 | 9.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/ServerDoorDrill/UsePoint` | use_point | 5.5 | 50.9 | 9.34 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/TreasuryReader` | objective | 25.9 | 77.2 | 2.98 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/TreasuryReader/UsePoint` | use_point | 25.9 | 77.2 | 2.98 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultReader` | objective | 13.4 | 72.1 | 5.37 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultReader/UsePoint` | use_point | 13.4 | 72.1 | 5.37 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultDrill` | objective | 13.2 | 70.4 | 5.31 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/VaultDrill/UsePoint` | use_point | 13.2 | 70.4 | 5.31 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Devices/ArtDoorReader` | objective | 21.3 | 61.5 | 2.88 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Devices/ArtDoorReader/UsePoint` | use_point | 21.3 | 61.5 | 2.88 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 24.3 | 67.5 | 2.78 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 10.1 | 62.5 | 6.20 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 9.8 | 56.0 | 5.70 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 16.2 | 49.1 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 12.4 | 35.6 | 2.86 | ok |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 7.2 | 44.6 | 6.18 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 21.9 | 69.0 | 3.15 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 22.7 | 73.4 | 3.24 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 12.3 | 58.5 | 4.77 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 24.8 | 75.7 | 3.05 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 23.9 | 70.7 | 2.96 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneCloakroom/UsePoint` | use_point | 24.3 | 67.9 | 2.80 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneRegistrar/UsePoint` | use_point | 10.1 | 63.2 | 6.26 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneSecurity/UsePoint` | use_point | 9.8 | 56.5 | 5.76 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneBreakRoom/UsePoint` | use_point | 16.2 | 49.3 | 3.05 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneCurator/UsePoint` | use_point | 12.4 | 36.2 | 2.91 | ok |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneAdmin/UsePoint` | use_point | 7.2 | 45.2 | 6.27 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneStudio/UsePoint` | use_point | 21.9 | 69.3 | 3.16 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/PhoneAttendants/UsePoint` | use_point | 22.7 | 74.0 | 3.26 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/AlarmSecurity/UsePoint` | use_point | 12.3 | 59.0 | 4.82 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/AlarmAttendants/UsePoint` | use_point | 24.8 | 76.1 | 3.07 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Gameplay/Devices/AlarmVestibule/UsePoint` | use_point | 23.9 | 71.1 | 2.98 | ok |
 | `Spawns/PlayerRoof4` | `Gameplay/Lifts/ArtLift` | objective | 12.3 | 59.0 | 4.81 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Gameplay/Lifts/ArtLift/UsePoint` | use_point | 12.3 | 59.0 | 4.81 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 7.0 | 57.3 | 8.14 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 7.0 | 57.3 | 8.14 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas` | loot_spawn | 7.0 | 57.9 | 8.23 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_centrepiece/Slot_cp_landing/Canvas/UsePoint` | use_point | 7.0 | 57.9 | 8.23 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas` | loot_spawn | 26.7 | 80.2 | 3.01 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Variants/Group_canvas_orchard/Slot_orchard_benefactors/Canvas/UsePoint` | use_point | 26.7 | 80.2 | 3.01 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 15.6 | 61.8 | 3.97 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 16.4 | 62.7 | 3.82 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas` | loot_spawn | 15.6 | 62.1 | 3.99 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_canvas_widow/Slot_widow_conservation/Canvas/UsePoint` | use_point | 16.4 | 62.9 | 3.83 | detour (whitelisted) |
 | `Spawns/PlayerRoof4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas` | loot_spawn | 26.5 | 69.7 | 2.64 | ok |
 | `Spawns/PlayerRoof4` | `Variants/Group_canvas_saint/Slot_saint_harbour/Canvas/UsePoint` | use_point | 26.5 | 69.7 | 2.64 | ok |
-| `Spawns/PlayerRoof4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 19.6 | 66.0 | 3.37 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 19.6 | 66.0 | 3.37 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 7.9 | 41.1 | 5.17 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 7.9 | 41.1 | 5.17 | detour (whitelisted) |
-| `Spawns/PlayerRoof4` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 24.4 | 50.7 | 2.08 | ok |
-| `Spawns/PlayerRoof4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 28.4 | 57.1 | 2.01 | ok |
-| `Spawns/PlayerRoof4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 28.4 | 57.1 | 2.01 | ok |
+| `Spawns/PlayerRoof4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard` | objective | 19.6 | 66.2 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_keycard/Slot_kc_conservator/Keycard/UsePoint` | use_point | 19.6 | 66.2 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote` | objective | 7.9 | 41.6 | 5.24 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_code_note/Slot_code_admin_postit/CodeNote/UsePoint` | use_point | 7.9 | 41.6 | 5.24 | detour (whitelisted) |
+| `Spawns/PlayerRoof4` | `Variants/Group_court_doors/Slot_court_doors_locked/CourtDoors/UsePoint` | use_point | 24.4 | 51.7 | 2.12 | ok |
+| `Spawns/PlayerRoof4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` | objective | 28.4 | 58.2 | 2.05 | ok |
+| `Spawns/PlayerRoof4` | `Variants/Group_areaway/Slot_grate_loose/AreawayGrate/UsePoint` | use_point | 28.4 | 58.2 | 2.05 | ok |
 | `Spawns/PlayerRoof4` | `Variants/Group_escape/Slot_esc_mews/SecureMews/Zone` | secure_zone | 24.1 | 53.1 | 2.21 | ok |
 | `Spawns/PlayerRoof4` | `Variants/Group_escape/Slot_esc_mews/EscapeMews/Zone` | escape_zone | 20.3 | 50.0 | 2.47 | ok |
 | `Spawns/PlayerRoof4` | `Variants/Group_xl_crate/Slot_xl_loan/LoanStudy1` | loot_spawn | 18.9 | 58.8 | 3.12 | detour (whitelisted) |
