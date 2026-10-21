@@ -72,10 +72,14 @@ func update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
 	var want: bool = marker != null and _d.aim_family() == &"rifle" and _d.weapon_visual.visible and two_hands \
 		and not (_d.flinch_layer != null and _d.flinch_layer.active)
 	var rig: Node3D = _d.rig
-	left_hand_ik.set_target(marker if want else left_hand_ik.marker,
+	# LEAD (D's OF Cataclysm anim coverage, 21k errors): the kept marker is freed when the WeaponVisual is replaced
+	# (drop / swap); fade out on no marker instead.
+	var kept: Variant = left_hand_ik.get(&"marker")
+	var keep: Node3D = kept as Node3D if is_instance_valid(kept) else null
+	left_hand_ik.set_target(marker if want else keep,
 		rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D, rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D)
 	left_hand_ik.influence = move_toward(left_hand_ik.influence, 1.0 if want else 0.0, delta * tw.left_hand_ik_rate)
-	left_hand_ik.active = left_hand_ik.influence > 0.0 and left_hand_ik.marker != null
+	left_hand_ik.active = left_hand_ik.influence > 0.0 and is_instance_valid(left_hand_ik.get(&"marker"))
 
 
 ## Lead ruling (b) / SOURCE hit_zones: a hit-zone flinch on a moving body plays on the upper body only (spine and up,
