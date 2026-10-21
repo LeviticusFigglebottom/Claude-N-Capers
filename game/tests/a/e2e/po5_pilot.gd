@@ -758,6 +758,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	if combat and await _clear_threats():  # S9.1: damage cancels a hold, so clear the area first like a player
 		await face(target, 0.03, 1.0)
 	inp.press(&"interact")
+	var kind: StringName = comp.kind
 	var t: float = 0.0
 	var idle_ticks: int = 0
 	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
@@ -783,7 +784,9 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			inp.release(&"interact")
 			await inp.ticks(2)
 			if combat and await _clear_threats():  # S9.1: a hit dropped the hold, so clear the shooters first
-				d.note("pilot: use %s hold dropped, cleared threats before re-pressing" % comp.kind)
+				d.note("pilot: use %s hold dropped, cleared threats before re-pressing" % kind)
+			if not is_instance_valid(comp):  # DB sweep 1001: a bot picked the bag up during the fight
+				break
 			# Re-aim before pressing again: an F press with the crosshair on a cop is a shout (ND attempts 15-18).
 			await face(target, 0.03, 1.0)
 			if no_blind_press and not await _aim_on(comp, target):
