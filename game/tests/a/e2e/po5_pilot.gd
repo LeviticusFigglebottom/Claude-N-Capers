@@ -79,6 +79,8 @@ var last_blocked_door: Door = null
 ## goto(): stuck recoveries in one leg before it gives up, 0 = never (auto_loud sets it: the caller re-plans, sets the
 ## target aside, other markers first). P's GN loud rerun: STUCK x4 on the BronzeDoorsE LeafBody2, then 1200 s there.
 var stuck_give_up: int = 0
+## The ladder the last goto() stopped at because the crew carries a bag (ladders refuse bags, S10.1b), else null.
+var last_ladder_with_bag: Ladder = null
 ## The last goto() gave up after `stuck_give_up` stuck recoveries (no progress), not at a door or a timeout.
 var last_goto_stuck: bool = false
 ## Stealth: never press F unless the component is aimed (a press with nothing usable aimed is a shout,
@@ -377,6 +379,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	var top_up_t: float = 0.0
 	last_blocked_door = null
 	last_goto_stuck = false
+	last_ladder_with_bag = null
 	while t < timeout_s:
 		if combat and crew.crew_state != Enums.CrewState.NORMAL:
 			d.note("pilot: goto aborted, crew state %d (fight from the floor)" % crew.crew_state)
@@ -416,6 +419,11 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			await top_up()  # a player reloads on the move between fights (the tap takes 2 ticks; walking goes on)
 		var corner: Vector3 = next_corner(path, crew.global_position, target)
 		var leg: Array = _ladder_leg(corner)
+		if not leg.is_empty() and crew.is_carrying_bag():
+			# S10.1b: a ladder refuses a carried bag (headless OF 1037: 3 min of "RopeLadder up -> FAILED" with cash).
+			last_ladder_with_bag = leg[0] as Ladder
+			d.note("pilot: %s ahead with a bag: not climbing (the bag goes by the hoist)" % last_ladder_with_bag.name)
+			break
 		if not leg.is_empty():
 			inp.release(&"move_forward")
 			await climb_ladder(leg[0] as Ladder, bool(leg[1]))
