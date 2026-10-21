@@ -1,5 +1,6 @@
 # Rolling Thunder: the Vaultline convoy (rolling_thunder)
 Status: APPROVED (lead, 2026-10-11) (D-075). The lead's answers to the G0 open questions are folded in below (see Lead rulings).
+Updated for D-141 and **D-149** (the build plan's QC-RT rulings, 2026-10-21; build plan `docs/process/next_heist_rolling_thunder.md`).
 Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-01..03.
 
 ## Fiction
@@ -44,7 +45,9 @@ Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-0
   - every route through the ambush ends in `alarm_raised`.
   - The Board and briefing label it "Loud (ambush start)" (**D-075: STEALTH_OR_LOUD with this label
     is approved**; no new `HeistMode`).
-  - Size M (15–25 min). Phase P5.
+  - Size M (15–25 min; D-149.3 sets the e2e budgets and the D-120 checks on M). Phase P5. With no stealth win, the
+    P5 gate's ghost run is a **clean-setup run** (signals rigged, marshal handled, no early alarm, clean stop) followed
+    by the loud bot to the escape (D-149.4).
 - **Phase 1: Setup (stealth, `convoy_eta_s` = 150/180/210 s from the start).** Mercer counts the
   convoy in, and the countdown is an objective timer on `[convoy]`.
   - The street is **PUBLIC**. Pedestrians walk and civilians wait at the bus stops and sit in the
@@ -65,7 +68,7 @@ Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-0
     convoy halts in line at the stop line of its arm (`stop_clean_<route>`).
     - 3 s later Reyes noses the mixer out of the site's Tannery gate and across the front of the
       convoy. The rear escort car boxes the trucks in from behind.
-    - The **ambush window** (`ambush_window_s` = 8 s) opens. The escorts sit in their cars and the
+    - The **ambush window** (`ambush_window_s` = 8 s; an original mechanic, not PD2-sourced, D-149.9) opens. The escorts sit in their cars and the
       Vaultline crews in their armoured cabs.
     - Any crew shot, explosion, or masked crew member seen by a convoy unit **springs the ambush**
       (`alarm_raised(&"ambush")`). Otherwise the escort "makes" the crew at the end of the window
@@ -85,7 +88,7 @@ Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-0
   - At `convoy_eta_s` the convoy arrives **alerted**: Reyes rams it (crash stop) and every convoy
     unit dismounts into cover.
   - **The trucks are in lockdown:** deadbolts thrown, so saw times are ×1.5 (C4 and thermite are
-    unchanged).
+    unchanged). This is an original mechanic, not PD2-sourced (D-149.9).
   - Mercer: "They know. Reyes, you're on. Everybody else, find cover and wait for it."
   - This is the price of a sloppy setup, and the most dangerous way to play the heist. **D-075: the
     early-alarm penalty stands** (police at once, crash stop, truck lockdown with saws ×1.5).
@@ -93,13 +96,13 @@ Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-0
   - The police come after `police_delay_s` (45/60/90 s, rolled per difficulty; 0 after an early
     alarm). Then the `AssaultDirector` runs from the first CONTROL as usual (QC-35, already in
     `HeistMission.police_delay_s`).
-  - The crew opens the trucks (placed saw, hand saw, C4, thermite on the bullion roof hatch), bags
+  - The crew opens the trucks (placed saw, hand saw, C4, thermite on the bullion truck's rear doors), bags
     the cargo, secures ≥ 4 bags and holds for the escape.
 - **It uses the full P3 loud set:** every special, Brandt + Aegis, escalation, custody and hostage
   trades (the street is full of civilians), AI orders, and the device set:
   - **placed saws** on the truck rear doors (`saw_target` for the hand-held saw, D-057);
   - **C4** (4 charges per truck, PD2);
-  - **thermite** on the bullion roof hatch (`burn_point`, QC-38 + QC-81);
+  - **thermite** on the bullion truck's rear-door lock, at ground level (`burn_point`, QC-38 + QC-81; D-149.2);
   - padlocks and lockpicking in the setup.
 - **The design goal is the P3/P5 holdout loop on an open street:**
   - Each truck pins the crew to a spot in the convoy queue for a timed device.
@@ -152,7 +155,7 @@ Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-0
     yard. Next door are a laundromat (x 34…50) and Southfield Tyres (x 52…64), both dressing.
     It is holdout **H2**.
   - **SW: the Southfield bus interchange**, a paved plaza (x −60…−14, z 11…30) with bus shelters,
-    benches, trees and the **cast-iron clock pillar**. Behind it is **Ashby House** (x −60…−24,
+    benches, street planters and the **cast-iron clock pillar**. Behind it is **Ashby House** (x −60…−24,
     z 30…50), a 4-storey 1960s office block (roof +14.4, sniper perch S4). This is the default
     player spawn.
   - **East:** the **freight line** (tracks at x 70 and x 80) runs N–S on a low bank (rail level
@@ -186,7 +189,7 @@ Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-0
 | Edge | Closure |
 |---|---|
 | Orchard north (z −90) | A **traffic-management truck** with an arrow board and water-filled barriers across the northbound lanes (x 1…10); the **P_N** spawn is behind it (6, −86). The southbound lanes (x −10…−1) stay open as the **convoy lane** for `route_north`. Beyond z −92 is an `OUT_OF_BOUNDS` zone (D-040, respawn at `oob_respawn` spawns on the north sidewalks). Vista: Orchard continuing under the Skyway to a bend at z −200 (facades). |
-| Orchard south (z 72) | A **stalled articulated bus** across the carriageway (x −8…10, z 64…66) and barriers on both sidewalks; **P_S** behind it (0, 68). Vista to z −250 under the Skyway (OOB beyond z 72). |
+| Orchard south (z 72) | A **jack-knifed articulated lorry** (tractor + trailer; replaces the stalled bus, D-149.6) across the carriageway (x −8…10, z 64…66) and barriers on both sidewalks; **P_S** behind it (0, 68). Vista to z −250 under the Skyway (OOB beyond z 72). |
 | Tannery west (x −80) | An articulated lorry across the road (x −76…−74) and barriers on the sidewalks; **P_W** behind (−78, 0). Vista: Tannery to x −300, the low sun at the end of it. |
 | Underpass east (x 104, −5.0) | A **jack-knifed lorry** across the eastbound lanes (z 0…8, x 98…102), leaving the westbound lanes (z −8…0) as the **convoy lane** for `route_east`; **P_E** behind it (102, 4, −5.0). OOB beyond x 104. The cut walls (5 m) close the sides. |
 | Rail palisades (x 64 / x 86) | 1.8 m steel palisade (bars, see-through, bullet-transparent); the tracks are dressing and not reachable (no gate on our side). |
@@ -726,7 +729,7 @@ Sizes are between wall centre lines (m).
 
 | id | purpose (`RoomVolume.purpose`) | size m | ceiling m | kit | notes |
 |---|---|---|---|---|---|
-| CP-G | car_park (2.2–3.0, D-075/QC-87; no override) | 36 × 36 less cores/booth/plant | 2.7 | `car_park_deck` | Ground: 2 aisles, 5 m bays, ramp foot, E1 van in the west aisle. Concrete columns, painted bay lines, wheel stops, pay signs, fire extinguisher points, sodium-white LED battens. |
+| CP-G | car_park (2.2–3.0, D-075/QC-87; no override) | 36 × 36 less cores/booth/plant | 2.7 | `car_park_deck` | Ground: 2 aisles, 5 m bays, ramp foot, E1 van in the west aisle. Concrete columns, painted bay lines, pay signs (wheel stops dropped, D-149.6), fire extinguisher points, sodium-white LED battens. |
 | CP-2 | car_park | 36 × 36 less cores | 2.7 | `car_park_deck` (layout differs) | Deck 2: H1. Parked cars (cover, 12–18 per deck), the barrier façade, the stair-B drop zone. |
 | CP-R | roof | 36 × 36 | open | `car_park_roof` | Heli pad, lighting columns, 4 parked cars on the east half, head houses. |
 | STA, STB | stair | 3 × 6 | open | — | `ST`/`SB` on the plans; U-stairs 0 → 3.5 → 7.0; head houses on the roof. STA has a street door to Orchard. |
@@ -734,7 +737,7 @@ Sizes are between wall centre lines (m).
 | AB | office (attendant booth) | 5 × 6 | 2.6 | `attendant_booth` | Desk, CCTV monitor (dressing), kettle, heater, barrier controls; windows N and W. The attendant (civilian). |
 | CWC | restroom | 3 × 4 | 2.6 | `restroom_single` | Staff WC off the south aisle. |
 | CPL | plant | 7 × 6 | 2.7 | `plant_carpark` | Sprinkler pump set, main electrical board, ventilation fans; the lift breaker (5 s with `lift_dead`). |
-| DR | restaurant (dining room) | 13 × 12 | 3.0 | `diner_dining` | Booths `bb` along the glazing, tables, counter (0.9 m) with stools, till, pie case, jukebox (dressing), neon. Civilians cower in the booths (`cower_seated`). |
+| DR | restaurant (dining room) | 13 × 12 | 3.0 | `diner_dining` | Booths `bb` along the glazing, tables, counter (0.9 m) with stools, till, pie case, neon (jukebox dropped, D-149.6). Civilians cower in the booths (`cower_seated`). |
 | K | kitchen | 7 × 8 | 2.8 | `kitchen_commercial` | Griddle line, fryers, prep tables, walk-in fridge door (dressing), pass to the counter; delivery door N. |
 | BC | corridor (service) | 7 × 2 | 2.8 | `corridor_service` | Behind-the-counter link: DR, K, ST. |
 | ST | storage (dry store) | 7 × 8 less E | 2.8 | `storage_receiving` | Shelving, sacks, crates; service door S to the yard. |
@@ -743,7 +746,7 @@ Sizes are between wall centre lines (m).
 | R | corridor (rear lobby) | 2 × 6 | 2.8 | `corridor_service` | From DR to the fire exit S; stair door. |
 | SC | stair | 3 × 6 | open | — | 0 → 3.5. |
 | OF | office | 5 × 6 | 2.8 | `office_manager` | Desk, safe `S`, rota board, CCTV recorder (dressing). Door to the back of the counter. |
-| U1 | restaurant (function room) | 13 × 12 | 3.0 | `function_room` | Stacked chairs, folded tables `tt`, a small bar (dressing), bunting. The holdout's firing positions at the glazing. |
+| U1 | restaurant (function room) | 13 × 12 | 3.0 | `function_room` | Stacked chairs, folded tables `tt`, a small bar (dressing) (bunting dropped, D-149.6). The holdout's firing positions at the glazing. |
 | U2 | storage | 7 × 10 | 2.8 | `storage_archive` | Old furniture, boxes of menus, Christmas decorations. |
 | U3 | storage (dry goods overflow) | 7 × 8 | 2.8 | `storage_receiving` | Shelving. |
 | U4 | restroom | 3 × 3 | 2.8 | `restroom_single` | WC for the function room. |
@@ -755,11 +758,11 @@ Sizes are between wall centre lines (m).
 | C3 | restroom | 3 × 9 | 2.6 | `site_wc` | 3 WC cubicles, wash trough. |
 | C4 | storage (tool store) | 3 × 9 | 2.6 | `site_tool_store` | Racks of tools, gas bottles (dressing), the thermite bag slot. LOCKPICK door. |
 | MG | — (a container prop, no RoomVolume) | 3 × 2.4 | 2.2 inside | — | The steel explosives magazine; padlocked door. Its 2.2 m interior is below every room band, so it is a prop, not a room. The C4 boxes are `item_pickup`s (QC-84) reached from the open door's UsePoint. |
-| FG | exterior (frame, ground) | 24 × 20 | 3.2 (slab soffit) | `site_frame_ground` | Columns, formwork stacks, rebar bundles, a dumper truck (cover). |
+| FG | exterior (frame, ground) | 24 × 20 | 3.2 (slab soffit) | `site_frame_ground` | Columns, formwork stacks, rebar bundles, a site forklift (cover; replaces the dumper truck, D-149.6). |
 | F1 | exterior (frame slab +3.5) | 24 × 20 | open | `site_frame_slab` | Edge protection, block pallets, starter bars, a mortar mixer. H3. |
 | X1 | exterior (Orchard Ave + junction + Tannery west) | — | — | `exterior_street` | Signals on gantries, lamp posts, parked cars, bins, a newsstand, Skyway piers. |
 | X2 | exterior (east arm, ramp, underpass, cut) | 20 + 32 + 18 + 20 × 22 | — (underpass soffit 4.6) | `exterior_underpass` | Retaining walls with drainage channels, height bar, underpass fluorescents, graffiti-free (Southfield council keeps it painted), E2. |
-| X3 | exterior (plaza + bus interchange) | 46 × 19 | — | `exterior_plaza` | Bus shelters with benches (`cower_seated` spots), the clock pillar, trees in grates, cycle racks, a ticket machine. |
+| X3 | exterior (plaza + bus interchange) | 46 × 19 | — | `exterior_plaza` | Bus shelters with benches (`cower_seated` spots), the clock pillar, street planters (replace the trees in grates; cycle racks dropped, D-149.6), a ticket machine. |
 | X4 | exterior (Tanner's Reach yard) | 46 × 45 less buildings | — | `exterior_site` | Hoarding, crane base, skip, cabins' steps, site lighting masts, the mixer. |
 | X5 | exterior (rail lane) | 12 × 76 | — | `exterior_lane` | Palisade, cable troughs, a rail maintenance van (cover). |
 | X6 | exterior (car park forecourt, x 34…52, z −14…−11) | 18 × 3 | — | `exterior_street` | Railing over the ramp drop (1.1 m), bollards; throw spot down into the trench. |
@@ -809,8 +812,9 @@ Support-space check (level_standards §2.2):
 - **Beat cop (`cop_on_scene`, `patrol_officer` in stealth):** stands at the plaza or the diner
   corner. He detects like a guard but has no pager. If he sees a masked crew member, it is an early
   alarm.
-- **Loud:** civilians flee to the four closures (`civ_flee` exits, QC-88).
-  - Those who cannot reach an exit cower: diner customers in the booths (`cower_seated`); bus
+- **Loud:** the mission calls `civilians_leave(&"civ_flee")` at the alarm: street civilians walk out through the
+  four closures (`civ_flee` exits) and despawn there; no new flee-exit system (D-149.7).
+  - The rest cower (seated ones, those cut off by the fight): diner customers in the booths (`cower_seated`); bus
     queuers on the shelter benches (`cower_seated`); others against walls (`cower_stand`, placed
     0.21 m in front of a wall per characters.md v1.9: the diner walls, the car-park cores, the
     shelter backs, Ashby's facade).
@@ -909,7 +913,9 @@ applies (QC-83).
   - Crash stop: the impact is the alarm.
 - **After the stop the vehicles are static:**
   - They are **hard cover** (trucks: hard all round; escort cars: soft through the glass, hard
-    on the engine block) and navmesh obstacles (carved, QC-82).
+    on the engine block). They block navigation through **pre-baked nav regions per convoy layout**,
+    swapped in at the stop on sync nav; there is no runtime carve or rebake (D-149.1, heist_map v1.4, D-121). The
+    same holds for the mixer and the Tannery gate. Per-layout COVER uses the TacticalPoint `enabled` flag (A).
   - Escort cars burn out under explosives (dressing).
   - They never move again. The trucks cannot reverse, because the rear car blocks them.
 
@@ -1040,7 +1046,7 @@ The table gives flat distances from each spawn to each holdout centroid. All are
 | Spawn (tag) | Position (x, z, y) | Occluder (out of LOS of loot and escapes) | → H1 | → H2 | → H3 | → H4 |
 |---|---|---|---|---|---|---|
 | **P_N** `police_n` (Orchard north) | (6, −86, 0) | the traffic-management truck + its arrow board | 61 | 110 | 64 | 110 |
-| **P_S** `police_s` (Orchard south) | (0, 68, 0) | the stalled articulated bus | 106 | 51 | 115 | 101 |
+| **P_S** `police_s` (Orchard south) | (0, 68, 0) | the jack-knifed lorry (D-149.6) | 106 | 51 | 115 | 101 |
 | **P_W** `police_w` (Tannery west) | (−78, 0, 0) | the articulated lorry + the low sun behind it | 117 | 105 | 57 | 153 |
 | **P_E** `police_e` (underpass east) | (102, 4, −5.0) | the jack-knifed lorry, the cut walls | 76 | 80 | 147 | 27 |
 | **P_NE** `police_ne` (rail lane north) | (60, −76, 0) | the palisade gate + a rail maintenance van | 51 | 105 | 104 | 78 |
@@ -1092,9 +1098,10 @@ enabled when they open, with its UsePoint on the rear step. No interior navmesh 
 | Truck | Placed saw (`drill_point` SAW, jams per S9.3/S9.4) | Hand saw (`saw_cut`, `hand_saw_truck_s` ◇) | C4 (`charges_required` ◇ 4, PD2) | Thermite | Cargo |
 |---|---|---|---|---|---|
 | `vl_cash` (cash van) | 120 s ◇ on the rear-door lock | 60 s of cutting ◇ | 4 charges (`item.c4` from the magazine, or trip mines with `interaction.shaped_charge`), 5 s fuse, L3.6 blast | — | `loot.cash_bricks` × `cash_bags` (4/5/6); a cab `small_loot` pouch ($800 ◇) behind the cab door (LOCKPICK 8 s) |
-| `vl_bullion` (bullion truck) | 180 s ◇ | 90 s ◇ | 4 charges | **roof hatch** `burn_point` (QC-81): place the thermite bag (3 s), 45 s burn ◇, no jams, `cue.burn_warning`, then the hatch drops and the rear doors unlock; **no** fire volume | `loot.gold` × `gold_bags` (3/4) |
+| `vl_bullion` (bullion truck) | 180 s ◇ | 90 s ◇ | 4 charges | **rear-door** `burn_point` at ground level (QC-81; D-149.2, no roof traversal): place the thermite bag on the lock plate from the rear step (3 s), 45 s burn ◇, no jams, `cue.burn_warning`, then the rear doors unlock; **no** fire volume | `loot.gold` × `gold_bags` (3/4) |
 
-- **Lockdown** (early alarm): saw times ×1.5 (placed and hand). C4 and thermite are unchanged.
+- **Lockdown** (early alarm): saw times ×1.5 (placed and hand). C4 and thermite are unchanged. Original, not
+  PD2-sourced (D-149.9).
   Mercer: "Deadbolts are thrown. Saw's going to take longer."
 - **The box-in is the level change.** The stopped convoy plus the mixer turns an open street into
   lanes. Clean stops build a **wall of steel** along the queue (cover on one side, a shooting gallery
@@ -1105,9 +1112,11 @@ enabled when they open, with its UsePoint on the rear step. No interior navmesh 
   - `armored_truck` (A5-01, QC-80): a `safe` LARGE with `methods [saw, c4]` inside a static truck
     mesh, plus a `drill_point` SAW targeting it;
   - `convoy_vehicle` (A5-02, QC-82): the convoy is pre-placed at its stop layout and enabled by the
-    mission at `convoy_eta_s` (no drive-in; the mixer is static cover), with static nav obstacles;
+    mission at `convoy_eta_s` (no drive-in; the mixer is static cover), with its layout's pre-baked nav region
+    (D-149.1);
   - C4 (A5-03, QC-84): the magazine boxes are dressing and the trucks open by saw only;
-  - for the bullion hatch (QC-81), a `drill_point` THERMAL with `duration_s` 45 and no bag;
+  - for the bullion rear-door thermite (QC-81, D-149.2), a `drill_point` THERMAL at the rear lock with `duration_s` 45
+    and no bag;
   - each marked `TODO(A5-01)` / `TODO(A5-02)` / `TODO(A5-03)` / `TODO(QC-81)`, as Dockside did.
 
 ## Loot path
@@ -1170,7 +1179,7 @@ enabled when they open, with its UsePoint on the rear step. No interior navmesh 
 **Loud** (from the ambush, the crash or an early alarm):
 6. Spring the ambush: the convoy stops (clean or crash) and the alarm is raised. `[ambush]`
 7. *(optional)* Take down the escort and the Vaultline crews (bonus line). `[escort]`
-8. Open the trucks: placed saw, hand saw, C4 (4 charges) or thermite on a bullion hatch. The
+8. Open the trucks: placed saw, hand saw, C4 (4 charges) or thermite on a bullion truck's rear doors. The
    objective data shows the trucks opened (n/N). `[trucks]`
 9. Bag the cargo. `[cargo]`
 10. Secure ≥ 4 bags (cash and/or gold). `[secure]`
@@ -1253,8 +1262,8 @@ weights use A2-08 / A3-10 (QC-18).
 
 ## Escape
 - **Van in the car park (E1):** in the ground deck's west aisle (23, −30).
-  - Escape type `van`, `arrival_delay_s = escape_eta_s`. It drives in through the entrance from
-    Tannery (east arm) once called.
+  - Escape type `van`, `arrival_delay_s = escape_eta_s`. It appears in the aisle when it arrives (the escape van pops
+    in; only the convoy and the mixer drive in, D-149.8).
   - SECURE_LOOT at the rear doors from the start; the ESCAPE zone round the van when it arrives.
   - The last holdout is the ground deck, with H1 overhead.
 - **Van in the underpass (E2):** in the east cut (92, −4, −5.0), behind the lorry's gap.
@@ -1441,7 +1450,7 @@ set per layout. There are 28 shots: 1 top-down, 5 exterior, 4 landmarks (covered
 | `rc_ext_tannery_west` | from the junction looking W down Tannery **into the sun**: the site's Tannery gate, the **crane**, P_W's lorry | exterior 5, landmark 3 (and the glare check) |
 | `rc_diner_neon` | the diner corner from the east-arm sidewalk: the **neon**, the shopfront | landmark 4, diner exterior |
 | `rc_convoy_cash` | the `vl_cash` rear doors, saw point and the cab | truck (cash) |
-| `rc_convoy_bullion` | `vl_bullion` from above-behind: the roof hatch burn point, rear doors | truck (bullion, the "vault") |
+| `rc_convoy_bullion` | `vl_bullion` from behind: the rear-door thermite point at the lock, the cab | truck (bullion, the "vault") |
 | `rc_carpark_ground` | CP-G from the entrance: aisles, booth, E1 van | CP-G |
 | `rc_carpark_deck2` | CP-2 from the stair B corner looking NW over the barrier to the north arm | CP-2 (H1) |
 | `rc_carpark_ramp` | R1 from the south turning area | ramps |
@@ -1471,9 +1480,9 @@ Targets from architecture §10 and D-038 QC-10, checked by the `perf` validator 
 | Triangles per view | ≤ 3M (provisional, QC-10) | The Skyway deck and girder use 2 LODs; far facades are low-poly LOD dressing; vehicles 20–40k at LOD0 (hero props). |
 | Shadowed lights in any shot | ≤ 8 | The sun (1), 2 underpass battens, 1 per car-park deck, 1 diner, 1 site mast; the rest unshadowed. |
 | Texture memory | ≤ 1.5 GB | The shared library (concrete, asphalt, painted steel, plywood, brick, glass) covers ~90% of surfaces; the Vaultline livery and the diner neon are the unique sets. |
-| NPCs alive | police + convoy ≤ `DifficultyDef.max_active_enemies`; civilians ≤ 20 | The convoy units count against the cap (as D-064 Q5); pedestrians are despawned when they reach a `civ_flee` exit. |
+| NPCs alive | police + convoy ≤ `DifficultyDef.max_active_enemies`; civilians ≤ 20 | The convoy units count against the cap (as D-064 Q5); pedestrians are despawned when they reach a `civ_flee` exit (`civilians_leave`, D-149.7). |
 | Fog / haze | one WorldEnvironment height fog (low density dust haze), no FogVolumes | Exteriors only. |
-| Vehicles | ≤ 8 convoy/closure vehicles moving at once (the drive-in), then static | Movers are AnimatableBody3D on Path3D (QC-82); no physics vehicles. |
+| Vehicles | ≤ 8 convoy/closure vehicles moving at once (the drive-in), then static (D-149.8) | Movers are AnimatableBody3D on Path3D (QC-82); no physics vehicles; the escape van does not drive in. |
 | **Density (kits)** | streets: clutter in clusters at corners, shelters, the newsstand and the piers (no uniform scatter); car park decks 12–18 parked cars per deck, bays 40–60% filled; diner per kit minimums; site: stacks at the frame edges and the cabins | Same-kit rooms (CP-G/CP-2, W1/W2, C1–C4) must differ in layout hash (the `variety` check). |
 
 **Walkthrough whitelist** (level_standards §6): **R1 + R2 to the roof** from the car park spawn
@@ -1501,18 +1510,19 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
     `interaction.shaped_charge`, each placement adding one.
   - `lockdown()` multiplies the saw times by `lockdown_saw_mult` (◇ 1.5).
   - Visual nodes `Body`, `DoorL`, `DoorR`, `DrillPoint` (the rear lock), `LootAnchor`, `CabDoorL/R`,
-    optional `RoofHatch`.
-  - Vehicle collision fitted to `Body` (layer 1), a carved nav obstacle, and cover.
+    and on `vl_bullion` a `ThermitePoint` at the rear lock (D-149.2; no `RoofHatch`).
+  - Vehicle collision fitted to `Body` (layer 1) and cover. Navigation round it comes from the layout's pre-baked
+    nav region (D-149.1), not a runtime carve.
   - `loot_spawn` children enabled on open (as `Safe`).
   - Cab doors are ordinary `door` prefabs (LOCKPICK) parented to it.
 - **QC-81 (ENV A): `burn_point` `target: NodePath`** (on finish → `target.open_by_device()`) and
-  `fire_volume_size = Vector3.ZERO` meaning no fire volume. It is for the bullion roof hatch:
-  thermite through the roof, no lingering fire.
+  `fire_volume_size = Vector3.ZERO` meaning no fire volume. It is for the bullion truck's rear doors
+  (D-149.2): thermite on the lock at ground level, no lingering fire.
 - **QC-82 (ENV A, now roadmap A5-02): `convoy_vehicle` mover.**
   - An `AnimatableBody3D` vehicle that drives along a `Path3D` to a target marker at a set speed
     with braking, replicated (server-authoritative transform; clients interpolate).
-  - It ends static, carves the navmesh (or adds a `NavigationObstacle3D`), and emits
-    `vehicle_stopped(id)`.
+  - It ends static and emits `vehicle_stopped(id)`; the mission then enables the layout's pre-baked nav region
+    (D-149.1: no carve, no rebake). At most 8 movers drive in, then all are static (D-149.8).
   - It is used for the escort cars, the trucks (carrying their `armored_truck`), Reyes's mixer,
     and the marshal's scout car.
   - A mission API `drive_to(vehicle, path, marker, speed)`, or a prefab export plus `start()`.
@@ -1561,12 +1571,13 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
     for HUD names; there is no stair chain to check.
   - (c) My side: `--variants=all` also iterates the four convoy layouts as pseudo-variants
     (reachability and walkthrough per layout).
-- **QC-88 (ENV A): civilians on an open street.**
-  - Fleeing civilians path to `civ_flee` exits (CIVILIAN SpawnPoints tagged `civ_flee` at the
-    closures) and despawn there.
+- **QC-88 (ENV A): civilians on an open street. Ruled D-149.7: no new system.**
+  - In LOUD the mission calls `civilians_leave(&"civ_flee")`: civilians walk to the CIVILIAN SpawnPoints tagged
+    `civ_flee` at the closures and despawn there.
   - Pedestrians use the `civilian` PatrolPoints with `walk_text`.
-  - Exterior civilians who see a masked crew member call the police **by mobile phone** after the
-    `phone_call` clip (no `phone` prefab in the street), on the same timing as a phone run.
+  - Exterior civilians who see a masked crew member run to the nearest **sidewalk call point** (a
+    `civilian_call_point` marker by the shelters, the newsstand and the diner corner; ENV C places them) and make the
+    usual call there with the `phone_call` clip (no `phone` prefab in the street).
 - **QC-89 (ENV A): Skyway police island.**
   - One-way rappel links from the deck (+9.0) to the sidewalks (reuses QC-41's rappel), and P_SKY as
     a police-only navmesh island.
@@ -1577,8 +1588,8 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
 1. **Mode:** `STEALTH_OR_LOUD` with the Board/briefing label **"Loud (ambush start)"**: approved. No
    new `HeistMode`; a run never earns the stealth bonus.
 2. **Early-alarm penalty:** stands (police at once, the convoy alerted, the crash stop, truck
-   lockdown with saw times ×1.5).
-3. **Ambush window** (8 s, dismount 4 s): ◇, tunable.
+   lockdown with saw times ×1.5). The lockdown is an original mechanic, not PD2-sourced (D-149.9).
+3. **Ambush window** (8 s, dismount 4 s): ◇, tunable; original, not PD2-sourced (D-149.9).
 4. **Required loot:** 4 bags, ◇ tunable.
 5. **Truck numbers** (saw 120/180 s, hand saw 60/90 s, C4 4 charges, thermite 45 s): ◇, tunable.
 6. **`car_park`:** the validator's scale table gains `car_park` (2.2–3.0 m), so CP-G and CP-2 need no
@@ -1591,3 +1602,18 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
 - **QC-80/82/84** (`armored_truck`, `convoy_vehicle`, the C4 item) are now ENV A roadmap rows
   **A5-01..03**. Until they land, the G1 greybox uses the placeholders under Truck targets, each
   marked with a `TODO(A5-0n)`.
+
+## Build-plan rulings (D-149, 2026-10-21; QC-RT1..11 in `docs/process/next_heist_rolling_thunder.md` §8)
+1. **Convoy navigation:** pre-baked nav regions per convoy layout, swapped at the stop (also the mixer and the Tannery
+   gate). No runtime carve or rebake. TacticalPoint `enabled` (A) switches per-layout COVER.
+2. **Bullion truck:** thermite goes on a ground-level point at the rear-door lock. The roof hatch and any truck-roof
+   traversal are deleted.
+3. **Size M** (15–25 min): e2e budgets and the D-120 checks; base XP 2,000 (D-148).
+4. **P5 gate:** a clean-setup run (signals rigged, marshal handled, no early alarm) replaces the ghost run.
+5. The ≤ 3,500-polygon navmesh target is an early warning only (A's uncapped `NavPath` is on trunk).
+6. **D-147 reuse-first:** the stalled bus becomes a jack-knifed lorry; street trees become planters; the dumper truck
+   becomes a site forklift; jukebox, cycle racks, bunting and wheel stops are dropped.
+7. **Civilians:** `civilians_leave` + sidewalk call points; no new flee-exit system.
+8. **Drive-in:** the convoy and the mixer drive in (≤ 8 movers, then static); the escape van pops in.
+9. The early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window are **original mechanics**, not PD2-sourced.
+10. Plan scripts `tools/levelcheck/plans/rolling_thunder_*.py` (`--check` only) are allowed before the OF done check.
