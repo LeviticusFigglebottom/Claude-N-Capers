@@ -285,3 +285,12 @@ Suggestions for A: exclude frames that take a screenshot from HITCH (or log `sho
   85 @3.8, 85 @5.7, 60 @5.6, 59 @2.0). **Loud phase: only 3, worst 69 ms @163.1, 62 @139.9** (and one more at 50-59 ms). The 90-110 ms ones at t≈130/176 from GPU-13 are gone.
 - Other ERRORs: `!is_inside_tree() ... Transform3D()` x5, `Playback can only happen when a node is inside the scene tree` x1, `6 resources still in use at exit`.
 - 10 PNGs in `gpu/renders/a/of_hitch_navfix/`.
+## GPU-16: OF scorch round 3 (RENDER_SPLIT Job C)
+- Tree: env/c-worlds e3107aed (contains 37ab4ce1 "rc_burn_close review camera on the TW burn spot; paler TW ash ring" and d10a885e), local branch gpu/c4. Import exit 0, 8 s.
+- `of_burn_variant.gd -- --out=user://of_burn_test.tscn --drops`: exit 0, 8 s. Then `review_shots.tscn -- --scene=user://of_burn_test.tscn --warmup=60
+  --out=<repo>\docs\levels\ostrander_federal\g2\fix\burn_scorch_r3 --cameras=rc_burn_close,rc_teller_workroom,rc_vault_hole`: exit 0, 18 s, no ERRORs. Forward+ 1920x1080.
+- Output: `docs/levels/ostrander_federal/g2/fix/burn_scorch_r3/` (3 JPEGs, contact_sheet, shots.md, render_log.txt).
+- **rc_burn_close: the TW scorch reads clearly now.** It shows a large dark soot/char bloom on the navy carpet all round the cut, heaviest on the near and
+  right sides, with the glowing cut rims and the thermal drill on its tripod in frame. The char is dark, not a pale ash ring; any pale ring isn't noticeable against the soot.
+- rc_teller_workroom (the long view): floor around the ring 55.4 (GPU-14) -> 56.0, i.e. still no visible change at that distance. rc_burn_close is the camera to judge the scorch by.
+- rc_vault_hole soffit: 34.8 -> 34.8 (unchanged from GPU-14; the round-2 soot halo is still there).
