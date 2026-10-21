@@ -4,6 +4,70 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT greybox vs D's clips and cast (for C; read-only, origin/env/c-worlds 529d9450, `rolling_thunder_layout_content.gd`).**
+  Coordinates are world x, y, z (m); spawn yaw 90 faces -X and 180 faces +Z, as C's spawns use it. Heights match:
+  counter 0.90, cookline 0.90, diner tables 0.74, booth desk 0.75 (desk_work 0.74), shelter benches 0.45 (sit 0.47; 2 cm
+  is fine). **The positions and activities don't match:**
+  1. **Waitress** (25.5, 0, 20.5), activity `idle`. counter_wipe wants the root 0.28 m behind the counter's staff-side
+     edge (x 24.40), facing it: **(24.68, 0, 20.5), yaw 90, activity `counter_wipe`** (A: map the hint). The aisle behind,
+     2.75 m to the cookline, is fine.
+  2. **Cook** (28.55, 0, 17.0) is 0.60 m from the cookline edge (x 27.95). cook_stove wants 0.30 m:
+     **(28.25, 0, 17.0)**, yaw 90; the activity `cook_stove` is already right.
+  3. **Diner customers** (`civ_diner` x 5): none sits; all are `idle`. Customers 0 and 1 stand at x 18.0 facing the
+     booth boxes, 2 and 3 at x 21.6, 0.70 m off the table edge, and 4 at (19.5, 20) at no table. The booth boxes (1.5 x 1.2 x
+     1.4 solid, x 15.5-17.0) are 3.1 m from the tables, so no booth is next to a table. sit_eat wants a seat top
+     0.47 m (chair or booth bench, Seat at the root, 0.12 m forward of the cushion centre), the table top 0.74, its near
+     edge **0.22 m ahead of the root**. For the current tables (0.8 x 0.8 at x 20.5, z 18 / 22): **west seat roots
+     (19.88, 0, 18 | 22) facing +X (yaw -90); east (21.12, 0, 18 | 22) facing -X (yaw 90)**; activity `sit_eat`. A 5th
+     customer needs a 3rd table or a real booth: two benches facing across a 0.7 m table, each root 0.22 m from the edge.
+  4. **Bus queue** (`civ_bus` x 4) stands at z 14.0, 0.55 m in front of the benches (z 12.95-13.45), activity `idle`. The
+     roster says sit: **roots at z 13.32** (bench centre + 0.12), x unchanged (1.0 m apart is fine), yaw 180, activity `sit`.
+  5. **Car-park attendant** (18.5, 0, -16.2) faces the booth desk (near edge z -15.45) from 0.75 m away, standing `idle`;
+     the roster says sit at the desk. desk_work wants an npc chair with its Seat at the root and the desk near edge
+     about 0.20 m ahead (keyboard 0.36 m): **(18.5, 0, -15.65)**, yaw 180, prop_chair_office there, activity `desk_work`.
+     The real desk must be open below for the knees; the greybox box is solid.
+  6. **No cower marks in RT at all.** OF has `cower_stand` points tagged `cower`; RT's patrol data has none (doc §4: the
+     street flees, everyone else cowers). cower_stand wants a wall **0.21 m behind the root** (back-bag looks step out
+     0.12-0.25 m by cower_offsets), with about 0.7 m clear in front. Candidates: inside the diner front wall (z 14) facing
+     +Z; the customer side of the counter, **x 23.39 facing -X** (like OF's CowerCounter); behind the shelters on their
+     north face, **z 12.24 facing -Z** (yaw 0; the front holds the bench); in booth AB the attendant uses `cower_seated` on
+     the chair from item 5. Diner customers on chairs cower seated too.
+  7. **Convoy:** the ConvoyLayout placeholders are only vehicle boxes, with no seats, wheels or `convoy_*` spawns yet. When
+     they come (rt_vehicle_placement / test_rt_clips): the driver root goes on the footwell floor under the seat centre,
+     cushion 0.36 m above it, **wheel centre 0.40 m ahead and 0.76 m up, rim radius 0.18, face tilted 30 deg**, head
+     about 1.0-1.05 m up, roof liner at least 1.15 m. The cars are 1.5 m tall: fine if their floor is at most 0.35 m. Door
+     opening 0.30 m behind to 0.65 m ahead of the seat centre, sill at most 0.22 m up, 0.42 m beside the seat centre; keep
+     1.10 m beside the seat clear. vehicle_exit assumes the footwell is level with the road, so the 3.2-3.6 m armoured
+     cabs need van_exit or a root drop (A).
+  8. **Tags (D + C):** `staff_diner` deals [diner_waitress, diner_cook] round-robin, so the cook spawn can get the
+     waitress look and vice versa. Proposal: C puts `staff_waitress` / `staff_cook` first in those two spawns' tags; D
+     maps them in p5_cast (data only, on prep/d-rt when you say so).
+- **Loud screenshot review (NPC anim and clipping):** there are no GH loud captures on any branch (P's GH captures are
+  stealth, po6_gh). I reviewed the newest OF loud frames on gpu/renders: `a/of_a6_b1800_partial` (GPU-20),
+  `a/of_a5_b1500` and `a/of_r256_b480`, about 35 frames at full resolution where it mattered.
+  - **No NPC animation or mesh-clipping defects found.** Firing and aim poses (TAC Light / Heavy, the Zero reskins, the
+    crew), the deaths and the lying bodies, civilians cowering and with hands up, and the Commander Brandt wave all
+    read correctly. Weapons sit in the hands, and nothing sinks into the floor or walls.
+  - **One recurring issue, not an animation bug:** in every `stuck_*` frame the bot pilot is pressed against a TAC unit
+    and the camera ends up inside it (a6 `13_stuck_3`: the inside of a Zero TAC Light's plate and arm fills the view;
+    a5 `12_stuck_1` is the same). The aim pose's arms and rifle reach about 0.6 m in front of the NPC, more than the
+    player-to-NPC capsule gap. **For A/P, low priority:** keep NPCs about 0.8 m from a player root (motor separation),
+    or treat it as a harness artefact of the stuck pilot. PD2 lets enemies get this close too.
+  - Also seen: a crew AI teammate standing in the player's face (a6 `09_auto_212`). That is crew AI spacing (A).
+  - **IDLE, can take X.**
+- **AH prep done on `prep/d-ah` 8238fdaa3 (held for AH's turn; branched from prep/d-rt, so merge RT first).**
+  - **dj_mix** (dfd7ce9bf), as reported below.
+  - **16 finish swaps, 0 new meshes:** bouncers c-g, bartenders c/d, club_waiter/_b (the gala waiters in Velvet violet),
+    patrons e-j, frd_agent_offduty. Every swap has the same per-mesh tri counts as its base. `recolor` is now one shared step
+    (`_outfit_build.apply_recolor`). There are 3 new library colours (char_satin_silver, _emerald, _coral). p5_cast has
+    the AH pools (bouncer 7, bartender 6, patron 20 = 10 club + 10 gala, dancer 10, off-duty, couriers 12) and
+    `tag_map.afterhours` (18 spawn tags) for A to mirror.
+  - **Checks:** test_p5_cast 17/17, cower_offsets, lod, outfits, scenes, skirt_drape, npcs, hit_zones, ragdoll, rig,
+    civ_panic, factions, character_warm, ah_clips and anims all pass; gdlint, ownership d and banned are clean.
+    Review: `_review/ah_d1/ah_{door,bar,patrons}_sheet.png` (+ 30 m lineups and silhouettes).
+  - **Known limit:** the off-duty cop's FRD letters are geometry, so they show as faint relief on the black leather
+    back up close. Removing them is a small recipe option, not a mesh. Say if you want it.
+  - **Next:** P's GH/OF loud screenshots, checking for NPC anim and clipping issues.
 - **WORKING: AH prep on `prep/d-ah`** (branched from prep/d-rt, so RT merges first and the anim library stays one line).
   - **`dj_mix` is pushed: prep/d-ah dfd7ce9bf.** The DJ at the 1.0 m booth, 120 BPM: left hand on the faders, right on
     the jog wheel, knee bounce and head nod on the beat, and once per loop the right hand to the headphone cup (`cue`@90).
