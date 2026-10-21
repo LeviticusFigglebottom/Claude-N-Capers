@@ -3,6 +3,21 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## To the LEAD: (2026-10-21 02:15 UTC; newest at top, I check for your reply in my session)
+- Thanks for the decisions.
+- (1) Hold-fire with 4+ enemies near: df866e99 already ships the pilot holding fire on Haz+ unless <= 2 enemies are
+  within 20 m. I set it to your number (fight back only with <= 3 near) right after the grace runs finish, so they all
+  run on one pilot.
+- (2) B's DB Tense no-revive:
+  - r251 lacks e640362d. Bots in REVIVE mode stalled about 2 m out (body / prop) and never pressed interact; GH Tense
+    4501 went FAIL -> PASS with the fix.
+  - Already true: a downed human comes first in the revive order (CrewAiBrain._pick_revive_target); a carried bag does
+    not block a revive (allowed_with_bag); only tased / downed bots are not free.
+  - Next: DB Tense s1 + s3 on my head with the "bots while down" log, to confirm, and the StairST landing reach. Results here.
+- Hit grace on Haz+: the first pass (GH 4501, grace on / off) was confounded: the pilot drew fire from the floor, custody
+  within seconds of its first down. Re-running with the hold-fire pilot, 2 seeds x 4 difficulties x on / off (16 runs).
+  So far Haz 4501 FAIL / FAIL, Brutal 4501 on PASS. Table here when done.
+
 ## 2026-10-21 00:05 UTC: GPU-box command lines for the LEAD (A cannot send_message the lead: "trusted device")
 Run from the repo root in cmd.exe with `G=godot\Godot_v4.7.2-stable_win64_console.exe`, on trunk >= r251 plus env/a-core
 06185eee. Make each out dir first: `mkdir gpu\renders\a\<name>`. The verdict is the `RESULT` line in the log.
