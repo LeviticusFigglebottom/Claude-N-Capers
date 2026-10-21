@@ -6,9 +6,9 @@ extends TestCase
 const DIR: String = "res://systems/ai/data/enemies/"
 ## Routine..Cataclysm after D-127 (the pre-D-127 table x 1.25).
 const TABLE: Dictionary = {
-	"security_officer": [50.0, 50.0, 75.0, 100.0, 150.0, 200.0],
-	"patrol_officer": [50.0, 50.0, 75.0, 100.0, 150.0, 200.0],
-	"tac_light": [100.0, 100.0, 150.0, 200.0, 300.0, 400.0],
+	"security_officer": [40.0, 40.0, 75.0, 100.0, 150.0, 200.0],  # D-145: Routine / Tense at PD2 Hard (40)
+	"patrol_officer": [40.0, 40.0, 75.0, 100.0, 150.0, 200.0],
+	"tac_light": [80.0, 80.0, 150.0, 200.0, 300.0, 400.0],  # D-145: PD2 Hard rifle SWAT 80
 	"frd/tac_light": [100.0, 100.0, 150.0, 200.0, 300.0, 400.0],
 	"sentinel/tac_light": [100.0, 100.0, 150.0, 200.0, 300.0, 400.0],
 	"zero/tac_light": [100.0, 100.0, 150.0, 200.0, 300.0, 400.0],

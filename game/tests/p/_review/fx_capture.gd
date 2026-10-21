@@ -91,7 +91,7 @@ func _capture(wid: StringName) -> Array:
 		if f == _frames[want]:
 			await RenderingServer.frame_post_draw
 			var img: Image = get_viewport().get_texture().get_image()
-			img.save_png("%s/%s_f%02d.png" % [_out, String(wid).trim_prefix("weapon."), f])
+			img.save_png(PCaptureName.safe_path("%s/%s_f%02d.png" % [_out, String(wid).trim_prefix("weapon."), f]))
 			shots.append(img)
 			want += 1
 		f += 1
@@ -136,5 +136,5 @@ func _sheet(rows: Array[Array]) -> void:
 			img.convert(Image.FORMAT_RGBA8)
 			img.resize(w, h, Image.INTERPOLATE_BILINEAR)
 			sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i(x * w, y * h))
-	sheet.save_png("%s/fx_sheet.png" % _out)
+	sheet.save_png(PCaptureName.safe_path("%s/fx_sheet.png" % _out))
 	print("[FXCAP] sheet %s/fx_sheet.png (%d x %d)" % [_out, cols, rows.size()])

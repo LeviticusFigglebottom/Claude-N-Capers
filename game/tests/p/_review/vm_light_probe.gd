@@ -285,12 +285,12 @@ func _lum(show_weapon: bool) -> Array:
 func _measure(label: String) -> void:
 	var w: Array = await _lum(true)
 	var a: Array = await _lum(false)
-	(w[2] as Image).save_png("%s/%s_weapon.png" % [_out, label])
-	(a[2] as Image).save_png("%s/%s_arms.png" % [_out, label])
+	(w[2] as Image).save_png(PCaptureName.safe_path("%s/%s_weapon.png" % [_out, label]))
+	(a[2] as Image).save_png(PCaptureName.safe_path("%s/%s_arms.png" % [_out, label]))
 	RenderingServer.render_loop_enabled = true
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("%s/%s_screen.png" % [_out, label])
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/%s_screen.png" % [_out, label]))
 	RenderingServer.render_loop_enabled = false
 	print("[VML] %-10s weapon %.1f (%d px)  arms %.1f (%d px)" % [label, w[0], w[1], a[0], a[1]])
 

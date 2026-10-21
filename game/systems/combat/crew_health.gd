@@ -54,6 +54,9 @@ var helpless_left: float = 0.0
 var bleedout_health: float = 0.0
 ## Seconds of post-gate invulnerability left.
 var invuln_left: float = 0.0
+## D-145 hit grace (PD2): seconds left in which a bullet hit of at most `grace_damage` does nothing.
+var grace_left: float = 0.0
+var grace_damage: float = 0.0
 ## Seconds until armor starts regenerating.
 var regen_delay_left: float = 0.0
 ## D-145 §4a: seconds since this crew member last took damage (bot health regen).
@@ -127,6 +130,7 @@ func reset_full() -> void:
 	downs_used = 0
 	bleedout_left = 0.0
 	invuln_left = 0.0
+	grace_left = 0.0
 	regen_delay_left = 0.0
 
 
@@ -191,7 +195,9 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 			out["killed"] = true
 			go_to_custody()
 		return out
-	if invuln_left > 0.0:
+	var bullet: bool = int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.BULLET
+	# D-145 (PD2 _chk_dmg_too_soon): a bullet hit within the grace of a hit at least this strong does nothing.
+	if invuln_left > 0.0 or (bullet and grace_left > 0.0 and dmg <= grace_damage + 0.001):
 		out["amount"] = 0.0
 		return out
 	# --- A2-06 dodge (L2.4): a ranged or melee hit may do nothing (melee knockback still applies, the
@@ -199,6 +205,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	var dodge_type: int = int(info.get("type", Enums.DamageType.BULLET))
 	if (dodge_type == Enums.DamageType.BULLET or dodge_type == Enums.DamageType.MELEE) and _roll_dodge():
 		regen_delay_left = _regen_delay(tw)
+		if bullet:
+			_start_grace(dmg)
 		out["amount"] = 0.0
 		out["dodged"] = true
 		_publish(out, attacker_net_id)
@@ -222,6 +230,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	regen_delay_left = _regen_delay(tw)
 	if armor_dmg + health_dmg > 0.0:
 		since_damage_s = 0.0
+	if bullet and (armor_dmg + health_dmg > 0.0 or invuln_left > 0.0):
+		_start_grace(dmg)
 	out["amount"] = armor_dmg + health_dmg
 	out["armor_damage"] = armor_dmg
 	out["health_damage"] = health_dmg
@@ -247,6 +257,17 @@ func _publish(out: Dictionary, attacker_net_id: int) -> void:
 	EventBus.damage_applied.emit(_crew.net_id, attacker_net_id, out)
 	Net.replicate_event(&"damage_applied", [_crew.net_id, attacker_net_id, out])
 	BloodFx.hit(_crew, _crew.net_id, out, max_health, BloodFx.KIND_CREW)  # D-113
+
+
+## D-145: open the hit grace for a hit of `dmg` (PD2: the stronger of the running and the new hit sets the bar).
+func _start_grace(dmg: float) -> void:
+	var ct: CombatTweak = CombatTweak.data()
+	var arr: PackedFloat32Array = ct.bot_hit_grace_s_by_difficulty if _crew.is_ai else ct.hit_grace_s_by_difficulty
+	var g: float = arr[clampi(_difficulty(), 0, arr.size() - 1)] if not arr.is_empty() else 0.0
+	if g <= 0.0:
+		return
+	grace_damage = maxf(grace_damage, dmg) if grace_left > 0.0 else dmg
+	grace_left = g
 
 
 func _gate_invuln(tw: CrewTweak) -> float:
@@ -328,6 +349,7 @@ func revive(by_slot: int) -> void:
 	bleedout_left = 0.0
 	bleedout_health = 0.0
 	invuln_left = 0.0
+	grace_left = 0.0
 	regen_delay_left = 0.0
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.NORMAL)
@@ -493,6 +515,8 @@ func server_tick(delta: float) -> void:
 	_tick_health_regen(delta)  # L2.1
 	if invuln_left > 0.0:
 		invuln_left = maxf(invuln_left - delta, 0.0)
+	if grace_left > 0.0:
+		grace_left = maxf(grace_left - delta, 0.0)
 	if PerkHooks.tick(self, delta):  # perk hook (QB-62); true = a perk replaces the armor regen
 		return
 	if regen_delay_left > 0.0:

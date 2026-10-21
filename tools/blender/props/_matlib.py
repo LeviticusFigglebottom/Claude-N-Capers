@@ -257,15 +257,17 @@ def all_keys() -> list[str]:
 
 # Texture width (px) of every library id whose tile is 512 px over 2 m (style: low-detail surfaces).
 LIB_512 = {"chrome", "rubber_black", "plastic_matte", "glass_clear", "ceiling_tile"}
-# Weapon/gear library ids whose 1024 px texture tiles every 1 m (metadata/uv_tile_m = 1.0): at the prop
-# density (512 px/m) they need the same one-repeat-per-metre UVs as the 512 px tiles.
+# Weapon/gear library ids whose 1024 px texture tiles every 1 m (metadata/uv_tile_m = 1.0). Prop UVs scale by the
+# texture's pixel width (the validator's texel density), not its authored tile, so these map as every other 1024 px
+# library tile: one repeat per 2 m at the prop density (512 px/m). OF-C2: the old one-repeat-per-metre mapping gave
+# 1024 px/m (the materials FAIL on the thermal drill's polymer status box; 2048 px/m on the first-person throwables).
 TILE_1M = {"polymer_black", "polymer_olive", "steel_bare", "brass_cartridge", "alu_anodized_black",
            "paint_safety_orange", "metal_matte"}
 
 
 def texture_px(mat_id: str) -> float:
     """Albedo texture size behind a material id (library or prop) -> UV density choice."""
-    if mat_id in LIB_512 or mat_id in TILE_1M:
+    if mat_id in LIB_512:
         return 512.0
     if mat_id.startswith(PROP_PREFIX):
         key = mat_id[len(PROP_PREFIX):]

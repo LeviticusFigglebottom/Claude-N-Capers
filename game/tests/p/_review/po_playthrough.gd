@@ -304,7 +304,7 @@ func _shot(step: String) -> void:
 	await RenderingServer.frame_post_draw
 	_n += 1
 	var path: String = "%s/%02d_%s.png" % [_out, _n, step]
-	get_viewport().get_texture().get_image().save_png(path)
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path(path))
 	_log("shot %s" % path)
 
 
