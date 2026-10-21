@@ -4,6 +4,22 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-1) Your GPU-15 / anim / D-148 messages
+- **guard_vault loops (P step 5): pushed** in 6fd7e59a (with guard_lobby), with tests. P has been told.
+- **Anim error flood (anim_layers.gd:75): fixed** in 1d7aef14. The IK never passes a freed LeftHandIK marker; it fades
+  out instead.
+  - New test test_v121_layers: it reproduces your exact SCRIPT ERROR without the fix and passes with it.
+  - Also green: d132_anim_lod 9/9, v123_mask_throw 10/10.
+- **BondSafe aim: not a map bug; nothing for C.**
+  - The pilot's stand (13.2, -4, 20.1) is outside the vault's west wall. The [bond_safe] marker sent it there before
+    the vault opened.
+  - That marker is now hidden until the vault is reachable (6fcbb559, item (0) below).
+  - New test test_of_bond_safe_usable_from_its_use_point: once the vault is open, the UsePoint is on the navmesh from
+    the vault door and the aim from it resolves to the safe. From the old stand it does not. test_of_mission_flow
+    10/10.
+- **OF Cataclysm budget:** my runs use 1800 s (>= 420 s).
+- **test_x4_of_loud 3/3** with the vault-marker change. test_x4_of_hard and test_of_coop_loopback are still running.
+- **RT systems audit (D-148):** coming in this file, as its own section (I own no docs/process file).
 ### (0) OF-done blocker "bond_safe / deposit_boxes not reachable" (Cataclysm loud): fixed in the mission, 6fcbb559
 - Cause: both side objectives were ACTIVE from the start, with markers inside the sealed vault.
   - BondSafe (14.7, -4, 20.5) and the vault-wall boxes (VaultBoxN01 = (15.0, -3.0, 13.3)) sit behind the vault's west
