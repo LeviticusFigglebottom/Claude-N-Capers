@@ -254,3 +254,28 @@ func test_gn_rare_requires_keeps_draws() -> void:
 		assert_eq((r2[VariantResolver.RARE_KEY] as Array).has(&"e2"), (r1[VariantResolver.RARE_KEY] as Array).has(&"e2"),
 			"e2 unaffected (seed %d)" % s)
 		assert_false((r2[VariantResolver.RARE_KEY] as Array).has(&"e1"), "e1 never fires (no slot zz)")
+
+
+## RT (C's ask: gold_rush pins trucks_3 AND t3_bullion): `force_active` may list several pins; each holds, and a
+## conditional event decided at its first pinned group pins the later ones too (or none).
+func test_rt_rare_force_active_several_pins() -> void:
+	_make_slots({&"route": [&"r_north", &"r_east"], &"truck_count": [&"trucks_2", &"trucks_3"],
+		&"cargo_t3": [&"t3_cash", &"t3_bullion"]})
+	var pins: Array = [{"group": &"truck_count", "slot": &"trucks_3"}, {"group": &"cargo_t3", "slot": &"t3_bullion"}]
+	var rules: Array[Dictionary] = [
+		{"group": &"route", "pick": Vector2i(1, 1), "weights_by_difficulty": {Enums.Difficulty.ROUTINE: {"r_east": 0.0}}},
+		{"group": &"truck_count", "pick": Vector2i(0, 0)},
+		{"group": &"cargo_t3", "pick": Vector2i(0, 0)},
+	]
+	var r: Dictionary = _roll(_table(rules, [{"id": &"gold_rush", "chance": 1.0, "effects": {"force_active": pins}}]),
+		11, Enums.Difficulty.ROUTINE)
+	assert_eq(r[&"truck_count"], [&"trucks_3"], "first pin")
+	assert_eq(r[&"cargo_t3"], [&"t3_bullion"], "second pin")
+	for need: StringName in [&"r_north", &"r_east"]:
+		var ev: Dictionary = {"id": &"gold_rush", "chance": 1.0, "requires": {&"route": [need]},
+			"effects": {"force_active": pins}}
+		var rc: Dictionary = _roll(_table(rules, [ev]), 11, Enums.Difficulty.ROUTINE)
+		var fires: bool = need == &"r_north"
+		assert_eq((rc[VariantResolver.RARE_KEY] as Array).has(&"gold_rush"), fires, "conditional: requires %s" % need)
+		assert_eq(rc[&"truck_count"], [&"trucks_3"] if fires else [], "pin 1 follows the condition")
+		assert_eq(rc[&"cargo_t3"], [&"t3_bullion"] if fires else [], "pin 2 follows the condition")

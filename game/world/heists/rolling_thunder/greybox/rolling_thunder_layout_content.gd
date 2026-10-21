@@ -202,12 +202,12 @@ const FURNITURE: Array = [
 	["box", "ParkedCarR1", [36.0, 7.0, -18.0], [4.6, 1.45, 1.9], 90.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "ParkedCarR2", [30.0, 7.0, -18.0], [4.6, 1.45, 1.9], 90.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "ParkedCarR3", [24.0, 7.0, -18.0], [4.6, 1.45, 1.9], 90.0, "car", false, "prop", {"cover": "hard"}],
-	["box", "StreetCarOW1", [-9.0, 0.0, 30.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {"cover": "hard"}],
+	["box", "StreetCarOW1", [-9.0, 0.0, 34.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "StreetCarOW2", [-9.0, 0.0, 45.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "StreetCarOE1", [9.0, 0.0, 40.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "StreetCarOE2", [9.0, 0.0, 55.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "StreetCarTW1", [-30.0, 0.0, 7.0], [1.9, 1.45, 4.6], 90.0, "car", false, "prop", {"cover": "hard"}],
-	["box", "StreetCarTW2", [-50.0, 0.0, 7.0], [1.9, 1.45, 4.6], 90.0, "car", false, "prop", {"cover": "hard"}],
+	["box", "StreetCarTW2", [-55.0, 0.0, 7.0], [1.9, 1.45, 4.6], 90.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "StreetCarON1", [8.5, 0.0, -30.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {"cover": "hard"}],
 	["box", "BusShelter0", [-38.0, 0.0, 12.6], [5.0, 2.6, 0.3], 0.0, "bus_shelter", false, "prop", {}],
 	[
@@ -273,11 +273,11 @@ const ALWAYS: Dictionary = {
 				"objective_tag": "pay_station",
 				"@contents": [
 					[
-						"small_loot", "PayStationCash1", [-0.15, 0.3, 0.0],
+						"small_loot", "PayStationCash1", [-0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
 					],
 					[
-						"small_loot", "PayStationCash2", [0.15, 0.3, 0.0],
+						"small_loot", "PayStationCash2", [0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
 					],
 				],
@@ -297,11 +297,11 @@ const ALWAYS: Dictionary = {
 				"objective_tag": "diner_safe",
 				"@contents": [
 					[
-						"small_loot", "DinerSafeCash1", [-0.15, 0.3, 0.0],
+						"small_loot", "DinerSafeCash1", [-0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
 					],
 					[
-						"small_loot", "DinerSafeCash2", [0.15, 0.3, 0.0],
+						"small_loot", "DinerSafeCash2", [0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
 					],
 				],
@@ -967,12 +967,12 @@ const TACTICAL: Array = [
 	["tac", "CoverCarR1", "COVER", [37.55, 7.0, -18.0], 90.0, ["parked_car", "carpark"], false],
 	["tac", "CoverCarR2", "COVER", [31.55, 7.0, -18.0], 90.0, ["parked_car", "carpark"], false],
 	["tac", "CoverCarR3", "COVER", [25.55, 7.0, -18.0], 90.0, ["parked_car", "carpark"], false],
-	["tac", "CoverStreetCarOW1", "COVER", [-7.45, 0.0, 30.0], 90.0, ["parked_car", "street"], false],
+	["tac", "CoverStreetCarOW1", "COVER", [-7.45, 0.0, 34.0], 90.0, ["parked_car", "street"], false],
 	["tac", "CoverStreetCarOW2", "COVER", [-7.45, 0.0, 45.0], 90.0, ["parked_car", "street"], false],
 	["tac", "CoverStreetCarOE1", "COVER", [7.45, 0.0, 40.0], -90.0, ["parked_car", "street"], false],
 	["tac", "CoverStreetCarOE2", "COVER", [7.45, 0.0, 55.0], -90.0, ["parked_car", "street"], false],
 	["tac", "CoverStreetCarTW1", "COVER", [-30.0, 0.0, 5.45], 180.0, ["parked_car", "street"], false],
-	["tac", "CoverStreetCarTW2", "COVER", [-50.0, 0.0, 5.45], 180.0, ["parked_car", "street"], false],
+	["tac", "CoverStreetCarTW2", "COVER", [-55.0, 0.0, 5.45], 180.0, ["parked_car", "street"], false],
 	["tac", "CoverStreetCarON1", "COVER", [6.95, 0.0, -30.0], -90.0, ["parked_car", "street"], false],
 	["tac", "CoverShelter0", "COVER", [-36.5, 0.0, 11.85], 180.0, ["shelter", "plaza"], false],
 	["tac", "CoverShelter1", "COVER", [-28.5, 0.0, 11.85], 180.0, ["shelter", "plaza"], false],

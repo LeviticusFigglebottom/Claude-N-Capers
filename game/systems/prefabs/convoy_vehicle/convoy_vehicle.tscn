@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://systems/prefabs/convoy_vehicle/convoy_vehicle.gd" id="1_cv"]
+
+[sub_resource type="BoxShape3D" id="shape_shape_0"]
+size = Vector3(1.9, 1.5, 4.6)
+
+[node name="ConvoyVehicle" type="Node3D"]
+script = ExtResource("1_cv")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Collision" type="AnimatableBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+sync_to_physics = false
+metadata/surface = &"metal"
+
+[node name="Shape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("shape_shape_0")

@@ -22,7 +22,8 @@ Newest entry first, keep the last 10.
             and the C4 asset name / desc.
 
           `test_preplan` now accepts an `item.*` drop if the carried item has a name and a count. **Spawning an
-          item drop is A's RT-A3 (D-141.3); nothing in A's code spawns `item.*` drops yet.**
+          item drop is A's RT-A3 (D-141.3): done on env/a-core b0caf2b8a** (`item.c4` spawns an item pickup with
+          `params.count`; `test_a5_03_c4_item`), so the asset works once you merge it.
         - **Part 2 (3ead414e):** 6 achievements on existing condition keys, each with a scripted pass and near-miss
           case: Clean Stop (signals), Heavy Haul (4 gold), Nothing Left on the Road (all loot), Iron Crew
           (Hazardous+, no downs), Green Light (< 15 min), End of the Line (Cataclysm). Plus the `rolling_thunder`
@@ -38,7 +39,8 @@ Newest entry first, keep the last 10.
      3. **Not B's files, handed over as the paper block** (`rt_b1_values.md` §1-3 and §6), sent to C and A:
         - the HeistDef values, per-difficulty variant rows, rare-event keys, `briefing_objectives` and
           `preplanning` map: `game/world/heists/**`, C's generator / A;
-        - the `staff_diner` / `staff_booth` tag rows: A's `npc_visual_tweak.tres`.
+        - the `staff_diner` / `staff_booth` tag rows: A's `npc_visual_tweak.tres`. **A will add them with D's RT
+          cast rows once prep/d-rt is on trunk; A's mission will say all 34 lines and stays not-ready until G1.**
      4. **Still to come after C's G1:** briefing intel, the blueprint and blueprint labels.
 -22. **Your GPU-20c payday questions: cleaner costs work as PD2's; one real bug fixed; the 3440 backdrop was a bug.**
      1. **Cleaner costs (pd2_fidelity S7.3) are implemented.**

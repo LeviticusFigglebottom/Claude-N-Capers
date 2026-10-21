@@ -280,12 +280,12 @@ SLOT_DOORS: Dict[str, Dict[str, str]] = {
 # --------------------------------------------------------------------------------------------- furniture / cover
 # street parked cars [name, base, yaw] (1.9 x 1.45 x 4.6 greybox bodies, length along local z)
 STREET_CARS = [
-    ("StreetCarOW1", [-9.0, 0.0, 30.0], 0.0),
+    ("StreetCarOW1", [-9.0, 0.0, 34.0], 0.0),   # clear of OrchardW_S StreetLamp0 (z 28)
     ("StreetCarOW2", [-9.0, 0.0, 45.0], 0.0),
     ("StreetCarOE1", [9.0, 0.0, 40.0], 0.0),
     ("StreetCarOE2", [9.0, 0.0, 55.0], 0.0),
     ("StreetCarTW1", [-30.0, 0.0, 7.0], 90.0),
-    ("StreetCarTW2", [-50.0, 0.0, 7.0], 90.0),
+    ("StreetCarTW2", [-55.0, 0.0, 7.0], 90.0),   # clear of TanneryW_S StreetLamp0 (x -50)
     ("StreetCarON1", [8.5, 0.0, -30.0], 0.0),
 ]
 COVER_OFF = 0.6           # a COVER point stands this far off its cover's face, facing it (OF's pier points)
@@ -455,17 +455,18 @@ def always() -> Dict[str, List[list]]:
                     "size": "enum:SMALL",
                     "methods": ["saw", "drill", "c4"],
                     "objective_tag": "pay_station",
+                    # contents inside the Body (prop_safe_wall_small: z -0.42..0, the door at z 0; Safe PO6-05)
                     "@contents": [
                         [
                             "small_loot",
                             "PayStationCash1",
-                            [-0.15, 0.3, 0.0],
+                            [-0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
                         ],
                         [
                             "small_loot",
                             "PayStationCash2",
-                            [0.15, 0.3, 0.0],
+                            [0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
                         ],
                     ],
@@ -497,13 +498,13 @@ def always() -> Dict[str, List[list]]:
                         [
                             "small_loot",
                             "DinerSafeCash1",
-                            [-0.15, 0.3, 0.0],
+                            [-0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
                         ],
                         [
                             "small_loot",
                             "DinerSafeCash2",
-                            [0.15, 0.3, 0.0],
+                            [0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
                         ],
                     ],

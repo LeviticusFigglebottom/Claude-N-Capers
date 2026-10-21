@@ -53,6 +53,13 @@ var launch_options: Dictionary:
 		return _launch_options
 ## True once the alarm has sounded (stays true through ESCAPE/ENDED).
 var went_loud: bool = false
+## A5-02 (D-149.1): the active layout id per layout group (ConvoyLayouts; absent / "" = none). Server sets it via
+## set_layout, clients follow (HeistNetSync SVC_RUNTIME "layouts").
+var layouts: Dictionary = {}
+## The "convoy" group's active layout ("" = the convoy has not stopped).
+var convoy_layout: String:
+	get:
+		return String(layouts.get(ConvoyLayouts.DEFAULT_GROUP, ""))
 var interaction: InteractionSystem = null
 var stealth: StealthDirector = null
 var mission: HeistMission = null
@@ -177,6 +184,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	dynamic_root.name = "Dynamic"
 	add_child(dynamic_root)
 	VariantResolver.configure_pending(pending)
+	ConvoyLayouts.reset(map)  # A5-02: every layout group off until the mission switches it
 	_apply_rare_modifiers()
 	preplan.apply_modifiers()  # C3: TEAM sources `asset.<id>`, before the crew reads modifiers
 	crew_loadouts = LoadoutModifiers.effective_loadouts(options.get("loadouts", {}), Net.all_slots())
@@ -278,6 +286,7 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	dynamic_root.name = "Dynamic"
 	add_child(dynamic_root)
 	VariantResolver.configure_pending(pending)
+	ConvoyLayouts.reset(map)  # A5-02: every layout group off until the mission switches it
 	_apply_rare_modifiers()
 	preplan.apply_modifiers()
 	_adopt_map_ids(data.get("map_ids", {}) as Dictionary)
@@ -311,6 +320,35 @@ func _on_replica_spawned(node: Node) -> void:
 
 ## Client (HeistNetSync.phase_replicated): the host's phase / alarm state (the EventBus facts
 ## arrive relayed).
+## Server (A5-02, D-149.1): make `id` the active layout of `group` ("" = none): show it and swap in its pre-baked
+## nav and cover (ConvoyLayouts.apply); replicated to clients. False (nothing changes) for an id not in the group.
+func set_layout(id: String, group: String = ConvoyLayouts.DEFAULT_GROUP) -> bool:
+	if not Net.is_authority() or map == null:
+		return false
+	if not ConvoyLayouts.apply(map, id, group):
+		Log.warn(&"heist", "unknown %s layout %s" % [group, id])
+		return false
+	layouts[group] = id
+	Log.info(&"heist", "%s layout %s" % [group, id if id != "" else "<none>"])
+	return true
+
+
+## Server: the convoy stopped in layout `id` (the "convoy" group).
+func set_convoy_layout(id: String) -> bool:
+	return set_layout(id, ConvoyLayouts.DEFAULT_GROUP)
+
+
+## Client: the host's active layouts (HeistNetSync).
+func apply_replicated_layouts(d: Dictionary) -> void:
+	if map == null:
+		return
+	for g: Variant in d:
+		var id: String = String(d[g])
+		if String(layouts.get(String(g), "")) != id:
+			layouts[String(g)] = id
+			ConvoyLayouts.apply(map, id, String(g))
+
+
 func _on_phase_replicated(new_phase: int, loud: bool) -> void:
 	went_loud = went_loud or loud
 	if new_phase != phase:

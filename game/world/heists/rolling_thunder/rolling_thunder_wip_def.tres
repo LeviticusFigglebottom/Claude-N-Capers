@@ -13,6 +13,7 @@ base_payout = 30000
 stealth_bonus_mult = 1.0
 loot = Array[StringName]([&"loot.cash_bricks", &"loot.gold", &"loot.bearer_bonds"])
 objectives = Array[StringName]([&"casing", &"signals", &"charges", &"thermite", &"marshal", &"convoy", &"ambush", &"escort", &"trucks", &"cargo", &"secure", &"escape_wait", &"escape"])
+briefing_objectives = Array[StringName]([&"casing", &"ui.briefing.step.rolling_thunder.setup", &"convoy", &"ui.briefing.step.rolling_thunder.trucks", &"secure", &"escape"])
 preplanning = {
 "assets": {
 &"asset.alternate_entry": {
@@ -24,6 +25,9 @@ preplanning = {
 },
 &"asset.body_bag_case_drop": {
 "point_ids": [&"pp_drop_site", &"pp_drop_diner_yard"]
+},
+&"asset.c4_drop": {
+"point_ids": [&"pp_drop_carpark", &"pp_drop_underpass"]
 },
 &"asset.doctor_bag_drop": {
 "point_ids": [&"pp_drop_site", &"pp_drop_carpark", &"pp_drop_diner_yard", &"pp_drop_underpass"]
@@ -54,7 +58,8 @@ preplanning = {
 "point_ids": [&"pp_drop_site", &"pp_drop_carpark", &"pp_drop_underpass"]
 }
 },
-"disable": [&"asset.intel_keycards", &"asset.intel_laptop"]
+"disable": [&"asset.intel_keycards", &"asset.intel_laptop"],
+"favors": 5
 }
 escape_options = Array[StringName]([&"van", &"heli"])
 music_track = &"rolling_thunder"

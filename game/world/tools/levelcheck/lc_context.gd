@@ -418,8 +418,10 @@ func nav_closest(p: Vector3) -> Vector3:
 
 ## All navigation layers on purpose: reachability is crew reachability, and a masked unburdened player can
 ## climb ladders (layer "ladder", Ladder.NAV_LAYER) and use vents. Bag / police routes use layer 1 only.
+## Through NavPath (no 4096-polygon search cap, like the game's AI): RT / OF navmeshes exceed it, and map_get_path
+## logged ~1,100 "most reachable polygons" errors per RT validate with partial paths.
 func nav_path(a: Vector3, b: Vector3) -> PackedVector3Array:
-	return NavigationServer3D.map_get_path(_nav_map(), a, b, true, 0xFFFFFFFF)
+	return NavPath.query(_nav_map(), a, b, true, 0xFFFFFFFF)
 
 
 ## Centroids of all navmesh polygons of every enabled region in the map (world space).

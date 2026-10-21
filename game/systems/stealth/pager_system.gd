@@ -77,6 +77,9 @@ func _exit_tree() -> void:
 func start_pager(guard: NpcBase) -> int:
 	if not Net.is_authority() or guard == null or guard.role != &"guard" or not _is_stealth():
 		return 0
+	if guard.has_meta(StealthDirector.META_ALARM_REASON):
+		_raise_alarm(&"npc_down", guard.net_id)  # QC-83 (d): a convoy unit down is the ambush, no pager to answer
+		return 0
 	var iid: int = guard.get_instance_id()
 	if _paged.has(iid):
 		return 0

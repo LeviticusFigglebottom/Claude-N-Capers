@@ -1,17 +1,9 @@
-## Rolling Thunder: HeistDef + HeistVariantTable values for ENV C's generator. PLACEHOLDER BLOCK (RT-C1, ENV C): ENV B
-## owns these values (D-137 QB-2: B sends the values block, C pastes it here verbatim and regenerates). B's RT-B1 block
-## does not exist yet, so this file carries ONLY numbers that are already ruled or written down, and nothing invented:
-## * HeistDef identity / mode / loot / objectives / escapes / music: the G0 doc §HeistDef + B's stub
-##   (game/content/docs/heists/rolling_thunder.md): contact.reyes, base_payout $30,000 (D-141.1, pinned in
-##   test_p5_catalogue), stealth_bonus_mult 1.0 (B's audit: no stealth win), loot cash_bricks / gold / bearer_bonds.
-## * Variable table, scalars, rare events: the doc's G0 numbers (§Variable table, §Rare events, the Convoy units table),
-##   the same numbers as tools/levelcheck/plans/rolling_thunder_slots.py (--check PASS).
-## * Pre-planning: the doc's point lists only. NO costs / favors for the heist assets (asset.signal_insider,
-##   asset.intel_route keep their library costs; asset.c4_drop waits on A5-03 + B, D-141.3); the doc's ◇ favors 5 is
-##   B's number to confirm.
-## Missing from B (RT-B1, listed in the RT-C1 report): the values block itself (rule weights by difficulty, rare effect
-## keys for A's mission, the preplanning costs / favors, briefing_objectives / briefing_optional / briefing keys), the
-## D-143.5 per-heist allow-lists on signal_insider / intel_route, asset.c4_drop.
+## Rolling Thunder: HeistDef + HeistVariantTable values for ENV C's generator. ENV B owns the values (D-137 QB-2: B sends
+## the values block, C pastes it here and regenerates). Source: B's RT-B1 block, game/content/docs/rt_b1_values.md
+## (env/b-content d09905e3, D-151): §1 HeistDef (base_payout $30,000 D-141.1, stealth_bonus_mult 1.0, 13 objectives,
+## briefing_objectives), §2 variant rows and weights (slot weights in the scene: rolling_thunder_content.py SLOTS;
+## per-difficulty rows here), §3 rare events, §4 pre-planning (favors 5, asset.c4_drop). The crew assets with no point
+## (§4 "stay on") and the alternate_entry / escape_position categories are the doc's §Pre-planning rows.
 ## Format = ostrander_federal_resources.gd (make_def / make_variants / _from).
 
 const OUT_DIR: String = "res://world/heists/rolling_thunder/"
@@ -44,8 +36,12 @@ static func make_def() -> HeistDef:
 	# Objective ids = the doc's Objectives `[tag]`s in §HeistDef order (13; strings objective.rolling_thunder.<tag>).
 	d.objectives = [&"casing", &"signals", &"charges", &"thermite", &"marshal", &"convoy", &"ambush", &"escort",
 		&"trucks", &"cargo", &"secure", &"escape_wait", &"escape"] as Array[StringName]
-	# Pre-planning (contracts/preplanning.md; doc §Pre-planning): point lists only, costs / favors are B's (RT-B1).
+	# RT-B1 §1: the setup and truck steps merged (OF pattern, D-117 §4; both strings are B's).
+	d.briefing_objectives = [&"casing", &"ui.briefing.step.rolling_thunder.setup", &"convoy",
+		&"ui.briefing.step.rolling_thunder.trucks", &"secure", &"escape"] as Array[StringName]
+	# Pre-planning (contracts/preplanning.md; RT-B1 §4). Costs / favors are the asset defs' (B).
 	d.preplanning = {
+		"favors": 5,
 		"disable": [&"asset.intel_keycards", &"asset.intel_laptop"],
 		"assets": {
 			&"asset.alternate_entry": {"point_categories": [&"spawn"],
@@ -58,6 +54,7 @@ static func make_def() -> HeistDef:
 			&"asset.thermite_drop": {"point_ids": [&"pp_drop_site", &"pp_drop_carpark", &"pp_drop_underpass"]},
 			&"asset.sniper_position": {"point_ids": [&"pp_perch_roof", &"pp_perch_frame"]},
 			&"asset.escape_position": {"point_categories": [&"escape"], "force_variants": {}},
+			&"asset.c4_drop": {"point_ids": [&"pp_drop_carpark", &"pp_drop_underpass"]},
 			&"asset.signal_insider": {"point_ids": [&"pp_signals"]},
 			&"asset.intel_route": {"reveals": [&"convoy_route", &"marshal_walk"]},
 			&"asset.intel_guard_posts": {"reveals": [&"guard_post"]},
@@ -79,8 +76,11 @@ static func make_variants() -> HeistVariantTable:
 		t = load(VARIANTS_PATH) as HeistVariantTable
 	if t == null:
 		t = HeistVariantTable.new()
-	# truck_count (Convoy units table): Routine/Tense 0.7 / 0.3, Hazardous/Brutal 0.4 / 0.6, Lethal+ 0.2 / 0.8
-	var trucks: Dictionary = _from(Enums.Difficulty.HAZARDOUS, {&"trucks_2": 0.4, &"trucks_3": 0.6})
+	# truck_count (RT-B1 §2): Routine/Tense 0.7 / 0.3, Hazardous/Brutal 0.4 / 0.6, Lethal+ 0.2 / 0.8 (every
+	# difficulty keyed: the scene's slot weights are 1.0 / 1.0)
+	var trucks: Dictionary = _from(Enums.Difficulty.ROUTINE, {&"trucks_2": 0.7, &"trucks_3": 0.3})
+	for dv: int in [Enums.Difficulty.HAZARDOUS, Enums.Difficulty.BRUTAL]:
+		trucks[dv] = {&"trucks_2": 0.4, &"trucks_3": 0.6}
 	for dv: int in [Enums.Difficulty.LETHAL, Enums.Difficulty.CATACLYSM]:
 		trucks[dv] = {&"trucks_2": 0.2, &"trucks_3": 0.8}
 	t.rules = [
