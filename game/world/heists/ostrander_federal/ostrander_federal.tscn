@@ -58909,7 +58909,7 @@ script = ExtResource("424_of")
 kind = &"enter_code"
 
 [node name="LidDrill" parent="Gameplay/Devices" unique_id=107114 instance=ExtResource("434_of")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 24, 1, 14.6)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.75, 1, 14.6)
 script = ExtResource("435_of")
 device = 1
 duration_s = 360.0
@@ -58923,7 +58923,7 @@ metadata/requires_loot = "loot.thermal_drill_part"
 metadata/requires_count = 2
 
 [node name="UsePoint" parent="Gameplay/Devices/LidDrill" index="1"]
-transform = Transform3D(-8.742278e-08, 0, -1, 0, 1, 0, 1, 0, -8.742278e-08, -1.6000004, -1, 0)
+transform = Transform3D(-1, 0, -4.371139e-08, 0, 1, 0, 4.371139e-08, 0, -1, 0, -1, -1.8500004)
 
 [node name="Interactable" parent="Gameplay/Devices/LidDrill" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)

@@ -276,7 +276,7 @@ const ALWAYS: Dictionary = {
 			{"mount": "wall"}, "prop_keypad",
 		],
 		[
-			"prefab", "drill_point", "LidDrill", [24.0, 1.0, 14.6], 180.0,
+			"prefab", "drill_point", "LidDrill", [23.75, 1.0, 14.6], -90.0,
 			{
 				"device": "enum:THERMAL",
 				"duration_s": 360.0,
