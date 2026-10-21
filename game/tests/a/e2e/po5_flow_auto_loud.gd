@@ -22,6 +22,9 @@ const CLEAR_RANGE_M: float = 20.0
 ## Longest fight before picking the bag back up anyway, and the walk leg between threat checks (s).
 const CLEAR_LIMIT_S: float = 40.0
 const CARRY_LEG_S: float = 4.0
+## _escort_mate_bag: close enough to the secure zone's stand to lead a carrying bot (it secures within its
+## secure_seek_radius_m); the nav path ends at the van's rear corner, 3.25 m out (GPU-19 (c), no map snag).
+const ESCORT_ARRIVE_M: float = 3.5
 ## _lift_bag: a hoist landing this close (m, on the crew's floor) takes a bag the route would carry up a ladder; failed
 ## tries in a row before the pilot gives up on the hoist.
 const LIFT_NEAR_M: float = 15.0
@@ -399,9 +402,11 @@ func _escort_mate_bag() -> bool:
 			continue
 		var t0: float = rt.heist_time_s
 		var stand: Vector3 = p.stand_point(zone.global_position)
-		if not p.near(p.crew.global_position, stand, 3.0):
+		if not p.near(p.crew.global_position, stand, ESCORT_ARRIVE_M):
 			_note_once(StringName("_escort_%d" % key), "slot %d carries %s: leading it to the secure zone" % [c.slot, bag.loot_id])
-			await p.goto(stand, 3.0, 10.0)
+			p.quiet = true  # LEAD GPU-19 (c): "goto (3.5, 0.2, -4.3) FAILED at (4.6, 0.0, -1.2)" x5 was this leg ending
+			await p.goto(stand, ESCORT_ARRIVE_M, 10.0)  # 3.25 m out at the van's rear corner, the bots crowding in
+			p.quiet = false
 		else:
 			await p.hold_position(3.0)
 		_escort_s[key] = float(_escort_s.get(key, 0.0)) + maxf(rt.heist_time_s - t0, 1.0)
