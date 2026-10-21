@@ -67,8 +67,9 @@ MIN_CREW_DISTANCE = 15.0                     # DirectorTweak.min_crew_distance_m
 # Closure vehicles (site rect) and the side their spawn must be on ("-z" = further north than the vehicle, etc.).
 CLOSURES: Dict[str, Tuple[Rect, str, str]] = {
     "P_N": ((1, -85.5, 10, -83), "-z", "traffic-management truck, x 1-10, z -85.5..-83 (RT-C0 check)"),
-    "P_S": ((-8, 64, 10, 66), "+z", "jack-knifed lorry (was the stalled bus, D-149.6), x -8-10, z 64-66"),
-    "P_W": ((-76, -8, -74, 8), "-x", "articulated lorry x -76-74"),
+    "P_S": ((-4, 64, 10, 66), "+z", "jack-knifed lorry (was the stalled bus, D-149.6), x -4-10, z 64-66 (RT-C1 G1: "
+                                  "from x -8, leaving a >= 4 m police lane, RT plan §7.12)"),
+    "P_W": ((-76, -8, -74, 4), "-x", "articulated lorry x -76-74, z -8-4 (RT-C1 G1: a >= 4 m lane z 4-8, §7.12)"),
     "P_E": ((96, 0, 100, 8), "+x", "jack-knifed lorry z 0-8, x 96-100 (RT-C0 check: moved 2 m west)"),
 }
 ESCAPES: Dict[str, Tuple[float, float, float, str]] = {
