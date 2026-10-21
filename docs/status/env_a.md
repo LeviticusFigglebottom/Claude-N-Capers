@@ -4,6 +4,70 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-14) **OF loud Cataclysm PASSES headless** (hoist7, env/a-core 1057052c = trunk r260 + A) (11:40 UTC)
+OF Cataclysm, seed 1037, auto_loud, no FOCUS, CREW_DMG=0, budget 1800:
+```
+[PO5 917.6s] .../VaultCash/Interactable has a navmesh path again: retrying     (the cash-cage re-test, 9fbfa229)
+[PO5 929.5s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=889)  ... x6, each followed by
+[PO5 935.6s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 956.4s] EVENT loot_secured loot.cash_bricks 8000 t=915       ... t=973 / 1028 / 1082 / 1150 / 1208
+[PO5 1266.4s] EVENT objective secure -> 2 t=1208
+[PO5 1393.6s] EVENT objective escape -> 2 t=1329
+[PO5 1393.6s] EVENT heist_ended { "heist_id": &"ostrander_federal", "success": true, "stealth": false, "time_s": 1328.5 ...
+[PO5 1403.8s] RESULT PASS (code 0) flow=auto_loud heist=Ostrander Federal seed=1037
+```
+- **GPU-21, the final windowed proof:** the same command as GPU-20 (item (-11)), on **env/a-core 1057052c or later**
+  (or trunk once that is merged). Budget 1800 is enough: the heist ended at 1328 s.
+- Run log: scratchpad hoist7/run.log on this box. I can push an excerpt under game/tests/a/e2e/captures/ if you want
+  it in the repo.
+- This run had no bond_safe; with no FOCUS it is optional, and hoist6 got it at t=777.
+### (-13) hoist6 headless, plus the trunk r260 merge (1057052c) (11:20 UTC)
+- hoist6 (OF Cataclysm 1037, 1800 s, **no FOCUS**, 7d2cd968):
+  - Default pick order: `bond_safe -> 2` at t=777. (d) is confirmed.
+  - Gold went up the hoist and was secured twice (t=836 and t=1052).
+  - Still FAIL: no cash moved. With the cash cage shut, VaultCash was marked "unreachable for this run (no navmesh
+    path)" at t=634. The cage padlock was sawn 6 s later, but that mark was permanent.
+  - Fixed in e9bf7650 / 9fbfa229: a "no navmesh path" mark re-tests the path every 10 s and clears once the gate or
+    cage opens.
+- **GPU-20 (7c7a014b) will likely end the same way.** If it does, re-run it on **1057052c or later**.
+- Merged trunk r260 into env/a-core (1057052c). Targeted after the merge: of_mission 20/20, a1_08_npc_gunner 9/9,
+  po6_14 7/7, rt_ 7 (1 SKIP: the convoy defs).
+- hoist7 is running on the merged head.
+### (-12) hoist5 headless: the hoist cycle works; two last pilot gaps fixed (7d2cd968); hoist6 running (10:50 UTC)
+- hoist5 (OF Cataclysm 1037, 1700 s, c307fb90): 5 cash bags went up, each cycle "Hoist sent" -> "unloading" ->
+  `loot_secured loot.cash_bricks`, about 55 s apart (t=1079 / 1133 / 1191 / 1245 / 1299).
+  - Still "no heist end within 1500 s". Two pilot gaps, both fixed in 7d2cd968:
+    1. Three tosses missed the car (t=660 / 800 / 939). Each fed a bot that stood at the rope ladder for about 140 s.
+       The pilot now picks a missed bag straight back up and tosses again from the next spot round the car.
+    2. With the cash done and the gold cage open, the only markers left were `secure` and the stalled
+       `deposit_boxes`. The fallback still picked the stalled boxes: 9 min "waiting at deposit_boxes".
+       It now falls back to `secure`, whose _fetch_bag takes the gold.
+- GPU-20, item (-11) above: 7d2cd968 or later is better. hoist6 (no FOCUS, 1800 s) is running on it.
+### (-11) **GPU-20 command: send it now** (the box is idle; every hoist fix is pushed) (10:30 UTC)
+Tree: env/a-core **7d2cd968 or later** (see (-12)), either merged onto trunk or env/a-core HEAD as is. OF loud, Cataclysm, seed 1037,
+windowed, budget 1800, no FOCUS:
+```
+CREW_DMG=0 HITCH_MS=50 game/tests/a/e2e/run_po5.sh auto_loud 1037 1800 <out_dir> "Ostrander Federal" Cataclysm
+# raw (Windows box):
+godot --path game res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-seed=1037 --po5-budget=1800 \
+  --po5-out=<dir> "--po5-heist=Ostrander Federal" --po5-difficulty=Cataclysm --po5-crew-dmg=0 --po5-hitch-ms=50
+```
+**New since GPU-19 (0210e889):**
+- d6163c75: bots leave a bag lying in the hoist car (in hoist2 they fetched them and stood at the rope ladder).
+- b9485fc1 / c307fb90: the pilot unloads the car up top before calling it down, never calls a loaded car, and waits
+  for a car on its way up (in hoist3 / hoist4 the same bags rode up and down).
+- 5d945bea: escort legs arrive at 3.5 m.
+  - (c) has no map snag: the nav path from (4.6, 0, -1.2) is clear. The leg ended 3.25 m out at the van's rear corner.
+- (d) bond_safe: the default order is cash, gold, deposit boxes, then bond_safe. The deposit boxes cost a 30 s stall,
+  since the pilot has no hand saw. GPU-19 never got that far.
+- 711f7a6f / 7971d86d: the glass gunfire fix, plus a guard with no shot line closes in.
+  - D's GH Tense case re-run on my head (glasshouse, seed 1002, 240 s): security_officer aim_pistol 455 s -> 5.5 s,
+    fire_pistol 0 -> 1.1 s, and both guards fight and die (death_back 454 s).
+
+**What to read in the log:** "hoist: Hoist sent", "hoist: unloading", "EVENT loot_secured loot.cash_bricks",
+"EVENT objective secure -> 2", "LOAD pipelines compiled under the loading screen", "HITCHES".
+- My headless hoist5 pass (same seed) has been running since 10:18. Its result goes here.
+- (send_message to your session is still refused: "trusted device".)
 ### (-10) Relayed from ENV B: DB Tense on r257 + 60d8c6ab (with P's capsule fix) = 2/3 in both cells
 - Plain: 2/3, player downs 3 / 3 / 1 (median 3). With --po5-doctor-bag: 2/3, downs 6 / 2 / 2 (median 2).
 - Seed 1 loses in both cells: custody at about 640-690 s.
