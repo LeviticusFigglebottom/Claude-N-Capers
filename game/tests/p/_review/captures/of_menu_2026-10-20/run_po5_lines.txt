@@ -1,0 +1,99 @@
+[PO5 14.1s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/01_main_menu.png
+[PO5 15.1s] click 'SAFEHOUSE' at (162.0, 266.75)
+[PO5 15.5s] click '' at (353.25, 160.75)
+[PO5 16.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/02_planning_table.png
+[PO5 16.5s] click 'Ostrander Federal' at (142.0, 302.5)
+[PO5 17.6s] click 'ROUTINE' at (313.5, 250.0)
+[PO5 23.5s] click 'Briefing' at (848.0, 494.5)
+[PO5 23.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/03_briefing.png
+[PO5 23.7s] click 'Continue' at (856.0, 502.5)
+[PO5 24.7s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/04_continue.png
+[PO5 25.0s] click 'Confirm plan' at (856.0, 500.25)
+[PO5 25.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/05_confirm_plan.png
+[PO5 26.7s] click 'Start Heist' at (848.0, 494.5)
+[PO5 54.6s] HITCH frame=15718ms t=0.1 drawn=1 nodes=18358 enemies=4 top: npc_motor=16.0ms(144) anim_driver=15.5ms(21) custody_system=4.4ms(8) civilian_brain=3.9ms(112) stealth_director=3.3ms(8) crew_ai_brain=2.6ms(24) npc_gunner=1.2ms(32) guard_brain=0.2ms(32) heist_runtime=0.0ms(8) assault_director=0.0ms(8)
+[PO5 88.5s] HITCH frame=33873ms t=0.3 drawn=1 nodes=18358 enemies=4 top: hud_model=640.6ms(1) anim_driver=31.2ms(21) npc_motor=22.0ms(144) stealth_director=1.6ms(8) guard_brain=1.3ms(32) crew_ai_brain=1.3ms(24) civilian_brain=0.8ms(112) custody_system=0.3ms(8) npc_gunner=0.1ms(32) heist_runtime=0.0ms(8)
+[PO5 99.1s] HITCH frame=10438ms t=0.5 drawn=1 nodes=18380 enemies=4 top: npc_motor=19.9ms(144) anim_driver=16.9ms(21) crew_ai_brain=7.7ms(24) civilian_brain=4.0ms(112) stealth_director=1.5ms(8) hud_model=1.3ms(1) custody_system=0.2ms(8) guard_brain=0.2ms(32) npc_gunner=0.1ms(32) heist_runtime=0.0ms(8)
+[PO5 99.5s] in heist ostrander_federal seed 1002 diff 0 phase 1 crew at (21.8, -0.8, 44.0)
+[PO5 133.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/06_heist_start.png
+[PO5 134.4s] mouse captured by the game (MouseCapture)
+[PO5 134.6s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 134.7s] [X4] ostrander_federal    2.4 s  launched seed 1002, variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ao2"], &"officers": [&"off_2"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust_4"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[PO5 134.7s] [X4] ostrander_federal    2.4 s  detection shortcut: crew.stealth_hidden = true (NPCs, cameras, lasers, sensors untouched)
+[PO5 135.6s] [X4] ostrander_federal    3.4 s  objective casing COMPLETED
+[PO5 135.6s] [X4] ostrander_federal    3.4 s  keycard slot [&"kc_security"], manager [&"mgr_gallery"]
+[PO5 136.2s] [X4] ostrander_federal    4.0 s  objective keycard COMPLETED
+[PO5 139.8s] [X4] ostrander_federal    4.1 s  take the keycard: done
+[PO5 140.1s] HITCH frame=3634ms t=4.1 drawn=1 nodes=18379 enemies=4 top: npc_motor=12.7ms(144) anim_driver=1.7ms(21) crew_ai_brain=1.4ms(24) stealth_director=1.2ms(8) civilian_brain=0.7ms(112) custody_system=0.3ms(8) guard_brain=0.2ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8) assault_director=0.0ms(8)
+[PO5 160.8s] HITCH frame=20757ms t=4.3 drawn=1 nodes=18379 enemies=4 top: npc_motor=22.1ms(144) anim_driver=2.1ms(21) hud_model=1.4ms(1) crew_ai_brain=1.2ms(24) stealth_director=1.0ms(8) civilian_brain=0.7ms(112) custody_system=0.5ms(8) guard_brain=0.2ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8)
+[PO5 173.0s] HITCH frame=12189ms t=4.4 drawn=1 nodes=18379 enemies=4 top: npc_motor=22.5ms(144) stealth_director=1.4ms(8) anim_driver=1.3ms(21) crew_ai_brain=1.2ms(24) hud_model=1.2ms(1) civilian_brain=0.6ms(112) custody_system=0.3ms(8) guard_brain=0.2ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8)
+[PO5 173.7s] [X4] ostrander_federal    5.1 s  objective vault_gate COMPLETED
+[PO5 174.2s] [X4] ostrander_federal    5.2 s  swipe the vault gate: done
+[PO5 185.1s] HITCH frame=9381ms t=6.7 drawn=1 nodes=18379 enemies=4 top: npc_motor=29.7ms(144) stealth_director=8.0ms(8) crew_ai_brain=5.1ms(24) anim_driver=1.1ms(21) civilian_brain=0.6ms(112) custody_system=0.3ms(8) npc_gunner=0.1ms(32) guard_brain=0.1ms(32) heist_runtime=0.1ms(8) assault_director=0.0ms(8)
+[PO5 194.0s] HITCH frame=8901ms t=6.9 drawn=1 nodes=18379 enemies=4 top: npc_motor=41.7ms(144) stealth_director=9.5ms(8) anim_driver=1.5ms(21) hud_model=1.2ms(1) crew_ai_brain=1.1ms(24) civilian_brain=0.6ms(112) custody_system=0.3ms(8) guard_brain=0.2ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8)
+[PO5 195.5s] HITCH frame=1209ms t=7.3 drawn=0 nodes=18379 enemies=4 top: npc_motor=20.1ms(72) hud_model=19.4ms(1) anim_driver=3.2ms(21) crew_ai_brain=3.1ms(12) stealth_director=2.4ms(4) civilian_brain=0.5ms(56) custody_system=0.2ms(4) guard_brain=0.1ms(16) npc_gunner=0.1ms(16) heist_runtime=0.1ms(4)
+[PO5 195.6s] [X4] ostrander_federal    7.3 s  start the LaserController hack: done
+[PO5 203.3s] [X4] ostrander_federal   27.3 s  objective lasers COMPLETED
+[PO5 203.3s] [X4] ostrander_federal   27.3 s  hack LaserController finished after 0 restart(s)
+[PO5 203.4s] TEL worst_frame=33873ms t=27 phase=2 phys=129.7ms proc=16.0ms nodes=18379 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=9.3m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 206.4s] [X4] ostrander_federal   29.7 s  start the VaultControlRack hack: done
+[PO5 229.4s] HITCH frame=15622ms t=54.2 drawn=1 nodes=18372 enemies=4 top: npc_motor=12.1ms(144) anim_driver=2.1ms(21) hud_model=1.5ms(1) crew_ai_brain=1.2ms(24) stealth_director=1.0ms(8) civilian_brain=0.5ms(112) custody_system=0.3ms(8) guard_brain=0.1ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8)
+[PO5 231.1s] TEL worst_frame=15622ms t=61 phase=2 phys=106.2ms proc=5.0ms nodes=18372 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=8.7m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 234.8s] [X4] ostrander_federal   68.0 s  restart the VaultControlRack hack (#1): done
+[PO5 241.6s] TEL worst_frame=299ms t=93 phase=2 phys=223.8ms proc=6.6ms nodes=18373 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=7.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 243.5s] [X4] ostrander_federal   95.2 s  restart the VaultControlRack hack (#2): done
+[PO5 264.2s] HITCH frame=13607ms t=122.3 drawn=1 nodes=18369 enemies=4 top: npc_motor=19.9ms(144) anim_driver=7.0ms(21) hud_model=1.6ms(1) civilian_brain=1.6ms(112) crew_ai_brain=1.3ms(24) stealth_director=1.3ms(8) custody_system=0.2ms(8) npc_gunner=0.2ms(32) guard_brain=0.1ms(32) heist_runtime=0.1ms(8)
+[PO5 264.6s] [X4] ostrander_federal  123.8 s  objective server COMPLETED
+[PO5 264.6s] [X4] ostrander_federal  123.8 s  objective time_lock COMPLETED
+[PO5 264.6s] [X4] ostrander_federal  123.8 s  objective code_pc COMPLETED
+[PO5 264.7s] [X4] ostrander_federal  123.8 s  hack VaultControlRack finished after 2 restart(s)
+[PO5 265.9s] TEL worst_frame=13607ms t=128 phase=2 phys=206.9ms proc=5.2ms nodes=18374 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=6.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 276.2s] TEL worst_frame=208ms t=168 phase=2 phys=97.3ms proc=4.1ms nodes=18376 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=9.2m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 290.3s] HITCH frame=13110ms t=172.8 drawn=1 nodes=18373 enemies=4 top: npc_motor=18.9ms(144) crew_ai_brain=1.4ms(24) anim_driver=1.4ms(21) stealth_director=1.2ms(8) hud_model=1.1ms(1) civilian_brain=0.8ms(112) custody_system=0.2ms(8) guard_brain=0.2ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8)
+[PO5 300.2s] TEL worst_frame=13110ms t=208 phase=2 phys=109.8ms proc=10.6ms nodes=18373 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=15.2m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 310.9s] TEL worst_frame=224ms t=248 phase=2 phys=118.2ms proc=9.6ms nodes=18376 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=6.8m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 321.9s] TEL worst_frame=290ms t=288 phase=2 phys=125.4ms proc=10.9ms nodes=18376 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=11.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 340.9s] HITCH frame=17508ms t=293.0 drawn=1 nodes=18373 enemies=4 top: npc_motor=20.7ms(144) anim_driver=5.7ms(21) hud_model=5.6ms(1) crew_ai_brain=1.2ms(24) stealth_director=1.0ms(8) civilian_brain=0.7ms(112) guard_brain=0.4ms(32) custody_system=0.2ms(8) npc_gunner=0.2ms(32) heist_runtime=0.1ms(8)
+[PO5 350.3s] TEL worst_frame=17508ms t=328 phase=2 phys=122.1ms proc=13.6ms nodes=18376 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=9.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 372.7s] HITCH frame=12855ms t=360.3 drawn=1 nodes=18370 enemies=4 top: npc_motor=15.1ms(144) anim_driver=2.9ms(21) crew_ai_brain=1.5ms(24) hud_model=1.3ms(1) stealth_director=1.2ms(8) civilian_brain=0.8ms(112) custody_system=0.3ms(8) guard_brain=0.2ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8)
+[PO5 374.9s] TEL worst_frame=12855ms t=368 phase=2 phys=134.2ms proc=14.3ms nodes=18370 enemies=4 civs=14 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=9.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 381.6s] [X4] ostrander_federal  393.8 s  objective time_lock_wait COMPLETED
+[PO5 385.4s] TEL worst_frame=438ms t=398 phase=2 phys=105.1ms proc=13.1ms nodes=18382 enemies=4 civs=14 crew=[0:0@(24.0, -4.0, 16.7) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=6.0m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 390.2s] [X4] ostrander_federal  402.0 s  pick the cash cage padlock: done
+[PO5 391.6s] [X4] ostrander_federal  403.1 s  bag VaultCash (6 left): done
+[PO5 392.3s] [X4] ostrander_federal  404.0 s  secured loot.cash_bricks (1)
+[PO5 393.7s] [X4] ostrander_federal  405.1 s  bag VaultCash (5 left): done
+[PO5 394.5s] [X4] ostrander_federal  405.9 s  secured loot.cash_bricks (2)
+[PO5 395.8s] [X4] ostrander_federal  407.0 s  bag VaultCash (4 left): done
+[PO5 396.2s] TEL worst_frame=318ms t=408 phase=2 phys=304.3ms proc=8.3ms nodes=18386 enemies=4 civs=14 crew=[0:0@(42.5, 8.7, 26.3) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=20.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 396.6s] [X4] ostrander_federal  407.9 s  secured loot.cash_bricks (3)
+[PO5 397.9s] [X4] ostrander_federal  409.0 s  bag VaultCash (3 left): done
+[PO5 398.8s] [X4] ostrander_federal  409.8 s  objective secure COMPLETED
+[PO5 398.8s] [X4] ostrander_federal  409.8 s  objective vault_loot COMPLETED
+[PO5 398.8s] [X4] ostrander_federal  409.8 s  objective code_hint COMPLETED
+[PO5 398.9s] [X4] ostrander_federal  409.8 s  secured loot.cash_bricks (4)
+[PO5 427.3s] HITCH frame=24674ms t=423.2 drawn=1 nodes=18372 enemies=4 top: npc_motor=9.0ms(144) anim_driver=1.7ms(21) crew_ai_brain=1.3ms(24) hud_model=1.2ms(1) civilian_brain=0.7ms(112) custody_system=0.2ms(8) guard_brain=0.1ms(32) npc_gunner=0.1ms(32) heist_runtime=0.1ms(8) stealth_director=0.1ms(8)
+[PO5 431.6s] TEL worst_frame=24674ms t=440 phase=4 phys=104.3ms proc=10.0ms nodes=18369 enemies=4 civs=14 crew=[0:0@(42.5, 8.7, 26.3) 1:0@(23.2, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.2, -0.8, 44.0) nearest_enemy=11.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 435.3s] [X4] ostrander_federal  454.9 s  objective escape COMPLETED
+[PO5 435.4s] STATS difficulty=0 police=4 peak_alive=4 specials={  } composition={ &"enemy.security_officer": 4 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+[PO5 435.4s] [X4] ostrander_federal  454.9 s  route done at 454.9 s heist; objectives [&"casing", &"keycard", &"vault_gate", &"lasers", &"server", &"time_lock", &"code_pc", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"escape"]; secured [&"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks"]; laser waits 0
+[PO5 435.4s] RESULT of_stealth route PASS seed 1002: [&"casing", &"keycard", &"vault_gate", &"lasers", &"server", &"time_lock", &"code_pc", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"escape"]
+[PO5 464.0s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/07_payday.png
+[PO5 464.0s] payday buttons: ["Continue"]
+[PO5 492.2s] click 'Continue' at (848.0, 494.5)
+[PO5 502.9s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/08_payday_0.png
+[PO5 524.4s] click 'Continue' at (848.0, 494.5)
+[PO5 535.3s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/09_payday_1.png
+[PO5 535.4s] payday: picking a card
+[PO5 556.6s] click '' at (306.0, 269.5)
+[PO5 567.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/10_payday_2.png
+[PO5 567.9s] payday: picking a card
+[PO5 588.6s] click '' at (306.0, 269.5)
+[PO5 599.0s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/11_payday_3.png
+[PO5 619.8s] click 'Continue' at (848.0, 494.5)
+[PO5 619.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/12_payday_4.png
+[PO5 620.0s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/13_back_in_hub.png
+[PO5 620.0s] back in the hub
+[PO5 620.0s] shot /tmp/claude-0/-home-user-Claude-N-Capers/3b6a99ea-ca5d-52af-9274-6d6170d40dd2/scratchpad/of_menu/14_end.png
+[PO5 620.0s] STATS difficulty=0 police=4 peak_alive=4 specials={  } composition={ &"enemy.security_officer": 4 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+[PO5 620.0s] RESULT PASS (code 0) flow=of_stealth heist=Ostrander Federal seed=1002
