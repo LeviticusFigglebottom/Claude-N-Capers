@@ -863,7 +863,11 @@ dock), `kc_on_manager` + `mgr_vault`, `code_pc = pc_exec`, `srv_gallery`, `lz_sw
 one ECM (2 charges), 2 cable ties, **no kills, no pagers**:
 1. Plaza spawn. Walk unmasked down Tannery Street into Ledger Lane (PUBLIC). Read `rover_dock`.
 2. When he starts his `smoke` pause at the Tannery corner (facing E, 22 m away), mask behind the
-   dumpsters (behind C6). **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
+   dumpsters (behind C6). **Second cue (D-150 Hazardous ghost, P's ghost_haz data):** `rover_hall` walks his three
+   loops in turn from BCMid (guard_tweak `hub_loops`: (a) TW/hall, (b) LD dock check → MO, (c) stair B → fire exit),
+   so his (b) dock check lands in most smoke windows. Go only once he has **left LD for MO** on (b): his MO leg and the
+   whole of (c) keep him at BC's east end (x > 40), away from the LD → BC west → SA route. If he is heading for LD,
+   or in it, let that window go. **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
    → BC west end (C4 is off in `cam_a`) → SA down. About 16 s.
 3. Basement, BB west (C13 at the east end does not reach x < 28). Wait in LK. When the manager
    (alone on SB, D-136 §3b.5) takes his WC break, shout him down and **tie him** (tie 1), take the keycard (1 s)
