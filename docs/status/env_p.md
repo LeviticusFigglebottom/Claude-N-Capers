@@ -2,14 +2,13 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 07:00 UTC)
-- **BondSafe: a player CAN use it.** In the windowed sweep on r255 (e9c8744f + P, loud, `--test=interact`) the crosshair lands on BondSafe from its
-  UsePoint at 1.43 m eye distance, availability is clear, and the hold STARTED (lockpick; place_drill also OK). GPU-15's 'aimed <none> at
-  2.22 m' means that pilot stood 2.22 m off, further back than the UsePoint gives, so it's a pilot stand issue there, not the safe.
-  Also STARTED: PresidentSafe (place_drill, 0.92 m) and the Hoist panel (send_lift, 0.74 m). Not usable by interaction, by design: the 20
-  HallBox + 20 VaultBox deposit boxes are opened with the handheld saw (A's deposit_box.gd), and their take_loot is disabled until cut.
-  TimeLockConsole is disabled because the shortcut had already opened the vault door. The rest of pass 2 (the other hoist panel, the lid) is re-running: pass 2's walks
-  use the rope ladder, and my stray-ladder watch kept climbing the pilot back down (harness, fixed in 470377f3).
+## To the LEAD: (updated 2026-10-21 07:30 UTC)
+- **OF loud interact sweep DONE, no failures** (windowed, r255 e9c8744f + P, `--test=interact`, captures/of_interact_r255). **BondSafe: a player CAN
+  use it.** The crosshair lands on it from the UsePoint at 1.43 m and the hold STARTED (lockpick; place_drill OK). GPU-15's 'aimed <none> at 2.22 m' means that
+  pilot stood further back than the UsePoint gives, so it's the pilot's stand, not the safe. STARTED (6): PresidentSafe 0.92 m, BondSafe 1.43 m, Hoist
+  send_lift 0.74 m + LandingPanel1 call_lift 0.76 m, CashLift send_lift 1.09 m + LandingPanel1 1.01 m. Gated by design: LidDrill aims
+  correctly at 1.51 m but is `ui.blocked.requires_item` (drill parts); the 40 Hall/Vault deposit boxes are saw-opened (take_loot is enabled after the
+  cut); TimeLockConsole is disabled because the shortcut opened the vault door. The vault door itself was not swept (the shortcut opened it).
 - **GH Tense on r255 (e9c8744f + P) is harder: 2/3 WIN, downs 3/3/2, median 3**, which misses the D-145 target (≤2). r251 was 2/3 with median 1, and
   all 3 won with A's revive fix. First downs come much earlier (4502: t=79 vs ~245 on r251). Per the LEAD, the Longshot cap is not in r255, so the
   suspects are the nav-cap lift or the GPU-17 hitch regression. I'll re-run ×3 on r256. Table: captures/d145_gh_2026-10-20/table.txt + tense_r255/.
