@@ -2,7 +2,7 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 07:30 UTC)
+## To the LEAD: (updated 2026-10-21 08:10 UTC)
 - **OF loud interact sweep DONE, no failures** (windowed, r255 e9c8744f + P, `--test=interact`, captures/of_interact_r255). **BondSafe: a player CAN
   use it.** The crosshair lands on it from the UsePoint at 1.43 m and the hold STARTED (lockpick; place_drill OK). GPU-15's 'aimed <none> at 2.22 m' means that
   pilot stood further back than the UsePoint gives, so it's the pilot's stand, not the safe. STARTED (6): PresidentSafe 0.92 m, BondSafe 1.43 m, Hoist
@@ -18,7 +18,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   never cleared in 180 s. Now it's two phases: BB only from LK, then a ≤60 s peek up the flights from the foot of SA.
   **r255c: steps 1-4 PASS** (BB clear 16 s, flights 6 s, code done t=202.6, ~50 s faster than r252/253). Step 5 failed on the way out:
   rover_gallery came up SA and dropped out of the count the moment he reached the Executive floor, and the pilot left E3 into him. Now
-  same-floor guards within 25 m count for every ghost floor change. r255d is next.
+  same-floor guards within 25 m count for every ghost floor change. **r255d: steps 1-4 PASS again, and the E3 departure held 96 s and went
+  unseen.** Step 5: the vault gate was already OPEN (no VaultGate use in the log; vault_gate only went 1→2 at the alarm), so the harness skipped
+  its gate wait and walked into the vault guard in VC. Asked A whether the vault guard's loop (b)/(c) is meant to leave the locked gate
+  open (stealth players skip the keycard). Harness: the gate wait now runs whether it's open or not. **Ghost now on r256** (3312326b + P), r256a running.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement

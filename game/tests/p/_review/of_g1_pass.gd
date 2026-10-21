@@ -2555,7 +2555,7 @@ func _g5_vault() -> bool:
 	if not await _of_to_floor(0):
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
-	if gate != null and not gate.is_open:
+	if gate != null:  # open or not (r255d: the vault guard's loop (b)/(c) left it open; no wait, walked into him in VC)
 		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide())
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
