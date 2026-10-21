@@ -6,8 +6,9 @@
 ##
 ## Hooks (docs/levels/ostrander_federal/g2/c/burn_hooks.md):
 ##   Props/DressC/BurnThrough            Node3D, hidden. The scorched hole edge + cut faces (HoleEdge, with the ember
-##                                       glow EmberGlow), the fallen lid's plate and rubble on the vault floor (Debris),
-##                                       the dust (DustBurst under the hole, DustPuff over it in TW, DustHaze lingering).
+##                                       glow EmberGlow, the ScorchTW / ScorchVT decals and SootTW), the fallen lid's plate and
+##                                       rubble on the vault floor (Debris), the dust (DustBurst under the hole, DustPuff
+##                                       over it in TW, DustHaze lingering).
 ##     BurnAnim (AnimationPlayer)        play(&"burn") on device_finished (the drill burns through): shows the root,
 ##                                       drops the debris (0.8 s), bursts the dust, cools the glow over 20 s, the haze
 ##                                       settles by 60 s. play(&"burnt") = the end state at once (late join / restore).
@@ -31,6 +32,14 @@ const SLAB_BOTTOM: float = -0.8
 const VAULT_FLOOR: float = -4.0
 ## The scorch ring on the TW floor (over the LidPanel's 2.4 x 2.4 m border) and under the vault ceiling.
 const SCORCH_OUT: float = 0.6
+## The projected scorch (see _scorch_texture): bands past the cut (m), its reach on each side, texture width (px).
+const SCORCH_CHAR_M: float = 0.3
+const SCORCH_SOOT_M: float = 0.6
+const SCORCH_ASH_M: float = 0.85
+const SCORCH_DECAL_OUT: float = 1.4
+const SCORCH_PX: int = 128
+const SCORCH_ASH_SOFFIT: Color = Color(0.3, 0.28, 0.26, 0.6)
+const SCORCH_ASH_FLOOR: Color = Color(0.46, 0.44, 0.41, 0.78)
 const HELI_HOVER: Vector3 = Vector3(20.0, 22.0, 33.0)
 const VAN_PARK: Vector3 = Vector3(14.0, 0.0, -6.75)
 
@@ -90,6 +99,9 @@ func _burn_through(parent: Node3D) -> void:
 	glow.shadow_enabled = false
 	glow.layers = 1 | (1 << 20)
 	_own(edge, glow)
+	_own(edge, _scorch_decal("ScorchTW", SLAB_TOP, false))
+	_own(edge, _scorch_decal("ScorchVT", SLAB_BOTTOM, true))
+	_tw_soot(edge)
 	var debris: Node3D = Node3D.new()
 	debris.name = "Debris"
 	_own(root, debris)
@@ -201,6 +213,97 @@ func _hole_mesh() -> ArrayMesh:
 	st2.set_material(rim)
 	st2.commit(am)
 	return am
+
+
+## GPU-6 review (r253): the flat rings sit mm off the TW carpet / the VT soffit and lose the depth test at camera
+## distance, so the burn read as an ember rim only. A projected scorch (procedural square-falloff gradient, no texture
+## asset) over the floor around the hole (`up` = false, projecting down) or the soffit (`up`, projecting up): charcoal
+## at the cut, fading out SCORCH_DECAL_OUT past it. Forward+ draws decals (Compatibility skips them).
+func _scorch_decal(nm: String, y: float, up: bool) -> Decal:
+	var d: Decal = Decal.new()
+	d.name = nm
+	d.texture_albedo = _scorch_texture(SCORCH_ASH_SOFFIT if up else SCORCH_ASH_FLOOR)
+	d.size = Vector3(HOLE.size.x + 2.0 * SCORCH_DECAL_OUT, 0.3, HOLE.size.y + 2.0 * SCORCH_DECAL_OUT)
+	d.position = Vector3(HOLE.get_center().x, y, HOLE.get_center().y)
+	if up:
+		d.rotation = Vector3(PI, 0.0, 0.0)   # project upward onto the soffit
+	d.upper_fade = 0.1
+	d.lower_fade = 0.1
+	d.albedo_mix = 1.0
+	d.cull_mask = 1
+	return d
+
+
+## GPU-11a (r255): the square gradient spent its dark band inside the hole and near-black soot barely showed on the TW
+## carpet. Per pixel by the distance `t` (m) past the cut, with a fixed-seed noise ragging the bands: char (near black,
+## opaque) to SCORCH_CHAR_M, soot to SCORCH_SOOT_M, a pale ash ring to SCORCH_ASH_M (contrast on the dark carpet), then
+## fading out by SCORCH_DECAL_OUT. Procedural, deterministic, no texture asset. GPU-14: the soffit reads; the TW floor
+## (navy carpet, little luminance contrast for black) takes a paler, denser ash ring (`ash_c`).
+func _scorch_texture(ash_c: Color) -> ImageTexture:
+	var w: float = HOLE.size.x + 2.0 * SCORCH_DECAL_OUT
+	var h: float = HOLE.size.y + 2.0 * SCORCH_DECAL_OUT
+	var px: int = SCORCH_PX
+	var py: int = int(round(float(SCORCH_PX) * h / w))
+	var noise: FastNoiseLite = FastNoiseLite.new()
+	noise.seed = 1037
+	noise.frequency = 3.0
+	var img: Image = Image.create(px, py, false, Image.FORMAT_RGBA8)
+	var char_c: Color = Color(0.012, 0.011, 0.01, 0.97)
+	var soot_c: Color = Color(0.045, 0.04, 0.035, 0.9)
+	for j: int in py:
+		for i: int in px:
+			var x: float = (float(i) + 0.5) / float(px) * w - w * 0.5
+			var z: float = (float(j) + 0.5) / float(py) * h - h * 0.5
+			var t: float = maxf(absf(x) - HOLE.size.x * 0.5, absf(z) - HOLE.size.y * 0.5)
+			t += noise.get_noise_2d(x, z) * 0.18
+			var col: Color
+			if t < SCORCH_CHAR_M:
+				col = char_c
+			elif t < SCORCH_SOOT_M:
+				col = char_c.lerp(soot_c, (t - SCORCH_CHAR_M) / (SCORCH_SOOT_M - SCORCH_CHAR_M))
+			elif t < SCORCH_ASH_M:
+				col = soot_c.lerp(ash_c, (t - SCORCH_SOOT_M) / (SCORCH_ASH_M - SCORCH_SOOT_M))
+			else:
+				col = ash_c
+				col.a = ash_c.a * clampf(1.0 - (t - SCORCH_ASH_M) / (SCORCH_DECAL_OUT - SCORCH_ASH_M), 0.0, 1.0)
+			img.set_pixel(i, j, col)
+	return ImageTexture.create_from_image(img)
+
+
+## Charred slab chunks and soot clumps on the TW floor round the rim (presentation only, no colliders), kept off the
+## hoist car and ShaftE's panel (east edge) and the rope ladder's top (north edge): [name, size, position, yaw, char].
+func _tw_soot(parent: Node3D) -> void:
+	var holder: Node3D = Node3D.new()
+	holder.name = "SootTW"
+	_own(parent, holder)
+	var ch: StandardMaterial3D = StandardMaterial3D.new()
+	ch.resource_name = "of_burn_soot"
+	ch.albedo_color = Color(0.035, 0.032, 0.03)
+	ch.roughness = 1.0
+	var conc: Material = load(MAT_DIR + "concrete.tres") as Material
+	var y0: float = SLAB_TOP
+	for p: Array in [
+		["Chunk1", Vector3(0.16, 0.07, 0.12), Vector3(23.05, 0.0, 14.1), 25.0, false],
+		["Chunk2", Vector3(0.11, 0.05, 0.14), Vector3(22.85, 0.0, 15.2), 61.0, true],
+		["Chunk3", Vector3(0.09, 0.05, 0.08), Vector3(23.2, 0.0, 15.95), 12.0, false],
+		["Chunk4", Vector3(0.14, 0.06, 0.1), Vector3(23.9, 0.0, 16.05), 78.0, true],
+		["Chunk5", Vector3(0.07, 0.04, 0.09), Vector3(22.7, 0.0, 13.6), 40.0, true],
+		["Chunk6", Vector3(0.12, 0.05, 0.07), Vector3(24.35, 0.0, 16.25), 5.0, false],
+		["Flake1", Vector3(0.22, 0.012, 0.16), Vector3(22.95, 0.0, 14.7), 33.0, true],
+		["Flake2", Vector3(0.18, 0.012, 0.2), Vector3(23.6, 0.0, 16.3), 70.0, true],
+		["Flake3", Vector3(0.15, 0.012, 0.12), Vector3(22.6, 0.0, 15.75), 15.0, true],
+	]:
+		var mi: MeshInstance3D = MeshInstance3D.new()
+		mi.name = String(p[0])
+		var bm: BoxMesh = BoxMesh.new()
+		bm.size = p[1]
+		bm.material = ch if bool(p[4]) else conc
+		mi.mesh = bm
+		var at: Vector3 = p[2]
+		mi.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(float(p[3]))), Vector3(at.x, y0 + bm.size.y * 0.5 + 0.004,
+			at.z))
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		_own(holder, mi)
 
 
 ## A flat scorch ring of width `w` around the hole at height `y`: charred black at the hole, fading out by vertex alpha.

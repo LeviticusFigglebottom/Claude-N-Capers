@@ -1,0 +1,250 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 17.0s t=-1.0] objective casing -> 1
+[OFP 17.0s t=-1.0] objective keycard -> 1
+[OFP 17.0s t=-1.0] objective code_hint -> 1
+[OFP 17.0s t=-1.0] objective code_pc -> 1
+[OFP 17.0s t=-1.0] objective server -> 1
+[OFP 17.0s t=-1.0] objective vault_gate -> 1
+[OFP 17.0s t=-1.0] objective lasers -> 1
+[OFP 17.0s t=-1.0] objective time_lock -> 0
+[OFP 17.0s t=-1.0] objective time_lock_wait -> 0
+[OFP 17.0s t=-1.0] objective vault_loot -> 0
+[OFP 17.0s t=-1.0] objective gold_cage -> 0
+[OFP 17.0s t=-1.0] objective drill_delivery -> 0
+[OFP 17.0s t=-1.0] objective vault_drill -> 0
+[OFP 17.0s t=-1.0] objective vault_breach -> 0
+[OFP 17.0s t=-1.0] objective secure -> 1
+[OFP 17.0s t=-1.0] objective deposit_boxes -> 1
+[OFP 17.0s t=-1.0] objective bond_safe -> 1
+[OFP 17.0s t=-1.0] objective president_safe -> 1
+[OFP 17.0s t=-1.0] objective server_drives -> 1
+[OFP 17.0s t=-1.0] objective escape_wait -> 0
+[OFP 17.0s t=-1.0] objective escape -> 0
+[OFP 41.9s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 256.0s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 256.0s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 281.2s t=8.2] pilot: t=5 at (37.9, -0.7, 40.1) corner (42.4, -0.6, 42.3) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01588615652872 bot=false
+[OFP 293.3s t=20.3] pilot: t=5 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(0.10,0.00) pin_yaw=0.09794857307133 bot=false
+[OFP 304.1s t=31.1] pilot: t=5 at (35.3, 0.0, -6.2) corner (33.5, 0.2, -6.3) yaw_err 0.00 fwd=true path=9 mouse_mode=2 state=0 look=(1.48,0.00) pin_yaw=1.4847393100863 bot=false
+[OFP 305.9s t=32.9] GHOST step _g1_lane done at t=32.9 (+29.7 s)
+[OFP 305.9s t=32.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-5.2, 0.0, -4.6) walk
+[OFP 316.0s t=42.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (9.6, 0.0, -2.8) walk
+[OFP 325.9s t=52.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (25.6, 0.0, -3.0) walk
+[OFP 335.9s t=62.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (41.5, 0.0, -4.5) walk
+[OFP 339.4s t=66.4] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 0.5 s) after 34 s
+[OFP 339.4s t=66.4] GHOST lane clear after 0 s
+[OFP 340.4s t=67.4] objective casing -> 2
+[OFP 341.0s t=68.0] masked true
+[OFP 343.7s t=70.7] ECM on
+[OFP 348.8s t=75.8] pilot: t=5 at (12.2, 0.0, -1.8) corner (10.2, 0.2, -1.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.86,0.00) pin_yaw=1.85835092105117 bot=false
+[OFP 358.4s t=85.1] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 374.3s t=89.9] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 379.4s t=94.7] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 380.3s t=95.6] GHOST step _g2_dock done at t=95.6 (+62.7 s)
+[OFP 384.2s t=99.5] DETECT Npc_civilian8 kind 1 meter 0.10 at (7.1, -4.0, 2.5), pilot (3.4, -4.0, 5.2) crouched false
+[OFP 389.4s t=104.5] pilot: use Npc_civilian8 (cable_tie) -> OK in 2.0 s
+[OFP 391.0s t=106.2] objective keycard -> 2
+[OFP 396.5s t=106.5] GHOST step _g3_keycard done at t=106.5 (+10.9 s)
+[OFP 396.5s t=106.5] GHOST waiting for the stair core: Npc_guard3 (15.3, 0.0, 8.0)
+[OFP 406.3s t=116.5] GHOST waiting for the stair core: Npc_guard3 (19.0, 0.0, 11.9) moving, Npc_guard6 (17.4, 0.0, -3.1) moving
+[OFP 419.4s t=124.5] GHOST stair core clear after 18 s
+[OFP 449.9s t=134.4] pilot: t=5 at (14.0, 1.7, 3.3) corner (14.0, 2.5, 2.3) yaw_err -0.00 fwd=true path=21 mouse_mode=2 state=0 look=(-0.03,0.00) pin_yaw=-0.03560102594565 bot=false
+[OFP 452.5s t=137.1] DETECT Npc_civilian10 kind 1 meter 0.25 at (14.9, 5.0, 8.3), pilot (14.5, 5.0, 6.3) crouched false
+[OFP 453.0s t=137.6] DETECT Npc_civilian10 kind 1 meter 0.60 at (14.2, 5.0, 8.3), pilot (13.9, 5.1, 5.8) crouched false
+[OFP 454.8s t=139.4] pilot: t=10 at (15.0, 7.8, 4.2) corner (15.0, 8.8, 5.7) yaw_err -0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-9.45,0.00) pin_yaw=-9.4536422312558 bot=false
+[OFP 456.4s t=140.6] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 459.2s t=143.2] pilot: use AssistantDoor (open_door) -> OK in 0.0 s
+[OFP 463.1s t=147.0] pilot: use CodePC (start_hack) -> OK in 2.0 s
+[OFP 463.1s t=147.0] GHOST waiting for the stair core: Npc_guard4 (14.7, 5.0, 7.4)
+[OFP 473.1s t=157.0] GHOST waiting for the stair core: Npc_guard4 (17.6, 8.6, 7.6) moving
+[OFP 473.4s t=157.3] DETECT Npc_guard4 kind 0 meter 0.12 at (18.1, 8.6, 7.7), pilot (20.3, 8.6, 4.5) crouched false
+[OFP 473.9s t=157.8] DETECT Npc_guard4 kind 0 meter 0.52 at (18.9, 8.6, 7.7), pilot (20.3, 8.6, 4.5) crouched false
+[OFP 483.1s t=167.0] GHOST waiting for the stair core: Npc_guard4 (27.6, 8.6, 8.0)
+[OFP 501.4s t=176.8] DETECT Npc_guard4 kind 0 meter 0.20 at (18.8, 8.6, 8.2), pilot (20.3, 8.6, 4.5) crouched false
+[OFP 501.5s t=177.0] GHOST waiting for the stair core: Npc_guard4 (18.5, 8.6, 8.2) moving
+[OFP 501.9s t=177.3] DETECT Npc_guard4 kind 0 meter 0.59 at (18.0, 8.6, 8.2), pilot (20.3, 8.6, 4.5) crouched false
+[OFP 511.5s t=187.0] GHOST waiting for the stair core: Npc_guard4 (7.9, 8.6, 10.1) moving
+[OFP 521.5s t=197.0] GHOST waiting for the stair core: Npc_guard4 (8.1, 8.6, 15.1)
+[OFP 531.5s t=207.0] GHOST waiting for the stair core: Npc_guard4 (6.2, 8.6, 9.2) moving
+[OFP 539.3s t=214.8] DETECT Npc_guard4 kind 0 meter 0.28 at (18.0, 8.6, 8.2), pilot (20.3, 8.6, 4.5) crouched false
+[OFP 539.8s t=215.3] DETECT Npc_guard4 kind 0 meter 0.67 at (18.8, 8.6, 8.1), pilot (20.3, 8.6, 4.5) crouched false
+[OFP 541.5s t=217.0] GHOST waiting for the stair core: Npc_guard4 (21.5, 8.6, 8.1) moving
+[OFP 551.5s t=227.0] GHOST waiting for the stair core: Npc_guard4 (27.7, 8.6, 8.0)
+[OFP 566.4s t=234.5] GHOST stair core clear after 88 s
+[OFP 569.1s t=236.7] pilot: use CodePC (start_hack) -> OK in 2.0 s
+[OFP 574.0s t=241.7] pilot: t=5 at (14.7, 8.6, 6.1) corner (14.6, 8.8, 7.5) yaw_err 3.06 fwd=false path=13 mouse_mode=2 state=0 look=(-12.52,0.00) pin_yaw=-12.3309487453189 bot=false
+[OFP 578.2s t=245.5] pilot: use ElectricalDoorE (open_door) -> OK in 0.0 s
+[OFP 587.1s t=254.5] objective code_pc -> 2
+[OFP 587.1s t=254.5] objective code_pc -> 2
+[OFP 587.1s t=254.5] objective server -> 1
+[OFP 587.2s t=254.5] GHOST code hack state 3 at t=254
+[OFP 587.2s t=254.5] GHOST step _g4_code done at t=254.5 (+148.0 s)
+[OFP 587.2s t=254.5] GHOST waiting for the stair core: 
+[OFP 597.0s t=264.5] GHOST waiting for the stair core: Npc_guard4 (18.3, 5.0, 8.1) moving
+[OFP 607.1s t=274.5] GHOST waiting for the stair core: Npc_guard3 (29.4, 0.0, 8.0) moving, Npc_guard4 (17.9, 5.0, 15.7) moving, Npc_guard5 (27.2, -4.0, 7.9) moving
+[OFP 617.1s t=284.5] GHOST waiting for the stair core: Npc_guard3 (13.6, 0.0, 8.0) moving, Npc_guard5 (27.0, -4.0, 7.9) moving
+[OFP 627.1s t=294.5] GHOST waiting for the stair core: Npc_guard2 (19.8, -4.0, 10.6) moving, Npc_guard3 (20.8, 0.0, 11.9) moving, Npc_guard5 (28.8, -4.0, 7.8) moving, Npc_guard6 (14.6, 0.0, -2.9) moving
+[OFP 644.7s t=304.5] GHOST waiting for the stair core: Npc_guard5 (13.0, -4.0, 8.0) moving
+[OFP 654.7s t=314.5] GHOST waiting for the stair core: Npc_guard5 (11.9, -4.0, 13.1) moving, Npc_guard7 (29.0, -4.0, 8.0) moving
+[OFP 664.8s t=324.5] GHOST waiting for the stair core: Npc_guard2 (20.6, -4.0, 10.6) moving, Npc_guard4 (25.5, 5.0, 8.0) moving, Npc_guard5 (12.4, -4.0, 16.2) moving
+[OFP 674.7s t=334.5] GHOST waiting for the stair core: Npc_guard3 (24.7, 0.0, 13.1) moving, Npc_guard4 (9.5, 5.0, 8.0) moving, Npc_guard5 (9.7, -4.0, 8.1) moving
+[OFP 684.7s t=344.5] GHOST waiting for the stair core: Npc_guard4 (7.0, 5.0, 16.6) moving, Npc_guard5 (25.7, -4.0, 8.0) moving
+[OFP 687.2s t=347.0] GHOST stair core clear after 92 s
+[OFP 708.7s t=354.8] pilot: t=5 at (15.0, 4.9, 5.2) corner (15.0, 2.8, 1.7) yaw_err 0.00 fwd=true path=30 mouse_mode=2 state=0 look=(-12.55,0.00) pin_yaw=-12.5538898561463 bot=false
+[OFP 711.7s t=357.8] DETECT Npc_guard3 kind 0 meter 0.13 at (15.5, 0.0, 8.0), pilot (14.5, 0.0, 6.3) crouched false
+[OFP 712.2s t=358.3] DETECT Npc_guard3 kind 0 meter 0.57 at (14.7, 0.0, 8.0), pilot (15.0, 0.0, 5.8) crouched false
+[OFP 713.7s t=359.8] pilot: t=10 at (14.0, -2.0, 2.8) corner (14.0, -2.1, 3.3) yaw_err 0.01 fwd=true path=8 mouse_mode=2 state=0 look=(-3.07,0.00) pin_yaw=-3.05703025763432 bot=false
+[OFP 715.3s t=361.3] GHOST LK hide at (0.9, -3.8, 6.3)
+[OFP 715.3s t=361.3] GHOST vault gate not clear (Npc_guard2 (21.3, -4.0, 10.7)): waiting at (0.9, -3.8, 6.3)
+[OFP 720.3s t=366.3] pilot: t=5 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.27,0.00) pin_yaw=-6.27140992919522 bot=false
+[OFP 733.1s t=371.8] pilot: t=10 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28024464377449 bot=false
+[OFP 752.1s t=378.2] pilot: t=15 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28317089038683 bot=false
+[OFP 755.5s t=381.8] pilot: detour right 1.2 m to (2.1, -3.8, 7.5) (attempt 6)
+[OFP 757.8s t=384.1] pilot: t=20 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-12.56,0.00) pin_yaw=-12.5550304481621 bot=false
+[OFP 763.6s t=389.9] pilot: t=25 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-12.57,0.00) pin_yaw=-12.56550469578 bot=false
+[OFP 769.4s t=395.6] pilot: t=30 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-12.57,0.00) pin_yaw=-12.5663018396626 bot=false
+[OFP 772.0s t=398.3] pilot: detour right 1.2 m to (2.1, -3.8, 7.5) (attempt 12)
+[OFP 775.3s t=401.5] pilot: t=35 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-18.84,0.00) pin_yaw=-18.8382195634658 bot=false
+[OFP 781.0s t=407.2] pilot: t=40 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-18.85,0.00) pin_yaw=-18.8486892608526 bot=false
+[OFP 787.1s t=413.3] DETECT Npc_guard5 kind 0 meter 0.16 at (16.8, -4.0, 8.0), pilot (0.9, -3.8, 7.5) crouched false
+[OFP 787.3s t=413.4] pilot: t=45 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-18.85,0.00) pin_yaw=-18.8495688363801 bot=false
+[OFP 787.9s t=414.0] DETECT Npc_guard5 kind 0 meter 0.57 at (15.6, -4.0, 8.0), pilot (0.9, -4.0, 7.5) crouched false
+[OFP 788.5s t=414.8] pilot: detour right 1.2 m to (2.1, -3.8, 7.5) (attempt 18)
+[OFP 788.6s t=414.8] DETECT Npc_guard5 kind 0 meter 1.00 at (14.6, -4.0, 8.0), pilot (0.9, -4.0, 7.5) crouched false
+[OFP 792.6s t=418.9] pilot: t=50 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-25.12,0.00) pin_yaw=-25.1214044498811 bot=false
+[OFP 798.8s t=425.0] pilot: t=55 at (0.9, -3.9, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-25.13,0.00) pin_yaw=-25.1324110046153 bot=false
+[INFO][stealth][p1] ALARM: guard_radio (source 207)
+[OFP 804.3s t=430.5] ALARM guard_radio by Npc_guard5 (pilot at (0.9, -4.0, 7.5))
+[OFP 804.6s t=430.5] objective code_hint -> 1
+[OFP 804.6s t=430.5] objective code_hint -> 2
+[OFP 804.6s t=430.5] objective server -> 1
+[OFP 804.6s t=430.5] objective server -> 2
+[OFP 804.6s t=430.5] objective vault_gate -> 1
+[OFP 804.6s t=430.5] objective vault_gate -> 2
+[OFP 804.6s t=430.5] objective lasers -> 1
+[OFP 804.6s t=430.5] objective lasers -> 2
+[OFP 804.7s t=430.5] objective drill_delivery -> 1
+[OFP 804.8s t=430.5] objective drill_delivery -> 1
+[OFP 808.1s t=430.8] pilot: t=60 at (0.9, -4.0, 7.5) corner (0.9, -3.8, 6.3) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=4 look=(-25.13,0.00) pin_yaw=-25.1326718995952 bot=false
+[OFP 808.1s t=430.8] could not reach (0.9, -3.8, 6.3) (at (0.9, -4.0, 7.5))
+[OFP 808.1s t=430.8] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 818.3s t=440.8] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 828.2s t=450.8] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 838.2s t=460.8] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 848.2s t=470.8] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 858.2s t=480.8] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 868.2s t=490.8] GHOST waiting for the vault gate: Npc_guard2 (18.0, -4.0, 10.8) moving, Npc_guard5 (6.9, -4.0, 7.9), Npc_guard9 (34.1, -4.0, 7.8) moving
+[OFP 884.0s t=500.8] GHOST waiting for the vault gate: Npc_guard (11.9, -4.0, 7.5) moving, Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.8, -4.0, 7.4) moving, Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (27.0, -4.0, 7.6) moving, Npc_guard7 (10.3, -4.0, 7.4) moving, Npc_guard8 (11.2, -4.0, 7.4) moving, Npc_guard9 (10.5, -4.0, 8.0)
+[OFP 894.1s t=510.8] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 903.9s t=520.5] objective vault_drill -> 1
+[OFP 904.2s t=520.8] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 914.1s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 924.1s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 934.2s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 944.2s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 954.2s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 964.2s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 974.2s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 984.2s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 994.2s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1004.3s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1014.3s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1024.3s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1034.3s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1044.5s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1054.4s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1064.4s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1074.5s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1084.4s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1094.4s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1104.5s t=524.9] GHOST waiting for the vault gate: Npc_guard (9.8, -4.0, 7.5), Npc_guard2 (14.4, -4.0, 9.4), Npc_guard3 (10.0, -4.0, 8.0), Npc_guard4 (11.0, -4.0, 7.4), Npc_guard5 (6.9, -4.0, 7.9), Npc_guard6 (10.4, -4.0, 7.4), Npc_guard7 (8.6, -4.0, 7.4), Npc_guard8 (9.2, -4.0, 7.4), Npc_guard9 (10.5, -4.0, 8.4)
+[OFP 1114.5s t=524.9] GHOST vault gate NOT clear after 300 s (going anyway)
+[OFP 1128.0s t=524.9] pilot: detour right 0.7 m to (1.2, -3.8, 8.2) (attempt 1)
+[OFP 1139.0s t=524.9] pilot: detour left 0.7 m to (0.9, -3.8, 6.6) (attempt 1)
+[OFP 1145.0s t=524.9] pilot: detour left 0.7 m to (0.9, -3.8, 6.6) (attempt 2)
+[OFP 1148.4s t=524.9] pilot: detour right 0.7 m to (1.2, -3.8, 8.2) (attempt 2)
+[OFP 1153.3s t=524.9] pilot: t=5 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159099269302 bot=false
+[OFP 1154.3s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 3)
+[OFP 1157.7s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 3)
+[OFP 1163.6s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 4)
+[OFP 1166.9s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 4)
+[OFP 1172.7s t=524.9] pilot: t=10 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159115064533 bot=false
+[OFP 1172.9s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 5)
+[OFP 1176.2s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 5)
+[OFP 1182.2s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 6)
+[OFP 1185.5s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 6)
+[OFP 1191.5s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 7)
+[OFP 1194.8s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 7)
+[OFP 1199.6s t=524.9] pilot: t=15 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159100759418 bot=false
+[OFP 1200.7s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 8)
+[OFP 1204.1s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 8)
+[OFP 1210.0s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 9)
+[OFP 1213.4s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 9)
+[OFP 1219.1s t=524.9] pilot: t=20 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159097630174 bot=false
+[OFP 1219.2s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 10)
+[OFP 1222.7s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 10)
+[OFP 1228.5s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 11)
+[OFP 1232.0s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 11)
+[OFP 1237.8s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 12)
+[OFP 1241.3s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 12)
+[OFP 1245.9s t=524.9] pilot: t=25 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159102249534 bot=false
+[OFP 1247.1s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 13)
+[OFP 1250.5s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 13)
+[OFP 1256.3s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 14)
+[OFP 1259.8s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 14)
+[OFP 1265.5s t=524.9] pilot: t=30 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.715909912029 bot=false
+[OFP 1265.6s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 15)
+[OFP 1269.1s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 15)
+[OFP 1274.9s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 16)
+[OFP 1278.4s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 16)
+[OFP 1284.2s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 17)
+[OFP 1287.7s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 17)
+[OFP 1292.1s t=524.9] pilot: t=35 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.715910373965 bot=false
+[OFP 1293.5s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 18)
+[OFP 1296.9s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 18)
+[OFP 1302.7s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 19)
+[OFP 1306.1s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 19)
+[OFP 1311.6s t=524.9] pilot: t=40 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159100610406 bot=false
+[OFP 1312.0s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 20)
+[OFP 1315.4s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 20)
+[OFP 1321.4s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 21)
+[OFP 1324.8s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 21)
+[OFP 1330.7s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 22)
+[OFP 1334.0s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 22)
+[OFP 1338.5s t=524.9] pilot: t=45 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159105378778 bot=false
+[OFP 1339.9s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 23)
+[OFP 1343.4s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 23)
+[OFP 1349.9s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 24)
+[OFP 1354.0s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 24)
+[OFP 1359.8s t=524.9] pilot: t=50 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159102249534 bot=false
+[OFP 1360.1s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 25)
+[OFP 1363.6s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 25)
+[OFP 1369.4s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 26)
+[OFP 1372.9s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 26)
+[OFP 1378.8s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 27)
+[OFP 1382.3s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 27)
+[OFP 1386.7s t=524.9] pilot: t=55 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.7159107017906 bot=false
+[OFP 1388.2s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 28)
+[OFP 1391.6s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 28)
+[OFP 1397.4s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 29)
+[OFP 1400.9s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 29)
+[OFP 1406.2s t=524.9] pilot: t=60 at (0.9, -4.0, 7.5) corner (4.9, -3.8, 7.5) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=5 look=(-26.72,0.00) pin_yaw=-26.715910373965 bot=false
+[OFP 1408.3s t=524.9] pilot: detour right 0.7 m to (1.1, -3.8, 8.2) (attempt 1)
+[OFP 1411.8s t=524.9] pilot: detour left 0.7 m to (0.9, -3.8, 6.6) (attempt 1)
+[OFP 1417.6s t=524.9] pilot: detour left 0.7 m to (0.9, -3.8, 6.6) (attempt 2)
+[OFP 1421.1s t=524.9] pilot: detour right 0.7 m to (1.1, -3.8, 8.2) (attempt 2)
+[OFP 1425.8s t=524.9] pilot: t=5 at (0.9, -4.0, 7.5) corner (4.3, -3.8, 7.7) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(-26.76,0.00) pin_yaw=-26.7614074226112 bot=false
+[OFP 1426.9s t=524.9] pilot: detour right 1.2 m to (1.1, -3.8, 8.6) (attempt 3)
+[OFP 1430.4s t=524.9] pilot: detour left 1.2 m to (1.2, -3.8, 6.2) (attempt 3)
+[OFP 1436.2s t=524.9] pilot: door VaultGate (open_door) blocked: ui.blocked.state
+[OFP 1436.2s t=524.9] FAIL ghost/_g5_vault (alarm guard_radio)
+[OFP] FAIL ghost/_g5_vault
+[OFP 1448.1s t=524.9] FILLS per observer (peak D-128 meter on the pilot): 5 observers
+[OFP 1448.1s t=524.9]   FILL Npc_civilian8                kind 1 peak 0.39 at t=100.0 (observer (7.1, -4.0, 2.5), pilot (2.8, -4.0, 4.3) crouched false)
+[OFP 1448.1s t=524.9]   FILL Npc_civilian10               kind 1 peak 0.74 at t=137.8 (observer (13.9, 5.0, 8.3), pilot (13.9, 5.5, 5.1) crouched false)
+[OFP 1448.1s t=524.9]   FILL Npc_guard4                   kind 0 peak 0.83 at t=215.6 (observer (19.2, 8.6, 8.1), pilot (20.3, 8.6, 4.5) crouched false)
+[OFP 1448.1s t=524.9]   FILL Npc_guard3                   kind 0 peak 0.98 at t=358.8 (observer (13.9, 0.0, 8.0), pilot (15.0, -0.9, 4.1) crouched false)
+[OFP 1448.1s t=524.9]   FILL Npc_guard5                   kind 0 peak 1.00 at t=414.8 (observer (14.6, -4.0, 8.0), pilot (0.9, -4.0, 7.5) crouched false)
+[OFP 1448.1s t=524.9] GHOST total 521.7 s game time (stopped); alarm guard_radio; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)

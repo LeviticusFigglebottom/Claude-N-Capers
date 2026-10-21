@@ -5,6 +5,205 @@ Newest entry first, keep the last 10.
 
 
 
+**To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - Building the G1 greybox in a separate worktree on a local `prep/c-rt` branch: emit_layout from the passing plan
+    scripts, then the generator (copy-adapting the OF chain), the site and shells, stairs and ramps, rooms and zones,
+    spawns, doors, contract nodes and the nav bake, then the slots and convoy placeholders. Validate and regen as
+    usual.
+  - **Branch note:** my session rules let me push only to `env/c-worlds`. So `prep/c-rt` stays a LOCAL branch,
+    unpushed, until the OF done check, when it merges into env/c-worlds and is pushed there.
+  - If you need it visible earlier, the user (not a session message) has to allow pushing `prep/c-rt`.
+  - Risk: a container reclaim would lose the local branch. I'll keep commits small and report each milestone here.
+- 2026-10-21, P's OF ghost BB question: answered per D-150. The §5 line predates D-140's Cataclysm extras, and the
+  ghost acceptance is on Hazardous. ostrander_federal.md §5 is annotated (b08b9b56). I'm standing by for P's Hazardous
+  numbers in case rover_basement needs a longer away leg there (D-150.3).
+- 2026-10-21, D-149 applied (env/c-worlds aca54f85): paper only, nothing in game/.
+  - Plan doc: marked RULED (D-149), with my two wrong claims fixed (D-147/148 were already written; NavPath has been on
+    trunk since r255).
+  - Design doc: the QC-RT6 substitutions (bus -> jack-knifed lorry, trees -> planters, dumper -> forklift; jukebox,
+    bunting, wheel stops and racks dropped). Also QC-RT9's mechanics labelled original, the QC-RT2 rear-door thermite
+    point (no roof hatch), QC-RT1 pre-baked layout nav, QC-RT7 civilians_leave + call points, and QC-RT8 drive-in / van
+    pop-in.
+  - QC-RT10: the --check-only `tools/levelcheck/plans/rolling_thunder_{checklib,floors_ascii,site_ascii,convoy,slots,
+    check}.py` (stdlib only, no emit). `rolling_thunder_check.py --check` currently FAILs on 9 G0 design inconsistencies:
+    - 27 route doors at 0.9 m;
+    - UC missing from the Room list;
+    - J has no door;
+    - MG drawn 4x3 vs listed 3x2.4;
+    - the controller is 3.6 m from the man-gate, not 2 m;
+    - P_N and P_E are not behind their closures;
+    - the rear-car offset is 12 / 10.5 m, not 11;
+    - the east loot path is 48 m+, not 40.
+  - The polygon estimate is about 2,100, uncalibrated (early warning only, D-149.5).
+  - RT-C0 DONE (db3cafcd): `rolling_thunder_check.py --check` PASS (0 fail, 1 warn).
+    - The 1 warn is open on purpose: the car-park west barrier is 2 m beyond the Orchard sidewalk, so a HEAVY-bag
+      throw over it can only be judged by the G1 throw test (§7.5).
+    - Fixes: 27 route doors to 1.0 m (all fit, no redraw); UC in the Room list; J given a 0.9 m door; MG 4x3;
+      controller note 3.6 m (sightline still checked); P_N 2.5 m behind a now-sized traffic-management truck; the east
+      lorry moved 2 m west so P_E is 2 m behind it; T3 shift = T3 length + 3 m (12 / 10.5 m); east loot path about
+      50 m (48.1 m straight-line chain). Also lift doors 1.8 m double, pedestrian gates 1.2 m, a scaffold entry 1.2 m.
+    - Judgement calls for you:
+      (a) guards stay 1.1 m, labelled intentional (handrail or a 50 deg+ coping, nothing standable within 0.5 m),
+          rather than 1.2 m, which would move throw spots and cover heights;
+      (b) the lorry moved rather than P_E (x 104 is the play-space edge);
+      (c) the scaffold entry is on the north face (the U-stair foot is at the same end as its head);
+      (d) both lift-path lengths are estimates (crash stop stair A -> lift about 50 m vs a 53.9 m chain, inside the
+          check's 10 % allowance);
+      (e) the scripts' jamb check is 0.2 m, Ostrander's is 0.3 m.
+    - The navmesh estimate of about 2,100 polygons is uncalibrated (early warning only).
+- **2026-10-21 r257, RT questions for your ruling (QC-RT1..11; they're in §8 of next_heist_rolling_thunder.md,
+  §9 is open risks).** My recommendation is in brackets after each.
+  1. **QC-RT1 convoy nav:** the convoy layouts must block nav without a runtime rebake (heist_map v1.4 / D-121).
+     Pre-baked nav regions per layout, swapped at the stop (§3b.1)? Same for the mixer and the Tannery gate. A also
+     needs a TacticalPoint `enabled` flag. [Pre-baked regions per layout.]
+  2. **QC-RT2 bullion hatch:** crew can't mantle onto a ~3 m truck roof. A truck-rear ladder to the roof, or a
+     ground-level thermite point on the rear doors (§3b.3)? [The rear-door thermite point: no new traversal.]
+  3. **QC-RT3 size:** M (the design doc, 15-25 min) or L (`next_heist.md` §1)? It sets the e2e time budgets and the
+     D-120 checks. [M.]
+  4. **QC-RT4 P5 gate:** a "ghost run" can't apply to a heist with no stealth win. Accept a clean-setup run instead
+     (signals rigged, marshal handled, no early alarm; §3b.6)? [Yes.]
+  5. **QC-RT5 path cap:** A's uncapped `NavPath` (env/a-core ffc264d4) must reach trunk before RT G1. Is C's
+     ≤ 3,500-polygon target then an early warning only, or a hard G1 rule? [An early warning.]
+  6. **QC-RT6 D-147 substitutions (§3b.5):** OK to change the design doc to reuse/drop the trees, dumper, bus, jukebox,
+     cycle racks, bunting and wheel stops? [Yes.]
+  7. **QC-RT7 civilians:** reuse `civilians_leave` plus sidewalk call points (§3b.4) instead of a new QC-88 flee-exit
+     system? [Reuse.]
+  8. **QC-RT8 A5-02 scope:** convoy and mixer drive in, escape van pops in (§3b.2)? Or keep the G1 pre-placed convoy
+     permanently? [Drive-in, ≤ 8 movers then static.]
+  9. **QC-RT9 PD2 fidelity:** the early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window have no PD2 source
+     in the repo. Confirm they stay as original choices? [Keep, labelled original.]
+  10. **QC-RT10 paper scope:** may C write the plan scripts (`tools/levelcheck/plans/rolling_thunder_*.py`, `--check`
+      only: they verify the G0 arithmetic, no map) before the OF done check? [Yes, paper only.]
+  11. **QC-RT11:** D-147 and D-148 aren't in `decisions.md` yet. The plan file sits in your `docs/process/` (you
+      accepted the ownership flag). [Write both decisions.]
+- 2026-10-21, P's GH Tense 4502 curb STUCK at (21.5, −0.4, 0.3): the map is clean. P owns the fix.
+  - Geometry: the kerb is 0.15 m (PellRoadN top −0.150, PellSidewalkW_N top 0.000) vs the 0.35 m step, with nothing
+    under the road.
+  - Live HeistRuntime repro of P's route, walking and sprinting: the crew holds −0.149 on the road and steps to +0.001
+    on the sidewalk.
+  - P's log has three crew sunk 0.25-0.3 m into the 0.15 m ground slabs from t≈63-68: crew 0 at −0.4 on the road; bots
+    2 and 3 at −0.3 on the 0.0 sidewalk.
+  - Embedded like that, the kerb becomes a 0.4 m rise, above the step, hence the stall.
+  - Cause: a controller/physics embed in the loud phase, in game/systems/player/crew_controller.gd (P's, not A's).
+    P agrees: no map change and no kerb ramp. P is tracing the trigger with an embed watchdog and fixing it in the
+    controller.
+- 2026-10-21, r256 RT doc drift reconciled with D's cast check (env/d-art 13cdeef9 / prep/d-rt fb5160ef2):
+  - Marshal = `armored_car_marshal` (roster row and §6 text in rolling_thunder.md; the plan's §3 cast line).
+  - New roster row: Reyes = `contact_hollis`, pool `ram_driver`, tag `driver_mixer`, `sit_vehicle_drive`, seated in
+    mixer M.
+  - D's clip prop sizes are now in the plan (car seat 0.36 m, wheel rim 0.40 m ahead / 0.76 m up r 0.18 at 30°,
+    diner counter 0.90 m, booth table 0.74 m, griddle 0.90 m), for C's RT-C2 builds.
+  - Docs only. Ran banned and ownership (the plan file is the accepted LEAD-path exception).
+- 2026-10-21, GPU-16 drill fix (219323c8): the LidDrill moved so its head sits over the lid 0.35 m inside the west edge
+  and the tripod points west. All three feet are now on the TW carpet, 0.25 m+ clear of the cut; at the hole centre,
+  two feet had come down inside it. The UsePoint is unchanged (eye to drill 1.95 m, inside the 2.0 m reach), so P's
+  burn route is unaffected. test_ostrander_federal_map asserts the feet clear the cut by 0.15 m+.
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; ownership and banned are clean. Not re-rendered.
+- 2026-10-21, D-148 Rolling Thunder plan DONE (d31fc32f): `docs/process/next_heist_rolling_thunder.md` (you accepted the
+  ownership flag).
+  - Audit (§3): 4 exists, 10 reusable, 13 partial, 5 missing, 10 wrong vs rulings. Examples of the last: payout $85k vs
+    D-141's $30k; 0.9 m route doors vs the 1.0 m rule; runtime nav carving vs heist_map v1.4 / D-121; no assault
+    events; no bullion-hatch access.
+  - D-147 reuse (§3c): kits 11 as-is + 8 variants + 7 new; 94 catalog ids reused; 14 new generators, each justified
+    (armored truck, mixer, lorry, Skyway girder, crane and others); 7 items proposed as drops.
+  - Questions (§8): QC-RT1..11. The big ones: convoy-layout nav without a rebake (QC-RT1), bullion hatch access (QC-RT2),
+    the size class (QC-RT3), a ghost run with no stealth win (QC-RT4), A's uncapped path queries to trunk plus a
+    polygon target (QC-RT5).
+  - Build waits for the OF done check, per the plan's §2.
+- 2026-10-21, D-148 Rolling Thunder paper start: acknowledged, in progress.
+  - Writing `docs/process/next_heist_rolling_thunder.md` on the OF plan's model: §3 code audit
+    (exists / reusable / partial / missing / wrong vs rulings), §7 traversal (with the OF lessons), D-147 reuse-first
+    tables per RT area, and the RT-C1/C2/A/B/D/P breakdown.
+  - Note: `docs/process/` is LEAD-owned. I'm writing it there because you named the path, so expect check_ownership to
+    flag that one file on merge.
+  - Paper only: no RT map building until the OF done check. The OF scorch close-camera render stays first.
+- 2026-10-21, r255 burnt scorch, round 3 (the last pass, as you asked; env/c-worlds 37ab4ce1): please render Job C
+  with `--cameras=rc_burn_close,rc_teller_workroom,rc_vault_hole` on the of_burn_variant scene.
+  - New review camera `rc_burn_close` (TW, appended so the 34 keep their numbers): eye (21.9, 2.1, 16.0) looking at
+    the hole centre (24.0, 0.0, 14.6). That's about 3.3 m away and 40 deg down, west of the hole, so the hoist shaft
+    (east) and the rope ladder (north) are out of frame. RENDER_SPLIT's burnt camera list includes it.
+  - TW floor decal: since black on navy has little contrast, its ash ring is paler and denser
+    (0.46 / 0.44 / 0.41 at alpha 0.78, was 0.30 at 0.60). The soffit decal is unchanged (it reads per GPU-14).
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
+- 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds f2dab548): please re-run Job C for the burnt
+  set (rc_vault_hole, rc_teller_workroom, out g2/fix/burn_scorch).
+  - Why GPU-11a was faint: the square gradient spent its dark band inside the hole, and near-black soot barely
+    showed on the dark navy TW carpet.
+  - New `_scorch_texture` in of_burn.gd: procedural, deterministic (fixed-seed noise), no asset. Banded by distance
+    past the cut, with a ragged edge:
+    - near-black char (alpha 0.97) to 0.3 m;
+    - soot to 0.6 m;
+    - a pale ash ring to 0.85 m (the contrast on the carpet);
+    - fading out by 1.4 m (was 0.9 m).
+  - New `SootTW`: 6 charred slab chunks and 3 soot flakes on the TW floor round the rim. Presentation only, no
+    colliders; kept off the hoist car, ShaftE's panel and the rope ladder top.
+  - Preview of the texture over a carpet colour: g2/fix/burn_scorch/scorch_texture_preview.png.
+  - Ran: OF regen twice identical (navmesh 4165, unchanged); validate OF final PASS; c ostrander 14, test_of_ 7 and
+    determinism 1 all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
+- 2026-10-21, r254 GPU-10 loud nav errors (env/c-worlds 996084e5). The OF map is clean; the cause is Godot's path-search cap, so the fix is in
+  A's queries.
+  - New test `game/tests/c/test_of_loud_nav_targets.gd`: OF loud, burn state, fully breached. All 122 loud-phase walk
+    targets pass, every one on the navmesh and reachable:
+    - police spawns, turret vans, heli drops, breach approaches inside and outside;
+    - 98 Tactical points (rooftop sniper posts exempt, since snipers hold);
+    - escape / secure zones and their wait markers, ladder ends, lift UsePoints.
+  - Every police spawn reaches the street outside every wall / door breach (P5 via the rappel links).
+  - Cause: Godot 4.7's NavigationPathQueryParameters3D.path_search_max_polygons defaults to 4096, and
+    NavigationAgent3D has the same default. OF's navmesh has 4,165 polygons, the only map over it (GH 1552,
+    ND 2024, GN 2870, DB 2464, SL 2058). So a long loud route, e.g. police from a far street spawn up to the
+    terrace, exhausts the search. Godot then logs "It's not expect to not find the most reachable polygons" and
+    returns a partial path.
+  - Repro: P1 -> CoverMisc7 (terrace) stops at the floor below, 3.6 m short, with the default cap; with
+    path_search_max_polygons 0 (unlimited) it reaches the target.
+  - Stealth shows 0 errors because its routes are short.
+  - Ask for ENV A: query paths with path_search_max_polygons = 0 (or >= 8192). `map_get_path` can't take it, so
+    this means NavigationServer3D.query_path + NavigationPathQueryParameters3D in assault_director.gd:970,
+    crew_ai_brain.gd:1022, civilian_brain.gd:958 and civilian_targets.gd:239, plus
+    NavigationAgent3D.path_search_max_polygons on the NPC agents. Map-side, I could thin OF below 4096 polygons,
+    but that is a fragile workaround (any growth re-breaks it) and I'd rather not.
+  - The 1-2 stalls A finds may also be targets made unreachable by the cap, not by geometry.
+- 2026-10-21, round 253, pushed as env/c-worlds ac0f4ce7: (1) is DONE.
+  - On env/c-worlds: the 3 GI .res (213ca05d), the GPU-6 final 34 + burnt shots (78e1f2a1), and trunk r252 merged.
+  - (3) The other heists' door jambs were already done in 94d9b79a (see the next item).
+  - (2) Burnt set: NOT as intended, and fixed in this push (pending your Job C).
+    - Intended and present: the ember rim, the glow and the slab debris.
+    - Missing: the scorch. The two scorch rings sat 4 mm above the TW carpet and 2 mm under the VT soffit, so as
+      alpha-blended surfaces they lost the depth test at camera distance and drew nothing.
+    - Fix (of_burn.gd): two projected Decals, ScorchTW onto the TW floor and ScorchVT onto the VT soffit. Charcoal at
+      the cut, fading out 0.9 m past it. A procedural square-falloff gradient, no texture asset. Forward+ draws them
+      (Compatibility skips decals).
+    - Please run Job C for the burnt set: the of_burn_variant + review_shots commands in RENDER_SPLIT.md Job B,
+      `--cameras=rc_vault_hole,rc_teller_workroom` with `--out=.../g2/fix/burn_scorch`.
+    - The 34 unburnt shots are unaffected: BurnThrough stays hidden until the burn.
+  - Ran: OF regen twice identical (navmesh 4165, unchanged); validate OF final PASS; c ostrander 14, test_of_ 6 and
+    determinism 1 all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
+- 2026-10-21, round 252, item (c) DONE on env/c-worlds 94d9b79a (GI .res in 213ca05d): door jambs on GH/ND/GN/DB/SL (nav bake only).
+  - Survey (the OF test's pattern, new `game/tests/c/test_door_clearance_maps.gd`): every heist failed on the old
+    bakes. Door/approach misses: GH 14, ND 11, GN 16, DB 6, SL 34.
+  - Fix: one shared helper, `game/world/heists/shared/door_nav_clearance.gd`, called from each generator's `_bake`:
+    - carved jamb boxes give every Door a straight throat centred on its frame;
+    - each throat edge is snapped inward to the 0.1 m world grid, since some door centres sit 5 cm off it;
+    - it uses `effective_width()`, because many doors leave `width_m` at 0;
+    - it sets `edge_max_error` 0.9 on those bakes (Godot's default 1.3 cells erased one-cell jamb notches wherever the
+      throat edge lines up with a corridor wall).
+  - Result: 0 misses on all five. Navmesh polygons go up 7-13% from the finer contours: GH 1412->1552,
+    ND 1851->2024, GN 2542->2870, DB 2270->2464, SL 1835->2058.
+  - Walkthrough: 15 routes that stood at 2.88-3.00x now read 3.00-3.03x (paths cross doors on the centre line). They
+    are whitelisted with that reason (GH 1, GN 7, SL 7); ND and DB had none.
+  - Test changes: test_gh_fire_escape_window's stair-foot bound `a.y < 0.2` became `< 0.5`. The point now reads
+    0.201; the path is unchanged. The OF clearance test now shares `_door_clearance_base.gd`.
+  - OF is untouched apart from the GPU-5 GI .res files, merged from gpu/renders (96dcf2ce).
+  - Ran:
+    - c tests: dockside_burn 28, gallery_night 17, glasshouse 17, night_deposit 21, shadow_ledger 17, test_gh_ 7
+      (1 skip, as before), test_gn_ 1, test_sl_ 1, test_of_ 6, determinism 1, test_door_clearance_maps 5. All pass.
+    - gn_regen_twice is identical.
+    - validate final: GH, ND, GN, DB and SL all PASS.
+    - gdlint, ownership and banned are clean.
+  - GPU-6 final shots: I reviewed the contact sheet and see no blockers. rc_manager_office now frames the office.
+
 ## 2026-10-21 (OF final switch; lead session_014E3p2DmSYTneJjytGwKKfc)
 
 **To the LEAD: OF is at stage FINAL on env/c-worlds (validate_level final, all variants: PASS). Please run GPU Job A,

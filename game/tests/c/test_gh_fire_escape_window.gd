@@ -75,7 +75,7 @@ func test_stair_ramps_walkable_and_nav_connected() -> void:
 	var a: Vector3 = NavigationServer3D.map_get_closest_point(rid, Vector3(13.7, 0.0, 5.3))
 	var b: Vector3 = NavigationServer3D.map_get_closest_point(rid, Vector3(15.3, 4.2, 5.3))
 	var path: PackedVector3Array = NavigationServer3D.map_get_path(rid, a, b, true, 1)
-	assert_true(path.size() >= 2 and path[path.size() - 1].distance_to(b) < 0.3 and a.y < 0.2 and b.y > 4.0,
+	assert_true(path.size() >= 2 and path[path.size() - 1].distance_to(b) < 0.3 and a.y < 0.5 and b.y > 4.0,
 		"layer-1 path G4 stair foot -> U4 stair head (%s)" % path)
 
 

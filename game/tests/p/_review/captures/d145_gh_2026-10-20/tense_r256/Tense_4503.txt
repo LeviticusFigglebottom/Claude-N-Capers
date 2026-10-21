@@ -1,0 +1,261 @@
+[PO5 6.9s] shot main_menu skipped (headless)
+[PO5 7.1s] click 'SAFEHOUSE' at (10.8, 31.78333)
+[PO5 8.0s] click '' at (23.55, 10.71667)
+[PO5 8.9s] shot planning_table skipped (headless)
+[PO5 9.0s] click 'Golden Hour' at (9.466667, 14.43333)
+[PO5 10.0s] click 'TENSE' at (26.15, 15.26667)
+[PO5 12.4s] click 'Briefing' at (56.53334, 60.96667)
+[PO5 12.4s] shot briefing skipped (headless)
+[PO5 12.5s] click 'Continue' at (57.06667, 61.5)
+[PO5 13.4s] shot continue skipped (headless)
+[PO5 13.6s] click 'Confirm plan' at (57.06667, 61.35)
+[PO5 14.4s] shot confirm_plan skipped (headless)
+[PO5 15.0s] click 'Start Heist' at (56.53334, 60.96667)
+[PO5 18.4s] in heist glasshouse seed 4503 diff 1 phase 1 crew at (3.0, 0.0, 14.4)
+[PO5 18.4s] shot heist_start skipped (headless)
+[PO5 19.9s] headless: no mouse capture; PlayerInput.test_assume_captured for the look motion
+[PO5 19.9s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 21.0s] EVENT objective casing -> 2 t=4
+[PO5 23.8s] EVENT objective safe -> 1 t=6
+[PO5 23.8s] EVENT objective keycard -> 1 t=6
+[PO5 23.8s] EVENT objective keycard -> 2 t=6
+[PO5 24.4s] loud: phase=3 went_loud=true
+[PO5 24.4s] shot auto_6 skipped (headless)
+[PO5 30.3s] TEL worst_frame=2573ms t=13 phase=3 phys=10.7ms proc=10.1ms nodes=7123 enemies=2 civs=8 crew=[0:0@(12.2, -0.3, 9.7) 1:0@(10.0, 0.0, 9.9) 2:0@(7.5, 0.0, 10.7) 3:0@(12.1, -0.3, 12.6) nearest_enemy=5.6m within15=2 input_enabled=true captured=false paused_by={  }]
+[PO5 35.3s] pilot: use SalonDoor (open_door) -> OK in 6.6 s
+[PO5 37.8s] pilot: t=5 at (14.0, -0.0, 9.4) corner (13.9, 0.2, 8.7) yaw_err -0.00 fwd=true path=49 mouse_mode=0 state=0 look=(0.01,-0.00) pin_yaw=0.01007559725292 bot=false
+[PO5 40.3s] TEL worst_frame=99ms t=23 phase=3 phys=9.1ms proc=7.4ms nodes=7528 enemies=1 civs=7 crew=[0:0@(15.3, 0.0, 5.0) 1:0@(16.3, 0.0, 6.3) 2:0@(14.6, 0.0, 7.6) 3:0@(15.0, 0.0, 7.3) nearest_enemy=1.8m within15=1 input_enabled=true captured=false paused_by={  }]
+[PO5 42.9s] pilot: t=10 at (7.2, 0.0, 5.3) corner (5.3, 4.4, 5.4) yaw_err -0.00 fwd=true path=38 mouse_mode=0 state=0 look=(1.63,0.00) pin_yaw=1.62743038689934 bot=false
+[PO5 47.9s] pilot: t=15 at (10.1, 0.0, 5.2) corner (9.1, 4.4, 5.2) yaw_err -0.00 fwd=true path=37 mouse_mode=0 state=0 look=(7.91,0.00) pin_yaw=7.9124820284049 bot=false
+[PO5 50.3s] TEL worst_frame=21ms t=33 phase=3 phys=8.1ms proc=6.9ms nodes=7592 enemies=0 civs=7 crew=[0:0@(5.0, 0.0, 5.5) 1:0@(16.4, 0.0, 6.0) 2:0@(7.1, 0.0, 5.5) 3:0@(6.9, 0.0, 5.1) nearest_enemy=infm within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 52.9s] pilot: t=20 at (12.4, 0.0, 5.0) corner (11.8, 4.4, 5.1) yaw_err 0.00 fwd=true path=35 mouse_mode=0 state=0 look=(14.24,0.00) pin_yaw=14.2430698113165 bot=false
+[PO5 57.9s] pilot: t=25 at (11.5, 0.0, 5.4) corner (11.8, 0.2, 5.1) yaw_err 1.71 fwd=false path=37 mouse_mode=0 state=0 look=(16.42,0.00) pin_yaw=16.6137881899775 bot=false
+[PO5 60.3s] TEL worst_frame=28ms t=43 phase=3 phys=8.9ms proc=5.1ms nodes=7402 enemies=0 civs=7 crew=[0:0@(11.6, 0.0, 4.4) 1:0@(11.8, 0.0, 5.2) 2:0@(11.1, 0.0, 5.5) 3:0@(5.1, 0.0, 5.4) nearest_enemy=infm within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 63.0s] pilot: t=30 at (11.5, 0.0, 3.9) corner (11.5, 0.0, 5.4) yaw_err 0.00 fwd=true path=42 mouse_mode=0 state=0 look=(21.99,0.00) pin_yaw=21.9911483731774 bot=false
+[PO5 67.9s] pilot: t=35 at (11.5, 0.0, 3.6) corner (11.6, 0.2, 4.0) yaw_err 0.06 fwd=true path=42 mouse_mode=0 state=0 look=(28.25,0.00) pin_yaw=28.3151240906807 bot=false
+[PO5 70.3s] TEL worst_frame=74ms t=53 phase=3 phys=12.7ms proc=8.4ms nodes=7043 enemies=0 civs=7 crew=[0:0@(11.6, 0.0, 3.8) 1:0@(12.3, 0.0, 5.5) 2:0@(12.3, 0.0, 5.5) 3:0@(2.1, 0.0, 5.5) nearest_enemy=infm within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 72.9s] pilot: t=40 at (11.5, 0.0, 5.3) corner (11.5, 0.0, 5.4) yaw_err -0.00 fwd=true path=40 mouse_mode=0 state=0 look=(28.27,0.00) pin_yaw=28.2743343658511 bot=false
+[PO5 77.8s] pilot: STUCK at (11.5, 0.0, 5.5) heading to (12.2, 0.2, 5.3); rays: vel=(0.5, 0.0, 0.0) floor=true state=0
+[PO5 77.8s] shot stuck_1 skipped (headless)
+[PO5 77.8s] pilot: detour left 0.7 m to (11.6, 0.2, 4.7) (attempt 1)
+[PO5 78.9s] pilot: t=45 at (11.6, -0.3, 4.8) corner (11.6, 0.0, 5.4) yaw_err 1.58 fwd=false path=38 mouse_mode=0 state=0 look=(26.66,0.00) pin_yaw=26.8474657253099 bot=false
+[PO5 80.3s] TEL worst_frame=26ms t=63 phase=3 phys=12.0ms proc=11.1ms nodes=7414 enemies=5 civs=7 crew=[0:0@(12.9, 0.0, 5.0) 1:0@(12.5, 0.0, 5.1) 2:0@(7.0, 0.3, 5.3) 3:0@(2.8, 0.0, 5.4) nearest_enemy=11.0m within15=2 input_enabled=true captured=false paused_by={  }]
+[PO5 80.8s] pilot: STUCK at (11.7, -0.3, 4.8) heading to (11.6, 0.0, 3.6); rays: slide:/root/HeistRuntime/Glasshouse/Gameplay/Doors/WCDoor/Visual/PropDoorSingleIvoryT20/Model/Frame/Collision@(12.0, 0.9, 4.6) n=(-0.7, 0.0, 0.7), vel=(-2.0, 0.0, -1.9) floor=true state=0
+[PO5 80.8s] shot stuck_2 skipped (headless)
+[PO5 84.8s] pilot: STUCK at (11.6, -0.3, 4.5) heading to (11.6, 0.0, 3.6); rays: h1.00:/root/HeistRuntime/Dynamic/Crew1@(11.6, 0.7, 4.1), vel=(-0.2, 0.0, -3.5) floor=true state=0
+[PO5 84.8s] shot stuck_3 skipped (headless)
+[PO5 85.2s] pilot: t=50 at (11.6, 0.3, 3.8) corner (11.6, 0.0, 3.6) yaw_err 0.05 fwd=true path=42 mouse_mode=0 state=0 look=(25.18,0.00) pin_yaw=25.2369273516385 bot=false
+[PO5 88.1s] pilot: STUCK at (11.6, -0.3, 4.8) heading to (11.6, 0.0, 3.6); rays: vel=(-1.6, 0.0, -2.4) floor=true state=0
+[PO5 90.3s] TEL worst_frame=68ms t=73 phase=3 phys=9.2ms proc=7.0ms nodes=7918 enemies=5 civs=7 crew=[0:0@(11.5, 0.0, 5.5) 1:0@(12.5, 0.0, 5.5) 2:0@(9.0, 0.0, 5.2) 3:0@(5.7, 0.0, 5.3) nearest_enemy=7.8m within15=3 input_enabled=true captured=false paused_by={  }]
+[PO5 91.6s] pilot: t=55 at (12.2, 0.0, 5.0) corner (11.8, 4.4, 5.1) yaw_err -0.00 fwd=true path=35 mouse_mode=0 state=0 look=(20.51,-0.00) pin_yaw=20.5145340808768 bot=false
+[PO5 94.3s] pilot: reload in a lull (weapon.corsair_ar 11/30, reserve 131)
+[PO5 97.6s] pilot: t=60 at (11.7, -0.3, 5.3) corner (11.6, 0.0, 5.4) yaw_err -1.81 fwd=false path=37 mouse_mode=0 state=0 look=(22.88,0.00) pin_yaw=22.6871713217503 bot=false
+[PO5 97.6s] pilot: goto (3.6, 4.4, 8.2) FAILED at (11.7, -0.3, 5.3) after 60.0 s
+[PO5 97.6s] pilot: could not reach /root/HeistRuntime/Glasshouse/Variants/Group_code_note/Slot_code_admin/CodeNote/Interactable (read_note)
+[PO5 97.6s] pilot: read_note out of reach after the walk: not pressing
+[PO5 100.3s] TEL worst_frame=21ms t=83 phase=3 phys=10.1ms proc=10.2ms nodes=8224 enemies=5 civs=7 crew=[0:0@(11.6, -0.3, 5.1) 1:0@(12.5, -0.3, 5.5) 2:0@(8.5, -0.3, 5.2) 3:0@(6.7, 0.0, 5.3) nearest_enemy=2.6m within15=4 input_enabled=true captured=false paused_by={  }]
+[PO5 102.6s] pilot: t=5 at (11.8, -0.3, 5.1) corner (11.6, 0.0, 3.6) yaw_err -1.06 fwd=false path=35 mouse_mode=0 state=0 look=(20.11,0.00) pin_yaw=19.9175219675478 bot=false
+[PO5 107.6s] pilot: t=10 at (11.6, 0.0, 5.3) corner (11.6, 0.0, 5.4) yaw_err -0.00 fwd=true path=38 mouse_mode=0 state=0 look=(15.70,0.00) pin_yaw=15.6994424252286 bot=false
+[PO5 110.3s] TEL worst_frame=27ms t=93 phase=3 phys=9.7ms proc=10.5ms nodes=8472 enemies=5 civs=7 crew=[0:0@(11.6, 0.0, 3.8) 1:0@(12.5, 0.0, 5.5) 2:0@(12.5, 0.2, 3.9) 3:0@(12.5, 0.0, 5.5) nearest_enemy=1.7m within15=4 input_enabled=true captured=false paused_by={  }]
+[PO5 112.6s] pilot: t=15 at (13.0, 0.0, 5.0) corner (11.8, 4.4, 5.1) yaw_err 0.00 fwd=true path=35 mouse_mode=0 state=0 look=(20.51,0.00) pin_yaw=20.5132211085099 bot=false
+[PO5 117.6s] pilot: t=20 at (11.6, 0.0, 4.2) corner (11.6, 0.0, 5.4) yaw_err -0.00 fwd=true path=42 mouse_mode=0 state=0 look=(15.70,0.00) pin_yaw=15.6995674611268 bot=false
+[PO5 120.3s] TEL worst_frame=87ms t=103 phase=3 phys=12.6ms proc=13.7ms nodes=8892 enemies=5 civs=7 crew=[0:0@(11.7, 0.0, 4.8) 1:0@(12.5, 0.0, 5.5) 2:0@(12.5, 0.0, 5.5) 3:0@(11.7, 0.0, 4.0) nearest_enemy=2.7m within15=3 input_enabled=true captured=false paused_by={  }]
+[PO5 120.4s] EVENT crew 3 state 0 -> 1 at (11.9, 0.0, 3.9) (t=103)
+[PO5 120.6s] revive slot 3 at 103 s (0.3 m)
+[PO5 121.8s] pilot: use revive hold dropped, cleared threats before re-pressing
+[PO5 122.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 122.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 122.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 123.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 123.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 124.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 124.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 124.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 125.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 125.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 126.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 126.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 126.8s] EVENT crew 3 state 1 -> 0 at (12.0, 0.0, 3.9) (t=109)
+[PO5 126.8s] pilot: use Crew3 (revive) -> OK in 4.3 s
+[PO5 129.0s] pilot: t=25 at (9.7, 0.0, 5.1) corner (9.1, 4.4, 5.2) yaw_err -0.00 fwd=true path=37 mouse_mode=0 state=0 look=(20.56,0.00) pin_yaw=20.5642994418386 bot=false
+[PO5 130.3s] TEL worst_frame=57ms t=113 phase=3 phys=15.7ms proc=9.3ms nodes=9389 enemies=5 civs=6 crew=[0:0@(5.4, 0.0, 5.4) 1:0@(11.1, 0.0, 5.4) 2:0@(9.0, 0.0, 5.5) 3:0@(12.2, 0.0, 4.1) nearest_enemy=6.2m within15=2 input_enabled=true captured=false paused_by={  }]
+[PO5 134.0s] pilot: t=30 at (13.0, 0.0, 5.0) corner (11.8, 4.4, 5.1) yaw_err 2.71 fwd=false path=37 mouse_mode=0 state=0 look=(24.04,0.00) pin_yaw=24.2367800530928 bot=false
+[PO5 139.1s] pilot: t=35 at (11.5, 0.0, 5.5) corner (11.2, 4.4, 5.1) yaw_err -0.02 fwd=true path=37 mouse_mode=0 state=0 look=(25.78,0.00) pin_yaw=25.7594102257799 bot=false
+[PO5 140.3s] TEL worst_frame=111ms t=123 phase=3 phys=10.8ms proc=8.3ms nodes=9573 enemies=4 civs=6 crew=[0:0@(11.6, 0.0, 4.1) 1:0@(5.0, 0.0, 5.3) 2:0@(11.2, 0.0, 5.2) 3:0@(11.2, 0.0, 4.9) nearest_enemy=9.4m within15=3 input_enabled=true captured=false paused_by={  }]
+[PO5 143.0s] pilot: STUCK at (11.6, 0.0, 4.2) heading to (11.6, 0.0, 3.6); rays: vel=(-0.2, 0.0, -3.5) floor=true state=0
+[PO5 143.0s] pilot: detour right 0.7 m to (12.3, 0.2, 3.9) (attempt 1)
+[PO5 144.4s] pilot: t=40 at (11.5, 0.0, 5.5) corner (12.2, 0.2, 5.3) yaw_err -2.43 fwd=false path=38 mouse_mode=0 state=0 look=(32.59,0.00) pin_yaw=32.3999601689584 bot=false
+[PO5 149.4s] pilot: t=45 at (7.1, -0.3, 5.4) corner (5.3, 4.4, 5.4) yaw_err 0.00 fwd=true path=38 mouse_mode=0 state=0 look=(33.03,0.00) pin_yaw=33.0295787913501 bot=false
+[PO5 150.3s] TEL worst_frame=37ms t=133 phase=3 phys=17.5ms proc=11.4ms nodes=8906 enemies=5 civs=6 crew=[0:0@(4.1, 0.0, 5.5) 1:0@(10.5, 0.0, 6.1) 2:0@(8.1, 0.0, 5.5) 3:0@(4.8, 0.0, 5.0) nearest_enemy=4.8m within15=4 input_enabled=true captured=false paused_by={  }]
+[PO5 154.4s] pilot: t=50 at (8.1, -0.3, 5.3) corner (9.6, 0.2, 5.2) yaw_err -0.00 fwd=true path=38 mouse_mode=0 state=0 look=(36.19,0.00) pin_yaw=36.1884802154318 bot=false
+[PO5 155.4s] pilot: STUCK at (8.1, -0.3, 5.3) heading to (9.6, 0.2, 5.2); rays: h0.40:/root/HeistRuntime/Dynamic/Npc_bulwark5@(8.7, 0.1, 5.3), h1.00:/root/HeistRuntime/Dynamic/Npc_bulwark5/Shield@(8.4, 0.7, 5.3), slide:/root/HeistRuntime/Dynamic/Npc_bulwark5/Shield@(8.4, 0.5, 5.3) n=(-1.0, 0.0, 0.1), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 159.7s] pilot: t=55 at (11.5, 0.0, 3.6) corner (11.6, 0.2, 4.0) yaw_err 0.01 fwd=true path=42 mouse_mode=0 state=0 look=(40.89,0.00) pin_yaw=40.8948506318784 bot=false
+[PO5 160.3s] TEL worst_frame=33ms t=143 phase=3 phys=15.5ms proc=9.6ms nodes=9026 enemies=5 civs=6 crew=[0:0@(11.5, 0.0, 5.5) 1:0@(12.5, 0.0, 5.2) 2:0@(9.9, 0.0, 5.1) 3:0@(8.9, 0.0, 5.2) nearest_enemy=7.3m within15=2 input_enabled=true captured=false paused_by={  }]
+[PO5 164.7s] pilot: t=60 at (11.6, 0.0, 4.3) corner (11.6, 0.0, 3.6) yaw_err -0.00 fwd=true path=35 mouse_mode=0 state=0 look=(44.03,0.00) pin_yaw=44.0328350586506 bot=false
+[PO5 164.8s] pilot: goto (3.6, 4.4, 8.2) FAILED at (11.6, 0.0, 4.2) after 60.0 s
+[PO5 164.8s] pilot: could not reach /root/HeistRuntime/Glasshouse/Variants/Group_code_note/Slot_code_admin/CodeNote/Interactable (read_note)
+[PO5 164.8s] pilot: read_note out of reach after the walk: not pressing
+[PO5 164.8s] shot auto_147 skipped (headless)
+[PO5 167.6s] EVENT crew 1 state 0 -> 2 at (12.4, 0.0, 5.5) (t=150)
+[PO5 169.8s] pilot: t=5 at (11.8, -0.3, 5.1) corner (11.6, 0.0, 3.6) yaw_err -0.73 fwd=false path=35 mouse_mode=0 state=0 look=(57.42,0.00) pin_yaw=57.2327223791372 bot=false
+[PO5 170.3s] TEL worst_frame=23ms t=153 phase=3 phys=10.8ms proc=7.6ms nodes=8857 enemies=2 civs=6 crew=[0:0@(11.5, 0.0, 3.6) 1:2@(12.4, 0.0, 5.5) 2:0@(7.7, 0.0, 5.2) 3:0@(11.3, 0.0, 5.5) nearest_enemy=5.6m within15=1 input_enabled=true captured=false paused_by={  }]
+[PO5 173.9s] EVENT crew 1 state 2 -> 0 at (12.4, -0.3, 5.5) (t=156)
+[PO5 174.8s] pilot: t=10 at (11.6, 0.0, 4.1) corner (11.6, 0.0, 3.6) yaw_err -0.00 fwd=true path=38 mouse_mode=0 state=0 look=(50.31,0.00) pin_yaw=50.3142701588304 bot=false
+[PO5 179.8s] pilot: t=15 at (11.5, 0.0, 3.7) corner (11.6, 0.2, 4.1) yaw_err -0.01 fwd=true path=42 mouse_mode=0 state=0 look=(53.46,0.00) pin_yaw=53.4491219628917 bot=false
+[PO5 180.3s] TEL worst_frame=40ms t=163 phase=3 phys=14.9ms proc=12.0ms nodes=9076 enemies=3 civs=6 crew=[0:0@(11.5, 0.0, 5.5) 1:0@(12.5, 0.0, 3.7) 2:0@(9.4, 0.0, 5.0) 3:0@(12.5, 0.0, 5.4) nearest_enemy=21.4m within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 184.8s] pilot: t=20 at (11.5, 0.0, 3.5) corner (11.6, 0.2, 5.0) yaw_err 2.36 fwd=false path=38 mouse_mode=0 state=0 look=(63.65,0.00) pin_yaw=63.8374644655714 bot=false
+[PO5 189.8s] pilot: t=25 at (12.7, 0.0, 5.1) corner (13.1, 0.2, 5.0) yaw_err -0.00 fwd=true path=37 mouse_mode=0 state=0 look=(67.79,0.00) pin_yaw=67.7865310427524 bot=false
+[PO5 190.3s] TEL worst_frame=20ms t=173 phase=3 phys=6.2ms proc=5.0ms nodes=9086 enemies=1 civs=6 crew=[0:0@(12.4, -0.3, 5.0) 1:0@(12.5, -0.3, 5.5) 2:0@(6.0, 0.0, 5.3) 3:0@(12.4, -0.3, 5.5) nearest_enemy=21.4m within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 194.8s] pilot: t=30 at (11.5, 0.0, 3.5) corner (11.6, 0.2, 4.0) yaw_err 1.02 fwd=false path=42 mouse_mode=0 state=0 look=(64.99,0.00) pin_yaw=65.1840861102692 bot=false
+[PO5 199.8s] pilot: t=35 at (11.7, -0.3, 4.9) corner (11.6, 0.0, 3.6) yaw_err -0.00 fwd=true path=35 mouse_mode=0 state=0 look=(69.25,0.00) pin_yaw=69.252813685046 bot=false
+[PO5 200.3s] TEL worst_frame=30ms t=183 phase=3 phys=13.6ms proc=9.6ms nodes=9270 enemies=3 civs=6 crew=[0:0@(11.5, 0.0, 3.5) 1:0@(12.5, 0.0, 5.5) 2:0@(7.1, 0.0, 5.2) 3:0@(12.4, 0.0, 5.5) nearest_enemy=21.3m within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 204.8s] pilot: t=40 at (11.5, 0.0, 3.5) corner (11.5, 0.2, 4.3) yaw_err -1.72 fwd=false path=40 mouse_mode=0 state=0 look=(74.01,0.00) pin_yaw=73.8130752048173 bot=false
+[PO5 209.8s] pilot: t=45 at (11.5, 0.0, 4.0) corner (11.5, 0.0, 5.4) yaw_err -0.00 fwd=true path=39 mouse_mode=0 state=0 look=(65.97,0.00) pin_yaw=65.9734490556666 bot=false
+[PO5 210.3s] TEL worst_frame=30ms t=193 phase=3 phys=10.7ms proc=5.7ms nodes=9284 enemies=1 civs=6 crew=[0:0@(11.5, 0.0, 5.5) 1:0@(10.5, 0.0, 5.5) 2:0@(8.3, 0.0, 5.2) 3:0@(12.5, 0.2, 3.9) nearest_enemy=22.4m within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 214.8s] pilot: t=50 at (11.5, 0.0, 3.5) corner (11.6, 0.2, 5.0) yaw_err 1.40 fwd=false path=38 mouse_mode=0 state=0 look=(77.18,0.00) pin_yaw=77.3671240772755 bot=false
+[PO5 219.8s] pilot: t=55 at (11.6, 0.0, 4.1) corner (11.6, 0.0, 3.6) yaw_err -0.00 fwd=true path=35 mouse_mode=0 state=0 look=(88.01,0.00) pin_yaw=88.013781215589 bot=false
+[PO5 220.3s] TEL worst_frame=171ms t=203 phase=3 phys=12.6ms proc=9.7ms nodes=9280 enemies=1 civs=6 crew=[0:0@(11.6, 0.0, 3.8) 1:0@(12.3, 0.0, 5.4) 2:0@(7.9, 0.0, 5.1) 3:0@(11.1, 0.0, 5.1) nearest_enemy=21.9m within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 224.8s] pilot: t=60 at (11.3, 0.0, 5.3) corner (12.0, 0.2, 5.2) yaw_err -2.15 fwd=false path=37 mouse_mode=0 state=0 look=(82.42,0.00) pin_yaw=82.2286612599428 bot=false
+[PO5 224.8s] pilot: goto (3.6, 4.4, 8.2) FAILED at (11.3, 0.0, 5.3) after 60.0 s
+[PO5 224.8s] pilot: could not reach /root/HeistRuntime/Glasshouse/Variants/Group_code_note/Slot_code_admin/CodeNote/Interactable (read_note)
+[PO5 224.8s] pilot: read_note out of reach after the walk: not pressing
+[PO5 224.8s] setting /root/HeistRuntime/Glasshouse/Variants/Group_code_note/Slot_code_admin/CodeNote/Interactable aside for 90 s (3 failed walks with a path: a body in the way)
+[PO5 229.9s] pilot: t=5 at (13.0, -0.3, 5.0) corner (11.8, 4.4, 5.1) yaw_err 0.82 fwd=false path=35 mouse_mode=0 state=0 look=(76.24,0.00) pin_yaw=76.4341818209878 bot=false
+[PO5 230.3s] TEL worst_frame=40ms t=213 phase=3 phys=9.9ms proc=8.8ms nodes=9280 enemies=1 civs=6 crew=[0:0@(11.8, -0.3, 5.1) 1:0@(11.7, -0.3, 4.8) 2:0@(7.0, 0.0, 5.3) 3:0@(10.8, -0.3, 5.8) nearest_enemy=22.0m within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 234.8s] pilot: t=10 at (11.5, 0.0, 4.8) corner (11.5, 0.0, 5.4) yaw_err -0.00 fwd=true path=40 mouse_mode=0 state=0 look=(84.82,0.00) pin_yaw=84.8230020435885 bot=false
+[PO5 239.8s] pilot: t=15 at (11.5, 0.0, 3.5) corner (11.6, 0.2, 4.0) yaw_err 1.02 fwd=false path=42 mouse_mode=0 state=0 look=(90.13,0.00) pin_yaw=90.3190420394467 bot=false
+[PO5 240.3s] TEL worst_frame=90ms t=223 phase=3 phys=15.4ms proc=14.4ms nodes=9280 enemies=1 civs=6 crew=[0:0@(11.5, 0.0, 4.9) 1:0@(12.5, 0.0, 5.5) 2:0@(8.7, 0.0, 5.2) 3:0@(10.6, 0.0, 6.7) nearest_enemy=22.2m within15=0 input_enabled=true captured=false paused_by={  }]
+[PO5 244.9s] pilot: t=20 at (11.5, 0.0, 4.5) corner (11.5, 0.0, 5.4) yaw_err -0.00 fwd=true path=42 mouse_mode=0 state=0 look=(84.82,0.00) pin_yaw=84.8230028013577 bot=false
+[PO5 249.9s] pilot: t=25 at (11.6, 0.0, 5.5) corner (12.1, 0.2, 5.3) yaw_err 0.01 fwd=true path=37 mouse_mode=0 state=0 look=(86.74,0.00) pin_yaw=86.7519679999687 bot=false
+[PO5 250.4s] TEL worst_frame=184ms t=233 phase=3 phys=11.1ms proc=9.6ms nodes=9848 enemies=7 civs=6 crew=[0:0@(13.0, 0.0, 5.0) 1:0@(12.4, 0.0, 5.0) 2:0@(7.8, 0.0, 5.1) 3:0@(10.6, 0.0, 5.1) nearest_enemy=11.3m within15=2 input_enabled=true captured=false paused_by={  }]
+[PO5 254.9s] pilot: t=30 at (11.5, 0.0, 5.3) corner (11.5, 0.0, 5.4) yaw_err -0.00 fwd=true path=37 mouse_mode=0 state=0 look=(97.39,0.00) pin_yaw=97.3893747896882 bot=false
+[PO5 259.9s] pilot: t=35 at (11.8, -0.3, 5.1) corner (11.6, 0.0, 3.6) yaw_err -1.08 fwd=false path=35 mouse_mode=0 state=0 look=(101.79,0.00) pin_yaw=101.600184243879 bot=false
+[PO5 260.4s] TEL worst_frame=27ms t=243 phase=3 phys=12.9ms proc=12.3ms nodes=10350 enemies=8 civs=6 crew=[0:0@(11.6, 0.0, 3.9) 1:0@(12.4, 0.0, 5.5) 2:0@(6.5, 0.0, 5.3) 3:0@(8.8, 0.0, 5.4) nearest_enemy=3.4m within15=3 input_enabled=true captured=false paused_by={  }]
+[PO5 264.9s] pilot: t=40 at (11.5, 0.0, 5.5) corner (11.2, 4.4, 5.1) yaw_err -1.70 fwd=false path=38 mouse_mode=0 state=0 look=(96.62,0.00) pin_yaw=96.4293712204753 bot=false
+[PO5 269.9s] pilot: t=45 at (4.8, 0.0, 5.5) corner (4.1, 4.4, 5.5) yaw_err 0.00 fwd=true path=38 mouse_mode=0 state=0 look=(102.16,0.00) pin_yaw=102.15724554904 bot=false
+[PO5 270.4s] TEL worst_frame=32ms t=253 phase=3 phys=14.2ms proc=15.0ms nodes=10459 enemies=7 civs=6 crew=[0:0@(3.9, 0.0, 5.5) 1:0@(7.8, 0.0, 5.2) 2:0@(7.2, 0.0, 5.0) 3:0@(4.9, 0.0, 5.0) nearest_enemy=5.6m within15=6 input_enabled=true captured=false paused_by={  }]
+[PO5 271.3s] EVENT crew 1 state 0 -> 2 at (6.1, 0.0, 5.0) (t=254)
+[PO5 274.9s] pilot: t=50 at (10.5, -0.3, 5.0) corner (11.4, 0.2, 5.0) yaw_err -0.00 fwd=true path=37 mouse_mode=0 state=0 look=(105.23,0.00) pin_yaw=105.228897000118 bot=false
+[PO5 277.3s] pilot: STUCK at (10.8, -0.3, 5.0) heading to (11.4, 0.2, 5.0); rays: h0.40:/root/HeistRuntime/Dynamic/Npc_bulwark8@(11.5, 0.1, 5.0), h1.00:/root/HeistRuntime/Dynamic/Npc_bulwark8/Shield@(11.2, 0.7, 5.0), slide:/root/HeistRuntime/Dynamic/Npc_bulwark8/Shield@(11.2, 0.5, 5.1) n=(-1.0, 0.0, -0.2), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 277.3s] pilot: detour right 0.7 m to (11.1, 0.2, 5.6) (attempt 1)
+[PO5 277.3s] EVENT crew 1 state 2 -> 0 at (6.1, -0.3, 5.0) (t=260)
+[PO5 279.7s] pilot: STUCK at (10.9, -0.3, 5.6) heading to (11.5, 0.2, 5.4); rays: h0.40:/root/HeistRuntime/Dynamic/Npc_bulwark8@(11.6, 0.1, 5.4), h1.00:/root/HeistRuntime/Dynamic/Npc_bulwark8/Shield@(11.3, 0.7, 5.5), slide:/root/HeistRuntime/Dynamic/Npc_bulwark8/Shield@(11.2, 0.5, 5.4) n=(-0.9, 0.0, 0.5), slide:/root/HeistRuntime/Glasshouse/Geometry/Building/InteriorWalls/G_Corridor_S_04@(11.1, 0.4, 5.9) n=(-0.6, 0.0, -0.8), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 279.7s] pilot: detour left 0.7 m to (11.0, 0.2, 5.0) (attempt 2)
+[PO5 280.4s] TEL worst_frame=66ms t=263 phase=3 phys=18.2ms proc=13.8ms nodes=10562 enemies=8 civs=6 crew=[0:0@(10.8, -0.3, 5.0) 1:0@(9.9, -0.3, 5.5) 2:0@(7.0, 0.0, 5.2) 3:0@(4.9, 0.0, 5.5) nearest_enemy=0.9m within15=6 input_enabled=true captured=false paused_by={  }]
+[PO5 280.6s] pilot: t=55 at (10.8, -0.3, 5.0) corner (11.4, 0.2, 5.0) yaw_err -0.00 fwd=true path=37 mouse_mode=0 state=0 look=(105.16,0.00) pin_yaw=105.164721589675 bot=false
+[PO5 282.1s] pilot: STUCK at (10.8, -0.3, 5.0) heading to (11.4, 0.2, 5.0); rays: h1.00:/root/HeistRuntime/Dynamic/Npc_bulwark8/Shield@(11.1, 0.7, 5.0), slide:/root/HeistRuntime/Dynamic/Npc_bulwark8/Shield@(11.1, 0.5, 5.1) n=(-0.9, 0.0, -0.4), slide:/root/HeistRuntime/Glasshouse/Geometry/Building/InteriorWalls/G_Corridor_N_W_04@(10.8, 0.4, 4.6) n=(0.0, 0.0, 1.0), slide:/root/HeistRuntime/Dynamic/Npc_bulwark8/Shield@(11.1, 0.5, 5.1) n=(-0.9, 0.0, -0.4), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 282.1s] pilot: detour right 1.2 m to (11.0, 0.2, 6.4) (attempt 3)
+[PO5 286.7s] pilot: t=60 at (8.6, 0.0, 5.3) corner (9.5, 0.2, 5.2) yaw_err -0.00 fwd=true path=38 mouse_mode=0 state=0 look=(99.02,-0.00) pin_yaw=99.0171398263483 bot=false
+[PO5 286.7s] pilot: goto (3.6, 4.4, 8.2) FAILED at (8.7, 0.0, 5.2) after 60.0 s
+[PO5 286.7s] FINDING objective code: marker at (3.7, 4.9, 8.9) not reachable
+[PO5 287.3s] shot auto_269 skipped (headless)
+[PO5 290.4s] TEL worst_frame=115ms t=273 phase=3 phys=14.1ms proc=9.9ms nodes=11048 enemies=8 civs=6 crew=[0:0@(11.5, 0.0, 3.9) 1:0@(12.5, 0.0, 3.7) 2:0@(6.9, 0.0, 5.2) 3:0@(9.8, 0.0, 5.1) nearest_enemy=2.4m within15=2 input_enabled=true captured=false paused_by={  }]
+[PO5 292.3s] pilot: t=5 at (11.7, -0.3, 5.1) corner (11.6, 0.0, 3.6) yaw_err -0.75 fwd=false path=35 mouse_mode=0 state=0 look=(107.69,0.00) pin_yaw=107.498346034843 bot=false
+[PO5 297.3s] pilot: t=10 at (11.5, 0.0, 5.5) corner (11.2, 4.4, 5.1) yaw_err -2.10 fwd=false path=38 mouse_mode=0 state=0 look=(109.75,0.00) pin_yaw=109.562995454877 bot=false
+[PO5 297.4s] EVENT crew 1 state 0 -> 2 at (12.5, 0.0, 5.5) (t=280)
+[PO5 300.4s] TEL worst_frame=77ms t=283 phase=3 phys=21.3ms proc=14.7ms nodes=11260 enemies=6 civs=6 crew=[0:0@(11.6, 0.0, 3.6) 1:2@(12.5, 0.0, 5.5) 2:0@(8.6, 0.0, 5.3) 3:0@(11.4, 0.0, 5.5) nearest_enemy=3.9m within15=4 input_enabled=true captured=false paused_by={  }]
+[PO5 302.3s] pilot: t=15 at (11.9, -0.3, 5.3) corner (11.6, 0.0, 3.6) yaw_err 0.81 fwd=false path=37 mouse_mode=0 state=0 look=(106.24,0.00) pin_yaw=106.42860810914 bot=false
+[PO5 304.7s] EVENT crew 1 state 2 -> 0 at (12.5, -0.3, 5.5) (t=287)
+[PO5 305.4s] pilot: STUCK at (11.6, -0.3, 4.6) heading to (11.6, 0.0, 3.6); rays: h0.40:/root/HeistRuntime/Dynamic/Crew3@(11.6, 0.1, 4.2), h1.00:/root/HeistRuntime/Dynamic/Crew3@(11.6, 0.7, 4.4), slide:/root/HeistRuntime/Glasshouse/Gameplay/Doors/WCDoor/Visual/PropDoorSingleIvoryT20/Model/Frame/Collision@(11.9, 0.4, 4.6) n=(-1.0, 0.0, 0.1), vel=(-0.3, 0.0, -3.4) floor=true state=0
+[PO5 305.4s] pilot: detour right 0.7 m to (12.3, 0.2, 4.0) (attempt 1)
+[PO5 308.8s] pilot: t=20 at (12.0, 0.0, 5.6) corner (12.4, 0.2, 5.3) yaw_err -0.00 fwd=true path=38 mouse_mode=0 state=0 look=(112.02,0.00) pin_yaw=112.016332996076 bot=false
+[PO5 310.4s] TEL worst_frame=91ms t=293 phase=3 phys=17.0ms proc=14.1ms nodes=11693 enemies=10 civs=6 crew=[0:0@(11.8, 0.0, 5.5) 1:0@(10.3, 0.0, 5.1) 2:0@(11.5, 0.0, 4.9) 3:0@(10.3, 0.0, 5.0) nearest_enemy=0.7m within15=9 input_enabled=true captured=false paused_by={  }]
+[PO5 311.0s] pilot: STUCK at (11.8, 0.0, 5.5) heading to (12.3, 0.2, 5.3); rays: slide:/root/HeistRuntime/Dynamic/Npc_police3@(12.0, 0.9, 5.2) n=(-0.5, 0.0, 0.9), slide:/root/HeistRuntime/Glasshouse/Geometry/Building/InteriorWalls/G_Corridor_S_04@(11.8, 0.4, 5.9) n=(0.0, 0.0, -1.0), slide:/root/HeistRuntime/Dynamic/Npc_police3@(12.0, 0.9, 5.2) n=(-0.5, 0.0, 0.9), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 311.0s] pilot: detour left 0.7 m to (11.8, 0.2, 5.0) (attempt 2)
+[PO5 313.8s] EVENT crew 0 state 0 -> 2 at (11.9, 0.0, 5.5) (t=296)
+[PO5 313.8s] pilot: goto aborted, crew state 2 (fight from the floor)
+[PO5 313.9s] pilot: goto (3.6, 4.4, 8.2) FAILED at (11.9, 0.0, 5.5) after 24.1 s
+[PO5 313.9s] bot 3 interaction started on 70: speed 0.00 st0 REVIVE
+[PO5 314.0s] bot 3 interaction cancelled on 70: speed 0.00 st0 REVIVE
+[PO5 314.0s] EVENT crew 0 state 2 -> 0 at (11.9, 0.0, 5.6) (t=296)
+[PO5 315.4s] EVENT crew 0 state 0 -> 1 at (12.6, -0.3, 5.2) (t=298)
+[PO5 315.4s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 315.4s] pilot: goto (3.6, 4.4, 8.2) FAILED at (12.5, -0.3, 5.3) after 1.0 s
+[PO5 315.5s] bot 3 interaction started on 70: speed 0.00 st0 REVIVE
+[PO5 316.1s] bots while down: 1:COVER st0 tgt=-1 5.0m sess=-, 2:COVER st0 tgt=-1 1.3m sess=-, 3:REVIVE st0 tgt=0 0.9m sess=revive 0.6/6.0
+[PO5 320.1s] bots while down: 1:COVER st0 tgt=-1 5.0m sess=-, 2:COVER st0 tgt=-1 7.1m sess=-, 3:REVIVE st0 tgt=0 0.9m sess=revive 4.6/6.0
+[PO5 320.3s] TEL worst_frame=108ms t=303 phase=3 phys=13.4ms proc=14.8ms nodes=11901 enemies=6 civs=6 crew=[0:1@(11.9, -0.3, 5.5) 1:0@(6.9, 0.0, 5.3) 2:0@(4.9, 0.0, 5.3) 3:0@(11.4, -0.3, 4.8) nearest_enemy=1.4m within15=4 input_enabled=true captured=false paused_by={  }]
+[PO5 321.5s] EVENT crew 0 state 1 -> 0 at (11.9, -0.3, 5.5) (t=304)
+[PO5 327.1s] pilot: t=5 at (11.6, 0.0, 3.6) corner (11.6, 0.0, 3.6) yaw_err -0.00 fwd=true path=38 mouse_mode=0 state=0 look=(113.14,0.00) pin_yaw=113.144151799648 bot=false
+[PO5 328.1s] EVENT crew 0 state 0 -> 1 at (11.6, 0.0, 4.0) (t=310)
+[PO5 328.1s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 328.2s] pilot: goto (3.6, 4.4, 8.2) FAILED at (11.6, 0.0, 3.9) after 6.0 s
+[PO5 328.2s] pilot: could not reach /root/HeistRuntime/Glasshouse/Variants/Group_code_note/Slot_code_admin/CodeNote/Interactable (read_note)
+[PO5 328.2s] pilot: read_note out of reach after the walk: not pressing
+[PO5 328.2s] bots while down: 1:REVIVE st0 tgt=0 1.0m sess=-, 2:FOLLOW st0 tgt=-1 1.6m sess=-, 3:FOLLOW st0 tgt=-1 3.3m sess=-
+[PO5 328.2s] bot 1 interaction started on 70: speed 0.00 st0 REVIVE
+[PO5 330.4s] TEL worst_frame=64ms t=313 phase=3 phys=16.0ms proc=14.7ms nodes=12190 enemies=7 civs=6 crew=[0:1@(11.8, 0.0, 3.9) 1:0@(12.5, 0.0, 3.7) 2:0@(10.8, 0.0, 6.6) 3:0@(11.6, 0.0, 5.5) nearest_enemy=1.0m within15=5 input_enabled=true captured=false paused_by={  }]
+[PO5 332.1s] bots while down: 1:REVIVE st0 tgt=0 0.8m sess=revive 4.0/6.0, 2:FOLLOW st0 tgt=-1 2.8m sess=-, 3:FOLLOW st0 tgt=-1 2.0m sess=-
+[PO5 334.2s] EVENT crew 0 state 1 -> 0 at (11.8, 0.0, 3.9) (t=316)
+[PO5 339.2s] pilot: STUCK at (11.8, 0.0, 5.4) heading to (12.3, 0.2, 5.3); rays: slide:/root/HeistRuntime/Dynamic/Npc_police24@(12.2, 0.9, 5.5) n=(-1.0, 0.0, -0.3), slide:/root/HeistRuntime/Dynamic/Npc_police34@(12.1, 0.9, 5.1) n=(-0.7, 0.0, 0.8), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 339.2s] pilot: detour left 0.7 m to (12.0, 0.2, 5.0) (attempt 1)
+[PO5 340.4s] TEL worst_frame=90ms t=323 phase=3 phys=14.9ms proc=11.1ms nodes=12587 enemies=6 civs=6 crew=[0:0@(11.5, 0.0, 3.6) 1:0@(6.6, 0.0, 5.2) 2:0@(11.7, 0.0, 4.9) 3:0@(8.8, 0.0, 5.2) nearest_enemy=2.5m within15=3 input_enabled=true captured=false paused_by={  }]
+[PO5 340.4s] pilot: t=5 at (11.5, 0.0, 3.8) corner (11.5, 0.0, 5.4) yaw_err 0.00 fwd=true path=41 mouse_mode=0 state=0 look=(122.52,0.00) pin_yaw=122.522111251286 bot=false
+[PO5 341.5s] pilot: STUCK at (11.9, 0.0, 5.4) heading to (12.3, 0.2, 5.3); rays: h0.05:/root/HeistRuntime/Dynamic/Npc_police34/Visual/PatrolOfficerDuty/Skeleton3D/Ragdoll/ShinL@(12.3, 0.1, 5.3), vel=(3.3, 0.0, -1.2) floor=true state=0
+[PO5 341.5s] pilot: detour left 0.7 m to (11.6, 0.2, 4.6) (attempt 2)
+[PO5 344.6s] pilot: goto (11.6, 0.2, 4.6) FAILED at (9.5, -0.3, 4.9) after 3.0 s
+[PO5 344.6s] pilot: detour right 0.7 m to (10.0, 0.2, 5.5) (attempt 2)
+[PO5 346.0s] EVENT crew 0 state 0 -> 2 at (7.6, -0.2, 4.9) (t=328)
+[PO5 346.0s] pilot: goto aborted, crew state 2 (fight from the floor)
+[PO5 346.0s] pilot: goto (10.0, 0.2, 5.5) FAILED at (7.6, -0.3, 4.9) after 1.4 s
+[PO5 346.0s] bot 2 interaction started on 70: speed 0.00 st0 REVIVE
+[PO5 346.4s] pilot: goto aborted, crew state 2 (fight from the floor)
+[PO5 346.4s] pilot: goto (3.6, 4.4, 8.2) FAILED at (7.6, -0.3, 4.9) after 6.0 s
+[PO5 346.4s] pilot: could not reach /root/HeistRuntime/Glasshouse/Variants/Group_code_note/Slot_code_admin/CodeNote/Interactable (read_note)
+[PO5 346.4s] pilot: read_note out of reach after the walk: not pressing
+[PO5 346.4s] bots while down: 1:COVER st0 tgt=-1 2.7m sess=-, 2:REVIVE st0 tgt=0 0.7m sess=revive 0.3/6.0, 3:COVER st0 tgt=-1 0.8m sess=-
+[PO5 350.1s] bot 2 interaction cancelled on 70: speed 0.00 st0 REVIVE
+[PO5 350.1s] EVENT crew 0 state 2 -> 0 at (7.6, -0.3, 4.9) (t=332)
+[PO5 350.4s] TEL worst_frame=141ms t=333 phase=3 phys=15.4ms proc=15.6ms nodes=11538 enemies=7 civs=6 crew=[0:0@(7.6, -0.3, 4.9) 1:0@(5.0, 0.0, 5.3) 2:0@(7.5, -0.3, 5.6) 3:0@(7.0, 0.0, 5.3) nearest_enemy=3.8m within15=4 input_enabled=true captured=false paused_by={  }]
+[PO5 355.4s] pilot: t=5 at (13.9, 1.9, 1.9) corner (13.9, 2.3, 1.2) yaw_err 0.00 fwd=true path=32 mouse_mode=0 state=0 look=(119.33,0.00) pin_yaw=119.333074249318 bot=false
+[PO5 360.4s] TEL worst_frame=48ms t=343 phase=3 phys=15.3ms proc=11.8ms nodes=9519 enemies=9 civs=6 crew=[0:0@(4.4, 4.2, 5.5) 1:0@(10.8, 4.2, 5.5) 2:0@(11.9, 4.2, 5.0) 3:0@(12.8, 4.2, 5.0) nearest_enemy=10.4m within15=5 input_enabled=true captured=false paused_by={  }]
+[PO5 360.4s] pilot: t=10 at (4.3, 4.2, 5.5) corner (4.1, 4.2, 6.9) yaw_err 0.35 fwd=true path=11 mouse_mode=0 state=0 look=(115.69,0.00) pin_yaw=115.87823501304 bot=false
+[PO5 362.5s] EVENT objective code -> 2 t=345
+[PO5 362.6s] pilot: use CodeNote (read_note) -> OK in 1.0 s
+[PO5 364.8s] EVENT crew 2 state 0 -> 2 at (5.1, 4.2, 5.5) (t=347)
+[PO5 367.6s] pilot: t=5 at (9.2, 4.2, 5.6) corner (10.0, 4.4, 5.4) yaw_err 0.00 fwd=true path=31 mouse_mode=0 state=0 look=(117.96,0.00) pin_yaw=117.956558071868 bot=false
+[PO5 368.6s] pilot: STUCK at (9.2, 4.2, 5.6) heading to (10.0, 4.4, 5.4); rays: slide:/root/HeistRuntime/Dynamic/Npc_police5@(9.2, 5.1, 5.2) n=(-0.1, 0.0, 1.0), slide:/root/HeistRuntime/Glasshouse/Geometry/Building/InteriorWalls/U_Corridor_S_02@(9.2, 4.6, 5.9) n=(-0.0, 0.0, -1.0), slide:/root/HeistRuntime/Dynamic/Npc_police5@(9.2, 5.1, 5.2) n=(-0.1, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 368.6s] pilot: detour right 0.7 m to (9.6, 4.4, 6.5) (attempt 1)
+[PO5 370.0s] EVENT crew 0 state 0 -> 1 at (10.1, 4.2, 5.6) (t=352)
+[PO5 370.0s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 370.1s] pilot: goto (9.6, 4.4, 6.5) FAILED at (10.1, 4.2, 5.5) after 1.4 s
+[PO5 370.1s] pilot: detour left 0.7 m to (10.3, 4.4, 5.0) (attempt 1)
+[PO5 370.1s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 370.1s] pilot: goto (10.3, 4.4, 5.0) FAILED at (10.1, 4.2, 5.5) after 0.0 s
+[PO5 370.4s] TEL worst_frame=71ms t=353 phase=3 phys=13.6ms proc=9.3ms nodes=9436 enemies=12 civs=6 crew=[0:1@(10.0, 4.2, 5.6) 1:0@(4.0, 4.2, 5.6) 2:2@(5.1, 4.2, 5.5) 3:0@(6.0, 4.2, 5.5) nearest_enemy=0.6m within15=10 input_enabled=true captured=false paused_by={  }]
+[PO5 370.5s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 370.5s] pilot: goto (7.5, 0.2, 4.5) FAILED at (9.6, 4.2, 5.7) after 6.0 s
+[PO5 370.5s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 370.5s] pilot: goto (7.1, 0.2, 5.3) FAILED at (9.7, 4.2, 5.7) after 0.0 s
+[PO5 370.5s] pilot: door WorkshopDoor (lockpick) blocked: ui.blocked.state
+[PO5 370.5s] bots while down: 1:REVIVE st0 tgt=2 5.8m sess=revive 5.3/6.0, 2:IDLE st2 tgt=-1 4.6m sess=-, 3:REVIVE st0 tgt=0 3.2m sess=-
+[PO5 371.0s] bot 3 interaction started on 70: speed 0.00 st0 REVIVE
+[PO5 371.2s] EVENT crew 2 state 2 -> 0 at (5.1, 4.2, 5.5) (t=353)
+[PO5 374.6s] bots while down: 1:FOLLOW st0 tgt=-1 2.4m sess=-, 2:FOLLOW st0 tgt=-1 3.0m sess=-, 3:REVIVE st0 tgt=0 0.6m sess=revive 3.6/6.0
+[PO5 377.0s] EVENT crew 0 state 1 -> 0 at (8.2, 4.2, 5.5) (t=359)
+[PO5 377.5s] shot auto_359 skipped (headless)
+[PO5 380.3s] EVENT crew 0 state 0 -> 2 at (10.3, 4.2, 5.2) (t=362)
+[PO5 380.3s] pilot: goto aborted, crew state 2 (fight from the floor)
+[PO5 380.3s] bot 3 interaction started on 70: speed 0.00 st0 REVIVE
+[PO5 380.3s] pilot: goto (7.5, 0.2, 4.5) FAILED at (10.3, 4.2, 5.2) after 2.7 s
+[PO5 380.3s] pilot: goto aborted, crew state 2 (fight from the floor)
+[PO5 380.3s] pilot: goto (7.1, 0.2, 5.3) FAILED at (10.3, 4.2, 5.2) after 0.0 s
+[PO5 380.3s] pilot: door WorkshopDoor (lockpick) blocked: ui.blocked.state
+[PO5 380.3s] bots while down: 1:FOLLOW st0 tgt=-1 2.4m sess=-, 2:FOLLOW st0 tgt=-1 2.8m sess=-, 3:REVIVE st0 tgt=0 0.4m sess=revive 0.1/6.0
+[PO5 380.4s] TEL worst_frame=67ms t=363 phase=3 phys=14.8ms proc=12.6ms nodes=8993 enemies=7 civs=6 crew=[0:2@(10.3, 4.2, 5.2) 1:0@(8.0, 4.2, 4.5) 2:0@(7.5, 4.2, 5.1) 3:0@(10.1, 4.2, 5.6) nearest_enemy=0.7m within15=5 input_enabled=true captured=false paused_by={  }]
+[PO5 384.4s] bots while down: 1:FOLLOW st0 tgt=-1 2.4m sess=-, 2:FOLLOW st0 tgt=-1 2.8m sess=-, 3:REVIVE st0 tgt=0 0.4m sess=revive 4.0/6.0
+[PO5 386.3s] EVENT crew 0 state 2 -> 0 at (10.3, 4.2, 5.2) (t=368)
+[PO5 390.4s] TEL worst_frame=55ms t=373 phase=3 phys=20.6ms proc=16.0ms nodes=8790 enemies=7 civs=6 crew=[0:0@(10.2, 4.2, 5.0) 1:0@(10.0, 4.2, 6.5) 2:0@(10.4, 4.2, 6.0) 3:0@(8.7, 4.2, 5.5) nearest_enemy=2.5m within15=5 input_enabled=true captured=false paused_by={  }]
+[PO5 391.4s] pilot: t=5 at (12.2, 4.2, 5.0) corner (11.6, 0.2, 5.0) yaw_err -0.84 fwd=false path=22 mouse_mode=0 state=0 look=(115.53,0.00) pin_yaw=115.34145598774 bot=false
+[PO5 393.5s] pilot: reload in a lull (weapon.kestrel_p9 0/17, reserve 140)
+[PO5 396.4s] pilot: t=10 at (15.1, 2.6, 1.9) corner (15.1, 2.4, 1.2) yaw_err -0.00 fwd=true path=16 mouse_mode=0 state=0 look=(113.08,0.00) pin_yaw=113.084674809832 bot=false
+[PO5 399.0s] EVENT crew 0 state 0 -> 5 at (13.7, 2.1, 1.4) (t=381)
+[PO5 399.0s] pilot: goto aborted, crew state 5 (fight from the floor)
+[PO5 399.0s] pilot: goto (7.5, 0.2, 4.5) FAILED at (13.7, 2.1, 1.4) after 12.6 s
+[PO5 399.0s] pilot: goto aborted, crew state 5 (fight from the floor)
+[PO5 399.1s] pilot: goto (7.1, 0.2, 3.7) FAILED at (13.7, 2.1, 1.4) after 0.0 s
+[PO5 399.1s] pilot: door WorkshopDoor (lockpick) blocked: ui.blocked.state
+[PO5 399.1s] FAIL player in custody at 381 s
+[PO5 399.1s] shot end skipped (headless)
+[PO5 399.1s] STATS difficulty=1 police=100 peak_alive=12 specials={ &"enemy.bulwark": 16, &"enemy.longshot": 2, &"enemy.stinger": 5 } composition={ &"enemy.security_officer": 2, &"enemy.patrol_officer": 24, &"enemy.bulwark": 16, &"enemy.tac_light": 51, &"enemy.longshot": 2, &"enemy.stinger": 5 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 3 custody 1 revived 4 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 3 regained 296; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 1 regained 210; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 1 regained 534
+[PO5 399.1s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4503

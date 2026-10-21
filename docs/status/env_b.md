@@ -3,6 +3,98 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## To the LEAD: (updated 2026-10-21 12:45; send_message to you is refused, so read this)
+-10. **New: D-145 DB Tense on r257 (+ the engage fix), both cells done. For your lever ruling:**
+
+    | Cell (headless auto_loud x1.0, solo + 3 bots) | Wins | Player downs (s1 / s2 / s3) | Median |
+    |---|---|---|---|
+    | Plain | **2/3** (s2 PASS 1226 s, s3 PASS 889 s; s1 custody 642 s) | 3 / 3 / 1 | 3 |
+    | `--po5-doctor-bag` | **2/3** (s2 PASS 1273 s, s3 PASS 882 s; s1 custody 684 s) | 6 / 2 / 2 | **2** |
+
+    The doctor bag meets the <= 2 median (s1 still loses: 6 downs, the bag twice). Seed 1 is the hard roll in both
+    cells (custody at ~640-690 s). B's read: 2/3 + median 2 with a doctor bag is PD2-normal for Hard; if you want
+    seed 1 to pass too, the Bulwark cap 3 -> 2 is the next lever (s2 fought 40 Bulwarks plain).
+    Also pushed: **8cdcf64d GPU-19 HUD fix** (device timers / objective badges step below the banner + boss stack).
+-9. **New: D-145 DB Tense PLAIN on r257 (+ the engage fix for s2): 2/3.** s1 custody 642 s (3 player downs); s2 PASS
+   1226 s (3 downs, 5 revives, a long fight: 40 Bulwarks, 9 Stingers); s3 PASS 889 s (1 down). Player downs 3 / 3 / 1
+   (median 3). **Doctor-bag cell running**: s1 custody 684 s after **6** player downs (the bag reset the down
+   counter), s2 / s3 in progress; numbers here when done.
+-8. **New: D-145 DB Tense on r257 (P's capsule fix), running, not idle.** Plain r257 x3: s1 custody 642 s (3 player
+   downs), s3 PASS 889 s (1 down), **s2 crashed (signal 11) in A's harness**: `po5_pilot.gd engage()` resumes on a
+   freed enemy after an await (same crash as my r256 doctor-bag s1). A's fix **60d8c6ab (env/a-core, harness only)
+   is not on trunk yet: please merge it**. Now running in a scratch worktree (r257 + 60d8c6ab cherry-picked, not on
+   env/b-content): plain s2 re-run (at t=683 s, crew all up, no crash), then the doctor-bag cell x3. Numbers here when
+   done. r256 doctor-bag partial (before the fix): s1 crash, s2 custody 657 s (all_custody after 1 player down).
+-7. **New: D-145 DB Tense on trunk r256 3312326b** (cap 1 Longshot + A's Longshot timing + revive fixes, headless
+   auto_loud x1.0, solo + 3 bots, no doctor bag): **1/3**. s3 PASS 873 s (player downs 1); s1 custody 583 s and s2
+   custody 664 s, both after the player's 3 downs (revives land: 5 and 3). Police 171 / 186 / 101, Longshots 2-3 per
+   run, Bulwarks 11-21. Across the four Tense batches since the revive fix: 1/3, 2/3, 1/3, 1/3: Tense on DB still
+   fails on the player's damage over the ~10 min loud phase. Next lever is A's / yours (damage grace, Stinger,
+   health, or the opt-in doctor bag in the harness); B's data levers left: Tense Bulwark cap 3 -> 2 or Stinger 1 -> 0.
+-6. **New: r255 note + DB Tense on trunk.** Your r255 message says the Longshot cap is on trunk, but **trunk
+   e9c8744f still has `tense.tres` longshot 2**: my 8e88e851 (cap 1) and A's f01d11db (Longshot timing) both missed
+   r255. env/b-content (417b4a75 = trunk r255 + the cap) is ready to merge. DB Tense x3 on that branch (cap only, no
+   A timing, no doctor bag): **1/3** (s3 PASS 805 s, 0 player downs; s1 custody 570 s, 3 downs; s2 all_custody at
+   684 s: a tase, a down, custody). With A's timing added (my run on A's f9b86af0 + the cap): **2/3**. So the
+   ruling needs both commits on trunk; then I re-run on trunk.
+-5. **New: D-148 XP option D applied** (xp_curve scale 1.0 = PD2's 23.28 M; `PayoutTweak.base_xp_by_heist`
+   GH 1,500 / ND, DB 2,000 / SL, GN 2,500 / OF 3,000, failure XP from the same base; PD2 multipliers kept).
+   Tests updated (xp_curve, payout_calculator + a D-148 test, heist_freshness: also fixed its stale v9 pin, the
+   save is v10 since PO-19). Pace re-run and the **level-unlock re-check** in `game/content/docs/progression_pace.md`
+   (D-148 section): every item unlock (<= L45) still comes within ~32 clears (was 24); **the board's level-80 Lethal /
+   Cataclysm gate now takes ~230 clears (was 131)**: PO call, B suggests lowering it to 70 (135 clears = the old
+   time-to-Lethal); not changed.
+   **pd2_fidelity is yours (docs/design/):** suggested P1 "Ours" text: "Level 0-100, same point formula (120). XP
+   curve: PD2's 900 -> 1,000,000 per level (~23.3 M), D-148. Base heist XP by size (S 1,500 / M 2,000 / L 2,500-3,000,
+   PayoutTweak.base_xp_by_heist) + 250 per bag, PD2 difficulty multipliers."
+-4. **New: D-145 DB Tense with the 1-Longshot cap (8e88e851) + A's Longshot timing (f01d11db) + nav fix: 2/3**
+   (s2 PASS 1008 s, s3 PASS 865 s, s1 custody 599 s). Player downs 3 / 3 / 1 (median 3, target <= 2). No doctor bag.
+   **New: RT content plan** (paper, no RT data): `game/content/docs/rt_content_plan.md`: def values (base $85k, D-148
+   base XP 2,500), strings (13 objective keys exist; ~40 new: preplan points, briefing steps, rare events, mode label),
+   ~35-40 VO lines (Mercer + Reyes), briefing/blueprint after C's G1, preplan (all assets exist except
+   `asset.c4_drop`, needs A's QC-84), 6 achievements (5 on existing conditions, 1 needs a variant condition).
+-3. **New: XP progression pace model for the PO: `game/content/docs/progression_pace.md`** (no data changed;
+   docs/design/ is not B-owned). Script `tests/b/tools/progression_pace.gd` drives the real payout / freshness /
+   stealth-bank / XpCurve code. Findings: XP is flat per heist (2000 + 250/bag x difficulty); our curve has PD2's
+   endpoints (900 -> 1 M per level) at half PD2's 23 M total; 6 Routine clears = L21, one first Cataclysm clear =
+   L26-29; level 100 = 221 Cataclysm / 310 Brutal / ~3,100 Routine clears rotating (grinding OF alone ~6x slower,
+   D-139). Options A (curve x4), B (flatter multipliers), C (heist-size base), D (curve x2 = PD2 + size base;
+   B's pick: first OF clear L6 / L25, 6 Routine clears L17, ~408 Cataclysm clears to 100) with tables.
+-2. **New: GPU-9 review (gpu/renders/b): fixed on env/b-content.**
+   - 1080p real-input OF (13 shots): clean. Loud OF HUD (6 shots): the Turret Van event marker clamped to the left
+     edge drew its label off-screen ("URRET VAN") -> labels of objective and assault-event markers now stay inside the
+     screen (ObjectiveMarkers.label_x; test_assault_events).
+   - Loud payday at 720p: the third achievement description ran under the fold -> payday descriptions cap at 2 lines
+     with an ellipsis (the trimmed tail repeats the REWARD line). Evidence _review/r252_gpu_review (before/after).
+   - The 6 "QA ISSUE overlap" lines (payday title / Heist complete x the achievement toast) are rect false positives:
+     full-width labels under the toast, no text overlap in the shots.
+   - of_run_capture + crew_capture now keep profiles under user:// (they wrote profiles/ into the out dir).
+   - For A (not B): with a saw running on the cash-cage padlock the prompt says "Press F to open / Can't do that right
+     now" (ui.blocked.state); a device-running reason fits better, and B's ui.blocked.device_running string reads "The
+     drill is running", so a per-device key (or a neutral "Already being cut") is needed if A switches to it.
+-1. **New: D-144 next-heist prep notes (RT + Afterhours)**: `game/content/docs/next_heist_prep_rt_ah.md`. Both heists
+   have only menu stubs on B's side (hidden heist_list entries, board, accents) plus objective strings for every doc
+   tag (13 / 12); loot defs and contacts exist. Missing: everything map-derived (no world dir yet: intel, blueprint),
+   voice lines (0), achievements (0), briefing step strings, music, def values. Order of work listed there.
+0. **New: D-145 DB Tense on A's revive fix 0f317b90 + trunk e91fa3c0: 1/3, revives now land** (player revived 3/4/4).
+   s2 PASS 1126 s; s1 custody 451 s and s3 custody 513 s, both after the player's three downs (not unrevived
+   bleed-outs). Tense on DB now fails on player damage, not revive logic. r252 merged (c94bed27): briefing_intel 14,
+   heist_text_audit 5, heist_readiness 9, of_payday_e2e 5, heist_achievements 13 all green on the final OF art.
+1. **OF payday / achievement / progression e2e: PASS, no B data gaps.** New `tests/b/test_of_payday_e2e.gd` (5 tests):
+   HeistRuntime-shaped results through PayoutCalculator, apply_heist_payout (XpCurve) and Achievements.on_payday on a
+   fresh profile, every difficulty. Contract = $80k x (1 / 2 / 2.6 / 4.2 / 7.2 / 9.2) = the briefing preview; loot from
+   the LootDef values; stash + spending = total; XP grows with difficulty; the stealth clear banks OF's x1.25.
+   Stealth clear unlocks Quiet Weekend / No Harm Done / Bank Holiday (+ OF Cataclysm on d5) and grants vault_bolts,
+   limestone, guilloche (+ vault_dial); loud breach with every bag unlocks Burn and Hoist / Clearing House (bronze,
+   keystone); a failure pays and unlocks nothing (D-120); a second clear grants nothing twice.
+   Numbers (stealth, 4 cash + 2 bonds, level-1 profile): d0 $138.6k / 4,550 XP / level 9 ... d5 $1.275M / 63,700 XP /
+   level 29 (+ Offshore Million). **PO balance note:** one first OF clear takes a new player to level 9 (Routine) /
+   21 (Hazardous) / 29 (Cataclysm): the XP curve and xp_mult, not a data gap.
+2. **D-145 DB Tense on A's revive fix (df866e99 + trunk c04cb710): 1/3** (s3 PASS 1085 s; s1 custody 331 s, crew wipe;
+   s2 custody 753 s). Sent to A: revive sessions open at <= 1.2 m but never complete (bot 3 held `sess=true` ~16 s on
+   the downed player in s2; bot 2 ~8 s in s1). Re-run after A's next fix. Routine on r251 was 3/3 (entry below).
+3. Windowed command lines for the PO's GPU box: entry 2026-10-21 00:30 below.
+
 ## 2026-10-21 02:00: D-145 DB cells on trunk r251 c04cb710 (headless auto_loud x1.0, solo + 3 bots)
 - Routine: 3/3 PASS, player downs 2 / 0 / 0 (median 0 <= 2), no nav give-ups (A's doorway fixes hold).
   s1 926 s police 218 (bulwark 19); s2 1040 s police 135; s3 916 s police 103.

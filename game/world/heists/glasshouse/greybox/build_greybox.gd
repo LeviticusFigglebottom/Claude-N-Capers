@@ -1471,6 +1471,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
 	for o: Array in _obstructions:
 		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
+	preload("res://world/heists/shared/door_nav_clearance.gd").add(src, _root, nm)  # door throats (ENV P ghost 250)
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	_prune_islands(nm)
 	holder.queue_free()

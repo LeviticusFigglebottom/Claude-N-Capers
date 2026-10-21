@@ -14,6 +14,26 @@ const _GROUPS: Dictionary = {
 @export var tags: Array[StringName] = []
 ## For ENTRY points: is this a breachable window/door (VariantSlot may toggle).
 @export var breachable: bool = false
+## D-149 QC-RT1: off = out of its kind's group, so no consumer sees it (every lookup reads the groups live). Missions
+## toggle it when a pre-baked nav region swaps in (RT convoy layouts, the mixer, the Tannery gate).
+@export var enabled: bool = true:
+	set(v):
+		enabled = v
+		if is_inside_tree():
+			_sync_group()
+
 
 func _ready() -> void:
-	add_to_group(_GROUPS[kind])
+	_sync_group()
+
+
+func set_enabled(on: bool) -> void:
+	enabled = on
+
+
+func _sync_group() -> void:
+	var g: StringName = _GROUPS[kind]
+	if enabled and not is_in_group(g):
+		add_to_group(g)
+	elif not enabled and is_in_group(g):
+		remove_from_group(g)
