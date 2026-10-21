@@ -400,3 +400,8 @@ comparison made under similar load is meaningful; ideally both trees get re-run 
 - Partial log/PNGs: gpu/renders/a/of_a6_b1800_partial{,.txt}. CPU load over the partial run: avg 36.1%, min 18.2, max 49.3 (of_a6_b1800_partial_cpu_load.txt).
 - Timeline reached (heist t): same opening as GPU-19 (casing @3, keycard/codes/server/vault_gate/lasers @6, drill_delivery 2 @148); server_drives secured @310 and @497 (-> 2);
   **president_safe -> 2 @510; vault_drill/vault_breach -> 2 @559; bond_safe, deposit_boxes, vault_loot, gold_cage -> 1 @559**; vault_loot -> 1 @618. The run ended before the hoist/secure stage that GPU-20 was meant to test.
+## GPU-20b: NOT STARTED, PC out of memory (waiting for the owner)
+- Tree ready: local branch gpu/a6b = env/a-core d9dddd87. 7 GB free-RAM gate per the LEAD.
+- The gate saw free RAM fall from 7.4-9.0 GB (07:21-08:01) to **4.7 GB at 08:09**, so the run was still waiting at the gate. Then Claude Code's low-memory reaper stopped the waiting job too.
+  **Godot never launched; no import, no run.** Free RAM afterwards: 3.6 of 31.8 GB. Biggest users by process name: chrome 11470 MB, claude 2737 MB, svchost 1474 MB, Spotify 1367 MB, node 1245 MB.
+- Per the reaper's rule and the LEAD's, I won't retry until memory recovers (>= 10 GB free after a kill). I'm flagging it to the owner, since the memory is going to their apps and other sessions, which I won't close.
