@@ -1,0 +1,35 @@
+[OFP 268.7s t=10.8] GHOST rover_hall at the LD check (t=11)
+[OFP 290.9s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 290.9s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 300.9s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 316.9s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 326.9s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 336.9s t=73.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.3, 0.0, 0.2) walk
+[OFP 342.0s t=78.0] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 45 s
+[OFP 342.4s t=78.5] GHOST LD occupied (rover_hall at (30.6, 0.0, 12.2) (not on MO / loop (c))): skipping this smoke window
+[OFP 359.7s t=95.8] GHOST rover_hall at the LD check (t=96)
+[OFP 418.7s t=133.5] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (18.4, 0.0, -5.6) walk
+[OFP 428.7s t=143.5] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (16.9, 0.0, -3.1) walk
+[OFP 438.7s t=153.5] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (32.9, 0.0, -3.6) walk
+[OFP 447.7s t=162.5] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 1.0 s) after 29 s
+[OFP 448.2s t=163.0] GHOST lane clear after 0 s
+[OFP 470.3s t=185.1] GHOST rover_hall at the LD check (t=185)
+[OFP 472.3s t=187.0] GHOST dock corridor door not clear (Npc_guard3 (14.6, 0.0, 8.0)): waiting at (6.0, 0.2, -1.3)
+[OFP 473.1s t=187.9] GHOST waiting for the dock corridor door: Npc_guard3 (13.3, 0.0, 8.0)
+[OFP 483.1s t=197.9] GHOST waiting for the dock corridor door: Npc_guard3 (21.1, 0.0, 11.9) moving
+[OFP 483.6s t=198.4] GHOST dock corridor door clear after 10 s
+[OFP 516.9s t=207.7] GHOST step _g2_dock done at t=207.7 (+174.7 s)
+[OFP 516.9s t=207.7] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 553.1s t=243.8] DETECT Npc_guard5 kind 0 meter 0.10 at (7.0, -4.0, 8.4), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 569.6s t=260.3] GHOST rover_hall at the LD check (t=260)
+[OFP 655.4s t=335.8] DETECT Npc_civilian8 kind 1 meter 0.14 at (5.9, -4.0, 7.5), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 656.3s t=336.8] DETECT Npc_civilian8 kind 1 meter 0.65 at (5.1, -4.0, 6.8), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 657.4s t=337.8] DETECT Npc_civilian8 kind 1 meter 1.00 at (5.1, -4.0, 6.8), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 669.6s t=350.1] GHOST rover_hall at the LD check (t=350)
+[INFO][stealth][p1] ALARM: guard_radio (source 207)
+[OFP 671.5s t=352.0] ALARM guard_radio by Npc_guard5 (pilot at (1.7, -4.0, 4.1))
+[OFP 673.8s t=354.2] GHOST manager at (41.8, -4.0, 8.9), seen by 0 of 8 BB eyes when shouted
+[OFP 732.6s t=376.5] GHOST rover_hall at the LD check (t=377)
+[OFP 835.7s t=398.0] GHOST total 394.8 s game time (stopped); alarm guard_radio; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)
