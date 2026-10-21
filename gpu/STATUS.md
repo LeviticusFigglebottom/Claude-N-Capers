@@ -190,3 +190,12 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
   the new door_nav_clearance.gd from env/c-worlds or police spawn/escape points.
 - Exit-only ERRORs in both runs: Texture/ShapedText/Font RID leaks and `1 resources still in use at exit`.
 - 13 PNGs per run in `gpu/renders/a/<run>/`.
+## GPU-11a: ENV C Job C, OF burnt re-render with the scorch fix (tree: env/c-worlds 4edf7d91, local branch gpu/c2; includes ac0f4ce7 "projected decals on the TW floor and the VT soffit")
+- Import exit 0, 6 s. `of_burn_variant.gd -- --out=user://of_burn_test.tscn --drops`: exit 0, 6 s, `wrote user://of_burn_test.tscn (0)`.
+- `review_shots.tscn -- --scene=user://of_burn_test.tscn --warmup=60 --out=<repo>\docs\levels\ostrander_federal\g2\final\burnt --cameras=rc_vault_hole,rc_teller_workroom,rc_terrace,rc_ext_lane`:
+  exit 0, 12 s. No ERRORs.
+- **The scorch decals render but are very faint.** Sizes vs GPU-6: rc_vault_hole +436 B, rc_teller_workroom +98 B, rc_terrace +37 B, rc_ext_lane -23 B.
+  At full res, TW shows only a slight darkening of the carpet around the orange burn ring, and VT shows a faint mottled patch on the soffit just right of the hole.
+  At contact-sheet scale, both look the same as GPU-6. If the goal is a visible char/scorch, the decal albedo/opacity (or the
+  `modulate`/energy against this lighting) probably needs pushing a lot further.
+- Output: the 4 burnt JPEGs + contact_sheet + shots.md, replacing the GPU-6 set at the same path.
