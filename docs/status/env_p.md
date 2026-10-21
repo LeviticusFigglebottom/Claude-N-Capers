@@ -31,7 +31,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   for MO (east, x > 40, two loops from the next LD visit). Harness: a watcher records his LD visits; a window counts only if his last LD check was
   ≤ 90 s ago and he's now at x > 25. haz_m: he spawns into loop (b), with an LD check at t=11, so at the t=78 window he was on loop (a) at (35.3, 11.5) and
   came back to LD at t=96 into the pilot. Timing alone can't tell the phases apart (both windows ~67 s after a check); position can: east now = x > 38
-  and z < 9.5 (BC corridor east = MO / loop (c)). haz_n (seed 1002) is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
+  and z < 9.5 (BC corridor east = MO / loop (c)). **haz_n: step 2 PASS on Hazardous (t=207.7)**, C's cue working: the t=78 window was skipped
+  (rover_hall on loop (a)), the t=162 window was taken (him at BC east), and he passed DockCorridorDoor at t=185 while the pilot waited outside, unseen.
+  Step 3: the manager wait was still at GHOST_LK_WAIT (in LockerDoor's sight line), and rover_basement saw it through the door (t=267). Now step 3 waits
+  crouched in the probed LK hide too. haz_o is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
   the LEAD and A with the numbers.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the

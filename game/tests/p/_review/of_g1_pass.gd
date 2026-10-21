@@ -2668,13 +2668,17 @@ func _smoke_cue(max_s: float) -> bool:
 
 ## 3. Wait in LK for the manager's WC break; shout him down, tie him (tie 1), take the keycard.
 func _g3_keycard() -> bool:
-	if not await _go(_of(GHOST_LK_WAIT), 0.5, 90.0):
+	# Wait for the manager in the probed LK hide, crouched (haz_n: at GHOST_LK_WAIT, in LockerDoor's sight line, rover_basement
+	# filled 1.0 through the door at t=267; lkprobe: (3, 4) is seen from 2 BB eyes, the hide from none).
+	if not await _go(_lk_hide(), 0.4, 90.0):
 		return false
+	pilot.inp.press(&"crouch")
 	# A lambda captures locals by value: an assignment inside it never reaches `mgr`, so hold it in an array.
 	var found: Array[NpcBase] = [null]
 	await wait_until(func() -> bool:
 		found[0] = _civ_near(_of(GHOST_LK_WAIT), 6.0)
 		return found[0] != null, 600.0)
+	pilot.inp.release(&"crouch")
 	var mgr: NpcBase = found[0]
 	if mgr == null:
 		note("manager never came to LK")
