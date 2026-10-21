@@ -2231,35 +2231,69 @@ func _test_interact() -> bool:
 		return false
 	if not await _mask():
 		return await _fail("mask")
-	var rope: Ladder = _x("rope_ladder") as Ladder
-	var hoist: BagLift = _x("hoist") as BagLift
-	if rope != null and hoist != null:
-		await _enable_hole(rope, hoist)
-	for tag: StringName in [&"vault_gate", &"vault_door"]:
-		var d: Door = (_tagged(tag) if tag == &"vault_gate" else _x("vault_door")) as Door
+	if not rt.went_loud:
+		HeistRuntime.get_service(G.SVC_STEALTH).call(&"raise_alarm", &"ofp_interact", 0)
+		await wait_s(0.5)
+		rt.isolate_npc(null)
+		note("SHORTCUT alarm raised through the StealthDirector (loud sweep), NPCs out")
+	var vault_door: Door = _x("vault_door") as Door
+	for d: Door in [_tagged(&"vault_gate") as Door, vault_door]:
 		if d != null and not d.is_open:
 			d.set_open(true, true)
 			note("SHORTCUT %s opened instantly" % d.name)
 	await wait_s(1.0)
-	var isys: InteractionSystem = rt.interaction
 	var rows: PackedStringArray = PackedStringArray()
-	var ok_n: int = 0
-	var comps: Array[InteractableComponent] = []
+	var ok_n: Array[int] = [0]
+	# Pass 1, before the burn-through: the rope ladder hangs in VT's walkway and free climb grabs every walk past it
+	# (r254 first try: 20 min of ladder ping-pong), so the hoist and the lid wait for pass 2.
+	var first: Array[InteractableComponent] = []
+	var late: Array[InteractableComponent] = []
 	for n: Node in rt.find_children("*", "InteractableComponent", true, false):
 		var ic: InteractableComponent = n as InteractableComponent
 		var o: Node = ic.owner_node()
 		var nm: String = String(o.name) if o != null else ""
-		if o is Safe or o is DrillPoint or o is BagLift or o is DepositBox or o == _x("vault_door") \
-				or nm.contains("TimeLock") or nm.contains("Lid") or nm.contains("Thermal"):
-			comps.append(ic)
-	note("INTERACT sweep: %d components" % comps.size())
-	for ic: InteractableComponent in comps:
+		if o is BagLift or nm.contains("Lid"):
+			late.append(ic)
+		elif o is Safe or o is DrillPoint or o is DepositBox or nm.contains("TimeLock") or nm.contains("Thermal"):
+			first.append(ic)
+	note("INTERACT sweep: %d before the burn-through, %d after (vault door opened by the shortcut: not swept)" % [
+		first.size(), late.size()])
+	await _sweep(_nearest_order(first), rows, ok_n)
+	var rope: Ladder = _x("rope_ladder") as Ladder
+	var hoist: BagLift = _x("hoist") as BagLift
+	if rope != null and hoist != null:
+		await _enable_hole(rope, hoist)
+	await _sweep(_nearest_order(late), rows, ok_n)
+	note("INTERACT summary: %d / %d started" % [ok_n[0], rows.size()])
+	await shot("interact_end")
+	return true
+
+
+func _nearest_order(list: Array[InteractableComponent]) -> Array[InteractableComponent]:
+	var out: Array[InteractableComponent] = []
+	var left: Array[InteractableComponent] = list.duplicate()
+	var at: Vector3 = pilot.crew.global_position
+	while not left.is_empty():
+		var best: int = 0
+		for k: int in left.size():
+			if left[k].global_position.distance_to(at) < left[best].global_position.distance_to(at):
+				best = k
+		at = left[best].global_position
+		out.append(left[best])
+		left.remove_at(best)
+	return out
+
+
+func _sweep(list: Array[InteractableComponent], rows: PackedStringArray, ok_n: Array[int]) -> void:
+	var isys: InteractionSystem = rt.interaction
+	for ic: InteractableComponent in list:
 		if not is_instance_valid(ic):
 			continue
 		var o: Node = ic.owner_node()
 		var label: String = "%s/%s (%s)" % [o.name if o != null else "?", ic.name, ic.kind]
 		if not ic.enabled:
 			rows.append("%s: disabled" % label)
+			note("INTERACT %s: disabled" % label)
 			continue
 		var started: Array[bool] = [false]
 		var cb: Callable = func(c: Node) -> void:
@@ -2271,21 +2305,17 @@ func _test_interact() -> bool:
 		ic.started.disconnect(cb)
 		pilot.inp.release(&"interact")
 		var aimed: InteractableComponent = isys.aimed_component(pilot.crew)
-		var dist: float = pilot.crew.eye_position().distance_to(ic.global_position)
 		var row: String = "%s: %s (avail before '%s', after '%s', aimed %s, eye dist %.2f, use() %s)" % [label,
 			"STARTED" if started[0] else "NOT STARTED", avail0, ic.availability(pilot.crew),
-			aimed.owner_node().name if aimed != null and aimed.owner_node() != null else "<none>", dist, ret]
+			aimed.owner_node().name if aimed != null and aimed.owner_node() != null else "<none>",
+			pilot.crew.eye_position().distance_to(ic.global_position), ret]
 		note("INTERACT " + row)
 		rows.append(row)
 		if started[0]:
-			ok_n += 1
+			ok_n[0] += 1
 		await wait_s(1.0)
-		var sess: Dictionary = isys.session(pilot.crew.slot)
-		if not sess.is_empty():  # walk off to cancel a hold still running
+		if not isys.session(pilot.crew.slot).is_empty():  # step off to cancel a hold still running
 			await _go(pilot.crew.global_position + Vector3(0.8, 0, 0), 0.3, 3.0)
-	note("INTERACT summary: %d / %d started" % [ok_n, rows.size()])
-	await shot("interact_end")
-	return true
 
 
 ## Headless probe (no pilot movement needed): LK floor points on the navmesh at floor height, reachable from
