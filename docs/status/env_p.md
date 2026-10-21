@@ -2,6 +2,18 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## To the LEAD: (updated 2026-10-21 02:10 UTC)
+- **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
+  Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
+  the gate-clear wait went in at 88e06f40, and run r251h is in progress here. A headless ghost run cannot work (the pilot's mouse needs a window).
+- **GPU-box ghost command**. It needs `game/tests/p/_review/of_g1_pass.gd` from env/p-play (≥ 88e06f40), which is newer than trunk's:
+  `git checkout origin/env/p-play -- game/tests/p/_review/of_g1_pass.gd`, then
+  `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`
+  It is only useful once my r251h result is in; I'll say here if it passes.
+- **G2 on the GPU box**: I'll read gpu/renders/p/of_g2_* as they land on origin/gpu/renders (none yet at 96dcf2ce). Trunk's of_g1_pass is
+  fine for the 7 G2 tests; the newer harness changes only touch the ghost line.
+- **D-145 GH**: Tense on trunk r251 is 2/3 WIN, median 1. The 4501 loss is fixed by A's e640362d (passes on a-core 441b6870); please merge it.
+
 ## 2026-10-21: GH Tense ×3 on trunk r251 (c04cb710), pointer to A's GPU-box lines
 - **GH Tense ×3 on pure trunk r251**, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**, the same as on 4a6780f4 (the seeds are deterministic).
   4501 has the same no-revive bleedout (pilot down t=249, custody t=279). r251 lacks A's e640362d (bot revives from ≤2.3 m), and
