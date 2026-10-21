@@ -1,8 +1,8 @@
 # Next heist: Rolling Thunder build plan (PAPER START D-148; build waits for the Ostrander done check)
 
 Owner: LEAD (drafted by an ENV C helper, 2026-10-21). Status: **paper only**. D-144: Ostrander Federal is the only heist in
-build until it passes its D-115-style done check; D-148 (LEAD dispatch, not yet written in decisions.md) starts the RT
-paper work now. Design source of truth: `docs/design/heists/rolling_thunder.md` (G0 APPROVED, D-075; QC-80..89; D-141
+build until it passes its D-115-style done check; D-148 (amends D-144 for paper only) starts the RT
+paper work now. Rulings on this plan: **D-149**. Design source of truth: `docs/design/heists/rolling_thunder.md` (G0 APPROVED, D-075; QC-80..89; D-141
 QB-RT1..5). This file is the *build* plan: what the code already has, what the doc needs that is missing or now wrong,
 what is reused vs new (D-147), who builds what, and how we prove it plays.
 Audit done read-only against env/c-worlds at trunk round 255 (docs identical to `origin/claude/dreamy-hamilton-pc7vck`).
@@ -10,14 +10,14 @@ Audit done read-only against env/c-worlds at trunk round 255 (docs identical to 
 ## 1. Why Rolling Thunder third
 Loud with a stealth-start ambush on an open street: first daylight heist, first exterior-only arena, first moving
 vehicles. It is the most system-heavy P5 heist (A5-01..03 plus the QC-83/88/89 hooks); Ostrander's groundwork covers the
-civilians, rappels and lift, not the convoy. Size: the doc says **M** (15–25 min), `next_heist.md` §1 says **L** (QC-RT3).
+civilians, rappels and lift, not the convoy. Size **M** (15–25 min; D-149.3; `next_heist.md` §1 said L).
 
 ## 2. Start gate
 1. **Ostrander Federal passes its done check** (D-144 / D-115 points 1-6: G2 final, e2e stealth + loud, P windowed G2
    pass, strings/VO, cast). The remaining OF items come first, including the burnt-scorch close render `rc_burn_close`
    (Job C, pending on the GPU box; env/c-worlds 37ab4ce1).
-2. No RT map, generator, prefab or mission code before that. Paper now: RT-L1, RT-C0 (§6). The plan scripts'
-   `--check` arithmetic is the only borderline item (QC-RT10).
+2. No RT map, generator, prefab or mission code before that. Paper now: RT-L1, RT-C0 and the `--check`-only plan
+   scripts of RT-C1 (D-148.2, D-149.10).
 
 ## 3. Audit of the G0 doc against today's code (read-only, 2026-10-21)
 Owners from `tools/ci/owners.json`: A = `game/systems/**` (+ co-owns `game/world/heists/**`, `game/world/props/**`),
@@ -90,9 +90,9 @@ B = `game/content/**`, C = `game/world/**`, `game/assets/**`, `tools/blender/**`
   a `civ_flee` exit and despawn. Panic calls need a phone / alarm / call point (`civilian_targets.gd:23` CALL_POINT_GROUP);
   no "mobile phone" call in place. Workaround: call-point markers on the sidewalks (map).
 - **Wrecker on vehicle-wide spawns only (QC-89, A):** `SpawnGroupDef` filters by phase/faction, not by spawn tag.
-- **NPC path queries (A):** on trunk, `NavigationAgent3D` (npc_motor) and `map_get_path` (`assault_director.gd:970`,
-  `crew_ai_brain.gd:1022`, `civilian_brain.gd:958`, `civilian_targets.gd:239`) still use Godot's 4096-polygon cap. A's fix
-  is on `env/a-core` only (ffc264d4, `game/systems/ai/nav/nav_path.gd`, `MAX_POLYGONS = 0`), not yet merged.
+- **NPC path queries (A): done.** `game/systems/ai/nav/nav_path.gd` (`NavPath.query`, `configure_agent`,
+  `MAX_POLYGONS = 0`) lifts Godot's 4096-polygon search cap for the director, civilians, crew AI and NpcMotor agents; on
+  trunk since round 255 (ffc264d4; D-149.5). (The audit's first pass read an older env/c-worlds tree.)
 - **Escape van (A):** `escape_zone` hides then shows the vehicle (`escape_zone.gd:9-13`); the doc's "drives in through the
   entrance" is cosmetic and would need A5-02.
 - **TacticalPoint (A):** no enabled flag (`contracts/map/tactical_point.gd`), so per-layout COVER (children of the
@@ -103,7 +103,8 @@ B = `game/content/**`, C = `game/world/**`, `game/assets/**`, `tools/blender/**`
 - **Anim (D):** the RT clips are mapped but absent from `tools/blender/characters/anim_humanoid.py` (`sit_vehicle`,
   `vehicle_exit_l/_r`, `sit_eat`, `cook_stove`); `radio_call`, `phone_call`, `walk_text` exist.
 - **Cast tags (D/A):** no look or tag for the diner cook and waitress (`staff_diner`), the attendant (`staff_booth`), the
-  escorts (`convoy_lead`, `convoy_rear`); escorts may fall back to the EnemyDef look (check, D-103 §3b.1).
+  escorts (`convoy_lead`, `convoy_rear`); D-149.12: the escorts stay EnemyDef looks by difficulty (no tag row), A tests
+  they never get a capsule.
 - **Prefab visuals (C):** car/van generators have fixed paint (`exterior.py _car`, `prefab_visuals.py _van`); the neon
   generator hard-codes "VOSSBERG" (`exterior.py _neon`). All three need parameters (§3c).
 
@@ -111,8 +112,12 @@ B = `game/content/**`, C = `game/world/**`, `game/assets/**`, `tools/blender/**`
 - **A5-01 `armored_truck`**, **A5-02 `convoy_vehicle`** (+ the `ConvoyLayout` sets and the mixer move), QC-83
   `HeistMission.raise_alarm(reason)` (only `StealthDirector.raise_alarm`, `stealth_director.gd:108`), `spawn_units(…,
   seated, vehicle)` + dismount, convoy detection → `&"ambush"` instead of a pager, QC-88 `civ_flee` exits.
-- Map: no `game/world/heists/rolling_thunder/`; no plan scripts (`tools/levelcheck/plans/rolling_thunder_*`: the doc says
-  the site plan "comes from" `rolling_thunder_site_ascii.py`, which does not exist); def, variants, mission, blueprint.
+- Map: no `game/world/heists/rolling_thunder/`; def, variants, mission, blueprint. The `--check`-only plan scripts now
+  exist (D-149.10): `tools/levelcheck/plans/rolling_thunder_{checklib,floors_ascii,site_ascii,convoy,slots,check}.py`;
+  `python3 tools/levelcheck/plans/rolling_thunder_check.py` runs all four reports. First run (2026-10-21): FAIL with 9
+  design-doc inconsistencies (route doors 0.9 m, the upper corridor and J's door, MG size, controller ↔ man-gate
+  distance, P_N / P_E vs their closures, the 3rd-truck shift, the east T1 → lift distance). Fixed in the doc (RT-C0
+  check, 2026-10-21): **PASS**, 1 warning left for G1 (HEAVY throw over the car-park west barrier, §7.5). No emitter yet.
 - 15 of the 26 kits the room list names (§3c). New props/vehicles (§3c). Assault events (none in the doc).
 - B (per its prep doc): VO text (0 of the doc's 42 lines), briefing steps, preplan/room labels (D-141.5, after G1), achievements,
   briefing intel + blueprint (need the map), `asset.c4_drop`, cue ids for audio_cues v1.4 (QC-85).
@@ -136,21 +141,25 @@ B = `game/content/**`, C = `game/world/**`, `game/assets/**`, `tools/blender/**`
    the DrillPoint as the safe's child (PO6-01, one visible saw) and the cargo inside; never a stand-in lock.
 9. **D-143.5:** `signal_insider` / `intel_route` should carry the per-heist allow-list (`heists: [rolling_thunder]`).
 10. **Unbuildable as written:** the bullion roof-hatch thermite needs the crew on a ~3 m truck roof with no mantle and no
-    ladder (QC-RT2).
+    ladder (QC-RT2). D-149.2: a ground-level thermite point on the rear doors instead (doc fixed).
 
-## 3b. Proposed rulings for the build (for the LEAD; not adopted)
+## 3b. Rulings for the build (proposed by C; ADOPTED as D-149)
 1. **Convoy navigation:** bake the street navmesh per layout for the arm's tiles only (2 layouts per route; the resolver
    deletes the other route's), and enable the matching region pair at the stop on sync nav (D-121). Per-layout COVER needs
    a TacticalPoint enabled flag (A). Avoidance-only obstacles are not acceptable (bots and police walk into trucks).
 2. **A5-02 scope:** convoy + mixer drive-in as designed (≤ 8 movers, then static); escape van stays a pop-in.
-3. **Bullion hatch:** a fold-down step ladder on the truck's rear (a `ladder` child, usable once loud) up to a 1.0 m
-   roof walk, or a ground-level burn_point on the rear doors ("thermite on the lock"). C prefers the ground-level one.
+3. **Bullion thermite (D-149.2):** a ground-level `burn_point` on the bullion truck's rear doors ("thermite on the
+   lock"), its UsePoint on the rear step; on finish it opens the truck (QC-81 `target`). No roof hatch, no roof ladder.
 4. **Civilians:** reuse `civilians_leave(&"civ_flee")` at the alarm for the street plus cower for the rest; call points on
    the sidewalks for panic calls. A builds only the despawn-at-exit if `civilians_leave` cannot run in LOUD.
 5. **D-147 substitutions** (doc changes, C): street trees → `prop_planter_street`; dumper → `prop_forklift`; jukebox,
    cycle racks, bunting, wheel stops dropped; the stalled bus → a second lorry (tractor + `veh_reefer_trailer`).
+   Applied to the design doc (D-149.6).
 6. **Gate for a heist with no stealth win:** the P5 "ghost run" becomes a *clean-setup run* (signals rigged, marshal handled,
-   no early alarm, clean stop) followed by the loud bot to escape, 5 seeds (QC-RT4).
+   no early alarm, clean stop) followed by the loud bot to escape, 5 seeds (QC-RT4, D-149.4).
+7. **Size M (D-149.3):** e2e time budgets for M (15–25 min, a Routine clean run near 15 min, the longest stop type
+   ≤ 25 min); D-120 checks on the M shape; base XP 2,000 (D-148.3).
+8. **Path cap (D-149.5):** `NavPath` is uncapped on trunk; RT's ≤ 3,500 polygons is a report-only early warning.
 
 ## 3c. D-147 reuse-first: catalog cover per RT area
 Ids are catalog ids (`game/world/props/prop_catalog.json`, 520 entries; generators in `tools/blender/props/`) or kit ids
@@ -203,7 +212,7 @@ generator or kit. Architecture (walls, slabs, stairs, ramps, kerbs, piers, deck)
 | Area | Covered by (reuse) | Genuinely new (justification) |
 |---|---|---|
 | Escorts, scout car | var. `_car`: police patrol car (livery + light bar), TAC SUV (height/length params), Vaultline scout car | — |
-| Trucks | `prop_saw_device`, `prop_cash_bags`, `prop_cash_pallet`, `prop_of_gold_skid`, `prop_of_gold_bars`, `prop_safe_wall_small` (cab safe) | `veh_armored_truck` (cash 7.5 m / bullion 9 m with `RoofHatch`; A5-01's visual slots; no armoured truck exists) + Vaultline livery material |
+| Trucks | `prop_saw_device`, `prop_cash_bags`, `prop_cash_pallet`, `prop_of_gold_skid`, `prop_of_gold_bars`, `prop_safe_wall_small` (cab safe) | `veh_armored_truck` (cash 7.5 m / bullion 9 m with the rear-door thermite plate, D-149.2; A5-01's visual slots; no armoured truck exists) + Vaultline livery material |
 | Ram truck | — | `veh_mixer_truck` (Reyes's mixer: arena cover + the ram) |
 | Escapes E1–E3, assault | `veh_van_secure` (var. council van for E2), `escape_van_marker.tscn`, `veh_heli_escape`, `prop_secure_*`, `prop_turret_van`, `prop_police_helicopter`, `prop_breach_window` | — |
 | Look / audio | `amb_city_afternoon` (var. remix → `amb_skyway_street`), the cues in §3 | `amb_underpass`, `amb_diner`, `amb_site`; 5 cues (`convoy_approach`, `convoy_brake`, `mixer_ram`, `signal_click`, `truck_doors_open`); music stems; `lut_rolling_thunder` |
@@ -221,8 +230,8 @@ bunting, wheel stops.
 
 ## 4. Rules the build must satisfy (OF §4, carried over)
 - Every objective carries `marker_tags` (ui_hud 1.8), the convoy marker included (it moves until the stop: B mocks it).
-- Every spawn tag maps in `heist_tag_characters.rolling_thunder` (no capsules, PO-5.7): add `staff_diner`, `staff_booth`,
-  `convoy_lead`, `convoy_rear`; check the shared map does not win.
+- Every spawn tag maps in `heist_tag_characters.rolling_thunder` (no capsules, PO-5.7): add `staff_diner`, `staff_booth`;
+  `convoy_lead` / `convoy_rear` are carved out (EnemyDef looks by difficulty, D-149.12); check the shared map does not win.
 - Key lights `viewmodel_lit`; ≤ 8 lights per 6 m tile (D-112); `perf_d146` on from G1; D-146 judged on the GPU box.
 - Director caps per crew (D-099), Routine/Tense escorts carry no armour (D-145 §3: patrol cars only, as the doc has).
 - Bags per D-102: cash MEDIUM (×0.75, no sprint, 4 m throw), gold HEAVY (×0.5, 2 m throw), bonds LIGHT; thermite is a tool.
@@ -241,21 +250,21 @@ As OF (D-129): C map/art/audio/levelcheck; A prefabs, director/civilian hooks, m
 B values (QB-2: B sends the values block, C's generator writes the `.tres`), strings, VO, UI; D clips and looks; P
 real-input verification. The convoy systems (RT-A2..A5) are the critical path.
 
-## 6. Work breakdown (proposed; starts at the §2 gate except RT-L1/RT-C0). RT-A1/RT-D1 are the shipped groundwork ids.
+## 6. Work breakdown (D-149; starts at the §2 gate except RT-L1, RT-C0 and RT-C1's `--check` plan scripts). RT-A1/RT-D1 are the shipped groundwork ids.
 | Id | Owner | Task | Size |
 |---|---|---|---|
-| RT-L1 | LEAD | Write D-147/D-148; adopt §3b; roadmap rows (A5-04.., RT C rows); settle size M/L; `docs/process` ownership of this file | S |
-| RT-C0 | C | Doc fixes (§3 Wrong 1-10, §3b once ruled): payout, doors ≥ 1.0 m, D-146 budget table, D-142 glazing list, D-122 breach layer, assault events (turret van on Tannery W, heli over the junction span, breach points on the car park and diner), substitutions, hatch access | S |
-| RT-C1 | C | Plan scripts `tools/levelcheck/plans/rolling_thunder_{site_ascii,floors_ascii,slots,content,geometry}.py` (`--check`: rooms tile, doors on walls, stair/ramp arithmetic) + `rolling_thunder_emit_layout.py` → greybox generator `game/world/heists/rolling_thunder/greybox/` (copy-adapt the OF chain) → **G1**: 4 floor levels, all contract nodes, the 18 variables (slot groups + scalars) + 8 rare events, 4 `ConvoyLayout` sets (placeholders `TODO(A5-01/02/03)`, `TODO(QC-81)`), 4 holdouts, 6 police groups + entries, perches S1–S4, 13 preplan points, review cams, `door_nav_clearance`, `_nav_thick`; `validate_level --stage=greybox --variants=all`; walkthrough; nav polygon report | L |
+| RT-L1 | LEAD | DONE: D-147/D-148 (already written), D-149 (§3b/§8 rulings); open: roadmap rows (A5-04.., RT C rows), `next_heist.md` §1 size → M, `docs/process` ownership of this file | S |
+| RT-C0 | C | Doc fixes (§3 Wrong 1-10, §3b once ruled, and every FAIL of `rolling_thunder_check.py`): payout, doors ≥ 1.0 m, D-146 budget table, D-142 glazing list, D-122 breach layer, assault events (turret van on Tannery W, heli over the junction span, breach points on the car park and diner), D-149 substitutions, rear-door thermite (D-149.2), clean-setup gate, original-mechanic labels (D-149.9 in the doc; pd2_fidelity by the LEAD) | S |
+| RT-C1 | C | Plan scripts `tools/levelcheck/plans/rolling_thunder_*.py` with `--check` (rooms vs the doc's tables, doors ≥ 1.0 m on routes, stair/ramp arithmetic, §7 clearances, convoy extents, polygon early warning; allowed now, D-149.10), then at the gate `rolling_thunder_emit_layout.py` → greybox generator `game/world/heists/rolling_thunder/greybox/` (copy-adapt the OF chain) → **G1**: 4 floor levels, all contract nodes, the 18 variables (slot groups + scalars) + 8 rare events, 4 `ConvoyLayout` sets (placeholders `TODO(A5-01/02/03)`, `TODO(QC-81)`), 4 holdouts, 6 police groups + entries, perches S1–S4, 13 preplan points, review cams, `door_nav_clearance`, `_nav_thick`; `validate_level --stage=greybox --variants=all`; walkthrough; nav polygon report | L |
 | RT-C1b | C | Levelcheck: convoy layouts as pseudo-variants (QC-87c) in reachability + walkthrough; ramp-only floor confirmed (QC-87b); `test_rt_loud_nav_targets.gd` (OF clone, per layout); RT in `test_door_clearance_maps.gd` | M |
 | RT-C2 | C | **G2**: 14 new generators, 6 materials, 7 new + 8 variant kits, 4 landmarks, daylight (sun 245°/9° 3800 K, dust haze), GI/probes/occluders, 28 review shots, music stems + 3 ambiences + 5 cues, LUT; `validate_level` final; D-146 on the GPU box | L |
-| RT-A2 | A | A5-01 `armored_truck` (Safe LARGE composition, `G.SAW_TARGET`, `charges_required` 4, `lockdown()` ×1.5, cab doors, cargo on open, visual nodes) + QC-81 `burn_point.target` and no-fire volume; tests | M |
+| RT-A2 | A | A5-01 `armored_truck` (Safe LARGE composition, `G.SAW_TARGET`, `charges_required` 4, `lockdown()` ×1.5, cab doors, cargo on open, visual nodes) + QC-81 `burn_point.target` and no-fire volume for the bullion truck's ground-level rear-door thermite point (D-149.2; no `RoofHatch`); tests | M |
 | RT-A3 | A (B) | A5-03 rest: `item_pickup` (generalised keycard_pickup), preplan item drop kind (`item.c4`, `params.count`); B: HUD `item.c4` count, `asset.c4_drop`; tests | S-M |
-| RT-A4 | A | A5-02 `convoy_vehicle` (Path3D mover, braking, `vehicle_stopped`, seats, replicated) + layout switch per QC-RT1 (nav region pair, TacticalPoint enable); tests | L |
-| RT-A5 | A | QC-83: `raise_alarm(reason)`, `spawn_units(enemy, count, tag, seated, vehicle)` + dismount, convoy units in the director cap (generalise the cartel rule), detection → ambush; QC-88/89 leftovers (§3b.4, `wrecker_ok`); tests | M |
-| RT-A6 | A | `rolling_thunder_mission.gd`: setup clock, marshal, signals, early alarm, clean/crash stop, trucks, lift, 3 escapes, 8 rare events, every VO line, assault event rows; e2e loud ×3 seeds per stop type + the clean-setup run | L |
+| RT-A4 | A | A5-02 `convoy_vehicle` (Path3D mover, braking, `vehicle_stopped`, seats, replicated) (convoy + mixer drive-in, ≤ 8 movers, then static; escape van pops in, D-149.8) + layout switch per D-149.1 (pre-baked nav region pair per layout, also mixer and Tannery gate; TacticalPoint `enabled`); tests | L |
+| RT-A5 | A | QC-83: `raise_alarm(reason)`, `spawn_units(enemy, count, tag, seated, vehicle)` + dismount, convoy units in the director cap (generalise the cartel rule), detection → ambush; civilians: `civilians_leave(&"civ_flee")` in LOUD + sidewalk call points, no flee-exit system (D-149.7); `wrecker_ok`; escort no-capsule test (D-149.12); tests | M |
+| RT-A6 | A | `rolling_thunder_mission.gd`: setup clock, marshal, signals, early alarm, clean/crash stop, trucks, lift, 3 escapes, 8 rare events, every VO line, assault event rows; e2e loud ×3 seeds per stop type + the clean-setup run (D-149.4), all inside the M budgets (D-149.3) | L |
 | RT-B1 | B | Values block (QB-2 shape: def, variant rows, preplanning incl. allow-list), ~42 VO texts (9 Reyes, 33 Mercer), briefing steps, labels (after G1, D-141.5), achievements, intel + blueprint, cue ids to the LEAD (audio_cues v1.4) | M |
-| RT-D2 | D | Clips `sit_vehicle`, `vehicle_exit_l/_r`, `sit_eat`, `cook_stove`; diner cook + waitress looks; tag rows for staff/escorts; cower placements (characters v1.9) | M |
+| RT-D2 | D | Clips `sit_vehicle`, `vehicle_exit_l/_r`, `sit_eat`, `cook_stove`; diner cook + waitress looks; tag rows for diner/booth staff (escorts stay EnemyDef looks, D-149.12); cower placements (characters v1.9) | M |
 | RT-P1 | P | Windowed real-input pass on G1 (§7 tests, setup timing from each spawn under D-128 fills, hauls under D-102), then on G2; snag probe 0 | M |
 
 Order: OF done check (incl. `rc_burn_close`) → RT-L1/C0 now (paper) → at the gate RT-A2..A5 and RT-C1 in parallel (each A
@@ -286,7 +295,7 @@ clean-setup run and the loud bot on 5 seeds).
    collider true to its visual (hard cover; escort-car glass as soft cover per the doc).
 8. **Convoy layouts (4):** every route and objective reachable in each (QC-87c); each truck's rear-step UsePoint, DrillPoint
    and LootAnchor reachable with ≥ 1.0 m clear behind; trench queue leaves ≥ 1.0 m at both walls; crash skews leave
-   ≥ 1.0 m gaps; the bullion hatch reachable without a mantle (QC-RT2).
+   ≥ 1.0 m gaps; the bullion thermite point at the rear doors, on the ground (D-149.2).
 9. **Underpass and rail:** 4.6 m soffit; the 4.4 m height bar clears the tallest truck (◇ ≤ 3.6 m) and the E2 van; cut walls
    5 m; palisades 1.8 m, unclimbable, see-through and bullet-transparent (a movement-only collider: unverified that one
    exists; ask A).
@@ -300,8 +309,8 @@ clean-setup run and the loud bot on 5 seeds).
 14. **Escapes:** E1 in the west aisle with ≥ 1.0 m all round; E2 behind a ≥ 4 m lorry gap; E3 reachable step-free from
     both head houses.
 15. **Navmesh size:** keep the whole map ≤ 3,500 polygons with the active layout pair (OF 4,165 is the only map over
-    Godot's 4096 cap; GN 2,870, DB 2,464; ENV C status r254), report it every regen; A's uncapped `NavPath` (env/a-core,
-    not yet on trunk) is the real fix and `test_rt_loud_nav_targets.gd` checks reachability uncapped. Thin colliders under 2 cells (0.2 m) widened in the bake only (`of_gameplay.gd _nav_thick`).
+    Godot's 4096 cap; GN 2,870, DB 2,464; ENV C status r254), report it every regen; A's uncapped `NavPath` (on trunk
+    since r255, D-149.5) is the real fix and the 3,500 figure is an early warning only and `test_rt_loud_nav_targets.gd` checks reachability uncapped. Thin colliders under 2 cells (0.2 m) widened in the bake only (`of_gameplay.gd _nav_thick`).
 16. **Walkthrough 3×:** only R1 + R2 to the roof is whitelisted (doc). Watch the hoarding detours (plaza → magazine), the
     rail lane (reached only through the CP fire door: make it crew-openable from inside or whitelist), plaza → U2.
 17. **D-146:** main ≤ 2,500, total ≤ 4,000, ≤ 8 shadowed lights in view, Forward+ on the GPU box with the Cataclysm loud
@@ -313,23 +322,23 @@ stair with a bag; each §7.5 throw at 3 pitches; plaza → controller → magazi
 `convoy_eta_s` 150; T1 → E1 and T3 → E2 with a HEAVY bag (east, clean); underpass in/out both ends; Skyway rappel lands;
 PO-3 snag probe = 0 on all four layouts.
 
-## 8. Questions for the LEAD / PO
-1. **QC-RT1 convoy nav:** per-layout pre-baked nav regions swapped at the stop (§3b.1), or another scheme? Same for the
-   mixer and the Tannery gate. Also needs a TacticalPoint enabled flag (A).
-2. **QC-RT2 bullion hatch:** truck-rear ladder to the roof, or a ground-level thermite point on the rear doors (§3b.3)?
-3. **QC-RT3 size:** M (doc, 15–25 min) or L (`next_heist.md` §1)? It sets the e2e time budgets and D-120 checks.
-4. **QC-RT4 P5 gate:** accept the clean-setup run in place of the ghost run for a heist with no stealth win (§3b.6)?
-5. **QC-RT5 path cap:** A's uncapped `NavPath` (env/a-core ffc264d4) must reach trunk before RT G1; is C's ≤ 3,500-polygon
-   target then an early warning only (C's preference) or a hard G1 rule?
-6. **QC-RT6 D-147 substitutions** (§3b.5): OK to change the doc (trees, dumper, bus, jukebox, racks, bunting, wheel stops)?
-7. **QC-RT7 civilians:** reuse `civilians_leave` + call points (§3b.4) instead of a new QC-88 system?
-8. **QC-RT8 A5-02 scope:** convoy + mixer drive-in, escape van pop-in (§3b.2)? Or the G1 pre-placed convoy permanently?
-9. **QC-RT9 PD2 fidelity (no in-repo cite found):** the early-alarm "truck lockdown, saws ×1.5" and the 8 s ambush window
-   are original choices; confirm they stay.
-10. **QC-RT10 paper scope:** may C write the plan scripts with `--check` before the OF done check (they only verify the G0
-    arithmetic), or does that wait for the gate?
-11. **QC-RT11:** D-147 and D-148 are not in `decisions.md` yet; this file sits in LEAD-owned `docs/process/` (expect
-    `check_ownership.py c` to flag it on merge).
+## 8. Questions for the LEAD / PO: RULED (D-149, 2026-10-21)
+1. **QC-RT1 convoy nav:** pre-baked nav regions per convoy layout, swapped at the stop; the same for the mixer and the
+   Tannery gate. No runtime rebake. A adds a TacticalPoint `enabled` flag.
+2. **QC-RT2 bullion hatch:** a ground-level thermite point on the truck's rear doors. No truck-roof traversal.
+3. **QC-RT3 size:** M (15–25 min); sets the e2e budgets and the D-120 checks; base XP 2,000 (D-148).
+4. **QC-RT4 P5 gate:** a clean-setup run (signals rigged, marshal handled, no early alarm) in place of the ghost run.
+5. **QC-RT5 path cap:** A's uncapped `NavPath` is on trunk since round 255 (ffc264d4); the ≤ 3,500-polygon target is an
+   early warning, not a hard G1 rule.
+6. **QC-RT6:** the D-147 substitutions are accepted; C updates the design doc (done, RT-C0).
+7. **QC-RT7:** civilians reuse `civilians_leave` plus sidewalk call points; no new flee-exit system.
+8. **QC-RT8:** the convoy and mixer drive in (≤ 8 movers, then static); the escape van pops in.
+9. **QC-RT9:** the early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window stay, labelled original (not
+   PD2-sourced) in pd2_fidelity.
+10. **QC-RT10:** C may write the `--check`-only plan scripts before the OF done check. Paper only: no map.
+11. **QC-RT11:** D-147 and D-148 were already in `decisions.md`. This file still sits in LEAD-owned `docs/process/`.
+12. **Escort looks (D-149.12):** `convoy_lead` / `convoy_rear` are EnemyDefs resolved by difficulty (no tag-map row); A
+    tests they never get a capsule.
 
 ## 9. Open risks
 - **Nav size:** an open 184 × 162 m street with three buildings, ~45 parked cars and a carved convoy will likely exceed

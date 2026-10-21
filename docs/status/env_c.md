@@ -6,6 +6,65 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, D-149 applied (env/c-worlds aca54f85): paper only, nothing in game/.
+  - Plan doc: marked RULED (D-149), with my two wrong claims fixed (D-147/148 were already written; NavPath has been on
+    trunk since r255).
+  - Design doc: the QC-RT6 substitutions (bus -> jack-knifed lorry, trees -> planters, dumper -> forklift; jukebox,
+    bunting, wheel stops and racks dropped). Also QC-RT9's mechanics labelled original, the QC-RT2 rear-door thermite
+    point (no roof hatch), QC-RT1 pre-baked layout nav, QC-RT7 civilians_leave + call points, and QC-RT8 drive-in / van
+    pop-in.
+  - QC-RT10: the --check-only `tools/levelcheck/plans/rolling_thunder_{checklib,floors_ascii,site_ascii,convoy,slots,
+    check}.py` (stdlib only, no emit). `rolling_thunder_check.py --check` currently FAILs on 9 G0 design inconsistencies:
+    - 27 route doors at 0.9 m;
+    - UC missing from the Room list;
+    - J has no door;
+    - MG drawn 4x3 vs listed 3x2.4;
+    - the controller is 3.6 m from the man-gate, not 2 m;
+    - P_N and P_E are not behind their closures;
+    - the rear-car offset is 12 / 10.5 m, not 11;
+    - the east loot path is 48 m+, not 40.
+  - The polygon estimate is about 2,100, uncalibrated (early warning only, D-149.5).
+  - RT-C0 DONE (db3cafcd): `rolling_thunder_check.py --check` PASS (0 fail, 1 warn).
+    - The 1 warn is open on purpose: the car-park west barrier is 2 m beyond the Orchard sidewalk, so a HEAVY-bag
+      throw over it can only be judged by the G1 throw test (§7.5).
+    - Fixes: 27 route doors to 1.0 m (all fit, no redraw); UC in the Room list; J given a 0.9 m door; MG 4x3;
+      controller note 3.6 m (sightline still checked); P_N 2.5 m behind a now-sized traffic-management truck; the east
+      lorry moved 2 m west so P_E is 2 m behind it; T3 shift = T3 length + 3 m (12 / 10.5 m); east loot path about
+      50 m (48.1 m straight-line chain). Also lift doors 1.8 m double, pedestrian gates 1.2 m, a scaffold entry 1.2 m.
+    - Judgement calls for you:
+      (a) guards stay 1.1 m, labelled intentional (handrail or a 50 deg+ coping, nothing standable within 0.5 m),
+          rather than 1.2 m, which would move throw spots and cover heights;
+      (b) the lorry moved rather than P_E (x 104 is the play-space edge);
+      (c) the scaffold entry is on the north face (the U-stair foot is at the same end as its head);
+      (d) both lift-path lengths are estimates (crash stop stair A -> lift about 50 m vs a 53.9 m chain, inside the
+          check's 10 % allowance);
+      (e) the scripts' jamb check is 0.2 m, Ostrander's is 0.3 m.
+    - The navmesh estimate of about 2,100 polygons is uncalibrated (early warning only).
+- **2026-10-21 r257, RT questions for your ruling (QC-RT1..11; they're in §8 of next_heist_rolling_thunder.md,
+  §9 is open risks).** My recommendation is in brackets after each.
+  1. **QC-RT1 convoy nav:** the convoy layouts must block nav without a runtime rebake (heist_map v1.4 / D-121).
+     Pre-baked nav regions per layout, swapped at the stop (§3b.1)? Same for the mixer and the Tannery gate. A also
+     needs a TacticalPoint `enabled` flag. [Pre-baked regions per layout.]
+  2. **QC-RT2 bullion hatch:** crew can't mantle onto a ~3 m truck roof. A truck-rear ladder to the roof, or a
+     ground-level thermite point on the rear doors (§3b.3)? [The rear-door thermite point: no new traversal.]
+  3. **QC-RT3 size:** M (the design doc, 15-25 min) or L (`next_heist.md` §1)? It sets the e2e time budgets and the
+     D-120 checks. [M.]
+  4. **QC-RT4 P5 gate:** a "ghost run" can't apply to a heist with no stealth win. Accept a clean-setup run instead
+     (signals rigged, marshal handled, no early alarm; §3b.6)? [Yes.]
+  5. **QC-RT5 path cap:** A's uncapped `NavPath` (env/a-core ffc264d4) must reach trunk before RT G1. Is C's
+     ≤ 3,500-polygon target then an early warning only, or a hard G1 rule? [An early warning.]
+  6. **QC-RT6 D-147 substitutions (§3b.5):** OK to change the design doc to reuse/drop the trees, dumper, bus, jukebox,
+     cycle racks, bunting and wheel stops? [Yes.]
+  7. **QC-RT7 civilians:** reuse `civilians_leave` plus sidewalk call points (§3b.4) instead of a new QC-88 flee-exit
+     system? [Reuse.]
+  8. **QC-RT8 A5-02 scope:** convoy and mixer drive in, escape van pops in (§3b.2)? Or keep the G1 pre-placed convoy
+     permanently? [Drive-in, ≤ 8 movers then static.]
+  9. **QC-RT9 PD2 fidelity:** the early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window have no PD2 source
+     in the repo. Confirm they stay as original choices? [Keep, labelled original.]
+  10. **QC-RT10 paper scope:** may C write the plan scripts (`tools/levelcheck/plans/rolling_thunder_*.py`, `--check`
+      only: they verify the G0 arithmetic, no map) before the OF done check? [Yes, paper only.]
+  11. **QC-RT11:** D-147 and D-148 aren't in `decisions.md` yet. The plan file sits in your `docs/process/` (you
+      accepted the ownership flag). [Write both decisions.]
 - 2026-10-21, P's GH Tense 4502 curb STUCK at (21.5, −0.4, 0.3): the map is clean. P owns the fix.
   - Geometry: the kerb is 0.15 m (PellRoadN top −0.150, PellSidewalkW_N top 0.000) vs the 0.35 m step, with nothing
     under the road.
