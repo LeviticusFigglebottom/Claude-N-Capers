@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 145 props checked
+- 162 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 145 props, 50 doors checked
+- 162 props, 50 doors checked
 
 
 ## scale: Human scale
@@ -139,13 +139,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 441304 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 441354 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
 - navmesh: 2578 polygons, cell 0.10/0.10 m
-- 178 markers checked
+- 195 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomCPG` | 661 | 661 | 100% |
@@ -199,12 +199,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 32 variant configuration(s), 67140 spawn->target path queries
+- 32 variant configuration(s), 73668 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 996 / 996 spawn->target walks ok
+- 1200 / 1200 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -230,13 +230,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
-- 50 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
+- 67 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
 - leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 1, metal 31, wood 18; 0 look glass / metal but resolve to wood (WARN)
 
 
 ## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
 
-- 50 door / window prefab(s), 50 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.001 m
+- 67 door / window prefab(s), 50 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.001 m
 
 
 ## seam_gaps: No see-through slits at wall corners, junctions, floors and ceilings

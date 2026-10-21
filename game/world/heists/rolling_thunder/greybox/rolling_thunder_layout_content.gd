@@ -328,6 +328,76 @@ const ALWAYS: Dictionary = {
 			{}, "prop_ladder_steel_h360_g00",
 		],
 	],
+	"Gameplay/Windows": [
+		[
+			"prefab", "window", "BoothWindowN", [18.5, 0.9, -20.0], 0.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_w100_h120",
+		],
+		[
+			"prefab", "window", "BoothWindowW", [16.0, 0.9, -17.5], 90.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_w100_h120",
+		],
+		[
+			"prefab", "window", "DinerShopN1", [15.8, 0.8, 14.0], 0.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "DinerShopN2", [21.5, 0.8, 14.0], 0.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "DinerShopN3", [24.7, 0.8, 14.0], 0.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "KitchenWindowN", [30.0, 0.9, 14.0], 0.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_w100_h120",
+		],
+		[
+			"prefab", "window", "DinerShopW1", [14.0, 0.8, 17.0], 90.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "DinerShopW2", [14.0, 0.8, 24.3], 90.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "FunctionShopN1", [15.8, 4.3, 14.0], 180.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "FunctionShopN2", [21.5, 4.3, 14.0], 180.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "FunctionShopN3", [24.7, 4.3, 14.0], 180.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "UpperStoreWindowN1", [30.0, 4.4, 14.0], 180.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_w100_h120",
+		],
+		[
+			"prefab", "window", "UpperStoreWindowN2", [31.2, 4.4, 14.0], 180.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_w100_h120",
+		],
+		[
+			"prefab", "window", "FunctionShopW1", [14.0, 4.3, 17.0], -90.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "FunctionShopW2", [14.0, 4.3, 23.0], -90.0, {"breakable": true, "see_through": true}, null,
+			{"kind": "window"}, "prop_window_shop_w300_h240",
+		],
+		[
+			"prefab", "window", "CabinC1Window", [-56.5, 1.2, -26.0], 0.0, {"breakable": true, "see_through": false}, null,
+			{"kind": "window"}, "prop_window_w100_h60_frosted",
+		],
+		[
+			"prefab", "window", "CabinC2Window", [-53.5, 1.2, -26.0], 0.0, {"breakable": true, "see_through": false}, null,
+			{"kind": "window"}, "prop_window_w100_h60_frosted",
+		],
+	],
 	"Gameplay/Containers": [
 		["prefab", "body_container", "SiteSkip", [-45.0, 0.0, -14.5], 90.0, {"capacity": 2}, null, {"kind": "skip"}, "prop_skip"],
 		[

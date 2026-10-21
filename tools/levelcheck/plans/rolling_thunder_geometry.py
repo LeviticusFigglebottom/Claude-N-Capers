@@ -364,23 +364,48 @@ def _opening_hole(o: Opening) -> Optional[list]:
     return [o.level, axis, float(fixed), r3(c - k[1]), r3(c + k[1]), y, r3(y + DOOR_HEAD)]
 
 
-# Windows (LOCAL): [level, axis, fixed, a0, a1, sill, head]; diner shopfronts sill 0.8 (doc), others 0.9.
-WINDOWS: List[list] = [
-    ["CP-G", "x", 30.0, 1.6, 3.4, 0.9, 2.1],
-    ["CP-G", "z", 0.0, 31.6, 33.4, 0.9, 2.1],  # booth AB N, W
-    ["DG", "x", 0.0, 0.6, 3.2, 0.8, 2.6],
-    ["DG", "x", 0.0, 5.8, 12.4, 0.8, 2.6],  # DR north bays
-    ["DG", "x", 0.0, 15.4, 16.6, 0.9, 2.1],  # K north
-    ["DG", "z", 0.0, 1.4, 4.6, 0.8, 2.6],
-    ["DG", "z", 0.0, 9.2, 11.6, 0.8, 2.6],  # DR west bays
-    ["DU", "x", 0.0, 0.6, 3.4, 4.3, 6.1],
-    ["DU", "x", 0.0, 5.6, 12.4, 4.3, 6.1],  # U1 north
-    ["DU", "x", 0.0, 15.4, 17.6, 4.4, 5.6],  # U2 north
-    ["DU", "z", 0.0, 1.4, 4.6, 4.3, 6.1],
-    ["DU", "z", 0.0, 7.4, 10.6, 4.3, 6.1],  # U1 west
-    ["SG", "x", 30.0, 3.6, 4.4, 0.9, 2.1],
-    ["SG", "x", 30.0, 6.6, 7.4, 0.9, 2.1],  # cabins C1, C2 N
+# Windows: breakable WindowPrefabs (the diner shopfronts are police ENTRY bays, doc; D-142: clear except the cabins'
+# frosted glass), placed like a door: pivot bottom-centre of the opening on the wall line (the sill), front -Z the
+# street side at ground and the room side upstairs (the UsePoint must stand on the navmesh). LOCAL rows [name, level,
+# axis, fixed, centre, sill, visual, front, see_through]; the hole is the visual's opening (WINDOW_SIZES), so the frame
+# laps the wall like the door kits.
+WINDOW_SIZES = {"prop_window_shop_w300_h240": (3.0, 2.4), "prop_window_w100_h120": (1.0, 1.2),
+                "prop_window_w100_h60_frosted": (1.0, 0.6)}
+SHOP = "prop_window_shop_w300_h240"
+WINDOW_ROWS: List[list] = [
+    ["BoothWindowN", "CP-G", "x", 30.0, 2.5, 0.9, "prop_window_w100_h120", "N", True],
+    ["BoothWindowW", "CP-G", "z", 0.0, 32.5, 0.9, "prop_window_w100_h120", "W", True],
+    ["DinerShopN1", "DG", "x", 0.0, 1.8, 0.8, SHOP, "N", True],
+    ["DinerShopN2", "DG", "x", 0.0, 7.5, 0.8, SHOP, "N", True],
+    ["DinerShopN3", "DG", "x", 0.0, 10.7, 0.8, SHOP, "N", True],
+    ["KitchenWindowN", "DG", "x", 0.0, 16.0, 0.9, "prop_window_w100_h120", "N", True],
+    ["DinerShopW1", "DG", "z", 0.0, 3.0, 0.8, SHOP, "W", True],
+    ["DinerShopW2", "DG", "z", 0.0, 10.3, 0.8, SHOP, "W", True],
+    ["FunctionShopN1", "DU", "x", 0.0, 1.8, 4.3, SHOP, "S", True],
+    ["FunctionShopN2", "DU", "x", 0.0, 7.5, 4.3, SHOP, "S", True],
+    ["FunctionShopN3", "DU", "x", 0.0, 10.7, 4.3, SHOP, "S", True],
+    ["UpperStoreWindowN1", "DU", "x", 0.0, 16.0, 4.4, "prop_window_w100_h120", "S", True],
+    ["UpperStoreWindowN2", "DU", "x", 0.0, 17.2, 4.4, "prop_window_w100_h120", "S", True],
+    ["FunctionShopW1", "DU", "z", 0.0, 3.0, 4.3, SHOP, "E", True],
+    ["FunctionShopW2", "DU", "z", 0.0, 9.0, 4.3, SHOP, "E", True],
+    ["CabinC1Window", "SG", "x", 30.0, 3.5, 1.2, "prop_window_w100_h60_frosted", "N", False],
+    ["CabinC2Window", "SG", "x", 30.0, 6.5, 1.2, "prop_window_w100_h60_frosted", "N", False],
 ]
+WINDOWS: List[list] = []   # [level, axis, fixed, a0, a1, sill, head] holes (from WINDOW_ROWS)
+for _w in WINDOW_ROWS:
+    _ww, _wh = WINDOW_SIZES[_w[6]]
+    WINDOWS.append([_w[1], _w[2], _w[3], r3(_w[4] - _ww / 2), r3(_w[4] + _ww / 2), _w[5], r3(_w[5] + _wh)])
+
+
+def window_prefabs() -> List[list]:
+    """[name, site pivot [x, y, z] (sill bottom-centre on the wall line), yaw, visual, see_through]."""
+    yaw = {"N": 0.0, "W": 90.0, "S": 180.0, "E": -90.0}
+    out = []
+    for nm, lvl, axis, fixed, c, sill, vis, front, clear in WINDOW_ROWS:
+        ox, oz = off(lvl)
+        pos = [r3(c + ox), sill, r3(fixed + oz)] if axis == "x" else [r3(fixed + ox), sill, r3(c + oz)]
+        out.append([nm, pos, yaw[front], vis, clear])
+    return out
 
 
 def holes_local() -> List[list]:
@@ -438,16 +463,8 @@ def walls() -> List[list]:
 
 
 def panes() -> List[list]:
-    """Clear glass in the windows (D-142: diner shopfronts, booth, cabins): [name, mn, mx] (0.04 m on the wall line)."""
-    out = []
-    for i, wnd in enumerate(WINDOWS):
-        f, a0, a1 = _to_site(wnd[0], wnd[1], wnd[2], wnd[3], wnd[4])
-        if wnd[1] == "x":
-            mn, mx = [a0, wnd[5], f - 0.02], [a1, wnd[6], f + 0.02]
-        else:
-            mn, mx = [f - 0.02, wnd[5], a0], [f + 0.02, wnd[6], a1]
-        out.append(["Pane%02d_%s" % (i, wnd[0].replace("-", "")), [r3(v) for v in mn], [r3(v) for v in mx]])
-    return out
+    """Static glass panes [name, mn, mx]: none at G1 since every window is a WindowPrefab (its GlassBody glazes it)."""
+    return []
 
 
 # --------------------------------------------------------------------------------------------- slabs and ceilings

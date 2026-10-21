@@ -528,6 +528,11 @@ def always() -> Dict[str, List[list]]:
                 "prop_ladder_steel_h360_g00",
             ),
         ],
+        # breakable windows (WindowPrefab; the shopfront bays are police ENTRYs): front -Z the street side
+        "Gameplay/Windows": [
+            Pf("window", nm, pos, yaw, {"breakable": True, "see_through": clear}, None, {"kind": "window"}, vis)
+            for nm, pos, yaw, vis, clear in GM.window_prefabs()
+        ],
         "Gameplay/Containers": [
             Pf(
                 "body_container",
