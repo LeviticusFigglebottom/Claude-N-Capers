@@ -3,6 +3,23 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-21 00:30: r251 merged; windowed command lines for the PO's GPU box (lead messages still refused)
+- Merged trunk c04cb710 (r251) and imported. D-145 DB Routine + Tense x3 now running headless on trunk.
+- edadb8ed evidence (_review/r250_label_scrim): OF facade with the label scrim, LIVE "TIME LOCK 03:27" and
+  "ESCAPE 02:27" on the HUD (the escape countdown captured after all).
+
+Windowed captures (from the clone root, after `godot --headless --path game --import`; prefix `xvfb-run -a` only
+without a display; repeat with `--resolution 1920x1080`):
+1. OF real-input menu pass (main menu to payday to hub, 15 shots):
+   `godot --audio-driver Dummy --path game --resolution 1280x720 --script res://tests/b/render/real_input_run_capture.gd -- <out_dir> ostrander_federal`
+2. OF HUD timers + label scrim: `... --script res://tests/b/render/of_timers_capture.gd -- <out_dir>`
+3. Bot gear live (BOT MISMATCH / BOT DONE <n>): `... --script res://tests/b/render/bot_gear_capture.gd -- <out_dir> ostrander_federal`
+4. Bot Crew screen + lobby AI cards (CREW DONE <issues>): `... --script res://tests/b/render/crew_capture.gd -- <out_dir>`
+5. Payday achievements fold ("PROBE focused=AchievementsUnlocked"): `... --script res://tests/b/render/payday_fold_capture.gd -- <out.png>`
+6. HUD contrast (CONTRAST PASS/FAIL; modes hud | loud | menus): `godot --audio-driver Dummy --path game --script res://tests/b/render/hud_contrast_capture.gd -- hud`
+7. Loud OF HUD run with clip scan (too slow on llvmpipe): `... --script res://tests/b/render/of_run_capture.gd -- <out_dir> loud`
+Most useful on a GPU: 7 at both sizes; 1 at 1920x1080 (here it hit the 30-min limit at 14/15).
+
 ## 2026-10-20 late: D-145 DB cells and HUD label scrim (lead messages blocked: untrusted-device)
 send_message to the lead fails (elevated_session_untrusted_device), so this entry is the report.
 
