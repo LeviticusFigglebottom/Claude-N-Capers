@@ -1,0 +1,8 @@
+asset: prop_diner_chair
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "sales", "hosts": ["table"], "kind": "chair", "pin_only": true, "place": "seat", "seat_fwd": 0.12, "surface": "fabric"}, "fn": "diner_chair", "seat": 0.47}
+seed: 2534336262  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_diner_chair
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

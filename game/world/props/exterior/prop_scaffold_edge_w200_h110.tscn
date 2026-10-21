@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_scaffold_edge_w200_h110/prop_scaffold_edge_w200_h110.glb" id="1_model"]
+
+[node name="PropScaffoldEdgeW200H110" type="Node3D"]
+metadata/kind = &"scaffold"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

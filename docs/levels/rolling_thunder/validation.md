@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 2 |
+| furniture_logic | PASS | 0 | 3 |
 
 ## contract_nodes: Contract nodes
 
@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 680 props checked
+- 701 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 680 props, 50 doors checked
+- 701 props, 50 doors checked
 
 
 ## scale: Human scale
@@ -139,12 +139,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 443678 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 443813 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3671 polygons, cell 0.10/0.10 m
+- navmesh: 3718 polygons, cell 0.10/0.10 m
 - 199 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -158,7 +158,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomAB` | 66 | 66 | 100% |
 | `Rooms/RoomCWC` | 23 | 23 | 100% |
 | `Rooms/RoomCPL` | 71 | 71 | 100% |
-| `Rooms/RoomDR` | 440 | 440 | 100% |
+| `Rooms/RoomDR` | 405 | 405 | 100% |
 | `Rooms/RoomK` | 118 | 118 | 100% |
 | `Rooms/RoomBC` | 39 | 39 | 100% |
 | `Rooms/RoomE` | 2 | 2 | 100% |
@@ -169,7 +169,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomSC` | 15 | 15 | 100% |
 | `Rooms/RoomOF` | 45 | 45 | 100% |
 | `Rooms/RoomYD` | 523 | 520 | 99% |
-| `Rooms/RoomU1` | 471 | 471 | 100% |
+| `Rooms/RoomU1` | 501 | 501 | 100% |
 | `Rooms/RoomU2` | 193 | 193 | 100% |
 | `Rooms/RoomU3` | 136 | 133 | 98% |
 | `Rooms/RoomU4` | 9 | 9 | 100% |
@@ -183,7 +183,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomSTW` | 15 | 15 | 100% |
 | `Rooms/RoomFG` | 745 | 745 | 100% |
 | `Rooms/RoomF1` | 832 | 832 | 100% |
-| `Rooms/RoomX4` | 723 | 723 | 100% |
+| `Rooms/RoomX4` | 721 | 721 | 100% |
 | `Rooms/RoomX1` | 837 | 837 | 100% |
 | `Rooms/RoomX2` | 468 | 468 | 100% |
 | `Rooms/RoomX3` | 770 | 770 | 100% |
@@ -235,7 +235,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 153 interior key light(s) in 25 room(s); 0 lack `viewmodel_lit`
+- 143 interior key light(s) in 25 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -256,8 +256,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 6, chair 13, desk 3, table 10, wall_unit 16, visitor_chair 1, desk_chair 8, stool 2, monitor 1
-- 24 seats, 19 tables/desks/counters, 50 doors checked
+- classified: counter 6, chair 19, desk 3, table 7, wall_unit 16, visitor_chair 1, desk_chair 3, stool 7, monitor 1
+- 30 seats, 16 tables/desks/counters, 50 doors checked
 
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): door_clear: in the clear zone of door `Gameplay/Doors/LiftDoorG` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.74 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): use_point: stands in the user's spot of `Gameplay/Doors/LiftDoorG` (UsePoint @ (20.50, 0.00, -47.70)) by 0.64 m (gameplay prefab / variant content: review)
+- WARN `Props/Dress/Streets/TanneryE_N/StreetLamp0` @ (25.50, 0.00, -8.50): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashT2` by 0.21 m (not a stack or a tucked seat)

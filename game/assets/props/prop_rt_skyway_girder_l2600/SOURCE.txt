@@ -1,0 +1,8 @@
+asset: prop_rt_skyway_girder_l2600
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "exterior", "kind": "landmark", "mount": "wall", "place": "wall_mount", "surface": "metal"}, "fn": "girder", "ln": 26.0, "text": "ORCHARD SKYWAY"}
+seed: 4143158451  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_rt_skyway_girder_l2600
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

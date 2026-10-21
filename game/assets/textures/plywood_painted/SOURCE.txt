@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only plywood_painted --preset gsr
+module: tools/texgen/materials/plywood_painted.py
+preset: tools/texgen/presets/gsr.py
+seed: 367769198 (zlib.crc32('plywood_painted'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.1108, "albedo_lum_mean_linear": 0.0784, "albedo_lum_min_linear": 0.04, "ao_mean": 0.997, "lum_floor_linear": 0.04, "metallic_mean": 0.0, "roughness_mean": 0.796}
