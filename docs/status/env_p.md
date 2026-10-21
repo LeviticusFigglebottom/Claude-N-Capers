@@ -57,7 +57,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   No snapshot rule predicts that, so now the pilot walks LK → gate in legs (BB west, the core, the gate), peeks before each one, and retreats
   to LK if a guard shows up (≤ 4 tries). r257c: the peek caught rover_basement coming back down BB at 12 m, but the retreat runs west along the
   same straight 48 m corridor and he filled 1.0 anyway. His positions (r256d/r257c) show him sweeping BB x 5-35 every 20-40 s; his only long stops
-  are RC (blind aisles per doc) or far east at SS. Now the gate window also requires rover_basement in RC or past x 36. r257d is running.
+  are RC (blind aisles per doc) or far east at SS. Now the gate window also requires rover_basement in RC or past x 36. **r257d: steps 1-4 PASS. Over
+  ~700 s of waiting in LK there were 3 windows (t≈784, 986, 1006); each closed within 3-4 s at the first peek (vault guard/rover back, or guard9
+  on BB east), and the pilot retreated unseen each time.** After the 4th try the harness goes anyway and was seen (harness give-up, not a finding).
+  At Cataclysm the BB-crossing window is effectively absent with these patrols. See the design question above.
   **If this doesn't hold, my read is that at Cataclysm (extra BB guards + rover_basement's short loops) the doc's step-5 window is very
   tight. I'd then like a design call (C/LEAD) on whether ghost §5 is meant to be timed on Cataclysm, or at a lower difficulty.**
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
