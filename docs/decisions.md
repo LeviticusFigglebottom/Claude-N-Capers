@@ -1429,3 +1429,16 @@ catalog props and kits first.** A new prop needs a one-line reason in the heist 
 role, or it is a landmark / hero piece. Generic dressing (furniture, office, kitchen, clutter, lighting, doors, exterior,
 vehicles) is never rebuilt per heist. Variants come from library finishes (materials/colour), not new meshes. C reports
 reused vs new counts in each G1/G2 review.
+
+## D-148: PO picks: next heist Rolling Thunder, XP option D, paper start now (2026-10-21, LEAD; product owner)
+PO: "Proceed with all your recommended options."
+1. **Next heist: Rolling Thunder** (`rolling_thunder`, the Vaultline convoy, D-075/D-141). Afterhours follows it.
+2. **Paper start now** (amends D-144 for paper only): the RT build plan, systems/content/cast audits and prep branches
+   may proceed while Ostrander finishes. Building on the env branches (maps, mission code, data) starts at the OF done
+   check. D's assembled cast waits on `prep/d-rt`.
+3. **XP pacing = option D** (B's progression_pace.md): the curve ×2 (= PD2's ~23 M total to level 100), heist-size base
+   XP (S 1,500 / M 2,000 / L 2,500-3,000), PD2 difficulty multipliers kept. B applies it, re-checks every level-locked
+   unlock (weapons, armor `unlock_level`, Bot Crew armors) against the new pace, and updates pd2_fidelity.
+4. **Hardest-difficulty OF loud vs the AI pilot** (Haz 0/3, Cata 0/2 with real bots): accepted as a harness limit; no
+   tuning for it. Human playtests decide later.
+5. **Reuse-first (D-147)** applies to RT from day one.
