@@ -2785,7 +2785,10 @@ func _test_ghost6() -> bool:
 	for d: Door in [_tagged(&"vault_gate") as Door, _x("vault_door") as Door]:
 		if d != null and not d.is_open:
 			d.set_open(true, true)
-	note("SHORTCUT ghost6: masked, teleported to CQ's corner, vault gate + door opened instantly")
+	var reg: CodeRegistry = CodeRegistry.of(pilot.crew)
+	if reg != null:
+		reg.reveal(&"vault", pilot.crew.slot)
+	note("SHORTCUT ghost6: masked, teleported to CQ's corner, vault gate + door opened instantly, vault code revealed")
 	await wait_s(2.0)
 	_ghost_stair_wait = true
 	var t0: float = rt.heist_time_s
@@ -3139,6 +3142,14 @@ func _g6_bags() -> bool:
 				if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false,
 						OF_LASER_LEAD_M):
 					return false
+			# The cash cage (CashCageGate, BARRED) opens on the vault code at its keypad (ghost6_a: the cash's use point
+			# was 2.3 m behind the closed gate).
+			var cage: Door = rt.find_child("CashCageGate", true, false) as Door
+			var kp: Node3D = rt.find_child("CashCageKeypad", true, false) as Node3D
+			if cage != null and not cage.is_open and kp != null \
+					and not await pilot.use(_comp(kp), 30.0, func() -> bool: return cage.is_open, true):
+				note("GHOST cash cage keypad: the gate did not open")
+				return false
 			if not await pilot.use(_comp(src), 90.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 				return false
 			await _go(pilot.stand_point(_of(GHOST_VT_HIDE)), 0.4, 30.0)
