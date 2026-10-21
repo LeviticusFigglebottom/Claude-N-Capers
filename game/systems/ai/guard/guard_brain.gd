@@ -28,6 +28,12 @@ extends Node
 ## S3.2 cuff flow sub-phase while ALARMED.
 enum CuffPhase { NONE, PAUSE, APPROACH, CUFFING }
 
+## FrameProf keys per ticked AlertState.
+const STATE_KEYS: Dictionary = {
+	Enums.AlertState.CALM: &"guard_brain.calm", Enums.AlertState.CURIOUS: &"guard_brain.curious",
+	Enums.AlertState.INVESTIGATING: &"guard_brain.investigating", Enums.AlertState.ALARMED: &"guard_brain.alarmed",
+	Enums.AlertState.COMBAT: &"guard_brain.combat",
+}
 const DEFAULT_TWEAK: String = "res://systems/ai/data/guard_tweak.tres"
 ## Alert states this brain drives; anything else (DOMINATED, TIED, DEAD...) is owned elsewhere.
 const ACTIVE_STATES: Array[int] = [
@@ -286,7 +292,9 @@ func _physics_step(delta: float) -> void:
 	if _npc.is_stunned():  # A2-03 (S8.6): ECM feedback stun pauses everything (radio call too)
 		wants_to_fire = false
 		return
-	match _npc.alert_state:
+	var fp: int = FrameProf.begin()
+	var st: int = _npc.alert_state
+	match st:
 		Enums.AlertState.CALM:
 			if route.is_empty():
 				_tick_post(delta)
@@ -302,6 +310,7 @@ func _physics_step(delta: float) -> void:
 			_tick_alarmed(delta)
 		Enums.AlertState.COMBAT:
 			_tick_combat(delta)
+	FrameProf.end(STATE_KEYS.get(st, &"guard_brain.other"), fp)  # LEAD (OF loud hitches): per alert state
 
 
 # --- CALM -------------------------------------------------------------------------------
@@ -648,14 +657,18 @@ func _enter_combat() -> void:
 	_closing = false
 	_retarget_left = 0.0
 	anim_hint = &"idle_alert"
+	var fp: int = FrameProf.begin()  # LEAD (OF loud hitches): the alarm's guard_brain frame (148-322 ms over 9 guards)
 	_npc.set_alert_state(Enums.AlertState.COMBAT)
+	FrameProf.end(&"guard_brain.enter_combat", fp)
 
 
 func _tick_combat(delta: float) -> void:
 	_retarget_left -= delta
 	if _retarget_left <= 0.0 or combat_target == null or not is_instance_valid(combat_target):
 		_retarget_left = tweak.combat_retarget_s
+		var fp: int = FrameProf.begin()
 		_pick_target()
+		FrameProf.end(&"guard_brain.pick_target", fp)
 	var target: Node3D = combat_target as Node3D
 	if target == null:
 		_motor.stop()

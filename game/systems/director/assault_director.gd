@@ -967,7 +967,7 @@ func _path_cost(from: Vector3, to: Vector3) -> float:
 	var nav_map: RID = _runtime.map.get_world_3d().navigation_map
 	if not nav_map.is_valid() or NavigationServer3D.map_get_iteration_id(nav_map) == 0:
 		return straight
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, from, to, true, 1 | Door.NAV_LAYER_BREACH)
+	var path: PackedVector3Array = NavPath.query(nav_map, from, to, true, 1 | Door.NAV_LAYER_BREACH)
 	if path.size() < 2 or path[path.size() - 1].distance_to(to) > 2.0:
 		return straight
 	var total: float = 0.0

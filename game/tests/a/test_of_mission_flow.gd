@@ -8,8 +8,8 @@ extends "res://tests/a/of_mission_case.gd"
 const OBJECTIVES: Array[StringName] = [&"casing", &"keycard", &"code_hint", &"code_pc", &"server", &"vault_gate", &"lasers",
 	&"time_lock", &"time_lock_wait", &"vault_loot", &"gold_cage", &"secure", &"deposit_boxes", &"bond_safe",
 	&"president_safe", &"server_drives", &"drill_delivery", &"vault_drill", &"vault_breach", &"escape_wait", &"escape"]
-const STARTS_HIDDEN: Array[StringName] = [&"time_lock", &"time_lock_wait", &"vault_loot", &"gold_cage", &"drill_delivery",
-	&"vault_drill", &"vault_breach", &"escape_wait", &"escape"]
+const STARTS_HIDDEN: Array[StringName] = [&"time_lock", &"time_lock_wait", &"vault_loot", &"gold_cage", &"bond_safe",
+	&"drill_delivery", &"vault_drill", &"vault_breach", &"escape_wait", &"escape"]
 
 
 func test_of_every_objective_has_resolving_marker_tags() -> void:
@@ -85,6 +85,115 @@ func test_of_stealth_line_keycard_code_gate_time_lock_vault() -> void:
 	assert_true(_ended.is_empty(), "nothing ended the heist")
 
 
+## P's ghost-line loops walk the vault guard through the locked gate (Door.npc_open keeps `locked`): that open is not
+## the crew's gate, so [vault_gate] stays active until the reader unlocks it.
+func test_of_guard_passing_the_locked_gate_is_not_vault_gate() -> void:
+	if _pending() or not await _launch():
+		return
+	var gate: Door = null
+	for n: Node in _m().find_tagged(&"vault_gate"):
+		if n is Door:
+			gate = n as Door
+	assert_true(gate != null and gate.locked and not gate.is_open, "the vault gate starts shut and locked")
+	gate.set_open(true)  # what Door._npc_apply_open does for a staff pass
+	await wait_physics_frames(1)
+	assert_true(gate.locked, "still locked after the guard's pass")
+	assert_eq(_state(&"vault_gate"), ACTIVE, "[vault_gate] not completed by a guard opening it")
+	gate.set_open(false)
+	gate.unlock()
+	gate.open()
+	await wait_physics_frames(1)
+	assert_eq(_state(&"vault_gate"), DONE, "[vault_gate] on an unlocked open")
+
+
+## LEAD OF-done (Cataclysm loud, 3 GPU runs): the pilot walked to the bond safe and the vault-wall boxes through the
+## sealed vault's wall. Inside-the-vault markers wait for the vault (open or burned through); the SD hall's boxes don't.
+func test_of_vault_side_loot_marked_once_the_vault_is_reachable() -> void:
+	if _pending() or not await _launch():
+		return
+	await wait_seconds(0.5)
+	var before: Dictionary = _marker_names()
+	assert_eq(_state(&"bond_safe"), HIDDEN, "[bond_safe] hidden while the vault is sealed")
+	assert_false(before.has(&"bond_safe"), "no bond safe marker yet")
+	var boxes: Array = before.get(&"deposit_boxes", [])
+	assert_true(not boxes.is_empty(), "the SD hall's boxes are marked (%s)" % [boxes])
+	for n: Variant in boxes:
+		assert_true(String(n).begins_with("HallBox"), "only hall boxes before the vault (%s)" % n)
+	(_m() as Object).call(&"open_vault")
+	await wait_seconds(0.5)
+	var after: Dictionary = _marker_names()
+	assert_eq(_state(&"bond_safe"), ACTIVE, "[bond_safe] once the vault is open")
+	assert_true(after.has(&"bond_safe"), "bond safe marked")
+	var vault_marked: bool = false
+	for n: Variant in after.get(&"deposit_boxes", []):
+		vault_marked = vault_marked or String(n).begins_with("VaultBox")
+	assert_true(vault_marked, "the vault-wall boxes are marked once it is open")
+	# [vault_loot]: the cash cage's way in (padlock, keypad) while its gate is shut, then the cash.
+	var cage: Array = after.get(&"vault_loot", [])
+	assert_true(cage.has("Padlock"), "the cage padlock is marked while the cage is shut (%s)" % [cage])
+	assert_false(cage.has("VaultCash") or cage.has("CashCageGate"), "not the cash or the gate yet (%s)" % [cage])
+	var lock: Padlock = null
+	for n: Node in _m().find_tagged(&"cash_cage"):
+		if n is Padlock:
+			lock = n as Padlock
+	lock.open_lock(true, &"saw")
+	await wait_seconds(0.5)
+	var opened: Array = _marker_names().get(&"vault_loot", [])
+	assert_true(opened.has("VaultCash") and not opened.has("Padlock"), "the cash once the cage is open (%s)" % [opened])
+
+
+## LEAD GPU-15 (2): "the pilot stands 2.2 m from the BondSafe interactable and its aim ray hits nothing". That stand
+## (13.2, -4, 20.1) is outside the vault's west wall. Once the vault is open, a real player reaches the safe's UsePoint
+## on the navmesh from the vault door, and the aim from there resolves to the safe.
+func test_of_bond_safe_usable_from_its_use_point() -> void:
+	if _pending() or not await _launch():
+		return
+	var safe: Safe = null
+	for n: Node in _m().find_tagged(&"bond_safe"):
+		if n is Safe:
+			safe = n as Safe
+	assert_true(safe != null, "the bond safe")
+	var comp: InteractableComponent = safe.get_node(^"Interactable") as InteractableComponent
+	var use: Node3D = safe.get_node(^"UsePoint") as Node3D
+	_m().call(&"open_vault")
+	await wait_physics_frames(3)
+	var map: RID = _rt.map.get_world_3d().navigation_map
+	var door: Node3D = _m().find_tagged(&"vault_door")[0] as Node3D
+	var path: PackedVector3Array = NavPath.query(map, door.global_position + Vector3(0.0, 0.0, 1.5), use.global_position)
+	assert_true(not path.is_empty() and path[path.size() - 1].distance_to(use.global_position) < 0.5,
+		"the UsePoint %s is on the navmesh from the vault door (path ends %s)" % [use.global_position,
+		path[path.size() - 1] if not path.is_empty() else Vector3.INF])
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	c.set_masked()
+	for stand: Vector3 in [use.global_position, Vector3(13.2, -4.0, 20.1)]:
+		_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, stand + Vector3(0, 0.05, 0)))
+		await wait_physics_frames(3)
+		var to: Vector3 = comp.global_position - c.eye_position()
+		var i: CrewIntent = CrewIntent.new()
+		i.look_yaw = atan2(-to.x, -to.z)
+		i.look_pitch = atan2(to.y, Vector2(to.x, to.z).length())
+		_rt.set_bot_intent(0, i)
+		await wait_physics_frames(2)
+		var inside: bool = stand == use.global_position
+		assert_eq(_rt.interaction.aimed_component(c) == comp, inside,
+			"aim at the safe from %s resolves: %s (inside the vault only)" % [stand, inside])
+
+
+## objective id -> the names of the nodes the HUD marks for it (positions matched to the tagged nodes).
+func _marker_names() -> Dictionary:
+	var out: Dictionary = {}
+	var found: Dictionary = _rt.find_by_tags([&"bond_safe", &"deposit_boxes", &"cash_cage", &"vault_loot"])
+	for m: Dictionary in _rt.hud_model.objective_markers:
+		var id: StringName = StringName(m["id"])
+		var tags: Array = [&"cash_cage", &"vault_loot"] if id == &"vault_loot" else [id]
+		for n: Node in tags.reduce(func(acc: Array, t: StringName) -> Array: return acc + found.get(t, []), []):
+			if n is Node3D and (n as Node3D).global_position.is_equal_approx(m["position"]):
+				var names: Array = out.get(id, [])
+				names.append(String(n.name))
+				out[id] = names
+	return out
+
+
 func test_of_rack_hack_starts_the_time_lock() -> void:
 	if _pending() or not await _launch():
 		return
@@ -157,6 +266,7 @@ func test_of_stealth_heli_called_on_secure() -> void:
 func test_of_side_safes_and_drives_complete() -> void:
 	if _pending() or not await _launch(Enums.Difficulty.ROUTINE, {&"president_safe": &"ps_bonds"}):
 		return
+	_m().call(&"open_vault")  # the bond safe is in the vault: its objective appears with it
 	for tag: StringName in [&"bond_safe", &"president_safe"]:
 		var safe: Safe = null
 		for n: Node in _m().find_tagged(tag):

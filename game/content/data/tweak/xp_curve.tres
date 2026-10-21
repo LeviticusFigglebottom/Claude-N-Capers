@@ -8,4 +8,4 @@ max_level = 100
 first_level_xp = 900.0
 last_level_xp = 1000000.0
 exponent = 3.36
-scale = 0.5
+scale = 1.0

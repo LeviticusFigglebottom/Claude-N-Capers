@@ -46,6 +46,8 @@ const COUNT_S: float = 1.2
 const XP_FILL_S: float = 0.9
 ## D-115: achievement entries per line in the payday's "Achievements unlocked" panel.
 const ACHIEVEMENT_COLUMNS: int = 3
+## r252: achievement descriptions in the payday panel show at most this many lines (see _build_achievements).
+const DESC_LINES: int = 2
 ## D-090: at most one count-up tick per this many ms.
 const COUNT_TICK_MS: int = 80
 
@@ -530,6 +532,10 @@ func _build_achievements() -> PanelContainer:
 			top.add_child(r)
 		var d: Label = UiBuild.label(a.desc_key, UiBuild.DIM)
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# r252 GPU loud payday: a 3-line description ran under the fold at 720p; two lines fit, and the reward the tail
+		# names ("Unlocks the ... material") is already on the REWARD line above, so the rest trims to an ellipsis.
+		d.max_lines_visible = DESC_LINES
+		d.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		e.add_child(d)
 		grid.add_child(e)
 		achievement_rows[id] = e

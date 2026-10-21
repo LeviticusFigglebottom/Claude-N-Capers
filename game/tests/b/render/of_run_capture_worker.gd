@@ -28,7 +28,7 @@ func _ready() -> void:
 	if args.size() > 1:
 		_modes = [StringName(args[1])]
 	DirAccess.make_dir_recursive_absolute(_out)
-	SaveService.root_dir = _out + "/profiles"
+	SaveService.root_dir = "user://of_run_profiles_%d" % OS.get_process_id()  # LEAD r252: not into the out dir (repo tree)
 	_run.call_deferred()
 
 

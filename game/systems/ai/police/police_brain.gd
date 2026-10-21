@@ -136,9 +136,15 @@ func _physics_step(delta: float) -> void:
 	_retarget_left -= delta
 	if _retarget_left <= 0.0 or combat_target == null or not is_instance_valid(combat_target):
 		_retarget_left = _roll(tweak.retarget_s)
+		var fp: int = FrameProf.begin()
 		_pick_target()
+		FrameProf.end(&"police_brain.pick_target", fp)
+		fp = FrameProf.begin()
 		_choose_position()
+		FrameProf.end(&"police_brain.choose_position", fp)
+	var fm: int = FrameProf.begin()
 	_tick_move(delta)
+	FrameProf.end(&"police_brain.move", fm)
 	var t: Node3D = combat_target as Node3D
 	wants_to_fire = t != null and _target_visible \
 		and _flat(t.global_position - _npc.global_position).length() <= tweak.fire_range_m

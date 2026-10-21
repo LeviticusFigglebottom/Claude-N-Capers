@@ -228,8 +228,10 @@ func observer_kind() -> int:
 	return Enums.ObserverKind.CAMERA
 
 
+## P (OF G2 throws, CameraC9): a camera switched off with GameplayPrefab.set_enabled(false) / enabled_at_start false
+## (OF-A2, QC-61: hidden, processing off) sees nothing.
 func can_observe() -> bool:
-	return active and not destroyed and _suppressed.is_empty() and is_inside_tree()
+	return active and prefab_enabled and not destroyed and _suppressed.is_empty() and is_inside_tree()
 
 
 ## Per-camera cone on top of the `camera` preset (S8.1): fov_deg, range_m.

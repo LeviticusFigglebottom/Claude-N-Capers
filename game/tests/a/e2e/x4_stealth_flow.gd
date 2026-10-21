@@ -357,6 +357,11 @@ func escape(ez: EscapeZone) -> bool:
 	if not check(inside != null, "a navmesh point inside %s" % ez.name):
 		return false
 	await _move_to(inside as Vector3, ez.global_position)
+	# The co-op loopback's client human has no input: it never walks to the escape, which waits for every human not in
+	# custody (EscapeZone.escaping_slots). Bring the other humans in (it passed only while that player ended in custody).
+	for c: CrewController in rt.crew_members():
+		if c != crew and not c.is_ai and c.crew_state != Enums.CrewState.CUSTODY:
+			rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, inside as Vector3))
 	var ok: bool = await wait_until(func() -> bool: return not ended.is_empty(), 5.0)
 	return check(ok, "heist_ended after standing in %s" % ez.name)
 

@@ -403,22 +403,29 @@ func refresh() -> void:
 		c = _runtime.crew_controller(slot) as CrewController
 	if _runtime != null:
 		_assign(&"heist_phase", int(_runtime.phase))
+	# LEAD (OF loud hitches: one hud_model frame of 458 ms at OF start): FrameProf sub-keys name the slow poll.
+	var fp: int = FrameProf.begin()
 	_poll_vitals(c, slot)
 	_poll_weapons(c)
 	_poll_inventory(c)
 	_poll_interaction(c, slot)
+	fp = FrameProf.lap(&"hud_model.player", fp)
 	_poll_detection(slot)
 	_poll_marks_and_timers(slot)
 	_publish_pagers()
+	fp = FrameProf.lap(&"hud_model.stealth", fp)
 	_poll_devices()
 	_poll_objectives()
+	fp = FrameProf.lap(&"hud_model.objectives", fp)
 	_poll_warnings(c)
 	_poll_dominate(c)
 	_poll_crew(slot)
 	_poll_crew_stats()
 	_poll_custody(c, slot)
 	_poll_captain()
-	_flush()
+	fp = FrameProf.lap(&"hud_model.crew", fp)
+	_flush()  # emits the changed groups: the HUD's own handlers run inside
+	FrameProf.end(&"hud_model.flush", fp)
 
 
 # --- Polling ----------------------------------------------------------------------
@@ -632,6 +639,7 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		return  # objectives published before the runtime is bound: resolve on a later poll
 	var want: Dictionary[StringName, Array] = {}
 	var sigs: Dictionary[StringName, String] = {}
+	var skips: Dictionary[StringName, Variant] = {}
 	for o: Dictionary in src:
 		var tags: Variant = (o.get("args", {}) as Dictionary).get("marker_tags", [])
 		if int(o["state"]) != Enums.ObjectiveState.ACTIVE or not (tags is Array) or (tags as Array).is_empty():
@@ -639,6 +647,7 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
 			continue  # e.g. Night Deposit's code / server steps in a lockdown (the panel hides them too)
 		want[StringName(o["id"])] = tags as Array
+		skips[StringName(o["id"])] = (o.get("args", {}) as Dictionary).get("marker_skip_prefixes", [])
 		sigs[StringName(o["id"])] = str(o.get("args", {}))  # any data update re-resolves (QC-60: runtime tags)
 	_marker_poll += 1
 	for gone: StringName in _marker_nodes.keys():
@@ -648,6 +657,8 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 			_marker_retry.erase(gone)
 	# P / lead (ND 1 Hz stutter): each find_by_tag walks the whole map, so only new / changed objectives are
 	# resolved, and an unresolved one retries with exponential back-off and gives up after MARKER_MAX_TRIES.
+	var todo: Array[StringName] = []
+	var tags: Array = []
 	for id: StringName in want:
 		var changed: bool = _marker_sig.get(id, "") != sigs[id] or not _marker_nodes.has(id)
 		if not changed:
@@ -658,12 +669,19 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 				continue
 		else:
 			_marker_retry.erase(id)
+		todo.append(id)
+		for t: Variant in want[id]:
+			if not tags.has(StringName(t)):
+				tags.append(StringName(t))
+	# LEAD (OF start: 477 ms here): every tag of every objective to resolve in ONE map walk.
+	var found: Dictionary = _runtime.find_by_tags(tags) if not tags.is_empty() else {}
+	for id: StringName in todo:
 		_marker_sig[id] = sigs[id]
 		var nodes: Array[Node3D] = []
 		for t: Variant in want[id]:
 			marker_lookups += 1
-			for n: Node in _runtime.find_by_tag(StringName(t)):
-				if n is Node3D:
+			for n: Node in found.get(StringName(t), []):
+				if n is Node3D and not _marker_skipped(n, skips[id]):
 					nodes.append(n as Node3D)
 		_marker_nodes[id] = nodes
 		if nodes.is_empty():
@@ -685,6 +703,17 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 				out.append({"id": oid, "text_key": StringName(o2["text_key"]), "position": n3.global_position,
 					"state": int(o2["state"])})
 	_assign(&"objective_markers", out)
+
+
+## Objective data `marker_skip_prefixes` (Array of node-name prefixes): tagged nodes the mission does not mark yet
+## (OF: the vault-wall deposit boxes while the vault is sealed; the SD hall's boxes are marked).
+static func _marker_skipped(n: Node, prefixes: Variant) -> bool:
+	if not (prefixes is Array):
+		return false
+	for p: Variant in prefixes:
+		if String(n.name).begins_with(String(p)):
+			return true
+	return false
 
 
 ## PO6-03: device rows from the known device net ids (EventBus device_started on every peer, plus one scan of

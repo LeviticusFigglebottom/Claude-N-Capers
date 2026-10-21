@@ -5,10 +5,11 @@ extends TestCase
 func test_shape_and_bounds() -> void:
 	assert_eq(XpCurve.max_level(), 100)
 	assert_eq(XpCurve.xp_for_level(0), 0)
-	assert_eq(XpCurve.step_xp(1), 450, "900 x 0.5")
-	assert_eq(XpCurve.step_xp(100), 500000, "1,000,000 x 0.5")
+	# D-148 (PO, option D): PD2's curve unscaled, 900 -> 1,000,000 per level, ~23M total (was x0.5).
+	assert_eq(XpCurve.step_xp(1), 900, "900")
+	assert_eq(XpCurve.step_xp(100), 1000000, "1,000,000")
 	var total: int = XpCurve.xp_for_level(100)
-	assert_true(total > 11000000 and total < 12500000, "total ~23M x 0.5, got %d" % total)
+	assert_true(total > 22500000 and total < 24000000, "total ~23M (PD2), got %d" % total)
 	assert_eq(XpCurve.xp_for_level(-5), 0)
 	assert_eq(XpCurve.xp_for_level(150), total)
 
@@ -25,8 +26,8 @@ func test_monotonic() -> void:
 func test_level_for_xp_round_trip() -> void:
 	assert_eq(XpCurve.level_for_xp(0), 0)
 	assert_eq(XpCurve.level_for_xp(-100), 0)
-	assert_eq(XpCurve.level_for_xp(449), 0)
-	assert_eq(XpCurve.level_for_xp(450), 1)
+	assert_eq(XpCurve.level_for_xp(899), 0)
+	assert_eq(XpCurve.level_for_xp(900), 1)
 	for level: int in [1, 2, 10, 37, 50, 99, 100]:
 		var need: int = XpCurve.xp_for_level(level)
 		assert_eq(XpCurve.level_for_xp(need), level)

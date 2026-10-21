@@ -51,6 +51,8 @@ const VIEWS: Dictionary = {
 ## --detail proposal check: the render layer the cast moves to (2 = bit value 2)
 const CAST_LAYER: int = 2
 const CAST_LAYER_BIT: int = 1 << (CAST_LAYER - 1)
+## --loud: a rendered frame slower than this (ms) is logged as a hitch with the NPCs spawned that frame.
+const HITCH_MS: float = 50.0
 ## --detail shadow proposal: cast geometry beyond this distance (m) from the camera casts no shadow.
 const FAR_SHADOW_M: float = 15.0
 const FORCE: Dictionary = {"ostrander_federal": {"vip": ["vip_in"]}}
@@ -88,8 +90,7 @@ func _ready() -> void:
 		await get_tree().physics_frame
 	if _loud:
 		rt.stealth.raise_alarm(&"d_cast_perf")
-		for _i: int in int(_seconds * Engine.physics_ticks_per_second):
-			await get_tree().physics_frame
+		await _loud_hitches(rt)
 	var npcs: Array[Node] = rt.npcs()
 	var by_role: Dictionary = {}
 	for n: Node in npcs:
@@ -349,6 +350,42 @@ func _shadow_breakdown(view: String, npcs: Array[Node], shown: Array) -> void:
 	for li: Light3D in saved_masks:
 		li.shadow_caster_mask = saved_masks[li]
 	print("[CASTPERF] view=%s cast excluded from the %d positional lights' shadow casters -> %d" % [view, pos.size(), split])
+
+
+## The loud wait, traced: every rendered frame slower than HITCH_MS during the `_seconds` of game time is logged with
+## the NPCs that appeared since the previous frame (their look scene), so first-spawn costs (material / shader compile,
+## scene instancing) show up by name; then a summary (hitches, worst, how many coincided with a spawn).
+func _loud_hitches(rt: HeistRuntime) -> void:
+	var seen: Dictionary = {}
+	for n: Node in rt.npcs():
+		seen[n.get_instance_id()] = true
+	var cap_ms: int = Time.get_ticks_msec() + int(_seconds * 20000.0)   # wall-clock safety cap (slow renderers)
+	var game_left: float = _seconds
+	var last: int = Time.get_ticks_usec()
+	var hitches: int = 0
+	var with_spawn: int = 0
+	var worst: float = 0.0
+	while game_left > 0.0 and Time.get_ticks_msec() < cap_ms:
+		await get_tree().process_frame
+		var now: int = Time.get_ticks_usec()
+		var ms: float = (now - last) / 1000.0
+		last = now
+		game_left -= get_process_delta_time()
+		var fresh: PackedStringArray = []
+		for n: Node in rt.npcs():
+			if not seen.has(n.get_instance_id()):
+				seen[n.get_instance_id()] = true
+				var nb: NpcBase = n as NpcBase
+				fresh.append(nb.visual_scene.resource_path.get_file().get_basename() if nb.visual_scene != null else
+						String(nb.name))
+		if ms > HITCH_MS:
+			hitches += 1
+			worst = maxf(worst, ms)
+			with_spawn += 1 if not fresh.is_empty() else 0
+			print("[CASTPERF] hitch %.1f ms at +%.1f s; spawned this frame: %s" % [ms, _seconds - game_left,
+					", ".join(fresh) if not fresh.is_empty() else "-"])
+	print("[CASTPERF] loud wait: %d hitches > %.0f ms (worst %.1f), %d on a frame with new NPCs" % [hitches, HITCH_MS,
+			worst, with_spawn])
 
 
 ## Frame time at this view: wall-clock ms between consecutive frames over `_frames` frames (average and worst), so a

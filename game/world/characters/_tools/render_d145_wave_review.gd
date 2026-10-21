@@ -16,6 +16,8 @@ const SEED: int = 7
 const WANT_UNITS: int = 6
 const WAIT_S: float = 240.0
 const CLOSEUPS: int = 4
+## close-up camera distance from the unit's chest (m)
+const CLOSE_M: float = 2.4
 
 var _out: String = ""
 var _cam: Camera3D = null
@@ -85,18 +87,49 @@ func _wave(diff: int) -> Array:
 		away.y = 0.0
 		away = away.normalized() if away.length() > 0.1 else Vector3(0, 0, 1)
 		imgs.append(await _shot("%s_group" % name, c + away * 7.0 + Vector3(0, 2.2, 0), c + Vector3(0, 1.0, 0)))
-		for i: int in mini(CLOSEUPS, units.size()):
-			var u: NpcBase = units[i]
-			var fwd: Vector3 = -u.global_transform.basis.z
-			fwd.y = 0.0
-			fwd = fwd.normalized() if fwd.length() > 0.1 else Vector3(0, 0, 1)
+		var shots: int = 0
+		for u: NpcBase in units:
+			if shots >= CLOSEUPS:
+				break
 			var at: Vector3 = u.global_position + Vector3(0, 1.25, 0)
-			imgs.append(await _shot("%s_unit%d" % [name, i], at + fwd * 2.4 + Vector3(0, 0.25, 0), at))
+			var eye: Variant = _clear_eye(u, at)
+			if eye == null:
+				_say("%s: no clear view of %s at %s, skipped" % [name, NpcVisuals.character_id(u), u.global_position])
+				continue
+			imgs.append(await _shot("%s_unit%d" % [name, shots], eye as Vector3, at))
+			shots += 1
 	rt.teardown()
 	_cam.queue_free()
 	for _i: int in 5:
 		await get_tree().process_frame
 	return imgs
+
+
+## A camera spot CLOSE_M (then 1.4x) from `at` with nothing between it and the unit (8 directions, the unit's facing
+## first; rays from the chest, head and hips out to the eye and back must all be clear, so the eye is neither behind
+## nor inside a wall, a bollard or a door, and no door cuts across the body), or null.
+func _clear_eye(u: NpcBase, at: Vector3) -> Variant:
+	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	var fwd: Vector3 = -u.global_transform.basis.z
+	fwd.y = 0.0
+	fwd = fwd.normalized() if fwd.length() > 0.1 else Vector3(0, 0, 1)
+	var skip: Array[RID] = []
+	if u is CollisionObject3D:
+		skip.append((u as CollisionObject3D).get_rid())
+	for dist: float in [CLOSE_M, CLOSE_M * 1.4]:
+		for k: int in 8:
+			var dir: Vector3 = fwd.rotated(Vector3.UP, k * PI / 4.0)
+			var eye: Vector3 = at + dir * dist + Vector3(0, 0.25, 0)
+			var clear: bool = true
+			# chest, head and hips all visible both ways (a door or wall half across the body fails)
+			for target: Vector3 in [at, at + Vector3(0, 0.5, 0), at - Vector3(0, 0.45, 0)]:
+				for pair: Array in [[target, eye], [eye, target]]:
+					var q := PhysicsRayQueryParameters3D.create(pair[0], pair[1])
+					q.exclude = skip
+					clear = clear and space.intersect_ray(q).is_empty()
+			if clear:
+				return eye
+	return null
 
 
 func _shot(name: String, eye: Vector3, at: Vector3) -> Image:

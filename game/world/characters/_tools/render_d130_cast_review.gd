@@ -213,12 +213,13 @@ func _pair() -> void:
 
 func _sheet() -> void:
 	var band_h: int = TILE.y * 2 + HEAD_TILE.y
-	var bands: int = ceili(float(_chars.size()) / COLS)
-	var sheet: Image = Image.create(TILE.x * COLS, band_h * bands, false, Image.FORMAT_RGBA8)
+	var cols: int = mini(COLS, maxi(1, _chars.size()))   # a short pool gets a narrower canvas, no empty columns
+	var bands: int = ceili(float(_chars.size()) / cols)
+	var sheet: Image = Image.create(TILE.x * cols, band_h * bands, false, Image.FORMAT_RGBA8)
 	sheet.fill(Color(0.2, 0.2, 0.2))
 	for c: int in range(_chars.size()):
-		var x: int = TILE.x * (c % COLS)
-		var y0: int = band_h * (c / COLS)
+		var x: int = TILE.x * (c % cols)
+		var y0: int = band_h * (c / cols)
 		var body: Node3D = (load(Spec.scene_path(_chars[c])) as PackedScene).instantiate() as Node3D
 		CrowdLod.force_level(body, false)
 		_vp.add_child(body)
