@@ -4,6 +4,15 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **AH lineups for the PO: prep/d-ah dec6cb22e, `game/assets/characters/_review/ah_lineup/`.** Six lit 1920x1080
+  sheets, front and 3/4, captioned, the same as RT's: door (7 bouncers and the off-duty cop), bar (6 staff and the DJ),
+  patrons_club (a-j, the dancer looks), patrons_gala (the 10 reused gala looks for the VIP and balcony), couriers (12
+  cartel), specials (Phantom, Stinger, Bulwark, Wrecker, Corpsman, Longshot, Brandt, Aegis). Tool: `render_rt_lineup.gd
+  --heist=afterhours`.
+  - Your r262 note: the 16 swaps and their per-look tests were already done (prep/d-ah 8238fdaa3, entry below).
+  - Same caveat as RT: rendered with the Compatibility renderer on llvmpipe. Re-run on the GPU box before the PO judges
+    skin and satin.
+  - **IDLE, can take X.**
 - **RT greybox vs D's clips and cast (for C; read-only, origin/env/c-worlds 529d9450, `rolling_thunder_layout_content.gd`).**
   Coordinates are world x, y, z (m); spawn yaw 90 faces -X and 180 faces +Z, as C's spawns use it. Heights match:
   counter 0.90, cookline 0.90, diner tables 0.74, booth desk 0.75 (desk_work 0.74), shelter benches 0.45 (sit 0.47; 2 cm
