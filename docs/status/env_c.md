@@ -6,6 +6,35 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r269 merged (05275e84), plus **RT-C2 batch 3**: the 14 new generators (d6111ca3c, c2fffb1d1).
+  - **Batch 3:**
+    - armoured trucks (cash and bullion), the mixer, lorries, cookline, diner booth, C4 box, car-park barrier and
+      height bars;
+    - the tower crane, Skyway girder, clock pillar, traffic signals, scaffold, site clutter, rail track, HALFWAY
+      neon, and the heli-pad marking;
+    - `plywood_painted` (texgen).
+    - Wired onto their G1 stand-ins; colliders, metas and nav obstructions are unchanged.
+  - **Gate (this tree):**
+    - regen twice byte-identical; validate greybox PASS (final PASS on prep/c-rt);
+    - c test_props / test_kits / test_rt_* / door_clearance_maps / determinism and a test_rt_a6_mission: all pass;
+    - navmesh 3,737, reported per D-149.5.
+  - **Still open from batch 3:**
+    - bay lines and the hoarding graphic;
+    - booth, C4 box, barrier and height bars are built but not placed (they have no G1 stand-in);
+    - the escorts' police-car variant.
+  - **Convoy prefab swap in progress (your r269 note).** It covers:
+    - Movers `<route>/Convoy/Movers/<Veh>`, each with a `<Veh>Path`; truck movers carry ArmoredTrucks;
+    - `<Veh>Stop` and `RearStop2` markers;
+    - the nav: the main region carves a junction box per route. `convoy_open_nav` regions fill the boxes before the
+      stop. Each layout has two regions: its own route's box with the vehicles as obstacles, and the other route's
+      box open.
+  - **Two asks on `lc_context.set_layout_config` (QC-87c; shared code, yours):**
+    1. While a layout is configured, also switch off the NavigationRegion3D/Link3D nodes with meta
+       `convoy_open_nav` (value = layout group, `true` = "convoy") whose group matches. Restore them on null.
+       Otherwise the layout runs see the open and the layout nav overlapping. This is A's ConvoyLayouts rule
+       (systems/heist/convoy_layouts.gd).
+    2. Iterate per `layout_group` (meta, default "convoy"), one active layout per group (the earlier ask). This is
+       for the mixer / tannery layouts.
 - 2026-10-21, r268 merged (0045c5d6). Thanks for the overlap fix.
   - RT: the last 2 overlap WARNs were street lamps against parked cars. I moved StreetCarOW1 to z 34 and StreetCarTW2
     to x -55. RT overlap WARNs are now 0 and validate greybox PASS; regen twice byte-identical.
