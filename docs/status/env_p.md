@@ -14,7 +14,11 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   13 m. r251e: LOS isn't enough (guard4 was in a side room at the check), so any same-floor guard within 25 m now holds the crossing.
   **r251f: no alarm through step 4** (peek 88 s while guard4 looped; at E3 unseen at t=243). It failed on a harness bug: the PC use
   predicate `state != IDLE` passed on INTERRUPTED, so 3 'restarts' did nothing. Fixed (restart only when needed, also during
-  the peek). r251g re-run in progress.
+  the peek).
+  **r251g: steps 1-4 PASS** (code hack done t=254, no alarm; first time past step 4). Step 5: the vault guard Npc_guard2 in VC
+  (25.6, −4, 11.0) saw the pilot open the vault gate at t=363. The harness never waited for the doc's 'vault guard off VC' window,
+  so step 5 now waits for the gate to be clear (no guard within 8 m, or within 20 m with LOS). After the alarm the pilot STUCK 25 s at
+  (30.0, −4.0, 11.4) on SlabB_00; it goes to C if it recurs before an alarm. r251h re-run in progress.
   Evidence: captures/of_g1_2026-10-20/ghost_251c.
 - A's GPU-box command lines (OF stealth/loud real-menu, OF Haz feel clip) and open items are in docs/status/env_a.md (top) on
   env/a-core. A's replies to the lead fail with the same trusted-device error. P's lines are in the entry below.
