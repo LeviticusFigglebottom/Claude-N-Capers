@@ -12,7 +12,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - **GH Tense on r256 (3312326b + P): 2/3 WIN, downs 2/3/3, median 3**, still over the D-145 target (≤2). The Longshot cap/timing didn't bring
   it back to r251's median 1. 4502's first down is still very early (t=82 vs ~245 on r251; on r255 t=79), so whatever moved it is in r255, not r256.
   4502 won with the pilot in custody. Suspects (LEAD): the nav-cap lift (cops path differently) or the GPU-17 hitch regression.
-  The 4502 log has the early-down details for A. Table + tense_r256/ in captures/d145_gh_2026-10-20.
+  **Cause of 4502's early down: a GH map snag, sent to C.** The pilot is STUCK ~15 s at the street (21.5, −0.4, 0.3) under fire, heading to a nav corner on
+  the sidewalk (20.7, 0.2, 0.8); its knee rays hit Glasshouse …/Ground/PellSidewalkW_N. The navmesh steps up a curb the capsule can't. The snag is on r251 too
+  (2× STUCK at t≈188), but since r255 the loud route reaches it at t≈86 (4-5× STUCK). Fixing the curb (C) should bring 4502 back.
+  Table + tense_r256/ in captures/d145_gh_2026-10-20.
 - **GH Tense on r255 (e9c8744f + P) is harder: 2/3 WIN, downs 3/3/2, median 3**, which misses the D-145 target (≤2). r251 was 2/3 with median 1, and
   all 3 won with A's revive fix. First downs come much earlier (4502: t=79 vs ~245 on r251). Per the LEAD, the Longshot cap is not in r255, so the
   suspects are the nav-cap lift or the GPU-17 hitch regression. I'll re-run ×3 on r256. Table: captures/d145_gh_2026-10-20/table.txt + tense_r255/.
