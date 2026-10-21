@@ -153,6 +153,8 @@ func build_ui() -> void:
 	backdrop.color = Color(UiAccent.app_bg(), 0.97)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
+	window_fill.append(backdrop)  # r266: the whole window on an ultrawide, not just the 16:9 column
+	fit_width()
 	var root: VBoxContainer = UiBuild.vbox(16)
 	UiBuild.screen_margin(self, root)
 	title_label = UiBuild.label(&"ui.results.title", UiBuild.HEADER)
@@ -200,7 +202,7 @@ func show_result(heist_result: Dictionary) -> void:
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
 	freshness_eval = HeistFreshness.evaluate(profile, StringName(result.get("heist_id", &"")))
-	payout = compute_payout(result, profile, Net.local_slot(), is_pro, freshness_eval)
+	payout = compute_payout(result, profile, payout_slot(), is_pro, freshness_eval)
 	xp_before = profile.xp
 	xp_after = xp_before + int(payout.get("xp_total", 0))
 	_applied = false
@@ -460,6 +462,13 @@ func _update_timer_label() -> void:
 ## D-139: the profile's own heist freshness (HeistFreshness.evaluate, before this run is recorded) scales money and
 ## XP; `fresh` = an evaluation to use instead (show_result's freshness_eval, also for the loss panel built after _apply
 ## recorded the run).
+## r266 (GPU-20c, pd2_fidelity S7.3): the local player's crew slot for their own payout. Without a Net session
+## (a dev launch straight into a heist) local_slot() is -1, PayoutCalculator's crew-wide view, which billed the AI
+## crew's civilian kills to the player; the local player is slot 0 then. Cleaner costs are the killer's only.
+static func payout_slot() -> int:
+	return maxi(Net.local_slot(), 0)
+
+
 static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int, pro: bool = false,
 		fresh: Dictionary = {}) -> Dictionary:
 	var ev: Dictionary = fresh if not fresh.is_empty() \
@@ -715,7 +724,7 @@ func _build_loss() -> VBoxContainer:
 	v.add_child(UiBuild.label(&"ui.results.loss_header", UiBuild.SUBHEADER))
 	var as_won: Dictionary = result.duplicate(true)
 	as_won["success"] = true
-	var would: Dictionary = compute_payout(as_won, profile, Net.local_slot(), is_pro,
+	var would: Dictionary = compute_payout(as_won, profile, payout_slot(), is_pro,
 			freshness_eval)
 	var grid: GridContainer = _grid(v)
 	_line(grid, &"lost_total", UiText.t(&"ui.results.lost_total"), UiText.money(int(would.get("total", 0))))

@@ -3,7 +3,33 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 19:25; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 20:05; send_message to you is refused, so read this)
+-22. **Your GPU-20c payday questions: cleaner costs work as PD2's; one real bug fixed; the 3440 backdrop was a bug.**
+     1. **Cleaner costs (pd2_fidelity S7.3) are implemented.**
+        - `DifficultyDef.civilian_kill_penalty` is $2k / 3k / 5k / 8k / 12k / 16k (Routine ... Cataclysm), shown as
+          "Cleanup costs (civilians)" in the Cash panel.
+        - Per the row, the cost comes **out of the killer's own payout**. AI teammates have their own crew slots,
+          so in GPU-20c (Rook 4, Dutch 2, the player 0) the player's payday rightly had **no** deduction. PD2 also
+          bills the killing player, and its bots don't target civilians.
+        - **Bug found:** without a Net session (a dev launch straight into a heist, standalone tools),
+          `Net.local_slot()` is -1. The payday then used PayoutCalculator's crew-wide view and **billed the AI
+          crew's kills to the player** ($30k for those 6 kills on Hazardous). The fix is
+          `PaydayScreen.payout_slot()` = max(local_slot, 0), so one rule holds everywhere: you pay for your own kills.
+        - **For A (behaviour, not payout):** crew AI targets only `HOSTILE_ROLES` (`crew_ai_brain.gd` scan), so 6
+          civilian deaths in one run came from stray fire / splash. PD2 bots rarely kill civilians; worth a
+          friendly-fire / line-of-fire check on civilians. Please relay.
+        - **Your call:** if the PO wants bot kills billed to the host (not PD2), it is a one-line calculator
+          change; I have not made it.
+     2. **The 3440x1440 world at the sides was not intended. Fixed.**
+        - The in-heist payday's opaque backdrop (commented "opaque over the map") sat inside UiScreen's 16:9
+          column, so the map showed at both sides on 21:9.
+        - `UiScreen.window_fill` now lets a screen register full-window children that `fit_width()` stretches back
+          out; the payday registers its backdrop.
+     - **Test:** the new `test_payday_cleaner_and_backdrop.gd` (3 tests). It pins: GPU-20c's crew costs the player
+       nothing; the player's own 2 kills charge 2 x $5k and show on the screen with no Net session; the backdrop
+       covers the whole 3440x1440 window. It fails on the old code (30000 vs 10000; the backdrop test errors).
+     - **Green:** `ui_payday` 15, `payday_sum` 2, `payday_cards` 10, `achievements` 31, `of_payday_e2e` 7,
+       `payout_calculator` 20, `ui_scenes` 4, `app_shell` 14, `menu_reach` 2, `app_flow` 5.
 -21. **Top-3 #3 done: the payday says when unlocks sit below the fold.**
      - **Change:** with more unlocks than one line holds (3), the panel header now reads **"ACHIEVEMENTS UNLOCKED: 6
        (3 MORE BELOW)"**; with 3 or fewer it stays the plain header. New string

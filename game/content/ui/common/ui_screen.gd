@@ -23,6 +23,9 @@ var control_hints: HBoxContainer = null
 
 ## Focus order for keyboard/gamepad; the first enabled one gets focus when the screen is shown.
 var focus_chain: Array[Control] = []
+## r266 (GPU-20c 3440x1440 payday): full-rect children that must cover the whole window, not just the 16:9 column
+## (the in-heist payday's opaque backdrop: the map showed at both sides). fit_width() stretches them back out.
+var window_fill: Array[Control] = []
 var _hints_pad: bool = false
 
 
@@ -47,6 +50,10 @@ func fit_width() -> void:
 	var inset: float = maxf((area.x - area.y * MAX_ASPECT) * 0.5, 0.0)
 	offset_left = inset
 	offset_right = -inset
+	for c: Control in window_fill:
+		if is_instance_valid(c):
+			c.offset_left = -inset
+			c.offset_right = inset
 
 
 ## Override: create child controls and fill focus_chain.
