@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/storage/prop_breaker_panel.tscn" id="1_base"]
+
+[node name="PropBreakerPanel" instance=ExtResource("1_base")]
+
+[node name="Panel" parent="Model"]
+visibility_range_end = 24.0
+visibility_range_end_margin = 2.4
+visibility_range_fade_mode = 1
+cast_shadow = 0
+
+[editable path="Model"]
