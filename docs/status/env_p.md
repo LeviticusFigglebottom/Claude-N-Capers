@@ -2,6 +2,13 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-21: GH Tense ×3 on trunk r251 (c04cb710), pointer to A's GPU-box lines
+- **GH Tense ×3 on pure trunk r251**, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**, the same as on 4a6780f4 (the seeds are deterministic).
+  4501 has the same no-revive bleedout (pilot down t=249, custody t=279). r251 lacks A's e640362d (bot revives from ≤2.3 m), and
+  4501 PASSES on env/a-core 441b6870 (A's run). **Merge e640362d and all 3 seeds win.** Table: captures/d145_gh_2026-10-20/table.txt, tense_r251/.
+- A's GPU-box command lines (OF stealth/loud real-menu, OF Haz feel clip) and open items are in docs/status/env_a.md (top) on
+  env/a-core. A's replies to the lead fail with the same trusted-device error. P's lines are in the entry below.
+
 ## 2026-10-20 (late): GPU-box command lines for the LEAD (P still cannot send_message the lead)
 Run from the repo root in cmd.exe; `G=godot\Godot_v4.7.2-stable_win64_console.exe`. Every run is windowed (no
 `--headless`, no xvfb). `--out` / `--po5-out` take an absolute path; `%CD%` keeps it inside the repo so the box can
