@@ -2078,6 +2078,7 @@ ui.achievements.locked,In progress
 ui.achievements.reward,{name}
 ui.achievements.reward_caption,Reward
 ui.results.achievements_header,Achievements unlocked
+ui.results.achievements_header_more,Achievements unlocked: {count} ({more} more below)
 ui.results.achievement_toast,Achievement unlocked
 ui.results.achievement_toast_reward,Reward: {name}
 achievement.first_score.name,First Score
@@ -2790,6 +2791,41 @@ item.asset.signal_insider.name,Insider: signal cabinet
 item.asset.signal_insider.desc,A council contact leaves the junction controller cabinet unlocked.
 item.asset.intel_route.name,Insider: convoy route
 item.asset.intel_route.desc,"You know which way the convoy comes in, and where the route marshal walks."
+item.asset.c4_drop.name,C4 drop
+item.asset.c4_drop.desc,"Four breaching charges left at the drop point. Faster than the saw on a truck door."
+ui.achievements.category.rolling_thunder,Rolling Thunder
+achievement.rt_clean_stop.name,Clean Stop
+achievement.rt_clean_stop.desc,"Clear Rolling Thunder with the junction signals rigged: the convoy stops on the red."
+achievement.rt_heavy_haul.name,Heavy Haul
+achievement.rt_heavy_haul.desc,"Secure four bags of gold on Rolling Thunder."
+achievement.rt_full_convoy.name,Nothing Left on the Road
+achievement.rt_full_convoy.desc,"Secure every bag the convoy carried on Rolling Thunder."
+achievement.rt_iron_crew.name,Iron Crew
+achievement.rt_iron_crew.desc,"Clear Rolling Thunder on Hazardous or higher without anyone going down."
+achievement.rt_quick.name,Green Light
+achievement.rt_quick.desc,"Clear Rolling Thunder in under 15 minutes."
+achievement.rt_cataclysm.name,End of the Line
+achievement.rt_cataclysm.desc,"Clear Rolling Thunder on Cataclysm."
+ui.briefing.step.rolling_thunder.setup,"Rig the junction signals, and raid the site stores if there is time"
+ui.briefing.step.rolling_thunder.trucks,Open the trucks and bag the cargo
+ui.briefing.sec.event.rolling_thunder.marshal_early,the route marshal is early and walks two checks
+ui.briefing.sec.event.rolling_thunder.convoy_early,the convoy runs 45 seconds early
+ui.briefing.sec.event.rolling_thunder.crane_sniper,a police marksman in the crane cab
+ui.briefing.sec.event.rolling_thunder.armored_escort,a Wrecker rides with the rear escort
+ui.briefing.sec.event.rolling_thunder.rush_hour,rush hour: more people on the street
+ui.preplan.point.rolling_thunder.pp_spawn_plaza,Bus interchange
+ui.preplan.point.rolling_thunder.pp_spawn_carpark,Car park: Deck 2 stair lobby
+ui.preplan.point.rolling_thunder.pp_spawn_underpass,Underpass: north sidewalk
+ui.preplan.point.rolling_thunder.pp_drop_site,Building site: inside the Orchard gate
+ui.preplan.point.rolling_thunder.pp_drop_carpark,Car park: Deck 2 south bays
+ui.preplan.point.rolling_thunder.pp_drop_diner_yard,Halfway Diner: the yard
+ui.preplan.point.rolling_thunder.pp_drop_underpass,Underpass: north abutment
+ui.preplan.point.rolling_thunder.pp_escape_carpark,Van: car park
+ui.preplan.point.rolling_thunder.pp_escape_underpass,Van: Tannery underpass
+ui.preplan.point.rolling_thunder.pp_escape_roof,Helicopter: car park roof
+ui.preplan.point.rolling_thunder.pp_perch_roof,Sniper perch: car park roof
+ui.preplan.point.rolling_thunder.pp_perch_frame,Sniper perch: the building frame
+ui.preplan.point.rolling_thunder.pp_signals,Junction signal cabinet
 heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
 heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. The Accountant wants its books and its count room emptied before the doors close."
@@ -3551,6 +3587,40 @@ voice.vo.mercer.briefing_ostrander_federal_1,"It's a working bank on a Friday af
 voice.vo.mercer.briefing_ostrander_federal_2,"If it goes loud, the vault seals and the time lock dies. I'll get you a thermal drill, and you go through the floor instead."
 voice.vo.accountant.ostrander_federal_contact_intro,Every dirty dollar in this city passes through Ostrander Federal. This weekend it all sits in one room.
 voice.vo.accountant.ostrander_federal_payday,Monday's Vaultline run will collect a remarkably clean vault. Your share has been reconciled.
+voice.vo.mercer.rolling_thunder_intro,"Convoy's on the road. You've got a few minutes to set the table."
+voice.vo.mercer.rolling_thunder_eta_60,"Sixty seconds out."
+voice.vo.mercer.rolling_thunder_eta_30,"Thirty. Get in position."
+voice.vo.mercer.rolling_thunder_marshal,"Vaultline scout car at the stop line. That's the route marshal: he carries a pager."
+voice.vo.mercer.rolling_thunder_signals_done,"Signals are ours. They'll stop on the red."
+voice.vo.mercer.rolling_thunder_signals_remind,"Signals aren't rigged. Reyes will have to ram them."
+voice.vo.mercer.rolling_thunder_c4_found,"Breaching charges. Take them."
+voice.vo.mercer.rolling_thunder_thermite_found,"Thermite. That'll do for a bullion door."
+voice.vo.mercer.rolling_thunder_sighted,"Convoy in sight."
+voice.vo.mercer.rolling_thunder_stopped,"They've stopped. Clean. On my mark."
+voice.vo.mercer.rolling_thunder_go,"Go, go, go."
+voice.vo.mercer.rolling_thunder_alerted,"They know. Reyes, you're on. Everybody else, find cover and wait for it."
+voice.vo.mercer.rolling_thunder_escort_down,"Escort's down. Get on those trucks."
+voice.vo.mercer.rolling_thunder_police,"Vaultline called it in. Police are coming."
+voice.vo.mercer.rolling_thunder_saw_on,"Saw's on the door."
+voice.vo.mercer.rolling_thunder_saw_jam,"Saw's stuck. Get it moving."
+voice.vo.mercer.rolling_thunder_deadbolts,"Deadbolts are thrown. Saw's going to take longer."
+voice.vo.mercer.rolling_thunder_truck_open,"Truck's open. Bag it."
+voice.vo.mercer.rolling_thunder_c4_armed,"Charges set. Clear the door."
+voice.vo.mercer.rolling_thunder_thermite_burn,"Thermite's burning. Stay back."
+voice.vo.mercer.rolling_thunder_gold,"That's gold. Heavy, but worth it."
+voice.vo.mercer.rolling_thunder_bonds,"Bearer bonds in the cab safe. Take them."
+voice.vo.mercer.rolling_thunder_lift_dead,"Goods lift's dead. Stairs to the roof."
+voice.vo.mercer.rolling_thunder_sniper_skyway,"Sniper on the Skyway."
+voice.vo.mercer.rolling_thunder_sniper_rail,"Sniper by the rail lane."
+voice.vo.mercer.rolling_thunder_sniper_crane,"Marksman in the crane cab."
+voice.vo.mercer.rolling_thunder_secured,"That's the four. Anything else is a bonus."
+voice.vo.mercer.rolling_thunder_van_eta,"Van's on its way."
+voice.vo.mercer.rolling_thunder_heli_eta,"Chopper's coming to the roof."
+voice.vo.mercer.rolling_thunder_escape,"Ride's here. Move."
+voice.vo.reyes.rolling_thunder_crash,"Hold on to something."
+voice.vo.reyes.rolling_thunder_ready,"Mixer's ready at the gate."
+voice.vo.reyes.rolling_thunder_boxed,"They're boxed in. Nobody drives out."
+voice.vo.reyes.rolling_thunder_payday,"Good haul. Drinks on me."
 voice.vo.mercer.ostrander_federal_intro,"Ostrander Federal, open for business. Masks in your pockets. Read the hall, the counter and the manager."
 voice.vo.mercer.ostrander_federal_case_manager,"That's Ashgrove, the day manager. Learn his rounds. The vault card's on him unless he's left it somewhere."
 voice.vo.mercer.ostrander_federal_case_gallery,Most of the officers sit up on the gallery. One of their computers holds the vault code.

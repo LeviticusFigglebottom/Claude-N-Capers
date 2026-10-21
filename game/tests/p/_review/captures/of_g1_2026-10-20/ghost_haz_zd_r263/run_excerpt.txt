@@ -1,0 +1,208 @@
+[OFP 16.4s t=-1.0] objective casing -> 1
+[OFP 16.4s t=-1.0] objective keycard -> 1
+[OFP 16.4s t=-1.0] objective code_hint -> 1
+[OFP 16.4s t=-1.0] objective code_pc -> 1
+[OFP 16.4s t=-1.0] objective server -> 1
+[OFP 16.4s t=-1.0] objective vault_gate -> 1
+[OFP 16.4s t=-1.0] objective lasers -> 1
+[OFP 16.4s t=-1.0] objective time_lock -> 0
+[OFP 16.4s t=-1.0] objective time_lock_wait -> 0
+[OFP 16.4s t=-1.0] objective vault_loot -> 0
+[OFP 16.4s t=-1.0] objective gold_cage -> 0
+[OFP 16.4s t=-1.0] objective drill_delivery -> 0
+[OFP 16.4s t=-1.0] objective vault_drill -> 0
+[OFP 16.4s t=-1.0] objective vault_breach -> 0
+[OFP 16.4s t=-1.0] objective secure -> 1
+[OFP 16.4s t=-1.0] objective deposit_boxes -> 1
+[OFP 16.4s t=-1.0] objective bond_safe -> 0
+[OFP 16.4s t=-1.0] objective president_safe -> 1
+[OFP 16.4s t=-1.0] objective server_drives -> 1
+[OFP 16.4s t=-1.0] objective escape_wait -> 0
+[OFP 16.4s t=-1.0] objective escape -> 0
+[OFP 287.8s t=10.8] GHOST rover_hall at the LD check (t=11)
+[OFP 310.0s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 310.0s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 320.0s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 341.1s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 351.2s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 361.1s t=73.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 371.1s t=78.5] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 46 s
+[OFP 388.4s t=95.8] GHOST rover_hall at the LD check (t=96)
+[OFP 407.3s t=104.0] GHOST LD occupied (rover_hall at (7.0, 0.0, 5.2) (not on MO / loop (c))): skipping this smoke window
+[OFP 428.4s t=125.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (10.5, 0.0, -3.3) walk
+[OFP 449.0s t=135.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (25.1, 0.0, -3.0) walk
+[OFP 459.0s t=145.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (41.0, 0.0, -4.5) walk
+[OFP 463.0s t=149.1] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 1.0 s) after 24 s
+[OFP 463.5s t=149.6] GHOST lane clear after 0 s
+[OFP 469.5s t=155.6] objective casing -> 2
+[OFP 487.6s t=173.6] GHOST waiting for the dock corridor door: 
+[OFP 488.6s t=174.6] GHOST dock corridor door clear after 1 s
+[OFP 515.2s t=178.3] DETECT Npc_guard3 kind 0 meter 0.16 at (27.3, 0.0, 8.0), pilot (12.4, 0.0, 8.0) crouched false
+[OFP 515.9s t=179.1] DETECT Npc_guard3 kind 0 meter 0.62 at (26.1, 0.0, 8.0), pilot (14.3, 0.0, 7.4) crouched false
+[OFP 517.9s t=181.1] GHOST waiting on SA's half landing for BB: Npc_guard2 (8.4, -4.0, 10.4)
+[OFP 521.4s t=184.6] GHOST rover_hall at the LD check (t=185)
+[OFP 528.0s t=191.1] GHOST waiting on SA's half landing for BB: Npc_guard2 (16.9, -4.0, 8.9)
+[OFP 536.0s t=199.1] GHOST BB clear after 18 s
+[OFP 537.5s t=200.5] GHOST step _g2_dock done at t=200.5 (+167.5 s)
+[OFP 537.5s t=200.5] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 537.5s t=200.5] GHOST waiting for the LK WC: 
+[OFP 538.5s t=201.5] GHOST LK WC clear after 1 s
+[OFP 606.2s t=269.3] GHOST rover_hall at the LD check (t=269)
+[OFP 694.7s t=340.9] GHOST manager at his WC stop (7.1, -4.0, 2.5), seen by 1 of 8 BB eyes
+[OFP 695.6s t=341.7] GHOST manager shouted from the WC hide: mode 6
+[OFP 710.8s t=356.9] objective keycard -> 2
+[OFP 716.3s t=357.2] GHOST step _g3_keycard done at t=357.2 (+156.6 s)
+[OFP 716.3s t=357.2] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 717.7s t=358.6] DETECT Npc_guard2 kind 0 meter 0.18 at (6.4, -4.0, 8.5), pilot (2.6, -4.0, 3.7) crouched false
+[OFP 717.9s t=358.8] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 717.9s t=358.8] GHOST waiting for the BB to SA: 
+[OFP 718.4s t=359.3] GHOST BB to SA not clear (Npc_guard2 (6.2, -4.0, 9.6) moving, Npc_guard5 (12.4, -4.0, 16.6) moving): waiting at (1.5, -3.8, 4.0)
+[OFP 719.6s t=360.6] GHOST rover_hall at the LD check (t=361)
+[OFP 722.4s t=363.3] GHOST BB to SA clear after 4 s
+[OFP 729.1s t=370.0] GHOST waiting for the stair core: 
+[OFP 738.9s t=379.8] DETECT Npc_guard5 kind 0 meter 0.11 at (14.0, -4.0, 8.0), pilot (14.4, -2.0, 2.2) crouched false
+[OFP 739.1s t=380.0] GHOST waiting for the stair core: Npc_guard6 (13.5, 0.0, -3.1) moving
+[OFP 749.1s t=390.0] GHOST waiting for the stair core: Npc_guard4 (13.6, 5.0, 8.0) moving
+[OFP 755.1s t=396.0] GHOST stair core clear after 26 s
+[OFP 759.4s t=400.3] DETECT Npc_civilian10 kind 1 meter 0.19 at (14.7, 5.0, 8.5), pilot (15.0, 3.2, 2.6) crouched false
+[OFP 770.6s t=411.4] GHOST waiting for the stair core: 
+[OFP 807.4s t=438.5] GHOST code hack state 2 at t=438
+[OFP 817.6s t=448.6] GHOST waiting for the stair core: 
+[OFP 817.9s t=449.0] GHOST rover_hall at the LD check (t=449)
+[OFP 844.6s t=466.4] objective code_pc -> 2
+[OFP 844.6s t=466.4] objective code_pc -> 2
+[OFP 844.6s t=466.4] objective server -> 1
+[OFP 844.7s t=466.4] GHOST code hack state 3 at t=466
+[OFP 844.7s t=466.4] GHOST step _g4_code done at t=466.4 (+109.3 s)
+[OFP 844.7s t=466.4] GHOST waiting for the stair core: Npc_guard2 (17.1, -4.0, 9.9)
+[OFP 854.7s t=476.4] GHOST waiting for the stair core: Npc_guard3 (22.0, 0.0, 8.0) moving, Npc_guard5 (12.4, -4.0, 16.2) moving
+[OFP 864.7s t=486.4] GHOST waiting for the stair core: Npc_guard5 (9.7, -4.0, 8.1) moving, Npc_guard6 (6.6, 0.0, -1.5) moving
+[OFP 874.7s t=496.4] GHOST waiting for the stair core: Npc_guard5 (25.6, -4.0, 8.0) moving, Npc_guard6 (22.2, 0.0, -2.9) moving
+[OFP 878.1s t=499.9] GHOST stair core clear after 34 s
+[OFP 889.2s t=511.0] GHOST waiting on SA's half landing for BB: Npc_guard2 (28.8, -4.0, 8.0)
+[OFP 895.7s t=517.5] GHOST BB clear after 6 s
+[OFP 897.2s t=519.0] GHOST foot of SA not clear: back up to the half landing
+[OFP 898.8s t=520.6] GHOST waiting on SA's half landing for BB: Npc_guard2 (17.3, -4.0, 8.1)
+[OFP 907.9s t=529.6] GHOST BB clear after 9 s
+[OFP 910.0s t=531.8] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 910.0s t=531.8] GHOST vault gate not clear (Npc_guard2 (25.6, -4.0, 10.9)): waiting at (1.5, -3.8, 4.0)
+[OFP 914.5s t=536.2] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 914.8s t=536.5] GHOST rover_hall at the LD check (t=537)
+[OFP 924.5s t=546.2] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (24.7, -4.0, 7.7) moving
+[OFP 934.5s t=556.2] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 944.5s t=566.2] GHOST waiting for the vault gate: Npc_guard2 (15.2, -4.0, 8.3) moving, Npc_guard5 (29.5, -4.0, 7.6) moving
+[OFP 954.5s t=576.2] GHOST waiting for the vault gate: Npc_guard5 (13.6, -4.0, 8.0) moving, Npc_guard7 (34.3, -4.0, 8.3) moving
+[OFP 964.5s t=586.2] GHOST waiting for the vault gate: Npc_guard2 (12.0, -4.0, 20.6) moving, Npc_guard5 (11.8, -4.0, 12.4) moving
+[OFP 968.0s t=589.7] GHOST vault gate clear after 54 s
+[OFP 972.8s t=594.5] GHOST vault gate approach 1: Npc_guard5 (12.1, -4.0, 14.5) (6 m), back to LK
+[OFP 988.1s t=598.8] GHOST vault gate not clear (Npc_guard2 (11.6, -4.0, 11.0)): waiting at (1.5, -3.8, 4.0)
+[OFP 988.1s t=598.9] GHOST waiting for the vault gate: Npc_guard2 (11.6, -4.0, 10.9)
+[OFP 998.1s t=608.9] GHOST waiting for the vault gate: Npc_guard2 (15.2, -4.0, 8.0) moving, Npc_guard5 (18.3, -4.0, 8.0) moving
+[OFP 1000.8s t=611.5] GHOST rover_hall at the LD check (t=612)
+[OFP 1016.5s t=618.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1026.5s t=628.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1036.5s t=638.9] GHOST waiting for the vault gate: Npc_guard2 (22.8, -4.0, 10.7) moving
+[OFP 1046.5s t=648.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 1056.5s t=658.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0), Npc_guard5 (21.8, -4.0, 7.5) moving
+[OFP 1066.5s t=668.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 1076.5s t=678.9] GHOST waiting for the vault gate: Npc_guard2 (18.9, -4.0, 8.3) moving, Npc_guard5 (23.0, -4.0, 7.9) moving, Npc_guard7 (35.2, -4.0, 16.3) moving
+[OFP 1086.5s t=688.9] GHOST waiting for the vault gate: Npc_guard5 (7.2, -4.0, 8.3) moving
+[OFP 1096.5s t=698.9] GHOST waiting for the vault gate: vault guard still on VC
+[OFP 1100.4s t=702.8] GHOST rover_hall at the LD check (t=703)
+[OFP 1106.5s t=708.9] GHOST waiting for the vault gate: Npc_guard5 (8.7, -4.0, 10.4) moving
+[OFP 1116.5s t=718.9] GHOST waiting for the vault gate: Npc_guard2 (31.2, -4.0, 8.2) moving, Npc_guard5 (18.2, -4.0, 8.0) moving
+[OFP 1126.5s t=728.9] GHOST waiting for the vault gate: Npc_guard2 (19.2, -4.0, 7.8) moving
+[OFP 1136.5s t=738.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1146.5s t=748.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1156.5s t=758.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1173.8s t=768.9] GHOST waiting for the vault gate: Npc_guard2 (17.1, -4.0, 9.9), Npc_guard5 (29.9, -4.0, 8.0) moving, Npc_guard7 (31.4, -4.0, 8.2) moving
+[OFP 1181.2s t=776.3] GHOST rover_hall at the LD check (t=776)
+[OFP 1183.8s t=778.9] GHOST waiting for the vault gate: Npc_guard2 (6.4, -4.0, 11.7) moving, Npc_guard5 (24.3, -4.0, 7.7) moving
+[OFP 1193.8s t=788.9] GHOST waiting for the vault gate: Npc_guard2 (10.7, -4.0, 23.3) moving
+[OFP 1203.8s t=798.9] GHOST waiting for the vault gate: Npc_guard2 (12.4, -4.0, 16.8) moving, Npc_guard5 (16.8, -4.0, 8.0) moving
+[OFP 1212.0s t=807.0] DETECT Npc_guard2 kind 0 meter 0.10 at (6.2, -4.0, 8.7), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 1213.8s t=808.9] GHOST waiting for the vault gate: Npc_guard2 (9.0, -4.0, 8.1) moving, Npc_guard5 (9.8, -4.0, 10.5) moving
+[OFP 1223.8s t=818.9] GHOST waiting for the vault gate: Npc_guard2 (21.4, -4.0, 10.5) moving
+[OFP 1232.7s t=827.8] DETECT Npc_guard5 kind 0 meter 0.09 at (6.4, -4.0, 8.6), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 1233.8s t=828.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (8.1, -4.0, 8.2) moving, Npc_guard7 (36.4, -4.0, 8.4) moving
+[OFP 1243.8s t=838.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (23.9, -4.0, 8.0) moving
+[OFP 1253.8s t=848.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1263.8s t=858.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 1267.7s t=862.8] GHOST rover_hall at the LD check (t=863)
+[OFP 1273.8s t=868.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0), Npc_guard7 (35.2, -4.0, 12.3) moving
+[OFP 1283.8s t=878.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 1293.8s t=888.9] GHOST waiting for the vault gate: Npc_guard2 (23.1, -4.0, 10.6) moving, Npc_guard5 (23.0, -4.0, 7.6) moving
+[OFP 1303.8s t=898.9] GHOST vault gate NOT clear after 300 s (going anyway)
+[OFP 1303.8s t=898.9] GHOST vault gate approach 2: vault guard / rover_basement not away, back to LK
+[OFP 1303.8s t=898.9] GHOST vault gate not clear (Npc_guard2 (23.5, -4.0, 8.2)): waiting at (1.5, -3.8, 4.0)
+[OFP 1303.9s t=898.9] GHOST waiting for the vault gate: Npc_guard2 (23.5, -4.0, 8.2)
+[OFP 1313.9s t=908.9] GHOST waiting for the vault gate: Npc_guard5 (27.4, -4.0, 7.9) moving
+[OFP 1323.8s t=918.9] GHOST waiting for the vault gate: Npc_guard5 (11.4, -4.0, 8.0) moving
+[OFP 1342.0s t=928.9] GHOST waiting for the vault gate: Npc_guard5 (12.2, -4.0, 14.6) moving
+[OFP 1352.0s t=938.9] GHOST waiting for the vault gate: Npc_guard2 (36.3, -4.0, 8.4) moving, Npc_guard5 (11.9, -4.0, 13.0) moving
+[OFP 1358.1s t=945.0] GHOST rover_hall at the LD check (t=945)
+[OFP 1362.0s t=948.9] GHOST waiting for the vault gate: Npc_guard2 (21.4, -4.0, 7.5) moving, Npc_guard5 (12.9, -4.0, 8.0) moving
+[OFP 1372.0s t=958.9] GHOST waiting for the vault gate: Npc_guard2 (21.9, -4.0, 10.5) moving, Npc_guard5 (28.7, -4.0, 8.0) moving
+[OFP 1382.0s t=968.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1392.0s t=978.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1402.0s t=988.9] GHOST waiting for the vault gate: Npc_guard2 (16.7, -4.0, 8.4) moving
+[OFP 1408.1s t=995.0] DETECT Npc_guard2 kind 0 meter 0.10 at (7.0, -4.0, 8.4), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 1412.0s t=998.9] GHOST waiting for the vault gate: Npc_guard2 (6.4, -4.0, 13.8) moving, Npc_guard5 (36.0, -4.0, 7.9) moving
+[OFP 1422.0s t=1008.9] GHOST waiting for the vault gate: Npc_guard2 (11.7, -4.0, 22.1) moving, Npc_guard5 (21.2, -4.0, 7.3) moving
+[OFP 1432.0s t=1018.9] GHOST waiting for the vault gate: Npc_guard2 (12.2, -4.0, 15.5) moving
+[OFP 1439.6s t=1026.5] DETECT Npc_guard2 kind 0 meter 0.07 at (6.7, -4.0, 8.6), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 1442.0s t=1028.9] GHOST waiting for the vault gate: Npc_guard2 (10.4, -4.0, 8.1) moving, Npc_guard5 (26.0, -4.0, 7.9) moving, Npc_guard7 (36.8, -4.0, 8.4) moving
+[OFP 1450.1s t=1037.0] GHOST rover_hall at the LD check (t=1037)
+[OFP 1452.0s t=1038.9] GHOST waiting for the vault gate: Npc_guard2 (22.8, -4.0, 10.4) moving, Npc_guard5 (10.1, -4.0, 8.0) moving
+[OFP 1469.5s t=1048.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (12.3, -4.0, 15.9) moving
+[OFP 1479.5s t=1058.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (11.9, -4.0, 12.8) moving
+[OFP 1489.5s t=1068.9] GHOST waiting for the vault gate: Npc_guard2 (24.0, -4.0, 10.8) moving, Npc_guard5 (13.2, -4.0, 8.0) moving, Npc_guard7 (35.2, -4.0, 12.8) moving
+[OFP 1499.5s t=1078.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0)
+[OFP 1509.5s t=1088.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0), Npc_guard7 (36.9, -4.0, 7.9) moving
+[OFP 1519.6s t=1098.9] GHOST waiting for the vault gate: Npc_guard2 (17.9, -4.0, 11.1) moving
+[OFP 1529.5s t=1108.9] GHOST waiting for the vault gate: Npc_guard2 (28.5, -4.0, 8.0) moving
+[OFP 1543.1s t=1118.9] GHOST waiting for the vault gate: Npc_guard5 (26.1, -4.0, 7.8) moving
+[OFP 1546.4s t=1122.3] GHOST rover_hall at the LD check (t=1122)
+[OFP 1553.1s t=1128.9] GHOST waiting for the vault gate: Npc_guard5 (28.1, -4.0, 7.9) moving, Npc_guard7 (35.2, -4.0, 13.3) moving
+[OFP 1563.0s t=1138.9] GHOST waiting for the vault gate: Npc_guard5 (30.0, -4.0, 5.8) moving
+[OFP 1573.0s t=1148.9] GHOST waiting for the vault gate: Npc_guard2 (24.7, -4.0, 7.8) moving, Npc_guard5 (15.8, -4.0, 8.0) moving
+[OFP 1578.7s t=1154.5] DETECT Npc_guard5 kind 0 meter 0.10 at (7.0, -4.0, 8.4), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 1583.0s t=1158.9] GHOST waiting for the vault gate: Npc_guard2 (17.8, -4.0, 10.8) moving, Npc_guard5 (11.1, -4.0, 10.7) moving
+[OFP 1593.1s t=1168.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9)
+[OFP 1603.1s t=1178.9] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (8.4, -4.0, 8.1) moving
+[OFP 1613.0s t=1188.9] GHOST waiting for the vault gate: Npc_guard2 (15.0, -4.0, 8.3) moving, Npc_guard5 (24.3, -4.0, 8.0) moving, Npc_guard7 (35.2, -4.0, 13.4) moving
+[OFP 1618.2s t=1194.0] DETECT Npc_guard2 kind 0 meter 0.16 at (6.9, -4.0, 8.4), pilot (1.7, -4.0, 4.1) crouched true
+[OFP 1623.0s t=1198.9] GHOST vault gate NOT clear after 300 s (going anyway)
+[OFP 1630.0s t=1205.9] objective vault_gate -> 2
+[OFP 1630.0s t=1205.9] objective time_lock -> 1
+[OFP 1633.0s t=1208.9] LASER CROSS lane x+0.01 standing with no bag: waited 0.0 s, across at 3.35 m/s (expected 3.50), tripped false, at (23.0, -4.0, 10.9)
+[OFP 1635.4s t=1211.3] GHOST rover_hall at the LD check (t=1211)
+[OFP 1637.9s t=1213.7] objective time_lock -> 2
+[OFP 1637.9s t=1213.7] objective time_lock_wait -> 0
+[OFP 1637.9s t=1213.7] objective time_lock_wait -> 1
+[OFP 1642.2s t=1218.1] LASER CROSS lane x+0.01 standing with no bag: waited 0.0 s, across at 3.35 m/s (expected 3.50), tripped false, at (19.0, -4.0, 10.9)
+[OFP 1648.8s t=1224.6] SHORTCUT time lock wait in CQ at x4
+[OFP 1685.5s t=1298.2] GHOST rover_hall at the LD check (t=1298)
+[OFP 1724.3s t=1390.2] GHOST rover_hall at the LD check (t=1390)
+[OFP 1762.5s t=1472.2] GHOST rover_hall at the LD check (t=1472)
+[OFP 1765.4s t=1483.8] objective time_lock_wait -> 2
+[OFP 1765.4s t=1483.8] objective bond_safe -> 1
+[OFP 1765.4s t=1483.8] objective deposit_boxes -> 1
+[OFP 1765.4s t=1483.8] objective vault_loot -> 1
+[OFP 1765.4s t=1483.8] objective gold_cage -> 1
+[OFP 1765.5s t=1483.8] GHOST step _g5_vault done at t=1483.8 (+1017.4 s)
+[OFP 1767.8s t=1486.5] DETECT Npc_guard7 kind 0 meter 0.10 at (28.5, -4.0, 8.0), pilot (12.7, -4.0, 7.9) crouched false
+[OFP 1768.0s t=1486.8] DETECT Npc_guard2 kind 0 meter 0.58 at (25.6, -4.0, 11.0), pilot (13.6, -4.0, 8.0) crouched false
+[OFP 1769.3s t=1488.0] DETECT Npc_guard2 kind 0 meter 0.61 at (25.6, -4.0, 11.0), pilot (16.5, -4.0, 9.6) crouched false
+[OFP 1770.0s t=1488.8] DETECT Npc_guard2 kind 0 meter 1.00 at (25.6, -4.0, 11.0), pilot (17.9, -4.0, 10.1) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 204)
+[OFP 1770.3s t=1489.1] ALARM guard_radio by Npc_guard2 (pilot at (18.9, -4.0, 10.3))
+[OFP 1770.3s t=1489.1] objective code_hint -> 1
+[OFP 1770.3s t=1489.1] objective code_hint -> 2
+[OFP 1770.3s t=1489.1] objective server -> 1
+[OFP 1770.3s t=1489.1] objective server -> 2
+[OFP 1770.3s t=1489.1] objective lasers -> 1
+[OFP 1770.3s t=1489.1] objective lasers -> 2
+[OFP 1810.7s t=1494.7] GHOST total 1491.5 s game time (stopped); alarm guard_radio; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)

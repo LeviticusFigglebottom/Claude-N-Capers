@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"diner_dining"
+purpose = &"restaurant"
+required_items = Array[StringName]([&"register", &"table", &"chair", &"light_fixture"])
+optional_items = {
+&"bin": 0.5,
+&"plant": 0.5
+}
+clutter_groups = {}
+min_density = 0.12
+max_density = 1
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"display_case", &"plant"])
+seed_salt = 4712
+counts = {
+&"table": Vector2i(1, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_small"),
+&"chair": PackedStringArray("prop_chair_break"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"table": PackedStringArray("prop_table_round_d120")
+}
+ceiling = {"prop_downlight": 2.6}
+notes = "RT DR Halloran's dining room: the counter (prop_counter_sales art) with the till on it, round tables and chairs beside the map's three customer tables, downlights (prop_pendant_brass hangs to 1.05 m under the 3.0 m ceiling, so not here), the pie case and the counter stools from fixed tables. Waits: prop_diner_booth (no pair seat exists), the HALFWAY neon (prop_neon_vossberg variant)."

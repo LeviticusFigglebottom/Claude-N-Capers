@@ -20,8 +20,9 @@ const DEFAULT_PATH: String = "res://content/data/board/board_tweak.tres"
 @export_group("Difficulty")
 ## Relative odds of each difficulty on a generated contract (only unlocked ones are rolled).
 @export var difficulty_weights: Array[float] = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-## Reputation level a player needs to see or buy a difficulty (PD2: the top tiers need level 80).
-@export var difficulty_min_level: Array[int] = [0, 0, 0, 0, 80, 80]
+## Reputation level a player needs to see or buy a difficulty. D-151: Lethal / Cataclysm at 70 (PD2 gates the top
+## tiers at 80; D-148's PD2-length curve made 80 ~230 Brutal clears, 70 keeps the old time-to-Lethal, ~135).
+@export var difficulty_min_level: Array[int] = [0, 0, 0, 0, 70, 70]
 ## Also require the build-wide unlock list (heist_list.tres unlocked_difficulties, the P1 gate).
 @export var respect_build_unlocks: bool = true
 

@@ -1,0 +1,21 @@
+asset: char_street_pedestrian_e
+script: tools/blender/characters/char_p5_street.py
+params: {"age": 0.33, "beard_shadow": 0.6, "build": 0.5, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "height": 1.77, "look": "rider", "skin": 4}
+seed: 2960329075  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_street_pedestrian_e
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0894, 0.1206] (model [0.0000, 1.2927, 0.1390], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0805, -0.0882] (model [0.0000, 1.6566, -0.0763], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1984, 0.0507, 0.0379] (model [0.1984, 0.9983, 0.0404], Godot axes, rest pose)
+backpack_note: daypack is rigid Gear on the chest bone; strap padding is Outfit
+body_faces_culled: 4840
+body_params: {"age": 0.33, "beard_shadow": 0.6, "build": 0.5, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.77, "lip": "auto", "skin": 4}
+bones: 52
+faces_hidden_by_bomber: 2500
+look: Delivery rider (RT-D1): green padded bomber over a graphite knit, charcoal work trousers, grey trainers, big green insulated delivery backpack
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 28086
+tris_by_mesh: {"Body": 9064, "Gear": 654, "Hair": 1856, "Outfit": 16512}

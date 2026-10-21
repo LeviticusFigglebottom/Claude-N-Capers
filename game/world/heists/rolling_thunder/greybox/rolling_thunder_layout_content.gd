@@ -112,13 +112,13 @@ const DOORS: Array = [
 		{"npc": ["staff_diner"]},
 	],
 	["KitchenDoor", "DG", [30.0, 0.0, 22.0], 180.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1, {}],
-	["CounterDoor", "DG", [27.0, 0.0, 23.0], 90.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1, {}],
+	["CounterDoor", "DG", [27.0, 0.0, 23.0], -90.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1, {}],
 	["DryStoreDoor", "DG", [30.0, 0.0, 24.0], 0.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1, {}],
 	[
 		"ElectricalDoor", "DG", [33.0, 0.0, 26.0], 180.0, "single", "LOCKPICK", "prop_door_single_steel_t20", 0.9,
 		{"npc": ["staff_diner"]},
 	],
-	["RearLobbyDoor", "DG", [18.0, 0.0, 26.0], 0.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1, {}],
+	["RearLobbyDoor", "DG", [18.0, 0.0, 26.0], 180.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1, {}],
 	[
 		"DinerOfficeDoor", "DG", [25.0, 0.0, 26.0], 0.0, "service", "LOCKPICK", "prop_door_service_ivory_t20", 1.1,
 		{"npc": ["staff_diner"]},

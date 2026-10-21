@@ -273,6 +273,32 @@ func test_reward_names_are_never_truncated() -> void:
 	get_window().size = saved
 
 
+## r266 B top-3 #3: one line holds ACHIEVEMENT_COLUMNS unlocks; with more, the header counts them and says how many
+## sit below the fold (an OF Cataclysm clear unlocks 6). With one line's worth it stays the plain header.
+func test_header_counts_unlocks_below_the_fold() -> void:
+	var six: Array[StringName] = [&"achievement.first_score", &"achievement.cataclysm_clear",
+		&"achievement.of_no_harm_done", &"achievement.of_cataclysm", &"achievement.offshore_million",
+		&"achievement.seasoned"]
+	var two: Array[StringName] = [&"achievement.first_score", &"achievement.of_no_harm_done"]
+	for ids: Array[StringName] in [six, two]:
+		var result: Dictionary = HeistCatalog.sample_result()
+		result["success"] = true
+		result["heist_id"] = &"ostrander_federal"
+		_screen.apply_to_profile = false
+		_screen.show_result(result)
+		_screen.achievements_unlocked = ids
+		_screen.call(&"_render")
+		await wait_frames(2)
+		var h: Label = _screen.achievements_header
+		assert_true(h != null and h.is_visible_in_tree(), "header shown")
+		var more: int = ids.size() - PaydayScreen.ACHIEVEMENT_COLUMNS
+		var want: String = UiText.t(&"ui.results.achievements_header_more", {"count": ids.size(), "more": more}) \
+				if more > 0 else UiText.t(&"ui.results.achievements_header")
+		assert_eq(h.text, want, "%d unlocks" % ids.size())
+	assert_eq(UiText.t(&"ui.results.achievements_header_more", {"count": 6, "more": 3}),
+			"Achievements unlocked: 6 (3 more below)")
+
+
 ## Lane 2 audit: a full crew's stats table is on screen at 720p without scrolling (it was under the fold).
 func test_full_crew_table_on_screen_at_720p() -> void:
 	var saved: Vector2i = get_window().size

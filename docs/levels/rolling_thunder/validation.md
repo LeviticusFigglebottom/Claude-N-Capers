@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 541 props checked
+- 680 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 541 props, 50 doors checked
+- 680 props, 50 doors checked
 
 
 ## scale: Human scale
@@ -139,18 +139,18 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 443334 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 443694 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3429 polygons, cell 0.10/0.10 m
+- navmesh: 3670 polygons, cell 0.10/0.10 m
 - 199 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomCPG` | 661 | 661 | 100% |
 | `Rooms/RoomCP2` | 724 | 724 | 100% |
-| `Rooms/RoomCPR` | 757 | 757 | 100% |
+| `Rooms/RoomCPR` | 753 | 753 | 100% |
 | `Rooms/RoomSTA` | 12 | 12 | 100% |
 | `Rooms/RoomSB` | 10 | 10 | 100% |
 | `Rooms/RoomLF` | 25 | 25 | 100% |
@@ -158,8 +158,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomAB` | 66 | 66 | 100% |
 | `Rooms/RoomCWC` | 23 | 23 | 100% |
 | `Rooms/RoomCPL` | 71 | 71 | 100% |
-| `Rooms/RoomDR` | 469 | 469 | 100% |
-| `Rooms/RoomK` | 143 | 143 | 100% |
+| `Rooms/RoomDR` | 440 | 440 | 100% |
+| `Rooms/RoomK` | 118 | 118 | 100% |
 | `Rooms/RoomBC` | 39 | 39 | 100% |
 | `Rooms/RoomE` | 2 | 2 | 100% |
 | `Rooms/RoomST` | 115 | 115 | 100% |
@@ -169,7 +169,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomSC` | 15 | 15 | 100% |
 | `Rooms/RoomOF` | 45 | 45 | 100% |
 | `Rooms/RoomYD` | 523 | 520 | 99% |
-| `Rooms/RoomU1` | 529 | 529 | 100% |
+| `Rooms/RoomU1` | 471 | 471 | 100% |
 | `Rooms/RoomU2` | 193 | 193 | 100% |
 | `Rooms/RoomU3` | 136 | 133 | 98% |
 | `Rooms/RoomU4` | 9 | 9 | 100% |
@@ -181,9 +181,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomC3` | 72 | 72 | 100% |
 | `Rooms/RoomC4` | 38 | 38 | 100% |
 | `Rooms/RoomSTW` | 15 | 15 | 100% |
-| `Rooms/RoomFG` | 775 | 775 | 100% |
-| `Rooms/RoomF1` | 843 | 843 | 100% |
-| `Rooms/RoomX4` | 741 | 741 | 100% |
+| `Rooms/RoomFG` | 745 | 745 | 100% |
+| `Rooms/RoomF1` | 832 | 832 | 100% |
+| `Rooms/RoomX4` | 723 | 723 | 100% |
 | `Rooms/RoomX1` | 836 | 836 | 100% |
 | `Rooms/RoomX2` | 468 | 468 | 100% |
 | `Rooms/RoomX3` | 770 | 770 | 100% |
@@ -235,7 +235,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 72 interior key light(s) in 20 room(s); 0 lack `viewmodel_lit`
+- 153 interior key light(s) in 25 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -256,8 +256,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 4, chair 6, desk 3, table 7, wall_unit 15, visitor_chair 1, desk_chair 8, monitor 1
-- 15 seats, 14 tables/desks/counters, 50 doors checked
+- classified: counter 6, chair 13, desk 3, table 10, wall_unit 16, visitor_chair 1, desk_chair 8, stool 2, monitor 1
+- 24 seats, 19 tables/desks/counters, 50 doors checked
 
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): door_clear: in the clear zone of door `Gameplay/Doors/LiftDoorG` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.74 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): use_point: stands in the user's spot of `Gameplay/Doors/LiftDoorG` (UsePoint @ (20.50, 0.00, -47.70)) by 0.64 m (gameplay prefab / variant content: review)

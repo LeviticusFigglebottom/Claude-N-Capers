@@ -40,7 +40,14 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   BB rule counts RC's front (x < 14, z < 14), and step 3 backs up to the half landing instead of walking BB. **haz_zc (r263): steps 1-4 PASS again** (BB wait 17 s after the dock,
   dock 199.5, keycard 357, code 466). Step 5: BB was clear at t=517.5, then the vault guard walked out of VC into BB 5 m off as the pilot came
   down (t=520). Now VC walkers count (his VC post standing doesn't). Every descent into BB shares one helper: half-landing wait → foot of SA →
-  back up if any basement guard is within 10 m (up to 4 tries). haz_zd is running.
+  back up if any basement guard is within 10 m (up to 4 tries). **haz_zd (r263): steps 1-5 PASS**, the first Hazardous run through the vault:
+  dock 200.5, keycard 357, code 466. The foot-of-SA check backed up once (t=519), then the gate: attempt 1 aborted (rover_basement 6 m),
+  then two 300 s waits with no gate window (t=599-899, 899-1199). That's the "no BB window on Hazardous" data the LEAD asked for. It went
+  on the last attempt (code entered t=1214, time lock in CQ's corner, vault open t=1484). Step 6 alarm at t=1489: after the time lock the
+  vault guard was back on his VC post (25.6, 11.0), 4 m from VT's door, and the first bag trip walked into him. Now every VC crossing
+  waits for his loop (b) (in from CQ's corner, out with the bag from VT's blind corner (24.5, 20.5), lkprobe) with no other guard in VC
+  or within 15 m of the gate. 6 bags = 12 such windows. Steps 6-7 are being debugged with `--test=ghost6` (a SHORTCUT start at CQ: debug
+  only, not the acceptance). **Also: ladder step-off soft-lock fixed (cb8be306d, ENV A confirmed ND 1001 PASS).**
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick

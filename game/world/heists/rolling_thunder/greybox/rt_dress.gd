@@ -366,6 +366,8 @@ func _dress_room(room: KitRoom, world_box: AABB, id: String, kit_id: String, pro
 	for i: int in range(nodes.size()):
 		var p: Dictionary = kept[i]
 		_finish_node(nodes[i], String(p["asset"]), String(p["mode"]), String(p["mount"]), p["xform"])
+		if String(p["mount"]) == "" and String(p["mode"]) != "ceiling":   # the fixed-table props keep off it
+			_placed_ext.append((p["xform"] as Transform3D) * aabb(String(p["asset"])))
 	counts[id] = nodes.size()
 	var missing: PackedStringArray = PackedStringArray()
 	var present: Dictionary = _mapbuilt_kinds_in(world_box)
@@ -851,7 +853,7 @@ func _link_faces() -> void:
 			var k: String = String(n3.get_meta(&"kind", ""))
 			if k == "" and n3.scene_file_path != "" and _scene_asset.has(n3.scene_file_path):
 				k = String((_cat[String(_scene_asset[n3.scene_file_path])] as Dictionary).get("kind", ""))
-			if k == "chair":
+			if k == "chair" or k == "stool":
 				chairs.append(n3)
 			elif k in SEAT_TARGETS:
 				targets.append(n3)
@@ -916,6 +918,15 @@ func _link_faces() -> void:
 			if to2.length() < pick_d:
 				pick_d = to2.length()
 				pick = c2
+		if pick == null:  # a monitor on a map-built desk: turn it (about its pivot) to the desk's chair within 45 deg
+			for c3: Node3D in chairs:
+				var to3: Vector3 = _gx(c3).origin - mx.origin
+				to3.y = 0.0
+				if to3.length() > 0.05 and to3.length() <= 1.5 and front.normalized().dot(to3.normalized()) >= cos(deg_to_rad(45.0)):
+					var turn: float = Vector2(front.x, front.z).angle_to(Vector2(to3.x, to3.z))
+					m.rotate_y(-turn)
+					pick = c3
+					break
 		if pick != null:
 			m.set_meta(&"faces", m.get_path_to(pick))
 

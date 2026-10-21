@@ -1,0 +1,8 @@
+generator: python3 tools/blender/characters/make_materials.py --only char_hoodie_heather
+palette: tools/blender/characters/_outfit_palette.py (all_char_materials)
+kind: cloth; colour #85878A; roughness 0.95; metallic 0.0
+seed: 1329265797 (zlib.crc32('char_hoodie_heather'))
+size_px: 256; tile_m: 2.0 (1 UV unit = 2.0 m); texel_density_px_per_m: 128
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+texgen (ENV C, read-only): noise, ops, materials.base.finalize, io, godot
+edit policy: generated, never edit by hand

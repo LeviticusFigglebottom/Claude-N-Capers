@@ -3,7 +3,124 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 17:40; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 21:20; send_message to you is refused, so read this)
+-23. **New: D-151 done, and RT-B1 landed (B's files). RT stays hidden (heist_list `hidden: true`) until A says G1 plays
+     end to end.**
+     1. **D-151, Lethal / Cataclysm gate 70** (6f0b838d + 3b0867e2).
+        - Changed: `board_tweak.tres` and the script default `[0, 0, 0, 0, 70, 70]`.
+        - Tests: `test_board` pins 70. `test_d148_pace` gains `test_d151_lethal_gate_is_70_...`, which reaches L70 on
+          the realistic path in 110-160 clears (pace doc: ~135, the old pace to 80 was 131).
+        - `progression_pace.md` is updated.
+        - Green: `d148_pace` 4, `board` 22, `board_screen` 7, `difficulty_unlock` 3, `p2_heist_content` 15.
+     2. **RT-B1 on env/b-content**, from `rt_b1_values.md`:
+        - **Part 1 (b43f2061):**
+          - `base_xp_by_heist[rolling_thunder] = 2500` (tres and script default);
+          - **D-143.5 allow-lists** `heists = [&"rolling_thunder"]` on `signal_insider` and `intel_route`;
+          - **`asset.c4_drop`**: 2,000, 2 favors, max 1, `pp_drop_carpark` / `pp_drop_underpass`, drop
+            `item.c4` x4, RT-only;
+          - strings: 2 briefing steps, all 13 `ui.preplan.point.rolling_thunder.*` labels, the 5 surprise strings
+            and the C4 asset name / desc.
+
+          `test_preplan` now accepts an `item.*` drop if the carried item has a name and a count. **Spawning an
+          item drop is A's RT-A3 (D-141.3); nothing in A's code spawns `item.*` drops yet.**
+        - **Part 2 (3ead414e):** 6 achievements on existing condition keys, each with a scripted pass and near-miss
+          case: Clean Stop (signals), Heavy Haul (4 gold), Nothing Left on the Road (all loot), Iron Crew
+          (Hazardous+, no downs), Green Light (< 15 min), End of the Line (Cataclysm). Plus the `rolling_thunder`
+          category (its header stays hidden while staged). `rewards` are empty: **D, mask parts wanted**.
+        - **Part 3 (ecdc69f4):** 34 Mercer / Reyes mission lines (`vo.<speaker>.rolling_thunder_*`, the
+          rt_b1_values §8 drafts, voice pass welcome). The VO audit gains owner **"S" (staged heist)**: a hidden
+          heist's lines wait for its mission. Once RT is offered, the normal rule applies and every line must be
+          said. That is A's mission (`world/heists/rolling_thunder`).
+        - **Green:** `preplan` 38, `preplan_result` 7, `preplan_screen` 7, `preplan_variants` 2, `p5_catalogue` 7,
+          `strings` 22, `ui_strings` 3, `heist_text_audit` 5, `payout_calculator` 20, `heist_achievements` 13,
+          `achievements` 31, `achievements_b702` 11, `achievements_in_play` 8, `of_payday_e2e` 7, `vo_coverage` 11,
+          `voice_lines` 9, `contact_radio` 17, `heist_screens_text` 8, `heist_readiness` 9.
+     3. **Not B's files, handed over as the paper block** (`rt_b1_values.md` §1-3 and §6), sent to C and A:
+        - the HeistDef values, per-difficulty variant rows, rare-event keys, `briefing_objectives` and
+          `preplanning` map: `game/world/heists/**`, C's generator / A;
+        - the `staff_diner` / `staff_booth` tag rows: A's `npc_visual_tweak.tres`.
+     4. **Still to come after C's G1:** briefing intel, the blueprint and blueprint labels.
+-22. **Your GPU-20c payday questions: cleaner costs work as PD2's; one real bug fixed; the 3440 backdrop was a bug.**
+     1. **Cleaner costs (pd2_fidelity S7.3) are implemented.**
+        - `DifficultyDef.civilian_kill_penalty` is $2k / 3k / 5k / 8k / 12k / 16k (Routine ... Cataclysm), shown as
+          "Cleanup costs (civilians)" in the Cash panel.
+        - Per the row, the cost comes **out of the killer's own payout**. AI teammates have their own crew slots,
+          so in GPU-20c (Rook 4, Dutch 2, the player 0) the player's payday rightly had **no** deduction. PD2 also
+          bills the killing player, and its bots don't target civilians.
+        - **Bug found:** without a Net session (a dev launch straight into a heist, standalone tools),
+          `Net.local_slot()` is -1. The payday then used PayoutCalculator's crew-wide view and **billed the AI
+          crew's kills to the player** ($30k for those 6 kills on Hazardous). The fix is
+          `PaydayScreen.payout_slot()` = max(local_slot, 0), so one rule holds everywhere: you pay for your own kills.
+        - **For A (behaviour, not payout): DONE by A.** Crew AI targets only `HOSTILE_ROLES`, so the 6 civilian
+          deaths came from stray fire. **env/a-core 6fa54bd59** adds a civilian line-of-fire check: a bot holds fire
+          / skips the target when a civilian is within 0.6 m of the shot line, including 4 m past the aim point
+          (tweaks `civilian_line_clear_m` / `civilian_line_past_m`, test `test_gpu20c_bot_civilian_fire`). Please
+          merge it with this.
+        - **Your call:** if the PO wants bot kills billed to the host (not PD2), it is a one-line calculator
+          change; I have not made it.
+     2. **The 3440x1440 world at the sides was not intended. Fixed.**
+        - The in-heist payday's opaque backdrop (commented "opaque over the map") sat inside UiScreen's 16:9
+          column, so the map showed at both sides on 21:9.
+        - `UiScreen.window_fill` now lets a screen register full-window children that `fit_width()` stretches back
+          out; the payday registers its backdrop.
+     - **Test:** the new `test_payday_cleaner_and_backdrop.gd` (3 tests). It pins: GPU-20c's crew costs the player
+       nothing; the player's own 2 kills charge 2 x $5k and show on the screen with no Net session; the backdrop
+       covers the whole 3440x1440 window. It fails on the old code (30000 vs 10000; the backdrop test errors).
+     - **Green:** `ui_payday` 15, `payday_sum` 2, `payday_cards` 10, `achievements` 31, `of_payday_e2e` 7,
+       `payout_calculator` 20, `ui_scenes` 4, `app_shell` 14, `menu_reach` 2, `app_flow` 5.
+-21. **Top-3 #3 done: the payday says when unlocks sit below the fold.**
+     - **Change:** with more unlocks than one line holds (3), the panel header now reads **"ACHIEVEMENTS UNLOCKED: 6
+       (3 MORE BELOW)"**; with 3 or fewer it stays the plain header. New string
+       `ui.results.achievements_header_more`, plus `PaydayScreen.achievements_header`.
+     - **Shot:** `r266_status_scrim/payday_d5_more_below_1920x1080.png` (OF Cataclysm, 1080p).
+     - **Test:** `test_ui_payday` gains `test_header_counts_unlocks_below_the_fold` (6 vs 2 unlocks).
+     - **Green:** `ui_payday` 15, `strings` 22, `ui_strings` 3, `achievements` 31.
+     - **All three top-3 items are closed:** #1 scrims (53e3ce91); #2 a guard only, PD2 red kept (01bb2b2e); #3 this.
+-20. **Top-3 #2 (jam colour): measured, smaller than I claimed; only a guard landed.**
+     - **I was wrong in -18:** the colourblind palettes already turn `objective` into a light yellow, and PD2's
+       red jam clears the CVD pair check (CIE76 >= 20 under every simulation) against every palette's objective.
+       I proved it by putting the old red into every palette: `test_options_palettes` still passes.
+     - **What landed:** `HudPalette.device_jam`, mapped to `HudTweak.device_jam_color`. It is **PD2 red in every
+       palette** (no visual change), and [`objective`, `device_jam`] is now one of the CVD pairs the test guards,
+       so a later palette or jam colour change cannot make them collide. Documented in `content/docs/options.md`.
+     - **Green:** `options_palettes` 6 and `hud_palettes_new` 2.
+     - **Next:** #3, the payday's "+N more" line for unlocks below the fold.
+-19. **New: top-3 #1 done, HUD status text readable on bright scenes.**
+     - **Fix:** a new strong label scrim (`UiBuild.LABEL_SCRIM_STRONG_ALPHA` 0.75; names keep the 45% one) under:
+       - the vitals ARMOR / HEALTH captions (the value stays on the right, after a spacer);
+       - a teammate's status line (Down / In custody / Last down / Civilian; hidden when empty, so no empty pill);
+       - the downed overlay's DOWNED caption (hugging the word).
+
+       The 45% scrim alone was not enough: on the bright backdrop ARMOR still measured 1.75:1.
+     - **Fill gate before -> after:** HEALTH 2.94 -> pass, In custody 1.99 -> pass, DOWNED 1.27 -> pass, ARMOR
+       (`hud_bright`) 1.75 -> pass. Contrast PASS on the loud and hud mocks; only the crosshair "+" keeps a note.
+       These labels are scrimmed, so the gate now **fails** if any of them regresses.
+     - **Shots:** `game/content/ui/_review/r266_status_scrim/`.
+     - **Test:** the new `test_hud_status_scrim.gd` (3 tests) pins the scrims headless, and fails 3/3 on the old
+       widgets.
+     - **Green:** `hud_feedback` 7, `hud_frame_budget` 3, `hud_palettes_new` 2, `hud_queue` 7, `heisters` 9,
+       `options_palettes` 6, `pp_hud_720p` 4, `pp_live_hud_720p` 4, `pp_subtitles_720p` 3, `ui_hud` 17,
+       `ui_theme` 19, `ui_scoreboard` 13, `dropin_wiring` 9, `onboarding_card` 10.
+     - **Next:** #2, the device jam colour in the colourblind palettes.
+-18. **New: B's top 3 improvements for the shipped heists (your round 266 ask). Starting #1 now.**
+     1. **HUD status text readable on bright scenes (accessibility, measured).**
+        - **Problem:** the contrast worker's fill check still notes two live HUD labels under 3:1 on the bright
+          backdrop: a teammate's **"In custody" at 1.99:1** (red status text, no scrim) and the vitals caption
+          **"HEALTH" at 2.94:1**. Teammate names already got the r249 label scrim; their status line (Downed / In
+          custody / Last down) and the vitals captions did not.
+        - **Value:** "a teammate is down / in custody" is the call a crew must not miss. Bright scenes (DB at
+          dawn, GN's white galleries, OF's limestone hall) are exactly where it fades.
+        - **Fix:** scrim those labels; the fill gate then fails if they regress.
+     2. **Device jam colour follows the colourblind palette.**
+        - **Problem:** `HudTweak.device_jam_color` (red) is not in `HudPalette`, so deuteranopia / protanopia
+          players get a red jam bar against the gold objective accent and the yellow paused one. The palettes
+          remap detection, health and markers, but not the drill / saw / hack jam state.
+        - **Value:** the jam is the most frequent loud call ("fix the drill"). It keeps its text cue, but the bar
+          colour is the at-a-glance signal.
+     3. **Payday: say when more unlocks sit below the fold.**
+        - **Problem:** a Cataclysm OF clear unlocks 6 achievements, and only 3 show without scrolling.
+        - **Value:** a "+3 more" line on the panel. It tells players their best moment has more to it; the focus
+          scroll already works, but nothing says to use it.
 -17. **New: the screen-text walk now covers every heist; all clean.**
      - **The test:** `test_of_screens_text` is renamed to **`test_heist_screens_text.gd`** (8 tests). It loops over
        `HeistCatalog.ids()` (GH, ND, SL, DB, GN, OF; a new heist in the catalogue is walked automatically) and checks:
