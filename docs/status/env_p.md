@@ -9,7 +9,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   walked down BB and saw it. r251i: it waited in LK (doc §3), but at (3, −4, 4), in line with LockerDoor, and standing; rover_basement
   passing BB at 6 m filled the meter. r251j: the NW corner (0.8, −4, 6.2) snapped through the wall to BB (0.8, −4, 7.5), and the pilot pushed
   into the wall for 60 s until rover_basement saw it. Harness only: it now picks the first LK corner that snaps onto the navmesh within 0.4 m,
-  and waits there crouched. **Ghost runs now use r252** (e91fa3c0 + P); run r252a is in progress. A headless ghost run cannot work (the pilot's mouse needs a window).
+  and waits there crouched. **Ghost runs now use r252** (e91fa3c0 + P). r252a: steps 1-4 PASS again. The chosen corner (0.9, −3.8, 6.3) was
+  a bench-top navmesh island 0.2 m up, the path ended in BB again, and the pilot was seen. Now the candidate must be at floor height and
+  the nav path must end on it. Run r252b is in progress. A headless ghost run cannot work (the pilot's mouse needs a window).
 - **GPU-box ghost command**. It needs `game/tests/p/_review/of_g1_pass.gd` from env/p-play (≥ 88e06f40), which is newer than trunk's:
   `git checkout origin/env/p-play -- game/tests/p/_review/of_g1_pass.gd`, then
   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`

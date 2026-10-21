@@ -136,7 +136,7 @@ const GHOST_LK_WAIT: Vector3 = Vector3(3.0, -4.0, 4.0)
 const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 ## LK corners beside LockerDoor (x 5, z 7), out of the door's sight line from BB (r251i: crouch-less wait at
 ## GHOST_LK_WAIT, in line with the door, filled by rover_basement passing BB at 6 m). The first that snaps onto the
-## navmesh inside LK wins (r251j: (0.8, 6.2) snapped through the wall into BB).
+## navmesh at floor height with a path to it wins (r251j: (0.8, 6.2) snapped through the wall into BB).
 const GHOST_LK_HIDES: Array[Vector3] = [Vector3(0.8, -4.0, 6.2), Vector3(9.2, -4.0, 6.2), Vector3(1.5, -4.0, 5.5),
 	Vector3(8.5, -4.0, 5.5), Vector3(2.5, -4.0, 5.0), Vector3(7.5, -4.0, 5.0)]
 const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
@@ -1575,7 +1575,11 @@ func _lk_hide() -> Vector3:
 	for c: Vector3 in GHOST_LK_HIDES:
 		var want: Vector3 = _of(c)
 		var got: Vector3 = pilot.stand_point(want)
-		if pilot.flat_dist(got, want) <= 0.4:
+		if pilot.flat_dist(got, want) > 0.4 or absf(got.y - want.y) > 0.1:  # r252a: a bench-top island at y+0.2
+			continue
+		var path: PackedVector3Array = NavigationServer3D.map_get_path(pilot.crew.get_world_3d().navigation_map,
+			pilot.crew.global_position, got, true)
+		if path.size() > 0 and path[path.size() - 1].distance_to(got) <= 0.3:
 			note("GHOST LK hide at %s" % Po5Pilot._v(got))
 			return got
 	note("GHOST no LK corner on the navmesh: using GHOST_LK_WAIT")
