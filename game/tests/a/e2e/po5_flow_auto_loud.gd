@@ -29,6 +29,8 @@ const ESCORT_ARRIVE_M: float = 3.5
 ## tries in a row before the pilot gives up on the hoist.
 const LIFT_NEAR_M: float = 15.0
 const LIFT_TRIES_MAX: int = 6
+## _is_unreachable: a target set aside for "no navmesh path" has its path re-tested this often (s).
+const UNREACH_RECHECK_S: float = 10.0
 ## Give up carrying one bag to the van after this long (s).
 const CARRY_LIMIT_S: float = 300.0
 
@@ -68,6 +70,8 @@ var doctor_bag: bool = "--po5-doctor-bag" in OS.get_cmdline_user_args()
 ## before anything else that is up (see _is_focus).
 var focus: StringName = _focus_arg()
 var _lift_tries: int = 0
+## _is_unreachable: heist time of the last path re-test per "no navmesh path" target.
+var _unreach_checked: Dictionary[int, float] = {}
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
 var _bot_note_t: float = -INF
@@ -544,7 +548,17 @@ func _is_unreachable(c: InteractableComponent) -> bool:
 		return false
 	var door: Door = _unreachable[key]
 	if door == null:
-		return true
+		# hoist6: VaultCash marked "no navmesh path" with the cash cage shut; the padlock was sawn 6 s later and the
+		# cash never retried. A gate / cage opening changes the navmesh path: re-test it every UNREACH_RECHECK_S.
+		if rt.heist_time_s < float(_unreach_checked.get(key, -INF)) + UNREACH_RECHECK_S:
+			return true
+		_unreach_checked[key] = rt.heist_time_s
+		if not _has_path(p._use_stand(c)):
+			return true
+		_unreachable.erase(key)
+		_unreach_checked.erase(key)
+		f.note("%s has a navmesh path again: retrying" % c.get_path())
+		return false
 	if is_instance_valid(door) and not _passable(door):
 		return true
 	_unreachable.erase(key)
