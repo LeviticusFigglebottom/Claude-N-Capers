@@ -1477,3 +1477,11 @@ than pure ghosting. Ruling:
    body bagging. Patrols are not lengthened to make a Cataclysm ghost possible. Density is the difficulty lever.
 3. If the Hazardous ghost also finds no BB window, C and A lengthen rover_basement's away leg at that difficulty
    only.
+
+**D-145 addendum (2026-10-21, LEAD): DB Tense accepted at 2/3.** On r257 + 60d8c6ab (P's capsule fix, the 1-Longshot
+cap, the Longshot timing), headless auto_loud, solo + 3 bots:
+- plain: 2/3, player downs 3 / 3 / 1;
+- with the doctor bag: 2/3, downs 6 / 2 / 2, median 2.
+
+GH Tense was already 3/3. No further Tense data lever (no Bulwark cap change). Seed 1's custody chain (about 640-690 s
+in both cells) is a low-priority look for A, not a blocker.
