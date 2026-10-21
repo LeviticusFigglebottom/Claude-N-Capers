@@ -224,6 +224,9 @@ KITS.update(SHADOW_KITS)
 from _kits_ostrander import ostrander_kits  # noqa: E402  (Ostrander Federal purpose variants, OF-C2)
 
 KITS.update(ostrander_kits(KITS))
+from _kits_rolling_thunder import rolling_thunder_kits  # noqa: E402  (Rolling Thunder variants, RT-C2)
+
+KITS.update(rolling_thunder_kits(KITS))
 
 
 def _sn(s: str) -> str:

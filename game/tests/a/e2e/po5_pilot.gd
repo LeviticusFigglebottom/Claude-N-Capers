@@ -758,6 +758,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	if combat and await _clear_threats():  # S9.1: damage cancels a hold, so clear the area first like a player
 		await face(target, 0.03, 1.0)
 	inp.press(&"interact")
+	var kind: StringName = comp.kind
 	var t: float = 0.0
 	var idle_ticks: int = 0
 	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
@@ -783,7 +784,9 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			inp.release(&"interact")
 			await inp.ticks(2)
 			if combat and await _clear_threats():  # S9.1: a hit dropped the hold, so clear the shooters first
-				d.note("pilot: use %s hold dropped, cleared threats before re-pressing" % comp.kind)
+				d.note("pilot: use %s hold dropped, cleared threats before re-pressing" % kind)
+			if not is_instance_valid(comp):  # DB sweep 1001: a bot picked the bag up during the fight
+				break
 			# Re-aim before pressing again: an F press with the crosshair on a cop is a shout (ND attempts 15-18).
 			await face(target, 0.03, 1.0)
 			if no_blind_press and not await _aim_on(comp, target):
@@ -1176,13 +1179,13 @@ func active_escape() -> EscapeZone:
 static func next_corner(path: PackedVector3Array, pos: Vector3, target: Vector3) -> Vector3:
 	if path.is_empty():
 		return target
-	var p2: Vector2 = Vector2(pos.x, pos.z)
+	# 3D (LEAD's r264 sweep, GH Routine 1001): flat, a path leg on the floor above, right over the crew, was the
+	# "nearest" segment; the pilot steered at (11.6, 4.4, 5.0) 4.4 m overhead instead of the stairs and paced the
+	# ground floor for 90 s under fire.
 	var seg: int = 0
 	var best: float = INF
 	for i: int in range(path.size() - 1):
-		var a: Vector2 = Vector2(path[i].x, path[i].z)
-		var b: Vector2 = Vector2(path[i + 1].x, path[i + 1].z)
-		var d: float = p2.distance_to(Geometry2D.get_closest_point_to_segment(p2, a, b))
+		var d: float = pos.distance_to(Geometry3D.get_closest_point_to_segment(pos, path[i], path[i + 1]))
 		if d < best - 0.001:
 			best = d
 			seg = i

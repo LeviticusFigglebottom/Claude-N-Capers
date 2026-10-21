@@ -197,6 +197,10 @@ copies `test_of_payday_e2e`, including the D-148 level pin and the co-op parity 
 
 ## 10. Open for the LEAD
 
-1. Approve the D-143.5 allow-list rows for `signal_insider` / `intel_route` now (two lines in existing B files), or
-   with the rest after the OF gate.
+1. **D-143.5 allow-list: RULED after the OF done check** (LEAD 2026-10-21 15:04). Paste these lines then, one per
+   file, after the `tags` line:
+   - `game/content/data/preplanning/assets/signal_insider.tres`: `heists = Array[StringName]([&"rolling_thunder"])`
+   - `game/content/data/preplanning/assets/intel_route.tres`: `heists = Array[StringName]([&"rolling_thunder"])`
+
+   This is the same format as `intel_product.tres` (`[&"afterhours"]`); `PreplanAssetDef.heists` empty = every heist.
 2. `rt_content_plan.md` §1 said $85k: superseded here ($30k, D-141.1); B updates that file when the gate opens.

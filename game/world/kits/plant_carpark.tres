@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"plant_carpark"
+purpose = &"plant"
+required_items = Array[StringName]([&"boiler", &"tank", &"switchboard", &"light_fixture"])
+optional_items = {
+&"ahu": 0.5,
+&"box": 0.6,
+&"fire_extinguisher": 1,
+&"shelving": 0.5,
+&"ups": 1
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 1.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"ahu", &"boiler", &"switchboard", &"tank"])
+seed_salt = 52
+seed_id = &"plant_room"
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"shelving": PackedStringArray("prop_shelving_parts"),
+&"switchboard": PackedStringArray("prop_switchboard")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "Rolling Thunder (plant), from plant_room: RT CPL car-park plant room: boiler, water tank, switchboard; the goods-lift breaker (LiftBreaker, a gameplay wall mount) is the map's."

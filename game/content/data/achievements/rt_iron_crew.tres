@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.rt_iron_crew"
+name_key = &"achievement.rt_iron_crew.name"
+desc_key = &"achievement.rt_iron_crew.desc"
+condition = {"event": &"heist_completed", "heist": &"rolling_thunder", "difficulty_min": 2, "max_downs": 0, "count": 1}
+unlock = &""
+order = 783
+category = &"rolling_thunder"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

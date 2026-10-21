@@ -15,6 +15,7 @@ base_xp_by_heist = {
 &"glasshouse": 1500,
 &"night_deposit": 2000,
 &"ostrander_federal": 3000,
+&"rolling_thunder": 2500,
 &"shadow_ledger": 2500
 }
 base_xp_failure_fraction = 0.25

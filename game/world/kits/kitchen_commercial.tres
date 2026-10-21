@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"kitchen_commercial"
+purpose = &"kitchen"
+required_items = Array[StringName]([&"fridge", &"kitchen_counter", &"wall_cabinet", &"microwave", &"bin", &"shelving", &"light_fixture"])
+optional_items = {
+&"box": 0.6,
+&"fire_extinguisher": 1
+}
+clutter_groups = {}
+min_density = 0.25
+max_density = 1.8
+min_props = 10
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 4713
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"box": PackedStringArray("prop_box_small"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"shelving": PackedStringArray("prop_shelving_parts")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "RT K diner kitchen: fridge, prep counter with the microwave and wall cabinets, dry-goods shelving, kitchen bin; the prep table (prop_packing_table_steel art) is the map's. Waits: prop_cookline (the G1 Cookline box stays greybox), prop_door_slide_coldstore (dressing)."

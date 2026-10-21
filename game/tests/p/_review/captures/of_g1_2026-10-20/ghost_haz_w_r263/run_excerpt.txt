@@ -1,0 +1,36 @@
+[OFP 275.5s t=10.8] GHOST rover_hall at the LD check (t=11)
+[OFP 297.8s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 297.8s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 307.8s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 330.5s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 340.6s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 350.6s t=73.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 361.3s t=78.5] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 46 s
+[OFP 378.6s t=95.8] GHOST rover_hall at the LD check (t=96)
+[OFP 398.6s t=104.0] GHOST LD occupied (rover_hall at (7.0, 0.0, 5.2) (not on MO / loop (c))): skipping this smoke window
+[OFP 419.6s t=125.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (10.5, 0.0, -3.3) walk
+[OFP 441.5s t=135.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (25.1, 0.0, -3.0) walk
+[OFP 451.5s t=145.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (41.0, 0.0, -4.5) walk
+[OFP 455.5s t=149.1] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 1.0 s) after 24 s
+[OFP 456.0s t=149.6] GHOST lane clear after 0 s
+[OFP 480.1s t=173.6] GHOST waiting for the dock corridor door: 
+[OFP 481.0s t=174.6] GHOST dock corridor door clear after 1 s
+[OFP 508.1s t=178.3] DETECT Npc_guard3 kind 0 meter 0.16 at (27.3, 0.0, 8.0), pilot (12.4, 0.0, 8.0) crouched false
+[OFP 508.9s t=179.1] DETECT Npc_guard3 kind 0 meter 0.62 at (26.1, 0.0, 8.0), pilot (14.3, 0.0, 7.4) crouched false
+[OFP 513.3s t=183.6] DETECT Npc_guard2 kind 0 meter 0.28 at (6.7, -4.0, 8.6), pilot (14.4, -4.0, 7.9) crouched false
+[OFP 513.4s t=183.6] GHOST step _g2_dock done at t=183.6 (+150.5 s)
+[OFP 513.4s t=183.6] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 513.4s t=183.6] GHOST waiting for the LK WC: 
+[OFP 513.8s t=184.1] DETECT Npc_guard2 kind 0 meter 0.70 at (7.5, -4.0, 8.4), pilot (14.4, -4.0, 7.9) crouched false
+[OFP 513.8s t=184.1] GHOST LK WC not clear (Npc_guard2 (7.5, -4.0, 8.4) moving): waiting at (1.5, -3.8, 4.0)
+[OFP 514.3s t=184.6] DETECT Npc_guard2 kind 0 meter 1.00 at (8.1, -4.0, 8.2), pilot (13.2, -4.0, 7.9) crouched false
+[OFP 514.4s t=184.6] GHOST rover_hall at the LD check (t=185)
+[INFO][stealth][p1] ALARM: guard_radio (source 204)
+[OFP 514.7s t=185.0] ALARM guard_radio by Npc_guard2 (pilot at (11.9, -4.0, 7.8))
+[OFP 527.8s t=198.0] GHOST waiting for the LK WC: Npc_guard (8.1, -4.0, 7.5) moving, Npc_guard2 (4.8, -4.0, 7.5) moving, Npc_guard3 (4.8, -4.0, 6.9) moving, Npc_guard5 (6.4, -4.0, 8.3), Npc_guard6 (14.0, -2.5, 3.7), Npc_guard7 (5.3, -4.0, 7.4) moving, Npc_guard8 (5.5, -4.0, 8.0) moving
+[OFP 537.8s t=208.0] GHOST waiting for the LK WC: Npc_guard (6.8, -4.0, 8.3) moving, Npc_guard2 (5.5, -4.0, 7.8) moving, Npc_guard3 (4.7, -4.0, 7.2) moving, Npc_guard4 (6.2, -4.0, 8.4) moving, Npc_guard6 (5.6, -4.0, 7.4) moving, Npc_guard7 (5.0, -4.0, 7.2) moving, Npc_guard8 (5.3, -4.0, 8.2) moving
+[OFP 547.8s t=218.0] GHOST waiting for the LK WC: Npc_guard (1.0, -4.0, 3.9) moving, Npc_guard2 (1.4, -4.0, 2.5) moving, Npc_guard3 (1.3, -4.0, 3.3) moving, Npc_guard4 (1.0, -4.0, 3.4), Npc_guard5 (1.9, -4.0, 3.6) moving, Npc_guard6 (1.4, -4.0, 2.0) moving, Npc_guard7 (1.9, -4.0, 2.7) moving, Npc_guard8 (1.4, -4.0, 2.9)
+[OFP 557.8s t=228.0] GHOST waiting for the LK WC: Npc_guard2 (1.4, -4.0, 2.8), Npc_guard3 (1.3, -4.0, 3.3), Npc_guard4 (1.0, -4.0, 3.4), Npc_guard5 (1.4, -4.0, 2.1), Npc_guard6 (1.3, -4.0, 1.7), Npc_guard7 (1.4, -4.0, 2.5), Npc_guard8 (1.4, -4.0, 3.0)
+[OFP 570.0s t=238.0] GHOST waiting for the LK WC: Npc_guard2 (1.4, -4.0, 2.8), Npc_guard3 (1.3, -4.0, 3.3), Npc_guard4 (1.0, -4.0, 3.4), Npc_guard5 (1.4, -4.0, 2.1), Npc_guard6 (1.3, -4.0, 1.7), Npc_guard7 (1.4, -4.0, 2.5), Npc_guard8 (1.4, -4.0, 3.0)
+[OFP 580.4s t=239.6] GHOST waiting for the LK WC: Npc_guard2 (1.4, -4.0, 2.7), Npc_guard3 (1.6, -4.0, 3.7), Npc_guard4 (1.0, -4.0, 3.4), Npc_guard5 (1.4, -4.0, 1.9), Npc_guard6 (1.4, -4.0, 1.3), Npc_guard7 (1.8, -4.0, 2.3), Npc_guard8 (1.8, -4.0, 3.1)
+[OFP 590.3s t=239.6] GHOST waiting for the LK WC: Npc_guard2 (1.4, -4.0, 2.7), Npc_guard3 (1.6, -4.0, 3.7), Npc_guard4 (1.0, -4.0, 3.4), Npc_guard5 (1.4, -4.0, 1.9), Npc_guard6 (1.4, -4.0, 1.3), Npc_guard7 (1.8, -4.0, 2.3), Npc_guard8 (1.8, -4.0, 3.1)

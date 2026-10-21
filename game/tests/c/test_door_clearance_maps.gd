@@ -21,3 +21,8 @@ func test_dockside_burn() -> void:
 
 func test_shadow_ledger() -> void:
 	await check_heist(&"shadow_ledger", 5)
+
+
+## RT-C1b: Rolling Thunder's greybox (the def at its wip path until G1; the launcher finds the map by convention).
+func test_rolling_thunder() -> void:
+	await check_heist(&"rolling_thunder", 20)

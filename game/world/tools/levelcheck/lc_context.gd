@@ -41,6 +41,9 @@ var proxy_root: Node3D = null
 
 var _prop_by_id: Dictionary = {}
 var _active: Dictionary = {}  # VariantSlot instance id -> bool (empty: everything active)
+## QC-87c: the convoy layout under test (meta `convoy_layout`); null = no layout run, every layout counts as active.
+var _layout: Node3D = null
+var _layout_nav_saved: Dictionary = {}  # nav region / link -> enabled as authored (restored by set_layout_config(null))
 
 
 func setup(p_map: HeistMap) -> void:
@@ -268,14 +271,53 @@ func _collect_doors() -> void:
 # --- variants ------------------------------------------------------------------------------
 
 func is_active(n: Node) -> bool:
-	if _active.is_empty():
+	if _active.is_empty() and _layout == null:
 		return true
 	var cur: Node = n
 	while cur != null and cur != map:
 		if cur is VariantSlot and not bool(_active.get(cur.get_instance_id(), true)):
 			return false
+		if _layout != null and cur != _layout and cur.has_meta(&"convoy_layout"):
+			return false
 		cur = cur.get_parent()
 	return true
+
+
+# --- convoy layouts (QC-87c, D-149.1) ---------------------------------------------------------
+
+## Nodes with meta `convoy_layout` (RT: one per route x clean / crash stop).
+func layouts() -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	for n: Node in map.find_children("*", "Node3D", true, false):
+		if n.has_meta(&"convoy_layout"):
+			out.append(n as Node3D)
+	out.sort_custom(func(a: Node3D, b: Node3D) -> bool:
+		return String(a.get_meta(&"convoy_layout")) < String(b.get_meta(&"convoy_layout")))
+	return out
+
+
+## Runs the checks as if the convoy stopped in `layout`: the other layouts' nodes count as inactive, and only this
+## layout's pre-baked nav regions / links are enabled. null restores every layout's nav as authored. Waits for nav sync.
+func set_layout_config(layout: Node3D) -> void:
+	_layout = layout
+	cache.clear()
+	var changed: bool = false
+	for l: Node3D in layouts():
+		for nav: Node in l.find_children("*", "", true, false):
+			if not (nav is NavigationRegion3D or nav is NavigationLink3D):
+				continue
+			if not _layout_nav_saved.has(nav):
+				_layout_nav_saved[nav] = bool(nav.get(&"enabled"))
+			var on: bool = bool(_layout_nav_saved[nav]) if layout == null else l == layout
+			if bool(nav.get(&"enabled")) != on:
+				nav.set(&"enabled", on)
+				changed = true
+	if layout == null:
+		_layout_nav_saved.clear()
+	if changed:
+		await await_nav_update(4)
+	else:
+		await await_sync(4)
 
 
 func variant_slots() -> Array[VariantSlot]:

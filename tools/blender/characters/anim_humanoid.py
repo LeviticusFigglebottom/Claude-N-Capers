@@ -26,6 +26,7 @@ import _anim_d304 as d304
 import _anim_hitzones as hitzones
 import _anim_holds as holds
 import _anim_humanoid as lib
+import _anim_idle_var as idlev
 import _anim_loco_holds as loco
 import _anim_police as police
 import _anim_rt as rt
@@ -305,6 +306,10 @@ CLIPS = {
     # AH-D1 Afterhours (QC-74, _anim_ah): the DJ at the 1.0 m booth on the stage, 120 BPM (16 beats per loop), the right
     # hand on the headphone cup at `cue`; booth layout in SOURCE `ah_dj_placement`
     "dj_mix": {"frames": 240, "loop": True, "speed": 0.0, "priority": 10, "events": {"cue": 90}},
+    # D polish #2 (_anim_idle_var): idle_alert variety for posted / pausing guards; frame 0 IS idle_alert frame 0 (A:
+    # VARIANT_GROUPS, SOURCE `idle_alert_variants`)
+    "idle_alert_b": {"frames": 150, "loop": True, "speed": 0.0, "priority": 2, "events": {"watch": 57}},
+    "idle_alert_c": {"frames": 174, "loop": True, "speed": 0.0, "priority": 2, "events": {"radio": 44}},
 }
 # D-116 frame-locked weapon holds on the move (_anim_loco_holds, SOURCE `locomotion_holds`): hold_<kind>_<gait>, the
 # base clip's frames / loop / events
@@ -344,7 +349,7 @@ def build(ctx) -> None:
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
                 or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP or name in bank.KEEP
-                or name in rt.KEEP or name in ah.KEEP):
+                or name in rt.KEEP or name in ah.KEEP or name in idlev.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -372,6 +377,8 @@ def build(ctx) -> None:
             row += rt.check_row(sk, CLIPS, name, baked, keep)
         if name in ah.NAMES:
             row += ah.check_row(sk, CLIPS, name, baked, keep)
+        if name in idlev.NAMES:
+            row += idlev.check_row(sk, CLIPS, name, baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -414,6 +421,8 @@ def build(ctx) -> None:
     for key, text in rt.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in ah.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
+    for key, text in idlev.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in loco.source_notes().items():
         ctx.source_extra[key] = text

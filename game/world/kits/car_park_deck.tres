@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"car_park_deck"
+purpose = &"car_park"
+required_items = Array[StringName]([&"light_fixture", &"fire_extinguisher"])
+optional_items = {
+&"exit_sign": 1
+}
+clutter_groups = {}
+min_density = 0.015
+max_density = 0.3
+min_props = 10
+lone_ok_kinds = Array[StringName]([&"car", &"fire_extinguisher", &"exit_sign", &"light_fixture", &"safe", &"bag_lift"])
+seed_salt = 4711
+counts = {
+&"fire_extinguisher": Vector2i(3, 4)
+}
+assets = {
+&"exit_sign": PackedStringArray("prop_exit_sign"),
+&"light_fixture": PackedStringArray("prop_led_batten_cold")
+}
+ceiling = {"prop_led_batten_cold": 6}
+notes = "RT CP-G / CP-2 car-park decks: cold LED battens on a 6 m grid under the deck above, extinguishers on the walls, exit signs over the doors; the parked cars (veh_car_sedan_*) are the map's (catalog art on the G1 boxes). No floor props: the aisles and ramps stay a drive. Waits: prop_car_park_barrier, bay lines."

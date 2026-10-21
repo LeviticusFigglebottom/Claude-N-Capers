@@ -4,6 +4,50 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-20) GPU-20b: the heist cap is now a flag (17:20 UTC)
+- **01633ed17:** auto_loud's heist-time cap is `--po5-heist-cap=<s>`, or `HEIST_CAP=<s>` with run_po5.sh.
+  - The default is now **2400 s** (it was a fixed 1500).
+  - The FAIL line prints the cap used. Checked: HEIST_CAP=30 on GH gives "no heist end within 30 s".
+- **deposit_boxes:** agreed, it's optional. The pilot skips it (no hand saw), and its VaultBox markers are
+  skipped via marker_skip_prefixes. It has never blocked anything in my OF runs.
+### (-19) Regression sweep on trunk b0bd47a0: 4/4 PASS + SL stealth PASS, once P's cb8be306d is merged (16:55 UTC)
+Headless auto_loud, **Routine**, seed 1001, on env/a-core with trunk b0bd47a0 merged.
+
+| heist | first run | root cause | fix | after fix |
+|---|---|---|---|---|
+| Golden Hour | FAIL (3 downs) | **harness**: `Po5Pilot.next_corner` chose the nearest path leg in 2D, which picked the upstairs leg right overhead. The pilot steered at a point 4.4 m above it and paced the ground floor under fire for 90 s | A **24c02e56c**: nearest leg in 3D, plus test_next_corner_ignores_the_leg_overhead (fails without the fix) | **PASS**, 283 s |
+| Nightfall Depository | FAIL (3 downs, 36 STUCK) | **game** (P's crew_ladder_climb.gd): a human climbing up the AreawayLadder never finished stepping off. The Top marker is at x 17.2; CageWest stops the 0.35 m capsule at 17.35, which is 0.151 m out (the check needs < 0.15). The step-off vy keeps the crew off the floor, so `grounded` never turns true, and W stays overridden. A real player is soft-locked; only jump frees them, into the 4 m pit. Deterministic repro: PTraversal.ladder(AreawayLadder) up=false. Likely exposed by the 0d0a1ab05 capsule fix | P **cb8be306d** on env/p-play (a stalled step-off lets go; test in test_p_ladder_free_climb). **Please merge it** | **PASS**, 665 s (local: env/a-core + cb8be306d, six AreawayLadder climbs all OK). Without it: the up climb FAILED again and the re-run looped on the ladder; I stopped it at 1510 s |
+| Gallery Night | PASS, 518 s, 0 downs | none | none | PASS |
+| Dockside Burn | PASS, 808 s, 0 downs | the errors=1 was **harness**: `Po5Pilot.use` read `comp.kind` after a bot picked the bag up mid-fight (freed) | A **0d868f9ed** | PASS |
+| Shadow Ledger stealth | PASS (no PO-5 SL flow, so I ran test_x4_sl_stealth) | none | none | PASS |
+
+- **Game bugs found:** 1, the ladder soft-lock, fixed by P. Any ladder whose Top marker sits closer than about 0.35 m to a wall would have trapped a human the same way.
+- **No regressions** from today's other systemic changes: NavPath, glass gunfire plus close-in, cuffs, revive clear, Longshot.
+### (-18) Your r264 re-runs: the cuff fix is confirmed; the revive-clear change is not a win-rate lever (15:25 UTC)
+Headless on env/a-core 2dbfbb29 (= r264's A side).
+- **Cataclysm 2024 (CREW_DMG=0): ends cleanly.**
+  - Tase at t=1015 -> DOWNED 1025 -> CUFFED 1029 -> **CUSTODY 1055** (the bleed-out runs while cuffed), then "FAIL
+    player in custody at 1056 s".
+  - One cuff, no CUFFED <-> DOWNED cycling (it was 15 cycles over 15 min). Still a loss: the accepted Cataclysm
+    harness limit.
+- **DB Tense ×3 + GH Tense 4501 with the revive clear (2 s on an enemy within 3 m before kneeling):**
+
+| run | result | player downs | end |
+|---|---|---|---|
+| DB s1 | FAIL | 3 | custody at t=584 (900 damage taken in 554 s loud; tac_light 344) |
+| DB s2 | FAIL | 3 | custody at t=719 |
+| DB s3 | **PASS** | 2 | heist_ended at 842 s |
+| GH 4501 | **PASS** | 0 | heist_ended at 266 s |
+
+- **Read:**
+  - The clear behaves as built, and the bots revive fast. In s2 the three downs at t=651 / 666 / 677 were each
+    revived in 7-13 s.
+  - s2 is lost to down density, not revive behaviour: four downs in 70 s near (43, 0, -25), and a Longshot did
+    270 of the 941 damage (6 hits from 30 m and beyond).
+  - B's r257 cell (2/3) and this one (1/3) are within 3-seed noise. The tree shifts the RNG streams, so seed-for-seed
+    comparisons across trees don't hold.
+  - I'd keep the clear (it removes the wipe pattern) and treat DB Tense as accepted at about 2/3, as you ruled.
+  - If you want a firmer number: B's ×3 on r264 plus mine is n=6.
 ### (-17) Your cuff-loop bug (Cataclysm 2024): fixed, for the next round (15:00 UTC)
 - **(1) Why it toggled:** L2.12 as built.
   - A police-cuffed downed heister had a 60 s self-free (CustodyTweak.police_cuff_self_free_s ◇) back to DOWNED,
@@ -487,6 +531,25 @@ GameplayPrefab`, an AnimatableBody3D root `Body`.
   - 4 charges on a truck arm the fuse and open it;
   - fewer leave it at n/4 (replicated count);
   - a pre-plan drop spawns a pickup with the right count.
+
+**C's RT asks, queued for after OF (paper):**
+- **civilians_leave at the alarm (D-149.7, QC-RT7):** HeistMission.civilians_leave(exit_tag) today returns 0 once
+  loud. RT needs: on `alarm_raised`, street civilians with a `civ_flee` route run to their sidewalk exit and despawn
+  there; the rest take the existing cower / flee.
+  - Plan: a loud branch in civilians_leave (walk to the nearest exit tagged `exit_tag`, despawn on arrival), plus
+    sidewalk call points (CivilianTargets.add_call_point, REASON_PHONE) for the 911 calls.
+  - Test: 3 civilians at the alarm reach two exits and despawn; a call point brings a call.
+- **Layout cover enable at the stop:** on the last `vehicle_stopped`, enable the TacticalPoints (COVER /
+  SHIELD_ANCHOR / ENTRY) under the active ConvoyLayout (`Gameplay/Convoy/<route>/<clean|crash>`) with
+  TacticalPoint.enabled (QC-RT1, in r258), and disable the other three layouts' points. The same call swaps in the
+  layout's nav region (D-149.1).
+  - Test: after the stop, only the active layout's points are in their groups.
+- **Tannery gates on mixer_move:** the gates under the Tannery underpass open (Door.unlock + open, or a nav region
+  swap) when the mixer starts its move (`mixer_move`, stop + 3 s on a clean stop, the impact on a crash), so the
+  trench has its second exit.
+  - Plan: the mission listens to ConvoyVehicle `drive_started` on the mixer and opens the doors tagged
+    `tannery_gate`.
+  - Test: the gates are shut before the move and open, with their nav link enabled, after it.
 
 **Proposed order once OF is done:**
 1. QC-81 BurnPoint.target.

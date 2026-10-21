@@ -760,9 +760,9 @@ Sizes are between wall centre lines (m).
 | U2 | storage | 7 × 10 | 2.8 | `storage_archive` | Old furniture, boxes of menus, Christmas decorations. |
 | U3 | storage (dry goods overflow) | 7 × 8 | 2.8 | `storage_receiving` | Shelving. |
 | U4 | restroom | 3 × 3 | 2.8 | `restroom_single` | WC for the function room. |
-| J | janitor | 3 × 3 | 2.8 | `janitor_closet` | Mop sink, buckets (U-level, under U4's partition). Door (0.9 m, non-route) onto the landing corridor UC at (3, 16), as W2 below it (RT-C0 check: it had none). |
+| J | janitor | 3 × 3 | 2.8 | `janitor_closet_of` (the OF janitor-purpose variant of `janitor_closet`, RT-C2) | Mop sink, buckets (U-level, under U4's partition). Door (0.9 m, non-route) onto the landing corridor UC at (3, 16), as W2 below it (RT-C0 check: it had none). |
 | UC | corridor (upper landing) | 2 × 6 | 2.8 | `corridor_service` | Upper landing over R (local x 3…5, z 12…18): U1, U4, J and stair SC open off it (RT-C0 check: drawn, was missing from the list). |
-| U5 | staff_room | 5 × 6 | 2.8 | `break_room` | Staff break room: fridge, table + chairs, counter + sink, microwave, coffee, bulletin board. |
+| U5 | break_room (RT-C2: the kit's purpose) | 5 × 6 | 2.8 | `break_room` | Staff break room: fridge, table + chairs, counter + sink, microwave, coffee, bulletin board. |
 | YD | exterior (diner yard) | 20 × 8 | — | `exterior_yard_small` | Bins (`body_container`), crates, waste oil, the staff smoking chair. |
 | C1 | office (site office) | 3 × 9 | 2.6 | `site_office` | Plan table, drawings on the wall, kettle, hard-hat rack, the site's radio. |
 | C2 | break_room (welfare) | 3 × 9 | 2.6 | `break_room` | Mess table, microwave, fridge, sink, notice board. |
@@ -771,7 +771,7 @@ Sizes are between wall centre lines (m).
 | MG | — (a container prop, no RoomVolume) | 4 × 3 (as drawn; RT-C0 check) | 2.2 inside | — | The steel explosives magazine; padlocked door. Its 2.2 m interior is below every room band, so it is a prop, not a room. The C4 boxes are `item_pickup`s (QC-84) reached from the open door's UsePoint. |
 | FG | exterior (frame, ground) | 24 × 20 | 3.2 (slab soffit) | `site_frame_ground` | Columns, formwork stacks, rebar bundles, a site forklift (cover; replaces the dumper truck, D-149.6). |
 | F1 | exterior (frame slab +3.5) | 24 × 20 | open | `site_frame_slab` | Edge protection, block pallets, starter bars, a mortar mixer. H3. |
-| X1 | exterior (Orchard Ave + junction + Tannery west) | — | — | `exterior_street` | Signals on gantries, lamp posts, parked cars, bins, a newsstand, Skyway piers. |
+| X1 | exterior (Orchard Ave + junction + Tannery west) | — | — | `exterior_street_rt` (RT-C2: `exterior_street` with the convoy vehicles lone-ok) | Signals on gantries, lamp posts, parked cars, bins, a newsstand, Skyway piers. |
 | X2 | exterior (east arm, ramp, underpass, cut) | 20 + 32 + 18 + 20 × 22 | — (underpass soffit 4.6) | `exterior_underpass` | Retaining walls with drainage channels, height bar, underpass fluorescents, graffiti-free (Southfield council keeps it painted), E2. |
 | X3 | exterior (plaza + bus interchange) | 46 × 19 | — | `exterior_plaza` | Bus shelters with benches (`cower_seated` spots), the clock pillar, street planters (replace the trees in grates; cycle racks dropped, D-149.6), a ticket machine. |
 | X4 | exterior (Tanner's Reach yard) | 46 × 45 less buildings | — | `exterior_site` | Hoarding, crane base, skip, cabins' steps, site lighting masts, the mixer. |

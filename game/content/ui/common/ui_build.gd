@@ -39,12 +39,15 @@ const FLOAT_SHADOW_SOFTNESS: int = 6
 const LABEL_SCRIM_COLOR: Color = Color(0, 0, 0, 0.45)
 const LABEL_SCRIM_RADIUS: int = 4
 const LABEL_SCRIM_PAD: Vector2 = Vector2(6, 2)
+## r266: the status scrim (vitals captions, a teammate's Downed / In custody line): text that must read on a bright
+## scene (white galleries, limestone, dawn) needs more than the 45% name scrim to keep a 3:1 fill.
+const LABEL_SCRIM_STRONG_ALPHA: float = 0.75
 
 
 ## The r249 label scrim as a StyleBoxFlat (Label "normal" style, or ObjectiveMarkers.draw_style_box).
-static func label_scrim() -> StyleBoxFlat:
+static func label_scrim(alpha: float = LABEL_SCRIM_COLOR.a) -> StyleBoxFlat:
 	var sb: StyleBoxFlat = StyleBoxFlat.new()
-	sb.bg_color = LABEL_SCRIM_COLOR
+	sb.bg_color = Color(LABEL_SCRIM_COLOR, alpha)
 	sb.set_corner_radius_all(LABEL_SCRIM_RADIUS)
 	sb.content_margin_left = LABEL_SCRIM_PAD.x
 	sb.content_margin_right = LABEL_SCRIM_PAD.x
@@ -54,8 +57,8 @@ static func label_scrim() -> StyleBoxFlat:
 
 
 ## `l` on the r249 label scrim (its text keeps the float outline / shadow).
-static func scrim_label(l: Label) -> Label:
-	l.add_theme_stylebox_override(&"normal", label_scrim())
+static func scrim_label(l: Label, alpha: float = LABEL_SCRIM_COLOR.a) -> Label:
+	l.add_theme_stylebox_override(&"normal", label_scrim(alpha))
 	return l
 
 

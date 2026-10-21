@@ -150,6 +150,7 @@ spec types `float/int/bool/choice`). Tests point `GameSettings.root_dir` at
 | `ally_marker`, `enemy_marker` | teammate names; marked-target diamonds |
 | `objective` | active objective rows |
 | `loot_highlight`, `interaction_highlight` | carried-bag line; interaction hold bar |
+| `device_jam` | a jammed drill / saw / hack in the device timers (bar, frame, status word); PD2 red in every palette, paired with `objective` in the CVD check (r266) |
 
 `HudPalette.apply_to(tweak)` returns a recoloured `HudTweak` copy; `HudPaletteSet.active_tweak()` is
 what the HUD reads. Outline / world highlights drawn by other environments can read
