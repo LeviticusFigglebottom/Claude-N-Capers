@@ -53,7 +53,8 @@ func shot(label: String) -> void:
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	_shot += 1
-	get_viewport().get_texture().get_image().save_png("%s/%s_%d_%02d_%s.png" % [runner_out, _heist, _diff, _shot, label])
+	var path: String = "%s/%s_%d_%02d_%s.png" % [runner_out, _heist, _diff, _shot, label]
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path(path))
 	RenderingServer.render_loop_enabled = false
 
 

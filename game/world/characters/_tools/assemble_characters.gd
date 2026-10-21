@@ -507,6 +507,7 @@ func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scen
 	lod.visibility_range_begin = switch_m
 	lod.visibility_range_begin_margin = CrowdLod.MARGIN_M
 	lod.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+	lod.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF  # D-146 (crowd_lod_proxy.gd also sets it)
 	lod.add_to_group(CrowdLod.GROUP, true)
 	skel.add_child(lod)
 	lod.skeleton = NodePath("..")

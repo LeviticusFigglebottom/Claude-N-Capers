@@ -2,6 +2,20 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-20 (evening): OF §7 G1 complete, ghost steps 1-3, D-145 GH, lead unreachable
+- **Lead unreachable from P since ~22:50 UTC** (send_message: "needs proof of a trusted device"); A hit the same.
+  Undelivered relay from A: D-145 Tense tuning on env/a-core 4a6780f4 (hit grace 0.45 s / bots 0.35 s on
+  Routine+Tense; TAC Light + Stinger 8 dmg on Tense, 6 Routine; TAC Light 80 HP, Patrol/Security 40; tase downs after
+  10 s; bot regen 25 %/s after 3 s). P runs GH Tense x3 on r250 + c-worlds + 4a6780f4 (running).
+- §7 G1 (of_g1_pass, seed 1002): laser x3, throws, fire_escape, dock, fire_exit, burn, hole: all PASS; PO-3 snags 0.
+- Ghost line (Cataclysm solo): steps 1-3 PASS since r246 (smoke-pause cue, A's pilot corner fix, lambda fix); step 4
+  caught by rover_gallery (Npc_guard4) on SA. A's gallery/hall hub loops (b7052ebd) are on r250: re-run queued.
+- D-145 GH (headless auto_loud, real menus, solo + 3 bots): Routine 3/3 WIN median 1 down; Tense 0/3 on every A fix so
+  far (latest: all legit custody after 3 downs / crew wipe; 4501 pilot stall at (7.9, 0, 5.0)). Evidence:
+  captures/d145_gh_2026-10-20/.
+- Ladder free-climb + run bob confirmed on trunk r245 (captures/feel_r245_2026-10-20).
+- Running: OF real-menu of_stealth + 2 GH loud clips (windowed chain), Tense x3 on 4a6780f4 (headless).
+
 ## 2026-10-20: OF-P1 resumed (D-144): burn/hoist PASS on C f385a22c + A 6f70122a
 - Tree: local trunk 8ed5fa93 + env/a-core + env/b-content + env/c-worlds + env/d-art + env/p-play (b12118ca, not
   pushed; round 245 not on trunk yet). of_mission 15/15, p_ladder 5/5 headless.

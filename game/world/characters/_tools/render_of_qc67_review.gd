@@ -12,8 +12,8 @@ extends Node3D
 ## Teller stations (x, z) and cower points (name: position, facing deg) from ostrander_federal_layout_content.gd.
 const TELLERS: Array[Vector3] = [Vector3(15.0, 0.0, 16.07), Vector3(17.0, 0.0, 16.07), Vector3(31.0, 0.0, 16.07),
 	Vector3(33.0, 0.0, 16.07)]
-## Queue marks (CivQueueW/E, the queue_idle spawn rows stand near them)
-const QUEUES: Array[Vector3] = [Vector3(15.0, 0.0, 21.0), Vector3(33.0, 0.0, 21.0)]
+## Queue spawn rows (CustomerQueue1/2 at x 12-13, LateCustomerQueue at x 34, z 20.88): the queue_idle customers
+const QUEUES: Array[Vector3] = [Vector3(12.5, 0.0, 20.88), Vector3(34.0, 0.0, 20.88)]
 const COWER: Dictionary = {
 	"CowerCounterW": Vector3(12.0, 0.0, 17.66), "CowerCounterE": Vector3(36.0, 0.0, 17.66),
 	"CowerWallW": Vector3(8.31, 0.0, 30.5), "CowerWallE": Vector3(39.69, 0.0, 31.0),
@@ -70,7 +70,7 @@ func _run() -> void:
 	for n: Node in rt.npcs(&"civilian"):
 		var npc: NpcBase = n as NpcBase
 		var dq: float = _nearest(npc.global_position, QUEUES)
-		if dq < 3.0:
+		if String(npc.spawn_info.get("idle_activity", "")).begins_with("queue"):
 			_say("queue %s activity %s look %s clip %s at %s mark %.2f m" % [npc.name, npc.spawn_info.get("idle_activity"),
 				NpcVisuals.character_id(npc), _clip(npc), npc.global_position, dq])
 	await _shot("tellers_w_staff_side", Vector3(14.2, 1.65, 14.4), Vector3(16.0, 0.95, 16.3))
@@ -78,7 +78,7 @@ func _run() -> void:
 	await _shot("tellers_e_staff_side", Vector3(34.8, 1.65, 14.4), Vector3(32.0, 0.95, 16.3))
 	await _shot("tellers_e_customer_side", Vector3(32.0, 2.05, 19.6), Vector3(32.0, 1.0, 16.1))
 	await _shot("teller_counter_profile", Vector3(18.6, 1.15, 16.4), Vector3(14.5, 1.0, 16.2))
-	await _shot("queue_w_side", Vector3(19.5, 1.6, 22.5), Vector3(15.0, 0.9, 20.0))
+	await _shot("queue_w_side", Vector3(16.0, 1.6, 23.0), Vector3(12.5, 0.9, 20.9))
 	if not _alarm:
 		_finish()
 		return

@@ -43,7 +43,7 @@ func note(msg: String) -> void:
 func shot(label: String) -> void:
 	await RenderingServer.frame_post_draw
 	_shot += 1
-	get_viewport().get_texture().get_image().save_png("%s/%02d_%s.png" % [runner_out, _shot, label])
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/%02d_%s.png" % [runner_out, _shot, label]))
 
 
 func wait_s(s: float) -> void:

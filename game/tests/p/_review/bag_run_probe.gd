@@ -209,8 +209,8 @@ func _carry_route(c: CrewController, r: Dictionary) -> Dictionary:
 			break
 		if shot_s > 0.0 and t >= next_shot and _args.has("shots"):
 			next_shot += shot_s
-			get_viewport().get_texture().get_image().save_png("%s/route%s_%05.1f.png" % [String(_args["shots"]),
-				String(_args.get("only", "x")), t])
+			get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/route%s_%05.1f.png" % [String(_args["shots"]),
+				String(_args.get("only", "x")), t]))
 	_inp.release(&"sprint")
 	_inp.release(&"move_forward")
 	if row["t_s"] > 0.0:

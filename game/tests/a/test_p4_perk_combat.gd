@@ -30,6 +30,7 @@ func _grant(grants: Dictionary) -> CrewController:
 
 
 func _hit(c: CrewController, amount: float) -> void:
+	c.health.grace_left = 0.0  # D-145 hit grace: back-to-back hits here test the perks
 	c.take_hit(Damage.info(amount, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"test", c.global_position,
 		Vector3.FORWARD), 0)
 

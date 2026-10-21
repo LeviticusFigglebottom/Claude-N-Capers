@@ -81,7 +81,7 @@ func shot(label: String) -> void:
 	await RenderingServer.frame_post_draw
 	_shot += 1
 	var p: String = "%s/%s_%02d_%s.png" % [runner_out, heist, _shot, label]
-	get_viewport().get_texture().get_image().save_png(p)
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path(p))
 	note("shot %s" % p.get_file())
 
 
