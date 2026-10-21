@@ -247,6 +247,8 @@ var _vg_away_n: int = 0
 ## Ghost step 2 (C's cue, ostrander_federal.md 8c034cdb): heist time rover_hall was last within 8 m of DockCorridorDoor
 ## (his loop (b) LD check); -1 before he's been seen there.
 var _rh_ld_t: float = -1.0
+## When the vault guard's current absence from VC began (heist s), for step 6's crossing windows.
+var _vg_away_since: float = -1.0
 
 
 func _ready() -> void:
@@ -1717,6 +1719,8 @@ func _vault_guard_off_vc(_gate: Door) -> bool:
 	var p: Vector3 = vg.global_position
 	var away: bool = absf(p.y - OF_FFL[0]) < 1.5 and (p.x < 12.0 or p.z > 13.5)
 	_vg_away_n = _vg_away_n + 1 if away else 0
+	if _vg_away_n == 1:
+		_vg_away_since = rt.heist_time_s
 	return _vg_away_n >= 2
 
 
@@ -1822,10 +1826,12 @@ func _down_to_bb() -> bool:
 	return true
 
 
-## Step 6's VC crossing window: the vault guard deep in loop (b) (two samples), no other guard in VC, and no other
+## Step 6's VC crossing window: the vault guard deep in loop (b) (two samples) since at most `max_age` s (his absences
+## run ~30-40 s), no other guard in VC, and no other
 ## basement guard within 15 m of the gate (the CQ <-> gate leg is BB).
-func _vc_window() -> bool:
-	if not _vault_guard_off_vc(null):
+func _vc_window(max_age: float) -> bool:
+	# A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was back in VC 5 s later).
+	if not _vault_guard_off_vc(null) or rt.heist_time_s - _vg_away_since > max_age:
 		return false
 	var gate_at: Vector3 = _of(Vector3(14.5, OF_FFL[0], 9.0))
 	for n: Node in rt.npcs(&"guard"):
@@ -1838,9 +1844,9 @@ func _vc_window() -> bool:
 	return true
 
 
-func _wait_vc_window(label: String, max_s: float = 900.0) -> void:
+func _wait_vc_window(label: String, max_age: float, max_s: float = 900.0) -> void:
 	var t: float = 0.0
-	while t < max_s and not _vc_window():
+	while t < max_s and not _vc_window(max_age):
 		if int(t * 2.0) % 60 == 0:
 			var vg: String = ""
 			for n: Node in rt.npcs(&"guard"):
@@ -3137,7 +3143,7 @@ func _g6_bags() -> bool:
 			# post 4 m from VT's door, t=1489). In: from CQ's corner. Out with the bag: from VT's blind corner.
 			if not _in_rect(pilot.crew.global_position, OF_VT_RECT):
 				await _go(pilot.stand_point(_of(GHOST_CQ_HIDE)), 0.3, 30.0)
-				await _wait_vc_window("CQ -> VT")
+				await _wait_vc_window("CQ -> VT", 15.0)
 				await _go(_of(OF_VC_WEST), 0.5, 60.0)
 				if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false,
 						OF_LASER_LEAD_M):
@@ -3153,7 +3159,7 @@ func _g6_bags() -> bool:
 			if not await pilot.use(_comp(src), 90.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 				return false
 			await _go(pilot.stand_point(_of(GHOST_VT_HIDE)), 0.4, 30.0)
-			await _wait_vc_window("VT -> CQ")
+			await _wait_vc_window("VT -> CQ", 10.0)
 			if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false,
 					OF_LASER_LEAD_M):
 				return false
