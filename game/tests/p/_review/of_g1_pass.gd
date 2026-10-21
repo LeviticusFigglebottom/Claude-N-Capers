@@ -2720,7 +2720,14 @@ func _g2_dock() -> bool:
 	if cdoor != null:
 		var hide: Vector3 = pilot.stand_point(door.global_position + Vector3(-2.0, 0.0, -1.5))
 		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide, Callable(), 0.5)
-	return await _of_to_floor(0)
+	# Down SA to the basement landing and wait there for BB (haz_w, r263: the dock done 24 s sooner, the vault guard's
+	# loop (b) walk down BB to RC met the pilot stepping out of SA at t=184; step 3's own check came after the step out).
+	if not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[1], OF_CORRIDOR_Z)), 0.6, 240.0) \
+			or not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[1], OF_SA_CORE.z)), 0.4, 240.0) \
+			or not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[0], OF_SA_CORE.z)), 0.5, 240.0):
+		return false
+	await _wait_core_clear(OF_FFL[0], OF_FFL[0], true, 12.0, 120.0)
+	return true
 
 
 ## The design doc's own cue (A 160b8e07 hub loops: LaneCorner smoke 20-40 s): a Ledger Lane guard ARRIVING at the
