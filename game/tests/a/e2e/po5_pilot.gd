@@ -588,6 +588,21 @@ func _civilian_blocking() -> bool:
 	return false
 
 
+## A live enemy the crew is pressed against (last move's slide collisions) or that stands within 0.8 m ahead at chest
+## height, else null.
+func _enemy_blocking() -> NpcBase:
+	for i: int in crew.get_slide_collision_count():
+		var b: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
+		if b != null and b.is_in_group(G.ENEMY) and b.is_alive():
+			return b
+	var fwd: Vector3 = Vector3(-sin(crew.look_yaw), 0.0, -cos(crew.look_yaw))
+	var from: Vector3 = crew.global_position + Vector3(0, 1.0, 0)
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, from + fwd * 0.8)
+	q.exclude = [crew.get_rid()]
+	var hit: NpcBase = crew.get_world_3d().direct_space_state.intersect_ray(q).get("collider") as NpcBase
+	return hit if hit != null and hit.is_in_group(G.ENEMY) and hit.is_alive() else null
+
+
 ## Stuck against something that is not the target (a prop, a cop, a wall corner the path hugs): side-step to a
 ## navmesh point beside the crew, alternating sides (odd attempts right, even left) and widening (0.7 m, then
 ## 1.2 m), a step toward `corner`, then the caller re-paths. Falls back to a jump when no side point is free.
@@ -653,6 +668,11 @@ func _pass_leaf(door: Door, corner: Vector3) -> void:
 
 
 func _unstick(attempt: int) -> void:
+	var foe: NpcBase = _enemy_blocking()
+	if foe != null:  # LEAD GPU-18 (OF b480): 40 s of side-steps into Npc_police13/14 on the SAFlight2W stair
+		d.note("pilot: %s blocks the way: shoot" % foe.name)
+		await engage(foe, 3.0)
+		return
 	for i: int in crew.get_slide_collision_count():
 		var blocker: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
 		if not shout_blockers and attempt < block_shout_after and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():

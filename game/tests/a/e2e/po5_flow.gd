@@ -5,6 +5,8 @@ extends Node
 ## HITCH `pipelines=` labels, in _pipelines_now() order.
 const PIPELINE_KINDS: PackedStringArray = ["mesh", "surface", "draw", "spec", "canvas"]
 const HITCH_MS: float = 1000.0
+## _load_report: rendered heist frames measured after the loading screen goes.
+const LOAD_FRAMES: int = 5
 
 var runner_out: String = "user://po5"
 var runner_flow: String = "smoke"
@@ -135,18 +137,22 @@ func enter_heist() -> bool:
 		await seconds(1.0)
 		if step in ["Planning Table", "Briefing", "Continue", "Confirm plan"]:
 			await shot(step.to_snake_case())
-	set_fast(true)
+	# LEAD (GPU-18 heist-load frame 3.1 s): like a player, the render loop stays on through the loading screen and the
+	# first heist frames (pipeline compiles land under the loading screen, as in play); fast mode after (_load_report).
+	var pipes0: int = _pipelines_total()
 	FrameProf.enabled = true  # per-system cost for HITCH lines (ND t=322 stall hunt)
 	var t: float = 0.0
 	while t < 60.0:
 		rt = HeistRuntime.current()
-		if rt != null and rt.crew_controller(0) != null:
+		if rt != null and rt.crew_controller(0) != null and not _loading_up():
 			break
 		await get_tree().physics_frame
 		t += 1.0 / Engine.physics_ticks_per_second
 	if rt == null or rt.crew_controller(0) == null:
 		await _fail("heist did not start within 60 s of Start Heist")
 		return false
+	await _load_report(pipes0)
+	set_fast(true)
 	crew = rt.crew_controller(0) as CrewController
 	await wait_s(1.0)
 	run_seed = rt.run_seed
@@ -481,6 +487,40 @@ func _pipeline_delta() -> String:
 		if d > 0:
 			parts.append("%s+%d" % [PIPELINE_KINDS[i], d])
 	return "[%s]" % " ".join(parts)
+
+
+## Sum of every pipeline-compilation counter (_pipelines_now).
+func _pipelines_total() -> int:
+	var n: int = 0
+	for v: int in _pipelines_now():
+		n += v
+	return n
+
+
+## True while MenuFlow's loading screen (a LoadingScreen under a root CanvasLayer) is up.
+func _loading_up() -> bool:
+	for n: Node in get_tree().root.get_children():
+		if n is CanvasLayer:
+			for c: Node in n.get_children():
+				if c is LoadingScreen and (c as CanvasItem).is_visible_in_tree():
+					return true
+	return false
+
+
+## LOAD line: the pipelines compiled under the loading screen and over the first LOAD_FRAMES rendered heist frames (with
+## the longest of them): compiles after the loading screen are the ones a player sees as the first-frame hitch.
+func _load_report(pipes0: int) -> void:
+	var under: int = _pipelines_total() - pipes0
+	var worst: float = 0.0
+	for i: int in range(LOAD_FRAMES):
+		var t0: int = Time.get_ticks_usec()
+		if DisplayServer.get_name() == "headless":
+			await get_tree().process_frame  # frame_post_draw never fires on the dummy renderer
+		else:
+			await RenderingServer.frame_post_draw
+		worst = maxf(worst, (Time.get_ticks_usec() - t0) / 1000.0)
+	note("LOAD pipelines compiled under the loading screen %d, over the first %d heist frames %d (worst frame %.0f ms) t=%.1f"
+		% [under, LOAD_FRAMES, _pipelines_total() - pipes0 - under, worst, rt.heist_time_s])
 
 
 func _pipelines_now() -> PackedInt64Array:

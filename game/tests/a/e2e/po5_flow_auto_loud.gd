@@ -57,6 +57,9 @@ var p: Po5Pilot = null
 var rt: HeistRuntime = null
 ## --po5-doctor-bag: the pilot carries and uses a doctor bag (see _doctor_bag).
 var doctor_bag: bool = "--po5-doctor-bag" in OS.get_cmdline_user_args()
+## --po5-focus=<objective id> (LEAD OF-done: verify BondSafe): once that objective's marker is up, the pilot takes it
+## before anything else that is up (see _is_focus).
+var focus: StringName = _focus_arg()
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
 var _bot_note_t: float = -INF
@@ -213,7 +216,7 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 		# GN-8 (windowed seed 4242): the ride is on its way (escape_wait): wait and defend at the escape too; the
 		# pilot went for the optional basement lockers and was downed and cuffed in Stair SS as the van arrived.
 		if StringName(me["id"]) in [&"escape", &"escape_wait"] \
-				or (StringName(me["id"]) == &"secure" and _loose_bag() != null):
+				or (StringName(me["id"]) == &"secure" and _loose_bag() != null) or _is_focus(me):
 			return me  # probe 8: a dropped bag (put down to clear the way) is carried in before anything optional
 	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
 		if StringName(m0["id"]) in FIRST_OBJECTIVES and not _marker_blocked.has(_marker_key(m0)):
@@ -712,7 +715,9 @@ func _secure_bag() -> void:
 		if p.nearest_enemy(CLEAR_RANGE_M) != null:
 			await _clear_then_pick_up()
 			continue
+		p.quiet = true  # LEAD GPU-18: the 4 s carry legs read as "goto FAILED" lines while the bag moves on
 		await p.goto(stand, 3.0, CARRY_LEG_S)
+		p.quiet = false
 	if p.crew.is_carrying_bag() and p.crew.crew_state == Enums.CrewState.NORMAL:
 		await p.secure_carried_bag(zone)
 
@@ -779,6 +784,19 @@ func _note_bot_revives() -> void:
 			tgt.slot if tgt != null else -1, c.global_position.distance_to(p.crew.global_position),
 			"-" if comp == null else "%s %.1f/%.1f" % [comp.kind, float(sess["progress"]), float(sess["duration"])]])
 	f.note("bots while down: " + ", ".join(parts))
+
+
+## --po5-focus: `m` is the focused objective's marker, not stalled or blocked. A verification flag: the focus can go
+## before the escape (markers come in objective order; OF lists bond_safe above escape_wait / escape).
+func _is_focus(m: Dictionary) -> bool:
+	return focus != &"" and StringName(m["id"]) == focus and not _stalled(m) and not _is_marker_blocked(m)
+
+
+static func _focus_arg() -> StringName:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--po5-focus="):
+			return StringName(a.trim_prefix("--po5-focus="))
+	return &""
 
 
 ## --po5-doctor-bag (LEAD D-145, DB Tense: 3 downs in a long heist): like a PD2 player on a long loud job, the pilot carries
