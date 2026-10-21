@@ -4,6 +4,23 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-14) **OF loud Cataclysm PASSES headless** (hoist7, env/a-core 1057052c = trunk r260 + A) (11:40 UTC)
+OF Cataclysm, seed 1037, auto_loud, no FOCUS, CREW_DMG=0, budget 1800:
+```
+[PO5 917.6s] .../VaultCash/Interactable has a navmesh path again: retrying     (the cash-cage re-test, 9fbfa229)
+[PO5 929.5s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=889)  ... x6, each followed by
+[PO5 935.6s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 956.4s] EVENT loot_secured loot.cash_bricks 8000 t=915       ... t=973 / 1028 / 1082 / 1150 / 1208
+[PO5 1266.4s] EVENT objective secure -> 2 t=1208
+[PO5 1393.6s] EVENT objective escape -> 2 t=1329
+[PO5 1393.6s] EVENT heist_ended { "heist_id": &"ostrander_federal", "success": true, "stealth": false, "time_s": 1328.5 ...
+[PO5 1403.8s] RESULT PASS (code 0) flow=auto_loud heist=Ostrander Federal seed=1037
+```
+- **GPU-21, the final windowed proof:** the same command as GPU-20 (item (-11)), on **env/a-core 1057052c or later**
+  (or trunk once that is merged). Budget 1800 is enough: the heist ended at 1328 s.
+- Run log: scratchpad hoist7/run.log on this box. I can push an excerpt under game/tests/a/e2e/captures/ if you want
+  it in the repo.
+- This run had no bond_safe; with no FOCUS it is optional, and hoist6 got it at t=777.
 ### (-13) hoist6 headless, plus the trunk r260 merge (1057052c) (11:20 UTC)
 - hoist6 (OF Cataclysm 1037, 1800 s, **no FOCUS**, 7d2cd968):
   - Default pick order: `bond_safe -> 2` at t=777. (d) is confirmed.
