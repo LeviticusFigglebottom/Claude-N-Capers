@@ -2,7 +2,14 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 08:10 UTC)
+## To the LEAD: (updated 2026-10-21 08:50 UTC)
+- **GAME BUG FIXED (P's own, 0d0a1ab0): crew capsules were shared.** crew_member.tscn's CapsuleShape3D sub-resource was one shape for every
+  crew member. Whenever anyone crouched, all the others' capsules shrank to 1.2 m under their 0.9 m standing offset, and they sank 0.30 m into the
+  floor (until that crew member stood). Found with a watchdog in GH Tense 4502 (C showed the kerb itself is only 0.15 m and clean): at t=11.8,
+  17.0, 21.3 and 63.4, every grounded crew member dropped exactly 0.30 m in the same move_and_slide. Embedded, the 0.15 m kerb became a 0.45 m wall,
+  so the r255/r256 early STUCK-and-downed. It hits humans in co-op too. Fix: each crew member duplicates its shape in _ready. New
+  test_crouch_does_not_sink_other_crew fails before (shared shape, 1.20 m, y −0.299) and passes after; test_p1_01_ground 13/13. **Please put it in
+  the next round;** I'll re-run GH Tense ×3 on it.
 - **OF loud interact sweep DONE, no failures** (windowed, r255 e9c8744f + P, `--test=interact`, captures/of_interact_r255). **BondSafe: a player CAN
   use it.** The crosshair lands on it from the UsePoint at 1.43 m and the hold STARTED (lockpick; place_drill OK). GPU-15's 'aimed <none> at 2.22 m' means that
   pilot stood further back than the UsePoint gives, so it's the pilot's stand, not the safe. STARTED (6): PresidentSafe 0.92 m, BondSafe 1.43 m, Hoist
