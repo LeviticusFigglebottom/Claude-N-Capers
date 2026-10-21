@@ -11,7 +11,8 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   TimeLockConsole is disabled because the shortcut had already opened the vault door. The rest of pass 2 (the other hoist panel, the lid) is re-running: pass 2's walks
   use the rope ladder, and my stray-ladder watch kept climbing the pilot back down (harness, fixed in 470377f3).
 - **GH Tense on r255 looks harder**: 4501 WIN with 3 downs, 4502 custody after 3 downs (it won with 2 downs on r251/4a6780f4).
-  4503 was killed by my own process cleanup and is re-running. Possibly the Longshot cap / nav-cap change; more after 4503 and the OF Tense check.
+  4503 was killed by my own process cleanup and is re-running. Per the LEAD, the Longshot cap/timing is NOT in r255 (it lands in r256), so the
+  suspects are the nav-cap lift or the r255 CPU hitch regression (GPU-17, A bisecting). I'll re-run GH Tense ×3 on r256 once it's pushed.
 - **A's guard_vault loops** (a-core 46551745) are in a ready tree (r255 + A + P, imported). Ghost step 5+ runs right after the sweep.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
