@@ -291,7 +291,7 @@ func _convoy_arrives() -> void:
 	var layout: Node3D = ConvoyLayouts.find(_runtime.map, layout_id)
 	var legs: Array[Array] = []  # [mover, its stop marker]: counted before any drives (park() stops at once)
 	for v: ConvoyVehicle in movers:
-		var stop: Node3D = layout.get_node_or_null(NodePath(String(v.name) + STOP_SUFFIX)) as Node3D if layout else null
+		var stop: Node3D = _stop_marker(layout, String(v.name))
 		if stop != null:
 			legs.append([v, stop])
 	_movers_left = legs.size()
@@ -306,6 +306,17 @@ func _convoy_arrives() -> void:
 			v.drive(path, leg[1] as Node3D)
 		else:
 			v.park(leg[1] as Node3D)
+
+
+## `<Veh>Stop` in `layout`; on trucks_2 the rear car closes up behind T2 at `RearStop2` when the layout has one (C).
+func _stop_marker(layout: Node3D, veh: String) -> Node3D:
+	if layout == null:
+		return null
+	if veh == "Rear" and _slot_active(&"truck_count", &"trucks_2"):
+		var short: Node3D = layout.get_node_or_null(NodePath(veh + STOP_SUFFIX + "2")) as Node3D
+		if short != null:
+			return short
+	return layout.get_node_or_null(NodePath(veh + STOP_SUFFIX)) as Node3D
 
 
 func _mover_stopped() -> void:

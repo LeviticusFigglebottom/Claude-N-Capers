@@ -52,7 +52,8 @@ func test_seated_units_share_the_cap_and_dismount() -> void:
 	_rt.stealth.raise_alarm(&"test")
 	await wait_physics_frames(3)
 	var truck: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(0, 0, -12), func(n: Node) -> void:
-		(n as ConvoyVehicle).vehicle_kind = &"truck") as ConvoyVehicle
+		(n as ConvoyVehicle).vehicle_kind = &"truck"
+		(n as ConvoyVehicle).rotation = Vector3(deg_to_rad(8.0), 0.0, 0.0)) as ConvoyVehicle  # a stop on a ramp (RT east)
 	await wait_physics_frames(2)
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
 	var units: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.security_officer", 2, &"", true, truck)
@@ -72,6 +73,7 @@ func test_seated_units_share_the_cap_and_dismount() -> void:
 		assert_false(u.has_meta(HeistMission.META_SEATED_IN))
 		assert_true(u.visible and u.process_mode == Node.PROCESS_MODE_INHERIT, "out and running")
 		assert_eq(u.alert_state, Enums.AlertState.COMBAT, "awake: it is loud")
+		assert_true(u.global_basis.y.angle_to(Vector3.UP) < 0.01, "stands upright off a tilted seat")
 		var local: Vector3 = truck.to_local(u.global_position)
 		assert_true(absf(local.x) > 1.5, "beside the truck, not inside (x %.2f)" % local.x)
 		assert_true(bot._is_hostile(u), "a target once out")

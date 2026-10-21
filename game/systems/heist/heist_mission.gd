@@ -343,7 +343,9 @@ func dismount_units(units: Array, step_m: float = 1.6) -> int:
 			var local: Vector3 = vehicle.to_local(pos)
 			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if local.x >= 0.0 else -1.0)
 			pos = Vector3(pos.x, vehicle.global_position.y, pos.z) + side * (absf(local.x) + step_m)
-		npc.global_position = pos
+		var fwd: Vector3 = -npc.global_basis.z
+		var yaw: float = atan2(-fwd.x, -fwd.z) if Vector2(fwd.x, fwd.z).length() > 0.01 else 0.0
+		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # upright: a seat on a ramp (RT east) is tilted
 		npc.visible = true
 		npc.process_mode = Node.PROCESS_MODE_INHERIT
 		if _runtime.went_loud and npc.alive:
