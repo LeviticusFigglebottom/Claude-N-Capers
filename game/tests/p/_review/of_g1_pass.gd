@@ -2791,6 +2791,12 @@ func _test_ghost6() -> bool:
 	for d: Door in [_tagged(&"vault_gate") as Door, _x("vault_door") as Door]:
 		if d != null and not d.is_open:
 			d.set_open(true, true)
+	# The manager is tied in LK by step 3 in the real line (ghost6_c: walking his route he saw the bag trip in BB, t=529).
+	for n: Node in rt.npcs(&"civilian"):
+		if n is NpcBase and _has_tag(n as NpcBase, "keycard_carrier"):
+			n.get_parent().remove_child(n)
+			n.queue_free()
+			note("SHORTCUT ghost6: the manager despawned (tied in LK in the real line)")
 	var reg: CodeRegistry = CodeRegistry.of(pilot.crew)
 	if reg != null:
 		reg.reveal(&"vault", pilot.crew.slot)
