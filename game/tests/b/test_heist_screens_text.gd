@@ -18,10 +18,45 @@ const BANNED: Array[String] = ["[loud]", "[stealth]", "TODO", "TBD", "PLACEHOLDE
 const ARG_SAMPLES: Dictionary = {"count": 1, "total": 3, "found": 1, "opened": 1, "drives": 2, "drives_secured": 1,
 	"answered": 1, "seconds": 60.0, "shutters_in_s": 30.0}
 
+## LEAD r268: staged heists walked through a test-only fixture (never in data): { heist id: its WIP def path }. The
+## WIP def takes over the convention def path in the resource cache and the cached heist list un-hides it, so the
+## menus offer it for this file only; after_all puts both back.
+const STAGED_WIP: Dictionary = {&"rolling_thunder": "res://world/heists/rolling_thunder/rolling_thunder_wip_def.tres"}
+
 var _raw_key_rx: RegEx = RegEx.create_from_string(
 		"\\b(objective|ui|vo|voice|heist|item|loot|asset|music|achievement|contact|unlock|perk|mask)\\.[a-z_]")
 var _gate_rx: RegEx = RegEx.create_from_string("\\bG[0-9]\\b")
 var _arg_rx: RegEx = RegEx.create_from_string("\\{([a-z_]+)\\}")
+var _staged: Array[StringName] = []
+var _wip: Array[Resource] = []
+## Held so the cached heist list (with the un-hidden entry) is not freed and reloaded from disk mid-file.
+var _list: UiHeistList = null
+
+
+func before_all() -> void:
+	_list = HeistCatalog.heist_list()
+	var list: UiHeistList = _list
+	for h: StringName in STAGED_WIP:
+		if not list.is_hidden(h) or ResourceLoader.exists(HeistRegistry.def_path(h)):
+			continue  # offered for real, or its def has landed: the plain walk covers it
+		if not ResourceLoader.exists(String(STAGED_WIP[h])):
+			continue
+		var def: Resource = load(String(STAGED_WIP[h]))
+		def.take_over_path(HeistRegistry.def_path(h))
+		_wip.append(def)
+		(list.heists[h] as Dictionary)["hidden"] = false
+		_staged.append(h)
+
+
+func after_all() -> void:
+	var list: UiHeistList = HeistCatalog.heist_list()
+	for h: StringName in _staged:
+		(list.heists[h] as Dictionary)["hidden"] = true
+	for r: Resource in _wip:
+		r.resource_path = ""
+	_staged.clear()
+	_wip.clear()
+	_list = null
 
 
 func _heists() -> Array[StringName]:
@@ -38,6 +73,8 @@ func _name(h: StringName) -> String:
 func test_the_walk_covers_every_offered_heist() -> void:
 	assert_true(_heists().size() >= 6, "offered heists: %s" % [_heists()])
 	assert_has(_heists(), &"ostrander_federal")
+	for h: StringName in _staged:
+		assert_has(_heists(), h, "staged %s is walked through the test-only fixture" % h)
 
 
 func test_briefing_on_every_difficulty() -> void:

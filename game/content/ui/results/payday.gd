@@ -153,8 +153,7 @@ func build_ui() -> void:
 	backdrop.color = Color(UiAccent.app_bg(), 0.97)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
-	window_fill.append(backdrop)  # r266: the whole window on an ultrawide, not just the 16:9 column
-	fit_width()
+	fill_window(backdrop)  # r266: the whole window on an ultrawide, not just the 16:9 column
 	var root: VBoxContainer = UiBuild.vbox(16)
 	UiBuild.screen_margin(self, root)
 	title_label = UiBuild.label(&"ui.results.title", UiBuild.HEADER)

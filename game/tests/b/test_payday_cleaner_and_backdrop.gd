@@ -6,6 +6,7 @@
 extends TestCase
 
 const PAYDAY: PackedScene = preload("res://content/ui/results/payday.tscn")
+const OPTIONS: PackedScene = preload("res://content/ui/menus/options_screen.tscn")
 const HAZARDOUS: DifficultyDef = preload("res://content/data/difficulty/hazardous.tres")
 
 
@@ -73,3 +74,21 @@ func test_backdrop_covers_the_whole_ultrawide_window() -> void:
 	pd.queue_free()
 	get_window().size = saved
 	await wait_frames(1)
+
+
+## r268: the Options screen opens from the in-heist pause over the map; its background covers the 21:9 window too.
+func test_options_background_covers_the_whole_ultrawide_window() -> void:
+	var saved: Vector2i = get_window().size
+	get_window().size = Vector2i(3440, 1440)
+	var s: UiScreen = OPTIONS.instantiate() as UiScreen
+	add_child(s)
+	await wait_frames(3)
+	var view: Rect2 = get_viewport().get_visible_rect()
+	assert_true(s.size.x < view.size.x - 1.0, "the content column is narrower than the 21:9 canvas")
+	assert_eq(s.window_fill.size(), 1, "the background is registered")
+	var back: Rect2 = s.window_fill[0].get_global_rect()
+	assert_true(back.grow(1.0).encloses(view), "background %s covers the window %s" % [back, view])
+	s.queue_free()
+	get_window().size = saved
+	await wait_frames(1)
+
