@@ -2,7 +2,7 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 08:50 UTC)
+## To the LEAD: (updated 2026-10-21 09:20 UTC)
 - **GAME BUG FIXED (P's own, 0d0a1ab0): crew capsules were shared.** crew_member.tscn's CapsuleShape3D sub-resource was one shape for every
   crew member. Whenever anyone crouched, all the others' capsules shrank to 1.2 m under their 0.9 m standing offset, and they sank 0.30 m into the
   floor (until that crew member stood). Found with a watchdog in GH Tense 4502 (C showed the kerb itself is only 0.15 m and clean): at t=11.8,
@@ -16,6 +16,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   send_lift 0.74 m + LandingPanel1 call_lift 0.76 m, CashLift send_lift 1.09 m + LandingPanel1 1.01 m. Gated by design: LidDrill aims
   correctly at 1.51 m but is `ui.blocked.requires_item` (drill parts); the 40 Hall/Vault deposit boxes are saw-opened (take_loot is enabled after the
   cut); TimeLockConsole is disabled because the shortcut opened the vault door. The vault door itself was not swept (the shortcut opened it).
+- **GH Tense on r257 (70471c50, with the capsule fix): 2/3 WIN, downs 1/3/3, median 3**, still over the D-145 target (≤2). The sink is gone (the pilot never
+  goes below the road, y ≥ −0.1), and so are the t≈82 downs (first downs t=270/275/131). What remains is loud difficulty plus pilot snags in A's
+  auto_loud pilot (9-10 STUCK per run: the stairs at (9.9, 0, 5.0) toward a point 4.4 m up, Bulwark shields). The bots now move differently, so
+  each run's path differs from r256. Your call: is median 3 on Tense with this pilot acceptable, or a tuning ask for A? Table: tense_r257/.
 - **GH Tense on r256 (3312326b + P): 2/3 WIN, downs 2/3/3, median 3**, still over the D-145 target (≤2). The Longshot cap/timing didn't bring
   it back to r251's median 1. 4502's first down is still very early (t=82 vs ~245 on r251; on r255 t=79), so whatever moved it is in r255, not r256.
   4502 won with the pilot in custody. Suspects (LEAD): the nav-cap lift (cops path differently) or the GPU-17 hitch regression.
