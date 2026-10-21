@@ -78,3 +78,14 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
   - `ostrander_federal_voxelgi_ground.res`: 3,895,552 octree bytes, err 0
   - `ostrander_federal_voxelgi_executive.res`: 1,255,712 octree bytes, err 0
 - No other files in the tree changed (no .import churn).
+## GPU-6: C Job B, OF final shots (tree: env/c-worlds 3c9b2fdf + GPU-5 .res)
+1. `review_shots.tscn -- --heist=ostrander_federal --stage=g2 --warmup=60 --out=<repo>\docs\levels\ostrander_federal\g2\final`:
+   exit 0, 25 s, 34 shots (TopDownPlan + 33 rc_*) + contact_sheet + shots.md. **No ERRORs or WARNINGs at all**
+   (the PresidentSafe stow warnings seen on trunk in GPU-1/GPU-4 are gone on env/c-worlds).
+2. `--headless --script res://world/tools/capture/of_burn_variant.gd -- --out=user://of_burn_test.tscn --drops`: exit 0, 6 s,
+   `of_burn_variant: wrote user://of_burn_test.tscn (0)`.
+3. `review_shots.tscn -- --scene=user://of_burn_test.tscn --warmup=60 --out=<repo>\docs\levels\ostrander_federal\g2\final\burnt --cameras=rc_vault_hole,rc_teller_workroom,rc_terrace,rc_ext_lane`:
+   exit 0, 13 s, 4 shots + contact_sheet + shots.md.
+- Burnt vs final: all 4 JPEGs differ, but only slightly (rc_vault_hole +7 KB, rc_terrace +2 KB, the other two within 0.1 KB). In the
+  contact sheet the changes are subtle (drops/debris at the vault hole and on the terrace), with no obvious scorch/fire look. ENV C should confirm this is the intended look.
+- Note: burnt/shots.md says "(g1)" in its title, a cosmetic tool label from the `--scene` path.
