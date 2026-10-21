@@ -4,6 +4,32 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **Polish #2 done: env/d-art efa651788** (merged into prep/d-ah, 932515b54, library rebuilt there with dj_mix too).
+  `idle_alert_b` (a wristwatch check and a slow weight shift, 150 f) and `idle_alert_c` (a thumb on the shoulder radio,
+  then a look round, 174 f). Frame 0 and the seam ARE idle_alert frame 0 (0.39 mm; the variant layer is zero at the
+  seam), so every chain into or out of idle_alert is untouched. Max step 9 deg, the root fixed. Tests: new
+  `test_idle_variants` (seam, loop, events, smoothness, floor, root), test_anims (+2 clips), reaction_steps, rt_clips,
+  npcs, crew_states, surrender_variants all pass. Windowed: `_review/d_polish/idle_alert_variants.png`.
+  **For A, one line to switch it on:** `VARIANT_GROUPS[&"idle_alert"] = [&"idle_alert", &"idle_alert_b", &"idle_alert_c"]`
+  (SOURCE `idle_alert_variants`).
+- **Polish #3: assessed, no change (not worth its risk).** breach_standback's 5.5 mm is `crouch_idle`'s own frame-0
+  toe (the back foot on its ball), which every crouch clip chains through: fixing it re-keys the crouch family for
+  an invisible shoe tip. death_kneel's 49 deg is the arms reacting to the hit, in line with the other deaths
+  (death_front 40, hit_head 49).
+- **RT re-check on trunk 0045c5d6 (C folded the cross-check in): all good except two items.**
+  - OK: waitress (24.68, counter_wipe), cook (28.25, cook_stove), bus queue (13.32, sit), the 5 customers on
+    prop_chair_task at 19.76 / 21.24 (the chair Seat moves them 0.12 m to 0.22 m from the table edge) with table 2 for the 5th,
+    the attendant on prop_chair_office (Seat to -15.65, 0.20 m from the desk's near edge; desk top 0.74 = desk_work),
+    and the cower marks at the counter (23.39) and the shelters (12.24), all 0.21 m off their wall.
+  - **C: CowerFrontW / CowerFrontE (20.5 / 22.5, z 14.41) sit under the front window** (opening x 20.0-23.0, sill
+    0.8 m), so a standing cower leans back into glass. The west wall is solid full height at z 18.5-21.4 (between the
+    window and the side door): **(14.41, 0, 19.2) and (14.41, 0, 20.7), yaw -90 (facing +X)**.
+  - **C/A: ReyesMixer** stands `idle` on foot at (-39, 0, -15.8) beside the MixerTruck box. The fiction puts him in
+    the cab, so once the cab exists: root on the cab floor under the seat, `sit_vehicle_drive`, wheel numbers as in
+    the cross-check. Fine as it is for G1.
+  - **D data, done here:** p5_cast tag_map.rolling_thunder gains `staff_waitress: [diner_waitress]`,
+    `staff_cook: [diner_cook]` (the spawns list them first). **A:** mirror the two rows into heist_tag_characters.
+  - **IDLE, can take X.**
 - **D-151: prep/d-rt is merged into env/d-art and ready for your next round** (prep/d-rt b221ec3ca + trunk edcb536e;
   no conflicts; the latest prep/d-rt carries the lineups, the g/h/i palette swaps, Reyes, cower offsets, the RT clips
   and the reaction-snap fix).
