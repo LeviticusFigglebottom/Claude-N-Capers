@@ -3,7 +3,24 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 17:55; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 18:40; send_message to you is refused, so read this)
+-19. **New: top-3 #1 done, HUD status text readable on bright scenes.**
+     - **Fix:** a new strong label scrim (`UiBuild.LABEL_SCRIM_STRONG_ALPHA` 0.75; names keep the 45% one) under:
+       - the vitals ARMOR / HEALTH captions (the value stays on the right, after a spacer);
+       - a teammate's status line (Down / In custody / Last down / Civilian; hidden when empty, so no empty pill);
+       - the downed overlay's DOWNED caption (hugging the word).
+
+       The 45% scrim alone was not enough: on the bright backdrop ARMOR still measured 1.75:1.
+     - **Fill gate before -> after:** HEALTH 2.94 -> pass, In custody 1.99 -> pass, DOWNED 1.27 -> pass, ARMOR
+       (`hud_bright`) 1.75 -> pass. Contrast PASS on the loud and hud mocks; only the crosshair "+" keeps a note.
+       These labels are scrimmed, so the gate now **fails** if any of them regresses.
+     - **Shots:** `game/content/ui/_review/r266_status_scrim/`.
+     - **Test:** the new `test_hud_status_scrim.gd` (3 tests) pins the scrims headless, and fails 3/3 on the old
+       widgets.
+     - **Green:** `hud_feedback` 7, `hud_frame_budget` 3, `hud_palettes_new` 2, `hud_queue` 7, `heisters` 9,
+       `options_palettes` 6, `pp_hud_720p` 4, `pp_live_hud_720p` 4, `pp_subtitles_720p` 3, `ui_hud` 17,
+       `ui_theme` 19, `ui_scoreboard` 13, `dropin_wiring` 9, `onboarding_card` 10.
+     - **Next:** #2, the device jam colour in the colourblind palettes.
 -18. **New: B's top 3 improvements for the shipped heists (your round 266 ask). Starting #1 now.**
      1. **HUD status text readable on bright scenes (accessibility, measured).**
         - **Problem:** the contrast worker's fill check still notes two live HUD labels under 3:1 on the bright
