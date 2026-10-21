@@ -3,7 +3,40 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21 05:40 UTC update; newest at top)
+## To the LEAD: (2026-10-21 update; newest at top)
+### (0) OF-done blocker "bond_safe / deposit_boxes not reachable" (Cataclysm loud): fixed in the mission, 6fcbb559
+- Cause: both side objectives were ACTIVE from the start, with markers inside the sealed vault.
+  - BondSafe (14.7, -4, 20.5) and the vault-wall boxes (VaultBoxN01 = (15.0, -3.0, 13.3)) sit behind the vault's west
+    and north walls.
+  - The pilot walked to them before the burn-through: the nav path ends 2.5 m short, and its LOS ray hit wall BZ0140.
+- Same run, after the burn: the [vault_loot] marker was the cash itself, inside the locked cash cage
+  (CashCageGate BARRED; ways in: keypad with the vault code, or C's padlock).
+  - The pilot pushed into the cage mesh for 24 s, then skipped the cash for the rest of the run: no bags, budget FAIL.
+- Fix (gameplay, PD2-style waypoints):
+  - [bond_safe] starts HIDDEN and appears with the vault (open_vault or burn_through).
+  - [deposit_boxes] marks only the SD hall's boxes until then (new objective data `marker_skip_prefixes`, honoured by
+    LocalHudModel).
+  - [vault_loot] marks the cage padlock and keypad until CashCageGate opens, then the cash.
+- Also fixed: [vault_gate] no longer completes when a guard walks through the locked gate.
+  - Door.npc_open opens it while it stays locked; the new guard_vault loops do this. Before the fix that completed the
+    objective and broke test_x4_of_stealth.
+- Pilot (harness only): it no longer calls the vault hoist at a box wall. It did that for 450 s in the same run.
+- Tests: test_of_mission_flow 9/9 (+2 new: vault side loot markers and the cage handoff; a guard passing the gate);
+  test_of_mission 19/19, test_hud_marker_lookups, test_x4_of_stealth 5/5, test_of_a6_hub_loops 3/3,
+  test_of_mission_loud 6/6, test_x4_nd_stealth.
+  - Still running at push time: test_x4_of_loud, test_x4_of_hard, test_of_coop_loopback, then a headless OF Cataclysm 1037 auto_loud run. Results go in the next status update.
+### (1) HITCH lines (your GPU-13 ask), b922571a
+- Each HITCH line now carries `shot=1` on screenshot frames, plus `pipelines=[mesh,surface,draw,spec,canvas]` (pipeline
+  compilations that frame, from RenderingServer) and `vram=..MB`.
+- `HITCHES n of m heist frames over N ms (k of them screenshot frames), worst x ms, without a shot y ms` prints at heist
+  end and on budget exit.
+- Headless OF Cataclysm 1037: t≈127-131 shows 80-97 ms frames, with police_brain at 29 ms over 65 calls.
+  - police_brain now has sub-keys (pick_target / choose_position / move).
+  - The GPU t≈129.6 / 176 frames need your next GPU run with these lines: a non-zero `pipelines` count there means a
+    shader compile, which is D's prewarm.
+### (2) P's ghost line: guard_vault and guard_lobby hub_loops pushed (6fd7e59a).
+
+### (earlier, 05:40 UTC)
 ### (1) Navmesh polygon cap: done, ffc264d4
 - New NavPath.query: NavigationPathQueryParameters3D with path_search_max_polygons = 0 (no cap). Used by the assault
   director, civilian_brain, civilian_targets, crew_ai_brain and the PO-5 pilot. NpcMotor's NavigationAgent3Ds get the
