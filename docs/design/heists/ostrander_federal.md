@@ -851,14 +851,26 @@ lasers (S9.10).
 Hazardous up, at least one guard must be avoided. The operator is the most valuable pager (all
 cameras off) and sits off BC, a corridor every route crosses.
 
-**The hardest roll and its ghost line** (the level_standards §4 MUST: no kills). The roll:
+**The hardest roll and its ghost line** (the level_standards §4 MUST: no kills). **D-150 (2026-10-21):** this line was
+written for 6 guards, before D-140's `guard_extra` put 8 on Cataclysm (the two extras walk BB east). There, BB has no
+window with both `rover_basement` and the vault guard away (P r257d). So the no-kill ghost acceptance runs on
+**Hazardous** (6 guards), and Cataclysm's stealth acceptance is a stealth win with pager kills (D-140); patrols are not
+lengthened for a Cataclysm ghost. If Hazardous also lacks the BB window, `rover_basement`'s away leg is lengthened at
+Hazardous only (D-150.3). The roll as first written:
 Cataclysm, `cam_a` (Titan), operator in, 6 guards (lobby, vault, rovers hall, gallery, basement,
 dock), `kc_on_manager` + `mgr_vault`, `code_pc = pc_exec`, `srv_gallery`, `lz_sweep`, `door_none`,
 `fe_up`, `customers` 8, `officers` 3, `time_lock_s` 270, `esc_van_dock`, rare `vip_client`. Solo,
 one ECM (2 charges), 2 cable ties, **no kills, no pagers**:
 1. Plaza spawn. Walk unmasked down Tannery Street into Ledger Lane (PUBLIC). Read `rover_dock`.
 2. When he starts his `smoke` pause at the Tannery corner (facing E, 22 m away), mask behind the
-   dumpsters (behind C6). **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
+   dumpsters (behind C6). **Second cue (D-150 Hazardous ghost, P's ghost_haz data):** `rover_hall` walks his three
+   loops in turn from BCMid (guard_tweak `hub_loops`: (a) TW/hall, (b) LD dock check → MO, (c) stair B → fire exit),
+   so his (b) dock check lands in most smoke windows. Go only once he has **left LD for MO** on (b): his MO leg and the
+   whole of (c) keep him at BC's east end, away from the LD → BC west → SA route. Read the phase by **where he is**
+   (east of x 38 on the BC line), not by the time since his last LD visit: he spawns into (b) (LD at t≈11) and passes
+   within 8 m of DockCorridorDoor at the hub between loops, so wait outside beside the dock door until he is east. If
+   he is heading for LD, or in it, let that window go. (P haz_n, seed 1002: the t=162 window, step 2 done at t=208; no
+   patrol change needed.) **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
    → BC west end (C4 is off in `cam_a`) → SA down. About 16 s.
 3. Basement, BB west (C13 at the east end does not reach x < 28). Wait in LK. When the manager
    (alone on SB, D-136 §3b.5) takes his WC break, shout him down and **tie him** (tie 1), take the keycard (1 s)

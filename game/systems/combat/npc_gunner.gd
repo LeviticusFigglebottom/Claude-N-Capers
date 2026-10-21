@@ -253,8 +253,37 @@ func _can_engage(c: CrewController) -> bool:
 		return false
 	var fp: int = FrameProf.begin()
 	var los: bool = CombatSystem.has_npc_los(_npc, _npc.eye_position(), aim, [_npc, c])  # A3-06: shields
+	if not los:
+		los = _pane_between(_npc.eye_position(), aim, [_npc, c]) != null  # PD2: a glass pane is shot out
 	FrameProf.end(&"npc_gunner.los", fp)
 	return los
+
+
+## PD2 (D's GH Tense anim coverage: 2 guards aimed through the glazing for 455 s and never fired; guards see through
+## clear glass, D-142, but the shot ray stopped at it): the breakable see-through pane (a Window / DisplayCase glass
+## body, StealthDirector.GROUP_SEE_THROUGH, its prefab has take_hit) that alone blocks `from` -> `to`, else null.
+## The next round goes into it (_fire), breaking it like a crew bullet does.
+func _pane_between(from: Vector3, to: Vector3, exclude_nodes: Array) -> Node:
+	var space: PhysicsDirectSpaceState3D = _npc.get_world_3d().direct_space_state
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, to, CombatTweak.data().los_mask)
+	var ex: Array[RID] = []
+	for n: Variant in exclude_nodes + _npc.get_tree().get_nodes_in_group(BulwarkShield.GROUP):
+		var co: CollisionObject3D = n as CollisionObject3D
+		if co != null and is_instance_valid(co):
+			ex.append(co.get_rid())
+	q.exclude = ex
+	var hit: Dictionary = space.intersect_ray(q)
+	var body: Node = hit.get("collider") as Node
+	if body == null or not body.is_in_group(StealthDirector.GROUP_SEE_THROUGH):
+		return null
+	var pane: Node = body.get_parent()
+	while pane != null and not pane.has_method(&"break_glass"):
+		pane = pane.get_parent()
+	if pane == null or not pane.has_method(&"take_hit") or pane.get(&"breakable") == false:
+		return null  # see-through but unbreakable (a glazed door leaf, armoured glazing): it stops bullets
+	ex.append(hit["rid"])
+	q.exclude = ex
+	return pane if space.intersect_ray(q).is_empty() else null
 
 
 ## S2.7: loud targeting range from the target's detection risk, lerp(min, max, (DR - 3) / 72) (80 m at DR 3,
@@ -287,6 +316,11 @@ func _fire(c: CrewController) -> void:
 		rt.make_noise(from, Tweak.stealth().gunshot_npc_radius_m, &"gunshot", _npc.net_id)
 	var chance: float = tw.npc_hit_chance(dist, _npc.difficulty) * NpcSuppression.hit_chance_mult(_npc)  # A3-06 (L3.5)
 	var hit: bool = GameRng.stream(&"npc_fire").randf() < chance
+	var pane: Node = _pane_between(from, aim, [_npc, c])
+	if pane != null:  # this round goes into the glass (breaks it); the crew is not hit through an intact pane
+		hit = false
+		pane.call(&"take_hit", Damage.info(shot_damage(), Enums.DamageType.BULLET, Enums.HitZone.BODY, weapon_id, aim,
+			(aim - from).normalized(), _npc.net_id), _npc.net_id)
 	fp = FrameProf.begin()
 	ShotFx.npc_shot(_npc, from, aim, hit, c)  # PO-8: shot_fx here + relayed (impact_fx.md)
 	FrameProf.end(&"npc_gunner.fx", fp)  # VfxDirector (muzzle, tracer, shells, impacts, decals)

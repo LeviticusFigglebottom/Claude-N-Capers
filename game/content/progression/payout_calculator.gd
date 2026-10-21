@@ -48,7 +48,7 @@
 ## so stash + spending == total always.
 ## Failed heist: no contract/loot/small-loot cash, crew-alive bonus off; civilian penalty per
 ## tweak.civilian_penalty_on_failure (off since the D-120 addendum: a failure pays and costs nothing).
-## XP base = base_xp_success x base_xp_failure_fraction (no loot XP); pro, difficulty and custody still apply;
+## XP base = PayoutTweak.base_xp_for(heist) x base_xp_failure_fraction (no loot XP); pro, difficulty and custody still apply;
 ## no crew-alive or stealth bonus, the bank is NOT consumed and nothing new is banked.
 ## Stealth bonus (S11.1, D-022 QB-13): the "stealth" XP line = running total x (banked_stealth_mult
 ## - 1), i.e. the bonus earned by the previous stealth heist. This heist's own stealth success only
@@ -153,15 +153,16 @@ static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef
 		bonuses: Dictionary) -> void:
 	var xp_mult: float = float(bonuses.get("xp_mult", 1.0))
 	var base: int = 0
+	var heist_base: int = tw.base_xp_for(StringName(result.get("heist_id", &"")))  # D-148 heist-size base
 	if success:
 		var bags: int = 0
 		for entry: Dictionary in result.get("loot", []) as Array:
 			var lid: StringName = StringName(entry.get("loot_id", &""))
 			if not tw.xp_loot_excluded_ids.has(lid) and not _is_tool(lid):
 				bags += 1
-		base = tw.base_xp_success + bags * tw.xp_per_loot_bag
+		base = heist_base + bags * tw.xp_per_loot_bag
 	else:
-		base = roundi(float(tw.base_xp_success) * tw.base_xp_failure_fraction)
+		base = roundi(float(heist_base) * tw.base_xp_failure_fraction)
 	var running: int = base
 	var pro: int = roundi(float(running) * (tw.pro_job_xp_mult - 1.0)) if is_pro else 0
 	running += pro

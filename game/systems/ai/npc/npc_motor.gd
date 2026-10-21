@@ -135,6 +135,7 @@ func _ready() -> void:
 		_agent.target_desired_distance = arrive_distance
 		_body.add_child.call_deferred(_agent)
 	if _agent != null:
+		NavPath.configure_agent(_agent)  # LEAD / C: OF's navmesh is over the 4096-polygon search default
 		_agent.link_reached.connect(_on_link_reached)
 		_agent.path_changed.connect(func() -> void: _corner = 1)
 	var npc: NpcBase = _body as NpcBase

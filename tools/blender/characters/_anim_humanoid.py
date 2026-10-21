@@ -1051,7 +1051,7 @@ def _surrender(sk: Skeleton, solver: Solver, N: int) -> Keys:
     mid.hands = dict(kneel_hands.hands)
     end = kneel_cuffed(sk, 0, 60)
     del end
-    return Keys(solver, [(0, _stand_key(sk), "inout"), (12, up, "out"), (22, up.copy(), "inout"), (36, mid, "inout"),
+    return Keys(solver, [(0, _stand_key(sk), "inout"), (12, up, "inout"), (22, up.copy(), "inout"), (36, mid, "inout"),
                          (N, kneel_hands, "settle")])
 
 

@@ -439,7 +439,10 @@ ALWAYS: Dict[str, List[list]] = {
         P("keypad", "CashCageKeypad", "B", [25.25, 1.2, 17.45], 0.0, {"code_group": "vault", "objective_tag": "cash_cage",
                                                                      "@targets": ["CashCageGate"]},
           [25.25, 0.0, 16.6], {"mount": "wall"}, "prop_keypad"),
-        P("drill_point", "LidDrill", "G", [24.0, 1.0, 14.6], 180.0, {"device": "enum:THERMAL", "duration_s": 360.0,
+        # OF-C2 (GPU-16, LEAD r256): the head over the lid 0.35 m inside its west edge, the tripod pointing west, so all
+        # three feet (local (+-0.43, 0.6), (0, 1.38)) stand on the TW carpet 0.25 m+ clear of the burn-through cut once
+        # the lid is gone (at the hole centre two feet came down inside it); UsePoint unchanged (eye 1.95 m < reach)
+        P("drill_point", "LidDrill", "G", [23.75, 1.0, 14.6], -90.0, {"device": "enum:THERMAL", "duration_s": 360.0,
                                                                   "loud_only": True, "objective_tag": "vault_drill",
                                                                   "requires_loot": "loot.thermal_drill_part",
                                                                   "requires_count": 2},

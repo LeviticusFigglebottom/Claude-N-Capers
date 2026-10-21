@@ -107,7 +107,9 @@ func _nd_gate() -> bool:
 	if not await f.use(gate, _done(&"vault_gate"), _tw().keycard_s + X4StealthFlow.MARGIN_S, "swipe the vault gate"):
 		return false
 	f.guard_lasers(&"antechamber_lasers", panel.global_position)
-	return f.check(gate.is_open, "the vault gate is open")
+	# P's ghost-line loops: the vault guard's (b) / (c) loops walk out through this gate (he may open or shut it), so the
+	# swipe's job is the unlock; the next leg passes the gate either way.
+	return f.check(gate.is_open or not gate.locked, "the vault gate is unlocked (open %s)" % gate.is_open)
 
 
 func _nd_time_lock() -> bool:
@@ -467,7 +469,9 @@ func _of_gate() -> bool:
 		return false
 	var console: Node3D = f.tagged(&"time_lock")
 	f.guard_lasers(&"laser_grid", console.global_position, _of_behind_grid)
-	return f.check(gate.is_open, "the vault gate is open")
+	# P's ghost-line loops: the vault guard's (b) / (c) loops walk out through this gate (he may open or shut it), so the
+	# swipe's job is the unlock; the next leg passes the gate either way.
+	return f.check(gate.is_open or not gate.locked, "the vault gate is unlocked (open %s)" % gate.is_open)
 
 
 ## The rack line: the laser controller (20 s, grid off, [lasers]) and the vault-control rack (90 s, 2 interruptions:

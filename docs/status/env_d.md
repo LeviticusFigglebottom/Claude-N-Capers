@@ -4,6 +4,250 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **D backlog, top 3 for the 6 shipped heists (your 17:35 ask). Scan of all 245 library clips: no reach error
+  over 1 cm and no foot / contact slide, so the value is in the snaps:**
+  1. **WORKING: reaction-clip snaps.** surrender / surrender_b / panic_start snap both forearms 51-55 deg in ONE frame at
+     frame 1 (the hands leave idle at full speed: the ease into the hands-up key is `out`, so the wrist jumps 11 cm in
+     the first frame from rest). surrender_c snaps 52 deg at f6, mask_on 50-52 deg at f25-28 (the arms drop from the strap
+     in 4 frames), downed_arrested 52 deg at f24. **Value:** these are the most-watched reactions in every heist
+     (civilians at the alarm, every guard / cop who gives up, the 3 crew masking up at each heist start), and a one-frame
+     pop reads as a glitch. Merge-safe: names, lengths, events and the exact chained start / end poses stay; target
+     <= 30 deg per frame; tested by test_anims / test_civ_panic / test_surrender_variants / test_crew_states.
+  2. **Guard idle variety:** in the stealth coverage, guards spend about 60-70 % of their time in `idle_alert` / `idle` at
+     posts and patrol stops (OF Haz 1,079 s of 1,700 s). Three variants (weight shift + watch check, stretch + look
+     round, radio thumb), D builds them; A adds one `VARIANT_GROUPS` row (as for cower / queue). **Value:** the
+     most-seen NPC pose in every stealth run stops reading as a synchronised troupe.
+  3. **Small polish:** breach_standback puts skin 5.5 mm under the floor (the only clip over 5 mm), and death_kneel whips
+     the arms 44-49 deg at f6-11. **Value:** visible at the police breach and at every kneeling death; cheap.
+- **Older-heist regression after today's AI changes (anim coverage, trunk b0bd47a0): 0 flags in all 5 runs** (no
+  FROZEN, MISMATCH, NO_CLIP, SLIDE or STATIC; 0 script errors).
+  | Run | Bodies | Flags |
+  |---|---|---|
+  | ND loud Routine (240 s, 3 crew AI) | 47 (25 patrol, 8 TAC Light, 6 Bulwark, 4 guards, 1 civilian, 3 crew) | 0 |
+  | GN loud Routine | 34 (17 civilians, 4 guards, 10 patrol, 3 crew) | 0 |
+  | DB loud Routine | 45 (22 patrol, 8 TAC Light, 5 Bulwark, 6 cartel, 1 civilian, 3 crew) | 0 |
+  | SL stealth Hazardous (300 s, alarm at 200 s) | 6 (4 guards, 2 civilians) | 0 |
+  | GN stealth Hazardous (300 s, alarm at 200 s) | 27 (18 civilians, 5 guards, 4 patrol) | 0 |
+  - In stealth, the guards patrol (walk, investigate_look, smoke) and civilians run their ambients (mop, phone_call,
+    browse, curator_inspect, desk_work); after the alarm, cower / cower_b / cower_c / cower_stand and flee. Neither SL
+    nor GN has a `civ_manager*` spawn, so the harness tie was skipped there (it was covered on OF).
+  - **Question for C/A:** an SL **guard** plays `teller_count` (cash counting), probably the reception post, and a GN
+    civilian does too. If the reception guard should look busy at the desk, `desk_work` or `check_desk_write` read better
+    than counting banknotes.
+  - SL Hazardous fielded only 2 civilians on this seed. Not anim; mentioned in case it is unexpected.
+  - **IDLE, can take X.**
+- **OF done check, anim coverage on trunk b0bd47a0: 0 flags in both runs** (no FROZEN, MISMATCH, NO_CLIP, SLIDE or STATIC).
+  - **Stealth at Hazardous** (300 s, seed 1002, no bots; harness ties the manager at 60 s, alarm at 200 s): 29 bodies (19
+    civilians, 6 Halden guards, 4 police). Clips seen: guard patrol walk / run / investigate_look / smoke; teller_count,
+    queue_idle, phone_call, sit_chair, desk_work; the manager `tied` (shouted and tied as a player would); after the
+    alarm cower / cower_b / cower_c, cower_stand, cower_seated and flee_b.
+  - **Loud at Routine** (240 s, 3 crew AI): 31 bodies (14 civilians, 4 guards, 10 patrol officers, 3 crew). Clips seen:
+    cower variants and flee / panic_start for the civilians, deaths and alert pistol for the guards, and for the police
+    alert pistol, strafes and the 8-way run / walk. Routine fields only patrol_officer, which resolves to its D-145.3
+    duty look; the coverage tool does not log looks (the GH wave review proved the resolver, 4/4).
+  - Tool: `loud_anim_coverage.gd` gained `--stealth`, `--tie-manager-at` and `--alarm-at` (env/d-art 9a72fb855).
+    Logs and JSON are local to the run; the numbers above are from them.
+  - **IDLE, can take X.**
+- **AH lineups for the PO: prep/d-ah dec6cb22e, `game/assets/characters/_review/ah_lineup/`.** Six lit 1920x1080
+  sheets, front and 3/4, captioned, the same as RT's: door (7 bouncers and the off-duty cop), bar (6 staff and the DJ),
+  patrons_club (a-j, the dancer looks), patrons_gala (the 10 reused gala looks for the VIP and balcony), couriers (12
+  cartel), specials (Phantom, Stinger, Bulwark, Wrecker, Corpsman, Longshot, Brandt, Aegis). Tool: `render_rt_lineup.gd
+  --heist=afterhours`.
+  - Your r262 note: the 16 swaps and their per-look tests were already done (prep/d-ah 8238fdaa3, entry below).
+  - Same caveat as RT: rendered with the Compatibility renderer on llvmpipe. Re-run on the GPU box before the PO judges
+    skin and satin.
+  - **IDLE, can take X.**
+- **RT greybox vs D's clips and cast (for C; read-only, origin/env/c-worlds 529d9450, `rolling_thunder_layout_content.gd`).**
+  Coordinates are world x, y, z (m); spawn yaw 90 faces -X and 180 faces +Z, as C's spawns use it. Heights match:
+  counter 0.90, cookline 0.90, diner tables 0.74, booth desk 0.75 (desk_work 0.74), shelter benches 0.45 (sit 0.47; 2 cm
+  is fine). **The positions and activities don't match:**
+  1. **Waitress** (25.5, 0, 20.5), activity `idle`. counter_wipe wants the root 0.28 m behind the counter's staff-side
+     edge (x 24.40), facing it: **(24.68, 0, 20.5), yaw 90, activity `counter_wipe`** (A: map the hint). The aisle behind,
+     2.75 m to the cookline, is fine.
+  2. **Cook** (28.55, 0, 17.0) is 0.60 m from the cookline edge (x 27.95). cook_stove wants 0.30 m:
+     **(28.25, 0, 17.0)**, yaw 90; the activity `cook_stove` is already right.
+  3. **Diner customers** (`civ_diner` x 5): none sits; all are `idle`. Customers 0 and 1 stand at x 18.0 facing the
+     booth boxes, 2 and 3 at x 21.6, 0.70 m off the table edge, and 4 at (19.5, 20) at no table. The booth boxes (1.5 x 1.2 x
+     1.4 solid, x 15.5-17.0) are 3.1 m from the tables, so no booth is next to a table. sit_eat wants a seat top
+     0.47 m (chair or booth bench, Seat at the root, 0.12 m forward of the cushion centre), the table top 0.74, its near
+     edge **0.22 m ahead of the root**. For the current tables (0.8 x 0.8 at x 20.5, z 18 / 22): **west seat roots
+     (19.88, 0, 18 | 22) facing +X (yaw -90); east (21.12, 0, 18 | 22) facing -X (yaw 90)**; activity `sit_eat`. A 5th
+     customer needs a 3rd table or a real booth: two benches facing across a 0.7 m table, each root 0.22 m from the edge.
+  4. **Bus queue** (`civ_bus` x 4) stands at z 14.0, 0.55 m in front of the benches (z 12.95-13.45), activity `idle`. The
+     roster says sit: **roots at z 13.32** (bench centre + 0.12), x unchanged (1.0 m apart is fine), yaw 180, activity `sit`.
+  5. **Car-park attendant** (18.5, 0, -16.2) faces the booth desk (near edge z -15.45) from 0.75 m away, standing `idle`;
+     the roster says sit at the desk. desk_work wants an npc chair with its Seat at the root and the desk near edge
+     about 0.20 m ahead (keyboard 0.36 m): **(18.5, 0, -15.65)**, yaw 180, prop_chair_office there, activity `desk_work`.
+     The real desk must be open below for the knees; the greybox box is solid.
+  6. **No cower marks in RT at all.** OF has `cower_stand` points tagged `cower`; RT's patrol data has none (doc §4: the
+     street flees, everyone else cowers). cower_stand wants a wall **0.21 m behind the root** (back-bag looks step out
+     0.12-0.25 m by cower_offsets), with about 0.7 m clear in front. Candidates: inside the diner front wall (z 14) facing
+     +Z; the customer side of the counter, **x 23.39 facing -X** (like OF's CowerCounter); behind the shelters on their
+     north face, **z 12.24 facing -Z** (yaw 0; the front holds the bench); in booth AB the attendant uses `cower_seated` on
+     the chair from item 5. Diner customers on chairs cower seated too.
+  7. **Convoy:** the ConvoyLayout placeholders are only vehicle boxes, with no seats, wheels or `convoy_*` spawns yet. When
+     they come (rt_vehicle_placement / test_rt_clips): the driver root goes on the footwell floor under the seat centre,
+     cushion 0.36 m above it, **wheel centre 0.40 m ahead and 0.76 m up, rim radius 0.18, face tilted 30 deg**, head
+     about 1.0-1.05 m up, roof liner at least 1.15 m. The cars are 1.5 m tall: fine if their floor is at most 0.35 m. Door
+     opening 0.30 m behind to 0.65 m ahead of the seat centre, sill at most 0.22 m up, 0.42 m beside the seat centre; keep
+     1.10 m beside the seat clear. vehicle_exit assumes the footwell is level with the road, so the 3.2-3.6 m armoured
+     cabs need van_exit or a root drop (A).
+  8. **Tags (D + C):** `staff_diner` deals [diner_waitress, diner_cook] round-robin, so the cook spawn can get the
+     waitress look and vice versa. Proposal: C puts `staff_waitress` / `staff_cook` first in those two spawns' tags; D
+     maps them in p5_cast (data only, on prep/d-rt when you say so).
+- **Loud screenshot review (NPC anim and clipping):** there are no GH loud captures on any branch (P's GH captures are
+  stealth, po6_gh). I reviewed the newest OF loud frames on gpu/renders: `a/of_a6_b1800_partial` (GPU-20),
+  `a/of_a5_b1500` and `a/of_r256_b480`, about 35 frames at full resolution where it mattered.
+  - **No NPC animation or mesh-clipping defects found.** Firing and aim poses (TAC Light / Heavy, the Zero reskins, the
+    crew), the deaths and the lying bodies, civilians cowering and with hands up, and the Commander Brandt wave all
+    read correctly. Weapons sit in the hands, and nothing sinks into the floor or walls.
+  - **One recurring issue, not an animation bug:** in every `stuck_*` frame the bot pilot is pressed against a TAC unit
+    and the camera ends up inside it (a6 `13_stuck_3`: the inside of a Zero TAC Light's plate and arm fills the view;
+    a5 `12_stuck_1` is the same). The aim pose's arms and rifle reach about 0.6 m in front of the NPC, more than the
+    player-to-NPC capsule gap. **For A/P, low priority:** keep NPCs about 0.8 m from a player root (motor separation),
+    or treat it as a harness artefact of the stuck pilot. PD2 lets enemies get this close too.
+  - Also seen: a crew AI teammate standing in the player's face (a6 `09_auto_212`). That is crew AI spacing (A).
+  - **IDLE, can take X.**
+- **AH prep done on `prep/d-ah` 8238fdaa3 (held for AH's turn; branched from prep/d-rt, so merge RT first).**
+  - **dj_mix** (dfd7ce9bf), as reported below.
+  - **16 finish swaps, 0 new meshes:** bouncers c-g, bartenders c/d, club_waiter/_b (the gala waiters in Velvet violet),
+    patrons e-j, frd_agent_offduty. Every swap has the same per-mesh tri counts as its base. `recolor` is now one shared step
+    (`_outfit_build.apply_recolor`). There are 3 new library colours (char_satin_silver, _emerald, _coral). p5_cast has
+    the AH pools (bouncer 7, bartender 6, patron 20 = 10 club + 10 gala, dancer 10, off-duty, couriers 12) and
+    `tag_map.afterhours` (18 spawn tags) for A to mirror.
+  - **Checks:** test_p5_cast 17/17, cower_offsets, lod, outfits, scenes, skirt_drape, npcs, hit_zones, ragdoll, rig,
+    civ_panic, factions, character_warm, ah_clips and anims all pass; gdlint, ownership d and banned are clean.
+    Review: `_review/ah_d1/ah_{door,bar,patrons}_sheet.png` (+ 30 m lineups and silhouettes).
+  - **Known limit:** the off-duty cop's FRD letters are geometry, so they show as faint relief on the black leather
+    back up close. Removing them is a small recipe option, not a mesh. Say if you want it.
+  - **Next:** P's GH/OF loud screenshots, checking for NPC anim and clipping issues.
+- **WORKING: AH prep on `prep/d-ah`** (branched from prep/d-rt, so RT merges first and the anim library stays one line).
+  - **`dj_mix` is pushed: prep/d-ah dfd7ce9bf.** The DJ at the 1.0 m booth, 120 BPM: left hand on the faders, right on
+    the jog wheel, knee bounce and head nod on the beat, and once per loop the right hand to the headphone cup (`cue`@90).
+    reach_err is 0 and the max joint step is 10.7 deg. The booth layout is in the SOURCE note `ah_dj_placement`. Tests:
+    test_ah_clips 3/3 (new), test_anims 18/18 (253 clips), test_rt_clips 6/6. Review:
+    `_review/ah_d1/dj_mix_review.png`.
+  - **16 finish swaps:** building now (0 new meshes), with p5_cast pools and tag_map.afterhours staged. Report to follow.
+- **RT lineups are already done and ready for the PO:** prep/d-rt de0212248, `game/assets/characters/_review/rt_lineup/`
+  (six 1080p sheets; see the entry below). Read them straight from origin/prep/d-rt. I recorded your dancer ruling
+  in `afterhours_cast_plan.md`. **IDLE, can take X.**
+- **Afterhours cast plan, paper only (D-147): `game/assets/characters/_review/afterhours_cast_plan.md` (env/d-art).**
+  Needs 0 new meshes, 16 finish swaps (5 bouncer, 4 bartender, 6 patron, 1 off-duty) and 1 new clip, `dj_mix`.
+  Estimate about half a D day; the earlier estimate was 2.
+  - Reused as is: the 10 gala `gallery_patron` looks (VIP and balcony crowd), `gallery_waiter` / `_b` (as violet swaps),
+    `club_dj`, the cartel looks (couriers), and every special and police look via their EnemyDefs.
+  - **PO question:** dancers (30 live) share the 10 club looks. No twin inside a 5-dancer cluster, but looks repeat
+    across clusters (D-130 allows it). Accept, or pay for more swaps?
+  - **Flag:** the roster's "plain clothes" off-duty cop is `frd_agent`, which wears the FRD windbreaker with marks. The
+    plan includes a swap without the marks.
+  - **IDLE again, can take X.**
+- **RT cast lineups for the PO: prep/d-rt de0212248, `game/assets/characters/_review/rt_lineup/`.** Six lit
+  1920x1080 sheets, each look front + 3/4, idle, captioned: convoy, escorts (Routine/Tense duty → Hazardous → Brutal →
+  Lethal (+ rare Wrecker) → Cataclysm), street_reused (12 OF looks), street_rt (pedestrians a-i + the 3 staff), site
+  (Halden a-j + beat cop), specials (Reyes). The tool is `world/characters/_tools/render_rt_lineup.gd`.
+  - Rendered on llvmpipe with the Compatibility renderer. Skin tone 1 reads near-white there (crew_f, pedestrian_f,
+    some Halden faces). That is not new, but please re-run it on the GPU box in Forward+ before the PO judges skin; the
+    command is in `next_heist_cast_notes.md`.
+  - The lineups showed g's camel mac reading close to civilian_customer_a's camel coat, so g is teal now. The cast and
+    cower-offset tests pass.
+  - Next: the Afterhours cast list against D-147, as a paper doc.
+- **IDLE, can take X** (r259). The palette swaps are already done: prep/d-rt daf913b8f has street_pedestrian g/h/i
+  (finish-only swaps of a/b/f, 21 looks, zero twins at the top roll; per-look tests all pass; see the D-149 item 1 entry
+  below). prep/d-rt is held for the OF done check. Open for any task: RT (lineup renders, more clips) or Afterhours prep
+  on paper (dj_mix, the patron, bouncer and bartender looks).
+- **D-149 item 3: loud anim coverage on GH and DB at Tense (r257 merged into env/d-art):** no anim flags on either
+  map. GH covered 73 bodies and DB 49, with no FROZEN, PLAYER_MISMATCH, NO_CLIP, SLIDE or STATIC flags.
+  Evidence: `game/assets/characters/_review/loud_cov_r257/` (README and both JSONs).
+  - **Behaviour notes for A, not anim:**
+    - GH: the 2 Halden guards aim for 455 s in total and never fire.
+    - DB: the 6 cartel gunmen stand idle or sit armed for about 215 s each and aim for 1.4 s in total. That may be fine if the crew never goes to them.
+    - DB: the Longshot never aims.
+- **D-149 item 1 done: prep/d-rt daf913b8f.** I built `street_pedestrian_g/h/i` as finish-only swaps of a, b and f.
+  They use the same meshes (tri counts identical per mesh); only the skin tone, hair colour and garment materials
+  change. g has a camel mac, h a cream hoodie with navy joggers, i a grey blazer over ivory. The street, bus and diner
+  pool is now 21 looks, so the top roll of 21 live has no twins. Each swap is a new face in the pool, and each gender
+  has at least 7. i keeps f's shoulder bag, so its cower offset is 0.14.
+  - **Item 2:** test_p5_cast, cower_offsets, lod, outfits, scenes, skirt_drape, npcs, hit_zones, ragdoll, rig, civ_panic
+    and character_warm all pass. gdlint, check_ownership d and check_banned are clean.
+  - **Evidence:** windowed review `game/assets/characters/_review/rt_d1_cast/rt_street_swaps_{sheet,lineup_30m,silhouette_30m}.png`,
+    each base beside its swap. g's first ice-blue mac read as a lab coat, so it is camel now. The tag-map ask to A is now 9 pedestrians, not 6.
+  - **Next:** item 3, loud_anim_coverage on GH and DB at Tense.
+- **RT re-check vs C's next_heist_rolling_thunder.md (r256): prep/d-rt 840699e64.**
+  - RT-D2's clips and the cook / waitress looks are all on prep/d-rt. The diner counter, `prop_counter_sales`, is 0.9 m,
+    the height counter_wipe is authored for.
+  - **Fixed, one of my misses:** `test_cower_offsets` failed on prep/d-rt. Three pedestrians carry back bags and had no
+    offset. They now have offsets: c 0.12, e 0.25 (the deep delivery backpack), f 0.14. The test now also measures
+    diner_staff and carpark_attendant. Every per-look D test now passes on prep/d-rt: cower_offsets, lod, outfits,
+    scenes, skirt_drape, npcs, hit_zones, ragdoll, rig and civ_panic.
+  - **Ruling needed (C §3/§4 vs D-103 §3b.1):** do NOT map `convoy_lead` / `convoy_rear`. A spawn tag beats the
+    EnemyDef in NpcVisuals, so any row would give every difficulty the same escort look. That would bypass the D-145.3
+    duty looks, the faction reskins and tac_heavy. The escorts are EnemyDefs, so they get a look anyway, never a
+    capsule. Please carve these two out of the "every spawn tag maps" rule, and A should test it.
+  - **For A, after the merge:** `npc_visual_tweak.tres` RT needs the 6 street_pedestrian looks added to civ_street,
+    civ_bus and civ_diner, plus new rows `staff_diner`, `staff_booth` and `driver_mixer` (Reyes = contact_hollis).
+    The list is in the notes.
+- **RT cast check (your r255 ask): prep/d-rt fb5160ef2** (on 39f981cc7; your note said 83cc1a187, which is now two commits
+  back). C's `next_heist_rolling_thunder.md` is on no branch yet, so I checked against `rolling_thunder.md`'s roster
+  (trunk e9c8744f) and D-147. Every row has a cast. 6 of the 9 rows reuse existing looks: Halden, patrol_officer, the Vaultline crew and marshal,
+  the 12 OF day looks for street, bus and diner, and the escorts and police via A's resolver. The 9 new RT looks were
+  built from the outfit kit's library garments, with no new meshes.
+  - **One gap, filled by reuse:** Reyes drives the ram mixer himself (crash stop), and nothing cast him. He is now
+    `contact_hollis` on pool `ram_driver` / tag `driver_mixer` (proposed tag name, for C), using sit_vehicle_drive.
+  - **Doc drift for C:** the roster row says the marshal is `armored_car_crew_b`; the cast is `armored_car_marshal`
+    (QC-86's hi-vis variant).
+  - **Twins:** at most 21 live (street 12 + bus 4 + diner 5) on 18 looks, so 3 repeats at the top roll only. D-130
+    allows it. If the PO wants zero, 3 palette-only swaps cover it (D-147). Not built.
+  - Clips: none missing. Checks: test_p5_cast 17/17, test_character_warm 2/2, gdlint, check_ownership d, check_banned
+    clean. Evidence: `game/assets/characters/_review/next_heist_cast_notes.md` (RT cast check table) on prep/d-rt.
+- **D-148 RT cast / clips: prep/d-rt 39f981cc7** (on top of 83cc1a187; still not on env/d-art).
+  - **Built this push:** `sit_eat` and `cook_stove` (implemented in the parked _anim_rt but never registered, so never
+    built), `sit_vehicle_drive` (the escort / crew driver: sit_vehicle's seat and glances, both hands on the wheel at
+    10 and 2 with small steering), `counter_wipe` (the waitress: bartender_wipe at the diner's 0.9 m counter; the bar
+    clip's 1.05 m would leave her hands 15 cm above the top). bartender_wipe now takes height / lean as parameters
+    (its own clip identical). Checks: reach error sit_eat 0, cook_stove 5.1 mm, drive 5.5 mm, counter_wipe 0; no skin
+    below the floor.
+  - **Reused, nothing to build (D-147):** escort officers in cars = the police looks via their EnemyDefs (duty and
+    faction variants on Routine / Tense) seated with `sit_vehicle` (passengers) or `sit_vehicle_drive` (drivers); convoy
+    guards bailing out = `vehicle_exit_l` / `_r` (crew and police roles); marshal `radio_call`; pedestrians `walk_text`;
+    bus queue `sit`; cowering `cower_seated` (booths, shelter benches) / `cower_stand`.
+  - **Tests (worktree):** d test_rt_clips 6 (now covers all 7 RT clips: presence, events, floor, loops; new: the
+    driver's wrists stay within 12 cm of the wheel rim points, counter_wipe's flat hand 0.15 m below bartender_wipe's),
+    test_anims 18 (clip count 248 -> 252), test_p5_cast 17, test_scenes 9. gdlint, check_ownership d, check_banned clean.
+  - **For A:** HINT_CLIPS / KNOWN_ACTIVITIES aliases for the new clips (`drive` -> sit_vehicle_drive, `counter_wipe`
+    / `wipe` -> counter_wipe; sit_eat / cook already there); seat the driver (Seat0) with sit_vehicle_drive and the
+    others with sit_vehicle; the dismount is vehicle_exit_* with curve.vehicle_exit_<side> root motion (existing
+    play_vehicle_exit). Check the Wrecker's dismount in the rear escort (bulky body through a car door) once C's car
+    exists.
+  - **For C (prop sizes the clips assume, from _anim_rt):** car seat cushion 0.36 m over the footwell floor
+    (rt_vehicle_placement); steering wheel rim centre 0.40 m ahead / 0.76 m up from the root, radius 0.18, face tilted
+    30 deg; diner counter top 0.90 m (waitress root 0.28 m behind its near edge, as the bar rule); booth table top
+    0.74 m, near edge 0.22 m ahead of the seated root; griddle top 0.90 m, front edge 0.30 m ahead of the cook.
+    (A SOURCE `rt_diner_placement` note will be added on the next library rebuild.)
+- **OF loud Cataclysm animation check:** A's gpu/renders/a/of_hitch* stills are first-person HUD frames with almost no
+  NPC on screen, so they can't show NPC animation; the logs have no animation warnings. Instead I ran my headless
+  `_tools/loud_anim_coverage.tscn` (P's AnimCoverage) on OF, Cataclysm, seed 1037, 3 bots, 240 s, 28-35 NPCs:
+  **frozen 0, clip mismatch 0, no clip 0, static 0**; 1 "slide" = the Longshot's heli_door_idle while its helicopter
+  moves (riding: correct). Nothing to fix in D's files.
+  **For A (real bug, 21,363 errors in 240 s):** `anim_layers.gd:75` `left_hand_ik.set_target(marker if want else
+  left_hand_ik.marker, ...)` passes back a FREED marker once the NPC's WeaponVisual is replaced or freed (dropped weapon,
+  swap): "Invalid type in function 'set_target' ... (previously freed)" every frame for that NPC. Fix: use
+  `left_hand_ik.marker if is_instance_valid(left_hand_ik.marker) else null` as the fallback.
+- **RT prep READY: `origin/prep/d-rt` 83cc1a187** (not merged to env/d-art; D-144). On env/d-art 674681736 + the parked
+  wip/d-rt-civilians and wip/d-rt-clips (clean merges):
+  - 9 looks rebuilt on the current pipeline (byte-identical to the parked glbs) and assembled: diner_waitress,
+    diner_cook (staff_diner), carpark_attendant (staff_booth), street_pedestrian a-f.
+  - p5_cast v15: the pedestrians join street_civilian / civ_street / civ_bus / civ_diner (18 looks, 6 per gender
+    minimum); diner_staff / carpark_attendant pools and the staff_diner / staff_booth tags.
+  - Clips from the parked branch: sit_vehicle, vehicle_exit_l / _r. Fixed a type bug in the parked test_rt_clips
+    (an Array assigned to a Dictionary aborted the exit test silently; it now runs and passes).
+  - Green in the worktree: d test_p5_cast 17, test_scenes 9, test_lod 6, test_rt_clips 5, test_anims 18. Drape: the
+    waitress's dress 5-7 leg vertices through in stride (within D-135's <= 12), 0 in cower / seated; pedestrians a / f 0.
+  - Still missing for RT (not in either parked branch): the sit_eat and cook_stove clips (A's HINT_CLIPS already
+    names them). About half a D day once the PO picks RT.
+  - The existing scenes' CrowdLod `cast_shadow = 0` (D-146) from re-assembly was left out of the prep diff; the
+    proxy script sets it at runtime anyway.
+  Checks run: gdlint (test_p5_cast.gd, test_rt_clips.gd), the tests above, check_skirt_drape, check_ownership d,
+  check_banned.
 - **r254 merged** (9d2e85d8) into env/d-art 396312586: import clean; d test_character_warm 2/2, test_of_cast_clips 3/3.
   Queue now empty on my side: waiting on GPU-12/13 (hitch log, shader-cache test) and A's CharacterWarm call. Open to
   the next item (OF/PO polish, or the next heist's cast once the PO picks).

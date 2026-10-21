@@ -110,7 +110,7 @@ func test_migration_seeds_completed_from_career() -> void:
 	v8.erase("freshness")
 	v8["career"]["heists"] = {"glasshouse": {"played": 3, "won": 2}, "night_deposit": {"played": 1, "won": 0}}
 	var p: PlayerProfile = SaveService.profile_from_save(v8)
-	assert_eq(p.version, 9)
+	assert_eq(p.version, SaveService.CURRENT_VERSION, "migrated to the current save version (v10 since PO-19)")
 	assert_eq(p.freshness["recent"], [])
 	assert_eq(int(p.freshness["runs"]), 0)
 	assert_eq(p.freshness["completed"], ["glasshouse"])
@@ -170,7 +170,9 @@ func test_calculator_money_and_xp() -> void:
 	lost["success"] = false
 	var fail_base: Dictionary = PayoutCalculator.compute(lost, null, _tw)
 	var fail_cut: Dictionary = PayoutCalculator.compute(lost, null, _tw, false, -1, 1.0, 1.0, 0.0, 0.5)
-	assert_eq(int(fail_cut["xp_total"]), roundi(float(fail_base["xp_total"]) * 0.5), "failed-heist XP scaled too")
+	# The freshness line is roundi(running x (mult - 1)), added to the running total (half-unit rounding away from 0).
+	var fail_xp: int = int(fail_base["xp_total"])
+	assert_eq(int(fail_cut["xp_total"]), fail_xp + roundi(float(fail_xp) * -0.5), "failed-heist XP scaled too")
 
 
 ## The payday screen shows "Heist freshness -20 %" on money and XP with the reason, then records the run.

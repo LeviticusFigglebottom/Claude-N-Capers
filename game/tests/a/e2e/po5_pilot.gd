@@ -28,6 +28,8 @@ const LINE_DOOR_M: float = 1.0
 ## shoots_from_floor: at most this many alive enemies within FLOOR_FIGHT_M (m) for a downed pilot to fight back.
 const FLOOR_FIGHT_MAX: int = 3  # LEAD: hold fire with 4+ enemies near
 const FLOOR_FIGHT_M: float = 20.0
+## engage(): with an empty mag, an enemy this close (m) gets the other weapon or a melee strike (_close_quarters).
+const CLOSE_QUARTERS_M: float = 2.5
 const THROUGH_LOOKAHEAD_M: float = 4.0
 ## goto: standing at the end of a nav path that stops this far (m, flat) short of the target = unreachable (OF-X2).
 const UNREACHABLE_M: float = 2.0
@@ -79,6 +81,8 @@ var last_blocked_door: Door = null
 ## goto(): stuck recoveries in one leg before it gives up, 0 = never (auto_loud sets it: the caller re-plans, sets the
 ## target aside, other markers first). P's GN loud rerun: STUCK x4 on the BronzeDoorsE LeafBody2, then 1200 s there.
 var stuck_give_up: int = 0
+## The ladder the last goto() stopped at because the crew carries a bag (ladders refuse bags, S10.1b), else null.
+var last_ladder_with_bag: Ladder = null
 ## The last goto() gave up after `stuck_give_up` stuck recoveries (no progress), not at a door or a timeout.
 var last_goto_stuck: bool = false
 ## Stealth: never press F unless the component is aimed (a press with nothing usable aimed is a shout,
@@ -194,7 +198,7 @@ func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 
 func nav_path(to: Vector3) -> PackedVector3Array:
 	var map: RID = crew.get_world_3d().navigation_map
-	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW | Ladder.NAV_LAYER)
+	return NavPath.query(map, crew.global_position, to, true, NAV_LAYERS_CREW | Ladder.NAV_LAYER)
 
 
 ## OF-A6 (Haz seed 5: 15 min at the burnt hole's edge): the climbable Ladder whose NavLink the leg to `corner` takes, as
@@ -377,6 +381,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	var top_up_t: float = 0.0
 	last_blocked_door = null
 	last_goto_stuck = false
+	last_ladder_with_bag = null
 	while t < timeout_s:
 		if combat and crew.crew_state != Enums.CrewState.NORMAL:
 			d.note("pilot: goto aborted, crew state %d (fight from the floor)" % crew.crew_state)
@@ -416,6 +421,11 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			await top_up()  # a player reloads on the move between fights (the tap takes 2 ticks; walking goes on)
 		var corner: Vector3 = next_corner(path, crew.global_position, target)
 		var leg: Array = _ladder_leg(corner)
+		if not leg.is_empty() and crew.is_carrying_bag():
+			# S10.1b: a ladder refuses a carried bag (headless OF 1037: 3 min of "RopeLadder up -> FAILED" with cash).
+			last_ladder_with_bag = leg[0] as Ladder
+			d.note("pilot: %s ahead with a bag: not climbing (the bag goes by the hoist)" % last_ladder_with_bag.name)
+			break
 		if not leg.is_empty():
 			inp.release(&"move_forward")
 			await climb_ladder(leg[0] as Ladder, bool(leg[1]))
@@ -588,6 +598,21 @@ func _civilian_blocking() -> bool:
 	return false
 
 
+## A live enemy the crew is pressed against (last move's slide collisions) or that stands within 0.8 m ahead at chest
+## height, else null.
+func _enemy_blocking() -> NpcBase:
+	for i: int in crew.get_slide_collision_count():
+		var b: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
+		if b != null and b.is_in_group(G.ENEMY) and b.is_alive():
+			return b
+	var fwd: Vector3 = Vector3(-sin(crew.look_yaw), 0.0, -cos(crew.look_yaw))
+	var from: Vector3 = crew.global_position + Vector3(0, 1.0, 0)
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, from + fwd * 0.8)
+	q.exclude = [crew.get_rid()]
+	var hit: NpcBase = crew.get_world_3d().direct_space_state.intersect_ray(q).get("collider") as NpcBase
+	return hit if hit != null and hit.is_in_group(G.ENEMY) and hit.is_alive() else null
+
+
 ## Stuck against something that is not the target (a prop, a cop, a wall corner the path hugs): side-step to a
 ## navmesh point beside the crew, alternating sides (odd attempts right, even left) and widening (0.7 m, then
 ## 1.2 m), a step toward `corner`, then the caller re-paths. Falls back to a jump when no side point is free.
@@ -653,6 +678,11 @@ func _pass_leaf(door: Door, corner: Vector3) -> void:
 
 
 func _unstick(attempt: int) -> void:
+	var foe: NpcBase = _enemy_blocking()
+	if foe != null:  # LEAD GPU-18 (OF b480): 40 s of side-steps into Npc_police13/14 on the SAFlight2W stair
+		d.note("pilot: %s blocks the way: shoot" % foe.name)
+		await engage(foe, 3.0)
+		return
 	for i: int in crew.get_slide_collision_count():
 		var blocker: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
 		if not shout_blockers and attempt < block_shout_after and blocker != null and blocker.is_in_group(G.CIVILIAN) and blocker.is_alive():
@@ -969,15 +999,25 @@ func has_los(point: Vector3, target: Node = null) -> bool:
 ## Aim at the head and fire in short bursts for up to `max_s` or until it dies / leaves sight.
 func engage(npc: NpcBase, max_s: float) -> void:
 	var t: float = 0.0
-	while t < max_s and npc.is_alive():
+	# B (DB Tense r256 s1, doctor-bag cell): signal 11 at the fire loop's await; the target can be freed (killed and
+	# cleaned up) during any await here, so check it after each one.
+	while t < max_s and is_instance_valid(npc) and npc.is_alive():
 		var aim_pt: Vector3 = _aim_point(npc)
 		if aim_pt == Vector3.INF:
 			break
 		await face(aim_pt, 0.03, 0.25)
-		if not has_los(aim_pt, npc):
+		if not is_instance_valid(npc) or not has_los(aim_pt, npc):
 			break
 		if not await _ensure_ammo():
-			break  # both weapons dry: nothing to shoot with
+			# Headless OF 1037: a cop in melee range (strike every 0.4 + 3.0 s) cancels every 3.5 s+ empty reload, so
+			# the pilot sat at 0/131 for 140 s. Like a PD2 player: the loaded sidearm, else a melee strike.
+			if not is_instance_valid(npc) or npc.global_position.distance_to(crew.global_position) > CLOSE_QUARTERS_M:
+				break  # both weapons dry: nothing to shoot with
+			await _close_quarters(npc)
+			t += 0.5
+			continue
+		if not is_instance_valid(npc):
+			break
 		inp.press(&"fire")
 		await inp.ticks(2)
 		inp.release(&"fire")
@@ -985,6 +1025,23 @@ func engage(npc: NpcBase, max_s: float) -> void:
 		await inp.ticks(6)
 		t += 0.25 + 8.0 * dt()
 	inp.release(&"fire")
+
+
+## An enemy in reach and an empty mag that a melee keeps cancelling: swap to the other weapon when its mag is loaded,
+## else strike (melee) at the enemy's chest.
+func _close_quarters(npc: NpcBase) -> void:
+	var w: CrewWeapons = crew.weapons
+	var other: int = Enums.WeaponSlot.PRIMARY if w.equipped_slot == Enums.WeaponSlot.SECONDARY \
+		else Enums.WeaponSlot.SECONDARY
+	if w.has_weapon(other) and w.mag(other) > 0:
+		d.note("pilot: %s in reach with an empty mag: drawing the %s" % [npc.name, w.weapon_id(other)])
+		await inp.tap(&"slot_primary" if other == Enums.WeaponSlot.PRIMARY else &"slot_secondary")
+		await inp.ticks(30)  # draw
+		return
+	d.note("pilot: %s in reach with an empty mag: melee" % npc.name)
+	await face(npc.global_position + Vector3(0, 1.2, 0), 0.08, 0.3)
+	await inp.tap(&"melee")
+	await inp.ticks(30)
 
 
 ## P's GN-P1 rerun (b): the pilot sat at 0/90 firing an empty gun. Like a player: an empty mag with reserve left is

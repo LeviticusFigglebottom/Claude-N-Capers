@@ -337,6 +337,37 @@ func test_l2_12_ai_kill_the_arresting_cop_before_uncuffing() -> void:
 	assert_true(ok, "freed and revived once the cop is down (state %d)" % c.crew_state)
 
 
+## D-145 (DB Tense seed 1: four bots knelt to revive with cops 0.6-1.0 m away, a crew wipe): a cop next to the downed
+## human is fought for up to revive_clear_s before the bot kneels; past that (a cop that will not drop) it revives anyway.
+func test_d145_ai_clear_a_cop_next_to_the_downed_before_kneeling() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
+	await wait_physics_frames(2)
+	var c: CrewController = _crew(0)
+	var cop: NpcBase = ATestMaps.add_npc_observer(_rt, &"police", Vector3(5.5, 0.05, 0.6), Vector3.LEFT)
+	cop.max_health = 1.0e9  # soaks the AI fire: the clear window is observable
+	cop.health = cop.max_health
+	c.health.go_down()
+	# Game seconds from the first bot in revive range to the first revive hold (the clear window sits between).
+	var marks: Array[float] = [-1.0, -1.0]  # [arrived, first hold]
+	var t0: int = Time.get_ticks_msec()
+	var watch: Callable = func() -> bool:
+		var now: float = float(Time.get_ticks_msec() - t0) / 1000.0 * TIME_SCALE
+		for slot: int in _ai_slots():
+			var bot: CrewController = _crew(slot)
+			if marks[0] < 0.0 and bot.global_position.distance_to(c.global_position) <= tweakd().revive_range_m:
+				marks[0] = now
+			if marks[1] < 0.0 and not _rt.interaction.session(slot).is_empty():
+				marks[1] = now
+		return c.crew_state == Enums.CrewState.NORMAL
+	var ok: bool = await wait_until(watch, 30.0)
+	assert_true(cop.health < cop.max_health, "the bots fought the cop at the downed human")
+	assert_true(marks[0] >= 0.0 and marks[1] - marks[0] >= tweakd().revive_clear_s * 0.8,
+		"no revive hold in the clear window (arrived %.1f s, first hold %.1f s)" % [marks[0], marks[1]])
+	assert_true(ok, "revived anyway once the clear window ran out (the cop did not drop)")
+
+
 func test_p3_ai_shoots_the_tasing_stinger_first() -> void:
 	await _go_loud()
 	var brain: CrewAiBrain = CrewAiBrain.of(_crew(1))

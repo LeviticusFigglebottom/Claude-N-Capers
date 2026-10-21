@@ -1,0 +1,65 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 16.0s t=-1.0] objective casing -> 1
+[OFP 16.0s t=-1.0] objective keycard -> 1
+[OFP 16.0s t=-1.0] objective code_hint -> 1
+[OFP 16.0s t=-1.0] objective code_pc -> 1
+[OFP 16.0s t=-1.0] objective server -> 1
+[OFP 16.0s t=-1.0] objective vault_gate -> 1
+[OFP 16.0s t=-1.0] objective lasers -> 1
+[OFP 16.0s t=-1.0] objective time_lock -> 0
+[OFP 16.0s t=-1.0] objective time_lock_wait -> 0
+[OFP 16.0s t=-1.0] objective vault_loot -> 0
+[OFP 16.0s t=-1.0] objective gold_cage -> 0
+[OFP 16.0s t=-1.0] objective drill_delivery -> 0
+[OFP 16.0s t=-1.0] objective vault_drill -> 0
+[OFP 16.0s t=-1.0] objective vault_breach -> 0
+[OFP 16.0s t=-1.0] objective secure -> 1
+[OFP 16.0s t=-1.0] objective deposit_boxes -> 1
+[OFP 16.0s t=-1.0] objective bond_safe -> 0
+[OFP 16.0s t=-1.0] objective president_safe -> 1
+[OFP 16.0s t=-1.0] objective server_drives -> 1
+[OFP 16.0s t=-1.0] objective escape_wait -> 0
+[OFP 16.0s t=-1.0] objective escape -> 0
+[OFP 32.1s t=0.0] launched ostrander_federal seed 1002 diff 2 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [], &"civ_extra": [&"cx_hall_1"], &"time_lock_s": 270.0, &"drill_eta_s": 45.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 235.2s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 235.2s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 262.6s t=8.2] pilot: t=5 at (37.9, -0.7, 40.1) corner (42.4, -0.6, 42.3) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01588615652872 bot=false
+[OFP 274.8s t=20.3] pilot: t=5 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(0.10,0.00) pin_yaw=0.09794857307133 bot=false
+[OFP 285.5s t=31.1] pilot: t=5 at (35.7, 0.0, -6.3) corner (33.4, 0.2, -6.4) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(1.50,0.00) pin_yaw=1.50226139555161 bot=false
+[OFP 287.4s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 287.4s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 297.4s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 314.0s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 324.0s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 334.0s t=73.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.3, 0.0, 0.2) walk
+[OFP 339.1s t=78.0] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 45 s
+[OFP 339.1s t=78.0] GHOST lane clear after 0 s
+[OFP 340.0s t=79.0] objective casing -> 2
+[OFP 340.7s t=79.6] masked true
+[OFP 343.4s t=82.3] ECM on
+[OFP 348.4s t=87.4] pilot: t=5 at (12.2, 0.0, -1.8) corner (10.2, 0.2, -1.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.86,0.00) pin_yaw=1.85905208980694 bot=false
+[OFP 357.8s t=96.7] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 361.4s t=100.3] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 361.4s t=100.3] DETECT Npc_guard3 kind 0 meter 1.00 at (10.9, 0.0, 7.9), pilot (9.2, 0.0, 8.4) crouched false
+[OFP 364.1s t=103.0] pilot: t=5 at (10.3, 0.0, 8.3) corner (10.9, 0.0, 8.1) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(4.96,0.00) pin_yaw=4.96043670427753 bot=false
+[OFP 365.7s t=104.6] pilot: STUCK at (10.3, 0.0, 8.3) heading to (10.9, 0.0, 8.1); rays: h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard3@(10.7, 0.2, 8.2), h0.40:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard3@(10.7, 0.4, 8.2), h1.00:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard3@(10.7, 1.0, 8.2), slide:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard3@(10.6, 0.9, 8.1) n=(-0.8, -0.0, 0.5), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Doors/DockCorridorDoor/Visual/PropDoorServiceSteelT20/Model/Frame/Collision@(10.1, 1.5, 8.6) n=(0.7, 0.0, -0.8), slide:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard3@(10.6, 0.9, 8.1) n=(-0.8, -0.0, 0.5), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 389.4s t=104.8] pilot: detour right 0.7 m to (10.8, 0.2, 8.6) (attempt 1)
+[OFP 391.3s t=106.8] pilot: STUCK at (10.3, 0.0, 8.3) heading to (10.7, 0.2, 8.5); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Doors/DockCorridorDoor/Visual/PropDoorServiceSteelT20/Model/Frame/Collision@(10.1, 1.5, 8.6) n=(0.5, 0.0, -0.8), vel=(0.0, 0.0, 0.0) floor=true state=4
+[INFO][stealth][p1] ALARM: guard_radio (source 205)
+[OFP 414.3s t=108.3] ALARM guard_radio by Npc_guard3 (pilot at (10.3, 0.0, 8.3))
+[OFP 414.4s t=108.3] objective keycard -> 1
+[OFP 414.4s t=108.3] objective keycard -> 2
+[OFP 414.4s t=108.3] objective code_hint -> 1
+[OFP 414.4s t=108.3] objective code_hint -> 2
+[OFP 414.4s t=108.3] objective code_pc -> 1
+[OFP 414.4s t=108.3] objective code_pc -> 2
+[OFP 414.4s t=108.3] objective server -> 1
+[OFP 414.4s t=108.3] objective server -> 2
+[OFP 414.4s t=108.3] objective vault_gate -> 1
+[OFP 414.4s t=108.3] objective vault_gate -> 2
+[OFP 414.4s t=108.3] objective lasers -> 1
+[OFP 414.4s t=108.3] objective lasers -> 2
+[OFP 414.4s t=108.3] objective drill_delivery -> 1
+[OFP 414.4s t=108.3] objective drill_delivery -> 1
+[OFP 414.6s t=108.3] pilot: detour left 0.7 m to (10.5, 0.2, 7.5) (attempt 1)
+[OFP 447.9s t=110.4] pilot: STUCK at (10.3, 0.0, 8.3) heading to (10.5, 0.2, 7.5); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Doors/DockCorridorDoor/Visual/PropDoorServiceSteelT20/Model/Frame/Collision@(10.1, 0.4, 8.6) n=(0.5, 0.0, -0.8), vel=(0.0, 0.0, -0.0) floor=true state=4

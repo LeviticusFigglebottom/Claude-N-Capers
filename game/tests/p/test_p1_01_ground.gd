@@ -280,6 +280,31 @@ func test_uncrouch_needs_headroom() -> void:
 	assert_true(await wait_until(func() -> bool: return not c.crouched, 1.0), "stands up once clear")
 
 
+## Each crew member owns its capsule: crew_member.tscn's CapsuleShape3D is a scene sub-resource, shared by every
+## instance unless duplicated. Before the fix, one crew member crouching set the shared height to 1.2 m under everyone
+## else's standing offset (0.9 m), so the others' capsule bottoms floated 0.3 m up and they sank 0.3 m into the floor
+## (GH Tense 4502, r255/r256: pilot + bots embedded, a 0.15 m kerb became a 0.45 m wall, STUCK under fire).
+func test_crouch_does_not_sink_other_crew() -> void:
+	await wait_physics_frames(2)
+	var c0: CrewController = await _start(0, Vector3(-3.0, 0.05, LANE_START_Z))
+	var c1: CrewController = await _start(1, Vector3(3.0, 0.05, LANE_START_Z))
+	var col0: CollisionShape3D = c0.get_node(^"Collision") as CollisionShape3D
+	var col1: CollisionShape3D = c1.get_node(^"Collision") as CollisionShape3D
+	assert_true(col0.shape != col1.shape, "each crew member has its own capsule shape")
+	await _inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.2)  # casing cannot crouch
+	_inp.press(&"crouch")
+	await wait_physics_frames(3)
+	assert_true(c0.crouched, "slot 0 crouched")
+	await wait_seconds(0.5)
+	var h1: float = (col1.shape as CapsuleShape3D).height
+	assert_near(h1, Tweak.crew().height_standing, 0.001, "slot 1 still has its standing capsule (%.2f)" % h1)
+	assert_near(c1.global_position.y, 0.0, 0.03, "slot 1 still on the floor, not sunk (y %.3f)" % c1.global_position.y)
+	assert_true(not c1.crouched, "slot 1 not crouched")
+	_inp.release(&"crouch")
+	assert_true(await wait_until(func() -> bool: return not c0.crouched, 1.0), "slot 0 stands up")
+	_rt.clear_bot_intent(1)
+
+
 ## PI-06: a teleport (spawn, custody release) sets the facing; player input keeps it instead of snapping back.
 func test_teleport_keeps_new_facing() -> void:
 	var c: CrewController = await _start(0, Vector3(0.0, 0.05, LANE_START_Z), 0.0)

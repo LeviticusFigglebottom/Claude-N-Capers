@@ -74,6 +74,12 @@ extends Resource
 ## progress for revive_stall_s revives from where it stands when within this distance (m; the human reach is 2.5) ◇.
 @export var revive_stall_reach_m: float = 2.3
 @export var revive_stall_s: float = 1.0
+## D-145 (DB Tense seed 1: four bots knelt to revive with cops 0.6-1.0 m away, crew wipe): before starting a revive,
+## a bot fights an enemy within revive_clear_m of the downed member for up to revive_clear_s (per revive target);
+## skipped when the downed member's bleed-out is under revive_clear_min_bleed_s (last stand: revive now) ◇.
+@export var revive_clear_m: float = 3.0
+@export var revive_clear_s: float = 2.0
+@export var revive_clear_min_bleed_s: float = 10.0
 ## L4.4 (P3 gate): a Stinger tasing a crew member scores its distance x this when the AI picks a target
 ## (lower = preferred; 0.25 = shot first unless something is 4x closer) ◇.
 @export var tasing_stinger_score_mult: float = 0.25

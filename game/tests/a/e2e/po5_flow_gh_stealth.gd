@@ -823,8 +823,7 @@ func _hears_from(c: NpcBase, from: Vector3) -> bool:
 	q.exclude = [c.get_rid(), crew.get_rid()]
 	if crew.get_world_3d().direct_space_state.intersect_ray(q).is_empty():
 		return true
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(crew.get_world_3d().navigation_map, from,
-		c.global_position, true)
+	var path: PackedVector3Array = NavPath.query(crew.get_world_3d().navigation_map, from, c.global_position, true)
 	var n: float = 0.0
 	for i: int in range(1, path.size()):
 		n += path[i - 1].distance_to(path[i])

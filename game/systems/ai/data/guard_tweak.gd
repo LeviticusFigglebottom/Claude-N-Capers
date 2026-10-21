@@ -52,5 +52,8 @@ extends Resource
 @export var combat_standoff_pref_m: float = 10.0
 ## wants_to_fire is true when the target is visible and within this distance (m).
 @export var combat_fire_range_m: float = 30.0
+## Seconds a guard in combat wants to fire without a shot line (the gunner not engaging: crew seen through a pane bullets
+## cannot pass) before it closes in for one (PD2: guards move to get a shot).
+@export var combat_no_shot_close_s: float = 3.0
 ## Seconds between target re-evaluations.
 @export var combat_retarget_s: float = 0.5
