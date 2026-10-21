@@ -56,9 +56,12 @@ func build() -> void:
 	v.offset_bottom = -40.0
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(v)
-	caption = UiBuild.float_text(UiBuild.caption(&"ui.hud.downed_title"))
+	# r266 B top-3 #1: on the status scrim (red on a bright scene measured 1.27:1 fill), hugging the word.
+	caption = UiBuild.scrim_label(UiBuild.float_text(UiBuild.caption(&"ui.hud.downed_title")),
+			UiBuild.LABEL_SCRIM_STRONG_ALPHA)
 	caption.add_theme_color_override(&"font_color", tweak.low_health_color)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	caption.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	v.add_child(caption)
 	timer_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	timer_label.add_theme_font_override(&"font", UiTokens.font_display())

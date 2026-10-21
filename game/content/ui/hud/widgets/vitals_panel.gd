@@ -31,9 +31,14 @@ func build() -> void:
 
 func _row(parent: Container, key: StringName) -> Label:
 	var h: HBoxContainer = UiBuild.hbox(8)
-	var cap: Label = UiBuild.float_text(UiBuild.caption(key))  # PO-4: label as caption, value as text
-	cap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# PO-4: label as caption, value as text. r266 B top-3 #1: the caption sits on the label scrim (HEALTH measured
+	# 2.94:1 fill on a bright scene); a spacer keeps the value on the right edge.
+	var cap: Label = UiBuild.scrim_label(UiBuild.float_text(UiBuild.caption(key)), UiBuild.LABEL_SCRIM_STRONG_ALPHA)
 	h.add_child(cap)
+	var gap: Control = Control.new()
+	gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	h.add_child(gap)
 	var val: Label = UiBuild.label(&"", UiBuild.HUD)
 	h.add_child(val)
 	parent.add_child(h)

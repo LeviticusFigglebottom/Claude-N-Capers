@@ -12,6 +12,7 @@ const FIELDS: Array[StringName] = [
 	&"health", &"armor", &"low_health",
 	&"ally_marker", &"enemy_marker",
 	&"objective", &"loot_highlight", &"interaction_highlight",
+	&"device_jam",
 ]
 
 @export var id: StringName = &"default"
@@ -29,6 +30,10 @@ const FIELDS: Array[StringName] = [
 @export var objective: Color = Color(0.88, 0.72, 0.29)
 @export var loot_highlight: Color = Color(0.4, 0.88, 0.4)
 @export var interaction_highlight: Color = Color(1.0, 1.0, 1.0)
+## r266 B top-3 #2: a jammed drill / saw / hack (device timer bar, frame and status word) against the running one
+## (`objective`). Every palette keeps PD2's red today (it already clears the CVD pair check against each palette's
+## objective); the field lets a palette change it, and test_options_palettes guards the pair.
+@export var device_jam: Color = Color(0.9, 0.28, 0.3)
 
 
 ## A copy of `base` with this palette's colours (base stays untouched).
@@ -45,6 +50,7 @@ func apply_to(base: HudTweak) -> HudTweak:
 	t.objective_color = objective
 	t.loot_color = loot_highlight
 	t.interaction_color = interaction_highlight
+	t.device_jam_color = device_jam
 	return t
 
 

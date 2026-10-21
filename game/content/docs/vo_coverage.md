@@ -19,7 +19,7 @@ reaches, kept for RadioTweak.speaker_overrides and new heists). Heists iterated:
 | shadow_ledger | 40 | 40 | 0 | 0 | 0 | 0 | 0 |
 | dockside_burn | 47 | 47 | 0 | 0 | 0 | 0 | 0 |
 | gallery_night | 65 | 65 | 0 | 0 | 0 | 0 | 0 |
-| shared | 371 | 342 | 29 | 0 | 0 | 19 | 10 |
+| shared | 406 | 356 | 50 | 0 | 0 | 16 | 0 |
 
 Missing (code can say it, the table has no such line): 0.
 
@@ -31,7 +31,7 @@ None.
 
 None.
 
-## Unsaid, owner B reserve (19)
+## Unsaid, owner B reserve (16)
 
 | Line | Event | Why |
 |---|---|---|
@@ -48,27 +48,52 @@ None.
 | `vo.reyes.radio_objective_new_1` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
 | `vo.reyes.radio_objective_new_2` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
 | `vo.reyes.radio_objective_new_3` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.accountant.radio_objective_new_1` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_objective_new_2` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_objective_new_3` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
 | `vo.mercer.radio_objective_failed_1` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_2` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_3` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 
-## Unsaid, owner C (10)
+## Unsaid, owner C (0)
+
+None.
+
+## Unsaid, owner staged heist (34)
 
 | Line | Event | Why |
 |---|---|---|
-| `vo.accountant.ostrander_federal_radio_time_lock_new` | radio.objective_new | ostrander_federal never gets a radio.objective_new fact |
-| `vo.accountant.ostrander_federal_radio_time_lock_wait_new` | radio.objective_new | ostrander_federal never gets a radio.objective_new fact |
-| `vo.accountant.ostrander_federal_radio_vault_loot_new` | radio.objective_new | ostrander_federal never gets a radio.objective_new fact |
-| `vo.accountant.ostrander_federal_radio_bond_safe` | radio.objective_done | the mission never completes objective `bond_safe` |
-| `vo.accountant.ostrander_federal_radio_president_safe` | radio.objective_done | the mission never completes objective `president_safe` |
-| `vo.accountant.ostrander_federal_radio_server_drives` | radio.objective_done | the mission never completes objective `server_drives` |
-| `vo.accountant.ostrander_federal_radio_drill_delivery_new` | radio.objective_new | ostrander_federal never gets a radio.objective_new fact |
-| `vo.accountant.ostrander_federal_radio_vault_drill_new` | radio.objective_new | ostrander_federal never gets a radio.objective_new fact |
-| `vo.accountant.ostrander_federal_radio_escape_wait_new` | radio.objective_new | ostrander_federal never gets a radio.objective_new fact |
-| `vo.accountant.ostrander_federal_radio_escape_new` | radio.objective_new | ostrander_federal never gets a radio.objective_new fact |
+| `vo.mercer.rolling_thunder_intro` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_eta_60` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_eta_30` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_marshal` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_signals_done` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_signals_remind` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_c4_found` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_thermite_found` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sighted` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_stopped` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_go` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_alerted` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_escort_down` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_police` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_saw_on` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_saw_jam` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_deadbolts` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_truck_open` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_c4_armed` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_thermite_burn` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_gold` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_bonds` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_lift_dead` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_skyway` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_rail` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_crane` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_secured` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_van_eta` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_heli_eta` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_escape` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_crash` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_ready` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_boxed` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_payday` | mission | nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
 
 ## glasshouse
 
@@ -485,11 +510,11 @@ None.
 | `vo.mercer.pager_last` | pager_last_answer | A | systems/stealth/pager_system.gd:314<br>systems/vo/bark_tweak.tres:12 |
 | `vo.mercer.dev_start` | dev_start | A | systems/dev/dev_sandbox_mission.gd:12 |
 | `vo.guard.cuff_warning` | cuff_warning | A | systems/stealth/stealth_tweak.gd:309 |
-| `vo.crew.ack_follow` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:165 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_hold` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:165 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_carry_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:165 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_drop_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:165 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_revive` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:165 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_follow` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_hold` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_carry_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_drop_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_revive` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
 | `vo.vance.radio_objective_done_1` | radio.objective_done | R | **UNSAID**: generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_done_2` | radio.objective_done | R | **UNSAID**: generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_done_3` | radio.objective_done | R | **UNSAID**: generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
@@ -553,9 +578,9 @@ None.
 | `vo.accountant.radio_objective_done_1` | radio.objective_done | R | ContactRadio radio.objective_done [vault_drill] via ostrander_federal (generic) |
 | `vo.accountant.radio_objective_done_2` | radio.objective_done | R | ContactRadio radio.objective_done [vault_drill] via ostrander_federal (generic) |
 | `vo.accountant.radio_objective_done_3` | radio.objective_done | R | ContactRadio radio.objective_done [vault_drill] via ostrander_federal (generic) |
-| `vo.accountant.radio_objective_new_1` | radio.objective_new | R | **UNSAID**: generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_objective_new_2` | radio.objective_new | R | **UNSAID**: generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_objective_new_3` | radio.objective_new | R | **UNSAID**: generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
+| `vo.accountant.radio_objective_new_1` | radio.objective_new | R | ContactRadio radio.objective_new [bond_safe] via ostrander_federal (generic)<br>ContactRadio radio.objective_new [gold_cage] via ostrander_federal (generic) |
+| `vo.accountant.radio_objective_new_2` | radio.objective_new | R | ContactRadio radio.objective_new [bond_safe] via ostrander_federal (generic)<br>ContactRadio radio.objective_new [gold_cage] via ostrander_federal (generic) |
+| `vo.accountant.radio_objective_new_3` | radio.objective_new | R | ContactRadio radio.objective_new [bond_safe] via ostrander_federal (generic)<br>ContactRadio radio.objective_new [gold_cage] via ostrander_federal (generic) |
 | `vo.accountant.radio_objective_failed_1` | radio.objective_failed | B | ContactRadio radio.objective_failed [time_lock_wait] via night_deposit (generic)<br>ContactRadio radio.objective_failed [time_lock_wait] via ostrander_federal (generic) |
 | `vo.accountant.radio_objective_failed_2` | radio.objective_failed | B | ContactRadio radio.objective_failed [time_lock_wait] via night_deposit (generic)<br>ContactRadio radio.objective_failed [time_lock_wait] via ostrander_federal (generic) |
 | `vo.accountant.radio_objective_failed_3` | radio.objective_failed | B | ContactRadio radio.objective_failed [time_lock_wait] via night_deposit (generic)<br>ContactRadio radio.objective_failed [time_lock_wait] via ostrander_federal (generic) |
@@ -615,46 +640,47 @@ None.
 | `vo.accountant.briefing_ostrander_federal_3` | briefing | B | BriefingModel.voice_lines via ostrander_federal (contact.accountant) |
 | `vo.mercer.briefing_ostrander_federal_1` | briefing | B | BriefingModel.voice_lines via ostrander_federal (contact.accountant) |
 | `vo.mercer.briefing_ostrander_federal_2` | briefing | B | BriefingModel.voice_lines via ostrander_federal (contact.accountant) |
-| `vo.accountant.ostrander_federal_contact_intro` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:121 |
-| `vo.accountant.ostrander_federal_payday` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:122 |
-| `vo.mercer.ostrander_federal_intro` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:120 |
-| `vo.mercer.ostrander_federal_case_manager` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:95 |
-| `vo.mercer.ostrander_federal_case_gallery` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:96 |
-| `vo.mercer.ostrander_federal_case_operator` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:97<br>world/heists/ostrander_federal/ostrander_federal_mission.gd:469 |
-| `vo.mercer.ostrander_federal_keycard` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:123 |
-| `vo.mercer.ostrander_federal_code_hint` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:124 |
-| `vo.mercer.ostrander_federal_pc_found` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:125 |
-| `vo.mercer.ostrander_federal_hack_interrupt` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:126 |
-| `vo.mercer.ostrander_federal_code` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:127 |
-| `vo.mercer.ostrander_federal_server_hack` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:128 |
-| `vo.mercer.ostrander_federal_vault_gate` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:129 |
-| `vo.mercer.ostrander_federal_lasers_off` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:130 |
-| `vo.mercer.ostrander_federal_time_lock_started` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:131 |
-| `vo.mercer.ostrander_federal_time_lock_60` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:132 |
-| `vo.mercer.ostrander_federal_time_lock_open` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:133 |
-| `vo.mercer.ostrander_federal_last_pager` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:134 |
-| `vo.mercer.ostrander_federal_camera_warning` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:135 |
-| `vo.mercer.ostrander_federal_vip_client` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:136 |
-| `vo.mercer.ostrander_federal_armored_car` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:137 |
-| `vo.mercer.ostrander_federal_lockdown` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:138 |
-| `vo.mercer.ostrander_federal_lockdown_vault_open` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:139 |
-| `vo.mercer.ostrander_federal_drill_inbound_terrace` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:140 |
-| `vo.mercer.ostrander_federal_drill_inbound_dock` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:141 |
-| `vo.mercer.ostrander_federal_drill_delivered_terrace` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:142 |
-| `vo.mercer.ostrander_federal_drill_delivered_dock` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:143 |
-| `vo.mercer.ostrander_federal_drill_prepositioned` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:144 |
-| `vo.mercer.ostrander_federal_drill_started` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:145 |
-| `vo.mercer.ostrander_federal_drill_jam` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:146 |
-| `vo.mercer.ostrander_federal_burn_through` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:147 |
-| `vo.mercer.ostrander_federal_hoist` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:148 |
-| `vo.mercer.ostrander_federal_gold_cage` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:149 |
-| `vo.mercer.ostrander_federal_required_secured` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:150 |
-| `vo.mercer.ostrander_federal_sniper_assay` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:156 |
-| `vo.mercer.ostrander_federal_sniper_garage` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:157 |
-| `vo.mercer.ostrander_federal_sniper_tower` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:158 |
-| `vo.mercer.ostrander_federal_van_eta` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:151 |
-| `vo.mercer.ostrander_federal_heli_eta` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:152 |
-| `vo.mercer.ostrander_federal_escape` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:153 |
+| `vo.accountant.ostrander_federal_contact_intro` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:131 |
+| `vo.accountant.ostrander_federal_payday` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:132 |
+| `vo.mercer.ostrander_federal_intro` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:130 |
+| `vo.mercer.ostrander_federal_case_manager` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:101 |
+| `vo.mercer.ostrander_federal_case_gallery` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:102 |
+| `vo.mercer.ostrander_federal_case_operator` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:103<br>world/heists/ostrander_federal/ostrander_federal_mission.gd:505 |
+| `vo.mercer.ostrander_federal_keycard` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:133 |
+| `vo.mercer.ostrander_federal_code_hint` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:134 |
+| `vo.mercer.ostrander_federal_pc_found` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:135 |
+| `vo.mercer.ostrander_federal_hack_interrupt` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:136 |
+| `vo.mercer.ostrander_federal_code` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:137 |
+| `vo.mercer.ostrander_federal_server_hack` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:138 |
+| `vo.mercer.ostrander_federal_vault_gate` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:139 |
+| `vo.mercer.ostrander_federal_lasers_off` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:140 |
+| `vo.mercer.ostrander_federal_time_lock_started` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:141 |
+| `vo.mercer.ostrander_federal_time_lock_60` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:142 |
+| `vo.mercer.ostrander_federal_time_lock_open` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:143 |
+| `vo.mercer.ostrander_federal_last_pager` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:144 |
+| `vo.mercer.ostrander_federal_camera_warning` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:145 |
+| `vo.mercer.ostrander_federal_vip_client` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:146 |
+| `vo.mercer.ostrander_federal_armored_car` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:147 |
+| `vo.mercer.ostrander_federal_lockdown` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:148 |
+| `vo.mercer.ostrander_federal_lockdown_vault_open` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:149 |
+| `vo.mercer.ostrander_federal_drill_inbound_terrace` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:150 |
+| `vo.mercer.ostrander_federal_drill_inbound_dock` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:151 |
+| `vo.mercer.ostrander_federal_drill_delivered_terrace` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:152 |
+| `vo.mercer.ostrander_federal_drill_delivered_dock` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:153 |
+| `vo.mercer.ostrander_federal_drill_prepositioned` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:154 |
+| `vo.mercer.ostrander_federal_drill_started` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:155 |
+| `vo.mercer.ostrander_federal_drill_jam` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:156 |
+| `vo.mercer.ostrander_federal_burn_through` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:157 |
+| `vo.mercer.ostrander_federal_hoist` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:158 |
+| `vo.mercer.ostrander_federal_gold_cage` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:159 |
+| `vo.mercer.ostrander_federal_required_secured` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:160 |
+| `vo.mercer.ostrander_federal_sniper_assay` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:168 |
+| `vo.mercer.ostrander_federal_sniper_garage` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:169 |
+| `vo.mercer.ostrander_federal_sniper_tower` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:170 |
+| `vo.mercer.ostrander_federal_van_eta` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:161 |
+| `vo.mercer.ostrander_federal_heli_eta` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:162 |
+| `vo.mercer.ostrander_federal_escape` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:163 |
+| `vo.mercer.ostrander_federal_captain_arrived` | mission | A | world/heists/ostrander_federal/ostrander_federal_mission.gd:165 |
 | `vo.accountant.ostrander_federal_radio_casing` | radio.objective_done | B | ContactRadio radio.objective_done [casing] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_keycard` | radio.objective_done | B | ContactRadio radio.objective_done [keycard] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_code_hint` | radio.objective_done | B | ContactRadio radio.objective_done [code_hint] via ostrander_federal |
@@ -662,27 +688,61 @@ None.
 | `vo.accountant.ostrander_federal_radio_server` | radio.objective_done | B | ContactRadio radio.objective_done [server] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_vault_gate` | radio.objective_done | B | ContactRadio radio.objective_done [vault_gate] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_lasers` | radio.objective_done | B | ContactRadio radio.objective_done [lasers] via ostrander_federal |
-| `vo.accountant.ostrander_federal_radio_time_lock_new` | radio.objective_new | C | **UNSAID**: ostrander_federal never gets a radio.objective_new fact |
+| `vo.accountant.ostrander_federal_radio_time_lock_new` | radio.objective_new | B | ContactRadio radio.objective_new [time_lock] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_time_lock` | radio.objective_done | B | ContactRadio radio.objective_done [time_lock] via ostrander_federal |
-| `vo.accountant.ostrander_federal_radio_time_lock_wait_new` | radio.objective_new | C | **UNSAID**: ostrander_federal never gets a radio.objective_new fact |
+| `vo.accountant.ostrander_federal_radio_time_lock_wait_new` | radio.objective_new | B | ContactRadio radio.objective_new [time_lock_wait] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_time_lock_wait` | radio.objective_done | B | ContactRadio radio.objective_done [time_lock_wait] via ostrander_federal |
-| `vo.accountant.ostrander_federal_radio_vault_loot_new` | radio.objective_new | C | **UNSAID**: ostrander_federal never gets a radio.objective_new fact |
+| `vo.accountant.ostrander_federal_radio_vault_loot_new` | radio.objective_new | B | ContactRadio radio.objective_new [vault_loot] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_vault_loot` | radio.objective_done | B | ContactRadio radio.objective_done [vault_loot] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_gold_cage` | radio.objective_done | B | ContactRadio radio.objective_done [gold_cage] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_secure` | radio.objective_done | B | ContactRadio radio.objective_done [secure] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_deposit_boxes` | radio.objective_done | B | ContactRadio radio.objective_done [deposit_boxes] via ostrander_federal |
-| `vo.accountant.ostrander_federal_radio_bond_safe` | radio.objective_done | C | **UNSAID**: the mission never completes objective `bond_safe` |
-| `vo.accountant.ostrander_federal_radio_president_safe` | radio.objective_done | C | **UNSAID**: the mission never completes objective `president_safe` |
-| `vo.accountant.ostrander_federal_radio_server_drives` | radio.objective_done | C | **UNSAID**: the mission never completes objective `server_drives` |
-| `vo.accountant.ostrander_federal_radio_drill_delivery_new` | radio.objective_new | C | **UNSAID**: ostrander_federal never gets a radio.objective_new fact |
+| `vo.accountant.ostrander_federal_radio_bond_safe` | radio.objective_done | B | ContactRadio radio.objective_done [bond_safe] via ostrander_federal |
+| `vo.accountant.ostrander_federal_radio_president_safe` | radio.objective_done | B | ContactRadio radio.objective_done [president_safe] via ostrander_federal |
+| `vo.accountant.ostrander_federal_radio_server_drives` | radio.objective_done | B | ContactRadio radio.objective_done [server_drives] via ostrander_federal |
+| `vo.accountant.ostrander_federal_radio_drill_delivery_new` | radio.objective_new | B | ContactRadio radio.objective_new [drill_delivery] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_drill_delivery` | radio.objective_done | B | ContactRadio radio.objective_done [drill_delivery] via ostrander_federal |
-| `vo.accountant.ostrander_federal_radio_vault_drill_new` | radio.objective_new | C | **UNSAID**: ostrander_federal never gets a radio.objective_new fact |
+| `vo.accountant.ostrander_federal_radio_vault_drill_new` | radio.objective_new | B | ContactRadio radio.objective_new [vault_drill] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_vault_breach` | radio.objective_done | B | ContactRadio radio.objective_done [vault_breach] via ostrander_federal |
-| `vo.accountant.ostrander_federal_radio_escape_wait_new` | radio.objective_new | C | **UNSAID**: ostrander_federal never gets a radio.objective_new fact |
+| `vo.accountant.ostrander_federal_radio_escape_wait_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape_wait] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_escape_wait` | radio.objective_done | B | ContactRadio radio.objective_done [escape_wait] via ostrander_federal |
-| `vo.accountant.ostrander_federal_radio_escape_new` | radio.objective_new | C | **UNSAID**: ostrander_federal never gets a radio.objective_new fact |
+| `vo.accountant.ostrander_federal_radio_escape_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape] via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_loot` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via ostrander_federal<br>ContactRadio radio.loot_secured (loot.gold) via ostrander_federal<br>ContactRadio radio.loot_secured (loot.bearer_bonds) via ostrander_federal<br>ContactRadio radio.loot_secured (loot.server_drives) via ostrander_federal<br>ContactRadio radio.loot_secured (loot.small_valuables) via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_loot_cash_bricks` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_loot_gold` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.gold) via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_loot_bearer_bonds` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.bearer_bonds) via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_loot_server_drives` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.server_drives) via ostrander_federal |
+| `vo.mercer.rolling_thunder_intro` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_eta_60` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_eta_30` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_marshal` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_signals_done` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_signals_remind` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_c4_found` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_thermite_found` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sighted` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_stopped` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_go` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_alerted` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_escort_down` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_police` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_saw_on` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_saw_jam` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_deadbolts` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_truck_open` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_c4_armed` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_thermite_burn` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_gold` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_bonds` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_lift_dead` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_skyway` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_rail` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_crane` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_secured` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_van_eta` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_heli_eta` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_escape` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_crash` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_ready` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_boxed` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_payday` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |

@@ -4,6 +4,12 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-20) GPU-20b: the heist cap is now a flag (17:20 UTC)
+- **01633ed17:** auto_loud's heist-time cap is `--po5-heist-cap=<s>`, or `HEIST_CAP=<s>` with run_po5.sh.
+  - The default is now **2400 s** (it was a fixed 1500).
+  - The FAIL line prints the cap used. Checked: HEIST_CAP=30 on GH gives "no heist end within 30 s".
+- **deposit_boxes:** agreed, it's optional. The pilot skips it (no hand saw), and its VaultBox markers are
+  skipped via marker_skip_prefixes. It has never blocked anything in my OF runs.
 ### (-19) Regression sweep on trunk b0bd47a0: 4/4 PASS + SL stealth PASS, once P's cb8be306d is merged (16:55 UTC)
 Headless auto_loud, **Routine**, seed 1001, on env/a-core with trunk b0bd47a0 merged.
 

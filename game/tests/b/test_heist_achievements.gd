@@ -7,7 +7,7 @@ extends TestCase
 const PAYDAY_SCENE: PackedScene = preload("res://content/ui/results/payday.tscn")
 const SLOT: int = 0
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
-	&"ostrander_federal"]
+	&"ostrander_federal", &"rolling_thunder"]
 const DONE: int = Enums.ObjectiveState.COMPLETED
 const ACTIVE: int = Enums.ObjectiveState.ACTIVE
 const LANTERN: StringName = &"loot.painting_lantern_bearer"
@@ -432,6 +432,33 @@ func _cases() -> Dictionary:
 		],
 	}
 	out[&"achievement.of_cataclysm"] = _top_case(of, false)  # any mode (LEAD r244)
+	# --- Rolling Thunder (RT-B1, D-151; staged in heist_list until A's G1 plays end to end). The job always ends loud.
+	var rt: StringName = &"rolling_thunder"
+	out[&"achievement.rt_clean_stop"] = {
+		"pass": _run(_res(rt, false), _facts([], {&"signals": DONE}), "signals rigged"),
+		"miss": [
+			_run(_res(rt, false), _facts([], {&"signals": ACTIVE}), "crash stop"),
+			_run(_res(rt, false), _facts([], {&"signals": [DONE, true]}), "signals skipped"),
+		],
+	}
+	out[&"achievement.rt_heavy_haul"] = {
+		"pass": _run(_res(rt, false, {"loot": _bags(&"loot.gold", 4) + _bags(&"loot.cash_bricks", 2)}), {}, "4 gold"),
+		"miss": [_run(_res(rt, false, {"loot": _bags(&"loot.gold", 3) + _bags(&"loot.cash_bricks", 4)}), {}, "3 gold")],
+	}
+	var haul: Array = _bags(&"loot.cash_bricks", 6) + _bags(&"loot.gold", 4)
+	out[&"achievement.rt_full_convoy"] = {
+		"pass": _run(_res(rt, false, {"loot": haul, "loot_available": 10}), {}, "every bag"),
+		"miss": [_run(_res(rt, false, {"loot": haul, "loot_available": 12}), {}, "bags left on the road")],
+	}
+	out[&"achievement.rt_iron_crew"] = {
+		"pass": _run(_res(rt, false, {"difficulty": Enums.Difficulty.HAZARDOUS, "crew": [_row(9, 0, 0)]}), {}, "no downs"),
+		"miss": [
+			_run(_res(rt, false, {"difficulty": Enums.Difficulty.HAZARDOUS, "crew": [_row(9, 0, 1)]}), {}, "a down"),
+			_run(_res(rt, false, {"difficulty": Enums.Difficulty.TENSE, "crew": [_row(9, 0, 0)]}), {}, "Tense"),
+		],
+	}
+	out[&"achievement.rt_quick"] = _speed_case(rt, 840.0, 960.0, false)
+	out[&"achievement.rt_cataclysm"] = _top_case(rt, false)
 	return out
 
 

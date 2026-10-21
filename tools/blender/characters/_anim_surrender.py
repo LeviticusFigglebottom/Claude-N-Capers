@@ -300,7 +300,7 @@ def _surrender_b(sk: Skeleton, solver: Solver, N: int) -> Keys:
     _raise_hands(sk, mid)
     end = kneel_hands(sk)
     s = N / 54.0
-    return Keys(solver, [(0, H._stand_key(sk), "inout"), (round(11 * s), up, "out"), (round(20 * s), glance, "inout"),
+    return Keys(solver, [(0, H._stand_key(sk), "inout"), (round(11 * s), up, "inout"), (round(20 * s), glance, "inout"),
                          (round(27 * s), up.copy(), "inout"), (round(38 * s), mid, "inout"),
                          (round(46 * s), kup, "inout"), (N, end, "settle")])
 
@@ -330,8 +330,17 @@ def _surrender_c(sk: Skeleton, solver: Solver, N: int) -> Keys:
     spine(down, lean=14.0, chest_lean=8.0, neck=(14, 0, 0), head=(16, 0, 0), hips=(6, 0, 0))
     _hands_on_head(sk, down, shape=0.7)
     end = kneel_hands(sk)
+    # the hands come up in front of the chest first (a straight path from hanging to beside the head passes next to the
+    # shoulder, where the folded arm's elbow swings round: a one-frame 50 deg upper-arm snap)
+    rise = H._stand_key(sk)
+    spine(rise, lean=2.0, neck=(4, 0, 0), head=(4, 0, 0))
+    for sfx, sx in A.SIDES:
+        hand_on(sk, rise, sfx, v3(sx * 0.23 * k, 0.31 * k, 1.40 * k), A.unit(v3(0.0, 0.4, 1.0)), v3(0.0, 1.0, 0.0),
+                pole=v3(sx * 0.8, -0.3, -0.5), along_share=0.5)
+        rise.hands[sfx] = hand_shape("relaxed", 0.6)
     s = N / 42.0
-    return Keys(solver, [(0, H._stand_key(sk), "inout"), (round(8 * s), H.hands_up(sk, 0, 60), "inout"),
+    return Keys(solver, [(0, H._stand_key(sk), "inout"), (round(5 * s), rise, "inout"),
+                         (round(9 * s), H.hands_up(sk, 0, 60), "inout"),
                          (round(13 * s), stand_hh, "inout"),
                          (round(19 * s), squat, "inout"), (round(29 * s), down, "heavy"), (N, end, "settle")])
 

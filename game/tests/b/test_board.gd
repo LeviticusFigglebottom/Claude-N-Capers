@@ -49,7 +49,10 @@ func test_data_files_load() -> void:
 	assert_eq(t.broker_cost_by_difficulty.size(), Enums.Difficulty.size())
 	for i: int in range(1, t.broker_cost_by_difficulty.size()):
 		assert_true(t.broker_cost_by_difficulty[i] > t.broker_cost_by_difficulty[i - 1], "broker cost rises with difficulty")
-	assert_true(t.min_level_of(Enums.Difficulty.LETHAL) >= 80 and t.min_level_of(Enums.Difficulty.CATACLYSM) >= 80)
+	# D-151: Lethal / Cataclysm open at level 70.
+	assert_eq(t.min_level_of(Enums.Difficulty.LETHAL), 70)
+	assert_eq(t.min_level_of(Enums.Difficulty.CATACLYSM), 70)
+	assert_eq(t.min_level_of(Enums.Difficulty.BRUTAL), 0)
 	for cid: StringName in t.fallback_contacts:
 		assert_true(ContactDef.find(cid) != null, "fallback contact %s exists" % cid)
 	for id: StringName in _city.district_ids():

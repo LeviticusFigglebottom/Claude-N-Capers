@@ -13,6 +13,7 @@ const PAIRS: Array = [
 	[&"detection_suspicious", &"detection_alert"], [&"detection_alert", &"detection_detected"],
 	[&"detection_suspicious", &"detection_detected"], [&"health", &"armor"], [&"health", &"low_health"],
 	[&"ally_marker", &"enemy_marker"], [&"objective", &"loot_highlight"], [&"loot_highlight", &"interaction_highlight"],
+	[&"objective", &"device_jam"],  # r266: a running device timer vs a jammed one
 ]
 ## Palette id -> the simulations it must survive (default: normal vision only).
 const TARGETS: Dictionary = {
@@ -58,6 +59,7 @@ func test_default_palette_keeps_the_pd2_hud_colours() -> void:
 	assert_eq(p.health, tw.health_color)
 	assert_eq(p.armor, tw.armor_color)
 	assert_eq(p.enemy_marker, tw.mark_color)
+	assert_eq(p.device_jam, tw.device_jam_color)
 	var applied: HudTweak = p.apply_to(tw)
 	assert_ne(applied, tw, "apply_to copies")
 	assert_eq(applied.chevron_radius_px, tw.chevron_radius_px, "non-colour tuning kept")
