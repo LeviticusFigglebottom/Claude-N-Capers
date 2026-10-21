@@ -1528,9 +1528,10 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 
 ## Ghost line: a player peeks into the stair core before using it (r246 run: Npc_guard4 on SA at 0.9 m). Wait until no
 ## living guard is within 8 m of the SA core between `y_lo` and `y_hi`; logs the wait (max 180 s, then goes anyway).
-func _wait_core_clear(from_y: float, to_y: float) -> void:
+func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> void:
 	# Guards on the floor the crew stands on see it whether it waits or not: count those on the stair flights and
 	# on the destination floor only (r246c: waiting by the ground core for a basement rover got the crew seen).
+	# `same_floor` counts them too: a walk across the core on this floor (EA -> E3, r251c: rover_gallery up SA).
 	var y_lo: float = minf(from_y, to_y) - 1.0
 	var y_hi: float = maxf(from_y, to_y) + 2.0
 	var core: Vector3 = _of(OF_SA_CORE)
@@ -1541,7 +1542,7 @@ func _wait_core_clear(from_y: float, to_y: float) -> void:
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or g.global_position.y <= y_lo or g.global_position.y >= y_hi \
-					or absf(g.global_position.y - from_y) <= 0.6:
+					or (not same_floor and absf(g.global_position.y - from_y) <= 0.6):
 				continue
 			# A walking guard reaches the flights during a multi-floor climb (~14 s, r248b: rover_gallery onto SA from
 			# the Gallery floor): moving within 15 m counts; a standing post only within 8 m with LOS to the core.
@@ -2317,6 +2318,9 @@ func _g4_code() -> bool:
 		var ic: InteractableComponent = _comp(pc)
 		if ic != null and ic.enabled:
 			await pilot.use(ic, 30.0, func() -> bool: return int(pc.get(&"state")) != 0, true)
+		# Doc §4: wait in E3 while rover_gallery passes. EA -> E3 crosses the SA core: peek first (r251c: seen at 3.5 m
+		# by rover_gallery coming up SA as the pilot left EA).
+		await _wait_core_clear(OF_FFL[3], OF_FFL[2], true)
 		await _go(_of(GHOST_E3_WAIT), 0.5, 40.0)
 		await wait_until(func() -> bool: return int(pc.get(&"state")) != HackTerminal.State.RUNNING, 60.0)
 	return _objective(&"code_pc") == 2 or int(pc.get(&"state")) == HackTerminal.State.DONE

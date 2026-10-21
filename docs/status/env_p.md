@@ -6,6 +6,11 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - **GH Tense ×3 on pure trunk r251**, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**, the same as on 4a6780f4 (the seeds are deterministic).
   4501 has the same no-revive bleedout (pilot down t=249, custody t=279). r251 lacks A's e640362d (bot revives from ≤2.3 m), and
   4501 PASSES on env/a-core 441b6870 (A's run). **Merge e640362d and all 3 seeds win.** Table: captures/d145_gh_2026-10-20/table.txt, tense_r251/.
+- **Ghost on r251 + c-worlds 9d00c55b + P** (windowed, seed 1002). C's door-throat bake fix (a9fc8631) **works**: the pilot leaves
+  EA cleanly, with no STUCK (the r250 stall was the AssistantDoor west jamb vs a throat 5 cm off-centre). Steps 1-3 PASS. Step 4: rover_gallery
+  (Npc_guard4) came up SA at t≈151 as the pilot crossed the core EA → E3, and filled 1.00 at 3.5 m. Harness fix: peek at the core
+  (same-floor guards included) before EA → E3, per doc §4 ('wait in E3 while rover_gallery passes'). Re-run in progress.
+  Evidence: captures/of_g1_2026-10-20/ghost_251c.
 - A's GPU-box command lines (OF stealth/loud real-menu, OF Haz feel clip) and open items are in docs/status/env_a.md (top) on
   env/a-core. A's replies to the lead fail with the same trusted-device error. P's lines are in the entry below.
 
