@@ -82,7 +82,7 @@ as low priority and does not hold the start:
 - Parked: D-132 D1 (PO real-GPU bench, README_bench.md).
 **Verdict: the D-115 gate is met for Ostrander Federal (D-136). Kickoff sent 2026-10-17.**
 
-## Ostrander Federal done assessment, DRAFT (2026-10-21 16:50, LEAD; trunk b0bd47a0 = round 264)
+## Ostrander Federal done assessment, FINAL (2026-10-21 16:50, LEAD; trunk b0bd47a0 = round 264)
 Measured against D-115's six criteria, with D-140 / D-145 / D-146 / D-150 applied.
 1. **Content against the design doc: MET.**
    - test_of_mission 20/20.
@@ -122,4 +122,4 @@ Also confirmed:
 - D-145 Tense: GH 3/3, DB 2/3 accepted.
 - GPU-18: the r256 frame times were fine; GPU-17's "regression" was other load on the box.
 
-**Verdict: not yet.** One gate remains: (a) P's Hazardous ghost line, now at step 6 (steps 1-5 pass). (b) is met by GPU-20c.
+**Verdict: DONE (D-152, 2026-10-21 23:40).** (b) is met by GPU-20c. (a) is accepted on step-wise evidence: steps 1-5 pass in one continuous run, every step-6 sub-move passes, and steps 6-7 follow the route note. Item 4 is met.
