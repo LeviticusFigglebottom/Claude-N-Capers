@@ -46,3 +46,26 @@ Checkout: `C:\Users\Aaron\caperworks-gpu`, depth-1 trunk clone, cone sparse-inde
 | shadow_ledger | 0 | 28 s | 25 |
 
 - Output: `docs/levels/<id>/gpu_forward_plus/` (shots + contact_sheet.jpg + shots.md). I spot-checked the glasshouse and shadow_ledger contact sheets and they are fully lit with no black frames.
+
+## GPU-4: OF re-render on trunk c04cb710 (round 251)
+- Trunk c04cb710 merged into gpu/renders (merge f444436f).
+- `--headless --path game --import`: exit 0, 9 s.
+- review_shots (same command as GPU-1, `--out=<repo>\docs\levels\ostrander_federal\g2\gpu_r251`): exit 0, 38 s,
+  the same 34 shots + contact_sheet as GPU-1, all lit. Warnings: `PresidentSafe` stow warnings, now 4
+  (PresidentValuables1/2/3 **and PresidentBonds**, up from 3), plus the usual texture RID leak.
+- heist_cast_perf quiet OF (`--heist=ostrander_federal --seed=1037 --detail`): exit 0, 46 s, npcs=29 (guard 10, civilian 19)
+  same as GPU-2. Console: `gpu/perf/ostrander_federal_r251.txt`.
+- Correction to GPU-1: it was 34 shots (TopDownPlan + 33 rc_*) + contact_sheet, not 35.
+
+**Draw-count delta vs GPU-2 (e960048e -> c04cb710): cast draws went up 50-70% in 5 of 6 views**
+
+| view | draws e960048e (map/cast) | draws c04cb710 (map/cast) |
+|---|---|---|
+| hall_south_eye | 2088 (1458/630) | 2441 (1424/1017) |
+| hall_south_high | 1881 (1287/594) | 2214 (1263/951) |
+| hall_west_diag | 2091 (1444/647) | 2493 (1428/1065) |
+| rc_hall_entrance | 2157 (1483/674) | 2517 (1444/1073) |
+| rc_hall_counter | 2216 (1383/833) | 1752 (1373/379) |
+| rc_hall_from_gallery | 1397 (861/536) | 1749 (827/922) |
+
+NPC placement is seeded but animation/tier state at capture time may differ, so check the per-NPC lines in the txt before treating this as a regression.
