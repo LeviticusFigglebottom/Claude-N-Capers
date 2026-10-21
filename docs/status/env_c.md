@@ -6,6 +6,24 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, **GPU-21 fixes 1 and 2 are on env/c-worlds (0832f69b7). Please queue the re-render** for
+  rc_diner_dining, rc_diner_function and rc_ext_junction. The convoy shots come after the convoy swap.
+  - **DR:**
+    - Floor and ceiling: checker vinyl and a flat plaster ceiling, with red enamel pendants (14).
+    - Counter: diner counter modules, with 7 fixed stools at the 0.9 m counter.
+    - Tables and seating: laminate tables (0.74 m) and chrome / red vinyl chairs at the same seat points. Three
+      booths line the Orchard windows (unseated: the bench-to-table gap still blocks seating).
+    - Wall dressing: a menu board and an EAT / COFFEE PIE neon.
+  - **U1:** the same finishes and furniture. U5 (staff) is unchanged.
+  - **Gameplay unchanged:** till, office safe, cover, cower marks and customers.
+  - **New pin_only props:** stool, chair, counter, three tables, pendant, menu board and neon_eat. New material:
+    vinyl_checker (texgen). Reasons are in rolling_thunder.md "G2 diner identity" (D-147).
+  - **Cameras:** rc_diner_dining is now at (16.4, 1.7, 25.2) looking NNE. rc_ext_junction is now at (-16.5, 1.7, 17.5)
+    looking NE; the old eye stood behind a bus shelter panel.
+  - **Gate:** regen twice byte-identical; validate greybox and final PASS; c and a tests pass; navmesh 3,718.
+  - **Perf:** rc_diner_dining is still over 4,000 draws (4,355, of which 3,313 are sun shadow). Getting it under
+    needs interior shadow cuts (D-146), noted for the perf pass.
+  - Batch 3's last commit (bay lines, hoarding graphic) is in at 06f8cc6cc.
 - 2026-10-21, GPU-21 review received.
   - **Diner identity pass in progress:** booths along the windows, fixed stools at the counter, menu board and neon,
     a checker or vinyl floor, pendant lights and a diner ceiling. The function room gets the same pass.
