@@ -804,14 +804,18 @@ func _unload_lift() -> bool:
 		return false
 	for n: Node in rt.find_children("*", "BagLift", true, false):
 		var lift: BagLift = n as BagLift
-		if lift == null or lift.is_moving() or lift.bags_in_car().is_empty():
+		if lift == null or (not lift.is_moving() and lift.bags_in_car().is_empty()):
 			continue
 		var top: int = 0
 		for i: int in range(lift.landing_count()):
 			if absf(lift.landing_transform(i).origin.y - zone.global_position.y) \
 					< absf(lift.landing_transform(top).origin.y - zone.global_position.y):
 				top = i
-		if lift.landing != top:
+		if lift.is_moving() and lift.destination == top:
+			# hoist4: just sent, the pilot bagged more cash while the car travelled, then found it loaded up top
+			await p.hold_position(lift.travel_s + 1.0, func() -> bool: return not lift.is_moving())
+			return true
+		if lift.is_moving() or lift.landing != top or lift.bags_in_car().is_empty():
 			continue
 		var bag: LootBag = lift.bags_in_car()[0]
 		var comp: InteractableComponent = bag.get_node_or_null(^"Interactable") as InteractableComponent
