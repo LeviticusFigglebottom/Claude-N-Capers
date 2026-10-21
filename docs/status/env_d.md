@@ -4,6 +4,16 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **Afterhours cast plan, paper only (D-147): `game/assets/characters/_review/afterhours_cast_plan.md` (env/d-art).**
+  Needs 0 new meshes, 16 finish swaps (5 bouncer, 4 bartender, 6 patron, 1 off-duty) and 1 new clip, `dj_mix`.
+  Estimate about half a D day; the earlier estimate was 2.
+  - Reused as is: the 10 gala `gallery_patron` looks (VIP and balcony crowd), `gallery_waiter` / `_b` (as violet swaps),
+    `club_dj`, the cartel looks (couriers), and every special and police look via their EnemyDefs.
+  - **PO question:** dancers (30 live) share the 10 club looks. No twin inside a 5-dancer cluster, but looks repeat
+    across clusters (D-130 allows it). Accept, or pay for more swaps?
+  - **Flag:** the roster's "plain clothes" off-duty cop is `frd_agent`, which wears the FRD windbreaker with marks. The
+    plan includes a swap without the marks.
+  - **IDLE again, can take X.**
 - **RT cast lineups for the PO: prep/d-rt de0212248, `game/assets/characters/_review/rt_lineup/`.** Six lit
   1920x1080 sheets, each look front + 3/4, idle, captioned: convoy, escorts (Routine/Tense duty → Hazardous → Brutal →
   Lethal (+ rare Wrecker) → Cataclysm), street_reused (12 OF looks), street_rt (pedestrians a-i + the 3 staff), site
