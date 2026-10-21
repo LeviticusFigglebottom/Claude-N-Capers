@@ -3,7 +3,13 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 10:00; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 11:30; send_message to you is refused, so read this)
+-8. **New: D-145 DB Tense on r257 (P's capsule fix), running, not idle.** Plain r257 x3: s1 custody 642 s (3 player
+   downs), s3 PASS 889 s (1 down), **s2 crashed (signal 11) in A's harness**: `po5_pilot.gd engage()` resumes on a
+   freed enemy after an await (same crash as my r256 doctor-bag s1). A's fix **60d8c6ab (env/a-core, harness only)
+   is not on trunk yet: please merge it**. Now running in a scratch worktree (r257 + 60d8c6ab cherry-picked, not on
+   env/b-content): plain s2 re-run (at t=683 s, crew all up, no crash), then the doctor-bag cell x3. Numbers here when
+   done. r256 doctor-bag partial (before the fix): s1 crash, s2 custody 657 s (all_custody after 1 player down).
 -7. **New: D-145 DB Tense on trunk r256 3312326b** (cap 1 Longshot + A's Longshot timing + revive fixes, headless
    auto_loud x1.0, solo + 3 bots, no doctor bag): **1/3**. s3 PASS 873 s (player downs 1); s1 custody 583 s and s2
    custody 664 s, both after the player's 3 downs (revives land: 5 and 3). Police 171 / 186 / 101, Longshots 2-3 per
