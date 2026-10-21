@@ -114,6 +114,162 @@ VARIANTS = {
     ),
 }
 
+# The 7 new RT kits of §3c (RT-C2 batch 2), assembled from existing catalog props only. A §3c "new generator" a kit
+# cannot place yet is named in its notes (car_park_deck: prop_car_park_barrier, bay lines; diner_dining:
+# prop_diner_booth; kitchen_commercial: prop_cookline; site_frame_*: prop_scaffold, prop_site_clutter; exterior_site:
+# prop_rt_tower_crane, plywood_painted). Open-air rooms (the frame, the site yard) are dressed from fixed tables
+# (rt_dress_data.gd, the OF way); the kit sets their required kinds and densities.
+NEW_KITS = {
+    "car_park_deck": {
+        "purpose": "car_park",
+        "min_density": 0.015,
+        "max_density": 0.3,
+        "min_props": 10,
+        "salt": 4711,
+        "required": ["light_fixture", "fire_extinguisher"],
+        "optional": {"exit_sign": 1},
+        "counts": {"fire_extinguisher": (3, 4)},
+        "assets": {"light_fixture": ["prop_led_batten_cold"], "exit_sign": ["prop_exit_sign"]},
+        "ceiling": {"prop_led_batten_cold": 6.0},
+        "lone_ok": ["car", "fire_extinguisher", "exit_sign", "light_fixture", "safe", "bag_lift"],
+        "notes": "RT CP-G / CP-2 car-park decks: cold LED battens on a 6 m grid under the deck above, extinguishers "
+        "on the walls, exit signs over the doors; the parked cars (veh_car_sedan_*) are the map's (catalog art on "
+        "the G1 boxes). No floor props: the aisles and ramps stay a drive. Waits: prop_car_park_barrier, bay lines.",
+    },
+    "diner_dining": {
+        "purpose": "restaurant",
+        "min_density": 0.12,
+        "max_density": 1.0,
+        "min_props": 12,
+        "salt": 4712,
+        "required": ["register", "table", "chair", "light_fixture"],
+        "optional": {"plant": 0.5, "bin": 0.5},
+        "counts": {"table": (1, 2)},
+        "assets": {
+            "light_fixture": ["prop_downlight"],
+            "table": ["prop_table_round_d120"],
+            "chair": ["prop_chair_break"],
+            "bin": ["prop_bin_small"],
+            "plant": ["prop_plant_tall"],
+        },
+        "ceiling": {"prop_downlight": 2.6},
+        "lone_ok": ["display_case", "plant"],
+        "notes": "RT DR Halloran's dining room: the counter (prop_counter_sales art) with the till on it, round "
+        "tables and chairs beside the map's three customer tables, downlights (prop_pendant_brass hangs to 1.05 m "
+        "under the 3.0 m ceiling, so not here), the pie case and the counter stools from fixed tables. Waits: "
+        "prop_diner_booth (no pair seat exists), the HALFWAY neon (prop_neon_vossberg variant).",
+    },
+    "kitchen_commercial": {
+        "purpose": "kitchen",
+        "min_density": 0.25,
+        "max_density": 1.8,
+        "min_props": 10,
+        "salt": 4713,
+        "required": ["fridge", "kitchen_counter", "wall_cabinet", "microwave", "bin", "shelving", "light_fixture"],
+        "optional": {"fire_extinguisher": 1, "box": 0.6},
+        "assets": {
+            "bin": ["prop_bin_kitchen"],
+            "shelving": ["prop_shelving_parts"],
+            "light_fixture": ["prop_ceiling_panel_neutral"],
+            "box": ["prop_box_small"],
+        },
+        "ceiling": {"prop_ceiling_panel_neutral": 2.4},
+        "notes": "RT K diner kitchen: fridge, prep counter with the microwave and wall cabinets, dry-goods shelving, "
+        "kitchen bin; the prep table (prop_packing_table_steel art) is the map's. Waits: prop_cookline (the G1 "
+        "Cookline box stays greybox), prop_door_slide_coldstore (dressing).",
+    },
+    "function_room": {
+        "purpose": "restaurant",
+        "min_density": 0.12,
+        "max_density": 1.0,
+        "min_props": 12,
+        "salt": 4714,
+        "required": ["table", "chair", "counter_bar", "light_fixture"],
+        "optional": {"plant": 0.8},
+        "counts": {"table": (2, 3), "chair": (6, 8)},
+        "assets": {
+            "table": ["prop_table_break"],
+            "chair": ["prop_chair_break"],
+            "counter_bar": ["prop_bar_lounge_w300"],
+            "light_fixture": ["prop_ceiling_panel_neutral"],
+            "plant": ["prop_plant_tall"],
+        },
+        "ceiling": {"prop_ceiling_panel_neutral": 2.6},
+        "notes": "RT U1 upstairs function room: break tables with chairs beside the map's two long tables, the "
+        "lounge bar on a wall, ceiling panels.",
+    },
+    "site_frame_ground": {
+        "purpose": "exterior",
+        "min_density": 0.01,
+        "max_density": 0.3,
+        "min_props": 6,
+        "salt": 4715,
+        "required": ["pallet", "forklift", "cone"],
+        "lone_ok": ["pallet", "forklift", "cone", "formwork", "skip", "gas_cylinders"],
+        "notes": "RT FG the frame's ground floor: loaded pallets in pairs, the forklift (for the dumper, D-149.6), "
+        "cones; the formwork stacks are the map's (G1 boxes). Fixed tables (rt_dress_data.gd). Waits: "
+        "prop_site_clutter (formwork / rebar / mixer), prop_scaffold.",
+    },
+    "site_frame_slab": {
+        "purpose": "exterior",
+        "min_density": 0.008,
+        "max_density": 0.3,
+        "min_props": 4,
+        "salt": 4716,
+        "required": ["pallet", "cone"],
+        "lone_ok": ["pallet", "cone", "gas_cylinders"],
+        "notes": "RT F1 the frame's first slab: block pallets (the map's G1 boxes, prop_pallet_loaded art) with a "
+        "second pallet each, cones by the slab edge. Fixed tables. Waits: prop_scaffold (edge protection), "
+        "prop_site_clutter.",
+    },
+    "exterior_site": {
+        "purpose": "exterior",
+        "min_density": 0.005,
+        "max_density": 0.3,
+        "min_props": 8,
+        "salt": 4717,
+        "required": ["lamp_post", "cone", "barrier", "light_fixture"],
+        "lone_ok": [
+            "lamp_post",
+            "cone",
+            "barrier",
+            "light_fixture",
+            "skip",
+            "dumpster",
+            "formwork",
+            "pallet",
+            "gas_cylinders",
+            "landmark",
+            "pole",
+            "ladder",
+            "vehicle",
+        ],
+        "notes": "RT X4 Tanner's Reach site yard: sodium masts, roadworks barriers with a hazard beacon, cones, gas "
+        "cylinders by the cabins. Fixed tables. Waits: prop_rt_tower_crane (the G1 crane boxes), plywood_painted "
+        "+ the hoarding graphic, prop_c4_box.",
+    },
+}
+
+# the 8th variant (RT-C2 batch 2): the roof deck from the new car_park_deck
+NEW_VARIANTS = {
+    "car_park_roof": (
+        "car_park_deck",
+        "roof",
+        {
+            "required": ["street_lamp"],
+            "optional": {},
+            "counts": {"street_lamp": [4, 6]},
+            "min_props": 6,
+            "min_density": 0.004,
+            "assets_set": {"street_lamp": ["prop_street_lamp"]},
+            "ceiling": {},
+            "lone_ok_add": ["street_lamp"],
+            "notes": "RT CP-R the open roof deck: street lamps off the parapets (prop_street_lamp as the §3c lamp "
+            "columns), the map's parked cars; no ceiling. Waits: the heli-pad marking (texgen decal).",
+        },
+    ),
+}
+
 
 def _tres_kit(kit_id: str) -> dict:
     """A hand-written DressingKit .tres as a _kits.py dict (flat fields only; refuses clutter groups)."""
@@ -153,12 +309,13 @@ def _tres_kit(kit_id: str) -> dict:
 
 
 def rolling_thunder_kits(kits: dict) -> dict:
-    out = {}
-    for vid, (base, purpose, ch) in VARIANTS.items():
-        k = copy.deepcopy(kits[base]) if base in kits else _tres_kit(base)
+    out = {kid: copy.deepcopy(k) for kid, k in NEW_KITS.items()}
+    for vid, (base, purpose, ch) in {**VARIANTS, **NEW_VARIANTS}.items():
+        src = out if base in out else kits
+        k = copy.deepcopy(src[base]) if base in src else _tres_kit(base)
         k["purpose"] = purpose
         k["seed_id"] = base
-        for key in ("required", "optional", "counts", "min_props"):
+        for key in ("required", "optional", "counts", "min_props", "min_density", "ceiling"):
             if key in ch:
                 k[key] = copy.deepcopy(ch[key])
         assets = k.setdefault("assets", {})

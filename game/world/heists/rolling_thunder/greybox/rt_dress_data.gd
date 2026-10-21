@@ -118,6 +118,38 @@ const ROWS: Array = [
 ## Directly placed props: [name, asset, position, yaw, metas]. Wall mounts sit on the face at `position` (centred);
 ## ceiling mounts hang from it.
 const DIRECT_PROPS: Array = [
+	# DR (diner_dining): counter stools facing the counter (catalog stools seat only at benches)
+	["CounterStool2", "prop_stool_shop", Vector3(23.0, 0.0, 21.0), -90.0, {}],
+	["CounterStool3", "prop_stool_shop", Vector3(23.0, 0.0, 21.7), -90.0, {}],
+	# CP-R (car_park_roof): street lamps off the parapets, the arm over the deck (the placer finds no row on the roof
+	# between the parked cars, the head houses and the heli pad)
+	["RoofLampW0", "prop_street_lamp", Vector3(17.2, 7.0, -40.0), -90.0, {}],
+	["RoofLampW1", "prop_street_lamp", Vector3(17.2, 7.0, -28.0), -90.0, {}],
+	["RoofLampN", "prop_street_lamp", Vector3(30.0, 7.0, -43.3), 180.0, {}],
+	["RoofLampS", "prop_street_lamp", Vector3(20.0, 7.0, -21.0), 0.0, {}],
+	# FG (site_frame_ground): the forklift between the columns, pallets in pairs, cones; clear of the guards' loop
+	# (FrameNW - FrameSW at x -46, FrameNE - FrameSE at x -27)
+	["FrameForklift", "prop_forklift", Vector3(-41.0, 0.0, -46.5), 0.0, {}],
+	["FramePallet0", "prop_pallet_loaded", Vector3(-48.0, 0.0, -38.0), 0.0, {}],
+	["FramePallet1", "prop_pallet_loaded", Vector3(-48.0, 0.0, -37.05), 0.0, {}],
+	["FrameCone0", "prop_traffic_cone", Vector3(-32.6, 0.0, -42.0), 0.0, {}],
+	["FrameCone1", "prop_traffic_cone", Vector3(-32.6, 0.0, -41.3), 0.0, {}],
+	# F1 (site_frame_slab, +3.5): a second pallet by each block pallet, cones by the west edge
+	["SlabPallet0", "prop_pallet_loaded", Vector3(-29.0, 3.5, -32.6), 0.0, {}],
+	["SlabPallet1", "prop_pallet_loaded", Vector3(-45.0, 3.5, -44.6), 0.0, {}],
+	["SlabCone0", "prop_traffic_cone", Vector3(-48.5, 3.5, -40.0), 0.0, {}],
+	["SlabCone1", "prop_traffic_cone", Vector3(-48.5, 3.5, -39.3), 0.0, {}],
+	# X4 (exterior_site): sodium masts in the yard's corners, roadworks barriers with a beacon by the crane, cones,
+	# gas cylinders on the tool store's east wall; off the guards' loop (GateN - GateS at x -16.5)
+	["SiteMastNW", "prop_mast_sodium", Vector3(-58.5, 0.0, -54.5), 180.0, {}],
+	["SiteMastNE", "prop_mast_sodium", Vector3(-15.8, 0.0, -54.0), 180.0, {}],
+	["SiteMastSW", "prop_mast_sodium", Vector3(-58.5, 0.0, -28.5), -90.0, {}],
+	["SiteBarrier0", "prop_barrier_roadworks", Vector3(-19.5, 0.0, -27.5), 90.0, {}],
+	["SiteBarrier1", "prop_barrier_roadworks", Vector3(-19.5, 0.0, -25.4), 90.0, {}],
+	["SiteBeacon", "prop_beacon_hazard", Vector3(-19.5, 0.0, -29.0), 0.0, {}],
+	["SiteCone0", "prop_traffic_cone", Vector3(-52.0, 0.0, -52.5), 0.0, {}],
+	["SiteCone1", "prop_traffic_cone", Vector3(-51.3, 0.0, -52.5), 0.0, {}],
+	["SiteGas", "prop_gas_cylinders", Vector3(-45.65, 0.0, -20.0), -90.0, {}],
 	# ST's second rect (x 32-34, z 26-32; the placer dresses a room's largest box): shelving and a box stack on the
 	# east wall, clear of the electrical closet's door (z 26)
 	["STShelf", "prop_shelving_boxes", Vector3(33.56, 0.0, 29.6), 90.0, {}],

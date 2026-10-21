@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"function_room"
+purpose = &"restaurant"
+required_items = Array[StringName]([&"table", &"chair", &"counter_bar", &"light_fixture"])
+optional_items = {
+&"plant": 0.8
+}
+clutter_groups = {}
+min_density = 0.12
+max_density = 1
+min_props = 12
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 4714
+counts = {
+&"chair": Vector2i(6, 8),
+&"table": Vector2i(2, 3)
+}
+assets = {
+&"chair": PackedStringArray("prop_chair_break"),
+&"counter_bar": PackedStringArray("prop_bar_lounge_w300"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"table": PackedStringArray("prop_table_break")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.6}
+notes = "RT U1 upstairs function room: break tables with chairs beside the map's two long tables, the lounge bar on a wall, ceiling panels."
