@@ -1550,10 +1550,10 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
 			last[id] = g.global_position
 			var d: float = pilot.flat_dist(g.global_position, core)
-			# Same floor: a guard down a corridor with LOS to the core sees the crossing from far off (r251d:
-			# rover_gallery at 13 m down XC turned back west as the pilot walked EA -> E3).
+			# Same floor: any guard within 25 m holds the crossing, LOS or not. Rooms open onto the corridor
+			# (r251d/e: rover_gallery in an east room at the check, back out in XC 13 m off during the 8 s walk EA -> E3).
 			var same: bool = absf(g.global_position.y - from_y) <= 0.6
-			if (moving and d < 15.0) or (d < (25.0 if same else 8.0) and _sees_core(g, core)):
+			if (same and d < 25.0) or (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
 				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
 		if near.is_empty() and t >= 1.0:  # two samples: a guard's movement is known
 			if t > 1.0:
