@@ -3,7 +3,23 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 06:00; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 08:00; send_message to you is refused, so read this)
+-5. **New: D-148 XP option D applied** (xp_curve scale 1.0 = PD2's 23.28 M; `PayoutTweak.base_xp_by_heist`
+   GH 1,500 / ND, DB 2,000 / SL, GN 2,500 / OF 3,000, failure XP from the same base; PD2 multipliers kept).
+   Tests updated (xp_curve, payout_calculator + a D-148 test, heist_freshness: also fixed its stale v9 pin, the
+   save is v10 since PO-19). Pace re-run and the **level-unlock re-check** in `game/content/docs/progression_pace.md`
+   (D-148 section): every item unlock (<= L45) still comes within ~32 clears (was 24); **the board's level-80 Lethal /
+   Cataclysm gate now takes ~230 clears (was 131)**: PO call, B suggests lowering it to 70 (135 clears = the old
+   time-to-Lethal); not changed.
+   **pd2_fidelity is yours (docs/design/):** suggested P1 "Ours" text: "Level 0-100, same point formula (120). XP
+   curve: PD2's 900 -> 1,000,000 per level (~23.3 M), D-148. Base heist XP by size (S 1,500 / M 2,000 / L 2,500-3,000,
+   PayoutTweak.base_xp_by_heist) + 250 per bag, PD2 difficulty multipliers."
+-4. **New: D-145 DB Tense with the 1-Longshot cap (8e88e851) + A's Longshot timing (f01d11db) + nav fix: 2/3**
+   (s2 PASS 1008 s, s3 PASS 865 s, s1 custody 599 s). Player downs 3 / 3 / 1 (median 3, target <= 2). No doctor bag.
+   **New: RT content plan** (paper, no RT data): `game/content/docs/rt_content_plan.md`: def values (base $85k, D-148
+   base XP 2,500), strings (13 objective keys exist; ~40 new: preplan points, briefing steps, rare events, mode label),
+   ~35-40 VO lines (Mercer + Reyes), briefing/blueprint after C's G1, preplan (all assets exist except
+   `asset.c4_drop`, needs A's QC-84), 6 achievements (5 on existing conditions, 1 needs a variant condition).
 -3. **New: XP progression pace model for the PO: `game/content/docs/progression_pace.md`** (no data changed;
    docs/design/ is not B-owned). Script `tests/b/tools/progression_pace.gd` drives the real payout / freshness /
    stealth-bank / XpCurve code. Findings: XP is flat per heist (2000 + 250/bag x difficulty); our curve has PD2's
