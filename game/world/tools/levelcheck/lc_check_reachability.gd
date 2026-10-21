@@ -61,6 +61,20 @@ func run(ctx: LcContext) -> void:
 	for cfg: Dictionary in configs:
 		await ctx.set_variant_config(cfg["active"])
 		pairs += _run_config(ctx, String(cfg["label"]), failures)
+	# QC-87c (D-149.1): one run per convoy layout, with its route slot active, the other layouts inactive and only its
+	# own pre-baked nav enabled; its trucks' RearDoor spots and its COVER points become targets.
+	var layouts: Array[Node3D] = ctx.layouts()
+	for lay: Node3D in layouts:
+		var act2: Dictionary = base.duplicate()
+		var slot: VariantSlot = _slot_of(lay)
+		if slot != null:
+			for o2: VariantSlot in groups_of(ctx).get(slot.slot_group, []):
+				act2[o2] = o2 == slot
+		await ctx.set_variant_config(act2)
+		await ctx.set_layout_config(lay)
+		pairs += _run_config(ctx, "convoy=%s" % String(lay.get_meta(&"convoy_layout")), failures, layout_targets(ctx, lay))
+	if not layouts.is_empty():
+		await ctx.set_layout_config(null)
 	await ctx.set_variant_config({})
 	var keys: Array = failures.keys()
 	keys.sort()
@@ -69,11 +83,13 @@ func run(ctx: LcContext) -> void:
 		var labels: PackedStringArray = f["labels"]
 		var lab: String = ", ".join(labels.slice(0, 6)) + (" ..." if labels.size() > 6 else "")
 		fail(ctx, f["node"], f["pos"], "%s [variants: %s]" % [f["msg"], lab])
-	note("%d variant configuration(s), %d spawn->target path queries" % [configs.size(), pairs])
+	note("%d variant configuration(s), %d convoy layout(s), %d spawn->target path queries"
+		% [configs.size(), layouts.size(), pairs])
 
 
-func _run_config(ctx: LcContext, label: String, failures: Dictionary) -> int:
+func _run_config(ctx: LcContext, label: String, failures: Dictionary, extra: Array[Dictionary] = []) -> int:
 	var targets: Array[Dictionary] = LcTargets.collect(ctx)
+	targets.append_array(extra)
 	var seen: Dictionary = {}
 	for t: Dictionary in targets:
 		seen[t["node"]] = true
@@ -108,6 +124,28 @@ func _run_config(ctx: LcContext, label: String, failures: Dictionary) -> int:
 				_record(failures, ctx, t3["node"], goal, "%s `%s` unreachable from player spawn `%s` (%s)"
 					% [t3["kind"], t3["name"], ctx.node_path(sp), end_s], label)
 	return n
+
+
+## A convoy layout's own targets: each truck's RearDoor marker (meta `truck_kind`) and its COVER TacticalPoints
+## (out of the cover group until the stop, so not in the normal target set).
+static func layout_targets(ctx: LcContext, layout: Node3D) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for n: Node in layout.find_children("*", "Node3D", true, false):
+		var is_door: bool = n.has_meta(&"truck_kind")
+		var is_cover: bool = n is TacticalPoint and (n as TacticalPoint).kind == TacticalPoint.Kind.COVER
+		if is_door or is_cover:
+			out.append({"name": ctx.node_path(n), "node": n, "pos": (n as Node3D).global_position,
+				"kind": "convoy_rear_door" if is_door else "convoy_cover", "zone": null})
+	return out
+
+
+static func _slot_of(n: Node) -> VariantSlot:
+	var cur: Node = n.get_parent()
+	while cur != null:
+		if cur is VariantSlot:
+			return cur as VariantSlot
+		cur = cur.get_parent()
+	return null
 
 
 ## NPC markers with meta `police_only = true` (police spawns on an island reached only through
