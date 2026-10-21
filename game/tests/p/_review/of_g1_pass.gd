@@ -250,6 +250,8 @@ var _rh_ld_t: float = -1.0
 ## Step 6's window: samples in a row with the vault guard on loop (b) or (c), and when that absence began.
 var _vc_away_n: int = 0
 var _vc_away_since: float = -1.0
+## Step 6: other basement guards' last sampled positions (closing on the gate).
+var _vc_last: Dictionary = {}
 
 
 func _ready() -> void:
@@ -1858,8 +1860,8 @@ func _down_to_bb() -> bool:
 
 
 ## Step 6's VC crossing window: the vault guard on loop (b) or (c) (two samples) since at most `max_age` s (his absences
-## run ~30-40 s), no other guard in VC or in BB's strip west of x 40, and no other
-## basement guard within 15 m of the gate (the CQ <-> gate leg is BB).
+## run ~30-40 s), or >= 25 m by path from the gate; and no other basement guard in VC, within 12 m of the gate, or
+## walking in BB toward it within 32 m (the gate -> CQ leg is BB).
 func _vc_window(max_age: float) -> bool:
 	# Doc §6: a window is the vault guard on loop (b) (RC: west / south) or (c) (east, SD: x > 36); ghost6_g saw (c) at
 	# t=280 / 490 / 670 unused. A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was
@@ -1873,25 +1875,46 @@ func _vc_window(max_age: float) -> bool:
 	_vc_away_n = _vc_away_n + 1 if away else 0
 	if _vc_away_n == 1:
 		_vc_away_since = rt.heist_time_s
-	if _vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age:
+	var gate_at: Vector3 = _of(Vector3(14.5, OF_FFL[0], 9.5))
+	# ...or far enough by path that he can't be back at the gate within the trip (ghost6_i: clear of the others at
+	# t=179 / 299 with him 18-28 s into loop (b) / (c), refused on age alone). 25 m: ~17 s at his walk, a bag trip.
+	var far: bool = vp != Vector3.INF and absf(vp.y - OF_FFL[0]) < 1.5 and _nav_len(vp, gate_at) >= 25.0
+	if not far and (_vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age):
 		return false
 	return _vc_others() == ""
+
+
+## Navmesh path length (m) from `a` to `b` on the crew's map (INF when there is no path).
+func _nav_len(a: Vector3, b: Vector3) -> float:
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(pilot.crew.get_world_3d().navigation_map, a, b, true)
+	if path.size() < 2:
+		return INF
+	var d: float = 0.0
+	for i: int in range(1, path.size()):
+		d += path[i - 1].distance_to(path[i])
+	return d
 
 
 ## Step 6: the first other basement guard that holds a VC crossing ("" = none), for the window and its log.
 func _vc_others() -> String:
 	var gate_at: Vector3 = _of(Vector3(14.5, OF_FFL[0], 9.0))
+	var who: String = ""
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
 		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5 or _has_tag(g, "guard_vault"):
 			continue
 		var p: Vector3 = g.global_position
-		# BB is one sight line: the gate -> CQ leg runs along it (ghost6_d: rover_basement 19 m east, walking west,
-		# filled 1.0 on the bag trip in 1.5 s, t=576).
-		if (p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or pilot.flat_dist(p, gate_at) < 15.0 \
-				or (p.z > 6.5 and p.z < 9.6 and p.x < 40.0):
-			return "%s %s" % [g.name, Po5Pilot._v(p)]
-	return ""
+		var id: int = g.get_instance_id()
+		var d: float = pilot.flat_dist(p, gate_at)
+		var closing: bool = _vc_last.has(id) and d < pilot.flat_dist(_vc_last[id], gate_at) - 0.05
+		_vc_last[id] = p
+		# BB is one sight line, but VC is walled off from it: the exposed leg is the gate -> CQ dash. A BB walker
+		# heading for the gate within 32 m holds it (ghost6_d: 19 m east, walking west, 1.0 in 1.5 s, t=576); one
+		# walking away or standing far off does not (ghost6_i: rover_basement's BB sweep held every window).
+		if who == "" and ((p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or d < 12.0
+				or (p.z > 6.5 and p.z < 9.6 and d < 32.0 and closing)):
+			who = "%s %s%s" % [g.name, Po5Pilot._v(p), " closing" if closing else ""]
+	return who
 
 
 func _wait_vc_window(label: String, max_age: float, max_s: float = 900.0) -> void:
