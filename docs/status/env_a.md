@@ -513,6 +513,25 @@ GameplayPrefab`, an AnimatableBody3D root `Body`.
   - fewer leave it at n/4 (replicated count);
   - a pre-plan drop spawns a pickup with the right count.
 
+**C's RT asks, queued for after OF (paper):**
+- **civilians_leave at the alarm (D-149.7, QC-RT7):** HeistMission.civilians_leave(exit_tag) today returns 0 once
+  loud. RT needs: on `alarm_raised`, street civilians with a `civ_flee` route run to their sidewalk exit and despawn
+  there; the rest take the existing cower / flee.
+  - Plan: a loud branch in civilians_leave (walk to the nearest exit tagged `exit_tag`, despawn on arrival), plus
+    sidewalk call points (CivilianTargets.add_call_point, REASON_PHONE) for the 911 calls.
+  - Test: 3 civilians at the alarm reach two exits and despawn; a call point brings a call.
+- **Layout cover enable at the stop:** on the last `vehicle_stopped`, enable the TacticalPoints (COVER /
+  SHIELD_ANCHOR / ENTRY) under the active ConvoyLayout (`Gameplay/Convoy/<route>/<clean|crash>`) with
+  TacticalPoint.enabled (QC-RT1, in r258), and disable the other three layouts' points. The same call swaps in the
+  layout's nav region (D-149.1).
+  - Test: after the stop, only the active layout's points are in their groups.
+- **Tannery gates on mixer_move:** the gates under the Tannery underpass open (Door.unlock + open, or a nav region
+  swap) when the mixer starts its move (`mixer_move`, stop + 3 s on a clean stop, the impact on a crash), so the
+  trench has its second exit.
+  - Plan: the mission listens to ConvoyVehicle `drive_started` on the mixer and opens the doors tagged
+    `tannery_gate`.
+  - Test: the gates are shut before the move and open, with their nav link enabled, after it.
+
 **Proposed order once OF is done:**
 1. QC-81 BurnPoint.target.
 2. A5-03 item_pickup + count.
