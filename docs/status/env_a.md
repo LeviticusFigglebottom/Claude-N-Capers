@@ -4,6 +4,40 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-22) RT-A5 ambush hooks + RT-A6 mission stage 1; **merge RT-B1 (env/b-content) with or before this** (21:45 UTC)
+- **175b9d877 RT-A5 (QC-83 / D-149.7):**
+  - `HeistMission.raise_alarm(reason)`.
+  - `spawn_units(enemy_id, count, tag, seated, vehicle)`: a ConvoyVehicle's seats or beside a plain body. Seated units
+    are paused, hidden in an armoured cab (replicated as NPC state "hid"), and are not bot targets.
+  - `dismount_units`.
+  - Mission units sit outside the assault force pool, and non-police ones share the police cap (`police_budget`
+    generalises the cartel rule).
+  - NPC meta `alarm_reason`: its radio call, or its death in place of a pager, raises that alarm ("ambush").
+  - `civilians_flee(&"civ_flee")`: a loud flee to an exit, then despawn.
+  - test_rt_a5_ambush: 5 tests. Regressions green: s3 / s5 / l1 / qc36 / l6 / gn_c_gaps / mission timers / coop
+    loopback.
+- **02da5f92f:**
+  - Rare-event `force_active` takes an Array of pins (C's gold_rush ask). Variant rules: 12/12.
+  - ConvoyVehicle `drive_started`.
+- **9fff6e120 RT-A6 stage 1, `rolling_thunder_mission.gd` (replaces C's stub):**
+  - Setup clock: marshal at ETA−75 (−90 on marshal_early), ETA 60 / 30, sighted at −20, convoy_early −45.
+  - Signals: the hack done means a clean stop. Otherwise, or after an early alarm, a crash stop.
+  - Early alarm: police at once and truck lockdown.
+  - The stop: movers drive onto the layout's `<Veh>Stop` markers if the map has them, otherwise the layout pops in. Then
+    convoy units, and on a clean stop the 3 s mixer move and the 8 s window ending in `raise_alarm(&"ambush")` with
+    dismount 4 s later. A crash means the impact is the alarm and units are out at once.
+  - Trucks opened n/N. A truck carrying no cargo spawns cash_bags / gold_bags at its LootAnchor when it opens.
+  - Escort down, then [secure] 4 bags, then the ride after escape_eta_s (+20 s heli).
+  - bonds_courier bags. Longshot perch lines.
+  - **All 34 of B's RT lines are said.**
+  - test_rt_a6_mission: 3 tests on C's real G1 map.
+- **Merge order:** the mission says B's new `vo.*.rolling_thunder_*` ids.
+  - On env/a-core alone, test_vo_coverage `test_no_missing_ids` fails until RT-B1 is merged.
+  - Merged locally with env/b-content, 10/11 pass. The 11th is B's placeholder `test_staged_heist_lines_wait_for_their_mission`
+    (asserts at least 30 RT lines unsaid; now 0). B is asked to flip it and add RT to HEISTS.
+- **Not ready yet (keep RT hidden):** G1 has no `armored_truck` prefabs, only boxes, so [trucks] has nothing to open.
+  I've asked C to place truck prefabs per layout for G1, with movers in RT-C2. Rare events other than
+  convoy_early / marshal_early / bonds_courier are stage 2.
 ### (-21) GPU-20c follow-ups done; RT A5-01 / A5-02 / A5-03 in (20:30 UTC)
 **1. AI crew killed civilians: fixed, 6fa54bd59.**
 - Bots never targeted civilians (the scan only takes HOSTILE_ROLES). The kills were rounds through civilians on the
