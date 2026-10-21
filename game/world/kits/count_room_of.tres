@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"count_room_of"
+purpose = &"cash_office"
+required_items = Array[StringName]([&"desk", &"chair", &"note_counter", &"packing_bench", &"cash_cage", &"shelving", &"light_fixture"])
+optional_items = {
+&"bin": 0.6,
+&"file_cabinet": 0.8
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk", &"packing_bench"]),
+"count": Vector2i(1, 2),
+"items": {&"binders": 0.6, &"note_counter": 2, &"papers": 1},
+"radius": 0.5
+}
+}
+min_density = 0.4
+max_density = 1.8
+min_props = 12
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 57
+seed_id = &"count_room"
+counts = {
+&"chair": Vector2i(2, 2),
+&"desk": Vector2i(2, 2),
+&"note_counter": Vector2i(2, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"chair": PackedStringArray("prop_chair_office"),
+&"desk": PackedStringArray("prop_desk_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "Ostrander Federal (cash_office), from count_room: B11 cash counting room: counting desks with note counters, the sealing bench, a cash trolley, shelving."

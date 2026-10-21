@@ -39,8 +39,10 @@ func run(ctx: LcContext) -> void:
 	await ctx.await_nav_update()  # a fixed frame count was not always enough for the link disable to reach the map
 	for d2: Door in barred:
 		_check_door(ctx, d2)
-	ctx.restore_links(saved)
-	await ctx.await_sync(3)
+	if ctx.restore_links(saved):
+		await ctx.await_nav_update(3)  # OF-C2: the restore must reach the map before the next check queries it
+	else:
+		await ctx.await_sync(3)
 	note("%d BARRED door(s) checked" % barred.size())
 	if not skipped.is_empty():
 		note("variant-slot BARRED doors not checked (one bake for every variant): %s" % ", ".join(skipped))
