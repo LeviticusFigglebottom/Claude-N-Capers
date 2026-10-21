@@ -15,9 +15,11 @@ Newest entry first, keep the last 10.
           `Net.local_slot()` is -1. The payday then used PayoutCalculator's crew-wide view and **billed the AI
           crew's kills to the player** ($30k for those 6 kills on Hazardous). The fix is
           `PaydayScreen.payout_slot()` = max(local_slot, 0), so one rule holds everywhere: you pay for your own kills.
-        - **For A (behaviour, not payout):** crew AI targets only `HOSTILE_ROLES` (`crew_ai_brain.gd` scan), so 6
-          civilian deaths in one run came from stray fire / splash. PD2 bots rarely kill civilians; worth a
-          friendly-fire / line-of-fire check on civilians. Please relay.
+        - **For A (behaviour, not payout): DONE by A.** Crew AI targets only `HOSTILE_ROLES`, so the 6 civilian
+          deaths came from stray fire. **env/a-core 6fa54bd59** adds a civilian line-of-fire check: a bot holds fire
+          / skips the target when a civilian is within 0.6 m of the shot line, including 4 m past the aim point
+          (tweaks `civilian_line_clear_m` / `civilian_line_past_m`, test `test_gpu20c_bot_civilian_fire`). Please
+          merge it with this.
         - **Your call:** if the PO wants bot kills billed to the host (not PD2), it is a one-line calculator
           change; I have not made it.
      2. **The 3440x1440 world at the sides was not intended. Fixed.**
