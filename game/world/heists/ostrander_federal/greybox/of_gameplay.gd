@@ -28,6 +28,12 @@ const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", 
 const LASER_COLUMN: String = "prop_laser_emitter_column"
 ## Minimum width of a rig wall in the nav bake (see _nav_thick).
 const RIG_NAV_MIN: float = 0.2
+## Door jamb boxes in the nav bake (see _jamb_clearance): crew capsule radius (crew_member.tscn), its clearance at the
+## jambs, the bake cell, the frame's half depth (the wall's).
+const JAMB_CREW_R: float = 0.35
+const JAMB_CREW_CLEAR: float = 0.05
+const NAV_CELL: float = 0.1
+const JAMB_FRAME_D: float = 0.1
 
 ## [node, property, names] bound once everything is built (targets, operator spawn).
 var _binds: Array[Array] = []
@@ -136,6 +142,7 @@ func _rig(host: Node3D, rows: Array) -> void:
 		if sb != null:
 			sb.collision_layer = 2
 			sb.set_meta(&"lc_subprop", true)   # levelcheck: each its own prop (not merged into the hoist's box)
+			sb.set_meta(&"kind", "hoist_rig")
 		obstruct(Transform3D.IDENTITY, _nav_thick(AABB(mn, mx - mn)))
 
 
@@ -169,6 +176,7 @@ func _lift_panel(lift: Node3D, row: Array) -> void:
 	sb.collision_mask = 0
 	sb.position = inv * at
 	sb.set_meta(&"lc_subprop", true)
+	sb.set_meta(&"kind", "lift_panel")   # (bag_lift's LandingPanelVisual copies carry it)
 	add(lift, sb)
 	var off: Vector3 = (mn + mx) * 0.5 - at
 	var col: CollisionShape3D = CollisionShape3D.new()
@@ -385,8 +393,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 	if extra.has("tag"):
 		props["objective_tag"] = String(extra["tag"])
 	var metas: Dictionary = {"kind": String(extra.get("kind_meta", "door")), "swing_side": "back"}
-	if bool(extra.get("push_bar", false)):
-		metas["fire_exit"] = true
+	if bool(extra.get("push_bar", false)) or bool(extra.get("fire_door", false)):
+		metas["fire_exit"] = true   # (fire_door: a two-way cross-corridor smoke door, no push bar)
 	if kind == "service":
 		metas["service"] = true
 	var it: Array = ["prefab", "door", nm, d[2], float(d[3]), props, null, metas, String(d[6])]
@@ -396,9 +404,29 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		var h: float = 4.9 if kind == "roller" else 2.6
 		obstruct(Transform3D(yaw_basis(float(d[3])), v3(d[2])), AABB(Vector3(-w * 0.5, -0.2, -BAKE_DEPTH),
 			Vector3(w, h, BAKE_DEPTH * 2.0)))
+	else:
+		_jamb_clearance(Transform3D(yaw_basis(float(d[3])), v3(d[2])), float(d[7]))
 	if inst != null and String(d[0]) in ["CashCageGate", "GoldCageGate"]:
 		_gate_padlock(inst, String(extra.get("tag", "")))
 	return inst
+
+
+## ENV P ghost run (AssistantDoor): the nav agent is 0.3 m but the crew capsule is 0.35 m, and the wall cut the bake
+## sees is wider than the frame (clear half width = the leaf's half width) and off its centre, so a path on the throat
+## edge put the capsule on a jamb and the pilot stalled there. Bake only: two carved (exact) boxes over the jambs, as
+## deep as the frame plus the capsule, leave a straight throat at the frame centre +- `half`: on the cell grid like the
+## door centres so it rasterizes exactly, a cell narrower for the contour simplification (edge_max_error 1.3 cells)
+## on wide throats, and at least a cell (the 0.9 m singles keep a 0.2 m throat; there the capsule just touches at
+## its edges). Off the throat the wall's own agent-radius margin (0.3 m) is only 5-10 cm narrower, so
+## corridors and landings past the doors keep their width. The collider keeps its real size.
+func _jamb_clearance(xf: Transform3D, width: float) -> void:
+	var w2: float = width * 0.5
+	var half: float = maxf(NAV_CELL, floorf((w2 - JAMB_CREW_R - JAMB_CREW_CLEAR - NAV_CELL) / NAV_CELL + 0.001) * NAV_CELL)
+	var depth: float = ceilf((JAMB_FRAME_D + JAMB_CREW_R) / NAV_CELL - 0.001) * NAV_CELL
+	var reach: float = w2 + JAMB_CREW_R + NAV_CELL - half   # over the jamb into the wall's own margin
+	for side: float in [-1.0, 1.0]:
+		var x0: float = half if side > 0.0 else -half - reach
+		obstruct(xf, AABB(Vector3(x0, -0.2, -depth), Vector3(reach, 2.6, depth * 2.0)), true)
 
 
 ## D-138: the cage gate's padlock / hasp (lockpick 8 s, or a placed saw) on the gate itself; opening it opens the gate.

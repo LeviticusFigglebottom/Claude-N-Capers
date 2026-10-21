@@ -2,6 +2,79 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-21: GH Tense ×3 on trunk r251 (c04cb710), pointer to A's GPU-box lines
+- **GH Tense ×3 on pure trunk r251**, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**, the same as on 4a6780f4 (the seeds are deterministic).
+  4501 has the same no-revive bleedout (pilot down t=249, custody t=279). r251 lacks A's e640362d (bot revives from ≤2.3 m), and
+  4501 PASSES on env/a-core 441b6870 (A's run). **Merge e640362d and all 3 seeds win.** Table: captures/d145_gh_2026-10-20/table.txt, tense_r251/.
+- **Ghost on r251 + c-worlds 9d00c55b + P** (windowed, seed 1002). C's door-throat bake fix (a9fc8631) **works**: the pilot leaves
+  EA cleanly, with no STUCK (the r250 stall was the AssistantDoor west jamb vs a throat 5 cm off-centre). Steps 1-3 PASS. Step 4: rover_gallery
+  (Npc_guard4) came up SA at t≈151 as the pilot crossed the core EA → E3, and filled 1.00 at 3.5 m. Harness fix: peek at the core
+  (same-floor guards included) before EA → E3, per doc §4 ('wait in E3 while rover_gallery passes').
+  r251d: the peek held 17 s while guard4 passed east. Then guard4's loop turned back west down XC (z 8) and saw the pilot walking to E3 at
+  13 m. r251e: LOS isn't enough (guard4 was in a side room at the check), so any same-floor guard within 25 m now holds the crossing.
+  **r251f: no alarm through step 4** (peek 88 s while guard4 looped; at E3 unseen at t=243). It failed on a harness bug: the PC use
+  predicate `state != IDLE` passed on INTERRUPTED, so 3 'restarts' did nothing. Fixed (restart only when needed, also during
+  the peek).
+  **r251g: steps 1-4 PASS** (code hack done t=254, no alarm; first time past step 4). Step 5: the vault guard Npc_guard2 in VC
+  (25.6, −4, 11.0) saw the pilot open the vault gate at t=363. The harness never waited for the doc's 'vault guard off VC' window,
+  so step 5 now waits for the gate to be clear (no guard within 8 m, or within 20 m with LOS). After the alarm the pilot STUCK 25 s at
+  (30.0, −4.0, 11.4) on SlabB_00; it goes to C if it recurs before an alarm. r251h re-run in progress.
+  Evidence: captures/of_g1_2026-10-20/ghost_251c.
+- A's GPU-box command lines (OF stealth/loud real-menu, OF Haz feel clip) and open items are in docs/status/env_a.md (top) on
+  env/a-core. A's replies to the lead fail with the same trusted-device error. P's lines are in the entry below.
+
+## 2026-10-20 (late): GPU-box command lines for the LEAD (P still cannot send_message the lead)
+Run from the repo root in cmd.exe; `G=godot\Godot_v4.7.2-stable_win64_console.exe`. Every run is windowed (no
+`--headless`, no xvfb). `--out` / `--po5-out` take an absolute path; `%CD%` keeps it inside the repo so the box can
+commit `gpu\renders\p\...`. Without the flag, of_g1_pass writes to `user://of_g1_pass` and po5 to `user://po5`.
+Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass differs only by that wrap.
+1. **OF ghost line** (Cataclysm solo, seed 1002). It needs trunk ≥ r250 (A's hub loops b7052ebd), which trunk already has:
+   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`
+   It writes PNGs to that dir; the verdict is the `[OFP] RESULT` line and the `GHOST step ... done` lines in the run txt.
+   On a FAIL, the window keeps running after RESULT. Close it once RESULT is printed.
+2. **D-145 GH Tense feel clip** (~5 min loud, solo + 3 bots). It needs A's env/a-core 4a6780f4 (Tense tuning) and
+   2daa35d6 (po5 harness) on trunk first; neither is on trunk at 59a2924b. Better: take env/a-core 441b6870, which adds
+   e640362d (the bot no-revive fix from Tense 4501) and 441b6870 (Cataclysm past the menu).
+   `%G% --path game --resolution 1280x720 --fixed-fps 30 --write-movie %CD%\gpu\renders\p\gh_tense\clip.avi res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-out=%CD%\gpu\renders\p\gh_tense --po5-budget=300 --po5-heist="Golden Hour" --po5-difficulty=Tense --po5-seed=4502 > gpu\renders\p\gh_tense_run.log 2>&1`
+   (Create `gpu\renders\p\gh_tense` before the run, because the movie writer does not make dirs.) Seed 4502 was a WIN on 4a6780f4
+   headless. For Routine, swap in `--po5-difficulty=Routine --po5-seed=4501` and a `gh_routine` dir. The .avi is MJPEG and large;
+   transcode before committing, or commit only the PNG steps and log.
+3. **OF §7 G2 pass**: same harness, one run per test, after C says G2 is final:
+   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=<t> --seed=1002 --out=%CD%\gpu\renders\p\of_g2_<t> > gpu\renders\p\of_g2_<t>.txt 2>&1`
+   with `<t>` = laser, throws, fire_escape, hole, dock, fire_exit, burn. Run laser three times, adding
+   `--pattern=lz_static`, `--pattern=lz_sweep` and `--pattern=lz_timed`. If G2 needs harness changes, P pushes them first and names the commit.
+- **Ghost line on r250 + c-worlds 18239f73 + P** (windowed, seed 1002): steps 1-3 PASS again (lane 29.7 s, dock 62.1 s, keycard 10.8 s).
+  Step 4: the stair-core wait worked (clear after 18 s) and CodePC started at t=146. Leaving the assistant office, the pilot was STUCK for
+  about 15 s at (18.8, 8.6, 6.1), walking into a low wood panel toward the nav corner (18.8, 8.8, 6.6). Velocity was 1.4 m/s with no displacement and
+  no probe-ray hits. Npc_guard4 (gallery hub loop) walked up and filled 1.00 at 1.9 m (alarm guard_radio t=166). This looks like a navmesh/collision
+  mismatch at gallery level, so it is C's. Sent to C; evidence in captures/of_g1_2026-10-20/ghost_250. A headless ghost run can't work
+  (mouse capture needs a window): the pilot never moves.
+- **OF full real-menu run PASS** (lead queue item 6), windowed via `run_po5.sh of_stealth 1002`, Routine, on r248 + c-worlds + A + P. It clicked main menu → SAFEHOUSE →
+  planning table → Ostrander Federal/ROUTINE → briefing → pre-planning → loadout → Start Heist → stealth heist → payday
+  ($112,303, clean, 7:35) → back in hub; 14 shots in captures/of_menu_2026-10-20. The flow sets crew.stealth_hidden (a detection
+  shortcut), so this proves the menu path and the objective chain, not stealth. The 10-34 s HITCH frames are xvfb software GL.
+- **D-145 GH Tense ×3** on r250 + c-worlds + A 4a6780f4, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**.
+  The target is met (Routine was already 3/3 WIN, median 1). In 4501 the pilot bled out 30 s after one down with no bot revive (slot 1 tased),
+  which is a bot revive-priority question for A. Table: captures/d145_gh_2026-10-20/table.txt + tense_4a6780f4/.
+- Relay from A, 23:55 UTC: OF real-bot hard runs (headless auto_loud through the real menus, crew damage ×1.0, solo + 3 bots, a-core head).
+  Haz 0/3: seed 5 custody at 603 s (after drill, burn-through and the vault in/out); seed 1 custody at 287 s. Cata 0/2: seeds 5 and 6 downed at
+  t≈18-20 s (auto_loud goes loud at t=6 from spawn), custody 1-2 s later. A's reading: OF loud at ×1.0 is not winnable on Haz+ with this
+  pilot + bots; the LEAD decides intent (PD2 DS) vs a tuning ask. A confirmed the 1-2 s Cata custody is bleedout drain: state 1→5
+  direct (no CUFFED 4, no tase). The harness pilot fires from the floor on Haz+, which makes it a legal target (L2.5), and ~12 police at Cata
+  damage empty the 100-point pool in ~1 s. A human holding fire would be cuffed (revivable) instead. A offers ~15 min: pilot holds fire
+  with 4+ enemies in range, for a fairer Cata read. LEAD's call. A is running the hit-grace-on-Haz+ comparison (GH 4501, Haz/Brutal/Lethal/Cata, grace on vs off).
+- Relay from A, 23:52 UTC: GH Tense 4501 on env/a-core 441b6870 (headless auto_loud, solo + 3 bots) PASS. The pilot went down once and a bot revived them.
+  Bot downs 0/0/2, 3 bot revives. So all 3 GH Tense seeds now have a win on A's current head (with P's 4502/4503 on 4a6780f4).
+- Relay from A, 23:45 UTC: env/a-core is at 441b6870. e640362d (GAME, bots): a bot in REVIVE that stops closing in for 1 s now
+  revives from up to 2.3 m. A body or prop had kept bots at 2.1-2.2 m vs revive_range 1.2 m in Tense 4501. The new test
+  test_l6_1_ai_revives_over_an_obstacle fails without the fix; test_l6_ 14/14 and d134/a3_05/give_way/p1_sandbox/d145_bot_regen are green.
+  8aea4ae3: the pilot climbs ladders like a player via P's free climb (OF Haz 5 had stood 15 min at the hole).
+  test_po5_special_visuals now launches on Hazardous. 441b6870: Cataclysm gets past the menu (the resource cache lost the in-memory unlock).
+- Relay from A (could not reach the lead): env/a-core is at 2daa35d6. auto_loud no longer reports "marker unreachable" when the objective
+  ended mid-walk (7b91a005). auto_loud fetches the OF drill parts a DrillPoint is owed (bcafd612; Haz seed 5 had stalled
+  1100 s). po5 opens build-locked Lethal/Cataclysm in memory (2daa35d6). OF hard so far: Haz 5 FAIL (drill stall),
+  Haz 1 FAIL (custody 287 s), Cata 5/6 did not start (menu lock); re-runs queued on A's side.
+
 ## 2026-10-20 (evening): OF §7 G1 complete, ghost steps 1-3, D-145 GH, lead unreachable
 - **Lead unreachable from P since ~22:50 UTC** (send_message: "needs proof of a trusted device"); A hit the same.
   Undelivered relay from A: D-145 Tense tuning on env/a-core 4a6780f4 (hit grace 0.45 s / bots 0.35 s on

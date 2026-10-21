@@ -27,6 +27,9 @@ extends Resource
 @export var lone_ok_kinds: Array[StringName] = []
 ## Seed salt for the placer (layouts must differ between rooms; validated by `variety`).
 @export var seed_salt: int = 0
+## Id the placer seeds with (empty = `id`): a heist's purpose variant of a shared kit keeps its base kit's layouts
+## (OF-C2: Ostrander Federal's `<kit>_of` kits for the rooms whose purpose differs from the shared kit's).
+@export var seed_id: StringName = &""
 ## KitPlacer (C1-07): kind -> Vector2i(min, max) instances when the kind is picked (required kinds
 ## default to (1, 1), optional picks to (1, 1)).
 @export var counts: Dictionary = {}

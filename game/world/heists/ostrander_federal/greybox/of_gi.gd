@@ -169,9 +169,9 @@ func environment(lighting: Node3D) -> void:
 	_render_budget_policy(lighting, root)
 
 
-## The policy node, and the map's opt-in to levelcheck's enforced D-146 budgets (meta perf_d146).
+## The policy node. OF does not opt in to levelcheck's enforced perf budgets (meta perf_d146): D-146 addendum 6 judges
+## them on Forward+ on the GPU box; the Compatibility model stays report-only, as an early warning.
 func _render_budget_policy(lighting: Node3D, root: Node) -> void:
-	root.set_meta(&"perf_d146", true)
 	var pol: Node = Node.new()
 	pol.set_script(load(POLICY_SCRIPT))
 	pol.name = "RenderBudgetPolicy"

@@ -109,6 +109,7 @@ def _doc_note() -> str:
 # [name, floor, axis, fixed, a0 (the plan opening's start), lock, front, extra]. The kind (single 1.0 / service 1.2 /
 # double 2.0 kit opening) follows the plan opening's width; a 4.2 m opening is two doubles (extra "c": centres).
 # extra: visual (catalog id), leaf (leaf_surface), npc (npc_authorized_tags: "@guards", "@staff"), push_bar, starts_open,
+# fire_door (meta fire_exit without a push bar: a two-way cross-corridor smoke door),
 # out (swing OUTWARD), tag (objective_tag), slot (built by that slot instead), bake_closed (D-073 / D-122), kind_meta.
 DOORS: List[list] = [
     # --- Basement ---
@@ -188,11 +189,13 @@ DOORS: List[list] = [
     ["JanitorDoorM", "M", "x", 7, 35.5, "NONE", "S", {}],
     ["ArchiveDoor", "M", "x", 7, 40.5, "NONE", "S", {}],
     ["StairDoorSBM", "M", "x", 7, 45.9, "NONE", "S", {"leaf": "metal"}],
-    ["LoggiaDoorW", "M", "x", 9, 6.5, "NONE", "N", {}],
+    # the loggias' cross-corridor smoke doors (UC | WL / EL: a corridor both sides; the loggias are open to the hall
+    # void): fire doors (meta fire_exit, no push bar: two-way), swinging north with the egress to the stairs (OF-C2)
+    ["LoggiaDoorW", "M", "x", 9, 6.5, "NONE", "S", {"fire_door": True}],
     ["OperationsDoor", "M", "x", 9, 11.5, "NONE", "N", {}],
     ["ConferenceDoor", "M", "x", 9, 30.5, "NONE", "N", {}],
     ["ComplianceDoor", "M", "x", 9, 36.5, "NONE", "N", {}],
-    ["LoggiaDoorE", "M", "x", 9, 40.5, "NONE", "N", {}],
+    ["LoggiaDoorE", "M", "x", 9, 40.5, "NONE", "S", {"fire_door": True}],
     ["OfficerDoor1", "M", "z", 6, 12.5, "NONE", "E", {}],
     ["OfficerDoor2", "M", "z", 6, 21.5, "NONE", "E", {}],
     ["OfficerDoor3", "M", "z", 6, 30.5, "NONE", "E", {}],
@@ -719,18 +722,20 @@ SLOT_CONTENT: Dict[str, List[list]] = {
     "cx_sd": [S("LateCustomerSD", "CIVILIAN", "B", [46.6, 0.0, 19.0], -90.0, ["civ_customer"], "browse")],
     "cx_none": [],
 }
+# The president's wall safe: its contents sit in the body's hollow (z -0.21, the LootAnchor depth; safe.gd interior_aabb
+# is the body less 2 cm: on the back plane, z 0, they were moved to the anchor with a warning, PO GPU run)
 for _sid in ("ps_bonds", "ps_empty"):
     SLOT_CONTENT[_sid] = [P("safe", "PresidentSafe", "E", [30.0, 0.85, 0.2], 180.0,
                             {"size": "enum:MEDIUM", "methods": ["drill", "saw"], "objective_tag": "president_safe",
                              "@contents": [] if _sid == "ps_empty" else [
-                                                   ["loot_spawn", "PresidentBonds", [0.0, 0.05, 0.0],
+                                                   ["loot_spawn", "PresidentBonds", [0.0, 0.05, -0.21],
                                                     {"loot_id": "loot.bearer_bonds", "count": 1,
                                                      "objective_tag": "president_safe"}],
-                                                   ["small_loot", "PresidentValuables1", [-0.15, 0.05, 0.0],
+                                                   ["small_loot", "PresidentValuables1", [-0.15, 0.05, -0.21],
                                                     {"loot_id": "loot.small_valuables", "value": 1500}],
-                                                   ["small_loot", "PresidentValuables2", [0.0, 0.11, 0.0],
+                                                   ["small_loot", "PresidentValuables2", [0.0, 0.11, -0.21],
                                                     {"loot_id": "loot.small_valuables", "value": 1500}],
-                                                   ["small_loot", "PresidentValuables3", [0.15, 0.05, 0.0],
+                                                   ["small_loot", "PresidentValuables3", [0.15, 0.05, -0.21],
                                                     {"loot_id": "loot.small_valuables", "value": 1500}]]},
                             [30.0, 0.0, 1.2], {"mount": "wall"}, "prop_safe_wall_small")]
 SLOT_CONTENT["sec_staffed"] = []
