@@ -111,6 +111,9 @@ var _aim_head: bool = false
 var _interact_ticks: int = 0
 var _drop_pending: bool = false
 var _secure_look: Vector3 = Vector3.INF
+## The heist's BagLifts (found once, _in_lift_car).
+var _lifts: Array[BagLift] = []
+var _lifts_scanned: bool = false
 ## Orders routed by the crew tick handler, applied at the start of the next brain tick so every
 ## brain resolves the receiver on the same state.
 var _pending: Array[Dictionary] = []
@@ -854,8 +857,8 @@ func _thrown_bags() -> void:
 				or bag.since_thrown_s > tweak.thrown_bag_pickup_window_s or LootManager.is_tool_loot(bag.loot_id):
 			continue  # OF-X2: tool bags (thermite, drill parts) stay where the human put them
 		var thrower: CrewController = _rt.crew_controller(bag.thrown_by_slot) as CrewController
-		if thrower == null or thrower.is_ai or thrower == _crew:
-			continue
+		if thrower == null or thrower.is_ai or thrower == _crew or _in_lift_car(bag):
+			continue  # OF: a bag put into the hoist car goes up with it (bots took them and stood at the rope ladder)
 		if bag.in_flight:
 			# Only a bag coming at the bot (not one thrown past a bot standing beside the thrower).
 			var to_me: Vector3 = chest - bag.global_position
@@ -875,6 +878,18 @@ func _thrown_bags() -> void:
 		task = &"carry_bag"
 		task_target_net_id = claim.net_id
 		_took_thrown_bag(claim.thrown_by_slot)
+
+
+## True when `bag` lies in a BagLift car (a human loaded the hoist): it rides the lift, no bot fetches it.
+func _in_lift_car(bag: LootBag) -> bool:
+	if not _lifts_scanned:
+		_lifts_scanned = true
+		for n: Node in _rt.find_children("*", "BagLift", true, false):
+			_lifts.append(n as BagLift)
+	for l: BagLift in _lifts:
+		if is_instance_valid(l) and l.bags_in_car().has(bag):
+			return true
+	return false
 
 
 func _took_thrown_bag(thrower_slot: int) -> void:
