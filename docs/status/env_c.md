@@ -7,6 +7,21 @@ Newest entry first, keep the last 10.
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **r258 rulings applied:**
+    - (1) **floating:** the 5 tilted east-arm convoy placeholders carry meta `lc_ignore` with an `lc_ignore_reason`
+      line, set in RT's generator only. They have no collision, so D-113's rule is kept. A floating-only
+      `floating_whitelist.txt` hook in the shared validator was denied by this session's permissions, so I used the
+      existing per-node meta. It also skips clipping for those 5 boxes, which have no collider.
+    - (2) **Menus:** RT was already `hidden: true` in B's heist_list.tres, so not menu-ready (the builder's "shows in
+      the menus" was wrong).
+    - (4) **The 4 tests/b FAILs were mine.** I was wrong to relay them as pre-existing.
+      - 3 came from RT's def registering RT as a heist: HeistRegistry finds `<id>_def.tres`, and B's catalogue tests
+        then demand RT's missing values. The def is now `rolling_thunder_wip_def.tres` (off the convention) until G1
+        approval + RT-B1, when it's renamed back. The map still validates via the convention scene path.
+      - The 4th (heist_freshness v9 vs v10) was a stale trunk merge, fixed by merging trunk 3a3885ad.
+      - Now green: contacts 6, heist_freshness 14, p2_heist_content 15, payout_calculator 20, plus heist_readiness 9,
+        p5_catalogue 7 and determinism 1.
+    - RT regen twice is identical; **validate greybox (all variants): PASS**; ownership and banned are clean.
   - **Milestone 1 merged (RT-C1 8973f6c9 via the env/c-worlds merge, after cc55e5e9):** the RT G1 greybox builds.
     - Generator `game/world/heists/rolling_thunder/greybox/` (the OF chain copy-adapted). Built: site, Skyway, trench,
       hoarding and closures, car park ×3, diner ×2, cabins, magazine, frame, scaffold, crane, the stairs, rooms and zones,
