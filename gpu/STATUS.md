@@ -405,3 +405,23 @@ comparison made under similar load is meaningful; ideally both trees get re-run 
 - The gate saw free RAM fall from 7.4-9.0 GB (07:21-08:01) to **4.7 GB at 08:09**, so the run was still waiting at the gate. Then Claude Code's low-memory reaper stopped the waiting job too.
   **Godot never launched; no import, no run.** Free RAM afterwards: 3.6 of 31.8 GB. Biggest users by process name: chrome 11470 MB, claude 2737 MB, svchost 1474 MB, Spotify 1367 MB, node 1245 MB.
 - Per the reaper's rule and the LEAD's, I won't retry until memory recovers (>= 10 GB free after a kill). I'm flagging it to the owner, since the memory is going to their apps and other sessions, which I won't close.
+## GPU-20b: full OF loud run on env/a-core 0cb810a5: everything done up to escape_wait; FAIL code 1 = po5 heist-time cap
+- Tree: local branch gpu/a6b = env/a-core 0cb810a5 ("merge trunk into env/a-core (regression sweep base)"). The RAM gate (8 GB, every 5 min) passed at 12:27:44 (8.8 GB free)
+  once the W101 session paused its browser jobs. Import exit 0, 28 s. Run 12:28:12-12:54:16, same command as GPU-20 (budget 1800).
+  Log `gpu/renders/a/of_a6b_b1800.txt`, 26 PNGs, load log `of_a6b_b1800_load.txt` (CPU avg 19.4%, max 29%; free RAM 4.8-12.3 GB during the run, no reaper).
+- **RESULT: `[PO5 1562.8s] RESULT FAIL (code 1) flow=auto_loud heist=Ostrander Federal seed=1037`.** This is not the wall budget:
+  `[PO5 1562.1s] FAIL no heist end within 1500 s; markers ["deposit_boxes" x20, "escape_wait"]`. po5's heist-time cap (1500 s heist time) hit 29 s after escape_wait started.
+- **Objective timeline (heist t):** casing 2 @3; keycard/code_hint/code_pc/server/vault_gate/lasers 2 @6; vault_drill 1 @51; drill_delivery 2 @149;
+  server_drives secured @325 and @461 (-> 2); **president_safe 2 @437**; **vault_drill/vault_breach 2 @577** (bond_safe/deposit_boxes/vault_loot/gold_cage -> 1);
+  cash_bricks secured @675, 1143, 1211, 1274, 1328 (**5 cash**); **vault_loot 2 @1288**; **gold_cage 2 @1355**; **bond_safe 2 @1435**;
+  **gold secured @1471 -> secure 2, escape_wait 0 -> 1 @1471**. Deposit boxes were never done (still a marker at the end).
+- **loot_secured: 8** (server_drives x2, cash_bricks x5, gold x1).
+- **Hoist works now:** the bags left the vault (contrast GPU-19's 331x ladder loop). There were 9 `RopeLadder ahead with a bag` lines, but no stall.
+- **STUCK 19** (blockers named on 9: Npc_police 7, Crew 1, wall FloorE/EX0070_2 1). **FAILED gotos 5:** 3 short ones near (7-9, 0, 1.5) @516-527 s while police blocked;
+  `goto (24.0, -3.8, 19.0) FAILED at (24.0, 0.0, 18.9) after 60.0 s` -> `could not reach .../VaultCash/Interactable` @583.9 (a 60 s stall above the vault);
+  `goto (30.4, -3.8, 19.0) FAILED at (28.2, -4.0, 18.8) after 45.2 s` -> `could not reach .../VaultGold/Interactable` @634.1 (both later succeeded).
+  **"blocks the way": 2** (Npc_police12 @327.9, Npc_police2 @523.9). FINDING x3 (crew leading cash to the secure zone; these worked this time, the cash got secured).
+- **HITCHES:** `143 of 309031 heist frames over 50 ms (20 of them screenshot frames), worst 2935 ms, without a shot 2935 ms` (heist load). 0.046% of frames
+  (GPU-19: 0.34% at about 30% CPU load; this run had about 19% load). Cataclysm: police=67, peak 28 alive. Pilot intake: 0 dmg (crew-dmg 0).
+- **Suggestion:** the heist reached escape_wait with all main objectives done. A po5 heist-time cap above 1500 s (or the escape van arriving sooner) should give the
+  first full PASS. Deposit boxes remain the one objective the pilot never attempts.

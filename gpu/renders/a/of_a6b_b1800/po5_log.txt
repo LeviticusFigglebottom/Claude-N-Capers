@@ -1,0 +1,677 @@
+[PO5 5.1s] harness: Cataclysm opened in memory (locked in the build)
+[PO5 15.4s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/01_main_menu.png
+[PO5 19.0s] click 'SAFEHOUSE' at (872.0, 711.3334)
+[PO5 19.0s] click '' at (1382.0, 450.6667)
+[PO5 20.1s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/02_planning_table.png
+[PO5 20.2s] click 'Ostrander Federal' at (818.6667, 806.6667)
+[PO5 21.2s] click 'CATACLYSM' at (2438.0, 666.6667)
+[PO5 29.1s] click 'Briefing' at (2701.333, 1318.667)
+[PO5 29.3s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/03_briefing.png
+[PO5 29.5s] click 'Continue' at (2722.667, 1340.0)
+[PO5 30.4s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/04_continue.png
+[PO5 30.6s] click 'Confirm plan' at (2722.667, 1334.0)
+[PO5 31.5s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/05_confirm_plan.png
+[PO5 33.6s] click 'Start Heist' at (2701.333, 1318.667)
+[PO5 43.0s] HITCH shot=0 pipelines=[surface+78 spec+49] vram=2439MB frame=2935ms t=0.1 process=23.5ms physics=0.3ms draws=2810 objects=3986 nodes=19036 enemies=9 spawned=[] top: anim_driver=105.2ms(30) npc_motor=10.9ms(216) custody_system=6.4ms(8) stealth_director=2.1ms(8) crew_ai_brain=1.1ms(24) civilian_brain=1.0ms(144) guard_brain=0.4ms(72) guard_brain.calm=0.2ms(72)
+[PO5 43.2s] HITCH shot=0 pipelines=[surface+32 spec+27] vram=2962MB frame=216ms t=0.3 process=8094.6ms physics=45.8ms draws=2838 objects=4203 nodes=19064 enemies=9 spawned=[] top: anim_driver=20.9ms(30) hud_model=14.9ms(1) hud_model.objectives=12.2ms(1) npc_motor=9.4ms(216) hud_model.flush=2.0ms(1) stealth_director=1.2ms(8) crew_ai_brain=1.0ms(24) civilian_brain=0.5ms(144)
+[PO5 43.3s] HITCH shot=0 pipelines=[] vram=2962MB frame=66ms t=0.3 process=44.4ms physics=5.3ms draws=2801 objects=4164 nodes=19061 enemies=9 spawned=[] top: anim_driver=26.2ms(30) npc_motor=5.3ms(135) hud_model=1.0ms(1) stealth_director=0.8ms(5) crew_ai_brain=0.7ms(15) hud_model.objectives=0.5ms(1) civilian_brain=0.3ms(90) guard_brain=0.3ms(45)
+[PO5 43.3s] LOAD pipelines compiled under the loading screen 142, over the first 5 heist frames 59 (worst frame 207 ms) t=0.4
+[PO5 44.3s] in heist ostrander_federal seed 1037 diff 5 phase 1 crew at (21.8, -0.8, 44.0)
+[PO5 44.3s] DEV OPTION crew_damage_taken_mult=0.00 (D-133 harness-only; assault events on)
+[PO5 45.2s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/06_heist_start.png
+[PO5 45.2s] HITCH shot=1 pipelines=[] vram=2962MB frame=899ms t=1.5 process=22.6ms physics=16.6ms draws=2829 objects=4187 nodes=19055 enemies=9 spawned=[] top: npc_motor=8.0ms(216) anim_driver=1.7ms(30) stealth_director=1.3ms(8) crew_ai_brain=0.9ms(24) civilian_brain=0.5ms(144) guard_brain=0.3ms(72) custody_system=0.2ms(8) npc_gunner=0.1ms(72)
+[PO5 46.0s] mouse captured by the game (MouseCapture)
+[PO5 46.1s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 46.2s] HITCH shot=0 pipelines=[] vram=2962MB frame=94ms t=2.5 process=4.8ms physics=15.4ms draws=2829 objects=4187 nodes=19055 enemies=9 spawned=[] top: anim_driver=1.9ms(30) hud_model=0.0ms(1)
+[PO5 47.1s] EVENT objective casing -> 2 t=3
+[PO5 47.6s] HITCH shot=0 pipelines=[] vram=2962MB frame=61ms t=4.0 process=94.4ms physics=16.9ms draws=2829 objects=4187 nodes=19062 enemies=9 spawned=[] top: npc_motor=1.5ms(27) anim_driver=1.4ms(30) stealth_director=0.2ms(1) crew_ai_brain=0.1ms(3) civilian_brain=0.1ms(18) guard_brain=0.0ms(9) custody_system=0.0ms(1) npc_gunner=0.0ms(9)
+[PO5 47.9s] HITCH shot=0 pipelines=[] vram=2962MB frame=94ms t=4.2 process=94.4ms physics=16.9ms draws=2829 objects=4187 nodes=19082 enemies=9 spawned=[] top: anim_driver=1.5ms(30) npc_motor=1.3ms(27) stealth_director=0.3ms(1) crew_ai_brain=0.1ms(3) civilian_brain=0.1ms(18) guard_brain=0.0ms(9) npc_gunner=0.0ms(9) custody_system=0.0ms(1)
+[PO5 48.0s] HITCH shot=0 pipelines=[surface+9 draw+10 spec+13] vram=2963MB frame=65ms t=4.3 process=94.4ms physics=16.9ms draws=2503 objects=3138 nodes=19082 enemies=9 spawned=[] top: npc_motor=8.6ms(189) stealth_director=2.8ms(7) anim_driver=1.7ms(30) crew_ai_brain=1.0ms(21) civilian_brain=0.6ms(126) guard_brain=0.3ms(63) custody_system=0.2ms(7) npc_gunner=0.1ms(63)
+[PO5 48.1s] HITCH shot=0 pipelines=[draw+1 spec+10] vram=2965MB frame=91ms t=4.4 process=94.4ms physics=16.9ms draws=2097 objects=2358 nodes=19083 enemies=9 spawned=[] top: npc_motor=7.0ms(162) stealth_director=2.9ms(6) anim_driver=1.7ms(30) hud_model=1.2ms(1) crew_ai_brain=0.7ms(18) civilian_brain=0.5ms(108) hud_model.objectives=0.4ms(1) guard_brain=0.3ms(54)
+[PO5 49.6s] EVENT objective keycard -> 1 t=6
+[PO5 49.6s] EVENT objective keycard -> 2 t=6
+[PO5 49.6s] EVENT objective code_hint -> 1 t=6
+[PO5 49.6s] EVENT objective code_hint -> 2 t=6
+[PO5 49.6s] EVENT objective code_pc -> 1 t=6
+[PO5 49.6s] EVENT objective code_pc -> 2 t=6
+[PO5 49.6s] EVENT objective server -> 1 t=6
+[PO5 49.6s] EVENT objective server -> 2 t=6
+[PO5 49.6s] EVENT objective vault_gate -> 1 t=6
+[PO5 49.6s] EVENT objective vault_gate -> 2 t=6
+[PO5 49.6s] EVENT objective lasers -> 1 t=6
+[PO5 49.6s] EVENT objective lasers -> 2 t=6
+[PO5 49.6s] EVENT objective drill_delivery -> 1 t=6
+[PO5 49.6s] EVENT objective drill_delivery -> 1 t=6
+[PO5 49.7s] HITCH shot=0 pipelines=[] vram=2965MB frame=78ms t=6.0 process=11.4ms physics=17.2ms draws=2097 objects=2358 nodes=19084 enemies=9 spawned=[] top: guard_brain=33.1ms(9) guard_brain.alarmed=32.6ms(1) alarm.HeistRuntime._on_alarm_raised=30.9ms(1) phase.Mission._on_phase_changed=28.6ms(1) npc_motor=7.4ms(27) anim_driver=1.5ms(30) hud_model=0.9ms(1) alarm.CuePlayer._on_alarm_raised=0.6ms(1)
+[PO5 49.7s] HITCH shot=0 pipelines=[surface+5] vram=2965MB frame=50ms t=6.0 process=11.4ms physics=17.2ms draws=2165 objects=2422 nodes=19166 enemies=10 spawned=["patrol_officer"] top: npc_motor=14.8ms(111) assault_director=7.0ms(4) spawn_npc.enter_tree=4.3ms(1) crew_ai_brain=2.3ms(12) anim_driver=2.1ms(30) spawn_npc.instantiate=0.4ms(1) guard_brain=0.4ms(36) door=0.3ms(12)
+[PO5 50.2s] loud: phase=3 went_loud=true
+[PO5 51.1s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/07_auto_6.png
+[PO5 51.2s] HITCH shot=1 pipelines=[] vram=2966MB frame=962ms t=6.7 process=17.1ms physics=73.5ms draws=2249 objects=3005 nodes=19252 enemies=11 spawned=[] top: npc_motor=15.3ms(232) crew_ai_brain=5.8ms(24) anim_driver=1.8ms(32) door=0.7ms(23) guard_brain=0.5ms(72) civilian_brain=0.4ms(144) police_brain=0.4ms(16) guard_brain.combat=0.3ms(72)
+[PO5 51.3s] HITCH shot=0 pipelines=[spec+4] vram=2966MB frame=72ms t=6.8 process=893.7ms physics=17.2ms draws=2531 objects=2797 nodes=19252 enemies=11 spawned=[] top: npc_motor=12.1ms(174) crew_ai_brain=6.3ms(18) anim_driver=1.5ms(32) hud_model=0.8ms(1) door=0.5ms(18) guard_brain=0.4ms(54) hud_model.objectives=0.3ms(1) civilian_brain=0.3ms(108)
+[PO5 56.0s] pilot: t=5 at (36.1, 0.0, 37.5) corner (39.5, 0.2, 37.2) yaw_err -0.00 fwd=true path=63 mouse_mode=2 state=0 look=(-1.50,0.00) pin_yaw=-1.49721270334567 bot=false
+[PO5 56.8s] TEL worst_frame=7665ms t=12 phase=3 phys=38.9ms proc=8.8ms nodes=19252 enemies=11 civs=18 crew=[0:0@(39.0, 0.0, 37.3) 1:0@(34.5, -0.7, 39.6) 2:0@(35.5, -0.7, 41.6) 3:0@(36.8, -0.7, 39.5) nearest_enemy=18.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 61.0s] pilot: t=10 at (48.7, 0.0, 31.6) corner (48.8, 0.2, 27.6) yaw_err 0.00 fwd=true path=59 mouse_mode=2 state=0 look=(-0.03,0.00) pin_yaw=-0.02761471026179 bot=false
+[PO5 66.7s] pilot: t=15 at (49.2, 0.0, 14.2) corner (49.2, 0.2, 13.8) yaw_err 0.00 fwd=true path=44 mouse_mode=2 state=0 look=(-0.01,0.00) pin_yaw=-0.01185491650733 bot=false
+[PO5 66.8s] TEL worst_frame=31ms t=22 phase=3 phys=26.5ms proc=12.9ms nodes=19448 enemies=12 civs=17 crew=[0:0@(49.2, 0.0, 13.5) 1:0@(51.8, 0.0, 19.9) 2:0@(50.4, 0.0, 20.0) 3:0@(52.5, 0.0, 18.1) nearest_enemy=4.8m within15=6 input_enabled=true captured=true paused_by={  }]
+[PO5 72.8s] pilot: t=20 at (46.0, 0.0, -1.0) corner (38.8, 0.2, -2.4) yaw_err 0.00 fwd=true path=21 mouse_mode=2 state=0 look=(1.38,0.00) pin_yaw=1.37549727009338 bot=false
+[PO5 76.8s] TEL worst_frame=41ms t=32 phase=3 phys=17.5ms proc=7.0ms nodes=19464 enemies=9 civs=17 crew=[0:0@(35.7, 0.0, -3.0) 1:0@(46.8, 0.0, -0.6) 2:0@(41.4, 0.0, -2.3) 3:0@(39.2, 0.0, -5.0) nearest_enemy=13.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 77.9s] pilot: reload in a lull (weapon.corsair_ar 13/30, reserve 106)
+[PO5 78.7s] pilot: t=25 at (29.3, 0.0, -4.3) corner (28.5, 0.2, -4.4) yaw_err 0.00 fwd=true path=15 mouse_mode=2 state=0 look=(1.38,0.00) pin_yaw=1.37581283527544 bot=false
+[PO5 85.1s] pilot: reload in a lull (weapon.corsair_ar 17/30, reserve 89)
+[PO5 86.9s] TEL worst_frame=26ms t=42 phase=3 phys=16.4ms proc=4.3ms nodes=19488 enemies=5 civs=17 crew=[0:0@(16.2, 0.0, -4.8) 1:0@(18.7, 0.0, -2.4) 2:0@(19.6, 0.0, -5.0) 3:0@(18.3, 0.0, -7.5) nearest_enemy=15.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 95.4s] EVENT objective vault_drill -> 1 t=51
+[PO5 95.4s] HITCH shot=0 pipelines=[] vram=2966MB frame=50ms t=51.0 process=15.7ms physics=17.4ms draws=1802 objects=1994 nodes=19506 enemies=5 spawned=[] top: anim_driver=1.0ms(34) npc_motor=0.8ms(22) hud_model=0.8ms(1) crew_ai_brain=0.7ms(3) hud_model.objectives=0.3ms(1) hud_model.player=0.2ms(1) hud_model.crew=0.1ms(1) police_brain=0.1ms(4)
+[PO5 96.8s] TEL worst_frame=50ms t=52 phase=3 phys=47.7ms proc=6.3ms nodes=19337 enemies=5 civs=17 crew=[0:0@(8.5, 0.0, -0.8) 1:0@(10.1, 0.0, -0.8) 2:0@(11.6, 0.0, -2.4) 3:0@(9.1, 0.0, -4.0) nearest_enemy=12.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 104.0s] HITCH shot=0 pipelines=[] vram=2964MB frame=70ms t=59.6 process=6.9ms physics=16.6ms draws=961 objects=1027 nodes=19617 enemies=10 spawned=[] top: npc_motor=1.3ms(27) anim_driver=1.2ms(35) crew_ai_brain=0.5ms(3) police_brain=0.1ms(9) police_brain.move=0.1ms(9) assault_director=0.1ms(1) npc_gunner=0.0ms(15) civilian_brain=0.0ms(17)
+[PO5 104.0s] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[PO5 106.8s] pilot: t=5 at (9.2, 0.0, 6.7) corner (9.4, 0.2, 7.9) yaw_err 0.00 fwd=true path=60 mouse_mode=2 state=0 look=(3.30,0.00) pin_yaw=3.29839678670607 bot=false
+[PO5 106.8s] TEL worst_frame=70ms t=62 phase=3 phys=21.0ms proc=7.8ms nodes=19613 enemies=10 civs=17 crew=[0:0@(9.2, 0.0, 6.9) 1:0@(7.4, 0.0, 4.7) 2:0@(5.7, 0.0, 3.2) 3:0@(6.7, 0.0, 3.0) nearest_enemy=7.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 111.8s] pilot: t=10 at (14.2, -2.0, 2.4) corner (14.0, -2.1, 3.3) yaw_err 0.10 fwd=true path=39 mouse_mode=2 state=0 look=(9.11,0.00) pin_yaw=9.21165544598108 bot=false
+[PO5 113.0s] HITCH shot=0 pipelines=[] vram=2967MB frame=70ms t=68.6 process=12.6ms physics=18.6ms draws=1332 objects=1476 nodes=19426 enemies=10 spawned=[] top: police_brain=4.6ms(9) police_brain.move=4.6ms(9) anim_driver=1.2ms(33) crew_ai_brain=1.1ms(3) npc_motor=1.1ms(27) assault_director=0.1ms(1) npc_gunner=0.0ms(13) civilian_brain=0.0ms(17)
+[PO5 113.1s] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[PO5 116.8s] TEL worst_frame=70ms t=72 phase=3 phys=19.5ms proc=6.9ms nodes=19332 enemies=10 civs=17 crew=[0:0@(21.8, -4.0, 8.0) 1:0@(17.3, -4.0, 7.6) 2:0@(16.1, -4.0, 7.7) 3:0@(15.0, -4.0, 7.5) nearest_enemy=1.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 117.4s] pilot: t=15 at (23.9, -4.0, 8.0) corner (24.3, -3.8, 8.0) yaw_err 0.00 fwd=true path=23 mouse_mode=2 state=0 look=(10.97,0.00) pin_yaw=10.9749488555702 bot=false
+[PO5 122.5s] pilot: t=20 at (41.4, -4.0, 8.5) corner (41.9, -3.8, 8.5) yaw_err -0.00 fwd=true path=15 mouse_mode=2 state=0 look=(10.94,0.00) pin_yaw=10.9444300921626 bot=false
+[PO5 126.3s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part2/Interactable for its drill (27 m)
+[PO5 126.9s] TEL worst_frame=39ms t=82 phase=3 phys=17.2ms proc=6.0ms nodes=19144 enemies=10 civs=17 crew=[0:0@(36.8, -4.0, 11.0) 1:0@(35.7, -4.0, 9.9) 2:0@(36.7, -4.0, 9.5) 3:0@(41.8, -4.0, 8.9) nearest_enemy=3.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 131.3s] pilot: t=5 at (33.6, -4.0, 7.9) corner (27.4, -3.8, 7.7) yaw_err 0.00 fwd=true path=40 mouse_mode=2 state=0 look=(14.12,0.00) pin_yaw=14.1177342788017 bot=false
+[PO5 136.3s] pilot: t=10 at (16.1, -4.0, 7.5) corner (14.6, -3.8, 7.5) yaw_err 0.00 fwd=true path=34 mouse_mode=2 state=0 look=(14.12,0.00) pin_yaw=14.1177335019332 bot=false
+[PO5 136.9s] TEL worst_frame=23ms t=92 phase=3 phys=17.0ms proc=6.2ms nodes=19148 enemies=10 civs=17 crew=[0:0@(14.8, -4.0, 7.3) 1:0@(20.5, -4.0, 8.0) 2:0@(21.2, -4.0, 7.8) 3:0@(22.1, -4.0, 7.6) nearest_enemy=2.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 141.3s] pilot: t=15 at (14.6, 0.0, 8.0) corner (14.2, 0.2, 8.0) yaw_err 0.38 fwd=true path=20 mouse_mode=2 state=0 look=(7.46,0.00) pin_yaw=7.64835924617574 bot=false
+[PO5 146.3s] pilot: t=20 at (9.9, 0.0, -1.6) corner (15.1, 0.2, -4.0) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(5.14,0.00) pin_yaw=5.14432513736602 bot=false
+[PO5 146.8s] TEL worst_frame=38ms t=102 phase=3 phys=18.2ms proc=11.3ms nodes=19159 enemies=10 civs=17 crew=[0:0@(11.6, 0.0, -2.4) 1:0@(7.2, 0.0, 1.5) 2:0@(7.8, 0.0, 1.9) 3:0@(7.7, 0.0, 1.8) nearest_enemy=12.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 149.2s] EVENT objective drill_delivery -> 1 t=105
+[PO5 149.2s] HITCH shot=0 pipelines=[] vram=2965MB frame=84ms t=104.8 process=14.0ms physics=17.9ms draws=1417 objects=1548 nodes=19159 enemies=10 spawned=[] top: anim_driver=1.3ms(30) npc_motor=1.2ms(27) crew_ai_brain=0.8ms(3) police_brain=0.1ms(9) police_brain.move=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(17) npc_gunner=0.0ms(10)
+[PO5 149.3s] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[PO5 150.2s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/08_auto_104.png
+[PO5 150.2s] carrying loot.thermal_drill_part to LidDrill
+[PO5 150.3s] HITCH shot=1 pipelines=[] vram=2966MB frame=966ms t=105.0 process=14.0ms physics=17.9ms draws=753 objects=1585 nodes=19159 enemies=10 spawned=[] top: npc_motor=10.7ms(216) crew_ai_brain=9.9ms(24) anim_driver=4.0ms(30) police_brain=1.4ms(72) police_brain.move=0.7ms(72) assault_director=0.4ms(8) civilian_brain=0.3ms(136) npc_gunner=0.2ms(80)
+[PO5 150.3s] HITCH shot=0 pipelines=[spec+2] vram=2966MB frame=51ms t=105.1 process=915.7ms physics=81.1ms draws=1212 objects=1303 nodes=19159 enemies=10 spawned=[] top: anim_driver=9.8ms(30) npc_motor=6.8ms(135) crew_ai_brain=6.2ms(15) police_brain=0.9ms(45) hud_model=0.8ms(1) police_brain.move=0.5ms(45) hud_model.objectives=0.3ms(1) assault_director=0.3ms(5)
+[PO5 155.1s] pilot: t=5 at (8.2, 0.0, 0.6) corner (8.1, 0.0, 0.9) yaw_err -0.00 fwd=true path=32 mouse_mode=2 state=0 look=(9.38,0.00) pin_yaw=9.37891104361398 bot=false
+[PO5 157.7s] TEL worst_frame=966ms t=112 phase=3 phys=18.2ms proc=10.6ms nodes=19159 enemies=10 civs=17 crew=[0:0@(8.9, 0.0, 5.0) 1:0@(7.2, 0.0, 5.0) 2:0@(3.6, 0.0, 5.3) 3:0@(5.3, 0.0, 5.8) nearest_enemy=8.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 160.1s] pilot: t=10 at (10.7, 0.0, 7.8) corner (10.9, 0.0, 7.8) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(10.94,0.00) pin_yaw=10.9449727943159 bot=false
+[PO5 167.7s] TEL worst_frame=35ms t=122 phase=3 phys=18.1ms proc=6.3ms nodes=19534 enemies=14 civs=17 crew=[0:0@(14.3, 0.0, 8.2) 1:0@(12.0, 0.0, 7.5) 2:0@(20.5, 0.0, 8.0) 3:0@(6.7, 0.0, 8.0) nearest_enemy=4.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 170.4s] HITCH shot=0 pipelines=[] vram=2966MB frame=69ms t=125.2 process=6.0ms physics=18.1ms draws=1163 objects=1282 nodes=19630 enemies=15 spawned=[] top: npc_motor=1.4ms(31) anim_driver=1.4ms(35) crew_ai_brain=0.4ms(3) police_brain=0.2ms(13) police_brain.move=0.1ms(13) assault_director=0.1ms(1) npc_gunner=0.0ms(14) civilian_brain=0.0ms(17)
+[PO5 170.5s] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[PO5 174.4s] pilot: t=15 at (18.4, 0.0, 11.2) corner (19.5, 0.2, 11.5) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(10.69,0.00) pin_yaw=10.693062990986 bot=false
+[PO5 177.7s] TEL worst_frame=69ms t=132 phase=3 phys=19.4ms proc=12.6ms nodes=19630 enemies=15 civs=17 crew=[0:0@(23.9, 0.0, 12.9) 1:0@(19.8, 0.0, 15.5) 2:0@(22.3, 0.0, 16.0) 3:0@(22.7, 0.0, 15.6) nearest_enemy=4.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 182.2s] HITCH shot=0 pipelines=[] vram=2966MB frame=77ms t=136.9 process=6.8ms physics=17.0ms draws=1163 objects=1282 nodes=19623 enemies=15 spawned=[] top: npc_motor=1.8ms(32) anim_driver=1.7ms(35) crew_ai_brain=0.3ms(3) police_brain=0.3ms(13) police_brain.move=0.1ms(13) npc_gunner=0.1ms(14) assault_director=0.0ms(1) civilian_brain=0.0ms(17)
+[PO5 182.2s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 182.2s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part/Interactable for its drill (21 m)
+[PO5 182.2s] HITCH shot=0 pipelines=[] vram=2966MB frame=53ms t=137.0 process=6.8ms physics=17.0ms draws=1163 objects=1282 nodes=19623 enemies=15 spawned=[] top: npc_motor=6.6ms(128) anim_driver=2.1ms(35) crew_ai_brain=1.5ms(12) police_brain=0.8ms(52) police_brain.move=0.6ms(52) assault_director=0.2ms(4) npc_gunner=0.1ms(56) civilian_brain=0.1ms(68)
+[PO5 187.2s] pilot: t=5 at (11.6, 0.0, 8.0) corner (10.9, 0.2, 7.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(7.82,0.00) pin_yaw=7.82078876175575 bot=false
+[PO5 187.7s] TEL worst_frame=77ms t=142 phase=3 phys=18.8ms proc=14.0ms nodes=19629 enemies=14 civs=17 crew=[0:0@(9.9, 0.0, 8.0) 1:0@(14.8, 0.0, 10.6) 2:0@(22.9, 0.0, 15.9) 3:0@(15.7, 0.0, 11.9) nearest_enemy=6.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 192.2s] pilot: t=10 at (12.8, 0.0, -2.9) corner (15.1, 0.2, -4.0) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(5.15,0.00) pin_yaw=5.15086106299196 bot=false
+[PO5 194.1s] EVENT objective drill_delivery -> 1 t=149
+[PO5 194.1s] EVENT objective drill_delivery -> 2 t=149
+[PO5 194.2s] HITCH shot=0 pipelines=[] vram=2965MB frame=84ms t=148.9 process=21.2ms physics=16.7ms draws=1710 objects=1897 nodes=18789 enemies=5 spawned=[] top: anim_driver=6.5ms(26) crew_ai_brain=1.0ms(3) npc_motor=0.8ms(22) assault_director=0.0ms(1) police_brain=0.0ms(3) civilian_brain=0.0ms(17) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 194.2s] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[PO5 194.2s] carrying loot.thermal_drill_part to LidDrill
+[PO5 194.2s] HITCH shot=0 pipelines=[] vram=2965MB frame=52ms t=149.0 process=21.2ms physics=16.7ms draws=1710 objects=1897 nodes=18789 enemies=5 spawned=[] top: crew_ai_brain=5.9ms(18) npc_motor=5.5ms(132) anim_driver=3.8ms(26) assault_director=0.2ms(6) police_brain=0.2ms(18) civilian_brain=0.2ms(102) custody_system=0.2ms(6) police_brain.move=0.1ms(18)
+[PO5 197.7s] TEL worst_frame=84ms t=152 phase=3 phys=17.6ms proc=17.9ms nodes=18793 enemies=5 civs=17 crew=[0:0@(9.4, 0.0, -1.3) 1:0@(10.7, 0.0, -4.3) 2:0@(9.3, 0.0, -2.3) 3:0@(8.4, 0.0, -1.4) nearest_enemy=8.1m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 199.2s] pilot: t=5 at (8.2, 0.0, 0.6) corner (8.1, 0.0, 0.9) yaw_err 0.00 fwd=true path=32 mouse_mode=2 state=0 look=(9.38,0.00) pin_yaw=9.37881472732471 bot=false
+[PO5 204.2s] pilot: t=10 at (10.8, 0.0, 7.8) corner (10.9, 0.0, 7.8) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(10.95,0.00) pin_yaw=10.9451176524402 bot=false
+[PO5 207.7s] TEL worst_frame=32ms t=162 phase=3 phys=17.3ms proc=14.5ms nodes=18693 enemies=4 civs=17 crew=[0:0@(15.2, 0.0, 10.2) 1:0@(14.1, 0.0, 8.8) 2:0@(12.9, 0.0, 8.2) 3:0@(13.8, 0.0, 8.4) nearest_enemy=4.0m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 209.2s] pilot: t=15 at (17.7, 0.0, 11.0) corner (18.1, 0.2, 11.1) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(10.70,0.00) pin_yaw=10.6958995876869 bot=false
+[PO5 217.7s] TEL worst_frame=35ms t=172 phase=3 phys=18.0ms proc=20.0ms nodes=18684 enemies=3 civs=17 crew=[0:0@(25.3, 0.0, 14.2) 1:0@(27.5, 0.0, 15.9) 2:0@(21.6, 0.0, 15.7) 3:0@(20.5, 0.0, 15.8) nearest_enemy=4.4m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 221.0s] HITCH shot=0 pipelines=[] vram=2963MB frame=103ms t=175.7 process=5.9ms physics=15.3ms draws=2627 objects=2901 nodes=18694 enemies=2 spawned=[] top: anim_driver=1.2ms(25) npc_motor=0.7ms(19) crew_ai_brain=0.2ms(3) npc_gunner=0.1ms(5) civilian_brain=0.0ms(17) police_brain=0.0ms(1) assault_director=0.0ms(1) npc_gunner.los=0.0ms(1)
+[PO5 221.0s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 221.6s] pilot: reload in a lull (weapon.corsair_ar 10/30, reserve 76)
+[PO5 227.7s] TEL worst_frame=103ms t=182 phase=3 phys=15.4ms proc=3.7ms nodes=18975 enemies=4 civs=17 crew=[0:0@(25.3, 0.0, 14.2) 1:0@(28.1, 0.0, 15.3) 2:0@(21.6, 0.0, 15.7) 3:0@(20.5, 0.0, 15.8) nearest_enemy=4.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 237.7s] TEL worst_frame=24ms t=192 phase=3 phys=15.3ms proc=5.6ms nodes=18971 enemies=4 civs=17 crew=[0:0@(34.4, 0.0, 9.8) 1:0@(31.1, 0.0, 10.5) 2:0@(36.5, 0.0, 15.9) 3:0@(36.5, 0.0, 11.8) nearest_enemy=4.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 242.2s] HITCH shot=0 pipelines=[] vram=2963MB frame=64ms t=196.9 process=3.7ms physics=16.8ms draws=2413 objects=2696 nodes=18971 enemies=4 spawned=[] top: anim_driver=0.9ms(28) npc_motor=0.8ms(21) crew_ai_brain=0.5ms(3) police_brain=0.1ms(3) police_brain.move=0.0ms(3) assault_director=0.0ms(1) civilian_brain=0.0ms(17) custody_system=0.0ms(1)
+[PO5 242.2s] pilot: use StaffDoorTWE (open_door) -> OK in 8.0 s
+[PO5 244.9s] pilot: t=5 at (40.1, 0.0, 7.9) corner (41.7, 0.2, 7.8) yaw_err 0.00 fwd=true path=41 mouse_mode=2 state=0 look=(11.05,0.00) pin_yaw=11.0515195735147 bot=false
+[PO5 247.7s] TEL worst_frame=64ms t=202 phase=3 phys=17.0ms proc=11.3ms nodes=18875 enemies=4 civs=17 crew=[0:0@(46.4, 0.0, 6.4) 1:0@(42.4, 0.0, 7.8) 2:0@(45.6, 0.0, 7.7) 3:0@(41.1, 0.0, 8.0) nearest_enemy=13.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 249.9s] pilot: t=10 at (46.2, -2.0, 2.4) corner (46.0, -2.1, 3.3) yaw_err 0.10 fwd=true path=27 mouse_mode=2 state=0 look=(15.39,0.00) pin_yaw=15.4915366567961 bot=false
+[PO5 254.9s] pilot: t=15 at (39.4, -4.0, 9.7) corner (37.9, -3.8, 9.6) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=0 look=(14.08,0.00) pin_yaw=14.0782883678343 bot=false
+[PO5 258.0s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/09_auto_212.png
+[PO5 258.1s] HITCH shot=1 pipelines=[spec+1] vram=2963MB frame=737ms t=212.2 process=3.8ms physics=15.8ms draws=1560 objects=2396 nodes=18588 enemies=4 spawned=[] top: npc_motor=8.1ms(168) crew_ai_brain=7.2ms(24) anim_driver=1.2ms(24) police_brain=0.5ms(24) police_brain.move=0.4ms(24) civilian_brain=0.3ms(136) assault_director=0.2ms(8) custody_system=0.2ms(8)
+[PO5 258.2s] TEL worst_frame=737ms t=212 phase=3 phys=16.2ms proc=697.5ms nodes=18588 enemies=4 civs=17 crew=[0:0@(35.6, -4.0, 10.9) 1:0@(35.1, -4.0, 13.2) 2:0@(35.1, -4.0, 12.2) 3:0@(41.9, -4.0, 8.9) nearest_enemy=2.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 268.3s] TEL worst_frame=31ms t=222 phase=3 phys=17.5ms proc=5.9ms nodes=18588 enemies=4 civs=17 crew=[0:0@(41.8, -4.0, 8.6) 1:0@(39.4, -4.0, 10.4) 2:0@(36.8, -4.0, 11.2) 3:0@(38.6, -4.0, 9.7) nearest_enemy=8.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 270.9s] pilot: t=5 at (46.0, -3.3, 4.8) corner (46.0, -2.1, 3.3) yaw_err -0.00 fwd=true path=50 mouse_mode=2 state=0 look=(18.82,0.00) pin_yaw=18.820721548212 bot=false
+[PO5 275.9s] pilot: t=10 at (46.0, 1.3, 3.8) corner (46.0, 2.5, 2.3) yaw_err -0.00 fwd=true path=40 mouse_mode=2 state=0 look=(12.54,0.00) pin_yaw=12.5437088086559 bot=false
+[PO5 278.2s] TEL worst_frame=28ms t=232 phase=3 phys=19.7ms proc=6.8ms nodes=19336 enemies=12 civs=17 crew=[0:0@(47.0, 5.0, 5.7) 1:0@(46.3, 2.5, 1.5) 2:0@(47.2, 2.7, 1.9) 3:0@(46.0, 2.0, 2.8) nearest_enemy=16.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 280.9s] pilot: t=15 at (47.0, 8.2, 4.8) corner (47.0, 8.8, 5.7) yaw_err -0.00 fwd=true path=24 mouse_mode=2 state=0 look=(3.10,0.00) pin_yaw=3.0933272090055 bot=false
+[PO5 281.8s] HITCH shot=0 pipelines=[] vram=2963MB frame=67ms t=236.0 process=7.1ms physics=19.4ms draws=1688 objects=1892 nodes=19612 enemies=15 spawned=[] top: npc_motor=2.1ms(32) anim_driver=0.9ms(35) crew_ai_brain=0.8ms(3) police_brain=0.2ms(14) police_brain.move=0.1ms(14) assault_director=0.0ms(1) npc_gunner=0.0ms(15) civilian_brain=0.0ms(17)
+[PO5 281.9s] pilot: use StairDoorSBE (open_door) -> OK in 0.0 s
+[PO5 286.7s] pilot: t=20 at (32.9, 8.6, 7.6) corner (28.1, 8.8, 7.5) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=0 look=(1.55,0.00) pin_yaw=1.55049580174948 bot=false
+[PO5 288.2s] TEL worst_frame=67ms t=242 phase=3 phys=20.4ms proc=3.6ms nodes=19612 enemies=15 civs=17 crew=[0:0@(27.7, 8.6, 7.8) 1:0@(34.1, 8.6, 8.8) 2:0@(32.3, 8.6, 7.8) 3:0@(33.9, 8.6, 7.6) nearest_enemy=12.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 288.5s] HITCH shot=0 pipelines=[] vram=2963MB frame=71ms t=242.7 process=3.6ms physics=20.4ms draws=1688 objects=1892 nodes=19612 enemies=15 spawned=[] top: police_brain=2.8ms(14) police_brain.move=2.5ms(14) npc_motor=1.6ms(32) anim_driver=1.4ms(35) hud_model=1.1ms(1) crew_ai_brain=0.8ms(3) hud_model.objectives=0.4ms(1) hud_model.player=0.3ms(1)
+[PO5 288.6s] pilot: use PresidentDoor (open_door) -> OK in 0.0 s
+[PO5 293.9s] HITCH shot=0 pipelines=[] vram=2963MB frame=64ms t=248.1 process=6.1ms physics=17.2ms draws=1688 objects=1892 nodes=20649 enemies=26 spawned=["brandt", "bulwark", "bulwark", "bulwark", "bulwark", "bulwark", "bulwark", "bulwark", "bulwark", "bulwark", "bulwark"] top: assault_director=50.0ms(1) spawn_npc.enter_tree=43.3ms(11) npc_motor=1.8ms(32) anim_driver=1.2ms(35) spawn_npc.instantiate=0.8ms(11) crew_ai_brain=0.5ms(3) police_brain=0.5ms(14) police_brain.move=0.2ms(14)
+[PO5 294.0s] HITCH shot=0 pipelines=[] vram=2963MB frame=75ms t=248.1 process=6.1ms physics=17.2ms draws=1688 objects=1892 nodes=20649 enemies=26 spawned=[] top: npc_motor=17.3ms(215) anim_driver=4.8ms(46) crew_ai_brain=3.2ms(15) police_brain=2.7ms(125) police_brain.move=1.3ms(125) police_brain.pick_target=0.7ms(12) assault_director=0.3ms(5) npc_gunner=0.3ms(130)
+[PO5 294.1s] HITCH shot=0 pipelines=[] vram=2963MB frame=154ms t=248.2 process=6.1ms physics=17.2ms draws=1688 objects=1892 nodes=20653 enemies=26 spawned=[] top: npc_motor=9.6ms(172) crew_ai_brain=3.0ms(12) anim_driver=1.8ms(46) police_brain=1.3ms(100) hud_model=0.9ms(1) police_brain.move=0.8ms(100) hud_model.objectives=0.4ms(1) assault_director=0.2ms(4)
+[PO5 294.2s] pilot: use PresidentSafe (place_drill) -> OK in 3.0 s
+[PO5 294.2s] HITCH shot=0 pipelines=[] vram=2963MB frame=76ms t=248.3 process=6.1ms physics=17.2ms draws=1688 objects=1892 nodes=20653 enemies=26 spawned=[] top: npc_motor=20.4ms(344) crew_ai_brain=5.3ms(24) police_brain=2.7ms(200) police_brain.move=1.8ms(200) anim_driver=1.3ms(46) assault_director=0.4ms(8) npc_gunner=0.4ms(208) civilian_brain=0.2ms(136)
+[PO5 298.3s] TEL worst_frame=154ms t=252 phase=3 phys=20.3ms proc=4.1ms nodes=20649 enemies=26 civs=17 crew=[0:0@(29.9, 8.6, 1.5) 1:0@(27.9, 8.6, 3.0) 2:0@(29.1, 8.6, 4.8) 3:0@(31.5, 8.6, 4.0) nearest_enemy=14.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 308.2s] TEL worst_frame=42ms t=262 phase=3 phys=29.0ms proc=12.4ms nodes=20649 enemies=26 civs=17 crew=[0:0@(27.9, 8.6, 8.0) 1:0@(27.9, 8.6, 3.0) 2:0@(28.7, 8.6, 5.4) 3:0@(27.4, 8.6, 5.1) nearest_enemy=6.6m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 309.1s] pilot: t=5 at (25.3, 8.6, 7.9) corner (19.7, 8.8, 7.7) yaw_err 0.00 fwd=true path=34 mouse_mode=2 state=0 look=(1.53,0.00) pin_yaw=1.53324195036242 bot=false
+[PO5 314.0s] pilot: t=10 at (25.9, 8.6, 7.5) corner (25.9, 5.2, 7.0) yaw_err 0.00 fwd=true path=31 mouse_mode=2 state=0 look=(-0.05,0.00) pin_yaw=-0.04511457887435 bot=false
+[PO5 314.1s] pilot: STUCK at (25.9, 8.6, 7.5) heading to (25.9, 5.2, 7.0); rays: h0.05:/root/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorE/EX0070_2_02@(25.9, 8.7, 7.1), h0.20:/root/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorE/EX0070_2_02@(25.9, 8.8, 7.1), h0.40:/root/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorE/EX0070_2_02@(25.9, 9.0, 7.1), h1.00:/root/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorE/EX0070_2_02@(25.9, 9.6, 7.1), slide:/root/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorE/EX0070_2_02@(25.9, 9.0, 7.1) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 314.4s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/10_stuck_1.png
+[PO5 314.4s] pilot: detour right 0.7 m to (26.6, 8.8, 7.5) (attempt 1)
+[PO5 314.5s] HITCH shot=1 pipelines=[] vram=2976MB frame=307ms t=268.5 process=19.4ms physics=22.1ms draws=1236 objects=2063 nodes=20753 enemies=26 spawned=["tac_heavy"] top: npc_motor=20.5ms(343) crew_ai_brain=8.2ms(24) police_brain=5.9ms(199) assault_director=4.9ms(8) spawn_npc.enter_tree=4.1ms(1) police_brain.move=4.1ms(199) anim_driver=1.8ms(46) npc_gunner=0.5ms(215)
+[PO5 314.5s] HITCH shot=0 pipelines=[spec+3] vram=2976MB frame=76ms t=268.6 process=19.4ms physics=22.1ms draws=1385 objects=1536 nodes=20753 enemies=26 spawned=[] top: npc_motor=18.2ms(301) crew_ai_brain=9.3ms(21) anim_driver=5.4ms(47) police_brain=2.7ms(175) police_brain.move=1.6ms(175) hud_model=0.9ms(1) assault_director=0.4ms(7) npc_gunner=0.4ms(189)
+[PO5 314.6s] HITCH shot=0 pipelines=[] vram=2976MB frame=59ms t=268.7 process=19.4ms physics=22.1ms draws=1387 objects=1536 nodes=20753 enemies=26 spawned=[] top: npc_motor=10.0ms(172) crew_ai_brain=4.3ms(12) anim_driver=2.3ms(47) police_brain=1.4ms(100) police_brain.move=0.9ms(100) hud_model=0.9ms(1) hud_model.objectives=0.4ms(1) hud_model.player=0.3ms(1)
+[PO5 318.4s] TEL worst_frame=307ms t=272 phase=3 phys=36.8ms proc=7.0ms nodes=20941 enemies=28 civs=17 crew=[0:0@(15.8, 8.6, 7.5) 1:0@(21.9, 8.6, 9.0) 2:0@(19.9, 8.6, 7.9) 3:0@(21.8, 8.6, 7.5) nearest_enemy=0.6m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 319.5s] pilot: t=15 at (16.9, 8.6, 7.5) corner (18.5, 5.2, 7.6) yaw_err 0.00 fwd=true path=29 mouse_mode=2 state=0 look=(-1.59,0.00) pin_yaw=-1.59052285317609 bot=false
+[PO5 324.5s] pilot: t=20 at (16.8, 8.6, 7.5) corner (14.6, 8.8, 7.5) yaw_err -0.00 fwd=true path=29 mouse_mode=2 state=0 look=(-10.97,0.00) pin_yaw=-10.9732520770909 bot=false
+[PO5 324.7s] pilot: STUCK at (16.8, 8.6, 7.5) heading to (14.6, 8.8, 7.5); rays: slide:/root/HeistRuntime/Dynamic/Npc_police12@(16.7, 9.5, 7.8) n=(0.5, -0.0, -0.9), slide:/root/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorE/EX0070_2_00@(16.8, 9.0, 7.1) n=(0.0, 0.0, 1.0), slide:/root/HeistRuntime/Dynamic/Npc_police12@(16.7, 9.5, 7.8) n=(0.5, -0.0, -0.9), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 325.4s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/11_stuck_2.png
+[PO5 325.4s] pilot: detour left 0.7 m to (16.5, 8.8, 8.2) (attempt 2)
+[PO5 325.5s] HITCH shot=1 pipelines=[] vram=2977MB frame=755ms t=278.9 process=7.6ms physics=21.2ms draws=1089 objects=1885 nodes=20941 enemies=28 spawned=[] top: npc_motor=21.7ms(360) crew_ai_brain=8.4ms(24) police_brain=3.8ms(216) police_brain.move=2.0ms(216) anim_driver=2.0ms(49) npc_gunner=0.9ms(232) hud_model=0.8ms(1) police_brain.pick_target=0.4ms(7)
+[PO5 325.5s] HITCH shot=0 pipelines=[] vram=2977MB frame=84ms t=279.0 process=684.8ms physics=22.7ms draws=1180 objects=1295 nodes=20941 enemies=28 spawned=[] top: npc_motor=17.1ms(270) crew_ai_brain=7.1ms(18) anim_driver=5.3ms(49) police_brain=2.8ms(162) npc_gunner=1.9ms(174) police_brain.move=1.5ms(162) hud_model=1.0ms(1) npc_gunner.fired=0.6ms(1)
+[PO5 325.6s] HITCH shot=0 pipelines=[] vram=2977MB frame=83ms t=279.1 process=684.8ms physics=22.7ms draws=1178 objects=1308 nodes=20941 enemies=28 spawned=[] top: npc_motor=17.0ms(270) anim_driver=5.5ms(49) crew_ai_brain=5.3ms(18) police_brain=2.7ms(162) police_brain.move=1.5ms(162) npc_gunner=0.7ms(174) assault_director=0.3ms(6) police_brain.pick_target=0.3ms(5)
+[PO5 327.2s] pilot: STUCK at (17.1, 8.6, 7.6) heading to (16.5, 8.8, 8.2); rays: h0.05:/root/HeistRuntime/Dynamic/Npc_police12@(16.7, 8.7, 8.0), h0.20:/root/HeistRuntime/Dynamic/Npc_police12@(16.8, 8.8, 7.9), h0.40:/root/HeistRuntime/Dynamic/Npc_police12@(16.8, 9.0, 7.9), h1.00:/root/HeistRuntime/Dynamic/Npc_police12@(16.8, 9.6, 7.9), slide:/root/HeistRuntime/Dynamic/Npc_police12@(16.8, 9.5, 7.9) n=(0.8, -0.0, -0.6), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 327.9s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/12_stuck_3.png
+[PO5 327.9s] pilot: Npc_police12 blocks the way: shoot
+[PO5 328.0s] HITCH shot=1 pipelines=[] vram=2977MB frame=717ms t=280.9 process=9.9ms physics=27.0ms draws=1359 objects=2230 nodes=20946 enemies=28 spawned=[] top: npc_motor=21.3ms(360) crew_ai_brain=9.6ms(24) police_brain=5.7ms(216) police_brain.move=4.3ms(216) npc_gunner=2.3ms(232) anim_driver=1.9ms(49) npc_gunner.fired=0.6ms(1) assault_director=0.5ms(8)
+[PO5 328.1s] HITCH shot=0 pipelines=[] vram=2977MB frame=72ms t=281.0 process=9.9ms physics=27.0ms draws=1246 objects=1393 nodes=20948 enemies=27 spawned=[] top: npc_motor=15.5ms(264) crew_ai_brain=6.5ms(18) anim_driver=2.8ms(49) police_brain=2.3ms(156) police_brain.move=1.5ms(156) hud_model=1.0ms(1) npc_gunner=0.6ms(174) hud_model.objectives=0.4ms(1)
+[PO5 328.1s] HITCH shot=0 pipelines=[] vram=2977MB frame=66ms t=281.1 process=9.9ms physics=27.0ms draws=1277 objects=1424 nodes=20948 enemies=27 spawned=[] top: npc_motor=10.7ms(176) anim_driver=5.9ms(49) crew_ai_brain=4.1ms(12) police_brain=1.8ms(104) police_brain.move=1.0ms(104) npc_gunner=0.4ms(116) police_brain.pick_target=0.3ms(5) assault_director=0.2ms(4)
+[PO5 328.2s] HITCH shot=0 pipelines=[] vram=2977MB frame=57ms t=281.2 process=639.7ms physics=24.1ms draws=1297 objects=1447 nodes=20948 enemies=27 spawned=[] top: npc_motor=10.3ms(176) anim_driver=5.7ms(49) police_brain=4.4ms(104) crew_ai_brain=3.9ms(12) police_brain.move=3.5ms(104) hud_model=1.1ms(1) npc_gunner=0.4ms(116) hud_model.objectives=0.4ms(1)
+[PO5 329.4s] TEL worst_frame=755ms t=282 phase=3 phys=23.4ms proc=16.5ms nodes=20950 enemies=26 civs=17 crew=[0:0@(15.3, 8.6, 7.7) 1:0@(21.9, 8.6, 9.0) 2:0@(19.9, 8.6, 8.4) 3:0@(18.9, 8.6, 7.0) nearest_enemy=13.2m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 333.8s] pilot: t=25 at (15.0, 5.0, 7.8) corner (14.6, 5.0, 6.1) yaw_err 1.54 fwd=false path=13 mouse_mode=2 state=0 look=(-7.64,0.00) pin_yaw=-7.44576808989786 bot=false
+[PO5 339.4s] TEL worst_frame=37ms t=292 phase=3 phys=21.1ms proc=17.3ms nodes=20952 enemies=26 civs=16 crew=[0:0@(25.5, 5.0, 7.8) 1:0@(23.7, 5.0, 7.5) 2:0@(22.5, 5.0, 7.9) 3:0@(12.1, 5.0, 8.9) nearest_enemy=5.0m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 348.1s] HITCH shot=0 pipelines=[] vram=2977MB frame=80ms t=301.0 process=6.6ms physics=21.2ms draws=2129 objects=2355 nodes=20866 enemies=24 spawned=[] top: npc_motor=2.8ms(40) anim_driver=1.8ms(48) crew_ai_brain=1.6ms(3) police_brain=0.5ms(23) police_brain.move=0.2ms(23) npc_gunner=0.1ms(28) police_brain.choose_position=0.1ms(1) assault_director=0.1ms(1)
+[PO5 348.1s] pilot: use ServerDoor (open_door) -> OK in 8.0 s
+[PO5 349.4s] TEL worst_frame=80ms t=302 phase=3 phys=20.2ms proc=9.4ms nodes=20858 enemies=24 civs=16 crew=[0:0@(25.9, 5.0, 5.6) 1:0@(24.8, 5.0, 6.1) 2:0@(24.6, 5.0, 7.7) 3:0@(13.8, 5.0, 8.5) nearest_enemy=9.9m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 350.4s] HITCH shot=0 pipelines=[] vram=2977MB frame=80ms t=303.3 process=7.5ms physics=22.0ms draws=2129 objects=2355 nodes=20869 enemies=24 spawned=[] top: npc_motor=2.4ms(40) anim_driver=2.0ms(48) crew_ai_brain=0.7ms(3) police_brain=0.5ms(23) police_brain.move=0.2ms(23) police_brain.choose_position=0.1ms(1) npc_gunner=0.1ms(28) police_brain.pick_target=0.1ms(1)
+[PO5 350.4s] pilot: use ServerDrives (bag_loot) -> OK in 1.0 s
+[PO5 351.3s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/13_auto_303.png
+[PO5 351.3s] marker president_safe@30,9,0: usable again, back to it
+[PO5 351.3s] pilot: reload in a lull (weapon.corsair_ar 12/30, reserve 67)
+[PO5 351.4s] HITCH shot=1 pipelines=[] vram=2977MB frame=905ms t=303.6 process=7.5ms physics=22.0ms draws=2293 objects=3560 nodes=20869 enemies=24 spawned=[] top: npc_motor=22.7ms(320) crew_ai_brain=7.0ms(24) police_brain=6.0ms(184) police_brain.move=4.5ms(184) anim_driver=1.4ms(48) npc_gunner=0.8ms(224) assault_director=0.5ms(8) guard_brain=0.3ms(8)
+[PO5 351.4s] HITCH shot=0 pipelines=[] vram=2977MB frame=69ms t=303.7 process=833.1ms physics=76.0ms draws=2017 objects=2268 nodes=20869 enemies=24 spawned=[] top: npc_motor=14.2ms(200) police_brain=11.6ms(115) police_brain.move=10.7ms(115) crew_ai_brain=5.0ms(15) anim_driver=2.4ms(48) npc_gunner=1.5ms(140) hud_model=1.2ms(1) npc_gunner.fired=0.6ms(1)
+[PO5 351.5s] HITCH shot=0 pipelines=[] vram=2977MB frame=75ms t=303.8 process=833.1ms physics=76.0ms draws=1209 objects=1293 nodes=20869 enemies=24 spawned=[] top: npc_motor=15.0ms(200) anim_driver=5.9ms(48) crew_ai_brain=4.1ms(15) police_brain=1.8ms(115) police_brain.move=1.1ms(115) npc_gunner=0.5ms(140) assault_director=0.3ms(5) civilian_brain=0.2ms(85)
+[PO5 351.6s] HITCH shot=0 pipelines=[] vram=2977MB frame=56ms t=303.8 process=833.1ms physics=76.0ms draws=1209 objects=1293 nodes=20869 enemies=24 spawned=[] top: npc_motor=10.8ms(160) crew_ai_brain=3.6ms(12) anim_driver=2.5ms(48) hud_model=1.4ms(1) police_brain=1.2ms(92) police_brain.move=0.8ms(92) hud_model.objectives=0.5ms(1) npc_gunner=0.4ms(112)
+[PO5 360.2s] TEL worst_frame=905ms t=312 phase=3 phys=26.1ms proc=6.2ms nodes=20867 enemies=23 civs=16 crew=[0:0@(15.0, 4.0, 3.9) 1:0@(13.7, 5.0, 7.8) 2:0@(15.2, 5.0, 7.6) 3:0@(15.1, 5.0, 7.6) nearest_enemy=9.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 370.2s] TEL worst_frame=37ms t=322 phase=3 phys=22.5ms proc=5.5ms nodes=20676 enemies=23 civs=16 crew=[0:0@(7.2, 0.0, -1.0) 1:0@(5.8, 0.0, 3.6) 2:0@(5.0, 0.0, 4.4) 3:0@(8.3, 0.0, 5.6) nearest_enemy=13.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 373.0s] EVENT loot_secured loot.server_drives 7500 t=325
+[PO5 374.4s] HITCH shot=0 pipelines=[] vram=2975MB frame=56ms t=326.6 process=19.9ms physics=24.9ms draws=1623 objects=1850 nodes=20517 enemies=23 spawned=[] top: anim_driver=25.0ms(44) npc_motor=8.9ms(117) crew_ai_brain=3.4ms(9) police_brain=1.0ms(66) police_brain.move=0.6ms(66) npc_gunner=0.2ms(75) assault_director=0.2ms(3) civilian_brain=0.1ms(48)
+[PO5 378.1s] pilot: t=5 at (13.0, 0.0, 7.7) corner (14.4, 0.2, 7.5) yaw_err -0.00 fwd=true path=47 mouse_mode=2 state=0 look=(-13.99,0.00) pin_yaw=-13.9883259574602 bot=false
+[PO5 380.2s] TEL worst_frame=56ms t=332 phase=3 phys=24.7ms proc=9.4ms nodes=20424 enemies=23 civs=16 crew=[0:0@(14.0, 2.3, 2.4) 1:0@(14.0, 0.0, 7.5) 2:0@(12.9, 0.0, 7.7) 3:0@(11.9, 0.0, 7.8) nearest_enemy=9.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 383.1s] pilot: t=10 at (14.1, 5.0, 5.9) corner (14.0, 7.0, 2.9) yaw_err -0.02 fwd=true path=30 mouse_mode=2 state=0 look=(-18.78,0.00) pin_yaw=-18.8041071603551 bot=false
+[PO5 388.0s] pilot: t=15 at (19.2, 8.6, 7.0) corner (19.1, 8.6, 6.1) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(-18.80,0.00) pin_yaw=-18.8005951931594 bot=false
+[PO5 390.2s] TEL worst_frame=44ms t=342 phase=3 phys=20.1ms proc=14.6ms nodes=20324 enemies=23 civs=16 crew=[0:0@(22.2, 8.6, 7.7) 1:0@(18.9, 8.6, 7.2) 2:0@(16.6, 8.6, 8.2) 3:0@(21.3, 8.6, 8.4) nearest_enemy=13.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 393.0s] pilot: t=20 at (29.1, 8.6, 3.4) corner (29.4, 8.8, 2.7) yaw_err 0.00 fwd=true path=5 mouse_mode=2 state=0 look=(-12.96,0.00) pin_yaw=-12.9562322439418 bot=false
+[PO5 395.8s] HITCH shot=0 pipelines=[] vram=2974MB frame=74ms t=348.0 process=7.0ms physics=21.6ms draws=1179 objects=1291 nodes=20699 enemies=27 spawned=[] top: npc_motor=2.4ms(39) anim_driver=1.4ms(46) crew_ai_brain=0.6ms(3) police_brain=0.3ms(26) police_brain.move=0.2ms(26) assault_director=0.1ms(1) guard_brain=0.1ms(1) guard_brain.combat=0.1ms(1)
+[PO5 395.8s] pilot: use PresidentSafe (fix_drill) -> OK in 2.0 s
+[PO5 395.8s] marker vault_drill@24,1,15: usable again, back to it
+[PO5 399.6s] HITCH shot=0 pipelines=[] vram=2974MB frame=51ms t=351.9 process=18.8ms physics=24.9ms draws=1179 objects=1291 nodes=20795 enemies=28 spawned=[] top: anim_driver=7.6ms(47) npc_motor=6.1ms(88) police_brain=5.6ms(52) police_brain.move=5.3ms(52) crew_ai_brain=1.7ms(6) npc_gunner=0.1ms(54) assault_director=0.1ms(2) civilian_brain=0.1ms(32)
+[PO5 400.2s] TEL worst_frame=74ms t=352 phase=3 phys=24.1ms proc=24.9ms nodes=20795 enemies=28 civs=16 crew=[0:0@(21.5, 8.6, 7.7) 1:0@(27.5, 8.6, 7.5) 2:0@(26.6, 8.6, 7.5) 3:0@(28.0, 8.6, 6.6) nearest_enemy=12.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 400.8s] pilot: t=5 at (19.3, 8.6, 7.6) corner (19.1, 8.6, 7.9) yaw_err 0.34 fwd=true path=55 mouse_mode=2 state=0 look=(-10.44,0.00) pin_yaw=-10.2506955210668 bot=false
+[PO5 405.8s] pilot: t=10 at (14.0, 5.2, 5.7) corner (14.8, 5.2, 5.9) yaw_err 0.34 fwd=true path=42 mouse_mode=2 state=0 look=(-8.50,0.00) pin_yaw=-8.31062020569181 bot=false
+[PO5 410.2s] TEL worst_frame=48ms t=362 phase=3 phys=23.7ms proc=19.7ms nodes=20795 enemies=28 civs=16 crew=[0:0@(14.3, 0.0, 6.8) 1:0@(13.9, 2.5, 1.9) 2:0@(14.0, 2.0, 2.8) 3:0@(14.7, 2.5, 1.5) nearest_enemy=4.8m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 410.8s] pilot: t=15 at (14.2, 0.0, 8.9) corner (14.1, 0.0, 9.9) yaw_err 0.00 fwd=true path=19 mouse_mode=2 state=0 look=(-3.19,0.00) pin_yaw=-3.1906041241785 bot=false
+[PO5 418.7s] HITCH shot=0 pipelines=[] vram=2977MB frame=80ms t=370.9 process=7.2ms physics=21.5ms draws=3114 objects=3366 nodes=20791 enemies=28 spawned=[] top: npc_motor=2.5ms(44) anim_driver=1.5ms(47) hud_model=0.9ms(1) crew_ai_brain=0.6ms(3) hud_model.objectives=0.4ms(1) police_brain=0.3ms(26) police_brain.move=0.2ms(26) hud_model.flush=0.2ms(1)
+[PO5 418.8s] pilot: use LidDrill (place_drill) -> OK in 2.0 s
+[PO5 418.8s] HITCH shot=0 pipelines=[] vram=2977MB frame=58ms t=371.0 process=7.2ms physics=21.5ms draws=3114 objects=3366 nodes=20791 enemies=28 spawned=[] top: npc_motor=10.4ms(176) crew_ai_brain=3.0ms(12) anim_driver=1.7ms(47) police_brain=1.4ms(104) police_brain.move=0.9ms(104) npc_gunner=0.5ms(108) assault_director=0.2ms(4) npc_gunner.los=0.2ms(8)
+[PO5 418.8s] pilot: reload in a lull (weapon.corsair_ar 22/30, reserve 62)
+[PO5 420.2s] TEL worst_frame=80ms t=372 phase=3 phys=20.7ms proc=6.3ms nodes=20791 enemies=28 civs=16 crew=[0:0@(25.4, 0.0, 14.3) 1:0@(27.5, 0.0, 15.9) 2:0@(20.5, 0.0, 15.8) 3:0@(14.8, 0.0, 7.8) nearest_enemy=4.4m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 423.8s] HITCH shot=0 pipelines=[] vram=2977MB frame=50ms t=376.1 process=7.4ms physics=20.6ms draws=3109 objects=3370 nodes=20793 enemies=27 spawned=[] top: police_brain=10.5ms(50) police_brain.move=9.7ms(50) npc_motor=7.6ms(86) anim_driver=4.7ms(47) crew_ai_brain=1.1ms(6) npc_gunner=0.3ms(54) police_brain.pick_target=0.3ms(2) assault_director=0.1ms(2)
+[PO5 423.9s] HITCH shot=0 pipelines=[] vram=2977MB frame=59ms t=376.1 process=7.4ms physics=20.6ms draws=3109 objects=3370 nodes=20793 enemies=27 spawned=[] top: police_brain=10.4ms(50) police_brain.move=10.0ms(50) npc_motor=6.5ms(86) anim_driver=2.4ms(47) hud_model=1.7ms(1) crew_ai_brain=0.8ms(6) hud_model.objectives=0.5ms(1) hud_model.player=0.5ms(1)
+[PO5 424.0s] HITCH shot=0 pipelines=[] vram=2977MB frame=51ms t=376.2 process=7.4ms physics=20.6ms draws=3109 objects=3370 nodes=20793 enemies=27 spawned=[] top: npc_motor=14.6ms(172) anim_driver=3.0ms(47) crew_ai_brain=2.4ms(12) police_brain=1.8ms(100) police_brain.move=1.1ms(100) npc_gunner=0.5ms(108) assault_director=0.3ms(4) npc_gunner.los=0.2ms(4)
+[PO5 424.0s] HITCH shot=0 pipelines=[] vram=2977MB frame=72ms t=376.3 process=7.4ms physics=20.6ms draws=3179 objects=3445 nodes=20793 enemies=27 spawned=[] top: npc_motor=13.2ms(172) anim_driver=10.8ms(47) police_brain=4.2ms(100) police_brain.move=3.4ms(100) crew_ai_brain=3.0ms(12) hud_model=1.6ms(1) npc_gunner=0.6ms(108) hud_model.objectives=0.5ms(1)
+[PO5 424.1s] HITCH shot=0 pipelines=[] vram=2977MB frame=60ms t=376.3 process=7.4ms physics=20.6ms draws=3137 objects=3407 nodes=20793 enemies=27 spawned=[] top: npc_motor=14.3ms(172) anim_driver=2.3ms(47) crew_ai_brain=2.3ms(12) police_brain=1.9ms(100) police_brain.move=1.3ms(100) npc_gunner=0.6ms(108) assault_director=0.3ms(4) npc_gunner.los=0.2ms(4)
+[PO5 424.2s] HITCH shot=0 pipelines=[] vram=2977MB frame=61ms t=376.4 process=29.9ms physics=35.6ms draws=3236 objects=3507 nodes=20793 enemies=27 spawned=[] top: npc_motor=13.2ms(172) anim_driver=7.2ms(47) crew_ai_brain=2.1ms(12) police_brain=2.1ms(100) police_brain.move=1.2ms(100) npc_gunner=0.5ms(108) police_brain.pick_target=0.3ms(4) assault_director=0.2ms(4)
+[PO5 424.3s] HITCH shot=0 pipelines=[] vram=2977MB frame=78ms t=376.5 process=29.9ms physics=35.6ms draws=3200 objects=3472 nodes=20793 enemies=27 spawned=[] top: npc_motor=13.9ms(172) anim_driver=11.2ms(47) hud_model=2.4ms(1) police_brain=2.3ms(100) crew_ai_brain=2.3ms(12) police_brain.move=1.1ms(100) hud_model.objectives=0.7ms(1) hud_model.player=0.7ms(1)
+[PO5 424.4s] HITCH shot=0 pipelines=[] vram=2977MB frame=63ms t=376.6 process=29.9ms physics=35.6ms draws=3271 objects=3549 nodes=20793 enemies=27 spawned=[] top: npc_motor=11.5ms(172) anim_driver=2.2ms(47) crew_ai_brain=2.1ms(12) npc_gunner=1.6ms(108) hud_model=1.5ms(1) police_brain=1.4ms(100) police_brain.move=0.9ms(100) npc_gunner.fired=0.7ms(1)
+[PO5 424.4s] HITCH shot=0 pipelines=[] vram=2977MB frame=54ms t=376.7 process=29.9ms physics=35.6ms draws=3270 objects=3553 nodes=20793 enemies=27 spawned=[] top: npc_motor=9.1ms(129) police_brain=3.4ms(75) police_brain.move=3.0ms(75) anim_driver=2.2ms(47) crew_ai_brain=1.4ms(9) npc_gunner=0.3ms(81) assault_director=0.2ms(3) civilian_brain=0.1ms(48)
+[PO5 428.8s] pilot: mag empty (0/54), reloading
+[PO5 430.2s] TEL worst_frame=78ms t=382 phase=3 phys=21.1ms proc=9.8ms nodes=20799 enemies=26 civs=16 crew=[0:0@(25.4, 0.0, 14.3) 1:0@(27.5, 0.0, 15.9) 2:0@(20.5, 0.0, 15.8) 3:0@(21.6, -0.0, 15.7) nearest_enemy=4.4m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 434.7s] pilot: reload in a lull (weapon.corsair_ar 12/30, reserve 24)
+[PO5 440.2s] TEL worst_frame=44ms t=392 phase=3 phys=24.1ms proc=11.1ms nodes=20976 enemies=27 civs=16 crew=[0:0@(14.3, 0.0, 6.9) 1:0@(16.0, 0.0, 11.2) 2:0@(16.7, 0.0, 12.0) 3:0@(16.0, 0.0, 13.9) nearest_enemy=4.7m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 440.7s] pilot: t=5 at (14.0, 0.3, 5.4) corner (14.0, 0.7, 5.0) yaw_err -0.00 fwd=true path=41 mouse_mode=2 state=0 look=(-6.38,0.00) pin_yaw=-6.38465244361635 bot=false
+[PO5 445.8s] pilot: t=10 at (15.1, 4.2, 4.2) corner (15.1, 4.9, 5.0) yaw_err 0.00 fwd=true path=33 mouse_mode=2 state=0 look=(-9.53,0.00) pin_yaw=-9.52734831155306 bot=false
+[PO5 450.2s] TEL worst_frame=42ms t=402 phase=3 phys=22.0ms proc=14.3ms nodes=20976 enemies=27 civs=16 crew=[0:0@(14.7, 8.6, 6.7) 1:0@(14.1, 6.8, 2.7) 2:0@(14.8, 6.8, 2.7) 3:0@(14.9, 5.0, 5.8) nearest_enemy=9.1m within15=5 input_enabled=true captured=true paused_by={  }]
+[PO5 450.8s] pilot: t=15 at (14.9, 8.6, 8.0) corner (17.3, 8.8, 7.9) yaw_err -0.08 fwd=true path=19 mouse_mode=2 state=0 look=(-14.02,0.00) pin_yaw=-14.1004309188508 bot=false
+[PO5 457.6s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/14_auto_408.png
+[PO5 457.7s] HITCH shot=1 pipelines=[] vram=2977MB frame=943ms t=409.1 process=5.4ms physics=21.1ms draws=1321 objects=2218 nodes=20880 enemies=27 spawned=[] top: npc_motor=25.4ms(344) police_brain=11.1ms(208) police_brain.move=9.0ms(208) crew_ai_brain=7.2ms(24) anim_driver=1.4ms(48) police_brain.choose_position=0.6ms(6) npc_gunner=0.5ms(232) assault_director=0.5ms(8)
+[PO5 457.7s] HITCH shot=0 pipelines=[] vram=2977MB frame=67ms t=409.2 process=867.2ms physics=20.9ms draws=1161 objects=1319 nodes=20880 enemies=27 spawned=[] top: npc_motor=15.1ms(215) crew_ai_brain=5.6ms(15) anim_driver=2.2ms(48) police_brain=1.7ms(130) police_brain.move=1.2ms(130) hud_model=0.9ms(1) hud_model.objectives=0.4ms(1) assault_director=0.3ms(5)
+[PO5 460.9s] TEL worst_frame=943ms t=412 phase=3 phys=22.1ms proc=6.5ms nodes=20784 enemies=27 civs=16 crew=[0:0@(29.1, 8.6, 3.3) 1:0@(25.6, 8.6, 3.5) 2:0@(27.7, 8.6, 6.1) 3:0@(29.2, 8.6, 6.1) nearest_enemy=5.2m within15=5 input_enabled=true captured=true paused_by={  }]
+[PO5 462.5s] pilot: reload in a lull (weapon.corsair_ar 25/30, reserve 10)
+[PO5 469.6s] pilot: reload in a lull (weapon.corsair_ar 1/30, reserve 5)
+[PO5 470.9s] TEL worst_frame=47ms t=422 phase=3 phys=20.5ms proc=22.8ms nodes=20697 enemies=23 civs=16 crew=[0:0@(28.1, 8.6, 6.5) 1:0@(25.6, 8.6, 3.5) 2:0@(26.9, 8.6, 4.9) 3:0@(29.6, 8.6, 6.1) nearest_enemy=13.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 474.9s] pilot: t=5 at (19.1, 8.6, 6.3) corner (19.1, 8.6, 7.9) yaw_err -0.00 fwd=true path=34 mouse_mode=2 state=0 look=(-15.71,0.00) pin_yaw=-15.7079628536908 bot=false
+[PO5 479.9s] pilot: t=10 at (14.0, 5.7, 5.0) corner (14.0, 5.3, 5.7) yaw_err 0.00 fwd=true path=19 mouse_mode=2 state=0 look=(-9.37,0.00) pin_yaw=-9.36634963283222 bot=false
+[PO5 480.9s] TEL worst_frame=48ms t=432 phase=3 phys=22.7ms proc=23.3ms nodes=20697 enemies=23 civs=16 crew=[0:0@(14.4, 5.0, 8.0) 1:0@(14.9, 6.9, 2.7) 2:0@(14.0, 6.3, 3.9) 3:0@(14.5, 6.8, 2.7) nearest_enemy=9.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 484.9s] pilot: t=15 at (22.2, 5.0, 7.7) corner (25.9, 5.2, 7.5) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(-7.80,0.00) pin_yaw=-7.79830637129134 bot=false
+[PO5 485.0s] HITCH shot=0 pipelines=[] vram=2976MB frame=69ms t=436.4 process=12.1ms physics=20.8ms draws=1729 objects=1939 nodes=20692 enemies=23 spawned=[] top: npc_motor=3.0ms(39) anim_driver=2.2ms(46) crew_ai_brain=0.8ms(3) police_brain=0.3ms(22) police_brain.move=0.2ms(22) assault_director=0.1ms(1) npc_gunner=0.1ms(27) civilian_brain=0.0ms(16)
+[PO5 485.1s] EVENT objective president_safe -> 2 t=437
+[PO5 487.7s] HITCH shot=0 pipelines=[] vram=2976MB frame=80ms t=439.2 process=7.4ms physics=13.2ms draws=1552 objects=1712 nodes=20703 enemies=23 spawned=[] top: npc_motor=3.0ms(39) crew_ai_brain=1.4ms(3) anim_driver=1.3ms(46) police_brain=0.3ms(22) police_brain.move=0.2ms(22) npc_gunner=0.1ms(27) assault_director=0.1ms(1) civilian_brain=0.0ms(16)
+[PO5 487.7s] pilot: use ServerDrives (bag_loot) -> OK in 1.0 s
+[PO5 490.9s] TEL worst_frame=80ms t=442 phase=3 phys=11.8ms proc=10.8ms nodes=20703 enemies=23 civs=16 crew=[0:0@(20.9, 5.0, 7.7) 1:0@(23.1, 5.0, 7.6) 2:0@(24.0, 5.0, 8.5) 3:0@(22.4, 5.0, 8.5) nearest_enemy=9.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 500.7s] HITCH shot=0 pipelines=[] vram=2975MB frame=58ms t=452.1 process=13.0ms physics=13.6ms draws=1406 objects=1543 nodes=20606 enemies=26 spawned=[] top: anim_driver=19.5ms(45) npc_motor=9.7ms(84) police_brain=6.9ms(50) police_brain.move=5.7ms(50) crew_ai_brain=2.4ms(6) hud_model=1.8ms(1) hud_model.objectives=0.7ms(1) hud_model.player=0.6ms(1)
+[PO5 500.9s] TEL worst_frame=58ms t=452 phase=3 phys=13.6ms proc=13.0ms nodes=20606 enemies=26 civs=16 crew=[0:0@(13.7, 0.0, 7.9) 1:0@(14.0, 0.3, 5.5) 2:0@(14.5, 0.0, 7.1) 3:0@(14.0, 0.9, 4.5) nearest_enemy=4.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 509.5s] EVENT objective server_drives -> 2 t=461
+[PO5 509.5s] EVENT loot_secured loot.server_drives 7500 t=461
+[PO5 510.9s] TEL worst_frame=45ms t=462 phase=3 phys=31.2ms proc=15.7ms nodes=20603 enemies=26 civs=16 crew=[0:0@(7.7, 0.0, -0.6) 1:0@(7.9, 0.0, 0.3) 2:0@(7.1, 0.0, -1.8) 3:0@(6.6, 0.0, -1.8) nearest_enemy=2.2m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 513.5s] pilot: STUCK at (7.9, 0.0, 1.3) heading to (8.6, 0.2, 3.6); rays: h0.20:/root/HeistRuntime/Dynamic/Npc_police2@(8.0, 0.2, 1.8), h0.40:/root/HeistRuntime/Dynamic/Npc_police2@(8.0, 0.4, 1.7), h1.00:/root/HeistRuntime/Dynamic/Npc_police2@(8.0, 1.0, 1.7), slide:/root/HeistRuntime/Dynamic/Npc_police2@(8.1, 0.9, 1.6) n=(-0.5, 0.0, -0.9), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 513.5s] pilot: detour right 0.7 m to (7.3, 0.2, 1.8) (attempt 1)
+[PO5 516.6s] pilot: goto (7.3, 0.2, 1.8) FAILED at (7.3, 0.0, 1.4) after 3.0 s
+[PO5 516.6s] pilot: detour left 0.7 m to (8.1, 0.2, 1.5) (attempt 1)
+[PO5 517.9s] pilot: t=5 at (7.6, 0.0, 1.5) corner (8.4, 0.2, 3.9) yaw_err 0.00 fwd=true path=28 mouse_mode=2 state=0 look=(-15.40,0.00) pin_yaw=-15.4034838886314 bot=false
+[PO5 518.9s] pilot: STUCK at (7.7, 0.0, 1.6) heading to (8.4, 0.2, 3.9); rays: slide:/root/HeistRuntime/Dynamic/Npc_police8@(7.5, 0.9, 1.8) n=(0.7, 0.0, -0.7), slide:/root/HeistRuntime/Dynamic/Npc_police2@(8.0, 0.9, 1.8) n=(-0.9, 0.0, -0.5), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 518.9s] pilot: detour left 0.7 m to (8.5, 0.2, 1.7) (attempt 2)
+[PO5 520.9s] TEL worst_frame=34ms t=472 phase=3 phys=11.5ms proc=11.2ms nodes=20609 enemies=25 civs=16 crew=[0:0@(8.6, 0.0, 1.3) 1:0@(6.9, 0.0, 7.7) 2:0@(7.1, 0.0, 4.2) 3:0@(8.9, 0.0, 4.5) nearest_enemy=0.7m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 521.9s] pilot: goto (8.5, 0.2, 1.7) FAILED at (8.8, 0.0, 1.5) after 3.0 s
+[PO5 521.9s] pilot: detour right 0.7 m to (8.2, 0.2, 1.9) (attempt 2)
+[PO5 523.9s] pilot: STUCK at (8.6, 0.0, 1.3) heading to (8.2, 0.2, 1.9); rays: h0.05:/root/HeistRuntime/Dynamic/Npc_police2@(8.3, 0.1, 1.8), h0.20:/root/HeistRuntime/Dynamic/Npc_police2@(8.4, 0.2, 1.7), h0.40:/root/HeistRuntime/Dynamic/Npc_police2@(8.4, 0.4, 1.6), h1.00:/root/HeistRuntime/Dynamic/Npc_police2@(8.4, 1.0, 1.6), slide:/root/HeistRuntime/Dynamic/Npc_police2@(8.4, 0.4, 1.6) n=(0.5, 0.0, -0.9), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 523.9s] pilot: Npc_police2 blocks the way: shoot
+[PO5 526.7s] pilot: goto (8.2, 0.2, 1.9) FAILED at (8.4, 0.0, 1.3) after 3.0 s
+[PO5 530.2s] pilot: reload in a lull (weapon.corsair_ar 11/30, reserve 7)
+[PO5 530.9s] TEL worst_frame=26ms t=482 phase=3 phys=17.0ms proc=15.2ms nodes=20591 enemies=24 civs=16 crew=[0:0@(13.8, 0.0, 9.2) 1:0@(7.7, 0.0, 7.5) 2:0@(7.0, 0.0, 7.3) 3:0@(7.0, 0.0, 8.0) nearest_enemy=4.1m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 531.0s] pilot: t=10 at (13.8, 0.0, 9.7) corner (13.9, 0.0, 9.9) yaw_err -0.00 fwd=true path=20 mouse_mode=2 state=0 look=(-15.66,0.00) pin_yaw=-15.6590944431601 bot=false
+[PO5 532.6s] HITCH shot=0 pipelines=[] vram=2975MB frame=51ms t=484.0 process=24.5ms physics=20.6ms draws=836 objects=878 nodes=20618 enemies=24 spawned=[] top: assault_director=33.7ms(1) anim_driver=4.5ms(45) police_brain=3.0ms(23) npc_motor=2.8ms(40) police_brain.move=2.7ms(23) crew_ai_brain=1.0ms(3) police_brain.pick_target=0.2ms(1) npc_gunner=0.1ms(26)
+[PO5 536.1s] pilot: t=15 at (24.0, 0.0, 18.8) corner (24.0, -3.8, 19.0) yaw_err -0.73 fwd=false path=2 mouse_mode=2 state=0 look=(-21.36,0.00) pin_yaw=-21.5520515786712 bot=false
+[PO5 536.6s] HITCH shot=0 pipelines=[] vram=2975MB frame=56ms t=488.1 process=18.8ms physics=15.6ms draws=836 objects=878 nodes=20618 enemies=24 spawned=[] top: anim_driver=11.0ms(45) police_brain=7.8ms(46) police_brain.move=7.5ms(46) npc_motor=6.1ms(80) crew_ai_brain=0.9ms(6) npc_gunner=0.2ms(52) assault_director=0.2ms(2) civilian_brain=0.1ms(32)
+[PO5 540.5s] HITCH shot=0 pipelines=[] vram=2975MB frame=50ms t=492.0 process=26.5ms physics=14.4ms draws=836 objects=878 nodes=20806 enemies=26 spawned=[] top: anim_driver=13.0ms(47) npc_motor=5.7ms(82) police_brain=0.7ms(50) crew_ai_brain=0.5ms(6) police_brain.move=0.5ms(50) npc_gunner=0.2ms(56) assault_director=0.1ms(2) civilian_brain=0.1ms(32)
+[PO5 540.9s] TEL worst_frame=56ms t=492 phase=3 phys=14.4ms proc=26.5ms nodes=20806 enemies=26 civs=15 crew=[0:0@(24.0, 0.0, 19.2) 1:0@(29.5, 0.0, 17.9) 2:0@(19.5, 0.0, 20.5) 3:0@(18.4, 0.0, 17.9) nearest_enemy=1.9m within15=5 input_enabled=true captured=true paused_by={  }]
+[PO5 541.1s] pilot: t=20 at (24.0, 0.0, 19.1) corner (24.0, -3.8, 19.0) yaw_err -0.03 fwd=true path=2 mouse_mode=2 state=0 look=(-69.27,0.00) pin_yaw=-69.2998930337135 bot=false
+[PO5 546.1s] pilot: t=25 at (24.1, 0.0, 19.1) corner (24.0, -3.8, 19.0) yaw_err -0.83 fwd=false path=2 mouse_mode=2 state=0 look=(-117.73,0.00) pin_yaw=-117.918248311639 bot=false
+[PO5 547.3s] pilot: STUCK at (24.0, 0.0, 19.0) heading to (24.0, -3.8, 19.0); rays: vel=(0.5, 0.0, 2.9) floor=true state=0
+[PO5 547.3s] pilot: detour right 1.2 m to (22.9, 0.2, 19.5) (attempt 3)
+[PO5 550.9s] TEL worst_frame=48ms t=502 phase=3 phys=30.7ms proc=30.6ms nodes=20706 enemies=26 civs=15 crew=[0:0@(23.9, 0.0, 19.0) 1:0@(29.5, 0.0, 17.9) 2:0@(19.5, 0.0, 20.5) 3:0@(18.4, 0.0, 17.9) nearest_enemy=1.4m within15=7 input_enabled=true captured=true paused_by={  }]
+[PO5 551.5s] pilot: t=30 at (23.8, 0.0, 19.0) corner (24.0, -3.8, 19.0) yaw_err -1.14 fwd=false path=2 mouse_mode=2 state=0 look=(-163.86,0.00) pin_yaw=-164.049310591182 bot=false
+[PO5 557.9s] pilot: t=35 at (24.0, 0.0, 19.2) corner (24.0, -3.8, 19.0) yaw_err 2.52 fwd=false path=2 mouse_mode=2 state=0 look=(-115.53,0.00) pin_yaw=-115.335389369468 bot=false
+[PO5 560.9s] TEL worst_frame=44ms t=512 phase=3 phys=12.7ms proc=10.9ms nodes=20628 enemies=24 civs=14 crew=[0:0@(24.0, 0.0, 19.0) 1:0@(29.5, 0.0, 17.9) 2:0@(19.5, 0.0, 20.5) 3:0@(18.4, 0.0, 17.9) nearest_enemy=4.2m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 563.9s] pilot: t=40 at (24.0, 0.0, 19.0) corner (24.0, -3.8, 19.0) yaw_err 0.12 fwd=true path=2 mouse_mode=2 state=0 look=(-110.44,0.00) pin_yaw=-110.325557027756 bot=false
+[PO5 564.8s] HITCH shot=0 pipelines=[] vram=2975MB frame=91ms t=516.3 process=19.8ms physics=10.8ms draws=3033 objects=3347 nodes=20630 enemies=23 spawned=[] top: anim_driver=16.6ms(45) npc_motor=10.6ms(148) police_brain=1.4ms(88) crew_ai_brain=1.3ms(12) police_brain.move=0.8ms(88) assault_director=0.2ms(4) npc_gunner=0.2ms(104) police_brain.pick_target=0.1ms(1)
+[PO5 568.9s] pilot: t=45 at (24.0, 0.0, 18.9) corner (24.0, -3.8, 19.0) yaw_err 1.20 fwd=false path=2 mouse_mode=2 state=0 look=(-54.74,0.00) pin_yaw=-54.5500307202331 bot=false
+[PO5 570.9s] TEL worst_frame=91ms t=522 phase=3 phys=16.7ms proc=14.4ms nodes=20630 enemies=23 civs=14 crew=[0:0@(24.0, 0.0, 19.0) 1:0@(29.5, 0.0, 17.9) 2:0@(19.5, 0.0, 20.5) 3:0@(18.4, 0.0, 17.9) nearest_enemy=9.3m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 573.9s] pilot: t=50 at (24.0, 0.0, 19.0) corner (24.0, -3.8, 19.0) yaw_err 0.78 fwd=false path=2 mouse_mode=2 state=0 look=(0.30,0.00) pin_yaw=0.48904624134386 bot=false
+[PO5 578.9s] pilot: t=55 at (24.0, 0.0, 19.0) corner (24.0, -3.8, 19.0) yaw_err 0.78 fwd=false path=2 mouse_mode=2 state=0 look=(57.90,0.00) pin_yaw=58.0890467420229 bot=false
+[PO5 580.9s] TEL worst_frame=43ms t=532 phase=3 phys=9.5ms proc=18.0ms nodes=20630 enemies=23 civs=14 crew=[0:0@(24.0, 0.0, 19.0) 1:0@(29.5, 0.0, 17.9) 2:0@(19.5, 0.0, 20.5) 3:0@(18.4, 0.0, 17.9) nearest_enemy=9.3m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 583.9s] pilot: t=60 at (24.0, 0.0, 18.9) corner (24.0, -3.8, 19.0) yaw_err 0.78 fwd=false path=2 mouse_mode=2 state=0 look=(115.50,0.00) pin_yaw=115.689047242702 bot=false
+[PO5 583.9s] pilot: goto (24.0, -3.8, 19.0) FAILED at (24.0, 0.0, 18.9) after 60.0 s
+[PO5 583.9s] pilot: could not reach /root/HeistRuntime/OstranderFederal/Gameplay/Loot/VaultCash/Interactable (bag_loot)
+[PO5 583.9s] pilot: bag_loot out of reach after the walk: not pressing
+[PO5 583.9s] skipping unreachable /root/HeistRuntime/OstranderFederal/Gameplay/Loot/VaultCash/Interactable (bag_loot) for this run (no navmesh path)
+[PO5 585.8s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/15_auto_536.png
+[PO5 585.9s] HITCH shot=1 pipelines=[] vram=2976MB frame=996ms t=536.6 process=20.4ms physics=9.3ms draws=2866 objects=3909 nodes=20630 enemies=23 spawned=[] top: npc_motor=17.7ms(296) crew_ai_brain=3.0ms(24) police_brain=2.7ms(176) police_brain.move=1.5ms(176) anim_driver=1.4ms(45) npc_gunner=0.4ms(208) assault_director=0.4ms(8) civilian_brain=0.2ms(128)
+[PO5 590.7s] pilot: t=5 at (30.4, 0.0, 19.0) corner (30.4, -3.8, 19.0) yaw_err 1.67 fwd=false path=2 mouse_mode=2 state=0 look=(145.23,0.00) pin_yaw=145.419330955044 bot=false
+[PO5 591.7s] TEL worst_frame=996ms t=542 phase=3 phys=16.3ms proc=14.3ms nodes=20626 enemies=23 civs=14 crew=[0:0@(30.4, 0.0, 19.0) 1:0@(35.9, 0.0, 18.1) 2:0@(29.1, 0.0, 19.3) 3:0@(31.4, 0.0, 20.7) nearest_enemy=7.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 595.7s] pilot: t=10 at (30.4, 0.0, 19.0) corner (30.4, -3.8, 19.0) yaw_err 0.23 fwd=true path=2 mouse_mode=2 state=0 look=(194.44,0.00) pin_yaw=194.632681055487 bot=false
+[PO5 600.7s] pilot: t=15 at (30.4, 0.0, 19.0) corner (30.4, -3.8, 19.0) yaw_err 0.14 fwd=true path=2 mouse_mode=2 state=0 look=(243.79,0.00) pin_yaw=243.930748571203 bot=false
+[PO5 601.7s] TEL worst_frame=47ms t=552 phase=3 phys=9.3ms proc=33.6ms nodes=20626 enemies=23 civs=14 crew=[0:0@(30.3, 0.0, 19.0) 1:0@(37.5, 0.0, 18.0) 2:0@(30.5, 0.0, 17.8) 3:0@(32.5, 0.0, 20.7) nearest_enemy=7.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 605.7s] pilot: t=20 at (30.4, 0.0, 19.0) corner (30.4, -3.8, 19.0) yaw_err 0.22 fwd=true path=2 mouse_mode=2 state=0 look=(293.12,0.00) pin_yaw=293.316621229545 bot=false
+[PO5 610.7s] pilot: t=25 at (30.4, 0.0, 19.1) corner (30.4, -3.8, 19.0) yaw_err 2.43 fwd=false path=2 mouse_mode=2 state=0 look=(342.59,0.00) pin_yaw=342.784763401867 bot=false
+[PO5 611.7s] TEL worst_frame=40ms t=562 phase=3 phys=9.7ms proc=11.6ms nodes=20626 enemies=23 civs=14 crew=[0:0@(30.4, 0.0, 18.9) 1:0@(37.5, 0.0, 18.0) 2:0@(29.2, 0.0, 18.2) 3:0@(32.5, 0.0, 20.7) nearest_enemy=7.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 614.0s] pilot: STUCK at (30.3, 0.0, 19.0) heading to (30.4, -3.8, 19.0); rays: vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 614.0s] pilot: detour right 0.7 m to (30.4, 0.2, 19.7) (attempt 1)
+[PO5 616.0s] pilot: t=30 at (30.4, 0.0, 19.0) corner (30.4, -3.8, 19.0) yaw_err 0.04 fwd=true path=2 mouse_mode=2 state=0 look=(390.09,0.00) pin_yaw=390.131198574954 bot=false
+[PO5 616.8s] HITCH shot=0 pipelines=[] vram=2975MB frame=58ms t=567.5 process=23.8ms physics=9.1ms draws=2985 objects=3243 nodes=20626 enemies=23 spawned=[] top: anim_driver=33.8ms(45) npc_motor=6.9ms(74) police_brain=1.2ms(44) crew_ai_brain=0.8ms(6) police_brain.move=0.6ms(44) police_brain.choose_position=0.2ms(1) assault_director=0.2ms(2) npc_gunner=0.2ms(52)
+[PO5 618.3s] pilot: STUCK at (30.3, 0.0, 19.0) heading to (30.4, -3.8, 19.0); rays: vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 618.3s] pilot: detour left 0.7 m to (30.6, 0.2, 18.3) (attempt 2)
+[PO5 621.3s] pilot: t=35 at (30.3, 0.0, 19.0) corner (30.4, -3.8, 19.0) yaw_err -0.03 fwd=true path=2 mouse_mode=2 state=0 look=(388.39,0.00) pin_yaw=388.358514119345 bot=false
+[PO5 621.7s] TEL worst_frame=58ms t=572 phase=3 phys=10.2ms proc=12.6ms nodes=20626 enemies=23 civs=14 crew=[0:0@(30.3, 0.0, 19.0) 1:0@(37.5, 0.0, 18.0) 2:0@(29.4, 0.0, 20.7) 3:0@(32.5, 0.0, 20.7) nearest_enemy=7.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 622.6s] pilot: STUCK at (30.3, 0.0, 19.0) heading to (30.4, -3.8, 19.0); rays: vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 622.6s] pilot: detour right 1.2 m to (30.4, 0.2, 20.2) (attempt 3)
+[PO5 626.0s] EVENT objective vault_drill -> 2 t=577
+[PO5 626.0s] EVENT objective vault_breach -> 2 t=577
+[PO5 626.1s] EVENT objective bond_safe -> 1 t=577
+[PO5 626.1s] EVENT objective deposit_boxes -> 1 t=577
+[PO5 626.1s] EVENT objective vault_loot -> 1 t=577
+[PO5 626.1s] EVENT objective gold_cage -> 1 t=577
+[PO5 626.1s] HITCH shot=0 pipelines=[] vram=2975MB frame=216ms t=576.6 process=20.8ms physics=8.3ms draws=2985 objects=3243 nodes=20622 enemies=23 spawned=[] top: npc_motor=2.6ms(37) anim_driver=0.9ms(45) crew_ai_brain=0.3ms(3) police_brain=0.3ms(22) police_brain.move=0.2ms(22) assault_director=0.1ms(1) npc_gunner=0.1ms(26) civilian_brain=0.0ms(16)
+[PO5 626.2s] HITCH shot=0 pipelines=[] vram=2975MB frame=68ms t=576.8 process=20.8ms physics=8.3ms draws=1332 objects=1523 nodes=20622 enemies=23 spawned=[] top: npc_motor=23.6ms(296) crew_ai_brain=2.6ms(24) police_brain=2.4ms(176) police_brain.move=1.6ms(176) anim_driver=1.4ms(45) assault_director=0.5ms(8) npc_gunner=0.4ms(208) civilian_brain=0.2ms(128)
+[PO5 626.3s] HITCH shot=0 pipelines=[] vram=2975MB frame=57ms t=576.9 process=13.6ms physics=213.9ms draws=2294 objects=2611 nodes=20621 enemies=23 spawned=[] top: npc_motor=14.4ms(222) crew_ai_brain=2.5ms(18) anim_driver=2.4ms(45) police_brain=2.2ms(132) hud_model=1.3ms(1) police_brain.move=1.1ms(132) hud_model.objectives=0.4ms(1) hud_model.flush=0.4ms(1)
+[PO5 626.9s] pilot: t=40 at (28.8, 0.0, 18.6) corner (25.0, 0.2, 17.8) yaw_err -0.00 fwd=true path=22 mouse_mode=2 state=0 look=(403.48,0.00) pin_yaw=403.482725987289 bot=false
+[PO5 627.6s] HITCH shot=0 pipelines=[] vram=2975MB frame=66ms t=578.2 process=15.1ms physics=19.1ms draws=2294 objects=2611 nodes=20621 enemies=23 spawned=[] top: npc_motor=10.0ms(111) anim_driver=5.7ms(45) crew_ai_brain=2.1ms(9) police_brain=0.9ms(66) police_brain.move=0.6ms(66) assault_director=0.2ms(3) npc_gunner=0.2ms(78) civilian_brain=0.1ms(48)
+[PO5 627.6s] HITCH shot=0 pipelines=[] vram=2975MB frame=63ms t=578.2 process=15.1ms physics=19.1ms draws=2294 objects=2611 nodes=20621 enemies=23 spawned=[] top: npc_motor=15.7ms(148) anim_driver=7.6ms(45) police_brain=5.1ms(88) police_brain.move=3.6ms(88) crew_ai_brain=2.6ms(12) hud_model=1.1ms(1) police_brain.pick_target=0.5ms(4) hud_model.objectives=0.5ms(1)
+[PO5 628.4s] pilot: reload in a lull (weapon.corsair_ar 9/30, reserve 6)
+[PO5 630.1s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 631.8s] TEL worst_frame=216ms t=582 phase=3 phys=22.0ms proc=12.0ms nodes=20617 enemies=23 civs=14 crew=[0:0@(24.0, -3.4, 13.9) 1:0@(25.1, 0.0, 15.0) 2:0@(25.1, 0.0, 15.0) 3:0@(23.1, 0.0, 16.0) nearest_enemy=1.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 632.1s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 633.9s] pilot: t=45 at (27.6, -4.0, 18.4) corner (28.4, -3.8, 19.0) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(406.20,0.00) pin_yaw=406.201639659874 bot=false
+[PO5 634.0s] pilot: goto blocked by GoldCageGate (ui.blocked.state); giving up this leg
+[PO5 634.1s] pilot: goto (30.4, -3.8, 19.0) FAILED at (28.2, -4.0, 18.8) after 45.2 s
+[PO5 634.1s] pilot: could not reach /root/HeistRuntime/OstranderFederal/Gameplay/Loot/VaultGold/Interactable (bag_loot)
+[PO5 634.1s] pilot: bag_loot out of reach after the walk: not pressing
+[PO5 634.1s] skipping unreachable /root/HeistRuntime/OstranderFederal/Gameplay/Loot/VaultGold/Interactable (bag_loot) until GoldCageGate is passable
+[PO5 640.0s] HITCH shot=0 pipelines=[] vram=2975MB frame=122ms t=590.5 process=14.0ms physics=20.3ms draws=1917 objects=2211 nodes=20618 enemies=23 spawned=[] top: crew_ai_brain=3.3ms(3) npc_motor=2.3ms(37) anim_driver=1.0ms(45) police_brain=0.3ms(22) police_brain.move=0.2ms(22) npc_gunner=0.1ms(26) assault_director=0.0ms(1) civilian_brain=0.0ms(16)
+[PO5 640.0s] pilot: use Padlock (place_saw) -> OK in 3.0 s
+[PO5 640.0s] HITCH shot=0 pipelines=[] vram=2975MB frame=72ms t=590.6 process=14.0ms physics=20.3ms draws=1917 objects=2211 nodes=20618 enemies=23 spawned=[] top: npc_motor=14.4ms(222) crew_ai_brain=11.5ms(18) police_brain=1.8ms(132) police_brain.move=1.1ms(132) anim_driver=1.1ms(45) npc_gunner=0.3ms(156) assault_director=0.3ms(6) civilian_brain=0.2ms(96)
+[PO5 641.8s] TEL worst_frame=122ms t=592 phase=3 phys=27.7ms proc=12.9ms nodes=20623 enemies=23 civs=14 crew=[0:0@(24.3, -4.0, 16.8) 1:0@(23.2, 0.0, 17.7) 2:0@(24.0, 0.0, 18.2) 3:0@(25.1, 0.0, 18.1) nearest_enemy=4.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 651.1s] HITCH shot=0 pipelines=[] vram=2975MB frame=73ms t=601.7 process=9.6ms physics=24.5ms draws=1917 objects=2211 nodes=20624 enemies=23 spawned=[] top: npc_motor=2.5ms(37) anim_driver=1.5ms(45) crew_ai_brain=0.9ms(3) police_brain=0.3ms(22) police_brain.move=0.2ms(22) npc_gunner=0.1ms(26) assault_director=0.0ms(1) civilian_brain=0.0ms(16)
+[PO5 651.1s] pilot: use Padlock (fix_drill) -> OK in 2.0 s
+[PO5 651.8s] TEL worst_frame=73ms t=602 phase=3 phys=67.7ms proc=15.6ms nodes=20624 enemies=23 civs=14 crew=[0:0@(24.3, -4.0, 16.8) 1:0@(23.1, 0.0, 17.7) 2:0@(24.0, 0.0, 18.2) 3:0@(25.1, 0.0, 18.1) nearest_enemy=4.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 655.5s] HITCH shot=0 pipelines=[] vram=2976MB frame=50ms t=606.1 process=8.0ms physics=20.3ms draws=2236 objects=2452 nodes=20905 enemies=26 spawned=[] top: crew_ai_brain=6.6ms(6) npc_motor=5.7ms(74) anim_driver=3.1ms(48) police_brain=3.1ms(50) police_brain.move=2.7ms(50) assault_director=0.3ms(2) npc_gunner=0.1ms(58) police_brain.pick_target=0.1ms(2)
+[PO5 656.7s] HITCH shot=0 pipelines=[] vram=2976MB frame=114ms t=607.3 process=10.1ms physics=39.9ms draws=2236 objects=2452 nodes=20910 enemies=26 spawned=[] top: npc_motor=2.5ms(37) crew_ai_brain=1.9ms(3) anim_driver=1.4ms(48) police_brain=0.3ms(25) police_brain.move=0.2ms(25) assault_director=0.1ms(1) npc_gunner=0.1ms(29) civilian_brain=0.0ms(16)
+[PO5 656.7s] pilot: use Padlock (place_saw) -> OK in 3.0 s
+[PO5 656.8s] HITCH shot=0 pipelines=[] vram=2976MB frame=77ms t=607.4 process=10.1ms physics=39.9ms draws=2236 objects=2452 nodes=20910 enemies=26 spawned=[] top: npc_motor=15.9ms(222) crew_ai_brain=15.0ms(18) anim_driver=7.0ms(48) police_brain=2.2ms(150) police_brain.move=1.4ms(150) assault_director=0.5ms(6) npc_gunner=0.3ms(174) civilian_brain=0.2ms(96)
+[PO5 656.8s] HITCH shot=0 pipelines=[] vram=2976MB frame=52ms t=607.4 process=10.1ms physics=39.9ms draws=2236 objects=2452 nodes=20910 enemies=26 spawned=[] top: npc_motor=13.3ms(185) crew_ai_brain=12.7ms(15) police_brain=2.4ms(125) anim_driver=1.5ms(48) hud_model=1.3ms(1) police_brain.move=1.1ms(125) hud_model.objectives=0.5ms(1) assault_director=0.4ms(5)
+[PO5 661.8s] TEL worst_frame=114ms t=612 phase=3 phys=30.3ms proc=6.8ms nodes=20915 enemies=26 civs=14 crew=[0:0@(27.9, -4.0, 18.8) 1:0@(26.5, 0.0, 18.3) 2:0@(26.7, 0.0, 19.7) 3:0@(28.0, 0.0, 20.3) nearest_enemy=6.4m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 671.8s] TEL worst_frame=37ms t=622 phase=3 phys=21.6ms proc=8.4ms nodes=20923 enemies=26 civs=12 crew=[0:0@(16.2, -4.0, 20.5) 1:0@(17.7, 0.0, 20.7) 2:0@(17.7, 0.0, 20.3) 3:0@(17.2, 0.0, 19.4) nearest_enemy=7.8m within15=9 input_enabled=true captured=true paused_by={  }]
+[PO5 673.0s] EVENT objective vault_loot -> 1 t=624
+[PO5 673.0s] HITCH shot=0 pipelines=[] vram=2977MB frame=105ms t=623.6 process=10.3ms physics=22.3ms draws=2647 objects=2852 nodes=20913 enemies=26 spawned=[] top: crew_ai_brain=2.6ms(3) npc_motor=2.6ms(38) anim_driver=0.9ms(48) police_brain=0.3ms(25) police_brain.move=0.2ms(25) npc_gunner=0.1ms(29) assault_director=0.1ms(1) npc_gunner.los=0.0ms(3)
+[PO5 673.1s] HITCH shot=0 pipelines=[] vram=2977MB frame=77ms t=623.7 process=10.3ms physics=22.3ms draws=1592 objects=1656 nodes=20913 enemies=26 spawned=[] top: npc_motor=18.7ms(190) crew_ai_brain=12.1ms(15) police_brain=4.0ms(125) police_brain.move=3.4ms(125) anim_driver=2.0ms(48) npc_gunner=0.6ms(145) assault_director=0.3ms(5) door=0.2ms(5)
+[PO5 673.1s] HITCH shot=0 pipelines=[] vram=2977MB frame=57ms t=623.7 process=11.1ms physics=102.9ms draws=1661 objects=1740 nodes=20913 enemies=26 spawned=[] top: npc_motor=12.4ms(190) crew_ai_brain=10.7ms(15) anim_driver=2.0ms(48) police_brain=1.7ms(125) hud_model=1.1ms(1) police_brain.move=1.1ms(125) npc_gunner=0.6ms(145) hud_model.flush=0.4ms(1)
+[PO5 674.2s] HITCH shot=0 pipelines=[] vram=2977MB frame=124ms t=624.7 process=8.0ms physics=24.0ms draws=1661 objects=1740 nodes=20922 enemies=26 spawned=[] top: npc_motor=2.8ms(38) crew_ai_brain=2.5ms(3) anim_driver=1.0ms(48) police_brain=0.3ms(25) police_brain.move=0.2ms(25) npc_gunner=0.1ms(29) assault_director=0.0ms(1) npc_gunner.los=0.0ms(3)
+[PO5 674.2s] pilot: use BondSafe (place_drill) -> OK in 3.0 s
+[PO5 674.2s] /root/HeistRuntime/OstranderFederal/Gameplay/Loot/VaultCash/Interactable has a navmesh path again: retrying
+[PO5 674.2s] marker vault_loot@24,-4,21: usable again, back to it
+[PO5 674.3s] HITCH shot=0 pipelines=[] vram=2977MB frame=86ms t=624.8 process=8.0ms physics=24.0ms draws=1661 objects=1740 nodes=20922 enemies=26 spawned=[] top: npc_motor=19.4ms(266) crew_ai_brain=17.7ms(21) police_brain=2.7ms(175) anim_driver=1.8ms(48) police_brain.move=1.5ms(175) npc_gunner=0.9ms(203) assault_director=0.4ms(7) npc_gunner.los=0.2ms(21)
+[PO5 674.3s] HITCH shot=0 pipelines=[] vram=2977MB frame=65ms t=624.9 process=8.0ms physics=24.0ms draws=1661 objects=1740 nodes=20922 enemies=26 spawned=[] top: npc_motor=15.3ms(228) crew_ai_brain=15.1ms(18) police_brain=2.7ms(150) anim_driver=2.0ms(48) police_brain.move=1.3ms(150) hud_model=1.1ms(1) npc_gunner=0.7ms(174) police_brain.choose_position=0.4ms(5)
+[PO5 674.4s] HITCH shot=0 pipelines=[] vram=2977MB frame=57ms t=625.1 process=8.0ms physics=24.0ms draws=1661 objects=1740 nodes=20922 enemies=26 spawned=[] top: crew_ai_brain=10.4ms(12) npc_motor=10.1ms(152) anim_driver=3.8ms(48) npc_gunner=1.6ms(116) police_brain=1.4ms(100) hud_model=1.0ms(1) police_brain.move=0.9ms(100) npc_gunner.fired=0.6ms(1)
+[PO5 678.9s] HITCH shot=0 pipelines=[] vram=2977MB frame=87ms t=629.5 process=5.9ms physics=20.1ms draws=1661 objects=1740 nodes=20929 enemies=26 spawned=[] top: npc_motor=3.1ms(38) anim_driver=1.2ms(48) crew_ai_brain=0.8ms(3) police_brain=0.4ms(25) police_brain.move=0.3ms(25) npc_gunner=0.1ms(29) civilian_brain=0.1ms(16) assault_director=0.1ms(1)
+[PO5 679.0s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 679.6s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/16_auto_629.png
+[PO5 679.7s] HITCH shot=1 pipelines=[] vram=2977MB frame=675ms t=629.8 process=5.9ms physics=20.1ms draws=1897 objects=2920 nodes=20929 enemies=26 spawned=[] top: npc_motor=22.4ms(304) crew_ai_brain=17.8ms(24) anim_driver=4.2ms(48) police_brain=3.2ms(200) police_brain.move=1.8ms(200) npc_gunner=0.9ms(232) assault_director=0.4ms(8) police_brain.pick_target=0.3ms(5)
+[PO5 679.8s] HITCH shot=0 pipelines=[] vram=2977MB frame=83ms t=629.9 process=597.4ms physics=84.3ms draws=2143 objects=2396 nodes=20929 enemies=26 spawned=[] top: npc_motor=16.4ms(228) crew_ai_brain=11.8ms(18) anim_driver=2.3ms(48) police_brain=2.2ms(150) police_brain.move=1.3ms(150) hud_model=1.2ms(1) npc_gunner=0.6ms(174) hud_model.objectives=0.5ms(1)
+[PO5 679.8s] HITCH shot=0 pipelines=[] vram=2977MB frame=65ms t=630.0 process=597.4ms physics=84.3ms draws=2411 objects=2697 nodes=20929 enemies=26 spawned=[] top: npc_motor=14.1ms(190) crew_ai_brain=12.3ms(15) police_brain=2.3ms(125) anim_driver=2.1ms(48) police_brain.move=1.2ms(125) npc_gunner=0.5ms(145) assault_director=0.3ms(5) police_brain.pick_target=0.3ms(5)
+[PO5 679.9s] HITCH shot=0 pipelines=[] vram=2977MB frame=54ms t=630.0 process=597.4ms physics=84.3ms draws=2247 objects=2529 nodes=20929 enemies=26 spawned=[] top: npc_motor=11.4ms(152) crew_ai_brain=8.1ms(12) anim_driver=2.2ms(48) npc_gunner=1.5ms(116) police_brain=1.5ms(100) hud_model=1.0ms(1) police_brain.move=0.9ms(100) npc_gunner.fired=0.6ms(1)
+[PO5 682.0s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 682.3s] TEL worst_frame=675ms t=632 phase=3 phys=26.3ms proc=12.0ms nodes=20929 enemies=26 civs=12 crew=[0:0@(24.3, -4.0, 14.2) 1:0@(25.0, 0.0, 15.5) 2:0@(25.0, 0.0, 15.5) 3:0@(25.7, 0.0, 14.6) nearest_enemy=1.8m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 686.1s] HITCH shot=0 pipelines=[] vram=2977MB frame=62ms t=636.1 process=8.8ms physics=23.6ms draws=2276 objects=2436 nodes=20857 enemies=26 spawned=[] top: npc_motor=2.7ms(38) crew_ai_brain=1.7ms(3) anim_driver=1.3ms(47) police_brain=0.6ms(25) police_brain.move=0.2ms(25) police_brain.choose_position=0.2ms(2) police_brain.pick_target=0.1ms(2) npc_gunner=0.1ms(29)
+[PO5 686.1s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 686.1s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=636)
+[PO5 692.1s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 692.3s] TEL worst_frame=62ms t=642 phase=3 phys=22.1ms proc=4.8ms nodes=20849 enemies=26 civs=12 crew=[0:0@(25.0, -4.0, 15.2) 1:0@(26.4, 0.0, 15.9) 2:0@(26.4, 0.0, 14.6) 3:0@(25.1, 0.0, 14.5) nearest_enemy=2.8m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 696.0s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 698.1s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 699.2s] pilot: t=5 at (24.9, 0.0, 12.9) corner (25.0, 0.2, 13.5) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(399.09,0.00) pin_yaw=399.086442103955 bot=false
+[PO5 702.1s] pilot: STUCK at (24.9, 0.0, 12.9) heading to (25.0, 0.2, 13.5); rays: h0.05:/root/HeistRuntime/Dynamic/Npc_police14@(25.0, 0.1, 13.3), h0.20:/root/HeistRuntime/Dynamic/Npc_police14@(25.0, 0.2, 13.2), h0.40:/root/HeistRuntime/Dynamic/Npc_police14@(25.0, 0.4, 13.2), h1.00:/root/HeistRuntime/Dynamic/Npc_police14@(25.0, 1.0, 13.2), slide:/root/HeistRuntime/Dynamic/Npc_police14@(25.0, 0.9, 13.2) n=(-0.0, -0.0, -1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 702.2s] pilot: detour right 0.7 m to (24.3, 0.2, 13.2) (attempt 1)
+[PO5 702.3s] TEL worst_frame=36ms t=652 phase=3 phys=24.7ms proc=7.2ms nodes=20586 enemies=26 civs=12 crew=[0:0@(24.9, 0.0, 12.9) 1:0@(27.7, 0.0, 15.5) 2:0@(24.0, -1.2, 13.9) 3:0@(25.5, -4.0, 15.9) nearest_enemy=0.7m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 704.5s] pilot: t=10 at (24.7, 0.0, 12.9) corner (25.0, 0.2, 13.5) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(399.49,0.00) pin_yaw=399.490866545468 bot=false
+[PO5 704.5s] pilot: STUCK at (24.7, 0.0, 12.9) heading to (25.0, 0.2, 13.5); rays: h0.05:/root/HeistRuntime/Dynamic/Npc_police14@(24.9, 0.1, 13.3), h0.20:/root/HeistRuntime/Dynamic/Npc_police14@(24.9, 0.2, 13.2), h0.40:/root/HeistRuntime/Dynamic/Npc_police14@(24.9, 0.4, 13.2), h1.00:/root/HeistRuntime/Dynamic/Npc_police14@(24.9, 1.0, 13.2), slide:/root/HeistRuntime/Dynamic/Npc_police14@(24.8, 0.9, 13.2) n=(-0.5, 0.0, -0.9), vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 704.5s] pilot: detour left 0.7 m to (25.4, 0.2, 12.8) (attempt 2)
+[PO5 709.8s] HITCH shot=0 pipelines=[] vram=2975MB frame=76ms t=659.8 process=12.1ms physics=19.6ms draws=2149 objects=2420 nodes=20524 enemies=23 spawned=[] top: npc_motor=2.4ms(35) anim_driver=1.2ms(43) crew_ai_brain=0.8ms(3) police_brain=0.3ms(22) police_brain.move=0.2ms(22) npc_gunner=0.1ms(27) assault_director=0.1ms(1) custody_system=0.0ms(1)
+[PO5 709.8s] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[PO5 712.3s] TEL worst_frame=76ms t=662 phase=3 phys=21.8ms proc=8.6ms nodes=20520 enemies=23 civs=12 crew=[0:0@(20.7, 0.0, 14.3) 1:0@(25.6, 0.0, 15.9) 2:0@(20.7, -4.0, 16.1) 3:0@(22.3, -4.0, 15.5) nearest_enemy=5.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 722.3s] TEL worst_frame=31ms t=672 phase=3 phys=20.8ms proc=7.2ms nodes=20350 enemies=23 civs=12 crew=[0:0@(7.4, 0.0, -0.9) 1:0@(6.2, 0.0, 4.1) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=15.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 725.2s] EVENT objective secure -> 1 t=675
+[PO5 725.2s] EVENT loot_secured loot.cash_bricks 8000 t=675
+[PO5 730.2s] pilot: t=5 at (13.1, 0.0, 8.3) corner (13.9, 0.2, 8.5) yaw_err 0.00 fwd=true path=26 mouse_mode=2 state=0 look=(400.34,0.00) pin_yaw=400.340394119076 bot=false
+[PO5 732.3s] TEL worst_frame=30ms t=682 phase=3 phys=22.3ms proc=7.5ms nodes=20343 enemies=23 civs=12 crew=[0:0@(18.2, 0.0, 11.3) 1:0@(14.0, 0.0, 8.7) 2:0@(18.8, -4.0, 15.0) 3:0@(17.8, -4.0, 13.8) nearest_enemy=4.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 733.0s] HITCH shot=0 pipelines=[] vram=2974MB frame=79ms t=683.1 process=7.5ms physics=22.3ms draws=876 objects=944 nodes=20343 enemies=23 spawned=[] top: anim_driver=27.9ms(41) npc_motor=7.6ms(105) crew_ai_brain=2.3ms(9) police_brain=1.3ms(66) hud_model=1.2ms(1) police_brain.move=0.7ms(66) hud_model.objectives=0.6ms(1) hud_model.player=0.3ms(1)
+[PO5 733.0s] HITCH shot=0 pipelines=[] vram=2974MB frame=54ms t=683.1 process=7.5ms physics=22.3ms draws=876 objects=944 nodes=20343 enemies=23 spawned=[] top: anim_driver=12.5ms(41) npc_motor=12.1ms(140) police_brain=4.3ms(88) police_brain.move=3.3ms(88) crew_ai_brain=2.8ms(12) police_brain.pick_target=0.3ms(3) npc_gunner=0.3ms(104) assault_director=0.2ms(4)
+[PO5 733.9s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 734.0s] pilot: reload in a lull (weapon.corsair_ar 2/30, reserve 7)
+[PO5 736.0s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 736.6s] HITCH shot=0 pipelines=[] vram=2974MB frame=53ms t=686.7 process=15.0ms physics=22.7ms draws=876 objects=944 nodes=20339 enemies=23 spawned=[] top: npc_motor=7.3ms(105) crew_ai_brain=3.5ms(9) police_brain=3.4ms(66) police_brain.move=2.8ms(66) anim_driver=2.1ms(41) assault_director=0.2ms(3) npc_gunner=0.2ms(78) police_brain.pick_target=0.1ms(2)
+[PO5 737.2s] pilot: t=10 at (24.3, -4.0, 16.6) corner (24.0, -3.8, 16.9) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(398.17,0.00) pin_yaw=398.169781728537 bot=false
+[PO5 739.0s] HITCH shot=0 pipelines=[] vram=2974MB frame=89ms t=689.1 process=27.3ms physics=20.2ms draws=876 objects=944 nodes=20346 enemies=23 spawned=[] top: npc_motor=2.2ms(35) crew_ai_brain=1.1ms(3) anim_driver=1.0ms(41) police_brain=0.3ms(22) police_brain.move=0.2ms(22) assault_director=0.1ms(1) npc_gunner=0.1ms(26) civilian_brain=0.0ms(12)
+[PO5 739.0s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 741.5s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 742.3s] TEL worst_frame=89ms t=692 phase=3 phys=19.8ms proc=7.9ms nodes=20059 enemies=23 civs=12 crew=[0:0@(25.0, -4.0, 14.9) 1:0@(27.3, -4.0, 16.0) 2:0@(23.6, -4.0, 14.6) 3:0@(23.7, -4.0, 14.6) nearest_enemy=2.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 743.5s] HITCH shot=0 pipelines=[] vram=2972MB frame=60ms t=693.6 process=3.4ms physics=20.8ms draws=2044 objects=2384 nodes=20059 enemies=23 spawned=[] top: npc_motor=2.2ms(35) crew_ai_brain=0.8ms(3) anim_driver=0.8ms(38) police_brain=0.3ms(22) police_brain.move=0.2ms(22) assault_director=0.1ms(1) npc_gunner=0.0ms(23) civilian_brain=0.0ms(12)
+[PO5 743.5s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 750.9s] hoist: the bag missed Hoist's car (try 1)
+[PO5 751.0s] FINDING slot 3 carries loot.cash_bricks: leading it to the secure zone
+[PO5 752.1s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 752.3s] TEL worst_frame=60ms t=702 phase=3 phys=21.7ms proc=8.9ms nodes=20062 enemies=23 civs=12 crew=[0:0@(24.1, -3.8, 14.0) 1:0@(27.3, -4.0, 16.0) 2:0@(26.3, -4.0, 14.9) 3:0@(23.6, -4.0, 14.6) nearest_enemy=1.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 754.2s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 755.1s] pilot: reload in a lull (weapon.corsair_ar 9/30, reserve 6)
+[PO5 758.1s] pilot: t=5 at (13.5, 0.0, 8.0) corner (13.0, 0.2, 8.0) yaw_err 0.00 fwd=true path=20 mouse_mode=2 state=0 look=(391.10,0.00) pin_yaw=391.101226438811 bot=false
+[PO5 762.3s] TEL worst_frame=27ms t=712 phase=3 phys=23.1ms proc=7.4ms nodes=20058 enemies=23 civs=12 crew=[0:0@(7.5, 0.0, -1.0) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=16.3m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 770.8s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/17_auto_720.png
+[PO5 770.8s] HITCH shot=1 pipelines=[] vram=2972MB frame=773ms t=720.3 process=6.1ms physics=20.7ms draws=430 objects=1093 nodes=20058 enemies=23 spawned=[] top: npc_motor=20.2ms(280) crew_ai_brain=6.8ms(24) police_brain=2.6ms(176) police_brain.move=1.6ms(176) anim_driver=1.3ms(38) assault_director=0.5ms(8) npc_gunner=0.4ms(184) civilian_brain=0.2ms(96)
+[PO5 772.9s] TEL worst_frame=773ms t=722 phase=3 phys=19.1ms proc=3.8ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.3, -4.0, 14.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 782.9s] TEL worst_frame=34ms t=732 phase=3 phys=20.1ms proc=6.3ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.4, -4.0, 15.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.5, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 792.9s] TEL worst_frame=36ms t=742 phase=3 phys=20.5ms proc=6.1ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.4, -4.0, 15.6) 3:0@(15.2, -4.0, 13.9) nearest_enemy=17.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 802.9s] TEL worst_frame=26ms t=752 phase=3 phys=20.0ms proc=3.6ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 812.9s] TEL worst_frame=25ms t=762 phase=3 phys=20.6ms proc=6.2ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.7, -4.0, 13.7) 2:0@(15.1, -4.0, 14.0) 3:0@(15.4, -4.0, 15.2) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 822.9s] TEL worst_frame=32ms t=772 phase=3 phys=20.3ms proc=3.8ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.8) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 832.9s] TEL worst_frame=28ms t=782 phase=3 phys=20.4ms proc=6.1ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(16.9, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.9) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 842.9s] TEL worst_frame=34ms t=792 phase=3 phys=19.6ms proc=5.1ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.4, -4.0, 15.7) 3:0@(15.2, -4.0, 13.9) nearest_enemy=17.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 852.9s] TEL worst_frame=30ms t=802 phase=3 phys=19.1ms proc=4.0ms nodes=20058 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 861.2s] pilot: weapon.corsair_ar dry, switching weapons
+[PO5 862.9s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/18_auto_811.png
+[PO5 863.0s] HITCH shot=1 pipelines=[] vram=2972MB frame=677ms t=812.0 process=10.9ms physics=19.8ms draws=2101 objects=3042 nodes=20052 enemies=23 spawned=[] top: npc_motor=19.5ms(280) crew_ai_brain=7.4ms(24) police_brain=2.5ms(176) anim_driver=1.8ms(38) police_brain.move=1.6ms(176) npc_gunner=0.8ms(184) assault_director=0.4ms(8) npc_gunner.los=0.2ms(8)
+[PO5 863.0s] HITCH shot=0 pipelines=[] vram=2972MB frame=52ms t=812.1 process=10.9ms physics=19.8ms draws=1930 objects=2190 nodes=20052 enemies=23 spawned=[] top: npc_motor=12.1ms(175) crew_ai_brain=3.6ms(15) anim_driver=1.9ms(38) police_brain=1.7ms(110) hud_model=1.2ms(1) police_brain.move=1.0ms(110) npc_gunner=0.5ms(115) hud_model.objectives=0.4ms(1)
+[PO5 863.4s] TEL worst_frame=677ms t=812 phase=3 phys=19.8ms proc=615.8ms nodes=20052 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.2, -4.0, 14.3) 2:0@(15.2, -4.0, 14.1) 3:0@(15.4, -4.0, 15.2) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 865.1s] pilot: mag empty (0/113), reloading
+[PO5 869.9s] pilot: mag empty (0/96), reloading
+[PO5 873.4s] TEL worst_frame=32ms t=822 phase=3 phys=20.7ms proc=14.3ms nodes=20052 enemies=23 civs=12 crew=[0:0@(6.9, 0.0, -0.6) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=0.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 877.7s] pilot: t=5 at (13.8, 0.0, 9.0) corner (13.9, 0.0, 9.9) yaw_err -0.00 fwd=true path=26 mouse_mode=2 state=0 look=(386.47,0.00) pin_yaw=386.463862318441 bot=false
+[PO5 881.0s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 883.0s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 883.4s] TEL worst_frame=46ms t=832 phase=3 phys=20.4ms proc=6.3ms nodes=20052 enemies=23 civs=12 crew=[0:0@(24.7, -4.0, 14.6) 1:0@(20.4, -4.0, 13.7) 2:0@(21.3, -4.0, 14.7) 3:0@(22.7, -4.0, 15.4) nearest_enemy=3.9m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 884.6s] pilot: t=10 at (24.1, -4.0, 18.0) corner (24.1, -4.0, 18.4) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(386.42,0.00) pin_yaw=386.415891679503 bot=false
+[PO5 886.0s] HITCH shot=0 pipelines=[] vram=2972MB frame=95ms t=835.0 process=6.7ms physics=21.4ms draws=1925 objects=2190 nodes=20059 enemies=23 spawned=[] top: npc_motor=4.5ms(35) anim_driver=1.3ms(38) crew_ai_brain=1.3ms(3) police_brain=0.4ms(22) police_brain.move=0.2ms(22) assault_director=0.1ms(1) npc_gunner=0.1ms(23) civilian_brain=0.0ms(12)
+[PO5 886.1s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 886.1s] HITCH shot=0 pipelines=[] vram=2972MB frame=62ms t=835.1 process=6.7ms physics=21.4ms draws=1925 objects=2190 nodes=20059 enemies=23 spawned=[] top: npc_motor=19.3ms(175) police_brain=9.3ms(110) police_brain.move=8.3ms(110) crew_ai_brain=6.6ms(15) anim_driver=1.0ms(38) npc_gunner=0.3ms(115) assault_director=0.3ms(5) police_brain.choose_position=0.2ms(3)
+[PO5 886.2s] HITCH shot=0 pipelines=[] vram=2972MB frame=56ms t=835.2 process=5.8ms physics=92.3ms draws=1925 objects=2190 nodes=20059 enemies=23 spawned=[] top: npc_motor=18.0ms(175) police_brain=6.5ms(110) crew_ai_brain=6.2ms(15) police_brain.move=5.8ms(110) hud_model=1.6ms(1) anim_driver=1.5ms(38) hud_model.flush=0.7ms(1) hud_model.objectives=0.5ms(1)
+[PO5 888.5s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 890.3s] pilot: reload in a lull (weapon.kestrel_p9 12/17, reserve 79)
+[PO5 890.7s] hoist: the bag missed Hoist's car (try 2)
+[PO5 890.7s] FINDING slot 2 carries loot.cash_bricks: leading it to the secure zone
+[PO5 891.8s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 893.4s] TEL worst_frame=95ms t=842 phase=3 phys=20.9ms proc=6.4ms nodes=20062 enemies=23 civs=12 crew=[0:0@(24.0, -0.6, 13.9) 1:0@(24.8, -4.0, 16.1) 2:0@(23.0, -4.0, 15.0) 3:0@(24.7, -4.0, 14.6) nearest_enemy=1.2m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 893.9s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 897.8s] pilot: t=5 at (14.1, 0.0, 8.1) corner (13.9, 0.2, 8.5) yaw_err 2.17 fwd=false path=19 mouse_mode=2 state=0 look=(377.42,0.00) pin_yaw=377.614979768017 bot=false
+[PO5 902.8s] pilot: t=10 at (6.6, 0.0, -1.0) corner (5.8, 0.2, -1.1) yaw_err -0.00 fwd=true path=6 mouse_mode=2 state=0 look=(378.47,0.00) pin_yaw=378.470190643498 bot=false
+[PO5 903.4s] TEL worst_frame=28ms t=852 phase=3 phys=20.5ms proc=6.3ms nodes=20062 enemies=23 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=2.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 904.0s] pilot: reload in a lull (weapon.kestrel_p9 14/17, reserve 74)
+[PO5 913.4s] TEL worst_frame=31ms t=862 phase=3 phys=21.3ms proc=7.8ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.4, -4.0, 15.4) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 923.4s] TEL worst_frame=33ms t=872 phase=3 phys=19.2ms proc=7.2ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.2, -4.0, 14.1) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 933.4s] TEL worst_frame=28ms t=882 phase=3 phys=19.3ms proc=7.5ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.4, -4.0, 15.1) 3:0@(15.2, -4.0, 13.9) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 943.4s] TEL worst_frame=28ms t=892 phase=3 phys=20.5ms proc=7.1ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.3, -4.0, 14.8) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 953.4s] TEL worst_frame=33ms t=902 phase=3 phys=19.9ms proc=6.8ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.3, -4.0, 14.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 954.0s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/19_auto_902.png
+[PO5 954.1s] HITCH shot=1 pipelines=[] vram=2972MB frame=698ms t=902.6 process=6.8ms physics=19.9ms draws=2026 objects=3016 nodes=20068 enemies=22 spawned=[] top: npc_motor=18.8ms(272) crew_ai_brain=6.5ms(24) police_brain=2.9ms(168) anim_driver=2.2ms(38) police_brain.move=1.5ms(168) assault_director=0.5ms(8) npc_gunner=0.4ms(184) police_brain.pick_target=0.3ms(6)
+[PO5 954.2s] HITCH shot=0 pipelines=[] vram=2972MB frame=62ms t=902.7 process=623.1ms physics=20.0ms draws=1827 objects=2080 nodes=20068 enemies=22 spawned=[] top: npc_motor=14.8ms(204) anim_driver=5.4ms(38) crew_ai_brain=5.3ms(18) police_brain=1.8ms(126) police_brain.move=1.1ms(126) hud_model=0.9ms(1) hud_model.objectives=0.4ms(1) assault_director=0.3ms(6)
+[PO5 963.9s] TEL worst_frame=698ms t=912 phase=3 phys=19.3ms proc=7.2ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.3, -4.0, 14.7) 2:0@(15.3, -4.0, 14.5) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 973.9s] TEL worst_frame=25ms t=922 phase=3 phys=20.7ms proc=6.9ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 983.9s] TEL worst_frame=39ms t=932 phase=3 phys=19.6ms proc=7.5ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.2, -4.0, 14.2) 3:0@(15.4, -4.0, 15.2) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 993.9s] TEL worst_frame=31ms t=942 phase=3 phys=20.6ms proc=7.2ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.4, -4.0, 15.5) 2:0@(15.2, -4.0, 13.8) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1003.9s] TEL worst_frame=33ms t=952 phase=3 phys=20.4ms proc=5.9ms nodes=20068 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.8) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1013.9s] TEL worst_frame=34ms t=962 phase=3 phys=22.7ms proc=6.7ms nodes=20068 enemies=22 civs=12 crew=[0:0@(9.2, 0.0, 7.5) 1:0@(15.2, -4.0, 14.2) 2:0@(15.4, -4.0, 15.1) 3:0@(15.1, -4.0, 13.7) nearest_enemy=8.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1015.9s] pilot: t=5 at (13.9, 0.0, 10.0) corner (14.1, 0.2, 9.5) yaw_err 0.49 fwd=true path=23 mouse_mode=2 state=0 look=(382.29,0.00) pin_yaw=382.484130923675 bot=false
+[PO5 1019.2s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 1021.2s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 1022.9s] pilot: t=10 at (24.1, -4.0, 17.9) corner (24.1, -4.0, 18.4) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(380.13,0.00) pin_yaw=380.132700747277 bot=false
+[PO5 1023.9s] TEL worst_frame=42ms t=972 phase=3 phys=40.1ms proc=6.5ms nodes=19973 enemies=22 civs=12 crew=[0:0@(24.1, -4.0, 18.7) 1:0@(23.1, -4.0, 14.7) 2:0@(23.0, -4.0, 15.6) 3:0@(24.9, -4.0, 14.6) nearest_enemy=6.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1024.3s] HITCH shot=0 pipelines=[] vram=2972MB frame=92ms t=972.8 process=5.6ms physics=20.0ms draws=1619 objects=1894 nodes=19980 enemies=22 spawned=[] top: npc_motor=2.5ms(34) anim_driver=1.3ms(37) crew_ai_brain=1.2ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) assault_director=0.1ms(1) npc_gunner=0.0ms(22) civilian_brain=0.0ms(12)
+[PO5 1024.3s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 1024.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=51ms t=972.9 process=5.6ms physics=20.0ms draws=1619 objects=1894 nodes=19980 enemies=22 spawned=[] top: npc_motor=10.6ms(136) crew_ai_brain=5.0ms(12) hud_model=1.7ms(1) police_brain=1.6ms(84) anim_driver=1.2ms(37) police_brain.move=0.8ms(84) hud_model.flush=0.6ms(1) hud_model.objectives=0.4ms(1)
+[PO5 1024.5s] HITCH shot=0 pipelines=[] vram=2972MB frame=57ms t=973.1 process=5.6ms physics=20.0ms draws=1619 objects=1894 nodes=19980 enemies=22 spawned=[] top: npc_motor=12.2ms(102) crew_ai_brain=7.1ms(9) anim_driver=3.3ms(37) police_brain=1.4ms(63) police_brain.move=0.9ms(63) assault_director=0.4ms(3) npc_gunner=0.2ms(66) custody_system=0.1ms(3)
+[PO5 1026.7s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 1028.9s] hoist: the bag missed Hoist's car (try 3)
+[PO5 1028.9s] FINDING slot 1 carries loot.cash_bricks: leading it to the secure zone
+[PO5 1030.0s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 1032.1s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 1033.9s] TEL worst_frame=92ms t=982 phase=3 phys=20.0ms proc=8.8ms nodes=19983 enemies=22 civs=12 crew=[0:0@(18.6, 0.0, 11.2) 1:0@(23.5, -4.0, 14.4) 2:0@(20.3, -4.0, 15.1) 3:0@(22.5, -4.0, 15.9) nearest_enemy=6.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1036.0s] pilot: t=5 at (13.5, 0.0, 8.0) corner (13.0, 0.2, 8.0) yaw_err 0.00 fwd=true path=20 mouse_mode=2 state=0 look=(372.27,0.00) pin_yaw=372.266056231337 bot=false
+[PO5 1043.9s] TEL worst_frame=24ms t=992 phase=3 phys=18.3ms proc=5.7ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.2, -4.0, 14.5) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1044.7s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/20_auto_992.png
+[PO5 1044.8s] HITCH shot=1 pipelines=[] vram=2972MB frame=866ms t=992.6 process=5.7ms physics=18.3ms draws=437 objects=1208 nodes=19979 enemies=22 spawned=[] top: npc_motor=19.0ms(272) crew_ai_brain=7.1ms(24) police_brain=3.1ms(168) anim_driver=1.5ms(37) police_brain.move=1.5ms(168) assault_director=0.5ms(8) police_brain.pick_target=0.4ms(8) npc_gunner=0.4ms(176)
+[PO5 1044.8s] HITCH shot=0 pipelines=[] vram=2972MB frame=54ms t=992.7 process=792.2ms physics=19.4ms draws=262 objects=274 nodes=19979 enemies=22 spawned=[] top: npc_motor=14.8ms(204) crew_ai_brain=4.5ms(18) police_brain=1.7ms(126) anim_driver=1.4ms(37) police_brain.move=1.1ms(126) hud_model=0.9ms(1) hud_model.objectives=0.4ms(1) assault_director=0.3ms(6)
+[PO5 1054.5s] TEL worst_frame=866ms t=1002 phase=3 phys=20.5ms proc=5.0ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.3, -4.0, 15.0) 2:0@(15.1, -4.0, 14.0) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1064.5s] TEL worst_frame=36ms t=1012 phase=3 phys=19.1ms proc=4.9ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.2, -4.0, 14.0) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1074.5s] TEL worst_frame=23ms t=1022 phase=3 phys=20.1ms proc=4.4ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.4, -4.0, 15.1) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1084.5s] TEL worst_frame=40ms t=1032 phase=3 phys=17.9ms proc=5.4ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.2, -4.0, 14.4) 2:0@(15.3, -4.0, 14.6) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1094.5s] TEL worst_frame=24ms t=1042 phase=3 phys=19.3ms proc=2.4ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1104.5s] TEL worst_frame=23ms t=1052 phase=3 phys=21.3ms proc=5.0ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.2, -4.0, 14.2) 2:0@(15.1, -4.0, 13.7) 3:0@(15.3, -4.0, 14.8) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1114.5s] TEL worst_frame=31ms t=1062 phase=3 phys=17.8ms proc=4.9ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.4, -4.0, 15.2) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1124.5s] TEL worst_frame=27ms t=1072 phase=3 phys=17.4ms proc=2.8ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.9) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1134.5s] TEL worst_frame=21ms t=1082 phase=3 phys=18.2ms proc=5.6ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.3, -4.0, 14.9) 2:0@(15.1, -4.0, 13.7) 3:0@(15.2, -4.0, 14.2) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1136.4s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/21_auto_1083.png
+[PO5 1136.4s] HITCH shot=1 pipelines=[] vram=2972MB frame=852ms t=1083.6 process=3.4ms physics=17.0ms draws=437 objects=1208 nodes=19979 enemies=22 spawned=[] top: npc_motor=21.5ms(272) police_brain=7.6ms(168) police_brain.move=6.0ms(168) crew_ai_brain=5.8ms(24) anim_driver=0.8ms(37) police_brain.pick_target=0.5ms(7) assault_director=0.5ms(8) npc_gunner=0.4ms(176)
+[PO5 1145.2s] TEL worst_frame=852ms t=1092 phase=3 phys=18.3ms proc=5.1ms nodes=19979 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.3, -4.0, 14.6) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1155.2s] TEL worst_frame=27ms t=1102 phase=3 phys=20.5ms proc=7.5ms nodes=19979 enemies=22 civs=12 crew=[0:0@(13.9, 0.0, 9.9) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 14.3) 3:0@(15.3, -4.0, 13.7) nearest_enemy=4.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1155.3s] pilot: t=5 at (13.9, 0.0, 10.0) corner (14.1, 0.2, 9.5) yaw_err 1.86 fwd=false path=25 mouse_mode=2 state=0 look=(374.67,0.00) pin_yaw=374.859879633912 bot=false
+[PO5 1158.5s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 1160.4s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 1162.2s] pilot: t=10 at (24.1, -4.0, 18.3) corner (24.1, -4.0, 18.4) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(373.85,0.00) pin_yaw=373.849516600477 bot=false
+[PO5 1163.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=73ms t=1110.6 process=4.8ms physics=17.0ms draws=262 objects=274 nodes=19986 enemies=22 spawned=[] top: police_brain=2.5ms(21) police_brain.move=2.4ms(21) npc_motor=2.4ms(34) crew_ai_brain=1.0ms(3) anim_driver=0.8ms(37) npc_gunner=0.0ms(22) assault_director=0.0ms(1) civilian_brain=0.0ms(12)
+[PO5 1163.5s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 1165.2s] TEL worst_frame=73ms t=1112 phase=3 phys=17.7ms proc=8.4ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 15.7) 1:0@(22.9, -4.0, 15.8) 2:0@(23.0, -4.0, 15.8) 3:0@(25.0, -4.0, 14.8) nearest_enemy=3.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1165.9s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 1169.9s] HITCH shot=0 pipelines=[] vram=2972MB frame=54ms t=1117.1 process=5.5ms physics=17.9ms draws=262 objects=274 nodes=19986 enemies=22 spawned=[] top: npc_motor=3.1ms(34) anim_driver=1.1ms(37) crew_ai_brain=1.0ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) npc_gunner=0.1ms(22) assault_director=0.0ms(1) police_brain.pick_target=0.0ms(1)
+[PO5 1169.9s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1169.9s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=1117)
+[PO5 1175.2s] TEL worst_frame=54ms t=1122 phase=3 phys=16.6ms proc=3.0ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 15.6) 1:0@(27.8, -4.0, 14.9) 2:0@(26.2, -4.0, 13.7) 3:0@(24.0, -4.0, 13.7) nearest_enemy=3.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1175.9s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 1176.8s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 1178.9s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 1181.1s] HITCH shot=0 pipelines=[] vram=2972MB frame=56ms t=1128.3 process=5.7ms physics=17.8ms draws=262 objects=274 nodes=19986 enemies=22 spawned=[] top: npc_motor=2.6ms(34) anim_driver=0.9ms(37) crew_ai_brain=0.4ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) npc_gunner=0.0ms(22) assault_director=0.0ms(1) civilian_brain=0.0ms(12)
+[PO5 1181.1s] pilot: use Bag_cash_bricks4 (pick_bag) -> OK in 1.0 s
+[PO5 1185.2s] TEL worst_frame=56ms t=1132 phase=3 phys=22.2ms proc=5.0ms nodes=19986 enemies=22 civs=12 crew=[0:0@(17.4, 0.0, 12.0) 1:0@(21.7, -4.0, 15.6) 2:0@(21.1, -4.0, 15.1) 3:0@(20.4, -4.0, 16.3) nearest_enemy=6.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1195.2s] TEL worst_frame=25ms t=1142 phase=3 phys=19.2ms proc=5.9ms nodes=19986 enemies=22 civs=12 crew=[0:0@(3.6, 0.0, -1.4) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=18.4m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1196.2s] EVENT objective secure -> 1 t=1143
+[PO5 1196.2s] EVENT loot_secured loot.cash_bricks 8000 t=1143
+[PO5 1201.2s] pilot: t=5 at (13.8, 0.0, 9.0) corner (13.9, 0.0, 9.9) yaw_err -0.01 fwd=true path=26 mouse_mode=2 state=0 look=(355.05,0.00) pin_yaw=355.048787908291 bot=false
+[PO5 1204.5s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 1205.2s] TEL worst_frame=27ms t=1152 phase=3 phys=17.1ms proc=7.7ms nodes=19979 enemies=22 civs=12 crew=[0:0@(24.0, -1.0, 13.9) 1:0@(20.4, -4.0, 15.3) 2:0@(18.8, -4.0, 14.3) 3:0@(19.9, -4.0, 13.9) nearest_enemy=6.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1206.5s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 1208.1s] pilot: t=10 at (24.1, -4.0, 18.0) corner (24.1, -4.0, 18.4) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(355.00,0.00) pin_yaw=354.999959554087 bot=false
+[PO5 1209.5s] HITCH shot=0 pipelines=[] vram=2972MB frame=67ms t=1156.7 process=3.8ms physics=22.2ms draws=262 objects=274 nodes=19986 enemies=22 spawned=[] top: npc_motor=2.1ms(34) crew_ai_brain=1.0ms(3) anim_driver=0.8ms(37) police_brain=0.3ms(21) police_brain.move=0.2ms(21) assault_director=0.0ms(1) npc_gunner=0.0ms(22) civilian_brain=0.0ms(12)
+[PO5 1209.5s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 1212.0s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 1214.0s] HITCH shot=0 pipelines=[] vram=2972MB frame=50ms t=1161.2 process=5.5ms physics=19.7ms draws=262 objects=274 nodes=19986 enemies=22 spawned=[] top: npc_motor=2.2ms(34) crew_ai_brain=1.0ms(3) anim_driver=0.9ms(37) police_brain=0.3ms(21) police_brain.move=0.2ms(21) assault_director=0.0ms(1) npc_gunner=0.0ms(22) civilian_brain=0.0ms(12)
+[PO5 1214.0s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1215.2s] TEL worst_frame=67ms t=1162 phase=3 phys=19.1ms proc=3.9ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 14.9) 1:0@(24.3, -4.0, 16.5) 2:0@(25.8, -4.0, 17.2) 3:0@(27.2, -4.0, 15.6) nearest_enemy=2.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1223.3s] HITCH shot=0 pipelines=[] vram=2972MB frame=50ms t=1170.5 process=4.5ms physics=16.1ms draws=262 objects=274 nodes=19986 enemies=22 spawned=[] top: npc_motor=2.0ms(34) crew_ai_brain=0.9ms(3) anim_driver=0.8ms(37) police_brain=0.4ms(21) police_brain.move=0.2ms(21) police_brain.choose_position=0.1ms(1) police_brain.pick_target=0.1ms(1) assault_director=0.0ms(1)
+[PO5 1223.3s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1223.3s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=1171)
+[PO5 1225.2s] TEL worst_frame=50ms t=1172 phase=3 phys=16.4ms proc=3.9ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 15.6) 1:0@(23.9, -4.0, 17.6) 2:0@(25.8, -4.0, 17.2) 3:0@(27.2, -4.0, 15.6) nearest_enemy=3.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1228.5s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/22_auto_1175.png
+[PO5 1228.6s] HITCH shot=1 pipelines=[] vram=2972MB frame=566ms t=1175.4 process=3.1ms physics=17.0ms draws=1073 objects=2047 nodes=19986 enemies=22 spawned=[] top: npc_motor=17.2ms(272) crew_ai_brain=5.3ms(24) police_brain=4.5ms(168) police_brain.move=3.6ms(168) anim_driver=1.1ms(37) hud_model=0.8ms(1) hud_model.objectives=0.4ms(1) npc_gunner=0.3ms(176)
+[PO5 1229.7s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 1234.7s] pilot: t=5 at (25.0, -4.0, 14.8) corner (25.0, 0.2, 15.1) yaw_err 1.42 fwd=false path=10 mouse_mode=2 state=0 look=(347.36,0.00) pin_yaw=347.555186687707 bot=false
+[PO5 1235.6s] TEL worst_frame=566ms t=1182 phase=3 phys=17.9ms proc=6.3ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 14.8) 1:0@(24.0, -4.0, 17.6) 2:0@(25.8, -4.0, 17.2) 3:0@(27.2, -4.0, 15.6) nearest_enemy=2.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1239.7s] pilot: t=10 at (25.0, -4.0, 15.2) corner (25.0, 0.2, 15.1) yaw_err -1.49 fwd=false path=10 mouse_mode=2 state=0 look=(347.71,0.00) pin_yaw=347.520686752134 bot=false
+[PO5 1243.8s] pilot: STUCK at (25.0, -4.0, 15.2) heading to (24.7, -3.8, 14.5); rays: vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 1243.8s] pilot: detour right 0.7 m to (25.5, -3.8, 14.6) (attempt 1)
+[PO5 1244.7s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 1245.6s] TEL worst_frame=22ms t=1192 phase=3 phys=16.4ms proc=5.3ms nodes=19986 enemies=22 civs=12 crew=[0:0@(24.0, -2.2, 13.9) 1:0@(25.0, -4.0, 15.8) 2:0@(25.5, -4.0, 16.1) 3:0@(27.2, -4.0, 15.6) nearest_enemy=2.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1246.8s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 1247.2s] pilot: t=15 at (24.6, 0.0, 13.2) corner (25.0, 0.2, 13.5) yaw_err -0.02 fwd=true path=4 mouse_mode=2 state=0 look=(343.39,0.00) pin_yaw=343.370563537465 bot=false
+[PO5 1249.0s] HITCH shot=0 pipelines=[] vram=2972MB frame=63ms t=1195.8 process=5.8ms physics=19.0ms draws=874 objects=907 nodes=19986 enemies=22 spawned=[] top: npc_motor=2.3ms(34) anim_driver=0.9ms(37) hud_model=0.7ms(1) crew_ai_brain=0.5ms(3) hud_model.objectives=0.4ms(1) police_brain=0.3ms(21) police_brain.move=0.2ms(21) hud_model.crew=0.1ms(1)
+[PO5 1249.0s] pilot: use Bag_cash_bricks4 (pick_bag) -> OK in 1.0 s
+[PO5 1255.6s] TEL worst_frame=63ms t=1202 phase=3 phys=18.6ms proc=5.5ms nodes=19986 enemies=22 civs=12 crew=[0:0@(13.6, 0.0, 8.2) 1:0@(17.6, -4.0, 14.4) 2:0@(17.0, -4.0, 14.2) 3:0@(18.1, -4.0, 14.5) nearest_enemy=7.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1264.1s] EVENT objective secure -> 1 t=1211
+[PO5 1264.1s] EVENT loot_secured loot.cash_bricks 8000 t=1211
+[PO5 1265.6s] TEL worst_frame=27ms t=1212 phase=3 phys=22.8ms proc=10.3ms nodes=19983 enemies=22 civs=12 crew=[0:0@(5.6, 0.0, 2.2) 1:0@(15.3, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=15.1m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1269.1s] pilot: t=5 at (13.8, 0.0, 9.0) corner (13.9, 0.0, 9.9) yaw_err -0.01 fwd=true path=26 mouse_mode=2 state=0 look=(336.21,0.00) pin_yaw=336.199935002733 bot=false
+[PO5 1272.4s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 1274.4s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 1275.6s] TEL worst_frame=22ms t=1222 phase=3 phys=16.4ms proc=4.0ms nodes=19979 enemies=22 civs=12 crew=[0:0@(24.3, -4.0, 16.6) 1:0@(21.5, -4.0, 13.9) 2:0@(22.4, -4.0, 14.8) 3:0@(24.2, -4.0, 14.5) nearest_enemy=5.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1276.0s] pilot: t=10 at (24.1, -4.0, 18.0) corner (24.1, -4.0, 18.4) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(336.15,0.00) pin_yaw=336.150403643794 bot=false
+[PO5 1277.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=65ms t=1224.2 process=4.2ms physics=17.5ms draws=874 objects=907 nodes=19986 enemies=22 spawned=[] top: police_brain=2.6ms(21) police_brain.move=2.5ms(21) npc_motor=2.4ms(34) crew_ai_brain=1.2ms(3) anim_driver=0.6ms(37) npc_gunner=0.0ms(22) police_brain.pick_target=0.0ms(2) assault_director=0.0ms(1)
+[PO5 1277.4s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 1279.9s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 1281.9s] HITCH shot=0 pipelines=[] vram=2972MB frame=51ms t=1228.7 process=5.7ms physics=19.4ms draws=874 objects=907 nodes=19986 enemies=22 spawned=[] top: npc_motor=2.4ms(34) anim_driver=0.9ms(37) crew_ai_brain=0.8ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) npc_gunner=0.0ms(22) assault_director=0.0ms(1) civilian_brain=0.0ms(12)
+[PO5 1281.9s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1285.6s] TEL worst_frame=65ms t=1232 phase=3 phys=17.2ms proc=4.4ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 14.9) 1:0@(24.2, -4.0, 16.2) 2:0@(23.0, -4.0, 14.8) 3:0@(26.6, -4.0, 16.7) nearest_enemy=2.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1291.2s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1291.2s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=1238)
+[PO5 1295.6s] TEL worst_frame=46ms t=1242 phase=3 phys=15.7ms proc=4.4ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 15.6) 1:0@(23.5, -4.0, 16.2) 2:0@(24.1, -4.0, 14.5) 3:0@(26.6, -4.0, 16.7) nearest_enemy=3.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1297.2s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 1302.2s] pilot: t=5 at (25.0, -4.0, 14.8) corner (25.0, 0.2, 15.1) yaw_err 1.42 fwd=false path=10 mouse_mode=2 state=0 look=(328.51,0.00) pin_yaw=328.70379602571 bot=false
+[PO5 1305.6s] TEL worst_frame=18ms t=1252 phase=3 phys=15.4ms proc=4.9ms nodes=19986 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 15.1) 1:0@(24.2, -4.0, 17.0) 2:0@(26.5, -4.0, 16.7) 3:0@(27.8, -4.0, 15.1) nearest_enemy=2.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1307.2s] pilot: t=10 at (25.0, -4.0, 15.2) corner (24.7, -3.8, 14.5) yaw_err -0.55 fwd=true path=10 mouse_mode=2 state=0 look=(327.73,0.00) pin_yaw=327.535219810258 bot=false
+[PO5 1307.3s] pilot: STUCK at (25.0, -4.0, 15.1) heading to (24.7, -3.8, 14.5); rays: vel=(-0.9, 0.0, -2.1) floor=true state=0
+[PO5 1307.3s] pilot: detour right 0.7 m to (25.5, -3.8, 14.5) (attempt 1)
+[PO5 1308.1s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 1310.2s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 1312.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=56ms t=1259.2 process=4.1ms physics=16.8ms draws=874 objects=907 nodes=19986 enemies=22 spawned=[] top: npc_motor=2.2ms(34) anim_driver=0.9ms(37) crew_ai_brain=0.6ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) assault_director=0.0ms(1) npc_gunner=0.0ms(22) civilian_brain=0.0ms(12)
+[PO5 1312.4s] pilot: use Bag_cash_bricks4 (pick_bag) -> OK in 1.0 s
+[PO5 1315.6s] TEL worst_frame=56ms t=1262 phase=3 phys=18.1ms proc=4.4ms nodes=19986 enemies=22 civs=12 crew=[0:0@(19.3, 0.0, 13.3) 1:0@(23.8, -4.0, 16.3) 2:0@(20.5, -4.0, 16.0) 3:0@(22.5, -4.0, 16.0) nearest_enemy=5.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1325.6s] TEL worst_frame=22ms t=1272 phase=3 phys=17.2ms proc=2.8ms nodes=19986 enemies=22 civs=12 crew=[0:0@(4.9, 0.0, -1.2) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=17.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1327.5s] EVENT objective secure -> 1 t=1274
+[PO5 1327.5s] EVENT loot_secured loot.cash_bricks 8000 t=1274
+[PO5 1328.2s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/23_auto_1274.png
+[PO5 1328.3s] HITCH shot=1 pipelines=[] vram=2972MB frame=796ms t=1274.5 process=4.9ms physics=18.7ms draws=1633 objects=2674 nodes=19983 enemies=22 spawned=[] top: npc_motor=17.6ms(272) police_brain=4.2ms(168) crew_ai_brain=3.8ms(24) police_brain.move=3.3ms(168) anim_driver=0.9ms(37) hud_model=0.7ms(1) hud_model.objectives=0.4ms(1) npc_gunner=0.3ms(176)
+[PO5 1328.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=52ms t=1274.6 process=741.8ms physics=25.6ms draws=1711 objects=1932 nodes=19983 enemies=22 spawned=[] top: npc_motor=11.4ms(170) anim_driver=4.8ms(37) crew_ai_brain=3.6ms(15) police_brain=1.3ms(105) police_brain.move=0.8ms(105) hud_model=0.7ms(1) hud_model.objectives=0.4ms(1) npc_gunner=0.3ms(110)
+[PO5 1333.1s] pilot: t=5 at (13.8, 0.0, 9.0) corner (13.9, 0.0, 9.9) yaw_err -0.01 fwd=true path=26 mouse_mode=2 state=0 look=(317.35,0.00) pin_yaw=317.348390958624 bot=false
+[PO5 1336.2s] TEL worst_frame=796ms t=1282 phase=3 phys=18.8ms proc=7.6ms nodes=19979 enemies=22 civs=12 crew=[0:0@(22.9, 0.0, 12.8) 1:0@(19.5, -4.0, 15.6) 2:0@(17.0, -4.0, 14.7) 3:0@(17.2, -4.0, 13.8) nearest_enemy=7.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1336.4s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 1338.4s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 1340.1s] pilot: t=10 at (24.1, -4.0, 18.0) corner (24.1, -4.0, 18.4) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(317.30,0.00) pin_yaw=317.300865544737 bot=false
+[PO5 1341.4s] EVENT objective vault_loot -> 2 t=1288
+[PO5 1341.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=70ms t=1287.6 process=4.0ms physics=19.5ms draws=1488 objects=1681 nodes=19985 enemies=22 spawned=[] top: npc_motor=2.1ms(34) anim_driver=0.9ms(37) crew_ai_brain=0.9ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) npc_gunner=0.0ms(22) assault_director=0.0ms(1) civilian_brain=0.0ms(12)
+[PO5 1341.5s] pilot: use VaultCash (bag_loot) -> OK in 1.0 s
+[PO5 1341.5s] marker gold_cage@29,-4,19: usable again, back to it
+[PO5 1343.9s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 1345.9s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1346.2s] TEL worst_frame=70ms t=1292 phase=3 phys=48.5ms proc=4.5ms nodes=19985 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 14.9) 1:0@(26.0, -4.0, 16.4) 2:0@(24.7, -4.0, 16.7) 3:0@(25.7, -4.0, 15.2) nearest_enemy=2.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1355.2s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1355.2s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=1301)
+[PO5 1356.2s] TEL worst_frame=49ms t=1302 phase=3 phys=47.8ms proc=3.2ms nodes=19985 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 15.7) 1:0@(26.0, -4.0, 17.1) 2:0@(27.6, -4.0, 16.5) 3:0@(27.7, -4.0, 13.8) nearest_enemy=4.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1361.2s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 1362.1s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 1364.2s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 1366.2s] TEL worst_frame=23ms t=1312 phase=3 phys=16.9ms proc=4.5ms nodes=19985 enemies=22 civs=12 crew=[0:0@(25.0, 0.0, 14.8) 1:0@(27.6, -4.0, 16.2) 2:0@(25.5, -4.0, 16.1) 3:0@(26.3, -4.0, 14.0) nearest_enemy=4.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1366.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=59ms t=1312.6 process=4.5ms physics=16.9ms draws=1868 objects=2070 nodes=19985 enemies=22 spawned=[] top: npc_motor=2.4ms(34) anim_driver=0.8ms(37) crew_ai_brain=0.8ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) assault_director=0.1ms(1) npc_gunner=0.0ms(22) custody_system=0.0ms(1)
+[PO5 1366.4s] pilot: use Bag_cash_bricks4 (pick_bag) -> OK in 1.0 s
+[PO5 1376.2s] TEL worst_frame=59ms t=1322 phase=3 phys=16.8ms proc=4.4ms nodes=19985 enemies=22 civs=12 crew=[0:0@(8.6, 0.0, 4.4) 1:0@(15.2, -4.0, 14.2) 2:0@(15.1, -4.0, 13.7) 3:0@(15.3, -4.0, 14.9) nearest_enemy=11.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1381.4s] EVENT objective secure -> 1 t=1328
+[PO5 1381.4s] EVENT loot_secured loot.cash_bricks 8000 t=1328
+[PO5 1386.2s] TEL worst_frame=29ms t=1332 phase=3 phys=18.7ms proc=8.2ms nodes=19982 enemies=22 civs=12 crew=[0:0@(13.6, 0.0, 8.4) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(16.8, -4.0, 13.7) nearest_enemy=6.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1386.5s] pilot: t=5 at (13.8, 0.0, 9.0) corner (13.9, 0.0, 9.9) yaw_err -0.01 fwd=true path=27 mouse_mode=2 state=0 look=(298.51,0.00) pin_yaw=298.500741103616 bot=false
+[PO5 1389.8s] pilot: ladder RopeLadder down (4.0 m)
+[PO5 1391.7s] pilot: ladder RopeLadder down -> OK at (24.0, -4.0, 13.9)
+[PO5 1393.4s] pilot: t=10 at (27.4, -4.0, 18.0) corner (28.2, -3.8, 19.0) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(299.10,0.00) pin_yaw=299.102225280804 bot=false
+[PO5 1395.9s] HITCH shot=0 pipelines=[] vram=2972MB frame=54ms t=1342.1 process=4.2ms physics=18.0ms draws=1868 objects=2070 nodes=19978 enemies=22 spawned=[] top: npc_motor=2.4ms(34) anim_driver=0.8ms(37) crew_ai_brain=0.7ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) npc_gunner=0.0ms(22) assault_director=0.0ms(1) custody_system=0.0ms(1)
+[PO5 1395.9s] pilot: use Padlock (fix_drill) -> OK in 2.0 s
+[PO5 1396.2s] TEL worst_frame=54ms t=1342 phase=3 phys=52.3ms proc=5.1ms nodes=19978 enemies=22 civs=12 crew=[0:0@(28.0, -4.0, 18.7) 1:0@(28.2, -4.0, 15.7) 2:0@(25.8, -4.0, 16.2) 3:0@(24.4, -4.0, 16.9) nearest_enemy=6.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1406.2s] TEL worst_frame=33ms t=1352 phase=3 phys=22.1ms proc=6.7ms nodes=19978 enemies=22 civs=12 crew=[0:0@(27.8, -4.0, 18.6) 1:0@(28.2, -4.0, 15.7) 2:0@(25.8, -4.0, 16.2) 3:0@(24.4, -4.0, 16.9) nearest_enemy=6.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1409.0s] EVENT objective gold_cage -> 2 t=1355
+[PO5 1409.0s] HITCH shot=0 pipelines=[] vram=2972MB frame=82ms t=1355.2 process=4.3ms physics=18.7ms draws=1868 objects=2070 nodes=19976 enemies=22 spawned=[] top: npc_motor=2.0ms(34) crew_ai_brain=0.9ms(3) anim_driver=0.7ms(37) police_brain=0.3ms(21) police_brain.move=0.2ms(21) assault_director=0.1ms(1) npc_gunner=0.0ms(22) civilian_brain=0.0ms(12)
+[PO5 1409.1s] HITCH shot=0 pipelines=[] vram=2972MB frame=53ms t=1355.2 process=4.3ms physics=18.7ms draws=2333 objects=2536 nodes=19976 enemies=22 spawned=[] top: npc_motor=16.2ms(136) crew_ai_brain=3.6ms(12) anim_driver=1.5ms(37) police_brain=1.0ms(84) police_brain.move=0.7ms(84) assault_director=0.2ms(4) npc_gunner=0.2ms(88) door=0.1ms(4)
+[PO5 1410.9s] pilot: t=5 at (23.1, -4.0, 16.8) corner (23.5, -4.0, 16.6) yaw_err -1.34 fwd=false path=16 mouse_mode=2 state=0 look=(308.08,0.00) pin_yaw=307.892358164558 bot=false
+[PO5 1415.9s] pilot: t=10 at (23.3, -4.0, 16.7) corner (22.8, -3.8, 16.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(303.54,0.00) pin_yaw=303.541498575556 bot=false
+[PO5 1416.2s] TEL worst_frame=82ms t=1362 phase=3 phys=16.6ms proc=6.5ms nodes=19976 enemies=22 civs=12 crew=[0:0@(23.2, -4.0, 16.7) 1:0@(23.3, -4.0, 19.1) 2:0@(25.8, -4.0, 16.8) 3:0@(23.4, -4.0, 17.3) nearest_enemy=5.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1420.9s] pilot: t=15 at (23.8, -4.0, 16.5) corner (22.8, -3.8, 16.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(303.53,0.00) pin_yaw=303.535432448567 bot=false
+[PO5 1425.9s] pilot: t=20 at (23.9, -4.0, 16.5) corner (22.8, -3.8, 16.9) yaw_err 1.50 fwd=false path=17 mouse_mode=2 state=0 look=(301.98,0.00) pin_yaw=302.168888874454 bot=false
+[PO5 1426.2s] TEL worst_frame=20ms t=1372 phase=3 phys=16.0ms proc=5.7ms nodes=19972 enemies=22 civs=12 crew=[0:0@(23.2, -4.0, 16.7) 1:0@(22.9, -4.0, 17.9) 2:0@(25.8, -4.0, 16.8) 3:0@(23.1, -4.0, 17.1) nearest_enemy=5.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1430.9s] pilot: t=25 at (23.9, -4.0, 17.0) corner (23.9, -4.0, 16.6) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(301.59,0.00) pin_yaw=301.592882877805 bot=false
+[PO5 1435.9s] pilot: t=30 at (23.9, -4.0, 17.6) corner (23.9, -4.0, 16.6) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(301.59,0.00) pin_yaw=301.592909019244 bot=false
+[PO5 1436.2s] TEL worst_frame=23ms t=1382 phase=3 phys=18.3ms proc=6.9ms nodes=19972 enemies=22 civs=12 crew=[0:0@(23.9, -4.0, 16.5) 1:0@(23.0, -4.0, 17.9) 2:0@(25.8, -4.0, 16.8) 3:0@(22.9, -4.0, 16.6) nearest_enemy=4.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1440.9s] pilot: t=35 at (23.9, -4.0, 18.2) corner (23.8, -4.0, 16.6) yaw_err 0.12 fwd=true path=17 mouse_mode=2 state=0 look=(301.47,0.00) pin_yaw=301.592895924172 bot=false
+[PO5 1444.2s] pilot: STUCK at (23.5, -4.0, 16.6) heading to (22.8, -3.8, 16.9); rays: h0.20:/root/HeistRuntime/Dynamic/Crew3@(23.0, -3.8, 16.8), h0.40:/root/HeistRuntime/Dynamic/Crew3@(23.1, -3.6, 16.8), h1.00:/root/HeistRuntime/Dynamic/Crew3@(23.1, -3.0, 16.8), vel=(-3.3, 0.0, 1.3) floor=true state=0
+[PO5 1444.2s] pilot: detour right 0.7 m to (23.0, -3.8, 16.1) (attempt 1)
+[PO5 1446.2s] TEL worst_frame=21ms t=1392 phase=3 phys=19.1ms proc=4.9ms nodes=19972 enemies=22 civs=12 crew=[0:0@(19.8, -4.0, 20.0) 1:0@(23.2, -4.0, 16.7) 2:0@(23.2, -4.0, 16.8) 3:0@(22.6, -4.0, 17.1) nearest_enemy=8.7m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 1446.2s] pilot: t=40 at (19.8, -4.0, 20.0) corner (18.8, -3.8, 20.1) yaw_err 0.00 fwd=true path=7 mouse_mode=2 state=0 look=(303.29,0.00) pin_yaw=303.287403575727 bot=false
+[PO5 1449.4s] HITCH shot=0 pipelines=[] vram=2972MB frame=57ms t=1395.6 process=2.6ms physics=16.6ms draws=2437 objects=2636 nodes=19972 enemies=22 spawned=[] top: npc_motor=2.1ms(34) anim_driver=0.9ms(37) crew_ai_brain=0.6ms(3) police_brain=0.3ms(21) police_brain.move=0.2ms(21) assault_director=0.0ms(1) npc_gunner=0.0ms(22) custody_system=0.0ms(1)
+[PO5 1449.4s] pilot: use BondSafe (fix_drill) -> OK in 2.0 s
+[PO5 1450.2s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/24_auto_1395.png
+[PO5 1450.2s] GoldCageGate is passable again: retrying /root/HeistRuntime/OstranderFederal/Gameplay/Loot/VaultGold/Interactable
+[PO5 1450.3s] HITCH shot=1 pipelines=[] vram=2972MB frame=801ms t=1395.8 process=2.6ms physics=16.6ms draws=1747 objects=2671 nodes=19972 enemies=22 spawned=[] top: npc_motor=13.9ms(272) crew_ai_brain=4.5ms(24) police_brain=1.9ms(168) anim_driver=1.2ms(37) police_brain.move=1.1ms(168) npc_gunner=0.3ms(176) assault_director=0.3ms(8) civilian_brain=0.2ms(96)
+[PO5 1456.9s] TEL worst_frame=801ms t=1402 phase=3 phys=29.3ms proc=2.6ms nodes=19972 enemies=22 civs=12 crew=[0:0@(16.2, -4.0, 20.5) 1:0@(19.4, -4.0, 21.2) 2:0@(19.2, -4.0, 18.7) 3:0@(17.1, -4.0, 17.7) nearest_enemy=8.1m within15=9 input_enabled=true captured=true paused_by={  }]
+[PO5 1465.1s] pilot: t=5 at (24.9, -4.0, 16.8) corner (24.5, -4.0, 18.4) yaw_err -0.81 fwd=false path=12 mouse_mode=2 state=0 look=(299.03,0.00) pin_yaw=298.8363825708 bot=false
+[PO5 1466.8s] TEL worst_frame=30ms t=1412 phase=3 phys=18.6ms proc=4.5ms nodes=19972 enemies=22 civs=12 crew=[0:0@(30.0, -4.0, 18.9) 1:0@(24.7, -4.0, 16.2) 2:0@(25.3, -4.0, 16.9) 3:0@(24.2, -4.0, 16.9) nearest_enemy=8.7m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 1468.0s] HITCH shot=0 pipelines=[] vram=2972MB frame=55ms t=1413.6 process=5.5ms physics=16.4ms draws=1537 objects=1635 nodes=19979 enemies=22 spawned=[] top: npc_motor=2.2ms(34) crew_ai_brain=0.8ms(3) anim_driver=0.6ms(37) police_brain=0.4ms(21) police_brain.move=0.2ms(21) police_brain.pick_target=0.1ms(2) npc_gunner=0.0ms(22) assault_director=0.0ms(1)
+[PO5 1468.1s] pilot: use VaultGold (bag_loot) -> OK in 1.0 s
+[PO5 1473.0s] pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)
+[PO5 1475.2s] HITCH shot=0 pipelines=[] vram=2972MB frame=52ms t=1420.7 process=2.8ms physics=17.1ms draws=1537 objects=1635 nodes=19979 enemies=22 spawned=[] top: npc_motor=3.0ms(34) police_brain=2.5ms(21) police_brain.move=2.4ms(21) anim_driver=0.9ms(37) crew_ai_brain=0.6ms(3) npc_gunner=0.0ms(22) assault_director=0.0ms(1) civilian_brain=0.0ms(12)
+[PO5 1475.2s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1476.8s] TEL worst_frame=55ms t=1422 phase=3 phys=50.2ms proc=2.9ms nodes=19979 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 14.9) 1:0@(28.5, -4.0, 16.6) 2:0@(26.2, -4.0, 18.0) 3:0@(27.7, -4.0, 14.4) nearest_enemy=2.5m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 1484.8s] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[PO5 1484.8s] hoist: Hoist sent from landing 0 with 1 bag(s) (t=1430)
+[PO5 1486.8s] TEL worst_frame=48ms t=1432 phase=3 phys=19.2ms proc=3.2ms nodes=19979 enemies=22 civs=12 crew=[0:0@(25.0, -4.0, 15.6) 1:0@(28.5, -4.0, 16.6) 2:0@(26.2, -4.0, 18.0) 3:0@(27.7, -4.0, 14.4) nearest_enemy=4.1m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 1489.7s] EVENT objective bond_safe -> 2 t=1435
+[PO5 1490.8s] hoist: unloading Hoist at landing 1 (1 bag(s) in the car)
+[PO5 1494.9s] pilot: STUCK at (25.0, -4.0, 15.0) heading to (25.0, 0.2, 15.2); rays: vel=(-0.1, 0.0, 1.0) floor=true state=0
+[PO5 1494.9s] pilot: detour left 0.7 m to (25.7, -3.8, 15.3) (attempt 1)
+[PO5 1495.9s] pilot: ladder RopeLadder up (4.0 m)
+[PO5 1496.9s] TEL worst_frame=48ms t=1442 phase=3 phys=10.1ms proc=6.1ms nodes=19978 enemies=22 civs=12 crew=[0:0@(24.0, -2.0, 13.9) 1:0@(28.4, -4.0, 16.5) 2:0@(26.2, -4.0, 16.0) 3:0@(27.7, -4.0, 14.4) nearest_enemy=2.3m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 1498.0s] pilot: ladder RopeLadder up -> OK at (24.0, 0.0, 13.2)
+[PO5 1498.2s] pilot: t=5 at (24.2, 0.0, 13.1) corner (24.8, 0.2, 13.2) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(293.50,0.00) pin_yaw=293.503373931264 bot=false
+[PO5 1503.3s] HITCH shot=0 pipelines=[] vram=2972MB frame=54ms t=1448.8 process=7.5ms physics=7.8ms draws=2716 objects=2975 nodes=19980 enemies=21 spawned=[] top: npc_motor=1.8ms(33) crew_ai_brain=0.7ms(3) anim_driver=0.7ms(37) police_brain=0.2ms(20) police_brain.move=0.2ms(20) npc_gunner=0.0ms(22) assault_director=0.0ms(1) civilian_brain=0.0ms(12)
+[PO5 1503.3s] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[PO5 1503.4s] pilot: reload in a lull (weapon.kestrel_p9 0/17, reserve 78)
+[PO5 1506.8s] TEL worst_frame=54ms t=1452 phase=3 phys=7.7ms proc=4.6ms nodes=19980 enemies=21 civs=12 crew=[0:0@(21.0, 0.0, 14.5) 1:0@(24.9, -4.0, 16.2) 2:0@(20.5, -4.0, 16.0) 3:0@(22.5, -4.0, 15.7) nearest_enemy=5.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1516.9s] TEL worst_frame=17ms t=1462 phase=3 phys=9.9ms proc=4.2ms nodes=19980 enemies=21 civs=12 crew=[0:0@(8.8, 0.0, 6.0) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.7) 3:0@(15.1, -4.0, 13.7) nearest_enemy=10.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1524.9s] EVENT objective secure -> 1 t=1471
+[PO5 1524.9s] EVENT objective secure -> 2 t=1471
+[PO5 1524.9s] EVENT objective escape_wait -> 0 t=1471
+[PO5 1525.0s] EVENT objective escape_wait -> 1 t=1471
+[PO5 1525.0s] EVENT loot_secured loot.gold 14000 t=1471
+[PO5 1526.9s] TEL worst_frame=38ms t=1472 phase=3 phys=15.4ms proc=11.9ms nodes=19978 enemies=21 civs=12 crew=[0:0@(8.3, 0.0, -2.1) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.6) 3:0@(15.1, -4.0, 13.7) nearest_enemy=16.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1536.9s] TEL worst_frame=24ms t=1482 phase=3 phys=12.9ms proc=4.8ms nodes=19879 enemies=21 civs=12 crew=[0:0@(8.3, 0.0, -2.1) 1:0@(15.2, -4.0, 14.2) 2:0@(15.3, -4.0, 15.0) 3:0@(15.1, -4.0, 13.7) nearest_enemy=16.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1541.2s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/25_auto_1486.png
+[PO5 1541.3s] HITCH shot=1 pipelines=[] vram=2972MB frame=713ms t=1486.3 process=5.0ms physics=12.8ms draws=2040 objects=3104 nodes=19879 enemies=21 spawned=[] top: npc_motor=14.6ms(264) crew_ai_brain=5.8ms(24) police_brain=1.9ms(160) anim_driver=1.5ms(36) police_brain.move=1.1ms(160) npc_gunner=0.3ms(168) assault_director=0.3ms(8) civilian_brain=0.2ms(96)
+[PO5 1547.4s] TEL worst_frame=713ms t=1492 phase=3 phys=11.2ms proc=3.2ms nodes=19879 enemies=21 civs=12 crew=[0:0@(8.3, 0.0, -2.1) 1:0@(15.1, -4.0, 13.7) 2:0@(15.1, -4.0, 13.6) 3:0@(15.1, -4.0, 13.7) nearest_enemy=16.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1557.4s] TEL worst_frame=15ms t=1502 phase=3 phys=12.8ms proc=3.2ms nodes=19879 enemies=21 civs=12 crew=[0:0@(8.3, 0.0, -2.1) 1:0@(15.2, -4.0, 14.1) 2:0@(15.1, -4.0, 13.7) 3:0@(15.4, -4.0, 15.2) nearest_enemy=16.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1562.1s] FAIL no heist end within 1500 s; markers ["deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "deposit_boxes", "escape_wait"]
+[PO5 1562.7s] shot C:\Users\Aaron\gpu20b\of_a6b_b1800/26_end.png
+[PO5 1562.8s] HITCHES 143 of 309031 heist frames over 50 ms (20 of them screenshot frames), worst 2935 ms, without a shot 2935 ms
+[PO5 1562.8s] STATS difficulty=5 police=67 peak_alive=28 specials={ &"enemy.longshot": 2, &"enemy.bulwark": 13, &"enemy.corpsman": 1, &"enemy.brandt": 1 } composition={ &"enemy.security_officer": 9, &"enemy.patrol_officer": 10, &"enemy.tac_light": 22, &"enemy.tac_heavy": 9, &"enemy.longshot": 2, &"enemy.bulwark": 13, &"enemy.corpsman": 1, &"enemy.brandt": 1 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+INTAKE pilot standing loud 1501 s, 0 dmg, 0.00 dmg/s, 3.7 enemies within 20 m on average | by attacker [hits, dmg, nulled] { "enemy.security_officer": [0, 0.0, 42], "enemy.tac_heavy": [0, 0.0, 111], "enemy.patrol_officer": [0, 0.0, 5], "enemy.tac_light": [0, 0.0, 70] } | by range {  }
+[PO5 1562.8s] RESULT FAIL (code 1) flow=auto_loud heist=Ostrander Federal seed=1037
