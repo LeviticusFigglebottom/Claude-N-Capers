@@ -268,3 +268,20 @@ Suggestions for A: exclude frames that take a screenshot from HITCH (or log `sho
     mostly to the right of and below the glowing rim. Still subtle at contact-sheet scale.
   - **rc_teller_workroom floor around the burn ring (x850-1150, y560-640): 55.7 -> 55.4 (no visible change).** The TW floor scorch still doesn't show
     from this camera. It's about 25 m away at a grazing angle on dark navy carpet. Either the decal needs to be much darker/larger, or a closer TW camera is needed to judge it.
+## GPU-15: confirm A's nav fix (OF-done blocker)
+- Tree: local branch gpu/a3 = env/a-core ffc264d4 ("NavPath.query: path queries without Godot 4.7's 4096-polygon search cap") + merge of env/c-worlds 595f57fe (clean). Import exit 0, 6 s.
+- Same command as GPU-12 with `--po5-out=<repo>\gpu\renders\a\of_hitch_navfix`; log `gpu/renders/a/of_hitch_navfix.txt`.
+- **RESULT: `[PO5 241.0s] RESULT FAIL (code 2) flow=auto_loud heist=Ostrander Federal seed=1037`** (`FAIL budget 240 s exceeded`), but for a different reason than GPU-12 (below).
+- **Nav fix confirmed:**
+  - `"most reachable polygons"` ERRORs: **0** (GPU-12: 14; GPU-10 Routine loud: 1,498).
+  - `FINDING ... deposit_boxes ... not reachable`: **gone**. `FINDING ... bond_safe ... not reachable`: **gone**.
+  - The pilot now gets much further: DockPersonnelDoor, StairDoorSAB, RecordsDoor, thermal drill parts x2 -> LidDrill placed at 151.0 s and again at 186.9 s.
+- **New blocker at the bond safe (why the budget still ran out):**
+  - `[PO5 222.8s] pilot: goto (15.9, -3.8, 20.5) FAILED at (13.2, -4.0, 20.1) after 2.1 s`, i.e. the path now exists but ends about 2.7 m short.
+  - Then from 223.4 s to the 240.7 s budget, 44x `pilot: use place_drill re-press skipped: aimed <none> (dist 2.22, angle 0.0 deg)`:
+    the pilot is 2.22 m from BondSafe/Interactable and facing it, but its aim ray hits no interactable (out of reach/occluded, or the collider sits behind the safe body).
+  - Also, 240 s may be tight for a full Cataclysm loud run even when it's clean (GPU-10's Routine loud PASS took 225 s).
+- **Frames > 50 ms, excluding the 4 po5 shot frames: 9** (GPU-12 equivalent: 22 non-shot). Of these, 6 are heist start (t < 8 s: 2181 @0.1, 137 @0.3,
+  85 @3.8, 85 @5.7, 60 @5.6, 59 @2.0). **Loud phase: only 3, worst 69 ms @163.1, 62 @139.9** (and one more at 50-59 ms). The 90-110 ms ones at t≈130/176 from GPU-13 are gone.
+- Other ERRORs: `!is_inside_tree() ... Transform3D()` x5, `Playback can only happen when a node is inside the scene tree` x1, `6 resources still in use at exit`.
+- 10 PNGs in `gpu/renders/a/of_hitch_navfix/`.
