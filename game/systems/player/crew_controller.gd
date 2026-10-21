@@ -175,6 +175,10 @@ func _ready() -> void:
 		var tw: CrewTweak = Tweak.crew()
 		body_bags = tw.body_bags_base
 		cable_ties = tw.cable_ties_base
+	# The capsule is a crew_member.tscn sub-resource, shared by every instance: own a copy, or one crew member's
+	# crouch (_apply_stance) shrinks everyone's capsule under their standing offset and sinks them 0.3 m into the floor.
+	if _collision.shape != null:
+		_collision.shape = _collision.shape.duplicate()
 	_apply_stance(false)
 	if CrewView.of(self) == null:  # QB-47: camera, weapon visual, mask (presentation only)
 		var view: CrewView = CrewView.new()
