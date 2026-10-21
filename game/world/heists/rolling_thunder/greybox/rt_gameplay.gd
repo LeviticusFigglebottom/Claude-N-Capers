@@ -16,19 +16,24 @@ const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", 
 ## Minimum width of a thin body in the nav bake (see _nav_thick).
 const RIG_NAV_MIN: float = 0.2
 ## RT-C2 convoy: the truck hold (A5-01 ArmoredTruck visual) and cab (A5-02 ConvoyVehicle visual) per kind; the escort
-## cars keep A's placeholder visual (Seat0..3) until the police-car variant.
+## cars' visual (Seat0..3; its art fronts -Z, so the mover's `Visual` is turned 180 deg).
+const CONVOY_CAR_ART: String = "veh_escort_car"
 const CONVOY_TRUCK_ART: Dictionary = {"cash": "veh_armored_truck_cash", "bullion": "veh_armored_truck_bullion"}
 const CONVOY_CAB_ART: Dictionary = {"cash": "veh_armored_cab_cash", "bullion": "veh_armored_cab_bullion"}
 const CONVOY_THERMITE_ART: String = "prop_thermite_lock"
 ## ArmoredTruck defaults are the cash van (saw 120 s, hand saw 60 s, C4 x4); the bullion truck (doc Truck targets).
 const CONVOY_TRUCK_PROPS: Dictionary = {"bullion": {"saw_duration_s": 180.0, "hand_saw_duration_s": 90.0}}
-## rolling_thunder_convoy.py LEN / WIDTH (m) and the truck art's rear step, lock edge (x) and the rear-step UsePoint
-## (this far behind the doors, on the road).
+## rolling_thunder_convoy.py LEN / WIDTH (m) and the truck art's rear step and lock edge (x).
 const CONVOY_LEN: Dictionary = {"car": 5.0, "cash": 7.5, "bullion": 9.0}
 const CONVOY_WIDTH: Dictionary = {"car": 2.0, "cash": 2.5, "bullion": 2.5}
 const TRUCK_STEP: float = 0.35
 const TRUCK_LOCK_X: float = -0.85
-const TRUCK_USE_BACK: float = 0.9
+const TRUCK_USE_BACK: float = 0.5
+## The rear-step UsePoints stand at this x (truck-local), off the lock side's rear corner, clear of the door's swing
+## (hinge +X) and of a vehicle queued close behind (the movers wait 0.55 m apart): the truck's saw / C4 spot
+## TRUCK_USE_BACK behind the doors, the bullion thermite's THERMITE_USE_BACK.
+const TRUCK_USE_X: float = -1.8
+const THERMITE_USE_BACK: float = 1.1
 ## Where the movers' `<Veh>Path` Path3Ds go: "Movers" (beside the movers) wires A's drive-in (the mission's
 ## _drive_path finds them); any other name keeps the paths but the mission pops the vehicles in (park). "Paths" until
 ## ENV A's test_rt_a6_mission waits for the drive-in (its stop tests assert the layout 2 frames after the arrival).
@@ -434,11 +439,13 @@ func _convoy_mover(movers: Node3D, paths: Node3D, mv: Array) -> void:
 	veh.name = String(mv[0])
 	veh.transform = Transform3D(yaw_basis(float(mv[3])), v3(mv[2]))
 	set_prop(veh, "vehicle_kind", "truck" if kind != "car" else "car")
-	if kind != "car":
-		veh.set(&"visual_scene", catalog_scene(String(CONVOY_CAB_ART[kind])))
+	veh.set(&"visual_scene", catalog_scene(String(CONVOY_CAB_ART[kind]) if kind != "car" else CONVOY_CAR_ART))
 	veh.set_meta(&"kind", "convoy_" + kind)
 	movers.add_child(veh)
 	veh.owner = map_root
+	if kind == "car":
+		map_root.set_editable_instance(veh, true)
+		(veh.get_node("Visual") as Node3D).basis = yaw_basis(180.0)
 	var path: Path3D = Path3D.new()
 	path.name = String(mv[0]) + "Path"
 	var curve: Curve3D = Curve3D.new()
@@ -470,8 +477,8 @@ func _convoy_truck(veh: Node3D, kind: String) -> void:
 	t.owner = map_root
 	map_root.set_editable_instance(t, true)
 	var rear: float = -float(CONVOY_LEN[kind]) * 0.5
-	(t.get_node("UsePoint") as Node3D).transform = Transform3D(yaw_basis(180.0), Vector3(0.0, 0.0,
-		rear - TRUCK_USE_BACK))
+	var lock: Vector3 = Vector3(TRUCK_LOCK_X, 0.0, rear)
+	(t.get_node("UsePoint") as Node3D).transform = _facing(Vector3(TRUCK_USE_X, 0.0, rear - TRUCK_USE_BACK), lock)
 	(t.get_node("Interactable") as Node3D).position = Vector3(TRUCK_LOCK_X, 1.7, rear - 0.1)
 	if kind != "bullion":
 		return
@@ -489,8 +496,8 @@ func _convoy_truck(veh: Node3D, kind: String) -> void:
 	veh.add_child(b)   # beside the truck: a prefab inside a Safe is stowed as its loot (Safe._inner_loot)
 	b.owner = map_root
 	map_root.set_editable_instance(b, true)
-	(b.get_node("UsePoint") as Node3D).transform = Transform3D(yaw_basis(180.0), Vector3(0.0, -1.0, -(TRUCK_USE_BACK
-		- 0.085)))
+	(b.get_node("UsePoint") as Node3D).transform = Transform3D(Basis.IDENTITY, -b.position) * _facing(
+		Vector3(TRUCK_USE_X, 0.0, rear - THERMITE_USE_BACK), lock)
 
 
 ## A vehicle's nav footprint at `xf` (its pivot: bottom-centre, cab +Z): [corners, elevation, height, carve false],

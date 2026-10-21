@@ -18931,6 +18931,43 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "veh_escort_car": {
+  "aabb": [
+   -1.02,
+   0.0,
+   -2.32,
+   2.04,
+   1.58,
+   4.646
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/veh_escort_car/veh_escort_car.glb",
+  "group": "convoy_vehicle",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "convoy_vehicle",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Seat0",
+   "Seat1",
+   "Seat2",
+   "Seat3"
+  ],
+  "place": "none",
+  "prefab": "convoy_vehicle",
+  "scene": "res://world/props/convoy_vehicle/veh_escort_car.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "veh_flatbed_trailer": {
   "aabb": [
    -1.195,

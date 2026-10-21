@@ -851,10 +851,10 @@ def police_spawns() -> List[list]:
 def tactical() -> List[list]:
     out = [
         # street closures (vehicle-wide lanes past each closure vehicle; Wrecker / Bulwark routes)
-        T("EntryClosureN", "ENTRY", [-5.5, 0.0, -80.0], 180.0, ["closure", "north", "vehicle_wide"]),
+        T("EntryClosureN", "ENTRY", [-3.0, 0.0, -80.0], 180.0, ["closure", "north", "vehicle_wide"]),
         T("EntryClosureS", "ENTRY", [-9.0, 0.0, 62.0], 0.0, ["closure", "south", "vehicle_wide"]),
         T("EntryClosureW", "ENTRY", [-72.0, 0.0, 6.0], -90.0, ["closure", "west", "vehicle_wide"]),
-        T("EntryClosureE", "ENTRY", [94.0, -5.0, -4.0], 90.0, ["closure", "east", "vehicle_wide"]),
+        T("EntryClosureE", "ENTRY", [94.0, -5.0, -2.0], 90.0, ["closure", "east", "vehicle_wide"]),
         T("EntryRailGate", "ENTRY", [60.0, 0.0, -73.0], 180.0, ["rail_lane", "northeast"], True),
         # car park (breach_only: police never spawn inside a building, D-064 / QC-42)
         T("EntryCarParkEntrance", "ENTRY", [24.0, 0.0, -13.0], 180.0, ["carpark", "south", "breach_only"]),
@@ -1218,9 +1218,10 @@ def _path(route: str, start: tuple) -> List[list]:
     nm, _kind, a0, a1, lat, _yaw = start
     sgn = -1.0 if route == "north" else 1.0          # along the arm, away from the junction
     pts = [[_lane_pt(route, (a0 + a1) / 2.0, lat), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
-    if route == "east":
-        for x in (ST.RAMP_X[1], ST.RAMP_X[0]):       # the ramp's ends (the trench floor, the crest)
-            pts.append([_lane_pt(route, x, lat), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
+    if route == "east":   # the ramp's ends (the trench floor, the crest): onto the convoy lane up the ramp
+        pts.append([_lane_pt(route, ST.RAMP_X[1], lat), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
+        pts.append([_lane_pt(route, ST.RAMP_X[0], CV.LANE[route]), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
+    lat = CV.LANE[route]
     if nm != "lead":
         pts.append([_lane_pt(route, CV.PATH_END[route], lat), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
         return pts

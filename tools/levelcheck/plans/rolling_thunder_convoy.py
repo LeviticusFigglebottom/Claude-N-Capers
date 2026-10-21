@@ -60,6 +60,9 @@ ORDER = ["lead", "T1", "T2", "T3", "rear"]
 START_GAP = 0.55
 START_REAR = {"north": -89.9, "east": 103.9}
 LANE_Y = {"north": 0.0, "east": -5.0}
+# the lane they wait in: the east queue keeps north of the underpass escape van (E2, z -5.3..-2.7) and the east closure
+# lorry, and changes to the convoy lane (LANE) on the ramp
+START_LANE = {"north": -6.0, "east": -6.8}
 STEP = 0.35
 PATH_END = {"north": 6.0, "east": -6.0}               # every path runs past the lead stops, into the junction
 DOC_QUEUE_END = {("north", 2): -52.0, ("north", 3): -63.0}
@@ -151,7 +154,7 @@ def starts(route: str) -> List[Veh]:
     cur = START_REAR[route] - sgn * total
     out: List[Veh] = []
     for nm, kind in zip(ORDER, kinds(route)):
-        out.append((nm, kind, cur, cur + sgn * LEN[kind], LANE[route], 0.0))
+        out.append((nm, kind, cur, cur + sgn * LEN[kind], START_LANE[route], 0.0))
         cur += sgn * (LEN[kind] + START_GAP)
     return out
 

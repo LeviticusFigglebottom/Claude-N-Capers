@@ -76,8 +76,7 @@ func _check_route(route: StringName) -> void:
 		for st: Node in l.get_children():
 			var kind: String = String(st.get_meta(&"vehicle_kind", ""))
 			if kind == "cash" or kind == "bullion":
-				var spot: Vector3 = (st as Node3D).global_transform * Vector3(0.0, 0.0,
-					-float(SIZE[kind][0]) * 0.5 - 0.9)
+				var spot: Vector3 = (st as Node3D).global_transform * Vector3(-1.8, 0.0, -float(SIZE[kind][0]) * 0.5 - 0.5)
 				if _under_a_waiting_mover(movers, spot):
 					continue   # the north lead car / T1 wait upstream over part of the clean queue
 				_expect_reach(nav, police, spot, "open road: %s/%s rear step (from %s)" % [l.name, st.name, POLICE],
