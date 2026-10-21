@@ -12,6 +12,11 @@ const SIZE: Vector2i = Vector2i(1280, 720)
 const BACKDROPS: Dictionary = {"dark": Color(0.05, 0.05, 0.06), "mid": Color(0.45, 0.45, 0.45),
 		"bright": Color(0.92, 0.9, 0.85), "white": Color(1, 1, 1)}
 
+## LEAD 2026-10-21 (PO's 3440x1440): an optional 2nd arg "WxH" renders that size with the game's stretch
+## (canvas_items, aspect expand: a 1080-tall canvas, as wide as the aspect needs). Layout review only: the label
+## rects are canvas units then, so the contrast numbers do not apply (as the "loading" mode).
+var _size: Vector2i = SIZE
+var _canvas: bool = false
 var _fails: int = 0
 var _vp: SubViewport = null
 
@@ -59,7 +64,7 @@ static func label_ratio(img: Image, r: Rect2i) -> float:
 
 func _ready() -> void:
 	_vp = SubViewport.new()
-	_vp.size = SIZE
+	_vp.size = _size
 	_vp.own_world_3d = true
 	_vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	add_child(_vp)
@@ -69,6 +74,12 @@ func _ready() -> void:
 func _run() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	var mode: String = args[0] if args.size() > 0 else "hud"
+	if args.size() > 1 and args[1].contains("x"):
+		_size = Vector2i(int(args[1].get_slice("x", 0)), int(args[1].get_slice("x", 1)))
+		_vp.size = _size
+		_vp.size_2d_override = Vector2i(roundi(1080.0 * float(_size.x) / float(_size.y)), 1080)
+		_vp.size_2d_override_stretch = true
+		_canvas = true
 	OnboardingTips.persist = false  # never touch the player's save from a capture
 	if mode != "onboarding":
 		for id: StringName in OnboardingTips.ALL:
@@ -106,7 +117,10 @@ func _shot(shot: String, under: Node) -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var img: Image = _vp.get_texture().get_image()
-	img.save_png("user://contrast_%s.png" % shot)
+	img.save_png("user://contrast_%s%s.png" % [shot, "_%dx%d" % [_size.x, _size.y] if _canvas else ""])
+	if _canvas:
+		print("SHOT %s: layout only at %dx%d (canvas units: no contrast check)" % [shot, _size.x, _size.y])
+		return
 	var bad: int = 0
 	for n: Node in under.find_children("*", "Label", true, false):
 		var l: Label = n as Label
@@ -150,12 +164,12 @@ static func _visible_rect(l: Label) -> Rect2:
 		if p is Control and ((p as Control).clip_contents or p is ScrollContainer):
 			r = r.intersection((p as Control).get_global_rect())
 		p = p.get_parent()
-	return r.intersection(Rect2(Vector2.ZERO, Vector2(SIZE)))
+	return r.intersection(Rect2(Vector2.ZERO, Vector2(_size)))
 
 
 func _hud() -> void:
 	var back: ColorRect = ColorRect.new()
-	back.size = Vector2(SIZE)
+	back.size = Vector2(_size)
 	_vp.add_child(back)
 	var model: MockHudModel = MockHudModel.new()
 	_vp.add_child(model)
@@ -216,7 +230,7 @@ func _menus() -> void:
 ## PP-B-7: loud state (assault, downed + bleedout, low ammo, bag, hostages) over the same backdrops.
 func _loud() -> void:
 	var back: ColorRect = ColorRect.new()
-	back.size = Vector2(SIZE)
+	back.size = Vector2(_size)
 	_vp.add_child(back)
 	var model: MockHudModel = MockHudModel.new()
 	_vp.add_child(model)
@@ -266,7 +280,7 @@ func _loud() -> void:
 ## PO-4 lane 11: the casing and stealth onboarding cards over the backdrops.
 func _onboarding() -> void:
 	var back: ColorRect = ColorRect.new()
-	back.size = Vector2(SIZE)
+	back.size = Vector2(_size)
 	_vp.add_child(back)
 	var model: MockHudModel = MockHudModel.new()
 	_vp.add_child(model)
@@ -298,7 +312,7 @@ func _onboarding() -> void:
 ## vignette over the backdrops (a Camera3D looking down -Z gives the arcs their screen angle).
 func _feedback() -> void:
 	var back: ColorRect = ColorRect.new()
-	back.size = Vector2(SIZE)
+	back.size = Vector2(_size)
 	_vp.add_child(back)
 	var cam: Camera3D = Camera3D.new()
 	_vp.add_child(cam)
