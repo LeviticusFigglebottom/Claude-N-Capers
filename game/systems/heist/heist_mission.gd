@@ -18,6 +18,8 @@ const REINFORCEMENT_WAKE: StringName = &"reinforcement"
 ## QC-83: NPC meta of a seated unit (the vehicle's net id) and the vehicle kinds whose occupants are out of sight.
 const META_SEATED_IN: StringName = &"seated_in"
 const ARMOURED_VEHICLES: Array[StringName] = [&"truck", &"van"]
+## spawn_units beside a plain vehicle body (no seats): this far from its centre line (m).
+const UNIT_SIDE_M: float = 1.9
 ## QC-60 / §3b.9: spawn_loot(respawn = true) bags are checked this often (s) for having fallen off the map.
 const LOOT_WATCH_TIMER: StringName = &"_loot_respawn_watch"
 const LOOT_WATCH_S: float = 1.0
@@ -272,6 +274,12 @@ func _spawn_scripted(sp: SpawnPoint, xf: Transform3D) -> NpcBase:
 	return npc
 
 
+## A5-02 (D-149.1): make `id` the active layout of `group` (ConvoyLayouts: its pre-baked nav, cover, bodies and
+## prefabs on, the group's others off; replicated). False for an id not in the group.
+func set_layout(id: String, group: String = ConvoyLayouts.DEFAULT_GROUP) -> bool:
+	return _runtime != null and _runtime.set_layout(id, group)
+
+
 ## QC-83 (a) (Rolling Thunder: `&"ambush"`, the crash stop): STEALTH -> LOUD from the mission, through the stealth
 ## director like any alarm (alarm_raised [R], _on_alarm, the phase change). No-op once loud.
 func raise_alarm(reason: StringName, source_net_id: int = 0) -> void:
@@ -283,7 +291,8 @@ func raise_alarm(reason: StringName, source_net_id: int = 0) -> void:
 ## QC-83 (b) (Rolling Thunder: Vaultline crews and convoy escorts): spawn `count` units of `enemy_id` (the current
 ## faction's EnemyDef, AssaultDirector.enemy_def_for) through the director, as mission units: outside the assault
 ## force pool, and sharing the police cap (AssaultDirector.META_SHARES_CAP: police-role units count as police anyway).
-## Points: with `vehicle` (a ConvoyVehicle) its `Seat0..n` markers, else every SpawnPoint tagged `spawn_tag`. Seated
+## Points: with `vehicle` a ConvoyVehicle its `Seat0..n` markers; any other Node3D `vehicle` (a G1 placeholder body)
+## spots beside it (UNIT_SIDE_M off its sides, alternating, along it); else every SpawnPoint tagged `spawn_tag`. Seated
 ## (`seated`, with a vehicle; spawn them once it stopped): the unit stays on its seat, paused (no brain, physics or
 ## hits) and hidden when the vehicle is armoured (vehicle_kind truck / van), until dismount_units. Returns the units.
 func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated: bool = false,
@@ -308,7 +317,7 @@ func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated
 		if npc == null:
 			continue
 		npc.set_meta(AssaultDirector.META_SHARES_CAP, true)
-		if seated and vehicle != null:
+		if seated and vehicle is ConvoyVehicle:
 			npc.global_transform = p.global_transform
 			_seat(npc, vehicle)
 		out.append(npc)
@@ -354,6 +363,14 @@ func _unit_points(spawn_tag: StringName, vehicle: Node3D) -> Array[Node3D]:
 			out.append(m)
 		if not out.is_empty():
 			return out
+	if vehicle != null:
+		for i: int in 4:  # beside a plain body: left / right, front / back
+			var m: Marker3D = Marker3D.new()
+			vehicle.add_child(m)
+			var side: float = UNIT_SIDE_M * (1.0 if i % 2 == 0 else -1.0)
+			m.position = Vector3(side, 0.05, 1.0 if i < 2 else -1.0)
+			out.append(m)
+		return out
 	for n: Node in _runtime.map.find_children("*", "SpawnPoint", true, false):
 		if (n as SpawnPoint).tags.has(spawn_tag):
 			out.append(n as Node3D)
@@ -430,6 +447,19 @@ func loot_markers(tag: StringName) -> Array[Node3D]:
 		for n: Node in _runtime.map.find_children("*", "Node3D", true, false):
 			if n.has_meta(&"objective_tag") and StringName(n.get_meta(&"objective_tag")) == tag and not out.has(n):
 				out.append(n as Node3D)
+	return out
+
+
+## RT-A6: `count` bags of `loot_id` stacked at `node` (a truck's cargo spot opened at runtime). Returns them.
+func spawn_loot_at(loot_id: StringName, node: Node3D, count: int = 1) -> Array:
+	var out: Array = []
+	var loot: LootManager = _runtime.service(G.SVC_LOOT) as LootManager if _runtime != null else null
+	if loot == null or node == null:
+		return out
+	for i: int in count:
+		var bag: LootBag = _spawn_loot_at(loot, loot_id, node, i)
+		if bag != null:
+			out.append(bag)
 	return out
 
 
