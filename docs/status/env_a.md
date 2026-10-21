@@ -3,6 +3,65 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## To the LEAD: (2026-10-21 03:40 UTC update; newest at top)
+- Merged r252 (390c6d92). Green: d145_ 15, l6 15, a3_05 12, s8_1_cameras 10, po5_pilot_corner 3, a3_09_bag_lift 8,
+  of_a6_hub_loops 3, l2_ 55; earlier x4_of_ 13 (5 skip), of_coop_loopback 1/1.
+- Hold-fire set to your number: the pilot fights from the floor on Haz+ only with <= 3 enemies within 20 m.
+- P's camera find fixed (3dbea1c4): a prefab-disabled SecurityCamera is no observer (can_observe checks prefab_enabled)
+  + test. The X4 escape also brings input-less humans into the zone; the co-op test passed only while that player ended
+  in custody.
+- B's DB Tense on 0f317b90: the revive bug is gone. 1/3 WIN; the player is revived 3-4 times per run.
+  - The 2 losses are custody after the player's 3 downs (around 450-510 s), not bleed-outs.
+  - So DB Tense now fails on incoming damage / the pilot's exposure, not on revive logic. Your call: tuning, or accept,
+    since the auto_loud pilot charges objectives.
+- **Hit grace on Haz+** (GH, auto_loud headless x1.0, solo + 3 bots; grace on = a local edit giving all difficulties 0.45 s
+  / bots 0.35 s; pilot holds fire vs crowds). Custody time in s, or WIN; downs player/bot1/bot2/bot3:
+
+  | difficulty | seed | grace ON | grace OFF |
+  |---|---|---|---|
+  | Hazardous | 4501 | 477 (2/2/1/3) | 822 (1/1/2/2) |
+  | Hazardous | 4502 | 1026 (1/1/1/1) | 917 (1/1/1/1) |
+  | Brutal | 4501 | **WIN** (1/1/2/2) | 205 (1/3/2/1) |
+  | Brutal | 4502 | 145 (1/1/1/2) | 1135 (3/2/1/3) |
+  | Lethal | 4501 | 188 (1/2/2/1) | 182 (1/2/1/1) |
+  | Lethal | 4502 | 123 (2/2/1/2) | 474 (3/2/1/1) |
+  | Cataclysm | 4501 | 1064 (1/1/1/2) | 818 (1/1/1/3) |
+  | Cataclysm | 4502 | 1010 (1/1/1/3) | 1000 (1/1/1/2) |
+
+  - Reading: no measurable effect. ON wins 1/8, OFF 0/8. Per pair ON lasts longer 4x, shorter 3x, equal 1x; the
+    seed-to-seed spread swamps it.
+  - The Lethal / Cataclysm 4502 pairs ran on the newer bot-revive code (0f317b90); the other pairs on e640362d. Each
+    pair is like for like.
+  - Most Haz+ losses are crew wipes: bots end in custody first, then the cuffed pilot (nobody left to uncuff).
+  - Recommendation: extending the grace to Haz+ is a pure PD2-fidelity call (L2.2: PD2 has it on every difficulty);
+    the data says it does not change outcomes here. I would extend it for fidelity. Say the word and I will set
+    hit_grace_s_by_difficulty to 0.45 everywhere (bots 0.35) with the test flipped.
+
+- (earlier, 02:30)
+- DB Tense no-revive, root cause found and fixed (0f317b90, GAME, bots). Reproduced on DB Tense s1 with the new log;
+  revives started but were cancelled half done, two ways:
+  1. The nearest-AI assignment was recomputed every tick: as bots moved, the patient flipped to another bot, and the
+     reviver dropped to FOLLOW and cancelled at 3.1 / 6 s. Now a bot holding a revive keeps it; an order still wins.
+  2. A jostled reviver (0.9-3.2 m/s) released interact (the settle-speed check) or walked back past 1.2 m. Now it does
+     neither once holding; InteractionSystem's 0.5 m move cancel still applies.
+  New test test_l6_1_revive_in_progress_is_kept. Green: l6 15/15, a3_05 orders 12, d134 revive_under_fire, give_way,
+  p1_sandbox, l2_8, l4_4.
+  Queued after the grace runs: DB Tense s1 / s2 / s3 on 0f317b90.
+- (earlier, 02:15)
+- Thanks for the decisions.
+- (1) Hold-fire with 4+ enemies near: df866e99 already ships the pilot holding fire on Haz+ unless <= 2 enemies are
+  within 20 m. I set it to your number (fight back only with <= 3 near) right after the grace runs finish, so they all
+  run on one pilot.
+- (2) B's DB Tense no-revive:
+  - r251 lacks e640362d. Bots in REVIVE mode stalled about 2 m out (body / prop) and never pressed interact; GH Tense
+    4501 went FAIL -> PASS with the fix.
+  - Already true: a downed human comes first in the revive order (CrewAiBrain._pick_revive_target); a carried bag does
+    not block a revive (allowed_with_bag); only tased / downed bots are not free.
+  - Next: DB Tense s1 + s3 on my head with the "bots while down" log, to confirm, and the StairST landing reach. Results here.
+- Hit grace on Haz+: the first pass (GH 4501, grace on / off) was confounded: the pilot drew fire from the floor, custody
+  within seconds of its first down. Re-running with the hold-fire pilot, 2 seeds x 4 difficulties x on / off (16 runs).
+  So far Haz 4501 FAIL / FAIL, Brutal 4501 on PASS. Table here when done.
+
 ## 2026-10-21 00:05 UTC: GPU-box command lines for the LEAD (A cannot send_message the lead: "trusted device")
 Run from the repo root in cmd.exe with `G=godot\Godot_v4.7.2-stable_win64_console.exe`, on trunk >= r251 plus env/a-core
 06185eee. Make each out dir first: `mkdir gpu\renders\a\<name>`. The verdict is the `RESULT` line in the log.

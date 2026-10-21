@@ -33,7 +33,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 0 |
+| perf | PASS | 0 | 15 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -134,7 +134,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1851 polygons, cell 0.10/0.10 m
+- navmesh: 2024 polygons, cell 0.10/0.10 m
 - 176 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -291,45 +291,62 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 265 eye samples, 21465 rays, sky yes, 0 void ray(s)
+- 290 eye samples, 23490 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
-| camera | draw calls | triangles | shadow lights |
-|---|---|---|---|
-| `TopDownSite` | 1392 | 364960 | 6 |
-| `TopDownBuilding` | 1994 | 715946 | 6 |
-| `ExtHarborFacade` | 2209 | 736694 | 6 |
-| `ExtAtmCorner` | 2334 | 771362 | 6 |
-| `ExtLotSallyPort` | 1621 | 513704 | 6 |
-| `ExtQuaySteps` | 105 | 38124 | 2 |
-| `ExtWharfLane` | 2117 | 686552 | 6 |
-| `HallFromVestibule` | 1708 | 507610 | 6 |
-| `CompassLandmark` | 2118 | 635460 | 6 |
-| `HallGuardPost` | 1418 | 392682 | 5 |
-| `TellerWorkroom` | 2039 | 592570 | 6 |
-| `StaffCorridor` | 1734 | 540684 | 6 |
-| `SecurityRoom` | 533 | 167318 | 3 |
-| `SallyPort` | 1067 | 320086 | 3 |
-| `StairCore` | 586 | 199346 | 3 |
-| `BasementCorridor` | 1904 | 575500 | 6 |
-| `Antechamber` | 1381 | 406264 | 5 |
-| `VaultInterior` | 509 | 181492 | 4 |
-| `CountDepository` | 919 | 297638 | 3 |
-| `RecordsRoom` | 570 | 221898 | 3 |
-| `PlantAreaway` | 423 | 149166 | 2 |
-| `ManagerOffice` | 705 | 213906 | 0 |
-| `AtmVestibule` | 2293 | 737134 | 6 |
-| `CranePerch` | 2329 | 770714 | 6 |
-| `BreakRoom` | 589 | 189366 | 3 |
-| `SuppliesStore` | 306 | 106996 | 1 |
-| `LoanOffice` | 492 | 147560 | 1 |
-| `CashTransfer` | 225 | 83922 | 1 |
-| `LockerRoom` | 442 | 150248 | 2 |
-| `ServerRoom` | 716 | 233512 | 3 |
-| `InspectionPassage` | 617 | 219588 | 3 |
+- Budgets REPORT-ONLY (D-146 addendum 6: judged on Forward+ on the GPU box; this is the Compatibility early warning) (map meta `perf_d146`).
+- Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
+| camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
+|---|---|---|---|---|---|---|---|---|
+| `TopDownSite` | 1392 | 589 | 3844 | 0 | 5825 | 364960 | 6 | LampHarbor2 1037, LotLampMid 830, LampQuayE 624, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
+| `TopDownBuilding` | 1994 | 765 | 3718 | 0 | 6477 | 715946 | 6 | LampHarbor2 977, LotLampMid 817, LampQuayE 571, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
+| `ExtHarborFacade` | 2341 | 816 | 3726 | 0 | 6883 | 747246 | 6 | LampHarbor2 971, LotLampMid 830, LampQuayE 572, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
+| `ExtAtmCorner` | 2384 | 806 | 3767 | 0 | 6957 | 775060 | 6 | LampHarbor2 1002, LotLampMid 830, LampQuayE 582, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
+| `ExtLotSallyPort` | 1634 | 824 | 3003 | 0 | 5461 | 514744 | 6 | LampHarbor2 825, LotLampMid 591, LampQuayE 481, LightFixture_5 438, LightFixture_3 345, LightFixture_5 323 |
+| `ExtQuaySteps` | 105 | 48 | 188 | 0 | 341 | 38124 | 2 | LampHarbor2 123, LampQuayE 65 |
+| `ExtWharfLane` | 2177 | 816 | 3713 | 0 | 6706 | 689858 | 6 | LampHarbor2 1005, LotLampMid 816, LampQuayE 624, LightFixture_5 506, LightFixture_5 392, LightFixture_3 370 |
+| `HallFromVestibule` | 1708 | 525 | 3123 | 0 | 5356 | 507610 | 6 | LotLampMid 777, LampHarbor2 672, LampQuayE 554, LightFixture_5 490, LightFixture_5 389, LightFixture_3 241 |
+| `CompassLandmark` | 2157 | 772 | 3238 | 0 | 6167 | 638438 | 6 | LampHarbor2 795, LotLampMid 706, LightFixture_5 535, LampQuayE 489, LightFixture_5 419, LightFixture_3 294 |
+| `HallGuardPost` | 1418 | 485 | 2104 | 0 | 4007 | 392682 | 6 | LampHarbor2 534, LotLampMid 528, LampQuayE 340, LightFixture_5 288, LightFixture_5 254, LightFixture_3 160 |
+| `TellerWorkroom` | 2080 | 711 | 2963 | 0 | 5754 | 596096 | 6 | LampHarbor2 724, LotLampMid 656, LightFixture_5 521, LampQuayE 424, LightFixture_5 398, LightFixture_3 240 |
+| `StaffCorridor` | 1749 | 773 | 2927 | 0 | 5449 | 542032 | 6 | LampHarbor2 741, LotLampMid 617, LightFixture_5 503, LampQuayE 429, LightFixture_3 322, LightFixture_5 315 |
+| `SecurityRoom` | 533 | 212 | 1086 | 0 | 1831 | 167318 | 4 | LampHarbor2 379, LotLampMid 355, LightFixture_5 201, LightFixture_5 151 |
+| `SallyPort` | 1080 | 225 | 1198 | 0 | 2503 | 321224 | 3 | LotLampMid 597, LightFixture_5 314, LightFixture_5 287 |
+| `StairCore` | 586 | 262 | 1865 | 0 | 2713 | 199346 | 4 | LampHarbor2 887, LotLampMid 457, LightFixture_5 271, LightFixture_5 250 |
+| `BasementCorridor` | 1949 | 641 | 3064 | 0 | 5654 | 578912 | 6 | LampHarbor2 776, LotLampMid 693, LightFixture_5 505, LampQuayE 429, LightFixture_5 412, LightFixture_3 249 |
+| `Antechamber` | 1381 | 468 | 2264 | 0 | 4113 | 406264 | 6 | LampHarbor2 603, LotLampMid 560, LampQuayE 330, LightFixture_5 298, LightFixture_5 293, LightFixture_3 180 |
+| `VaultInterior` | 509 | 481 | 1136 | 0 | 2126 | 181492 | 4 | LampQuayE 405, LampHarbor2 396, LightFixture_3 176, LightFixture_5 159 |
+| `CountDepository` | 919 | 473 | 1266 | 0 | 2658 | 297638 | 3 | LampHarbor2 543, LampQuayE 517, LightFixture_3 206 |
+| `RecordsRoom` | 570 | 372 | 1066 | 0 | 2008 | 221898 | 3 | LampHarbor2 485, LampQuayE 360, LightFixture_3 221 |
+| `PlantAreaway` | 423 | 146 | 756 | 0 | 1325 | 149166 | 3 | LotLampMid 300, LightFixture_5 231, LightFixture_5 225 |
+| `ManagerOffice` | 705 | 0 | 307 | 0 | 1012 | 213906 | 1 | LampQuayE 307 |
+| `AtmVestibule` | 2315 | 826 | 3674 | 0 | 6815 | 738936 | 6 | LampHarbor2 957, LotLampMid 820, LampQuayE 557, LightFixture_5 540, LightFixture_5 425, LightFixture_3 375 |
+| `CranePerch` | 2395 | 791 | 3817 | 0 | 7003 | 775756 | 6 | LampHarbor2 1023, LotLampMid 830, LampQuayE 611, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
+| `BreakRoom` | 589 | 179 | 820 | 0 | 1588 | 189366 | 3 | LotLampMid 404, LightFixture_5 246, LightFixture_5 170 |
+| `SuppliesStore` | 306 | 0 | 140 | 0 | 446 | 106996 | 1 | LotLampMid 140 |
+| `LoanOffice` | 492 | 0 | 192 | 0 | 684 | 147560 | 1 | LampQuayE 192 |
+| `CashTransfer` | 225 | 49 | 482 | 0 | 756 | 83922 | 2 | LampHarbor2 283, LotLampMid 199 |
+| `LockerRoom` | 442 | 211 | 1169 | 0 | 1822 | 150248 | 4 | LampHarbor2 431, LotLampMid 357, LightFixture_5 216, LightFixture_5 165 |
+| `ServerRoom` | 716 | 210 | 1096 | 0 | 2022 | 233512 | 3 | LotLampMid 542, LightFixture_5 285, LightFixture_5 269 |
+| `InspectionPassage` | 617 | 578 | 1606 | 0 | 2801 | 219588 | 5 | LampHarbor2 531, LampQuayE 441, LightFixture_5 254, LightFixture_3 232, LightFixture_5 148 |
 
+- WARN `ReviewCameras/Antechamber` @ (9.75, -2.35, 8.10): 4113 draw calls in view (main 1381 + lit 468 + shadow 2264 + cast 0) > 4000
+- WARN `ReviewCameras/AtmVestibule` @ (25.20, 1.80, 19.20): 6815 draw calls in view (main 2315 + lit 826 + shadow 3674 + cast 0) > 4000
+- WARN `ReviewCameras/BasementCorridor` @ (0.60, -2.35, 6.75): 5654 draw calls in view (main 1949 + lit 641 + shadow 3064 + cast 0) > 4000
+- WARN `ReviewCameras/CompassLandmark` @ (2.00, 2.40, 18.60): 6167 draw calls in view (main 2157 + lit 772 + shadow 3238 + cast 0) > 4000
+- WARN `ReviewCameras/CranePerch` @ (42.00, 8.20, 4.00): 7003 draw calls in view (main 2395 + lit 791 + shadow 3817 + cast 0) > 4000
+- WARN `ReviewCameras/ExtAtmCorner` @ (33.00, 1.70, 29.00): 6957 draw calls in view (main 2384 + lit 806 + shadow 3767 + cast 0) > 4000
+- WARN `ReviewCameras/ExtHarborFacade` @ (10.50, 1.70, 33.00): 6883 draw calls in view (main 2341 + lit 816 + shadow 3726 + cast 0) > 4000
+- WARN `ReviewCameras/ExtLotSallyPort` @ (14.00, 3.00, -13.00): 5461 draw calls in view (main 1634 + lit 824 + shadow 3003 + cast 0) > 4000
+- WARN `ReviewCameras/ExtWharfLane` @ (32.50, 1.70, -12.00): 6706 draw calls in view (main 2177 + lit 816 + shadow 3713 + cast 0) > 4000
+- WARN `ReviewCameras/HallFromVestibule` @ (10.50, 1.65, 17.40): 5356 draw calls in view (main 1708 + lit 525 + shadow 3123 + cast 0) > 4000
+- WARN `ReviewCameras/HallGuardPost` @ (8.00, 1.65, 13.00): 4007 draw calls in view (main 1418 + lit 485 + shadow 2104 + cast 0) > 4000
+- WARN `ReviewCameras/StaffCorridor` @ (25.40, 1.65, 6.75): 5449 draw calls in view (main 1749 + lit 773 + shadow 2927 + cast 0) > 4000
+- WARN `ReviewCameras/TellerWorkroom` @ (0.80, 1.65, 9.30): 5754 draw calls in view (main 2080 + lit 711 + shadow 2963 + cast 0) > 4000
+- WARN `ReviewCameras/TopDownBuilding` @ (13.00, 40.00, 10.00): 6477 draw calls in view (main 1994 + lit 765 + shadow 3718 + cast 0) > 4000
+- WARN `ReviewCameras/TopDownSite` @ (13.00, 80.00, 10.00): 5825 draw calls in view (main 1392 + lit 589 + shadow 3844 + cast 0) > 4000
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 

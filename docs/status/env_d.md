@@ -3,6 +3,49 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **GPU-8 review** (origin/gpu/renders gpu/renders/d/*):
+  - **QC-67 CLOSED:** queue/qc67_log.txt: the queue customer (bank_customer_d at CustomerQueue1) plays `queue_idle_b`
+    (the queue_idle variant group); queue_w_side.png shows him at the mark. The 4 tellers play teller_count (r249 PASS).
+  - **D-145.3 wave:** the log is the proof: Routine 4/4 units `patrol_officer_duty`, Hazardous 0/6 `_duty`
+    (patrol_officer, tac_light_frd, longshot: armoured, as D-145.3 wants). Framing fixed: close-ups now take the first of
+    8 directions with a clear line both ways to the unit's chest (no more sky / ground / door / bollard frames). Please
+    re-run job 1 (same command) for clean close-ups.
+  - **Faction lineup:** reads right: each duty look drops the carrier and helmet for the soft cap and keeps its faction
+    colour and back mark (FRD letters, Sentinel hex, Zero mark). The sheet canvas now matches the pool (no empty columns);
+    a re-run is optional.
+  - **VIP walk:** the long coat hangs fine mid-stride (sheet tile 2); the higher inside-out count is not a visible defect.
+    No change.
+  - **OF loud perf** (RX 9070 XT): total 1,580-2,708 draws, under D-146's 4,000; frame avg 16-20 ms, but **every loud view
+    has a 87-115 ms worst frame** (GH quiet: max 16-22 ms). The cast is ~1,200 draws loud; "cast casts no shadow" takes
+    2,637 -> 1,459 (its cost is mostly shadows of the full-mesh guards, units keep full meshes to 25 m). Per-NPC numbers
+    are noisy (one customer at 906): positional shadow maps re-render only on change, so toggling a body skews them.
+    **New in heist_cast_perf (this push): the loud wait logs every frame > 50 ms with the NPCs that spawned that frame.**
+    That tells A whether the hitches are first-spawn (shader/material compile -> prewarm) or something else.
+    GPU job: `godot --path game --resolution 1920x1080 res://world/characters/_tools/heist_cast_perf.tscn --
+    --heist=ostrander_federal --loud --view=hall_south_eye` (look for "[CASTPERF] hitch ..." and "loud wait: ...").
+  Checks run: gdlint on render_d145_wave_review.gd, render_d130_cast_review.gd, heist_cast_perf.gd; check_ownership d;
+  check_banned. Tools only.
+- **Next-heist cast notes (notes only, D-144):** `game/assets/characters/_review/next_heist_cast_notes.md`.
+  Rolling Thunder: Vaultline / Halden / escorts (duty looks automatic) exist; parked wip/d-rt-civilians (diner staff,
+  attendant, 6 pedestrians, built not assembled) and wip/d-rt-clips (sit_vehicle, vehicle_exit_l/r); missing sit_eat +
+  cook_stove (A's HINT_CLIPS already names them) and 2 tag_map rows: about 1 D day. Afterhours: club looks exist but
+  pools are far short of D-130 (4 patron looks for 30-50 patrons/dancers, 2 bouncers for up to 7, 2 bartenders for 6),
+  no tag_map, no dj_mix: about 2 D days. Cast-side view: RT starts faster.
+- **r252 merged** (e91fa3c0, OF final art) into env/d-art 22fbee3e: import clean; d test_of_cast_clips 3/3 and
+  test_cower_offsets 2/2 still green on the final art (seats, worktops, cower walls unchanged for the cast).
+- **OF clip audit: PASS, new test** `game/tests/d/test_of_cast_clips.gd` (3 tests, green on env/d-art = r251 + D). For
+  every OF CIVILIAN / GUARD SpawnPoint in the built map (variant slots included): the clip its activity resolves to
+  (CivilianBrain KNOWN_ACTIVITIES, else idle; then HINT_CLIPS) exists in char_anim_humanoid with every variant-group
+  member, loops, and moves (a bone differs between 1/4 and 3/4 of the loop: no frozen pose); every seated clip has a
+  map `Seat` within civilian_seat_radius_m on its floor; every teller_count spawn stands behind a TellerWorktop
+  (top 1.00 m, near edge 0.20-0.40 m ahead). Sensitivity: with the edge window at 0.25 m and the motion threshold
+  raised, both checks fail. Not duplicated: A's HINT_CLIPS / KNOWN_ACTIVITIES key tests, C's queue-mark test.
+  Checks run: gdlint (test file), d test_of_cast_clips, check_ownership d, check_banned.
+- Waiting on your GPU box for the 5 command lines below (D-145.3 wave, faction lineup, VIP walk, queue re-check,
+  heist_cast_perf). No local renders meanwhile.
+- Next-heist cast notes only (D-144): none started; I'll draft them here if you want them, else I take OF/PO polish.
+
 ## 2026-10-21: GPU-box queue for the LEAD (cross-session messages to the LEAD are refused: untrusted device)
 Run from the repo root on env/d-art 5f7778a2 or later; OUT = any output folder. Send back the output paths.
 1. D-145.3 GH loud wave, Routine vs Hazardous (no --fixed-fps; waits for the director's own units):

@@ -501,12 +501,19 @@ func spawn_npc(role: StringName, xform: Transform3D, info: Dictionary = {}) -> N
 		Log.error(&"heist", "no NPC scene for role %s" % role)
 		return null
 	# GN-8: through WarmLoader, so this main-thread load never runs beside the director's prewarm loads.
+	# LEAD (OF loud GPU hitches): FrameProf books the instancing / setup / tree entry per stage, so a HITCH line names it.
+	var fp: int = FrameProf.begin()
 	var npc: NpcBase = (WarmLoader.get_or_load(path) as PackedScene).instantiate() as NpcBase
+	FrameProf.end(&"spawn_npc.instantiate", fp)
+	fp = FrameProf.begin()
 	if info.get("enemy_def") is EnemyDef:  # A1-09: per-EnemyDef spawns (director)
 		npc.enemy_def = info["enemy_def"] as EnemyDef
 	npc.setup_npc(difficulty, info)
+	FrameProf.end(&"spawn_npc.setup", fp)
+	fp = FrameProf.begin()
 	dynamic_root.add_child(npc, true)
 	npc.global_transform = xform
+	FrameProf.end(&"spawn_npc.enter_tree", fp)
 	NetIds.claim(npc)
 	npc_spawned.emit(npc)
 	return npc

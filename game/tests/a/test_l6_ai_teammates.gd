@@ -143,6 +143,40 @@ func test_l6_1_ai_revives_over_an_obstacle() -> void:
 			"slot %d stayed outside the box" % s)
 
 
+## B (DB Tense: revives started and never finished): the bot holding a revive keeps it when another bot comes closer
+## (no nearest-AI flip) and when it is nudged a little (no release on speed, no walk back inside revive_stall_reach_m).
+func test_l6_1_revive_in_progress_is_kept() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	var at: Vector3 = Vector3(4, 0.05, 0)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, at))
+	await wait_physics_frames(2)
+	_crew(0).health.go_down()
+	var found: Array[CrewController] = []  # lambdas capture locals by value: collect through an array
+	var started: bool = await wait_until(func() -> bool:
+		for s: int in _ai_slots():
+			var sess: Dictionary = _rt.interaction.session(s)
+			if not sess.is_empty() and float(sess["progress"]) > 0.5:
+				found.append(_crew(s))
+				return true
+		return false, 20.0)
+	assert_true(started and not found.is_empty(), "a bot started the revive")
+	if found.is_empty():
+		return
+	var reviver: CrewController = found[0]
+	var cancels: Array[int] = []
+	var cb: Callable = func(_nid: int, slot: int) -> void: cancels.append(slot)
+	EventBus.interaction_cancelled.connect(cb)
+	for s: int in _ai_slots():  # every other bot right next to the patient: the nearest pick would change
+		if _crew(s) != reviver:
+			_rt.teleport_crew(s, Transform3D(Basis.IDENTITY, at + Vector3(0.5, 0, 0.5 * float(s))))
+	reviver.global_position += Vector3(0.3, 0, 0)  # a nudge (< cancel_move_m)
+	var ok: bool = await wait_until(func() -> bool: return _crew(0).crew_state == Enums.CrewState.NORMAL, 15.0)
+	EventBus.interaction_cancelled.disconnect(cb)
+	assert_true(ok, "the human was revived")
+	assert_false(cancels.has(reviver.slot), "the reviver never dropped its revive (cancels %s)" % [cancels])
+
+
 func tweakd() -> CrewAiTweak:
 	return CrewHealth._bot_tweak()
 

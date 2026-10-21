@@ -134,48 +134,10 @@ const GHOST_SMOKE_AT: Vector3 = Vector3(48.0, 0.0, -5.0)
 const LANE_CLEAR_M: float = 20.0
 const GHOST_LK_WAIT: Vector3 = Vector3(3.0, -4.0, 4.0)
 const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
-const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
-const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
-const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
-## Runtime lookups (_x): prefab class + objective_tag (ENV C's G1 tags, wip/c-of-g1 f49df211) near a design-doc point;
-## the tag wins when present, else the nearest node of the class within `max` m. --resolve prints this table's
-## resolution against the map scene (FOUND by tag / FOUND near / FALLBACK far / MISSING).
-const EXPECT: Dictionary = {
-	"laser_grid": {"type": "LaserGrid", "tag": &"laser_grid", "near": OF_LASER_AT, "max": 8.0},
-	"vault_gate": {"type": "Door", "tag": &"vault_gate", "near": Vector3(17.0, -4.0, 9.0), "max": 4.0},
-	"keycard": {"type": "Node3D", "tag": &"keycard", "near": Vector3(22.0, 0.0, 3.0), "max": 60.0},
-	"time_lock": {"type": "Node3D", "tag": &"time_lock", "near": Vector3(33.0, -4.0, 12.0), "max": 6.0},
-	"vault_door": {"type": "Door", "tag": &"vault_door", "near": Vector3(30.0, -4.0, 13.0), "max": 4.0},
-	"vault_loot": {"type": "LootSpawn", "tag": &"vault_loot", "near": Vector3(24.0, -4.0, 18.5), "max": 8.0},
-	"code_pc": {"type": "Node3D", "tag": &"code_pc", "near": Vector3(19.0, 8.6, 3.0), "max": 6.0},
-	"drop_ladder": {"type": "Ladder", "tag": &"fire_escape", "near": OF_DROP_LADDER_AT, "max": 12.0},
-	"caged_ladder": {"type": "Ladder", "tag": &"", "near": OF_CAGED_LADDER_AT, "max": 6.0},
-	"hh_door": {"type": "Door", "tag": &"head_house", "near": OF_HH_DOOR, "max": 2.5},
-	# Pre-placed disabled (hidden) until the burn-through (QC-61): looked up hidden too.
-	"rope_ladder": {"type": "Ladder", "tag": &"", "near": Vector3(24.0, -2.0, 14.0), "max": 4.0, "hidden_ok": true},
-	"hoist": {"type": "BagLift", "tag": &"hoist", "near": Vector3(24.0, -4.0, 14.0), "max": 6.0, "hidden_ok": true},
-	"lid": {"type": "Node3D", "tag": &"lid", "near": OF_HOLE_AT, "max": 3.0},
-	"vault_drill": {"type": "Node3D", "tag": &"vault_drill", "near": OF_HOLE_AT, "max": 3.0},
-	"ld_door": {"type": "Door", "tag": &"dock_door", "near": OF_LD_DOOR, "max": 2.0},
-	"fire_exit": {"type": "Door", "tag": &"fire_exit", "near": OF_FIRE_EXIT, "max": 2.0},
-	"cash_lift": {"type": "BagLift", "tag": &"cash_lift", "near": GHOST_CQ_AT, "max": 8.0},
-	"e1_secure": {"type": "SecureZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
-	# C's G1 (ad972c5e): SecureTannery (50.4, 0, 14.3), SecureTerrace (42.5, 8.6, 26.0): 6.5 m off the doc's points.
-	"e2_secure": {"type": "SecureZone", "tag": &"", "near": OF_E2_AT, "max": 8.0},
-	"e3_secure": {"type": "SecureZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 8.0},
-	"e1_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
-	"e2_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E2_AT, "max": 6.0},
-	"e3_escape": {"type": "EscapeZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 6.0},
-}
-## Design-doc points the tests walk to / stand on (checked against the navmesh by --resolve --launch).
-const EXPECT_POINTS: Dictionary = {
-	"vc_west": OF_VC_WEST, "ga_stand": OF_GA_STAND, "terrace_e_stand": OF_TERRACE_E_STAND, "fe_roof": OF_FE_ROOF,
-	"lane_start": OF_LANE_START, "ld_in": OF_LD_IN, "bc_east": OF_BC_EAST, "sa_b": Vector3(14.0, -4.0, 8.2),
-	"sa_g": Vector3(14.0, 0.0, 8.2), "sa_gallery": Vector3(14.0, 5.0, 8.2), "sa_exec": Vector3(14.0, 8.6, 8.2),
-	"ghost_mask": GHOST_MASK_AT, "ghost_lk": GHOST_LK_WAIT, "ghost_e3": GHOST_E3_WAIT, "ghost_rc": GHOST_RC_WAIT,
-	"ghost_cq": GHOST_CQ_AT, "ghost_ld_stage": GHOST_LD_STAGE,
-}
-const EXPECT_SPAWN_TAGS: Array[StringName] = [&"preplan_spawn_lane", &"preplan_spawn_tannery"]
+## LK hide for the step 5 wait, from --test=lkprobe on r252 (headless): floor navmesh reachable from GHOST_LK_WAIT and
+## hidden at crouch height from 8 BB eyes outside LockerDoor (x 5, z 7). (1.5, 4.0) and its 4 neighbours see 0 of 8;
+## GHOST_LK_WAIT (3, 4) is seen by 2 (r251i/r252b: rover_basement filled it through the door, crouched or not).
+const GHOST_LK_HIDES: Array[Vector3] = [Vector3(1.5, -4.0, 4.0), Vector3(2.0, -4.0, 4.5), Vector3(1.5, -4.0, 3.5)]
 
 # --- Dry-run anchors on existing heists (night_deposit seed 21 from nd_stealth_route.gd; glasshouse) ----------------
 const ND_SEED: int = 21
@@ -1566,29 +1528,60 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 	note("GHOST stair core NOT clear after 180 s (going anyway)")
 
 
+func _lk_hide() -> Vector3:
+	for c: Vector3 in GHOST_LK_HIDES:
+		var want: Vector3 = _of(c)
+		var got: Vector3 = pilot.stand_point(want)
+		if pilot.flat_dist(got, want) > 0.4 or absf(got.y - want.y) > 0.3:  # LK's navmesh sits at y+0.2 (cell height)
+			continue
+		var path: PackedVector3Array = NavigationServer3D.map_get_path(pilot.crew.get_world_3d().navigation_map,
+			pilot.crew.global_position, got, true)
+		if path.size() > 0 and path[path.size() - 1].distance_to(got) <= 0.3:
+			note("GHOST LK hide at %s" % Po5Pilot._v(got))
+			return got
+	note("GHOST no LK corner on the navmesh: using GHOST_LK_WAIT")
+	return _of(GHOST_LK_WAIT)
+
+
 ## Doc §5: swipe at the gate when the vault guard is off VC (loops (b)/(c)) and rover_basement is east (r251g: seen at
-## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, or within 20 m
-## with LOS to it; logs the wait (max 180 s, then goes anyway).
-func _wait_spot_clear(spot: Vector3, y: float, label: String) -> void:
+## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, within 20 m
+## with LOS to it, or walking within 20 m; if not clear at once the crew waits at `hide` (LK, doc §3; r251h: waiting in BB
+## by the core, rover_basement walked down BB and saw it). Logs the wait (max 300 s, then goes anyway).
+func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> void:
 	var t: float = 0.0
-	while t < 180.0:
+	var hidden: bool = false
+	var last: Dictionary = {}
+	while t < 300.0:
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5:
 				continue
+			var id: int = g.get_instance_id()
+			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
+			last[id] = g.global_position
 			var d: float = pilot.flat_dist(g.global_position, spot)
-			if d < 8.0 or (d < 20.0 and _sees_core(g, spot)):
-				near.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
-		if near.is_empty():
-			if t > 0.0:
-				note("GHOST %s clear after %.0f s" % [label, t])
+			if d < 8.0 or (d < 20.0 and (moving or _sees_core(g, spot))):
+				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
+		if not near.is_empty() and not hidden:
+			hidden = true
+			note("GHOST %s not clear (%s): waiting at %s" % [label, ", ".join(near), Po5Pilot._v(hide)])
+			await _go(hide, 0.5, 60.0)
+			pilot.inp.press(&"crouch")  # a player waiting in a side room crouches
+			last.clear()
+			continue
+		if near.is_empty() and t >= 1.0:
+			if hidden:
+				pilot.inp.release(&"crouch")
+			note("GHOST %s clear after %.0f s" % [label, t])
 			return
 		if int(t * 2.0) % 20 == 0:
 			note("GHOST waiting for the %s: %s" % [label, ", ".join(near)])
 		await wait_s(0.5)
 		t += 0.5
-	note("GHOST %s NOT clear after 180 s (going anyway)" % label)
+	if hidden:
+		pilot.inp.release(&"crouch")
+	note("GHOST %s NOT clear after 300 s (going anyway)" % label)
 
 
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
@@ -2186,6 +2179,38 @@ func _civ_near(at: Vector3, r: float) -> NpcBase:
 	return null
 
 
+## Headless probe (no pilot movement needed): LK floor points on the navmesh at floor height, reachable from
+## GHOST_LK_WAIT, and hidden at crouch height from BB eyes outside LockerDoor. Picks GHOST_LK_HIDES (r252b).
+func _test_lkprobe() -> bool:
+	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, _ghost_opts(), false):
+		return false
+	var map: RID = pilot.crew.get_world_3d().navigation_map
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	var from: Vector3 = pilot.stand_point(_of(GHOST_LK_WAIT))
+	var eyes: Array[Vector3] = []
+	for e: Vector2 in [Vector2(4.0, 8.5), Vector2(5.0, 9.0), Vector2(6.0, 9.0), Vector2(6.5, 10.0), Vector2(8.0, 8.5),
+			Vector2(3.0, 8.5), Vector2(10.0, 8.5), Vector2(5.0, 11.0)]:
+		eyes.append(_of(Vector3(e.x, -4.0 + 1.6, e.y)))
+	var hits: PackedStringArray = PackedStringArray()
+	for xi: int in range(1, 20):
+		for zi: int in range(1, 14):
+			var want: Vector3 = _of(Vector3(xi * 0.5, -4.0, zi * 0.5))
+			var got: Vector3 = NavigationServer3D.map_get_closest_point(map, want)
+			if pilot.flat_dist(got, want) > 0.15 or absf(got.y - want.y) > 0.3:
+				continue
+			var path: PackedVector3Array = NavigationServer3D.map_get_path(map, from, got, true)
+			if path.is_empty() or path[path.size() - 1].distance_to(got) > 0.3:
+				continue
+			var seen: int = 0
+			for eye: Vector3 in eyes:
+				var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, got + Vector3(0, 0.7, 0), 1)
+				if space.intersect_ray(q).is_empty():
+					seen += 1
+			hits.append("(%.1f, %.1f) seen_by %d" % [xi * 0.5, zi * 0.5, seen])
+	note("LKPROBE from %s: %d floor points: %s" % [Po5Pilot._v(from), hits.size(), "; ".join(hits)])
+	return true
+
+
 func _test_ghost() -> bool:
 	var opts: Dictionary = _ghost_opts()
 	opts["loadouts"] = {0: _ghost_loadout()}
@@ -2369,7 +2394,7 @@ func _g5_vault() -> bool:
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate != null and not gate.is_open:
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate")
+		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide())
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid

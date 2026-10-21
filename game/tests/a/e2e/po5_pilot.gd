@@ -26,7 +26,7 @@ const THROUGH_PAST_M: float = 0.9
 const LINE_DOOR_M: float = 1.0
 ## _through_link: how far along the nav path (m) a crossing of the doorway counts as "the route leaves through it".
 ## shoots_from_floor: at most this many alive enemies within FLOOR_FIGHT_M (m) for a downed pilot to fight back.
-const FLOOR_FIGHT_MAX: int = 2
+const FLOOR_FIGHT_MAX: int = 3  # LEAD: hold fire with 4+ enemies near
 const FLOOR_FIGHT_M: float = 20.0
 const THROUGH_LOOKAHEAD_M: float = 4.0
 ## goto: standing at the end of a nav path that stops this far (m, flat) short of the target = unreachable (OF-X2).

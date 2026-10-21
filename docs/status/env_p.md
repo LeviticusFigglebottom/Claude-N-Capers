@@ -2,6 +2,30 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## To the LEAD: (updated 2026-10-21 04:00 UTC)
+- **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
+  Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
+  the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
+  walked down BB and saw it. r251i: it waited in LK (doc §3), but at (3, −4, 4), in line with LockerDoor, and standing; rover_basement
+  passing BB at 6 m filled the meter. r251j: the NW corner (0.8, −4, 6.2) snapped through the wall to BB (0.8, −4, 7.5), and the pilot pushed
+  into the wall for 60 s until rover_basement saw it. Harness only: it now picks the first LK corner that snaps onto the navmesh within 0.4 m,
+  and waits there crouched. **Ghost runs now use r252** (e91fa3c0 + P). r252a: steps 1-4 PASS again. The chosen corner (0.9, −3.8, 6.3) was
+  a bench-top navmesh island 0.2 m up, the path ended in BB again, and the pilot was seen. Now the candidate must be at floor height and
+  the nav path must end on it. r252b: no corner passed (LK's navmesh sits at y −3.8, so the 0.1 m height check was wrong). The pilot fell back to
+  (3, 4) and was seen through the door, crouched. New headless probe `--test=lkprobe`: it samples LK's floor navmesh and ray-checks 8 BB eyes.
+  (1.5, 4.0) and its neighbours are hidden from all 8, while (3, 4) is seen by 2. Hide set to (1.5, 4.0). Run r252c is in progress. A headless ghost run cannot work (the pilot's mouse needs a window).
+- **GPU-box ghost command**. It needs `game/tests/p/_review/of_g1_pass.gd` from env/p-play (≥ 88e06f40), which is newer than trunk's:
+  `git checkout origin/env/p-play -- game/tests/p/_review/of_g1_pass.gd`, then
+  `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`
+  It is only useful once my r251h result is in; I'll say here if it passes.
+- **OF §7 G2: 10/10 PASS, accepted by P** (GPU box, origin/gpu/renders b538099a, C final 3c9b2fdf): laser ×4 (default + lz_static/lz_sweep/
+  lz_timed, each confirmed forced), throws, fire_escape, hole, dock, fire_exit, burn. 0 script errors and no real stalls (the 'STUCK rows 0' lines are
+  summaries). The burn/hole alarms are the harness going loud on purpose (the hoist is loud-only). **One GAME bug, sent to A**: a camera
+  disabled via GameplayPrefab.set_enabled(false) still observes. SecurityCamera.can_observe() ignores prefab_enabled, so in throws
+  'CameraC9 disabled' at t=2 raised the alarm at t=35.9 (in G1 too). The fix is one line in A's file; it also matters for cameras placed with
+  enabled_at_start=false. **A fixed it in env/a-core 3dbea1c4** (can_observe requires prefab_enabled; new test_s8_1_disabled_camera_sees_nothing; test_s8_ 31/31).
+- **D-145 GH**: Tense on trunk r251 is 2/3 WIN, median 1. The 4501 loss is fixed by A's e640362d (passes on a-core 441b6870); please merge it.
+
 ## 2026-10-21: GH Tense ×3 on trunk r251 (c04cb710), pointer to A's GPU-box lines
 - **GH Tense ×3 on pure trunk r251**, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**, the same as on 4a6780f4 (the seeds are deterministic).
   4501 has the same no-revive bleedout (pilot down t=249, custody t=279). r251 lacks A's e640362d (bot revives from ≤2.3 m), and
