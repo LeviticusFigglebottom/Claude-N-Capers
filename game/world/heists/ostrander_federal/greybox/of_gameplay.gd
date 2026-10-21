@@ -261,7 +261,8 @@ func _box_row(parent: Node3D, it: Array) -> StaticBody3D:
 	mi.position = col.position
 	add(body, mi)
 	SurfaceTags.tag(body, _surface(String(it[7])))
-	obstruct(Transform3D(yaw_basis(float(it[4])), base), AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
+	# ENV P r260: a 5 cm partition (LK / PW cubicles, SD booths) rasterises to no cell; widen it in the bake only
+	obstruct(Transform3D(yaw_basis(float(it[4])), base), _nav_thick(AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size)))
 	return body
 
 

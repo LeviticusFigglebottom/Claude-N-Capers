@@ -482,3 +482,20 @@ PlayerTannery1 Gameplay/Loot/HallBox20/UsePoint
 PlayerTannery2 Gameplay/Devices/PhonePC/UsePoint
 PlayerTannery2 Gameplay/Loot/HallBox19
 PlayerTannery2 Gameplay/Loot/HallBox19/UsePoint
+
+#
+# Thin-partition bake fix (of_gameplay._box_row widens 5 cm partitions to two nav cells, ENV P r260): the paths to the
+# plaza routes no longer cut through the 5 cm hall queue rails (QueueRail1/2, solid 1 m) or an SD booth partition;
+# they walk round, ~4 m longer (2.87-2.99x -> 3.01-3.13x).
+# The same plaza -> bronze doors -> hall -> TW -> BC -> Stair A -> BB -> SD walk as the vault-level group above.
+PlayerPlaza3 Gameplay/Loot/HallBox23
+PlayerPlaza3 Gameplay/Loot/HallBox23/UsePoint
+PlayerPlaza4 Gameplay/Loot/HallBox23
+PlayerPlaza4 Gameplay/Loot/HallBox23/UsePoint
+PlayerPlaza4 Gameplay/Loot/HallBox24
+PlayerPlaza4 Gameplay/Loot/HallBox24/UsePoint
+PlayerPlaza1 Gameplay/Loot/HallBox21
+PlayerPlaza1 Gameplay/Loot/HallBox21/UsePoint
+PlayerPlaza2 Gameplay/Loot/HallBox22
+PlayerPlaza2 Gameplay/Loot/HallBox22/UsePoint
+PlayerPlaza4 Gameplay/Doors/TreasuryDoor/UsePoint
