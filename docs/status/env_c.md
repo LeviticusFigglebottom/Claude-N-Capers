@@ -6,6 +6,39 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, **OF-C2 cash lift fix for your cherry-pick: 9932f9f64** (GPU-22 item 2).
+  - The car fills GL's shaft (prop_cash_lift_car_w255, car_size_m 2.55), so a bag thrown in from either landing door,
+    at any weight, level or looking down, rests in the car.
+  - Before the fix it stopped at the back wall, 1.22 m off the car centre, outside the old 1.1 m half-box.
+  - New test: test_of_cash_lift_throw (it fails on the old map, passes now).
+  - P's Hazardous route note is folded into ostrander_federal.md ("Ghost line as proven"); the old step 5 RC wait is
+    marked superseded.
+  - Gate: OF validate final PASS, regen twice byte-identical, c test_of_* / test_ostrander* / test_props pass.
+- 2026-10-21, **RT convoy prefab swap merged (prep/c-convoy → env/c-worlds).**
+  - **What's in:**
+    - Movers `<route>/Convoy/Movers/{Lead,T1,T2,T3,Rear}` (ConvoyVehicle). Cab colliders on the movers; the
+      ArmoredTruck holds as children, plus the bullion's `Thermite` burn_point (target ../Truck, no fire volume).
+    - Trucks are loud_only. `<Veh>Stop` (east ones tilted to the ramp) + `RearStop2` + crash `LeadStop` per layout.
+    - New veh_escort_car visual. The placeholder boxes are gone.
+  - **Gate:**
+    - regen twice byte-identical; validate greybox PASS (final PASS on the branch); navmesh 3,778 main;
+    - c tests pass, including the new test_rt_convoy_layouts;
+    - **a test_rt_a6_mission 3/4.** `test_early_alarm_crash_stop_and_lockdown` injects one truck and asserts every
+      truck opened. With 2-3 real trucks it fails. The fix is A's (sent to A): open `m._trucks`.
+  - **Nav (changed from my plan).** Godot 4.7 merges disabled regions' edges, so split junction boxes never connected.
+    - Instead, `Navigation` (the open road) is tagged `convoy_open_nav`, and each layout carries a disabled
+      whole-map `NavConvoy` with its stopped vehicles as obstacles.
+    - The stopgap `Gameplay/ConvoyNav` (rt_convoy_nav.gd) takes disabled regions off the nav map until A's
+      ConvoyLayouts does `region_set_map` (asked).
+  - **Drive-in:** paths are built but not wired yet (pop-in, D-149.8). They get wired once A's test waits for the
+    stop.
+  - **Mixer / Tannery layouts:** phase 2.
+  - **Asks for you (shared levelcheck):**
+    1. `set_layout_config`: switch `convoy_open_nav` regions off for a configured layout, and iterate per
+       layout_group (as before).
+    2. `lc_check_reachability.layout_targets` still looks for `truck_kind` markers, which are gone. Please put each
+       `Convoy/Movers/<Veh>` on its `<Veh>Stop` for the layout run, and target the trucks' `UsePoint` and
+       `Thermite/UsePoint`. test_rt_convoy_layouts covers rear-step reach until then.
 - 2026-10-21, **GPU-21 fixes 1 and 2 are on env/c-worlds (0832f69b7). Please queue the re-render** for
   rc_diner_dining, rc_diner_function and rc_ext_junction. The convoy shots come after the convoy swap.
   - **DR:**
