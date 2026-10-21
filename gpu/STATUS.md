@@ -228,3 +228,6 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
 - ERRORs: `most reachable polygons` x14, `!is_inside_tree() ... Transform3D()` x5, `Playback can only happen when a node is inside the scene tree` x1,
   `6 resources still in use at exit`.
 - Output: `gpu/renders/a/of_hitch.log` + 10 PNGs in `gpu/renders/a/of_hitch/` (menu -> heist start -> auto_6/106/213 -> budget_exceeded).
+### Fix-up: GPU-10 and GPU-12 logs
+- `*.log` is in .gitignore, so `gpu/renders/a/of_stealth_18.log`, `of_loud_5.log` (GPU-10) and `of_hitch.log` (GPU-12) were skipped by
+  their commits. They're force-added now. Future logs will be force-added or saved as `.txt`.
