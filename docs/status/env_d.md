@@ -3,6 +3,24 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-21: GPU-box queue for the LEAD (cross-session messages to the LEAD are refused: untrusted device)
+Run from the repo root on env/d-art 5f7778a2 or later; OUT = any output folder. Send back the output paths.
+1. D-145.3 GH loud wave, Routine vs Hazardous (no --fixed-fps; waits for the director's own units):
+   `godot --path game --resolution 1280x720 res://world/characters/_tools/render_d145_wave_review.tscn -- --out=OUT`
+   -> OUT/d145_wave_sheet.png, d145_wave_{routine,hazardous}_{group,unit0-3}.png, d145_wave_log.txt (unit look ids;
+   `*_duty` on Routine = no armour).
+2. Faction duty lineup (offline): `godot --path game --script res://world/characters/_tools/render_d130_cast_review.gd
+   -- --pool=d145_factions` -> _review/d145_police/d145_factions_*.png
+3. VIP walk sheet (offline): the same script with `-- --pool=of_vip` -> _review/of_d1_cast/of_vip_*.png
+4. OF queue-customer re-check: `godot --path game --fixed-fps 60 --resolution 1280x720
+   res://world/characters/_tools/render_of_qc67_review.tscn -- --out=OUT --no-alarm` -> OUT/queue_w_side.png,
+   OUT/qc67_log.txt ("queue ..." lines: each queue_idle customer's clip).
+5. heist_cast_perf (5f7778a2): glasshouse views, `*_loud.png`, per-view frame time (avg / max ms over --frames=N,
+   default 120, + GPU name). UNVERIFIED by a run here (a headless GH smoke run timed out before measuring; gdlint
+   clean): treat the first GPU run as its test. OF after C's cuts: `-- --heist=ostrander_federal --shadows-only
+   --view=rc_hall_entrance,rc_hall_counter,rc_hall_from_gallery,hall_south_eye`; GH: `-- --heist=glasshouse --detail
+   [--loud]`.
+
 ## 2026-10-20: resumed (lead session_014E3p2DmSYTneJjytGwKKfc); OF-D1 QC-67, D-145.3 faction duty, OF cast perf
 ### Done
 - Re-orientation: long-gun grip below 2 mm (P's test_p_finger_clip: every gun < 1 mm) and the SMG re-time were already
