@@ -21,7 +21,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   same-floor guards within 25 m count for every ghost floor change. **r255d: steps 1-4 PASS again, and the E3 departure held 96 s and went
   unseen.** Step 5: the vault gate was already OPEN (no VaultGate use in the log; vault_gate only went 1→2 at the alarm), so the harness skipped
   its gate wait and walked into the vault guard in VC. Asked A whether the vault guard's loop (b)/(c) is meant to leave the locked gate
-  open (stealth players skip the keycard). Harness: the gate wait now runs whether it's open or not. **Ghost now on r256** (3312326b + P), r256a running.
+  open (stealth players skip the keycard). Harness: the gate wait now runs whether it's open or not. **Ghost now on r256** (3312326b + P).
+  r256a: step 1 PASS. Step 2: guard timings shifted on r256 (smoke cue t=88 vs 66), and rover_hall (Npc_guard3) stood in LD 5 m inside the dock door
+  when the pilot lockpicked it (doc: rover_hall loop (b) checks LD). Harness: a smoke window with a guard in LD is skipped for the next one.
+  r256b is running.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement

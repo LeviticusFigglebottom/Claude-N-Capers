@@ -2418,7 +2418,23 @@ func _g2_dock() -> bool:
 	# wait until every guard in Ledger Lane is > LANE_CLEAR_M from the dock door, logging where they walk.
 	var door_at: Vector3 = _of(OF_LD_DOOR)
 	var waited: float = 0.0
+	# Inside too: rover_hall's loop (b) checks LD (doc), so a smoke window with him in LD is no window (r256a: lockpicked
+	# into Npc_guard3 standing 5 m inside). Skip that cue and take the next one, up to 3 tries.
+	var ld_busy: Callable = func() -> String:
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g != null and g.is_alive() and g.global_position.z > 0.5 and absf(g.global_position.y) < 1.5 \
+					and pilot.flat_dist(g.global_position, door_at) < 8.0:
+				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
+		return ""
 	var clear: bool = await _smoke_cue(300.0)
+	for _try: int in 2:
+		var who: String = ld_busy.call()
+		if who == "":
+			break
+		note("GHOST LD occupied (%s): skipping this smoke window" % who)
+		await wait_until(func() -> bool: return ld_busy.call() == "", 90.0)
+		clear = await _smoke_cue(300.0)
 	while waited < 600.0 and not clear:
 		clear = true
 		var where: PackedStringArray = PackedStringArray()
