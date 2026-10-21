@@ -228,6 +228,8 @@ var _ghost_stair_wait: bool = false
 ## Walks may use ladders on purpose (the interact sweep's pass 2 crosses the hole by the rope ladder): the stray-ladder
 ## watch stands down (r255 sweep: it climbed the pilot back down every time, a 15-min ping-pong).
 var _ladders_ok: bool = false
+## _vault_guard_off_vc: consecutive samples with the vault guard off VC.
+var _vg_away_n: int = 0
 
 
 func _ready() -> void:
@@ -1610,7 +1612,7 @@ func _lk_hide() -> Vector3:
 ## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, within 20 m
 ## with LOS to it, or walking within 20 m; if not clear at once the crew waits at `hide` (LK, doc §3; r251h: waiting in BB
 ## by the core, rover_basement walked down BB and saw it). Logs the wait (max 300 s, then goes anyway).
-func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> void:
+func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, extra: Callable = Callable()) -> void:
 	var t: float = 0.0
 	var hidden: bool = false
 	var last: Dictionary = {}
@@ -1633,6 +1635,15 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> 
 			pilot.inp.press(&"crouch")  # a player waiting in a side room crouches
 			last.clear()
 			continue
+		if near.is_empty() and extra.is_valid() and not bool(extra.call()):
+			near.append("vault guard still on VC")
+			if not hidden:
+				hidden = true
+				note("GHOST %s: waiting for the vault guard's loop (b)/(c) at %s" % [label, Po5Pilot._v(hide)])
+				await _go(hide, 0.5, 60.0)
+				pilot.inp.press(&"crouch")
+				last.clear()
+				continue
 		if near.is_empty() and t >= 1.0:
 			if hidden:
 				pilot.inp.release(&"crouch")
@@ -1645,6 +1656,25 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> 
 	if hidden:
 		pilot.inp.release(&"crouch")
 	note("GHOST %s NOT clear after 300 s (going anyway)" % label)
+
+
+## Doc §5: the vault guard is on loop (b) (RC) or (c) (SD, CP), not on (a) in VC: outside VC and > 12 m from the gate on
+## two samples in a row (r256b: "clear" while he stood out of sight at VC's east end, back at the gate 20 s later).
+func _vault_guard_off_vc(gate: Door) -> bool:
+	var vg: NpcBase = null
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive():
+			continue
+		for t: Variant in g.spawn_info.get("tags", []):
+			if String(t) == "guard_vault":
+				vg = g
+	if vg == null:
+		return true
+	var p: Vector3 = vg.global_position
+	var in_vc: bool = absf(p.y - OF_FFL[0]) < 1.5 and p.x > 16.0 and p.x < 34.0 and p.z > 6.5 and p.z < 13.5
+	_vg_away_n = _vg_away_n + 1 if not in_vc and pilot.flat_dist(p, gate.global_position) > 12.0 else 0
+	return _vg_away_n >= 2
 
 
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
@@ -2572,7 +2602,7 @@ func _g5_vault() -> bool:
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate != null:  # open or not (r255d: the vault guard's loop (b)/(c) left it open; no wait, walked into him in VC)
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide())
+		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide(), _vault_guard_off_vc.bind(gate))
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid
