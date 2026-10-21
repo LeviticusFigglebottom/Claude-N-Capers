@@ -228,6 +228,9 @@ var _ghost_stair_wait: bool = false
 ## Walks may use ladders on purpose (the interact sweep's pass 2 crosses the hole by the rope ladder): the stray-ladder
 ## watch stands down (r255 sweep: it climbed the pilot back down every time, a 15-min ping-pong).
 var _ladders_ok: bool = false
+## Ghost line difficulty (--diff=hazardous|cataclysm|...). D-150: the no-kill ghost acceptance runs on Hazardous (6 guards);
+## Cataclysm stealth allows pager kills.
+var _ghost_diff: int = Enums.Difficulty.HAZARDOUS
 ## _vault_guard_off_vc: consecutive samples with the vault guard off VC.
 var _vg_away_n: int = 0
 
@@ -249,6 +252,7 @@ func _ready() -> void:
 			"resolve": _resolve = true
 			"launch": _resolve_launch = true
 			"line": _line = v
+			"diff": _ghost_diff = Enums.Difficulty.get(v.to_upper(), _ghost_diff)
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/of_g1_pass"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -1684,11 +1688,29 @@ func _vault_guard_off_vc(_gate: Door) -> bool:
 	return _vg_away_n >= 2
 
 
+## Doc §5's window: the vault guard on loop (b) and rover_basement away. rover_basement sweeps BB (x 5-35) every 20-40 s
+## (r256d/r257c); his only long stops are in RC, whose aisles are blind from BB (doc), or far east at SS. r257c: a peek
+## per leg saw him come back down BB, but the retreat ran west along the same straight corridor and he filled 1.0 anyway.
+func _gate_window(gate: Door) -> bool:
+	if not _vault_guard_off_vc(gate):
+		return false
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive():
+			continue
+		for t: Variant in g.spawn_info.get("tags", []):
+			if String(t) == "guard_rover_basement":
+				var p: Vector3 = g.global_position
+				var in_rc: bool = p.x < 14.0 and p.z > 9.5
+				return absf(p.y - OF_FFL[0]) > 1.5 or in_rc or p.x > 36.0
+	return true
+
+
 ## Step 5's peek before each leg of the LK -> gate walk: a guard walking within 20 m who sees the pilot or closes on the
 ## gate, or the vault guard back off his RC leg. "" when the next leg is safe.
 func _gate_threat(gate: Door) -> String:
-	if not _vault_guard_off_vc(gate):
-		return "vault guard not on RC"
+	if not _gate_window(gate):
+		return "vault guard / rover_basement not away"
 	var me: Vector3 = pilot.crew.global_position
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
@@ -2398,7 +2420,7 @@ func _sweep(list: Array[InteractableComponent], rows: PackedStringArray, ok_n: A
 ## Headless probe (no pilot movement needed): LK floor points on the navmesh at floor height, reachable from
 ## GHOST_LK_WAIT, and hidden at crouch height from BB eyes outside LockerDoor. Picks GHOST_LK_HIDES (r252b).
 func _test_lkprobe() -> bool:
-	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, _ghost_opts(), false):
+	if not await _launch(OF_HEIST, _of_seed(), _ghost_diff as Enums.Difficulty, _ghost_opts(), false):
 		return false
 	var map: RID = pilot.crew.get_world_3d().navigation_map
 	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
@@ -2430,7 +2452,7 @@ func _test_lkprobe() -> bool:
 func _test_ghost() -> bool:
 	var opts: Dictionary = _ghost_opts()
 	opts["loadouts"] = {0: _ghost_loadout()}
-	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, opts, false):
+	if not await _launch(OF_HEIST, _of_seed(), _ghost_diff as Enums.Difficulty, opts, false):
 		return false
 	_ghost_stair_wait = false
 	var t_start: float = rt.heist_time_s
@@ -2474,15 +2496,20 @@ func _g2_dock() -> bool:
 	var waited: float = 0.0
 	# Inside too: rover_hall's loop (b) checks LD (doc), so a smoke window with him in LD is no window (r256a: lockpicked
 	# into Npc_guard3 standing 5 m inside). Skip that cue and take the next one, up to 3 tries.
+	# ...and BC by DockCorridorDoor: rover_hall's loop (b) comes through it into LD (haz_b: waited inside LD, he walked in
+	# and found the pilot at 1 m). Inside the building = z > 0.5.
+	var cdoor_n: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
 	var ld_busy: Callable = func() -> String:
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g != null and g.is_alive() and g.global_position.z > 0.5 and absf(g.global_position.y) < 1.5 \
-					and pilot.flat_dist(g.global_position, door_at) < 8.0:
+			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
+				continue
+			if pilot.flat_dist(g.global_position, door_at) < 8.0 \
+					or (cdoor_n != null and pilot.flat_dist(g.global_position, cdoor_n.global_position) < 10.0):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
 	var clear: bool = await _smoke_cue(300.0)
-	for _try: int in 2:
+	for _try: int in 4:
 		var who: String = ld_busy.call()
 		if who == "":
 			break
@@ -2513,6 +2540,14 @@ func _g2_dock() -> bool:
 	var door: Door = _x("ld_door") as Door
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
+	# Peek through LD -> BC too: on Hazardous (D-150) rover_hall stood 1.7 m behind DockCorridorDoor when the pilot
+	# opened it (haz_a, t=100). Wait inside LD, 3 m back from that door, until BC beyond it is clear.
+	var cdoor: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
+	if cdoor != null:
+		var back: Vector3 = (door.global_position - cdoor.global_position)
+		back.y = 0.0
+		var hide: Vector3 = pilot.stand_point(cdoor.global_position + back.normalized() * 3.0)
+		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide)
 	return await _of_to_floor(0)
 
 
@@ -2631,7 +2666,7 @@ func _g5_vault() -> bool:
 		var hide: Vector3 = _lk_hide()
 		var legs: Array[Vector3] = [_of(Vector3(8.0, OF_FFL[0], 8.2)), _of(Vector3(13.5, OF_FFL[0], 8.2))]
 		for attempt: int in 4:
-			await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", hide, _vault_guard_off_vc.bind(gate))
+			await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", hide, _gate_window.bind(gate))
 			var ok: bool = true
 			for leg: Vector3 in legs + [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0))]:
 				var who: String = _gate_threat(gate)

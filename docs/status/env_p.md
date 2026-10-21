@@ -3,6 +3,16 @@
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
 ## To the LEAD: (updated 2026-10-21 09:20 UTC)
+- **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
+  dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
+  haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
+  'LD occupied' check also counts guards within 10 m of DockCorridorDoor, and that smoke window is skipped (≤ 4 tries). haz_c is running.
+  The BB window log (count/lengths) will go here for C if step 5 finds no window.
+- **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
+  pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35
+  every 20-40 s; the vault guard's only long absence is loop (b) RC (~30 s); Cataclysm's extra guards (Npc_guard7/9) walk BB east. In r257d no
+  moment in 300 s had both the vault guard and rover_basement away. Is §5 meant to be timed on Cataclysm with these patrols? If yes, rover_basement's
+  loops may need a longer away leg (A/C). If no, which difficulty should the ghost acceptance use? I'll keep iterating the harness meanwhile.
 - **GAME BUG FIXED (P's own, 0d0a1ab0): crew capsules were shared.** crew_member.tscn's CapsuleShape3D sub-resource was one shape for every
   crew member. Whenever anyone crouched, all the others' capsules shrank to 1.2 m under their 0.9 m standing offset, and they sank 0.30 m into the
   floor (until that crew member stood). Found with a watchdog in GH Tense 4502 (C showed the kerb itself is only 0.15 m and clean): at t=11.8,
@@ -50,7 +60,14 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   rover_basement, out of LOS east at that moment, turned back west down BB and saw the pilot at the gate (t=358). Now walkers within 20 m that are
   closing on the gate count too (doc: 'rover_basement is east'). r257b: the same failure (he was likely standing in SD, out of LOS, when the wait cleared).
   No snapshot rule predicts that, so now the pilot walks LK → gate in legs (BB west, the core, the gate), peeks before each one, and retreats
-  to LK if a guard shows up (≤ 4 tries). r257c is running.
+  to LK if a guard shows up (≤ 4 tries). r257c: the peek caught rover_basement coming back down BB at 12 m, but the retreat runs west along the
+  same straight 48 m corridor and he filled 1.0 anyway. His positions (r256d/r257c) show him sweeping BB x 5-35 every 20-40 s; his only long stops
+  are RC (blind aisles per doc) or far east at SS. Now the gate window also requires rover_basement in RC or past x 36. **r257d: steps 1-4 PASS. Over
+  ~700 s of waiting in LK there were 3 windows (t≈784, 986, 1006); each closed within 3-4 s at the first peek (vault guard/rover back, or guard9
+  on BB east), and the pilot retreated unseen each time.** After the 4th try the harness goes anyway and was seen (harness give-up, not a finding).
+  At Cataclysm the BB-crossing window is effectively absent with these patrols. See the design question above.
+  **If this doesn't hold, my read is that at Cataclysm (extra BB guards + rover_basement's short loops) the doc's step-5 window is very
+  tight. I'd then like a design call (C/LEAD) on whether ghost §5 is meant to be timed on Cataclysm, or at a lower difficulty.**
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
