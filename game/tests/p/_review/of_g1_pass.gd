@@ -145,6 +145,8 @@ const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 const GHOST_LK_HIDES: Array[Vector3] = [Vector3(1.5, -4.0, 4.0), Vector3(2.0, -4.0, 4.5), Vector3(1.5, -4.0, 3.5)]
 const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
 const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
+## lkprobe (r263): SA's half landing between B and G, seen from no BB / BC corridor eye: the step 2 -> 3 wait (haz_x).
+const GHOST_SA_MID: Vector3 = Vector3(14.5, -2.0, 2.0)
 ## lkprobe (r260): CQ floor point no BB corridor eye (x 0-47, z 7.6 / 8.4) sees: the time-lock refuge (haz_u).
 const GHOST_CQ_HIDE: Vector3 = Vector3(12.5, -4.0, 3.5)
 const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
@@ -2575,6 +2577,35 @@ func _test_lkprobe() -> bool:
 						seers.append("%d/%.1f" % [bx, bz])
 			cq.append("(%.1f, %.1f) %d [%s]" % [xi * 0.5, zi * 0.5, seers.size(), ",".join(seers)])
 	note("LKPROBE CQ: %s" % "; ".join(cq))
+	# SA (x 13-16, z 0-7) between B and G as the step 2 -> 3 wait (haz_x: on the B landing behind the door, the vault guard
+	# walking BB saw it at 2 m): corridor eye points on BB (y -4) and BC (y 0), x 0-47, z 7.6 / 8.4, seeing each point.
+	var sa: PackedStringArray = PackedStringArray()
+	var seen_sa: Dictionary = {}
+	for yi: int in range(0, 9):
+		for xi: int in range(27, 32):
+			for zi: int in range(1, 14):
+				var want: Vector3 = _of(Vector3(xi * 0.5, -4.0 + yi * 0.5, zi * 0.5))
+				var got: Vector3 = NavigationServer3D.map_get_closest_point(map, want)
+				if pilot.flat_dist(got, want) > 0.2 or absf(got.y - want.y) > 0.3:
+					continue
+				var key: String = Po5Pilot._v(got)
+				if seen_sa.has(key):
+					continue
+				seen_sa[key] = true
+				var nb: int = 0
+				var ng: int = 0
+				for bx: int in range(0, 48):
+					for bz: float in [7.6, 8.4]:
+						for fy: float in [-4.0, 0.0]:
+							var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(_of(Vector3(bx, fy + 1.6, bz)),
+								got + Vector3(0, 0.7, 0), 1)
+							if space.intersect_ray(q).is_empty():
+								if fy < -1.0:
+									nb += 1
+								else:
+									ng += 1
+				sa.append("%s bb %d bc %d" % [key, nb, ng])
+	note("LKPROBE SA: %s" % "; ".join(sa))
 	return true
 
 
@@ -2720,14 +2751,15 @@ func _g2_dock() -> bool:
 	if cdoor != null:
 		var hide: Vector3 = pilot.stand_point(door.global_position + Vector3(-2.0, 0.0, -1.5))
 		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide, Callable(), 0.5)
-	# Down SA to the basement landing and wait there for BB (haz_w, r263: the dock done 24 s sooner, the vault guard's
-	# loop (b) walk down BB to RC met the pilot stepping out of SA at t=184; step 3's own check came after the step out).
+	# Down SA to its half landing and wait there for BB (haz_w, r263: the dock done 24 s sooner, the vault guard's loop (b)
+	# walk down BB met the pilot stepping out of SA at t=184; haz_x: waiting on the B landing behind the door, he walked
+	# past it at 2 m). lkprobe: GHOST_SA_MID is seen from no BB or BC corridor point.
 	if not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[1], OF_CORRIDOR_Z)), 0.6, 240.0) \
 			or not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[1], OF_SA_CORE.z)), 0.4, 240.0) \
-			or not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[0], OF_SA_CORE.z)), 0.5, 240.0):
+			or not await _go(pilot.stand_point(_of(GHOST_SA_MID)), 0.4, 60.0):
 		return false
-	await _wait_core_clear(OF_FFL[0], OF_FFL[0], true, 12.0, 120.0)
-	return true
+	await _wait_core_clear(GHOST_SA_MID.y, OF_FFL[0], true, 12.0, 120.0)
+	return await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[0], OF_SA_CORE.z)), 0.5, 60.0)
 
 
 ## The design doc's own cue (A 160b8e07 hub loops: LaneCorner smoke 20-40 s): a Ledger Lane guard ARRIVING at the
