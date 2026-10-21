@@ -172,3 +172,21 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
   - Payday: $123,200, loud, 9:49, achievements First Score / Bank Holiday / Burn and Hoist.
   - ERRORs: `It's not expect to not find the most reachable polygons` x4 (navmesh). At exit: 43 Texture RIDs, 66 ShapedText RIDs, 4 Font RIDs leaked, and `1 resources still in use at exit`.
 - Console logs: `render_log.txt` in each folder. (If any `Â·` appears in a log, it's the UTF-8 middle dot; the log itself is fine.)
+## GPU-10: ENV A OF real-menu playthroughs on the final map
+- Tree: local branch gpu/a = env/a-core 30a0d429 + merge of env/c-worlds 11227ecb (clean merge, no conflicts; merge base 3c9b2fdf). Import: exit 0, 7 s.
+- Command: `--path game --resolution 1280x720 res://tests/a/e2e/po5_runner.tscn -- --po5-flow=<flow> --po5-out=<repo>\gpu\renders\a\<run> --po5-budget=1800 --po5-heist="Ostrander Federal" --po5-difficulty=Routine --po5-seed=<n> [...]`,
+  with stdout+stderr in `gpu/renders/a/<run>.log`.
+
+| run | args | exit | wall | verdict |
+|---|---|---|---|---|
+| of_stealth_18 | `--po5-flow=of_stealth --po5-seed=18` | 0 | 156 s | `RESULT PASS (code 0)` at 155.1 s |
+| of_loud_5 | `--po5-flow=of_loud --po5-seed=5 --po5-crew-dmg=0.25` | 0 | 226 s | `RESULT PASS (code 0)` at 225.4 s |
+
+- Stealth route: casing, keycard, vault_gate, lasers, server, time_lock, code_pc, time_lock_wait, secure, vault_loot, code_hint, escape. 4 security officers, no crew downs.
+- Loud route: casing, keycard, code_hint, code_pc, server, vault_gate, lasers, drill_delivery, vault_drill, vault_breach, secure, vault_loot, escape_wait, escape.
+  32 police spawned, peak 14 alive (patrol 13, tac_light 12, security 4, bulwark 2, longshot 1), no crew downs.
+- **Flag for A/C: the loud run logged `ERROR: It's not expect to not find the most reachable polygons` 1,498 times** (Godot navmesh:
+  an agent's target is off the navmesh or in a disconnected region). It was 4-21 per run in GPU-7/GPU-9. The stealth run logged none. It may involve
+  the new door_nav_clearance.gd from env/c-worlds or police spawn/escape points.
+- Exit-only ERRORs in both runs: Texture/ShapedText/Font RID leaks and `1 resources still in use at exit`.
+- 13 PNGs per run in `gpu/renders/a/<run>/`.

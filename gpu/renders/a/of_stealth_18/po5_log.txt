@@ -1,0 +1,81 @@
+[PO5 7.8s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/01_main_menu.png
+[PO5 8.1s] click 'SAFEHOUSE' at (872.0, 711.3334)
+[PO5 8.9s] click '' at (1391.333, 428.6667)
+[PO5 10.0s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/02_planning_table.png
+[PO5 10.1s] click 'Ostrander Federal' at (818.6667, 806.6667)
+[PO5 11.0s] click 'ROUTINE' at (1276.0, 666.6667)
+[PO5 14.3s] click 'Briefing' at (2701.333, 1318.667)
+[PO5 14.4s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/03_briefing.png
+[PO5 14.6s] click 'Continue' at (2722.667, 1340.0)
+[PO5 15.5s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/04_continue.png
+[PO5 15.7s] click 'Confirm plan' at (2722.667, 1334.0)
+[PO5 16.6s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/05_confirm_plan.png
+[PO5 17.1s] click 'Start Heist' at (2701.333, 1318.667)
+[PO5 22.7s] HITCH frame=2238ms t=0.1 drawn=1 nodes=18511 enemies=4 top: anim_driver=23.2ms(24) npc_motor=8.9ms(168) stealth_director=1.3ms(8) civilian_brain=1.1ms(136) custody_system=1.0ms(8) crew_ai_brain=0.9ms(24) guard_brain=0.1ms(32) npc_gunner=0.1ms(32) heist_runtime=0.0ms(8) assault_director=0.0ms(8)
+[PO5 23.9s] in heist ostrander_federal seed 18 diff 0 phase 1 crew at (21.8, -0.8, 44.0)
+[PO5 24.8s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/06_heist_start.png
+[PO5 25.6s] mouse captured by the game (MouseCapture)
+[PO5 25.7s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 25.7s] [X4] ostrander_federal    2.0 s  launched seed 18, variants { &"manager_route": [&"mgr_floor"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_dock", &"rover_hall"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_b"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_6"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 210.0, &"drill_eta_s": 45.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[PO5 25.8s] [X4] ostrander_federal    2.1 s  detection shortcut: crew.stealth_hidden = true (NPCs, cameras, lasers, sensors untouched)
+[PO5 26.7s] [X4] ostrander_federal    3.1 s  objective casing COMPLETED
+[PO5 26.7s] [X4] ostrander_federal    3.1 s  keycard slot [&"kc_security"], manager [&"mgr_floor"]
+[PO5 27.3s] [X4] ostrander_federal    3.6 s  objective keycard COMPLETED
+[PO5 27.5s] [X4] ostrander_federal    3.7 s  take the keycard: done
+[PO5 28.4s] [X4] ostrander_federal    4.8 s  objective vault_gate COMPLETED
+[PO5 28.5s] [X4] ostrander_federal    4.8 s  swipe the vault gate: done
+[PO5 30.8s] [X4] ostrander_federal    6.9 s  start the LaserController hack: done
+[PO5 35.8s] [X4] ostrander_federal   27.0 s  objective lasers COMPLETED
+[PO5 35.9s] [X4] ostrander_federal   27.0 s  hack LaserController finished after 0 restart(s)
+[PO5 36.0s] TEL worst_frame=2316ms t=27 phase=2 phys=64.6ms proc=5.0ms nodes=18532 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=7.9m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 37.9s] [X4] ostrander_federal   29.3 s  start the VaultControlRack hack: done
+[PO5 45.9s] TEL worst_frame=218ms t=57 phase=2 phys=95.3ms proc=3.1ms nodes=18529 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=7.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 46.5s] [X4] ostrander_federal   57.1 s  restart the VaultControlRack hack (#1): done
+[PO5 55.9s] TEL worst_frame=156ms t=90 phase=2 phys=95.5ms proc=3.2ms nodes=18523 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=7.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 56.4s] [X4] ostrander_federal   90.5 s  restart the VaultControlRack hack (#2): done
+[PO5 64.7s] [X4] ostrander_federal  123.5 s  objective server COMPLETED
+[PO5 64.7s] [X4] ostrander_federal  123.5 s  objective time_lock COMPLETED
+[PO5 64.8s] [X4] ostrander_federal  123.5 s  objective code_pc COMPLETED
+[PO5 64.8s] [X4] ostrander_federal  123.5 s  hack VaultControlRack finished after 2 restart(s)
+[PO5 65.9s] TEL worst_frame=149ms t=128 phase=2 phys=130.4ms proc=4.5ms nodes=18527 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=11.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 75.9s] TEL worst_frame=75ms t=168 phase=2 phys=72.9ms proc=6.1ms nodes=18532 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=6.9m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 85.9s] TEL worst_frame=71ms t=208 phase=2 phys=65.9ms proc=5.9ms nodes=18526 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=7.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 95.9s] TEL worst_frame=69ms t=248 phase=2 phys=66.1ms proc=4.2ms nodes=18526 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=15.2m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 105.9s] TEL worst_frame=69ms t=288 phase=2 phys=65.6ms proc=4.9ms nodes=18526 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=11.2m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 115.9s] TEL worst_frame=81ms t=328 phase=2 phys=64.3ms proc=5.5ms nodes=18526 enemies=4 civs=17 crew=[0:0@(38.0, -4.0, 2.1) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=15.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 117.1s] [X4] ostrander_federal  333.5 s  objective time_lock_wait COMPLETED
+[PO5 125.3s] [X4] ostrander_federal  341.8 s  pick the cash cage padlock: done
+[PO5 126.0s] TEL worst_frame=243ms t=343 phase=2 phys=240.6ms proc=4.4ms nodes=18525 enemies=4 civs=17 crew=[0:0@(24.0, -4.0, 19.0) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=8.2m within15=3 input_enabled=true captured=true paused_by={  }]
+[PO5 126.5s] [X4] ostrander_federal  342.9 s  bag VaultCash (8 left): done
+[PO5 127.2s] [X4] ostrander_federal  343.8 s  secured loot.cash_bricks (1)
+[PO5 128.5s] [X4] ostrander_federal  344.9 s  bag VaultCash (7 left): done
+[PO5 129.2s] [X4] ostrander_federal  345.7 s  secured loot.cash_bricks (2)
+[PO5 130.5s] [X4] ostrander_federal  346.8 s  bag VaultCash (6 left): done
+[PO5 131.2s] [X4] ostrander_federal  347.7 s  secured loot.cash_bricks (3)
+[PO5 132.5s] [X4] ostrander_federal  348.8 s  bag VaultCash (5 left): done
+[PO5 133.2s] [X4] ostrander_federal  349.6 s  objective secure COMPLETED
+[PO5 133.2s] [X4] ostrander_federal  349.6 s  objective vault_loot COMPLETED
+[PO5 133.2s] [X4] ostrander_federal  349.6 s  objective code_hint COMPLETED
+[PO5 133.3s] [X4] ostrander_federal  349.6 s  secured loot.cash_bricks (4)
+[PO5 136.2s] TEL worst_frame=199ms t=361 phase=4 phys=63.7ms proc=3.2ms nodes=18528 enemies=4 civs=17 crew=[0:0@(42.5, 8.7, 26.3) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=20.4m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 144.5s] [X4] ostrander_federal  394.7 s  objective escape COMPLETED
+[PO5 144.6s] STATS difficulty=0 police=4 peak_alive=4 specials={  } composition={ &"enemy.security_officer": 4 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+INTAKE pilot standing loud 0 s, 0 dmg, 0.00 dmg/s, 0.0 enemies within 20 m on average | by attacker [hits, dmg, nulled] {  } | by range {  }
+[PO5 144.6s] [X4] ostrander_federal  394.7 s  route done at 394.7 s heist; objectives [&"casing", &"keycard", &"vault_gate", &"lasers", &"server", &"time_lock", &"code_pc", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"escape"]; secured [&"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks"]; laser waits 0
+[PO5 144.6s] RESULT of_stealth route PASS seed 18: [&"casing", &"keycard", &"vault_gate", &"lasers", &"server", &"time_lock", &"code_pc", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"escape"]
+[PO5 146.3s] TEL worst_frame=78ms t=395 phase=5 phys=60.5ms proc=18.4ms nodes=18626 enemies=4 civs=17 crew=[0:0@(35.5, 8.6, 27.0) 1:0@(23.3, -0.8, 44.0) 2:0@(24.8, -0.8, 44.0) 3:0@(26.3, -0.8, 44.0) nearest_enemy=14.3m within15=1 input_enabled=true captured=false paused_by={  }]
+[PO5 147.9s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/07_payday.png
+[PO5 147.9s] payday buttons: ["Continue"]
+[PO5 148.0s] click 'Continue' at (2701.333, 1318.667)
+[PO5 150.3s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/08_payday_0.png
+[PO5 150.3s] payday: picking a card
+[PO5 150.5s] click '' at (1256.0, 718.6667)
+[PO5 152.7s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/09_payday_1.png
+[PO5 152.9s] click 'Continue' at (2701.333, 1318.667)
+[PO5 154.9s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/10_payday_2.png
+[PO5 155.0s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/11_back_in_hub.png
+[PO5 155.0s] back in the hub
+[PO5 155.1s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_stealth_18/12_end.png
+[PO5 155.1s] STATS difficulty=0 police=4 peak_alive=4 specials={  } composition={ &"enemy.security_officer": 4 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+INTAKE pilot standing loud 0 s, 0 dmg, 0.00 dmg/s, 0.0 enemies within 20 m on average | by attacker [hits, dmg, nulled] {  } | by range {  }
+[PO5 155.1s] RESULT PASS (code 0) flow=of_stealth heist=Ostrander Federal seed=18
