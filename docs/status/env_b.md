@@ -3,7 +3,59 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 12:45; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 14:15; send_message to you is refused, so read this)
+-12. **New: OF done check, payday / progression on trunk 40ef789d (D-148 in place): PASS, plus one hub fix.**
+    1. **`test_of_payday_e2e`: 7/7 green.** It runs the 5 earlier tests plus 2 new ones:
+       - `test_d148_first_clear_levels_match_the_pace_table`: a first OF stealth clear (6 bags, crew of 4 alive,
+         fresh profile, freshness as PaydayScreen applies it) lands on L6 / 11 / 18 / 23 / 24 / 25 from Routine to
+         Cataclysm. That is **exactly progression_pace.md's D-148 table**. XP is 5,850 / 11,700 / 29,250 / 58,500 /
+         67,275 / 81,900.
+       - `test_coop_every_slot_gets_the_same_payday`: with 4 human slots, every slot gets the same contract, loot,
+         total, XP and level at every difficulty.
+       - The pace tool re-run on 40ef789d prints the same table: 23.28 M XP to L100, new-player path L17 ... L49,
+         408 Cataclysm clears to 100. Also re-run and green: `test_ui_scoreboard` 13 and `test_ui_theme` 19.
+    2. **1080p stills for the PO** are in `game/content/ui/_review/r262_of_payday_hub/`. They come from the new
+       `tests/b/render/of_payday_hub_capture.gd`, which runs the real PaydayScreen, then the HubMenu, on a scratch
+       profile.
+       - **Hazardous:** $367,224. 29,250 XP takes the fresh profile 0 -> L18 ("Level up! Now level 18"), and it
+         banks the stealth bonus. Unlocked: First Score and No Harm Done (my run answered 1 pager and took 21 min,
+         so no Quiet Weekend / Bank Holiday).
+       - **Cataclysm:** $1,299,408. 81,900 XP takes the profile to L25. It unlocks 6 achievements; 3 show and the
+         rest sit below the fold (the r246 focus-scroll design). One reward name ellipsises ("Oxblood Her...") in
+         the 3-column panel.
+       - **Hub:** level, XP bar (1,205 / 4,151 to the next level), spending and stash all correct.
+       - **Fixed (B):** the Armory card's "20 SKILL POINTS · 58 PERK POINTS" ran past the card at 1080p. The counts
+         are now one per line, and the card grows. `test_hub` has a new test, 38/38 green; it fails on the old code.
+       - **PO note:** one Hazardous clear gives 58 perk points at L18. Perk points are total XP / 500
+         (`PerkPointTweak.xp_per_perk_point`), and D-148's bigger OF XP (5,850 vs 4,550 on Routine) raised them too.
+         Worth a look in P6 balance; no change from me.
+    3. **RT-B1 on paper, done:** `rt_b1_values.md` gains §7 strings and §8 voice. §7 has the 2 briefing steps, all
+       13 `pp_*` point labels (the doc's pre-planning table), the 5 surprise strings and `asset.c4_drop`'s name and
+       desc. §8 is a draft list of ~36 Mercer + Reyes lines by phase, using the doc's own two lines. Nothing is in
+       data; all of it is ready for when the OF gate opens. Still open: the D-143.5 allow-list question in item -11.
+-11. **New: ultrawide 3440x1440 + 16:10 + 1080p HUD pass (your 10:34 follow-up), and RT-B1 values on paper.** Shots: `game/content/ui/_review/r261_ultrawide/`.
+    - **Did the 10:34 renders finish?** Only partly. The live OF `ui_audit_capture` at 3440x1440 timed out at 40 min on
+      llvmpipe (rc 124) after shot 1 (casing HUD). That shot is fine: the HUD sits on the screen edges, the scrims
+      show and nothing stretches. I stopped the 16:10 live run (same cost, no shots). **The live loud OF run at
+      3440x1440 needs the GPU box**:
+      `ui_audit_capture.gd -- <out> heist - ostrander_federal` with `--resolution 3440x1440`.
+    - **Loud HUD mock at 3440x1440, 1920x1200 and 1920x1080** (`hud_contrast_capture.gd -- loud <WxH>`, new
+      optional size arg; it uses the game's `expand` stretch, so a wider aspect gets a wider canvas and 16:10 a
+      taller one). The banner stack, trade counter, objective, vitals, ammo, teammates, downed timer and prompts are
+      all placed correctly at every size; nothing clips.
+    - **One fix:** the Tab sheet was 43 px right of centre at every aspect. Its columns needed ~1,326 px, but its
+      box was 1,240, so the sheet grew to the right only. I tightened the sheet's gaps and made the box 1,260 and
+      centred, so it no longer meets the teammate panel. `test_ui_theme` now checks that the sheet fits its box
+      and is centred.
+    - The 720p contrast gate still passes. Thanks for the `_visible_rect` hotfix (4a28ff35); trunk r261 is merged.
+    - **RT-B1 values** are in `game/content/docs/rt_b1_values.md` (paper, in QB-2 shape, for C). It covers the
+      HeistDef values, the variant rows with per-difficulty weights, the 8 rare-event keys and their "surprise"
+      strings, the preplan block (`asset.c4_drop` at 2,000 and 2 favors), the briefing steps, and the
+      staff_diner / staff_booth tag rows.
+    - **Payout correction:** RT `base_payout` is **$30k**, pinned by D-141.1 and `test_p5_catalogue`; the G0 doc
+      and my rt_content_plan said $85k.
+    - **Your call:** do I add the D-143.5 `heists = [&"rolling_thunder"]` allow-list rows to `signal_insider` and
+      `intel_route` now (two lines in existing B files), or after the OF gate?
 -10. **New: D-145 DB Tense on r257 (+ the engage fix), both cells done. For your lever ruling:**
 
     | Cell (headless auto_loud x1.0, solo + 3 bots) | Wins | Player downs (s1 / s2 / s3) | Median |

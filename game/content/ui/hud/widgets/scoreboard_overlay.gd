@@ -52,7 +52,8 @@ func _init() -> void:
 
 func build() -> void:
 	# PO-4: an opaque Case File sheet (the HUD itself is frameless), crew table left, objectives right.
-	var row: HBoxContainer = UiBuild.hbox(UiTokens.S5)
+	# r261: tighter gaps (S3 columns, S4 row / sides) so the sheet fits its centred 1,260 box with the teammate panel clear.
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S4)
 	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(v)
@@ -61,7 +62,7 @@ func build() -> void:
 	v.add_child(title)
 	grid = GridContainer.new()
 	grid.columns = 1 + COLUMNS.size()
-	grid.add_theme_constant_override(&"h_separation", UiTokens.S4)
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
 	grid.add_theme_constant_override(&"v_separation", UiTokens.S2)
 	v.add_child(grid)
 	var o: VBoxContainer = UiBuild.vbox(UiTokens.S2)
@@ -83,7 +84,7 @@ func build() -> void:
 	o.add_child(loot_box)
 	var p: PanelContainer = PanelContainer.new()
 	p.add_theme_stylebox_override(&"panel", UiThemeFactory.box(Color(UiTokens.INK_1, 0.94), UiTokens.LINE_STRONG, 1,
-			UiTokens.CUT, Vector2(UiTokens.S5, UiTokens.S4)))
+			UiTokens.CUT, Vector2(UiTokens.S4, UiTokens.S4)))
 	p.add_child(row)
 	p.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)  # as tall as its rows, no empty sheet
 	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
