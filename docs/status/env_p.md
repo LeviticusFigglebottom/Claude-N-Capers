@@ -29,7 +29,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   step has the same two-patrol clash as BB. C asked for window numbers: these are they. **C's answer (ostrander_federal.md 8c034cdb):** rover_hall
   isn't random. A's hub_loops cycle him (a) TW/hall → (b) LD check → MO → (c) stair B / fire exit, so go in a smoke window only once he has LEFT LD
   for MO (east, x > 40, two loops from the next LD visit). Harness: a watcher records his LD visits; a window counts only if his last LD check was
-  ≤ 90 s ago and he's now at x > 25. haz_m (seed 1002) is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
+  ≤ 90 s ago and he's now at x > 25. haz_m: he spawns into loop (b), with an LD check at t=11, so at the t=78 window he was on loop (a) at (35.3, 11.5) and
+  came back to LD at t=96 into the pilot. Timing alone can't tell the phases apart (both windows ~67 s after a check); position can: east now = x > 38
+  and z < 9.5 (BC corridor east = MO / loop (c)). haz_n (seed 1002) is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
   the LEAD and A with the numbers.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the

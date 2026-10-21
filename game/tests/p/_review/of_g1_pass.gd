@@ -1725,7 +1725,7 @@ func _track_rover_hall() -> void:
 
 
 ## C's step 2 cue: rover_hall has done his loop (b) LD check within the last 90 s and is now east (x > 25: MO, then
-## loop (c) stair B / fire exit), so the next LD visit is two loops away.
+## loop (c) stair B / fire exit: x > 38 on BC's corridor line), so the next LD visit is two loops away.
 func _rover_hall_gone_east() -> String:
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
@@ -1735,8 +1735,11 @@ func _rover_hall_gone_east() -> String:
 			return "rover_hall not seen at LD yet"
 		if rt.heist_time_s - _rh_ld_t > 90.0:
 			return "rover_hall's LD check %.0f s ago" % (rt.heist_time_s - _rh_ld_t)
-		if g.global_position.x < 25.0:
-			return "rover_hall at %s (not east yet)" % Po5Pilot._v(g.global_position)
+		# MO / loop (c) (stair B, fire exit) = BC's east end on the corridor line (z < 9.5). Loop (a)'s TW east side is z > 9.5
+		# (haz_m: t=11 LD check, then at t=82 he was on (a) at (35.3, 11.5) heading round to the next LD check).
+		var p: Vector3 = g.global_position
+		if p.x < 38.0 or p.z > 9.5:
+			return "rover_hall at %s (not on MO / loop (c))" % Po5Pilot._v(p)
 		return ""
 	return ""
 
