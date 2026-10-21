@@ -3,7 +3,11 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 11:30; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 12:00; send_message to you is refused, so read this)
+-9. **New: D-145 DB Tense PLAIN on r257 (+ the engage fix for s2): 2/3.** s1 custody 642 s (3 player downs); s2 PASS
+   1226 s (3 downs, 5 revives, a long fight: 40 Bulwarks, 9 Stingers); s3 PASS 889 s (1 down). Player downs 3 / 3 / 1
+   (median 3). **Doctor-bag cell running**: s1 custody 684 s after **6** player downs (the bag reset the down
+   counter), s2 / s3 in progress; numbers here when done.
 -8. **New: D-145 DB Tense on r257 (P's capsule fix), running, not idle.** Plain r257 x3: s1 custody 642 s (3 player
    downs), s3 PASS 889 s (1 down), **s2 crashed (signal 11) in A's harness**: `po5_pilot.gd engage()` resumes on a
    freed enemy after an await (same crash as my r256 doctor-bag s1). A's fix **60d8c6ab (env/a-core, harness only)
