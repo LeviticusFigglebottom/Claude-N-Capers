@@ -6,6 +6,13 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r256 RT doc drift reconciled with D's cast check (env/d-art 13cdeef9 / prep/d-rt fb5160ef2):
+  - Marshal = `armored_car_marshal` (roster row and §6 text in rolling_thunder.md; the plan's §3 cast line).
+  - New roster row: Reyes = `contact_hollis`, pool `ram_driver`, tag `driver_mixer`, `sit_vehicle_drive`, seated in
+    mixer M.
+  - D's clip prop sizes are now in the plan (car seat 0.36 m, wheel rim 0.40 m ahead / 0.76 m up r 0.18 at 30°,
+    diner counter 0.90 m, booth table 0.74 m, griddle 0.90 m), for C's RT-C2 builds.
+  - Docs only. Ran banned and ownership (the plan file is the accepted LEAD-path exception).
 - 2026-10-21, GPU-16 drill fix (219323c8): the LidDrill moved so its head sits over the lid 0.35 m inside the west edge
   and the tripod points west. All three feet are now on the TW carpet, 0.25 m+ clear of the cut; at the hole centre,
   two feet had come down inside it. The UsePoint is unchanged (eye to drill 1.95 m, inside the 2.0 m reach), so P's

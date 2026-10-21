@@ -30,7 +30,14 @@ B = `game/content/**`, C = `game/world/**`, `game/assets/**`, `tools/blender/**`
   `base_payout` $30k pinned (`test_p5_catalogue.gd:37,44`, D-141.1); `asset.signal_insider`, `asset.intel_route`
   (`content/data/preplanning/assets/`); loot `cash_bricks`, `gold`, `bearer_bonds`, `thermite`. B's own gap list:
   `game/content/docs/next_heist_prep_rt_ah.md`.
-- Cast (D, RT-D1 0621b4f2): `p5_cast.json` heists.rolling_thunder (Vaultline crew a–f, `armored_car_marshal`, escort
+- Cast (D, RT-D1 0621b4f2; D's RT cast check prep/d-rt fb5160ef2, every roster row cast): the marshal is
+  `armored_car_marshal` (QC-86 hi-vis; the G0 roster said `armored_car_crew_b`, fixed), and Reyes in the ram mixer is
+  `contact_hollis` on pool `ram_driver`, tag `driver_mixer` (seated with `sit_vehicle_drive`; roster row added).
+  Prop sizes D's clips assume (C builds to them): car seat cushion 0.36 m over the footwell floor; steering-wheel rim
+  centre 0.40 m ahead / 0.76 m up from the seated root, r 0.18, tilted 30°; diner counter top 0.90 m (waitress root
+  0.28 m behind the near edge); booth table top 0.74 m, near edge 0.22 m ahead of the seated root; griddle top 0.90 m,
+  front edge 0.30 m ahead of the cook.
+- Cast pools (D, RT-D1 0621b4f2): `p5_cast.json` heists.rolling_thunder (Vaultline crew a–f, `armored_car_marshal`, escort
   pool `patrol_officer`/`tac_light`/`tac_heavy`, site-guard and street-civilian pools); `npc_visual_tweak.tres:98,166`
   maps `civ_street/bus/diner`, `convoy_t1..3`, `cop_*`, `guard_site_*`, `vl_marshal`.
 - Anim hints (A, RT-A1): `sit_vehicle`, `sit_eat`, `cook_stove` hint mapping with fallbacks, `play_vehicle_exit`
