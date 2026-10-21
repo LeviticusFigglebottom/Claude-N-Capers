@@ -84,3 +84,15 @@ escorts), sit_vehicle_drive (drivers, Reyes), vehicle_exit_l / _r (dismount, QC-
 Twins: street 12 + bus 4 + diner 5 = 21 live at most on 18 looks, so at most 3 repeats, and only at the maximum roll;
 the diner is a separate interior. D-130 allows it (no twins only while live <= looks). If the PO wants zero, 3 palette
 swaps of existing pedestrians (finish only, D-147) cover it; not built.
+
+### Re-check vs C's `docs/process/next_heist_rolling_thunder.md` (trunk 3312326b, round 256)
+- RT-D2 clips (`sit_vehicle`, `vehicle_exit_l/_r`, `sit_eat`, `cook_stove`) and the cook + waitress looks: on prep/d-rt
+  (plus `sit_vehicle_drive`, `counter_wipe`; the diner `prop_counter_sales` is 0.9 m = COUNTER_Z).
+- Cower placements: `test_cower_offsets` now also measures `diner_staff` / `carpark_attendant`; the back-bag pedestrians
+  needed offsets (c 0.12, e 0.25 for the deep delivery backpack, f 0.14). Staff and the others: 0.
+- **Do not map `convoy_lead` / `convoy_rear`** (C §3 "cast tags" and §4 ask to add them): NpcVisuals puts the
+  SpawnPoint tag before the EnemyDef (D-103 §3b.1), so any tag row would pin one look on every difficulty and bypass the
+  D-145.3 duty looks, the frd / sentinel / zero reskins and `tac_heavy`. The escorts are director EnemyDefs, so they never
+  fall back to capsules. The PO-5.7 "every spawn tag maps" rule needs an exception for these two tags, with a test (A).
+- For A once prep/d-rt merges, in `npc_visual_tweak.tres` `heist_tag_characters.rolling_thunder`: civ_street, civ_bus and
+  civ_diner get the 6 `street_pedestrian*` (18 looks); add `staff_diner`, `staff_booth` and `driver_mixer` from p5_cast.
