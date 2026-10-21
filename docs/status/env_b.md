@@ -3,6 +3,15 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-21 02:00: D-145 DB cells on trunk r251 c04cb710 (headless auto_loud x1.0, solo + 3 bots)
+- Routine: 3/3 PASS, player downs 2 / 0 / 0 (median 0 <= 2), no nav give-ups (A's doorway fixes hold).
+  s1 926 s police 218 (bulwark 19); s2 1040 s police 135; s3 916 s police 103.
+- Tense (after A's tuning): 0/3. s1 custody 331 s (police 46); s2 custody 785 s, 3 player downs, police 154
+  (bulwark 27, stinger 7); s3 custody 360 s (police 50).
+- Finding (sent to A): in s1 and s3 the player went down ONCE and no bot revived inside the 30 s bleedout
+  (s1 down t=301 -> custody t=331, bot slot 1 tased just before; s3 down t=330 at the StairST landing -> t=360), with
+  bots up. Tense now fails on bot revive priority / reach, not on damage.
+
 ## 2026-10-21 00:30: r251 merged; windowed command lines for the PO's GPU box (lead messages still refused)
 - Merged trunk c04cb710 (r251) and imported. D-145 DB Routine + Tense x3 now running headless on trunk.
 - edadb8ed evidence (_review/r250_label_scrim): OF facade with the label scrim, LIVE "TIME LOCK 03:27" and
