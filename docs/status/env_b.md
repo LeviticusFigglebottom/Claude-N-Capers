@@ -3,7 +3,43 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 20:05; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 21:20; send_message to you is refused, so read this)
+-23. **New: D-151 done, and RT-B1 landed (B's files). RT stays hidden (heist_list `hidden: true`) until A says G1 plays
+     end to end.**
+     1. **D-151, Lethal / Cataclysm gate 70** (6f0b838d + 3b0867e2).
+        - Changed: `board_tweak.tres` and the script default `[0, 0, 0, 0, 70, 70]`.
+        - Tests: `test_board` pins 70. `test_d148_pace` gains `test_d151_lethal_gate_is_70_...`, which reaches L70 on
+          the realistic path in 110-160 clears (pace doc: ~135, the old pace to 80 was 131).
+        - `progression_pace.md` is updated.
+        - Green: `d148_pace` 4, `board` 22, `board_screen` 7, `difficulty_unlock` 3, `p2_heist_content` 15.
+     2. **RT-B1 on env/b-content**, from `rt_b1_values.md`:
+        - **Part 1 (b43f2061):**
+          - `base_xp_by_heist[rolling_thunder] = 2500` (tres and script default);
+          - **D-143.5 allow-lists** `heists = [&"rolling_thunder"]` on `signal_insider` and `intel_route`;
+          - **`asset.c4_drop`**: 2,000, 2 favors, max 1, `pp_drop_carpark` / `pp_drop_underpass`, drop
+            `item.c4` x4, RT-only;
+          - strings: 2 briefing steps, all 13 `ui.preplan.point.rolling_thunder.*` labels, the 5 surprise strings
+            and the C4 asset name / desc.
+
+          `test_preplan` now accepts an `item.*` drop if the carried item has a name and a count. **Spawning an
+          item drop is A's RT-A3 (D-141.3); nothing in A's code spawns `item.*` drops yet.**
+        - **Part 2 (3ead414e):** 6 achievements on existing condition keys, each with a scripted pass and near-miss
+          case: Clean Stop (signals), Heavy Haul (4 gold), Nothing Left on the Road (all loot), Iron Crew
+          (Hazardous+, no downs), Green Light (< 15 min), End of the Line (Cataclysm). Plus the `rolling_thunder`
+          category (its header stays hidden while staged). `rewards` are empty: **D, mask parts wanted**.
+        - **Part 3 (ecdc69f4):** 34 Mercer / Reyes mission lines (`vo.<speaker>.rolling_thunder_*`, the
+          rt_b1_values §8 drafts, voice pass welcome). The VO audit gains owner **"S" (staged heist)**: a hidden
+          heist's lines wait for its mission. Once RT is offered, the normal rule applies and every line must be
+          said. That is A's mission (`world/heists/rolling_thunder`).
+        - **Green:** `preplan` 38, `preplan_result` 7, `preplan_screen` 7, `preplan_variants` 2, `p5_catalogue` 7,
+          `strings` 22, `ui_strings` 3, `heist_text_audit` 5, `payout_calculator` 20, `heist_achievements` 13,
+          `achievements` 31, `achievements_b702` 11, `achievements_in_play` 8, `of_payday_e2e` 7, `vo_coverage` 11,
+          `voice_lines` 9, `contact_radio` 17, `heist_screens_text` 8, `heist_readiness` 9.
+     3. **Not B's files, handed over as the paper block** (`rt_b1_values.md` §1-3 and §6), sent to C and A:
+        - the HeistDef values, per-difficulty variant rows, rare-event keys, `briefing_objectives` and
+          `preplanning` map: `game/world/heists/**`, C's generator / A;
+        - the `staff_diner` / `staff_booth` tag rows: A's `npc_visual_tweak.tres`.
+     4. **Still to come after C's G1:** briefing intel, the blueprint and blueprint labels.
 -22. **Your GPU-20c payday questions: cleaner costs work as PD2's; one real bug fixed; the 3440 backdrop was a bug.**
      1. **Cleaner costs (pd2_fidelity S7.3) are implemented.**
         - `DifficultyDef.civilian_kill_penalty` is $2k / 3k / 5k / 8k / 12k / 16k (Routine ... Cataclysm), shown as
