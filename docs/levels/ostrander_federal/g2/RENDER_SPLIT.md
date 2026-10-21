@@ -22,8 +22,8 @@ writes under `game/world/heists/ostrander_federal/`.
       --heist=ostrander_federal --stage=g2 --warmup=60 \
       --out=$PWD/docs/levels/ostrander_federal/g2/final
 
-That renders `TopDownPlan` + the 33 `rc_*` cameras, `contact_sheet.jpg` and `shots.md`. Then the 34th shot,
-`rc_vault_hole`, in its burnt state, from a test-only variant scene (`--drops` also shows the heli drop and the
+That renders `TopDownPlan` + the 34 `rc_*` cameras, `contact_sheet.jpg` and `shots.md` (`rc_burn_close` only reads in the burnt scene). Then the burnt shots
+(`rc_vault_hole`, `rc_burn_close` and the views onto them) from a test-only variant scene (`--drops` also shows the heli drop and the
 second van):
 
     godot --headless --path game --script res://world/tools/capture/of_burn_variant.gd -- \
@@ -31,7 +31,7 @@ second van):
     godot --path game --resolution 1920x1080 res://world/tools/review_shots.tscn -- \
       --scene=user://of_burn_test.tscn --warmup=60 \
       --out=$PWD/docs/levels/ostrander_federal/g2/final/burnt \
-      --cameras=rc_vault_hole,rc_teller_workroom,rc_terrace,rc_ext_lane
+      --cameras=rc_vault_hole,rc_teller_workroom,rc_burn_close,rc_terrace,rc_ext_lane
 
 ## Job C: spot re-renders while fixing (any time, on request)
 

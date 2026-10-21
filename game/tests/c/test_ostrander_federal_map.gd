@@ -25,6 +25,10 @@ const THROW_GUARD_M: float = 1.1
 const THROW_GUARD_SOLID_M: float = 0.5
 const SWEEP_WINDOW_MIN_S: float = 2.0
 const LADDER_CAR_CLEAR_MIN_M: float = 1.0
+## prop_thermal_drill_device's three feet in the drill point's frame (the floor is 1 m below the point), and their
+## minimum clearance from the burn-through cut (x 23.4-24.6, z 13.5-15.7).
+const DRILL_FEET: Array[Vector3] = [Vector3(-0.43, -1.0, 0.6), Vector3(0.43, -1.0, 0.6), Vector3(0.0, -1.0, 1.38)]
+const DRILL_FOOT_CLEAR_M: float = 0.15
 ## Spawn tags the roster reads (coordinator, LEAD rulings): each on at least one spawn.
 const SPAWN_TAGS: Array[StringName] = [&"civ_manager_mgr_floor", &"civ_manager_mgr_gallery", &"civ_manager_mgr_vault",
 	&"guard_lobby", &"guard_vault", &"guard_rover_hall", &"guard_rover_gallery", &"guard_rover_basement",
@@ -311,6 +315,13 @@ func test_of_a6_hooks() -> void:
 	assert_eq(_map.get_node("Gameplay/Ladders/RopeLadder").get(&"objective_tag"), &"rope_ladder", "rope ladder tag")
 	var drill: DrillPoint = _map.get_node("Gameplay/Devices/LidDrill") as DrillPoint
 	assert_true(drill.requires_loot == &"loot.thermal_drill_part" and drill.requires_count == 2, "drill parts x2")
+	# GPU-16: the drill's tripod feet (prop_thermal_drill_device, local) stand on the TW carpet clear of the cut once
+	# the lid is gone, not inside it.
+	for foot: Vector3 in DRILL_FEET:
+		var w: Vector3 = drill.global_transform * foot
+		var inside: bool = w.x > 23.4 - DRILL_FOOT_CLEAR_M and w.x < 24.6 + DRILL_FOOT_CLEAR_M \
+			and w.z > 13.5 - DRILL_FOOT_CLEAR_M and w.z < 15.7 + DRILL_FOOT_CLEAR_M
+		assert_false(inside, "the drill foot at %s stands %.2f m+ clear of the burn-through cut" % [w, DRILL_FOOT_CLEAR_M])
 	assert_true((_map.get_node("Gameplay/Devices/TimeLockConsole").get(&"targets") as Array).is_empty(),
 		"the time-lock console opens no door")
 	for rack: Node in _map.find_children("VaultControlRack", "", true, false):

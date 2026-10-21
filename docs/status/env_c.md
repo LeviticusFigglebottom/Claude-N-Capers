@@ -6,6 +6,39 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, GPU-16 drill fix (219323c8): the LidDrill moved so its head sits over the lid 0.35 m inside the west edge
+  and the tripod points west. All three feet are now on the TW carpet, 0.25 m+ clear of the cut; at the hole centre,
+  two feet had come down inside it. The UsePoint is unchanged (eye to drill 1.95 m, inside the 2.0 m reach), so P's
+  burn route is unaffected. test_ostrander_federal_map asserts the feet clear the cut by 0.15 m+.
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; ownership and banned are clean. Not re-rendered.
+- 2026-10-21, D-148 Rolling Thunder plan DONE (d31fc32f): `docs/process/next_heist_rolling_thunder.md` (you accepted the
+  ownership flag).
+  - Audit (§3): 4 exists, 10 reusable, 13 partial, 5 missing, 10 wrong vs rulings. Examples of the last: payout $85k vs
+    D-141's $30k; 0.9 m route doors vs the 1.0 m rule; runtime nav carving vs heist_map v1.4 / D-121; no assault
+    events; no bullion-hatch access.
+  - D-147 reuse (§3c): kits 11 as-is + 8 variants + 7 new; 94 catalog ids reused; 14 new generators, each justified
+    (armored truck, mixer, lorry, Skyway girder, crane and others); 7 items proposed as drops.
+  - Questions (§8): QC-RT1..11. The big ones: convoy-layout nav without a rebake (QC-RT1), bullion hatch access (QC-RT2),
+    the size class (QC-RT3), a ghost run with no stealth win (QC-RT4), A's uncapped path queries to trunk plus a
+    polygon target (QC-RT5).
+  - Build waits for the OF done check, per the plan's §2.
+- 2026-10-21, D-148 Rolling Thunder paper start: acknowledged, in progress.
+  - Writing `docs/process/next_heist_rolling_thunder.md` on the OF plan's model: §3 code audit
+    (exists / reusable / partial / missing / wrong vs rulings), §7 traversal (with the OF lessons), D-147 reuse-first
+    tables per RT area, and the RT-C1/C2/A/B/D/P breakdown.
+  - Note: `docs/process/` is LEAD-owned. I'm writing it there because you named the path, so expect check_ownership to
+    flag that one file on merge.
+  - Paper only: no RT map building until the OF done check. The OF scorch close-camera render stays first.
+- 2026-10-21, r255 burnt scorch, round 3 (the last pass, as you asked; env/c-worlds 37ab4ce1): please render Job C
+  with `--cameras=rc_burn_close,rc_teller_workroom,rc_vault_hole` on the of_burn_variant scene.
+  - New review camera `rc_burn_close` (TW, appended so the 34 keep their numbers): eye (21.9, 2.1, 16.0) looking at
+    the hole centre (24.0, 0.0, 14.6). That's about 3.3 m away and 40 deg down, west of the hole, so the hoist shaft
+    (east) and the rope ladder (north) are out of frame. RENDER_SPLIT's burnt camera list includes it.
+  - TW floor decal: since black on navy has little contrast, its ash ring is paler and denser
+    (0.46 / 0.44 / 0.41 at alpha 0.78, was 0.30 at 0.60). The soffit decal is unchanged (it reads per GPU-14).
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
 - 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds f2dab548): please re-run Job C for the burnt
   set (rc_vault_hole, rc_teller_workroom, out g2/fix/burn_scorch).
   - Why GPU-11a was faint: the square gradient spent its dark band inside the hole, and near-black soot barely
