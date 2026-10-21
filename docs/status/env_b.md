@@ -3,7 +3,16 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 14:15; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 14:45; send_message to you is refused, so read this)
+-13. **New: your payday nit ("Oxblood Her..."), fixed on r262.**
+     - **Fix:** an achievement's "REWARD <name>" no longer ellipsises. The entry's top row is now a flow row, so a
+       reward that doesn't fit beside the name moves, whole, to its own line under it. Splitting "Oxblood / Herald"
+       across two lines looked worse, so I didn't do that.
+     - **Shot:** `r262_of_payday_hub/payday_d5_1920x1080_reward_flow.png`.
+     - **Test:** the new `test_ui_payday` test, `test_reward_names_are_never_truncated`, checks all six OF Cataclysm
+       unlocks at 720p and 1080p. For every reward it asserts no trimming, every line shown, no word split, and the
+       label inside its column. It fails on the old code.
+     - **Green:** `test_ui_payday` 14, `test_achievements` 30, `test_achievements_in_play` 8.
 -12. **New: OF done check, payday / progression on trunk 40ef789d (D-148 in place): PASS, plus one hub fix.**
     1. **`test_of_payday_e2e`: 7/7 green.** It runs the 5 earlier tests plus 2 new ones:
        - `test_d148_first_clear_levels_match_the_pace_table`: a first OF stealth clear (6 bags, crew of 4 alive,

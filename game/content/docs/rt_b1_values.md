@@ -177,7 +177,25 @@ About 36 lines. Reused: the generic `radio.objective_new`, the generic last-page
 and the generic assault and escape-arrived lines. Event lines (`marshal_early`, `convoy_early`, `rush_hour`) reuse
 `rt_marshal`, `rt_eta_*` and the generic civilian lines.
 
-## 9. Open for the LEAD
+## 9. Achievements (6, OF shape; `achievements/rt_*.tres`, category `rolling_thunder`; rewards from D's catalog)
+
+All six use **existing** condition keys (`achievement_def.gd` / `heist_conditions.gd`), so no A or B code is needed.
+This replaces rt_content_plan.md §5: "sky high" needed a variant-match condition that does not exist, and "no
+escort" was trivial because the escort objective is required. ◇ = B's proposal.
+
+| id | condition |
+|---|---|
+| `achievement.rt_clean_stop` | `{"event": &"heist_completed", "heist": &"rolling_thunder", "objectives_completed": [&"signals"], "count": 1}` |
+| `achievement.rt_heavy_haul` | `{..., "loot_min": {&"loot.gold": 4}, "count": 1}` (a bullion truck, `trucks_3` + `t3_bullion`) |
+| `achievement.rt_full_convoy` | `{..., "all_loot_secured": true, "count": 1}` (every bag the convoy carried) |
+| `achievement.rt_iron_crew` | `{..., "difficulty_min": 2, "max_downs": 0, "count": 1}` (Hazardous+, nobody down) |
+| `achievement.rt_quick` | `{..., "max_time_s": 900.0, "count": 1}` ◇ (convoy ETA 150-210 s, plus about 10 min for the stop, the trucks and the escape) |
+| `achievement.rt_cataclysm` | `{..., "difficulty_min": 5, "count": 1}` |
+
+Strings are `achievement.rt_*.name` / `.desc` (12). Tests: `test_heist_achievements` gets the rows, and the RT payday e2e
+copies `test_of_payday_e2e`, including the D-148 level pin and the co-op parity test.
+
+## 10. Open for the LEAD
 
 1. Approve the D-143.5 allow-list rows for `signal_insider` / `intel_route` now (two lines in existing B files), or
    with the rest after the OF gate.
