@@ -4,6 +4,31 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-18) Your r264 re-runs: the cuff fix is confirmed; the revive-clear change is not a win-rate lever (15:25 UTC)
+Headless on env/a-core 2dbfbb29 (= r264's A side).
+- **Cataclysm 2024 (CREW_DMG=0): ends cleanly.**
+  - Tase at t=1015 -> DOWNED 1025 -> CUFFED 1029 -> **CUSTODY 1055** (the bleed-out runs while cuffed), then "FAIL
+    player in custody at 1056 s".
+  - One cuff, no CUFFED <-> DOWNED cycling (it was 15 cycles over 15 min). Still a loss: the accepted Cataclysm
+    harness limit.
+- **DB Tense ×3 + GH Tense 4501 with the revive clear (2 s on an enemy within 3 m before kneeling):**
+
+| run | result | player downs | end |
+|---|---|---|---|
+| DB s1 | FAIL | 3 | custody at t=584 (900 damage taken in 554 s loud; tac_light 344) |
+| DB s2 | FAIL | 3 | custody at t=719 |
+| DB s3 | **PASS** | 2 | heist_ended at 842 s |
+| GH 4501 | **PASS** | 0 | heist_ended at 266 s |
+
+- **Read:**
+  - The clear behaves as built, and the bots revive fast. In s2 the three downs at t=651 / 666 / 677 were each
+    revived in 7-13 s.
+  - s2 is lost to down density, not revive behaviour: four downs in 70 s near (43, 0, -25), and a Longshot did
+    270 of the 941 damage (6 hits from 30 m and beyond).
+  - B's r257 cell (2/3) and this one (1/3) are within 3-seed noise. The tree shifts the RNG streams, so seed-for-seed
+    comparisons across trees don't hold.
+  - I'd keep the clear (it removes the wipe pattern) and treat DB Tense as accepted at about 2/3, as you ruled.
+  - If you want a firmer number: B's ×3 on r264 plus mine is n=6.
 ### (-17) Your cuff-loop bug (Cataclysm 2024): fixed, for the next round (15:00 UTC)
 - **(1) Why it toggled:** L2.12 as built.
   - A police-cuffed downed heister had a 60 s self-free (CustodyTweak.police_cuff_self_free_s ◇) back to DOWNED,
