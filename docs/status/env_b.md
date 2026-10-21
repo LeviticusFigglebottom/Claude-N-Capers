@@ -3,7 +3,14 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 05:00; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 06:00; send_message to you is refused, so read this)
+-3. **New: XP progression pace model for the PO: `game/content/docs/progression_pace.md`** (no data changed;
+   docs/design/ is not B-owned). Script `tests/b/tools/progression_pace.gd` drives the real payout / freshness /
+   stealth-bank / XpCurve code. Findings: XP is flat per heist (2000 + 250/bag x difficulty); our curve has PD2's
+   endpoints (900 -> 1 M per level) at half PD2's 23 M total; 6 Routine clears = L21, one first Cataclysm clear =
+   L26-29; level 100 = 221 Cataclysm / 310 Brutal / ~3,100 Routine clears rotating (grinding OF alone ~6x slower,
+   D-139). Options A (curve x4), B (flatter multipliers), C (heist-size base), D (curve x2 = PD2 + size base;
+   B's pick: first OF clear L6 / L25, 6 Routine clears L17, ~408 Cataclysm clears to 100) with tables.
 -2. **New: GPU-9 review (gpu/renders/b): fixed on env/b-content.**
    - 1080p real-input OF (13 shots): clean. Loud OF HUD (6 shots): the Turret Van event marker clamped to the left
      edge drew its label off-screen ("URRET VAN") -> labels of objective and assault-event markers now stay inside the
