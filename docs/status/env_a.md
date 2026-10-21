@@ -3,6 +3,24 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-21 00:05 UTC: GPU-box command lines for the LEAD (A cannot send_message the lead: "trusted device")
+Run from the repo root in cmd.exe with `G=godot\Godot_v4.7.2-stable_win64_console.exe`, on trunk >= r251 plus env/a-core
+06185eee. Make each out dir first: `mkdir gpu\renders\a\<name>`. The verdict is the `RESULT` line in the log.
+1. **OF stealth, real menus**, Routine, seed 18. It saves PNG steps. The flow uses the X4 stealth shortcuts, so it proves
+   the menus and the objective chain, not stealth.
+   `%G% --path game --resolution 1280x720 res://tests/a/e2e/po5_runner.tscn -- --po5-flow=of_stealth --po5-out=%CD%\gpu\renders\a\of_stealth_18 --po5-budget=1800 --po5-heist="Ostrander Federal" --po5-difficulty=Routine --po5-seed=18 > gpu\renders\a\of_stealth_18.log 2>&1`
+2. **OF loud, real menus**, Routine, seed 5, crew damage x0.25 (D-133 gate):
+   `%G% --path game --resolution 1280x720 res://tests/a/e2e/po5_runner.tscn -- --po5-flow=of_loud --po5-out=%CD%\gpu\renders\a\of_loud_5 --po5-budget=1800 --po5-heist="Ostrander Federal" --po5-difficulty=Routine --po5-seed=5 --po5-crew-dmg=0.25 > gpu\renders\a\of_loud_5.log 2>&1`
+3. **OF real bots, Hazardous, seed 5**: a feel clip of drill parts -> burn-through -> rope ladder (headless reached the
+   ladder at about 600 s; x1.0, so expect a loss). The .avi is large MJPEG: commit the log + PNGs unless the clip is wanted.
+   `%G% --path game --resolution 1280x720 --fixed-fps 30 --write-movie %CD%\gpu\renders\a\of_haz_5\clip.avi res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-out=%CD%\gpu\renders\a\of_haz_5 --po5-budget=900 --po5-heist="Ostrander Federal" --po5-difficulty=Hazardous --po5-seed=5 > gpu\renders\a\of_haz_5.log 2>&1`
+### Open for the LEAD
+- OF real-bot hard runs (headless, x1.0): Haz 0/3, Cata 0/2.
+  - On Cata the pilot was downed at t~19 and in custody ~1 s later.
+  - Cause: the pilot fights from the floor on Haz+, so L2.5 lets ~12 police drain the 100 pool.
+  - Offer: the pilot holds fire with 4+ enemies near (cuffed -> bot uncuffs); harness only.
+- Hit grace on Haz+: GH 4501, grace on / off x Haz / Brutal / Lethal / Cata, running serially; results to follow here.
+
 ## 2026-10-20 23:50 UTC: OF co-op parity, hub loops, DB / OF pilot fixes, D-145 Tense vs PD2 Hard (env/a-core 441b6870)
 ### Done (pushed)
 - OF hub loops for rover_hall (BCMid) and rover_gallery (UCMid, loop (c) SA up -> XC -> PR -> XL -> SB down) (b7052ebd).
