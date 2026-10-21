@@ -4,6 +4,18 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **OF loud Cataclysm animation check:** A's gpu/renders/a/of_hitch* stills are first-person HUD frames with almost no
+  NPC on screen, so they can't show NPC animation; the logs have no animation warnings. Instead I ran my headless
+  `_tools/loud_anim_coverage.tscn` (P's AnimCoverage) on OF, Cataclysm, seed 1037, 3 bots, 240 s, 28-35 NPCs:
+  **frozen 0, clip mismatch 0, no clip 0, static 0**; 1 "slide" = the Longshot's heli_door_idle while its helicopter
+  moves (riding: correct). Nothing to fix in D's files.
+  **For A (real bug, 21,363 errors in 240 s):** `anim_layers.gd:75` `left_hand_ik.set_target(marker if want else
+  left_hand_ik.marker, ...)` passes back a FREED marker once the NPC's WeaponVisual is replaced or freed (dropped weapon,
+  swap): "Invalid type in function 'set_target' ... (previously freed)" every frame for that NPC. Fix: use
+  `left_hand_ik.marker if is_instance_valid(left_hand_ik.marker) else null` as the fallback.
+- **RT prep (prep/d-rt, not env/d-art):** worktree branch with wip/d-rt-civilians + wip/d-rt-clips merged cleanly on
+  env/d-art 674681736; rebuilding the 9 looks on the current pipeline, then import / assemble / p5_cast v15 (6 pedestrians
+  into the street pools = 18 looks; staff_diner, staff_booth) / tests. Push and report follow.
 - **r254 merged** (9d2e85d8) into env/d-art 396312586: import clean; d test_character_warm 2/2, test_of_cast_clips 3/3.
   Queue now empty on my side: waiting on GPU-12/13 (hitch log, shader-cache test) and A's CharacterWarm call. Open to
   the next item (OF/PO polish, or the next heist's cast once the PO picks).
