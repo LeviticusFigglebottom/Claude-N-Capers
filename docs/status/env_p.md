@@ -22,7 +22,11 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   ECM and lockpick; a busy LD at the second check keeps the ECM for the next window. haz_j: that second check (~t=80) came 1-3 s before he turned
   (~t 81-83). Now there's a 5 s watch after the mask, sampled every 0.5 s, before the ECM (the 20-40 s smoke window leaves ~10 s of slack). haz_k: the watch caught
   rover_hall heading for LD (t=82) and kept the ECM, but the pilot then waited for the next window MASKED behind the dumpsters, and rover_dock walking
-  back from his smoke saw it at 14 m (t=118). The mask can't come off, so the 5 s watch now runs before the mask (unmasked in the public lane). haz_l is running.
+  back from his smoke saw it at 14 m (t=118). The mask can't come off, so the 5 s watch now runs before the mask (unmasked in the public lane).
+  **haz_l: the harness is right, but no dock window on Hazardous seed 1002 (sent to C).** rover_dock's smoke windows: t≈78-118, 162-195, 285-322,
+  347-385, 429+ (every 85-120 s, 33-40 s long). rover_hall's loop (b) LD check falls inside 4 of the 5 (t=82 heading in, in LD ~108; 285 in BC;
+  348 / 430 heading in). Window 2 (t=168, him at 34 m east) may have been a false skip. After 5 windows: FAIL _g2_dock (no alarm). The dock
+  step has the same two-patrol clash as BB. C asked for window numbers: these are they.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
   pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35
