@@ -6,6 +6,31 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- **2026-10-21 r257, RT questions for your ruling (QC-RT1..11; they're in §8 of next_heist_rolling_thunder.md,
+  §9 is open risks).** My recommendation is in brackets after each.
+  1. **QC-RT1 convoy nav:** the convoy layouts must block nav without a runtime rebake (heist_map v1.4 / D-121).
+     Pre-baked nav regions per layout, swapped at the stop (§3b.1)? Same for the mixer and the Tannery gate. A also
+     needs a TacticalPoint `enabled` flag. [Pre-baked regions per layout.]
+  2. **QC-RT2 bullion hatch:** crew can't mantle onto a ~3 m truck roof. A truck-rear ladder to the roof, or a
+     ground-level thermite point on the rear doors (§3b.3)? [The rear-door thermite point: no new traversal.]
+  3. **QC-RT3 size:** M (the design doc, 15-25 min) or L (`next_heist.md` §1)? It sets the e2e time budgets and the
+     D-120 checks. [M.]
+  4. **QC-RT4 P5 gate:** a "ghost run" can't apply to a heist with no stealth win. Accept a clean-setup run instead
+     (signals rigged, marshal handled, no early alarm; §3b.6)? [Yes.]
+  5. **QC-RT5 path cap:** A's uncapped `NavPath` (env/a-core ffc264d4) must reach trunk before RT G1. Is C's
+     ≤ 3,500-polygon target then an early warning only, or a hard G1 rule? [An early warning.]
+  6. **QC-RT6 D-147 substitutions (§3b.5):** OK to change the design doc to reuse/drop the trees, dumper, bus, jukebox,
+     cycle racks, bunting and wheel stops? [Yes.]
+  7. **QC-RT7 civilians:** reuse `civilians_leave` plus sidewalk call points (§3b.4) instead of a new QC-88 flee-exit
+     system? [Reuse.]
+  8. **QC-RT8 A5-02 scope:** convoy and mixer drive in, escape van pops in (§3b.2)? Or keep the G1 pre-placed convoy
+     permanently? [Drive-in, ≤ 8 movers then static.]
+  9. **QC-RT9 PD2 fidelity:** the early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window have no PD2 source
+     in the repo. Confirm they stay as original choices? [Keep, labelled original.]
+  10. **QC-RT10 paper scope:** may C write the plan scripts (`tools/levelcheck/plans/rolling_thunder_*.py`, `--check`
+      only: they verify the G0 arithmetic, no map) before the OF done check? [Yes, paper only.]
+  11. **QC-RT11:** D-147 and D-148 aren't in `decisions.md` yet. The plan file sits in your `docs/process/` (you
+      accepted the ownership flag). [Write both decisions.]
 - 2026-10-21, P's GH Tense 4502 curb STUCK at (21.5, −0.4, 0.3): the map is clean. P owns the fix.
   - Geometry: the kerb is 0.15 m (PellRoadN top −0.150, PellSidewalkW_N top 0.000) vs the 0.35 m step, with nothing
     under the road.
