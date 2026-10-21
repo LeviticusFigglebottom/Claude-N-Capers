@@ -61,3 +61,26 @@ lineups. Estimate: about 2 D days (the patron crowd and its drape checks dominat
 ## Recommendation from the cast side
 Rolling Thunder starts faster: most of its cast exists or is parked half-built, and it needs 2 clips. Afterhours needs
 about 13 new looks and 1 clip. Either is fine for D; the PO's pick decides.
+
+## RT cast check vs the design roster and reuse-first (D-147, D-148; prep/d-rt, 2026-10-21)
+C's `next_heist_rolling_thunder.md` is not on any branch yet; checked against `rolling_thunder.md` "Civilian, guard
+and convoy roster" (trunk e9c8744f). Every roster row has a cast; only one gap, filled by reuse:
+
+| Roster row | Cast (prep/d-rt) | New? |
+|---|---|---|
+| Pedestrian, bus queue, diner customer (`civ_street` / `civ_bus` / `civ_diner`) | 12 OF day looks + 6 street pedestrians (18) | 6 looks built from the outfit kit (library garments + palette, no new meshes) |
+| Diner staff (`staff_diner`) | `diner_waitress`, `diner_cook` | 2 kit looks |
+| Car-park attendant (`staff_booth`) | `carpark_attendant` | 1 kit look |
+| Site guard (`guard_site_*`) | Halden `security_officer` a-j | reused |
+| Beat cop (`cop_plaza` / `cop_diner`) | `patrol_officer` | reused |
+| Route marshal (`vl_marshal`) | `armored_car_marshal` (QC-86 hi-vis variant of the crew uniform) | reused (the doc row still says `armored_car_crew_b`) |
+| Vaultline crew (`convoy_t1-3`) | `armored_car_crew` a-f | reused |
+| Escorts (`convoy_lead` / `convoy_rear`), police, Lethal `armored_escort` | director EnemyDefs: A's resolver picks the look per difficulty (D-145.3 duty looks, frd/sentinel/zero reskins, `wrecker*`) | reused, no tag_map row needed |
+| **Reyes in the mixer cab** (fiction, crash stop) | **`contact_hollis`** (Hollis "Hammer" Reyes) on pool `ram_driver` / tag `driver_mixer` | reused; **added now** (the tag name is a proposal to C) |
+
+Clips: walk_text, browse, sit, sit_eat, counter_wipe, cook_stove, smoke, look, radio_call, sit_vehicle (seated crew /
+escorts), sit_vehicle_drive (drivers, Reyes), vehicle_exit_l / _r (dismount, QC-83/86 callers are A's). Nothing missing.
+
+Twins: street 12 + bus 4 + diner 5 = 21 live at most on 18 looks, so at most 3 repeats, and only at the maximum roll;
+the diner is a separate interior. D-130 allows it (no twins only while live <= looks). If the PO wants zero, 3 palette
+swaps of existing pedestrians (finish only, D-147) cover it; not built.

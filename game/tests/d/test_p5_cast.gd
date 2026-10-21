@@ -162,6 +162,7 @@ const POOLS: Array = [
 	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus", "civ_diner"], 18, 6],
 	["rolling_thunder", ["diner_staff", "staff_diner"], 2, 1],
 	["rolling_thunder", ["carpark_attendant", "staff_booth"], 1, 0],
+	["rolling_thunder", ["ram_driver", "driver_mixer"], 1, 0],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"
