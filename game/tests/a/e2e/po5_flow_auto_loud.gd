@@ -6,6 +6,9 @@
 extends RefCounted
 
 ## A marker's prefab (its UsePoint is where to stand) lies within this of the marker.
+## _doctor_bag: no enemy within this (m) to stop and heal; walk at most this far to a placed bag (m).
+const DOCTOR_SAFE_M: float = 8.0
+const DOCTOR_WALK_M: float = 40.0
 const MARKER_PREFAB_M: float = 1.5
 const LOOP_LIMIT_S: float = 1500.0
 ## Downed teammates within this flat distance get revived first (m).
@@ -52,6 +55,8 @@ const STUCK_GIVE_UP: int = 6
 var f: Node = null
 var p: Po5Pilot = null
 var rt: HeistRuntime = null
+## --po5-doctor-bag: the pilot carries and uses a doctor bag (see _doctor_bag).
+var doctor_bag: bool = "--po5-doctor-bag" in OS.get_cmdline_user_args()
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
 var _bot_note_t: float = -INF
@@ -86,6 +91,11 @@ func play(flow: Node) -> int:
 		f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
 	EventBus.loot_secured.connect(func(_b: int, l: StringName, v: int) -> void:
 		f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
+	if doctor_bag:
+		var ds: DeployableSystem = rt.service(DeployableSystem.SERVICE) as DeployableSystem
+		if ds != null:
+			ds.give(p.crew.slot, &"deployable.doctor_bag")
+			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
 	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
 	p.stuck_give_up = STUCK_GIVE_UP
@@ -123,7 +133,7 @@ func step() -> void:
 		_note_once(&"_none", "no objective markers (HUD shows %s)" % [_objective_ids()])
 		await p.hold_position(2.0)
 		return
-	if await _revive_teammate():
+	if await _revive_teammate() or await _doctor_bag():
 		return
 	var m: Dictionary = _pick(markers)
 	var id: StringName = StringName(m["id"])
@@ -768,6 +778,40 @@ func _note_bot_revives() -> void:
 			tgt.slot if tgt != null else -1, c.global_position.distance_to(p.crew.global_position),
 			"-" if comp == null else "%s %.1f/%.1f" % [comp.kind, float(sess["progress"]), float(sess["duration"])]])
 	f.note("bots while down: " + ", ".join(parts))
+
+
+## --po5-doctor-bag (LEAD D-145, DB Tense: 3 downs in a long heist): like a PD2 player on a long loud job, the pilot carries
+## a doctor bag (L2.11: full heal + downs reset, 2 uses). With 2+ downs used and no enemy within DOCTOR_SAFE_M it walks to
+## a placed bag with uses left (DOCTOR_WALK_M), else holds `deploy` to set its own down, then uses it. True when it acted.
+func _doctor_bag() -> bool:
+	if not doctor_bag or p.crew.health == null or p.crew.health.downs_used < 2 or p.nearest_enemy(DOCTOR_SAFE_M) != null:
+		return false
+	var ds: DeployableSystem = rt.service(DeployableSystem.SERVICE) as DeployableSystem
+	if ds == null:
+		return false
+	var best: DeployablePrefab = null
+	for n: Node in ds.placed(&"doctor_bag"):
+		var bag: DeployablePrefab = n as DeployablePrefab
+		if bag != null and bag.uses_left > 0 and bag.interactable != null and bag.interactable.enabled \
+				and bag.global_position.distance_to(p.crew.global_position) <= DOCTOR_WALK_M:
+			if best == null or bag.global_position.distance_to(p.crew.global_position) \
+					< best.global_position.distance_to(p.crew.global_position):
+				best = bag
+	if best == null and ds.deployable_count(p.crew.slot) > 0:
+		var before: int = ds.deployable_count(p.crew.slot)
+		f.note("doctor bag: %d downs used, deploying one" % p.crew.health.downs_used)
+		p.inp.press(&"deploy")
+		await f.wait_until(func() -> bool: return ds.deployable_count(p.crew.slot) < before, 6.0)
+		p.inp.release(&"deploy")
+		await p.inp.ticks(5)
+		return true  # the next step walks to it and uses it
+	if best == null:
+		return false
+	f.note("doctor bag: %d downs used, using the bag at %s (%d uses left)" % [p.crew.health.downs_used,
+		Po5Pilot._v(best.global_position), best.uses_left])
+	var downs: int = p.crew.health.downs_used
+	await p.use(best.interactable, 15.0, func() -> bool: return p.crew.health.downs_used < downs)
+	return true
 
 
 ## While the pilot is down: every bot interaction start / cancel, with the bot's speed and mode (B's DB Tense: revive
