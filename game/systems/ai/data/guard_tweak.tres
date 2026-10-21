@@ -12,6 +12,14 @@ route_attempts = 6
 route_tag = &"guard"
 nearest_graph_max_m = 25.0
 hub_loops = {
+&"guard_vault": {
+"hub": &"VCPost",
+"loops": [[&"VCLaserW"], [&"RCNorth", &"RCSouth", &"RCEast"], [&"SDDesk", &"CP"]]
+},
+&"guard_lobby": {
+"hub": &"HallLobby",
+"loops": [[&"HallVestibule", &"HallWindowsW", &"HallPW"], [&"HallGate", &"TWGate", &"PC"], [&"LO", &"TWWest", &"BCWest", &"SRCoffee", &"BCMid", &"PC"]]
+},
 &"guard_rover_basement": {
 "hub": &"BBMid",
 "loops": [[&"RCEast"], [&"SDDesk", &"SS"], [&"CP", &"PL"]]
