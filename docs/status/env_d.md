@@ -4,6 +4,16 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT cast lineups for the PO: prep/d-rt de0212248, `game/assets/characters/_review/rt_lineup/`.** Six lit
+  1920x1080 sheets, each look front + 3/4, idle, captioned: convoy, escorts (Routine/Tense duty → Hazardous → Brutal →
+  Lethal (+ rare Wrecker) → Cataclysm), street_reused (12 OF looks), street_rt (pedestrians a-i + the 3 staff), site
+  (Halden a-j + beat cop), specials (Reyes). The tool is `world/characters/_tools/render_rt_lineup.gd`.
+  - Rendered on llvmpipe with the Compatibility renderer. Skin tone 1 reads near-white there (crew_f, pedestrian_f,
+    some Halden faces). That is not new, but please re-run it on the GPU box in Forward+ before the PO judges skin; the
+    command is in `next_heist_cast_notes.md`.
+  - The lineups showed g's camel mac reading close to civilian_customer_a's camel coat, so g is teal now. The cast and
+    cower-offset tests pass.
+  - Next: the Afterhours cast list against D-147, as a paper doc.
 - **IDLE, can take X** (r259). The palette swaps are already done: prep/d-rt daf913b8f has street_pedestrian g/h/i
   (finish-only swaps of a/b/f, 21 looks, zero twins at the top roll; per-look tests all pass; see the D-149 item 1 entry
   below). prep/d-rt is held for the OF done check. Open for any task: RT (lineup renders, more clips) or Afterhours prep
