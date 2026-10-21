@@ -106,6 +106,25 @@ func test_d142_npc_holds_fire_at_armoured_glass() -> void:
 	assert_false(w.broken, "intact")
 
 
+## D's GH Tense coverage (the second guard): crew seen through a pane bullets cannot pass (a glazed door leaf: see-through,
+## not breakable). The guard does not hold its standoff aiming for good; with no shot line for
+## GuardTweak.combat_no_shot_close_s it moves for one.
+func test_d142_guard_without_a_shot_line_moves_for_one() -> void:
+	var g: NpcBase = _rt.npcs(&"guard")[0] as NpcBase
+	var gpos: Vector3 = g.global_position
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, gpos + Vector3(0, 0, 8.0)))
+	var pane: StaticBody3D = ATestMaps.add_wall(_rt.map, gpos + Vector3(0, 1.5, 4.0), Vector3(3.0, 3.0, 0.05))
+	pane.add_to_group(StealthDirector.GROUP_SEE_THROUGH)  # seen through, not breakable: stops bullets
+	await wait_physics_frames(3)
+	_rt.stealth.raise_alarm(&"test", 0)
+	var brain: Node = g.get_node(^"Brain")
+	await wait_until(func() -> bool: return g.alert_state == Enums.AlertState.COMBAT and bool(brain.get(&"wants_to_fire")), 6.0)
+	var at_aim: Vector3 = g.global_position
+	var moved: bool = await wait_until(func() -> bool: return g.global_position.distance_to(at_aim) > 1.0,
+		(brain.get(&"tweak") as GuardTweak).combat_no_shot_close_s + 4.0)
+	assert_true(moved, "the guard left its standoff to get a shot (moved %.2f m)" % g.global_position.distance_to(at_aim))
+
+
 ## Crew at the origin, a Window between it and z = -6 (sill raised so the eye-to-chest line crosses the glass).
 func _glass_between(breakable: bool) -> WindowPrefab:
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
