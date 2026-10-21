@@ -17,6 +17,14 @@ Newest entry first, keep the last 10.
   - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
     D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **D's RT cast cross-check (env/d-art 9252b9ef):** being folded in now, through the builder on prep/c-rt, then
+    merged here.
+    - Waitress (`counter_wipe`) and cook re-placed.
+    - The diner customers seated (`sit_eat`), plus a booth for the 5th; bus queue seated; the attendant at a real desk
+      on `prop_chair_office` (`desk_work`).
+    - `cower_stand` marks (diner front wall, counter x 23.39, behind the shelters).
+    - `staff_waitress` / `staff_cook` put first in those spawns' tags.
+    - Convoy seat/door/cab numbers recorded in the plan for A5-02 (nothing built).
   - **r258 rulings applied:**
     - (1) **floating:** the 5 tilted east-arm convoy placeholders carry meta `lc_ignore` with an `lc_ignore_reason`
       line, set in RT's generator only. They have no collision, so D-113's rule is kept. A floating-only
