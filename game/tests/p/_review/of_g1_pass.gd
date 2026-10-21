@@ -2315,17 +2315,26 @@ func _g4_code() -> bool:
 	var pc: Node3D = _x("code_pc")
 	if pc == null:
 		return false
-	for _k: int in 4:
-		if _objective(&"code_pc") == 2:
+	var running: Callable = func() -> bool:
+		var st: int = int(pc.get(&"state"))
+		return st == HackTerminal.State.RUNNING or st == HackTerminal.State.DONE
+	for _k: int in 6:
+		if _objective(&"code_pc") == 2 or int(pc.get(&"state")) == HackTerminal.State.DONE:
 			break
-		var ic: InteractableComponent = _comp(pc)
-		if ic != null and ic.enabled:
-			await pilot.use(ic, 30.0, func() -> bool: return int(pc.get(&"state")) != 0, true)
-		# Doc §4: wait in E3 while rover_gallery passes. EA -> E3 crosses the SA core: peek first (r251c: seen at 3.5 m
-		# by rover_gallery coming up SA as the pilot left EA).
-		await _wait_core_clear(OF_FFL[3], OF_FFL[2], true)
-		await _go(_of(GHOST_E3_WAIT), 0.5, 40.0)
-		await wait_until(func() -> bool: return int(pc.get(&"state")) != HackTerminal.State.RUNNING, 60.0)
+		# Start / restart only when the hack needs it (r251f: `state != IDLE` passed on INTERRUPTED, so three
+		# "restarts" returned in 0 s without pressing anything).
+		if not running.call():
+			var ic: InteractableComponent = _comp(pc)
+			if ic != null and ic.enabled:
+				await pilot.use(ic, 30.0, running, true)
+			# Doc §4: wait in E3 while rover_gallery passes. EA -> E3 crosses the SA core: peek first (r251c: seen
+			# at 3.5 m by rover_gallery coming up SA as the pilot left EA).
+			await _wait_core_clear(OF_FFL[3], OF_FFL[2], true)
+			if not running.call() and ic != null and ic.enabled:  # interrupted during the peek: still at the PC
+				await pilot.use(ic, 30.0, running, true)
+			await _go(_of(GHOST_E3_WAIT), 0.5, 40.0)
+		await wait_until(func() -> bool: return int(pc.get(&"state")) != HackTerminal.State.RUNNING, 90.0)
+		note("GHOST code hack state %d at t=%.0f" % [int(pc.get(&"state")), rt.heist_time_s])
 	return _objective(&"code_pc") == 2 or int(pc.get(&"state")) == HackTerminal.State.DONE
 
 
