@@ -1781,6 +1781,19 @@ func _gate_threat(gate: Door) -> String:
 	return ""
 
 
+## A living guard on the basement floor within 8 m of the pilot, or within 20 m with a line of sight to it ("" if none).
+func _near_threat() -> String:
+	var me: Vector3 = pilot.crew.global_position
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
+			continue
+		var d_me: float = pilot.flat_dist(g.global_position, me)
+		if d_me < 8.0 or (d_me < 20.0 and _sees_core(g, me)):
+			return "%s %s (%.0f m)" % [g.name, Po5Pilot._v(g.global_position), d_me]
+	return ""
+
+
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
 ## the core walls cannot see the flights (r248: Npc_guard10's ground-floor post 7 m off held the wait for 180 s).
 func _sees_core(g: NpcBase, core: Vector3) -> bool:
@@ -2845,15 +2858,30 @@ func _g5_vault() -> bool:
 		return false
 	if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false, OF_LASER_LEAD_M):
 		return false
-	if not await _go(_of(GHOST_RC_WAIT), 0.5, 90.0):
-		return false
+	# Wait out the time lock in the LK hide, not RC (haz_t: RC is the vault guard's loop (b); walking there after the
+	# code, the pilot met him coming back through RC's door, t=1008). Back the way it came, peeking before each leg.
+	var hide_tl: Vector3 = _lk_hide()
+	var back: Array[Vector3] = [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0)),
+		pilot.stand_point(_of(Vector3(13.5, OF_FFL[0], 8.2))), pilot.stand_point(_of(Vector3(8.0, OF_FFL[0], 8.2))), hide_tl]
+	for leg: Vector3 in back:
+		var waited: float = 0.0
+		var who: String = _near_threat()
+		while who != "" and waited < 30.0:
+			if waited == 0.0:
+				note("GHOST back to LK: %s, holding" % who)
+			await wait_s(0.5)
+			waited += 0.5
+			who = _near_threat()
+		await _go(leg, 0.5, 30.0)
+	pilot.inp.press(&"crouch")
 	var vault: Door = _x("vault_door") as Door
 	Engine.time_scale = TIME_LOCK_SCALE
-	note("SHORTCUT time lock wait in RC at x%.0f" % TIME_LOCK_SCALE)
+	note("SHORTCUT time lock wait in LK at x%.0f" % TIME_LOCK_SCALE)
 	var open_or_alarm: Callable = func() -> bool:
 		return (vault != null and vault.is_open) or _objective(&"time_lock_wait") == 2 or _alarm != &""
 	await wait_until(open_or_alarm, 400.0)
 	Engine.time_scale = 1.0
+	pilot.inp.release(&"crouch")
 	return vault == null or vault.is_open or _objective(&"time_lock_wait") == 2
 
 

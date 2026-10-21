@@ -14,7 +14,11 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   at 1.7 m, he filled 1.0 at once and ran (a panicking civilian only goes down on a 50% roll), and guard5 cuffed the pilot in BB (t=363).
   Now the pilot shouts from the hide: the all-round shout reaches a civilian within 6 m by a navmesh path, without LOS. It ties him once
   he's down (blind), after rover_basement is away. lkprobe also found every point on his walk is seen by at least one BB eye at lying
-  height (the WC stop by 1, west of LockerDoor). haz_t is running.
+  height (the WC stop by 1, west of LockerDoor). **haz_t: steps 1-4 PASS** (keycard t=367: shouted DOWN from the hide on the first tap,
+  tied unseen; code t=529). Step 5: the BB → gate wait ran 300 s (t=642-946) with no window (vault guard on VC or rover_basement in BB), then
+  cleared on attempt 2 at t=981. Gate, lasers both ways, code entered t=996.5. The pilot then walked to the RC time-lock wait and met the vault
+  guard coming back from his loop (b) through RC (radio t=1008). Now it waits out the time lock in the LK hide, crouched, and peeks before
+  each leg back. haz_u is running.
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
