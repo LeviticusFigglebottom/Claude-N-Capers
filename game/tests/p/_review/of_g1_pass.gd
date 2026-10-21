@@ -2520,11 +2520,11 @@ func _g2_dock() -> bool:
 			var moving: bool = ld_last.has(id) and g.global_position.distance_to(ld_last[id]) > 0.15
 			var was: Vector3 = ld_last.get(id, g.global_position)
 			ld_last[id] = g.global_position
-			# rover_hall heading for DockCorridorDoor from anywhere within 25 m is on his loop (b) LD check (haz_g: in
+			# rover_hall heading for DockCorridorDoor from anywhere within 35 m is on his loop (b) LD check (haz_g: in
 			# the hall at the cue, through LD 30 s later; the smoke window had ended by the time he left).
 			if cdoor_n != null and moving and _has_tag(g, "guard_rover_hall"):
 				var dn: float = pilot.flat_dist(g.global_position, cdoor_n.global_position)
-				if dn < 25.0 and pilot.flat_dist(was, cdoor_n.global_position) - dn > 0.05:
+				if dn < 35.0 and pilot.flat_dist(was, cdoor_n.global_position) - dn > 0.05:  # haz_h: 24 m 5 s after the cue
 					return "%s %s heading for LD" % [g.name, Po5Pilot._v(g.global_position)]
 			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
 			var dc: float = pilot.flat_dist(g.global_position, cdoor_n.global_position) if cdoor_n != null else 999.0
