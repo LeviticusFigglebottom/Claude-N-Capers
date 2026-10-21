@@ -23,7 +23,7 @@ Newest entry first, keep the last 10.
         would churn).
      - **Regression fixed (mine):** 01bb2b2e added `HudPalette.device_jam`, but not its Options swatch label, so
        `test_options_settings` failed on `ui.options.palette.field.device_jam`. The string ("Jammed drill or saw")
-       is added. I had not run that suite then; it is in my palette checklist now.
+       is added. I had not run `test_options_settings` with the palette change; I run it with any palette change now.
 -24. **New (r268): RT briefing / HUD / preplan / payday strings verified through `test_heist_screens_text`. Clean.**
      - **The fixture** (test-only, nothing in data): `before_all` puts C's
        `rolling_thunder_wip_def.tres` at the convention def path in the resource cache (`take_over_path`) and
