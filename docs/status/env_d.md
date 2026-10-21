@@ -4,6 +4,20 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT re-check vs C's next_heist_rolling_thunder.md (r256): prep/d-rt 840699e64.**
+  - RT-D2's clips and the cook / waitress looks are all on prep/d-rt. The diner counter, `prop_counter_sales`, is 0.9 m,
+    the height counter_wipe is authored for.
+  - **Fixed, one of my misses:** `test_cower_offsets` failed on prep/d-rt. Three pedestrians carry back bags and had no
+    offset. They now have offsets: c 0.12, e 0.25 (the deep delivery backpack), f 0.14. The test now also measures
+    diner_staff and carpark_attendant. Every per-look D test now passes on prep/d-rt: cower_offsets, lod, outfits,
+    scenes, skirt_drape, npcs, hit_zones, ragdoll, rig and civ_panic.
+  - **Ruling needed (C §3/§4 vs D-103 §3b.1):** do NOT map `convoy_lead` / `convoy_rear`. A spawn tag beats the
+    EnemyDef in NpcVisuals, so any row would give every difficulty the same escort look. That would bypass the D-145.3
+    duty looks, the faction reskins and tac_heavy. The escorts are EnemyDefs, so they get a look anyway, never a
+    capsule. Please carve these two out of the "every spawn tag maps" rule, and A should test it.
+  - **For A, after the merge:** `npc_visual_tweak.tres` RT needs the 6 street_pedestrian looks added to civ_street,
+    civ_bus and civ_diner, plus new rows `staff_diner`, `staff_booth` and `driver_mixer` (Reyes = contact_hollis).
+    The list is in the notes.
 - **RT cast check (your r255 ask): prep/d-rt fb5160ef2** (on 39f981cc7; your note said 83cc1a187, which is now two commits
   back). C's `next_heist_rolling_thunder.md` is on no branch yet, so I checked against `rolling_thunder.md`'s roster
   (trunk e9c8744f) and D-147. Every row has a cast. 6 of the 9 rows reuse existing looks: Halden, patrol_officer, the Vaultline crew and marshal,
