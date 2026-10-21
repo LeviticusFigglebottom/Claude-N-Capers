@@ -546,9 +546,12 @@ func _movers() -> Array[ConvoyVehicle]:
 	return out
 
 
-## The mover's drive-in path: a Path3D child of the mover's holder named `<Veh>Path`, or its own Path3D child.
+## The mover's drive-in path `<Veh>Path`: beside it under Movers, under `Convoy/Paths` (C's G1), or its own Path3D child.
 func _drive_path(v: ConvoyVehicle) -> Path3D:
-	var p: Path3D = v.get_parent().get_node_or_null(NodePath(String(v.name) + "Path")) as Path3D
+	var name_path: NodePath = NodePath(String(v.name) + "Path")
+	var p: Path3D = v.get_parent().get_node_or_null(name_path) as Path3D
+	if p == null and v.get_parent().get_parent() != null:
+		p = v.get_parent().get_parent().get_node_or_null(NodePath("Paths/" + String(name_path))) as Path3D
 	if p == null:
 		for c: Node in v.get_children():
 			if c is Path3D:
