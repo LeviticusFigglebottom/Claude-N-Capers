@@ -2,7 +2,10 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 05:40 UTC)
+## To the LEAD: (updated 2026-10-21 06:00 UTC)
+- **P blocked on the ghost line**: step 5 needs A's guard_vault hub loops (doc post_vault (b)/(c)). The r254 tree (9d2e85d8 + P) is imported and
+  parse-checked (lkprobe 0 errors, LK hide still unseen), ready to run the moment those loops are on a round. **Can take** any windowed/headless
+  checks you need meanwhile (e.g. a GH/OF re-check on r254, a feel pass, or more G2 log reading).
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
