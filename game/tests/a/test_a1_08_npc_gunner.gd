@@ -70,6 +70,59 @@ func test_a1_08_npc_fire_blocked_by_wall() -> void:
 	assert_near(_total(c), c.health.max_health + c.health.max_armor, 0.001)
 
 
+## D's GH Tense anim coverage (PD2): guards see the crew through clear glass (D-142) and used to aim at it for good
+## without firing (the shot line stopped at the pane). Now the first round goes into a breakable pane and breaks it
+## (no hit through intact glass), and the next rounds go through the opening. Armoured glazing (breakable off) still
+## stops them.
+func test_d142_npc_shoots_out_a_glass_pane() -> void:
+	var w: WindowPrefab = await _glass_between(true)
+	var p: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -6)))
+	await wait_physics_frames(2)
+	var gun: NpcGunner = p.get_node("Gunner") as NpcGunner
+	var shots: Array[bool] = []
+	var cb: Callable = func(_t: Node, hit: bool) -> void: shots.append(hit)
+	gun.shot.connect(cb)
+	var before: float = _total(_crew())
+	gun.fire_at(_crew())
+	var broke: bool = await wait_until(func() -> bool: return w.broken, 4.0)
+	assert_true(broke, "the police shot the pane out")
+	assert_false(shots.is_empty() or shots[0], "the first round went into the glass, not the crew")
+	await wait_until(func() -> bool: return shots.size() >= 4, 6.0)
+	assert_true(shots.size() >= 2, "kept firing through the opening (%d shots)" % shots.size())
+	assert_true(_total(_crew()) <= before, "no healing from glass")
+
+
+func test_d142_npc_holds_fire_at_armoured_glass() -> void:
+	var w: WindowPrefab = await _glass_between(false)
+	var p: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -6)))
+	await wait_physics_frames(2)
+	var gun: NpcGunner = p.get_node("Gunner") as NpcGunner
+	var shots: Array[bool] = []
+	var cb: Callable = func(_t: Node, hit: bool) -> void: shots.append(hit)
+	gun.shot.connect(cb)
+	gun.fire_at(_crew())
+	await wait_seconds(2.0)
+	assert_true(shots.is_empty(), "no shots into armoured (non-breakable) glazing")
+	assert_false(w.broken, "intact")
+
+
+## Crew at the origin, a Window between it and z = -6 (sill raised so the eye-to-chest line crosses the glass).
+func _glass_between(breakable: bool) -> WindowPrefab:
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	var w: WindowPrefab = (load("res://systems/prefabs/window/window.tscn") as PackedScene).instantiate() as WindowPrefab
+	w.breakable = breakable
+	_rt.map.add_child(w)
+	w.global_position = Vector3(0.0, 0.7, -3.0)
+	await wait_physics_frames(3)
+	var space: PhysicsDirectSpaceState3D = _rt.map.get_world_3d().direct_space_state
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(Vector3(0, 1.5, -6), Vector3(0, 1.2, 0),
+		CombatTweak.data().los_mask)
+	var hit: Dictionary = space.intersect_ray(q)
+	assert_true(not hit.is_empty() and (hit["collider"] as Node).is_in_group(StealthDirector.GROUP_SEE_THROUGH),
+		"setup: the glass is on the line (%s)" % [hit.get("collider")])
+	return w
+
+
 func test_l2_5_police_hold_fire_on_downed_non_shooter() -> void:
 	var c: CrewController = _crew()
 	c.set_masked()
