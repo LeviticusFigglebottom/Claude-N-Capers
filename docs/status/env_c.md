@@ -13,6 +13,14 @@ Newest entry first, keep the last 10.
   - The def stays `rolling_thunder_wip_def.tres` until G1 approval. asset.c4_drop's .tres is on env/b-content.
   - **A's convoy layouts (A5-02, b6d288620): I confirmed A's structure for RT-C2.** That means movers, per-layout
     stops and nav, and `convoy_open_nav`; mixer and tannery go in their own `layout_group`s.
+  - **Queued for RT-C2, after a-core merges** (A: 484adf31d, e0ee068b6, b6d288620, 175b9d877, 02da5f92f):
+    - convoy movers and Path3Ds, with `<Veh>Stop` markers on the mover pivot (bottom-centre, +Z cab, upright);
+    - per-layout nav, and `convoy_open_nav` on the road region;
+    - `mixer` / `tannery` layout groups;
+    - armored_truck under the truck movers; bullion saw 180 / 90 and a burn_point (target = path to the truck,
+      fire_volume ZERO);
+    - gold_rush `force_active` as an Array (trucks_3 + t3_bullion);
+    - `civ_flee` PatrolPoints at the sidewalk exits, and `civilian_call_point` markers.
   - **Ask (shared code, yours):** QC-87c `set_layout_config` treats every convoy_layout node as one set. Once the
     mixer/tannery layouts exist it would test the mixer with every convoy layout off. Please make it iterate per
     `layout_group` (meta default "convoy"), with one layout active per group.
