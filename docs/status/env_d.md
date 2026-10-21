@@ -3,6 +3,19 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **OF clip audit: PASS, new test** `game/tests/d/test_of_cast_clips.gd` (3 tests, green on env/d-art = r251 + D). For
+  every OF CIVILIAN / GUARD SpawnPoint in the built map (variant slots included): the clip its activity resolves to
+  (CivilianBrain KNOWN_ACTIVITIES, else idle; then HINT_CLIPS) exists in char_anim_humanoid with every variant-group
+  member, loops, and moves (a bone differs between 1/4 and 3/4 of the loop: no frozen pose); every seated clip has a
+  map `Seat` within civilian_seat_radius_m on its floor; every teller_count spawn stands behind a TellerWorktop
+  (top 1.00 m, near edge 0.20-0.40 m ahead). Sensitivity: with the edge window at 0.25 m and the motion threshold
+  raised, both checks fail. Not duplicated: A's HINT_CLIPS / KNOWN_ACTIVITIES key tests, C's queue-mark test.
+  Checks run: gdlint (test file), d test_of_cast_clips, check_ownership d, check_banned.
+- Waiting on your GPU box for the 5 command lines below (D-145.3 wave, faction lineup, VIP walk, queue re-check,
+  heist_cast_perf). No local renders meanwhile.
+- Next-heist cast notes only (D-144): none started; I'll draft them here if you want them, else I take OF/PO polish.
+
 ## 2026-10-21: GPU-box queue for the LEAD (cross-session messages to the LEAD are refused: untrusted device)
 Run from the repo root on env/d-art 5f7778a2 or later; OUT = any output folder. Send back the output paths.
 1. D-145.3 GH loud wave, Routine vs Hazardous (no --fixed-fps; waits for the director's own units):
