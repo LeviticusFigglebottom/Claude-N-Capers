@@ -1528,9 +1528,10 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 
 ## Ghost line: a player peeks into the stair core before using it (r246 run: Npc_guard4 on SA at 0.9 m). Wait until no
 ## living guard is within 8 m of the SA core between `y_lo` and `y_hi`; logs the wait (max 180 s, then goes anyway).
-func _wait_core_clear(from_y: float, to_y: float) -> void:
+func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> void:
 	# Guards on the floor the crew stands on see it whether it waits or not: count those on the stair flights and
 	# on the destination floor only (r246c: waiting by the ground core for a basement rover got the crew seen).
+	# `same_floor` counts them too: a walk across the core on this floor (EA -> E3, r251c: rover_gallery up SA).
 	var y_lo: float = minf(from_y, to_y) - 1.0
 	var y_hi: float = maxf(from_y, to_y) + 2.0
 	var core: Vector3 = _of(OF_SA_CORE)
@@ -1541,7 +1542,7 @@ func _wait_core_clear(from_y: float, to_y: float) -> void:
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or g.global_position.y <= y_lo or g.global_position.y >= y_hi \
-					or absf(g.global_position.y - from_y) <= 0.6:
+					or (not same_floor and absf(g.global_position.y - from_y) <= 0.6):
 				continue
 			# A walking guard reaches the flights during a multi-floor climb (~14 s, r248b: rover_gallery onto SA from
 			# the Gallery floor): moving within 15 m counts; a standing post only within 8 m with LOS to the core.
@@ -1549,7 +1550,10 @@ func _wait_core_clear(from_y: float, to_y: float) -> void:
 			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
 			last[id] = g.global_position
 			var d: float = pilot.flat_dist(g.global_position, core)
-			if (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
+			# Same floor: any guard within 25 m holds the crossing, LOS or not. Rooms open onto the corridor
+			# (r251d/e: rover_gallery in an east room at the check, back out in XC 13 m off during the 8 s walk EA -> E3).
+			var same: bool = absf(g.global_position.y - from_y) <= 0.6
+			if (same and d < 25.0) or (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
 				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
 		if near.is_empty() and t >= 1.0:  # two samples: a guard's movement is known
 			if t > 1.0:
@@ -1560,6 +1564,31 @@ func _wait_core_clear(from_y: float, to_y: float) -> void:
 		await wait_s(0.5)
 		t += 0.5
 	note("GHOST stair core NOT clear after 180 s (going anyway)")
+
+
+## Doc §5: swipe at the gate when the vault guard is off VC (loops (b)/(c)) and rover_basement is east (r251g: seen at
+## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, or within 20 m
+## with LOS to it; logs the wait (max 180 s, then goes anyway).
+func _wait_spot_clear(spot: Vector3, y: float, label: String) -> void:
+	var t: float = 0.0
+	while t < 180.0:
+		var near: PackedStringArray = PackedStringArray()
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5:
+				continue
+			var d: float = pilot.flat_dist(g.global_position, spot)
+			if d < 8.0 or (d < 20.0 and _sees_core(g, spot)):
+				near.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
+		if near.is_empty():
+			if t > 0.0:
+				note("GHOST %s clear after %.0f s" % [label, t])
+			return
+		if int(t * 2.0) % 20 == 0:
+			note("GHOST waiting for the %s: %s" % [label, ", ".join(near)])
+		await wait_s(0.5)
+		t += 0.5
+	note("GHOST %s NOT clear after 180 s (going anyway)" % label)
 
 
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
@@ -2311,14 +2340,26 @@ func _g4_code() -> bool:
 	var pc: Node3D = _x("code_pc")
 	if pc == null:
 		return false
-	for _k: int in 4:
-		if _objective(&"code_pc") == 2:
+	var running: Callable = func() -> bool:
+		var st: int = int(pc.get(&"state"))
+		return st == HackTerminal.State.RUNNING or st == HackTerminal.State.DONE
+	for _k: int in 6:
+		if _objective(&"code_pc") == 2 or int(pc.get(&"state")) == HackTerminal.State.DONE:
 			break
-		var ic: InteractableComponent = _comp(pc)
-		if ic != null and ic.enabled:
-			await pilot.use(ic, 30.0, func() -> bool: return int(pc.get(&"state")) != 0, true)
-		await _go(_of(GHOST_E3_WAIT), 0.5, 40.0)
-		await wait_until(func() -> bool: return int(pc.get(&"state")) != HackTerminal.State.RUNNING, 60.0)
+		# Start / restart only when the hack needs it (r251f: `state != IDLE` passed on INTERRUPTED, so three
+		# "restarts" returned in 0 s without pressing anything).
+		if not running.call():
+			var ic: InteractableComponent = _comp(pc)
+			if ic != null and ic.enabled:
+				await pilot.use(ic, 30.0, running, true)
+			# Doc §4: wait in E3 while rover_gallery passes. EA -> E3 crosses the SA core: peek first (r251c: seen
+			# at 3.5 m by rover_gallery coming up SA as the pilot left EA).
+			await _wait_core_clear(OF_FFL[3], OF_FFL[2], true)
+			if not running.call() and ic != null and ic.enabled:  # interrupted during the peek: still at the PC
+				await pilot.use(ic, 30.0, running, true)
+			await _go(_of(GHOST_E3_WAIT), 0.5, 40.0)
+		await wait_until(func() -> bool: return int(pc.get(&"state")) != HackTerminal.State.RUNNING, 90.0)
+		note("GHOST code hack state %d at t=%.0f" % [int(pc.get(&"state")), rt.heist_time_s])
 	return _objective(&"code_pc") == 2 or int(pc.get(&"state")) == HackTerminal.State.DONE
 
 
@@ -2327,6 +2368,8 @@ func _g5_vault() -> bool:
 	if not await _of_to_floor(0):
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
+	if gate != null and not gate.is_open:
+		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate")
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid

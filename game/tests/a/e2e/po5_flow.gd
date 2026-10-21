@@ -20,6 +20,7 @@ var stats: Po5Stats = null
 ## llvmpipe renders at ~1 fps, which caps game time at 8 physics ticks per second. Between screenshots
 ## the harness turns the render loop off (window, DisplayServer and input stay real); shot() renders.
 var fast: bool = false
+var _heist_list: UiHeistList = null
 var _shot: int = 0
 var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
@@ -94,6 +95,7 @@ static func menu_heist_name(given: String) -> String:
 func _open_difficulty() -> void:
 	var d: int = Enums.Difficulty.keys().find(difficulty_name.to_upper())
 	var l: UiHeistList = HeistCatalog.heist_list()
+	_heist_list = l  # held: an unreferenced Resource leaves the cache and the next load() rereads the file
 	if d >= 0 and l != null and not l.unlocked_difficulties.has(d):
 		l.unlocked_difficulties.append(d)
 		note("harness: %s opened in memory (locked in the build)" % difficulty_name)

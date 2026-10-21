@@ -124,6 +124,29 @@ func test_l6_1_gate10_ai_revives_downed_human() -> void:
 	assert_true(game_s >= Tweak.crew().revive_time_s - 0.5, "the full 6 s revive hold (%.1f s)" % game_s)
 
 
+## P (GH Tense 4501): a downed human boxed in by low obstacles 1.7 m out (a body / prop at their side): the bot cannot
+## get within revive_range_m, stalls, and revives from where it stands (revive_stall_reach_m).
+func test_l6_1_ai_revives_over_an_obstacle() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	var at: Vector3 = Vector3(4, 0.05, 0)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, at))
+	for side: Vector3 in [Vector3(1.7, 0, 0), Vector3(-1.7, 0, 0), Vector3(0, 0, 1.7), Vector3(0, 0, -1.7)]:
+		var size: Vector3 = Vector3(0.2, 0.9, 3.6) if side.x != 0.0 else Vector3(3.6, 0.9, 0.2)
+		ATestMaps.add_wall(_rt.map, at + side + Vector3(0, 0.45, 0), size)
+	await wait_physics_frames(2)
+	_crew(0).health.go_down()
+	var ok: bool = await wait_until(func() -> bool: return _crew(0).crew_state == Enums.CrewState.NORMAL, 25.0)
+	assert_true(ok, "a bot revived the boxed-in human from outside the box")
+	for s: int in _ai_slots():
+		assert_true(_crew(s).global_position.distance_to(at) > tweakd().revive_range_m,
+			"slot %d stayed outside the box" % s)
+
+
+func tweakd() -> CrewAiTweak:
+	return CrewHealth._bot_tweak()
+
+
 func test_l6_1_ai_revives_downed_ai() -> void:
 	Engine.time_scale = TIME_SCALE
 	await _go_loud()
