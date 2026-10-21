@@ -134,6 +134,11 @@ PRESET = {
             "paint": "#3E5646", "gap": "#262A27", "sheets": 2, "gap_mm": 3, "rough": (0.72, 0.86),
             "wear": 0.35, "grime": 0.5,
         },
+        # RT-C2 GPU-21: the diner's checkerboard vinyl (vinyl_floor's model; 0.25 m squares, cream / charcoal)
+        "vinyl_checker": {
+            "tile_a": "#D9D1BF", "tile_b": "#3A3A3D", "chip_dark": "#6E6A62", "chip_light": "#C9C3B6",
+            "tile_m": 0.25, "rough": (0.3, 0.46), "wear": 0.3, "grime": 0.4,
+        },
         # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
         "polymer_black": {
             "base": "#45464A", "rough": (0.64, 0.76), "grain_cells_per_m": 300, "wear": 0.25,

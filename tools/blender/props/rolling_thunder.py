@@ -162,6 +162,70 @@ VARIANTS = {
         "key2": "emit_mint",
         "cat": {"kind": "neon_sign", "mount": "wall", "place": "wall_mount", "group": "exterior", "surface": "metal"},
     },
+    # GPU-21 (the LEAD's render review: DR read as an office): the diner's own furniture, each a shared kit's form with
+    # the diner finish (D-147 §3c "a new prop with a reason"; docs/design/heists/rolling_thunder.md, GPU-21 props).
+    # pin_only: no other kit's pick of these kinds changes.
+    "prop_diner_stool": {
+        "fn": "diner_stool",
+        "seat": 0.72,
+        "cat": {"kind": "stool", "place": "floor", "group": "sales", "surface": "metal", "pin_only": True},
+    },
+    "prop_diner_chair": {
+        "fn": "diner_chair",
+        "seat": 0.47,
+        "cat": {"kind": "chair", "place": "seat", "hosts": ["table"], "group": "sales", "surface": "fabric",
+                "seat_fwd": 0.12, "pin_only": True},
+    },
+    "prop_diner_counter_w250": {
+        "fn": "diner_counter",
+        "ln": 2.5,
+        "d": 0.8,
+        "cat": {"kind": "counter_service", "place": "wall", "support": True, "clear": 1.0, "top": 0.9, "group": "sales",
+                "surface": "wood", "pin_only": True},
+    },
+    "prop_diner_table_w80": {
+        "fn": "diner_table",
+        "w": 0.8,
+        "d": 0.8,
+        "h": 0.74,
+        "cat": {"kind": "table", "place": "center", "support": True, "clear": 0.7, "group": "sales", "pin_only": True},
+    },
+    "prop_diner_table_l120": {
+        "fn": "diner_table",
+        "w": 1.2,
+        "d": 0.8,
+        "h": 0.74,
+        "cat": {"kind": "table", "place": "center", "support": True, "clear": 0.7, "group": "sales", "pin_only": True},
+    },
+    "prop_diner_table_l180": {
+        "fn": "diner_table",
+        "w": 1.8,
+        "d": 0.8,
+        "h": 0.74,
+        "cat": {"kind": "table", "place": "center", "support": True, "clear": 0.7, "group": "sales", "pin_only": True},
+    },
+    "prop_pendant_diner": {
+        "fn": "diner_pendant",
+        "drop": 0.5,
+        "cat": {"kind": "light_fixture", "place": "ceiling", "fixture": True, "group": "lighting", "pin_only": True,
+                "light": {"type": "omni", "color": "#FFC890", "energy": 1.5, "range": 5.0, "pos": [0.0, -0.72, 0.0]}},
+    },
+    "prop_diner_menu_board": {
+        "fn": "menu_board",
+        "w": 2.4,
+        "h": 0.9,
+        "cat": {"kind": "menu_board", "mount": "wall", "place": "wall_mount", "group": "sales", "surface": "wood",
+                "pin_only": True},
+    },
+    "prop_neon_eat": {
+        "fn": "neon_sign",
+        "text": "EAT",
+        "key": "emit_led_red",
+        "line2": "COFFEE  PIE",
+        "key2": "emit_mint",
+        "cat": {"kind": "neon_sign", "mount": "wall", "place": "wall_mount", "group": "sales", "surface": "metal",
+                "pin_only": True},
+    },
 }
 
 WHEEL_R = 0.5
@@ -488,6 +552,154 @@ def _booth(k: Kit, p: dict) -> None:
             ((-hx + 0.05, -0.375, 0.0), (hx - 0.05, 0.375, 0.75)),
         ]
     )
+
+
+def _diner_stool(k: Kit, p: dict) -> None:
+    """A fixed counter stool (GPU-21): a chrome pedestal bolted to the floor on a flange, a foot ring, and a round red
+    vinyl seat (``seat`` m, the cushion top) with a chrome band."""
+    sz = float(p["seat"])
+    o = k.obj("Stool")
+    a = o.part(bevel=0.0)
+    a.cyl(0.16, 0.02, (0.0, 0.0, 0.01), "chrome", segs=20)  # floor flange
+    for i in range(4):
+        ang = math.pi / 4 + i * math.pi / 2
+        a.cyl(0.012, 0.006, (math.cos(ang) * 0.12, math.sin(ang) * 0.12, 0.023), "chrome", segs=6)  # bolts
+    a.rod((0.0, 0.0, 0.02), (0.0, 0.0, sz - 0.09), 0.035, "chrome", segs=12)
+    a.torus(0.19, 0.01, (0.0, 0.0, 0.26), "chrome", segs=20, rsegs=6)  # foot ring
+    for i in range(3):
+        ang = 2 * math.pi * i / 3
+        a.rod((0.0, 0.0, 0.26), (math.cos(ang) * 0.19, math.sin(ang) * 0.19, 0.26), 0.008, "chrome", segs=5)
+    a.cyl(0.18, 0.02, (0.0, 0.0, sz - 0.08), "chrome", segs=20)  # seat pan
+    soft = o.part(bevel=0.02, segments=2)
+    soft.cyl(0.19, 0.07, (0.0, 0.0, sz - 0.035), "rt_vinyl_red", segs=24)
+    a.torus(0.19, 0.008, (0.0, 0.0, sz - 0.05), "chrome", segs=24, rsegs=4)  # band
+    o.build()
+    k.collision([], cylinders=[(0.19, sz, (0.0, 0.0, sz / 2))])
+
+
+def _diner_chair(k: Kit, p: dict) -> None:
+    """A chrome-tube diner chair with a red vinyl seat and back (GPU-21). The `Seat` marker at the cushion (``seat``,
+    D's 0.47 m, as prop_chair_task, so the customers' roots and NpcSeatSpawns snaps do not move); no collision (the
+    seated NPC owns the space, as prop_chair_task)."""
+    seat = float(p["seat"])
+    o = k.obj("Chair")
+    a = o.part(bevel=0.0)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            a.rod((sx * 0.2, sy * 0.2, 0.0), (sx * 0.19, sy * 0.19, seat - 0.06), 0.012, "chrome", segs=8)
+            a.sphere(0.014, (sx * 0.2, sy * 0.2, 0.014), "chrome", segs=6, rings=3)
+        a.rod((sx * 0.19, -0.19, seat - 0.06), (sx * 0.19, 0.19, seat - 0.06), 0.01, "chrome", segs=6)  # side rails
+        a.rod((sx * 0.19, -0.2, seat - 0.06), (sx * 0.19, -0.23, 0.9), 0.011, "chrome", segs=8)  # back uprights
+    a.rod((-0.19, -0.23, 0.9), (0.19, -0.23, 0.9), 0.011, "chrome", segs=8)
+    soft = o.part(bevel=0.02, segments=2)
+    soft.bx((-0.22, -0.22, seat - 0.07), (0.22, 0.22, seat), "rt_vinyl_red")
+    soft.bx((-0.2, -0.25, 0.62), (0.2, -0.2, 0.86), "rt_vinyl_red")
+    o.build()
+    k.empty("Seat", (0.0, 0.0, seat))
+
+
+def _diner_counter(k: Kit, p: dict) -> None:
+    """A diner counter module (GPU-21) ``ln`` m along X, ``d`` m deep, the customers' front at +Y (Godot -Z): a grey
+    laminate top at 0.90 m with a stainless nosing overhanging the front 0.22 m (knee room at the stools), the cream
+    laminate front with a red band between stainless strips, a stainless kick; the staff side (-Y) a stainless back with
+    an open shelf."""
+    ln, d = float(p["ln"]), float(p["d"])
+    hx, hy = ln / 2, d / 2
+    fy = hy - 0.22  # the front panel under the overhang
+    body = k.obj("Counter")
+    cab = body.part(bevel=0.004)
+    trim = body.part(bevel=0.0)
+    cab.bx((-hx, -hy + 0.04, 0.0), (hx, fy - 0.06, 0.12), "steel")  # kick, recessed
+    cab.bx((-hx, -hy, 0.12), (hx, fy - 0.012, 0.86), "rt_laminate_cream")
+    cab.bx((-hx, fy - 0.012, 0.46), (hx, fy, 0.6), "rt_laminate_red")
+    for z0 in (0.44, 0.6):
+        trim.bx((-hx, fy - 0.012, z0), (hx, fy + 0.004, z0 + 0.02), "steel")
+    for x in (-hx + 0.004, hx - 0.004):  # module joints
+        trim.bx((x - 0.004, fy - 0.012, 0.12), (x + 0.004, fy + 0.004, 0.86), "steel")
+    cab.bx((-hx, -hy, 0.86), (hx, hy - 0.02, 0.9), "laminate_grey")  # top
+    trim.bx((-hx, hy - 0.02, 0.855), (hx, hy, 0.9), "steel")  # front nosing
+    trim.bx((-hx, -hy, 0.12), (hx, -hy + 0.01, 0.86), "steel")  # staff-side back
+    trim.bx((-hx + 0.05, -hy - 0.001, 0.4), (hx - 0.05, -hy + 0.3, 0.42), "steel")  # open shelf
+    body.build()
+    k.collision([((-hx, -hy, 0.0), (hx, hy, 0.9))])
+
+
+def _diner_pendant(k: Kit, p: dict) -> None:
+    """A diner pendant (GPU-21): a chrome canopy, a ``drop`` m stem and a red enamel dome shade over a warm lamp; the
+    shade's rim ``drop`` + 0.2 m under the ceiling (2.28 m clear under DR's 3.0 m, where prop_pendant_brass reaches
+    1.95 m)."""
+    drop = float(p["drop"])
+    o = k.obj("Pendant")
+    a = o.part(bevel=0.0)
+    a.lathe([(0.0, -0.05), (0.07, -0.05), (0.08, -0.03), (0.08, 0.0), (0.0, 0.0)], "chrome", segs=16)
+    a.rod((0.0, 0.0, -0.05), (0.0, 0.0, -drop), 0.008, "chrome", segs=6)
+    z = -drop
+    a.lathe([(0.0, z - 0.2), (0.19, z - 0.2), (0.185, z - 0.17), (0.15, z - 0.09), (0.08, z - 0.03),
+             (0.035, z), (0.0, z)], "rt_enamel_red", segs=24)
+    g = o.part(bevel=0.0)
+    g.sphere(0.055, (0.0, 0.0, z - 0.21), "emit_warm", segs=12, rings=6)
+    o.build()
+
+
+def _menu_board(k: Kit, p: dict) -> None:
+    """The diner's menu board (GPU-21): a black letter board ``w`` x ``h`` in a chrome frame, three columns, each a
+    white header (BREAKFAST, BURGERS, PIE / COFFEE) over menu lines and price tabs. Wall mount: the back at y = 0,
+    centred on the pivot, the front +Y."""
+    w, h = float(p["w"]), float(p["h"])
+    hw, hh = w / 2, h / 2
+    o = k.obj("Board")
+    b = o.part(bevel=0.0)
+    b.bx((-hw, 0.0, -hh), (hw, 0.03, hh), "felt_dark")
+    fr = o.part(bevel=0.004)
+    for lo, hi in (((-hw - 0.03, 0.0, hh), (hw + 0.03, 0.045, hh + 0.03)),
+                   ((-hw - 0.03, 0.0, -hh - 0.03), (hw + 0.03, 0.045, -hh)),
+                   ((-hw - 0.03, 0.0, -hh), (-hw, 0.045, hh)), ((hw, 0.0, -hh), (hw + 0.03, 0.045, hh))):
+        fr.bx(lo, hi, "chrome")
+    t = o.part(bevel=0.0)
+    cw = w / 3
+    heads = (("BREAKFAST",), ("BURGERS",), ("PIE", "COFFEE"))
+    lines = (0.62, 0.5, 0.7, 0.44, 0.58, 0.66, 0.4, 0.54)
+    for c, words in enumerate(heads):
+        # read from the front (+Y): the viewer's left is Blender +X, so the first column sits at +X
+        cx = hw - cw * (c + 0.5)
+        zt = hh - 0.14
+        for i, word in enumerate(words):
+            lettering(t, word, 0.07, cx, 0.03, zt - i * 0.29, "metal_white", stroke=0.011, depth=0.003, inlay=True,
+                      spacing=0.2)
+        row = 0
+        z = zt - 0.08
+        while z > -hh + 0.06:
+            if len(words) > 1 and abs(z - (zt - 0.29 + 0.035)) < 0.06:
+                z -= 0.075
+                continue
+            ln = lines[(row + c * 3) % len(lines)] * (cw - 0.2)
+            x0 = cx + (cw - 0.2) / 2  # flush left as read: the line starts at the column's +X side
+            t.bx((x0 - ln, 0.03, z), (x0, 0.033, z + 0.014), "metal_white")
+            t.bx((cx - (cw - 0.2) / 2, 0.03, z), (cx - (cw - 0.2) / 2 + 0.07, 0.033, z + 0.014), "metal_white")
+            z -= 0.075
+            row += 1
+    o.build()
+
+
+def _diner_table(k: Kit, p: dict) -> None:
+    """A diner table (GPU-21) ``w`` x ``d``, top at ``h`` (D's 0.74 m): cream laminate with a ribbed chrome band, on a
+    chrome pedestal and cross foot (one under a square top, two under a long one)."""
+    w, d, h = float(p["w"]), float(p["d"]), float(p["h"])
+    o = k.obj("Table")
+    a = o.part(bevel=0.003)
+    a.bx((-w / 2, -d / 2, h - 0.03), (w / 2, d / 2, h), "rt_laminate_cream")
+    m = o.part(bevel=0.0)
+    m.bx((-w / 2 - 0.004, -d / 2 - 0.004, h - 0.034), (w / 2 + 0.004, d / 2 + 0.004, h - 0.004), "chrome")
+    xs = [0.0] if w < 1.1 else [-w / 2 + 0.35, w / 2 - 0.35]
+    for x in xs:
+        m.rod((x, 0.0, 0.03), (x, 0.0, h - 0.034), 0.035, "chrome", segs=12)
+        m.cyl(0.1, 0.02, (x, 0.0, h - 0.044), "chrome", segs=16)
+        for ang in (0.0, math.pi / 2):
+            ex, ey = math.cos(ang) * min(0.3, d / 2 - 0.05), math.sin(ang) * min(0.3, d / 2 - 0.05)
+            m.rod((x - ex, -ey, 0.02), (x + ex, ey, 0.02), 0.02, "chrome", segs=6, square=True)
+    o.build()
+    k.collision([((-w / 2, -d / 2, h - 0.03), (w / 2, d / 2, h)),
+                 ((xs[0] - 0.04, -0.04, 0.0), (xs[-1] + 0.04, 0.04, h))])
 
 
 def _c4_box(k: Kit, p: dict) -> None:

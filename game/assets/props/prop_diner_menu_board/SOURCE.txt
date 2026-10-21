@@ -1,0 +1,8 @@
+asset: prop_diner_menu_board
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "sales", "kind": "menu_board", "mount": "wall", "pin_only": true, "place": "wall_mount", "surface": "wood"}, "fn": "menu_board", "h": 0.9, "w": 2.4}
+seed: 2244653995  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_diner_menu_board
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

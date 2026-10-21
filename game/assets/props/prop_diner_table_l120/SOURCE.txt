@@ -1,0 +1,8 @@
+asset: prop_diner_table_l120
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"clear": 0.7, "group": "sales", "kind": "table", "pin_only": true, "place": "center", "support": true}, "d": 0.8, "fn": "diner_table", "h": 0.74, "w": 1.2}
+seed: 3092416413  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_diner_table_l120
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

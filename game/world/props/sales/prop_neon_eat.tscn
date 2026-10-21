@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_neon_eat/prop_neon_eat.glb" id="1_model"]
+
+[node name="PropNeonEat" type="Node3D"]
+metadata/kind = &"neon_sign"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

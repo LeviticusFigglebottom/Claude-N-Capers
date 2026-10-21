@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_diner_menu_board/prop_diner_menu_board.glb" id="1_model"]
+
+[node name="PropDinerMenuBoard" type="Node3D"]
+metadata/kind = &"menu_board"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Board" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[editable path="Model"]
