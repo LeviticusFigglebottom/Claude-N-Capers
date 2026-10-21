@@ -14,6 +14,9 @@ extends Safe
 
 const TRUCK_PLACEHOLDER: PackedScene = preload("res://systems/prefabs/armored_truck/armored_truck_placeholder.tscn")
 const GROUP: StringName = &"armored_truck"
+## C4 before the saw: C4 is only offered to a crew member carrying charges_required charges (they came to blow it);
+## the saw needs nothing, so it stays the default (and the rear SAW drill_point offers it too).
+const TRUCK_METHOD_ORDER: Array[StringName] = [&"code", &"lockpick", &"c4", &"drill", &"saw"]
 
 ## True once lockdown() ran (server; the mission replicates the effect through device run times).
 var locked_down: bool = false
@@ -26,6 +29,10 @@ func _placeholder_scene() -> PackedScene:
 func _prefab_ready() -> void:
 	super._prefab_ready()
 	add_to_group(GROUP)
+
+
+func _method_order() -> Array[StringName]:
+	return TRUCK_METHOD_ORDER
 
 
 ## Server (A5-01, the early alarm): deadbolts thrown. Saws not yet placed on this truck (its own runner, every SAW

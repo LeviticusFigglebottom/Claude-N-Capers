@@ -161,7 +161,7 @@ func _prefab_ready() -> void:
 		runner.state_changed.connect(_on_shared_device_state)
 		runner.state_changed.connect(_on_own_device_state)
 	var first: StringName = &""
-	for m: StringName in METHOD_ORDER:
+	for m: StringName in _method_order():
 		if methods.has(m):
 			first = m
 			break
@@ -311,7 +311,7 @@ func _pick(crew: Node) -> Array:
 			return [&"fix", InteractableComponent.BLOCK_NONE]
 		return [&"", DrillPoint.BLOCK_RUNNING if runner.state == DeviceRunner.State.RUNNING else InteractableComponent.BLOCK_STATE]
 	var first_block: StringName = &""
-	for m: StringName in METHOD_ORDER:
+	for m: StringName in _method_order():
 		if not methods.has(m):
 			continue
 		var r: StringName = _method_block(m, crew)
@@ -320,6 +320,11 @@ func _pick(crew: Node) -> Array:
 		if first_block == &"":
 			first_block = r
 	return [&"", first_block if first_block != &"" else InteractableComponent.BLOCK_DISABLED]
+
+
+## Preference when several methods are usable by the same crew member (subclasses may reorder).
+func _method_order() -> Array[StringName]:
+	return METHOD_ORDER
 
 
 func _pick_staged() -> Array:
