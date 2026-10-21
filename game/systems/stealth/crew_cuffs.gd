@@ -11,8 +11,9 @@
 ## by_crew_slot) [R] when freed (-1 = freed themselves, also when another state change such as
 ## downed / custody ends the cuffs).
 ## L2.12 (A3-04): `cuff_downed(by_net_id)`: police cuff a DOWNED crew member who is not shooting
-## (PoliceBrain at CustodyTweak.police_cuff_range_m). Self-free after police_cuff_self_free_s; freed
-## (alone or by a teammate) they go back to DOWNED (CrewHealth pauses the bleedout while cuffed).
+## (PoliceBrain at CustodyTweak.police_cuff_range_m). No self-free (LEAD 2026-10-21, PD2: a cuffed player waits for a
+## teammate; the old 60 s self-free looped CUFFED <-> DOWNED for 15 min on Cataclysm 2024): freed by a teammate they go
+## back to DOWNED; CrewHealth keeps the bleed-out running while cuffed, so an unrescued one ends in custody.
 class_name CrewCuffs
 extends Node
 
@@ -121,7 +122,7 @@ func cuff(by_net_id: int) -> bool:
 func cuff_downed(by_net_id: int) -> bool:
 	if _crew == null or not Net.is_authority() or not CrewCuffs.can_police_cuff(_crew):
 		return false
-	cuffed_left = CustodyTweak.data().police_cuff_self_free_s
+	cuffed_left = INF  # no self-free (L2.12, see the header); _physics_process never counts it down to a free
 	cuffed_by_net_id = by_net_id
 	restore_state = Enums.CrewState.DOWNED
 	_crew.set_crew_state(Enums.CrewState.CUFFED)
