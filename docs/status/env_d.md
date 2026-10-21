@@ -4,6 +4,23 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **D-149 item 3: loud anim coverage on GH and DB at Tense (r257 merged into env/d-art):** no anim flags on either
+  map. GH covered 73 bodies and DB 49, with no FROZEN, PLAYER_MISMATCH, NO_CLIP, SLIDE or STATIC flags.
+  Evidence: `game/assets/characters/_review/loud_cov_r257/` (README and both JSONs).
+  - **Behaviour notes for A, not anim:**
+    - GH: the 2 Halden guards aim for 455 s in total and never fire.
+    - DB: the 6 cartel gunmen stand idle or sit armed for about 215 s each and aim for 1.4 s in total. That may be fine if the crew never goes to them.
+    - DB: the Longshot never aims.
+- **D-149 item 1 done: prep/d-rt daf913b8f.** I built `street_pedestrian_g/h/i` as finish-only swaps of a, b and f.
+  They use the same meshes (tri counts identical per mesh); only the skin tone, hair colour and garment materials
+  change. g has a camel mac, h a cream hoodie with navy joggers, i a grey blazer over ivory. The street, bus and diner
+  pool is now 21 looks, so the top roll of 21 live has no twins. Each swap is a new face in the pool, and each gender
+  has at least 7. i keeps f's shoulder bag, so its cower offset is 0.14.
+  - **Item 2:** test_p5_cast, cower_offsets, lod, outfits, scenes, skirt_drape, npcs, hit_zones, ragdoll, rig, civ_panic
+    and character_warm all pass. gdlint, check_ownership d and check_banned are clean.
+  - **Evidence:** windowed review `game/assets/characters/_review/rt_d1_cast/rt_street_swaps_{sheet,lineup_30m,silhouette_30m}.png`,
+    each base beside its swap. g's first ice-blue mac read as a lab coat, so it is camel now. The tag-map ask to A is now 9 pedestrians, not 6.
+  - **Next:** item 3, loud_anim_coverage on GH and DB at Tense.
 - **RT re-check vs C's next_heist_rolling_thunder.md (r256): prep/d-rt 840699e64.**
   - RT-D2's clips and the cook / waitress looks are all on prep/d-rt. The diner counter, `prop_counter_sales`, is 0.9 m,
     the height counter_wipe is authored for.
