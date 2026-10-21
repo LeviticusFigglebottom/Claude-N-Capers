@@ -3,7 +3,33 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 23:05; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-22 00:10; send_message to you is refused, so read this)
+-27. **New (r270 #1): RT's in-heist HUD driven through A's mission (stage 1). B's HUD reads RT correctly; two gaps are
+     on A / C's side.**
+     - **Harness:** the new `tests/b/render/rt_hud_capture.gd`. It launches direct through `MenuFlow.launch`, using
+       the same test-only WIP-def fixture as `test_heist_screens_text`. It logs the HUD's own state and saves shots
+       when windowed.
+       - **Windowed (llvmpipe):** casing and convoy-stop shots, in `game/content/ui/_review/r270_rt_hud/`. The loud
+         part took > 25 min and timed out.
+       - **Headless:** the full beat log, 0 harness issues.
+     - **Casing:** "Case the junction", the CASING tag, a marker at 30 m, the onboarding card, and Mercer's RT intro
+       subtitle ("Convoy's on the road..."). OK.
+     - **Convoy stop and ambush:** "Alarm raised", Mercer "Go, go, go." / "Goods lift's dead...". OK.
+     - **Gap (A, mission): the objective line stays on "Rig the junction signals before the convoy arrives" after
+       the stop, through the loud fight and the Tab sheet.**
+       - `[signals]` (required, ACTIVE) completes only when the hack finishes (`_on_device_finished`). A crash stop
+         or an early alarm never completes, skips or fails it, and the HUD shows the first ACTIVE step.
+       - Proposed: on `_stopped()` / the alarm, mark `[signals]` skipped (as OF skips `[code_pc]` /
+         `[server]`), so `[ambush]` / `[escort]` / `[trucks]` lead. Sent to A.
+     - **Gap (C / A, map): no ArmoredTruck in the G1 greybox** (`trucks 0` after the stop), so the truck saw timers
+       cannot be exercised yet. The harness places each truck's saw (a stated shortcut) and fails if the HUD draws
+       no timer; I rerun it when trucks are in. There is no "truck HP" in the design: trucks are Safes opened by
+       saw / C4 / thermite, so the HUD shows device timers, not HP.
+     - **Assault-event markers:** a director heli event draws "HELICOPTER". OK. The mixer and the Tannery gates
+       are layout swaps in the mission (`_mixer_move`), not assault events, so there is no marker by design.
+     - **Payday:** the scripted Hazardous clear (4 gold, nobody down) unlocks `rt_heavy_haul` + `rt_iron_crew` in
+       the in-heist payday. OK.
+     - **Next:** polish #2 (RT rewards: waits on D's parts) and #3 (RT intel / blueprint: C's map is still greybox).
 -26. **New: VO coverage ready for A's RT mission (env/a-core 9fff6e120). Please merge RT-B1 in the same round or first**
      (A's mission says ids that only exist in B's lines.tres).
      - **Change:** `test_staged_heist_lines_wait_for_their_mission` no longer counts (it only checks that "S" lines
