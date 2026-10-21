@@ -3,7 +3,28 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 21:20; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 22:05; send_message to you is refused, so read this)
+-24. **New (r268): RT briefing / HUD / preplan / payday strings verified through `test_heist_screens_text`. Clean.**
+     - **The fixture** (test-only, nothing in data): `before_all` puts C's
+       `rolling_thunder_wip_def.tres` at the convention def path in the resource cache (`take_over_path`) and
+       un-hides RT on the cached heist list (a reference is held, so it is not reloaded). `after_all` puts both
+       back. It applies only while RT is staged with no real def; once RT is offered for real, the plain walk covers
+       it.
+     - **Result:** green with RT in the walk (`test_the_walk_covers_every_offered_heist` asserts it). Covered:
+       - the broker at 6 difficulties;
+       - the briefing at 6 difficulties;
+       - the preplan on every blueprint point;
+       - the HUD line for all 13 RT objectives, plus the Tab sheet;
+       - the payday with the 6 RT achievements;
+       - the achievements screen.
+     - **Proof:** I broke 3 RT keys, each caught on its own screen:
+       - `objective.rolling_thunder.signals`: HUD line and Tab sheet;
+       - `heist.rolling_thunder.briefing`: briefing d0-d5;
+       - `achievement.rt_heavy_haul.name`: payday and achievements screen.
+
+       The file was restored afterwards (no diff).
+     - **Note for C:** the WIP def has no `briefing_objectives` yet, so the two
+       `ui.briefing.step.rolling_thunder.*` strings are unused until it does (rt_b1_values §1 has the list).
 -23. **New: D-151 done, and RT-B1 landed (B's files). RT stays hidden (heist_list `hidden: true`) until A says G1 plays
      end to end.**
      1. **D-151, Lethal / Cataclysm gate 70** (6f0b838d + 3b0867e2).
