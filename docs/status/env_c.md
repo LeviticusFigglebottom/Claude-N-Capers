@@ -24,8 +24,22 @@ Newest entry first, keep the last 10.
     - the rear-car offset is 12 / 10.5 m, not 11;
     - the east loot path is 48 m+, not 40.
   - The polygon estimate is about 2,100, uncalibrated (early warning only, D-149.5).
-  - RT-C0 is fixing those in the design doc now (prose to match the drawing, unless a rule is broken: the doors go to
-    1.0 m). The push follows when --check PASSes.
+  - RT-C0 DONE (db3cafcd): `rolling_thunder_check.py --check` PASS (0 fail, 1 warn).
+    - The 1 warn is open on purpose: the car-park west barrier is 2 m beyond the Orchard sidewalk, so a HEAVY-bag
+      throw over it can only be judged by the G1 throw test (§7.5).
+    - Fixes: 27 route doors to 1.0 m (all fit, no redraw); UC in the Room list; J given a 0.9 m door; MG 4x3;
+      controller note 3.6 m (sightline still checked); P_N 2.5 m behind a now-sized traffic-management truck; the east
+      lorry moved 2 m west so P_E is 2 m behind it; T3 shift = T3 length + 3 m (12 / 10.5 m); east loot path about
+      50 m (48.1 m straight-line chain). Also lift doors 1.8 m double, pedestrian gates 1.2 m, a scaffold entry 1.2 m.
+    - Judgement calls for you:
+      (a) guards stay 1.1 m, labelled intentional (handrail or a 50 deg+ coping, nothing standable within 0.5 m),
+          rather than 1.2 m, which would move throw spots and cover heights;
+      (b) the lorry moved rather than P_E (x 104 is the play-space edge);
+      (c) the scaffold entry is on the north face (the U-stair foot is at the same end as its head);
+      (d) both lift-path lengths are estimates (crash stop stair A -> lift about 50 m vs a 53.9 m chain, inside the
+          check's 10 % allowance);
+      (e) the scripts' jamb check is 0.2 m, Ostrander's is 0.3 m.
+    - The navmesh estimate of about 2,100 polygons is uncalibrated (early warning only).
 - **2026-10-21 r257, RT questions for your ruling (QC-RT1..11; they're in §8 of next_heist_rolling_thunder.md,
   §9 is open risks).** My recommendation is in brackets after each.
   1. **QC-RT1 convoy nav:** the convoy layouts must block nav without a runtime rebake (heist_map v1.4 / D-121).
