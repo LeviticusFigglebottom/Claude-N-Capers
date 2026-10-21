@@ -6,6 +6,24 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, P's GH Tense 4502 curb STUCK at (21.5, −0.4, 0.3): the map is clean. P owns the fix.
+  - Geometry: the kerb is 0.15 m (PellRoadN top −0.150, PellSidewalkW_N top 0.000) vs the 0.35 m step, with nothing
+    under the road.
+  - Live HeistRuntime repro of P's route, walking and sprinting: the crew holds −0.149 on the road and steps to +0.001
+    on the sidewalk.
+  - P's log has three crew sunk 0.25-0.3 m into the 0.15 m ground slabs from t≈63-68: crew 0 at −0.4 on the road; bots
+    2 and 3 at −0.3 on the 0.0 sidewalk.
+  - Embedded like that, the kerb becomes a 0.4 m rise, above the step, hence the stall.
+  - Cause: a controller/physics embed in the loud phase, in game/systems/player/crew_controller.gd (P's, not A's).
+    P agrees: no map change and no kerb ramp. P is tracing the trigger with an embed watchdog and fixing it in the
+    controller.
+- 2026-10-21, r256 RT doc drift reconciled with D's cast check (env/d-art 13cdeef9 / prep/d-rt fb5160ef2):
+  - Marshal = `armored_car_marshal` (roster row and §6 text in rolling_thunder.md; the plan's §3 cast line).
+  - New roster row: Reyes = `contact_hollis`, pool `ram_driver`, tag `driver_mixer`, `sit_vehicle_drive`, seated in
+    mixer M.
+  - D's clip prop sizes are now in the plan (car seat 0.36 m, wheel rim 0.40 m ahead / 0.76 m up r 0.18 at 30°,
+    diner counter 0.90 m, booth table 0.74 m, griddle 0.90 m), for C's RT-C2 builds.
+  - Docs only. Ran banned and ownership (the plan file is the accepted LEAD-path exception).
 - 2026-10-21, GPU-16 drill fix (219323c8): the LidDrill moved so its head sits over the lid 0.35 m inside the west edge
   and the tripod points west. All three feet are now on the TW carpet, 0.25 m+ clear of the cut; at the hole centre,
   two feet had come down inside it. The UsePoint is unchanged (eye to drill 1.95 m, inside the 2.0 m reach), so P's

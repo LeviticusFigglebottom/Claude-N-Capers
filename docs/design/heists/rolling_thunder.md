@@ -796,7 +796,7 @@ Support-space check (level_standards §2.2):
   - `post_site_frame`: FG aisles → the scaffold stair → F1 slab edge (pause `look` over Orchard) →
     back;
   - `post_site_cabins`: C1 ↔ C2 (coffee pause, `sit`) ↔ the magazine ↔ the crane base.
-- **Route marshal (Vaultline `armored_car_crew`, pager; scripted spawn):** at `convoy_eta_s` − 75 s
+- **Route marshal (Vaultline `armored_car_marshal`, pager; scripted spawn):** at `convoy_eta_s` − 75 s
   (− 90 with `marshal_early`), a Vaultline scout car pulls up at the stop line of the convoy's arm.
   - The marshal gets out and walks one of three checks (`marshal_walk`), radio on, until the convoy
     arrives:
@@ -836,7 +836,8 @@ Support-space check (level_standards §2.2):
 | Car-park attendant | 1 | always | `staff_booth` | sit (desk) | — |
 | Site guard (Halden, `security_officer`) | 1 (Routine/Tense), 2 (Hazardous+) | `guard_post` = `post_site_*` | `guard_site_gate`, `guard_site_frame`, `guard_site_cabins` | `smoke` (gate), `sit` (C2) | `guard`, `site` |
 | Beat cop (`patrol_officer`) | 0–1 | `cop_on_scene` | `cop_plaza`, `cop_diner` | `look` | — |
-| Route marshal (Vaultline, `armored_car_crew_b`) | 1 | scripted, ETA − 75 s | `scripted` + `vl_marshal` | `radio_call` | `vl_marshal`, `marshal_*` |
+| Route marshal (Vaultline, `armored_car_marshal`: QC-86's hi-vis variant) | 1 | scripted, ETA − 75 s | `scripted` + `vl_marshal` | `radio_call` | `vl_marshal`, `marshal_*` |
+| Ram driver (Hollis "Hammer" Reyes, `contact_hollis`, pool `ram_driver`) | 1 | always (in the mixer cab M) | `driver_mixer` (seated, Seat0) | `sit_vehicle_drive` | — |
 | Escort (lead car) | 2 | at the stop (QC-83) | `convoy_lead` (seated) | seated | — |
 | Vaultline crew (per truck: driver + custodian) | 2 × trucks | at the stop | `convoy_t1`, `convoy_t2`, `convoy_t3` (seated, armoured cab) | seated | — |
 | Escort (rear car) | 2–3 | at the stop | `convoy_rear` (seated) | seated | — |
@@ -1547,7 +1548,8 @@ because the stairs and the lift are the direct routes. Nothing else is expected.
   - Clips: a vehicle-seated idle (`sit_vehicle`), dismount (`vehicle_exit_l` / `_r`, ~1.5 s, for
     `armored_car_crew*` and the police roles), and `radio_call` standing (exists) for the marshal.
   - An optional marshal visual variant: a hi-vis tabard over the Vaultline uniform (`armored_car_crew_b`
-    base) so he reads as "the advance man" at 30 m.
+    base) so he reads as "the advance man" at 30 m. Built by D as `armored_car_marshal` (the roster's cast).
+  - Reyes at the mixer wheel: D casts `contact_hollis` (pool `ram_driver`, tag `driver_mixer`, `sit_vehicle_drive`).
   - A diner cook and waitress from the generic civilian set (no new models needed if D has an apron
     variant).
   - Cower placements follow characters.md v1.9 (`cower_seated` in booths and on shelter benches;
