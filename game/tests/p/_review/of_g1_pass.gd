@@ -1557,8 +1557,16 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 				_rover_basement_away)
 			if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), 0.4, 240.0):
 				return false
-			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], false, 25.0, 60.0)
-		elif _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
+			# Phase 2 from SA's half landing, not the B landing behind the door (haz_y: rover_basement walked down BB past
+			# it and saw the pilot at 1.5 m while it waited for rover_hall on G, t=380). Then straight up: the corridor
+			# step below would walk it back out into BB.
+			if not await _go(pilot.stand_point(_of(GHOST_SA_MID)), 0.4, 30.0):
+				return false
+			await _wait_core_clear(GHOST_SA_MID.y, OF_FFL[ffl_i], false, 25.0, 60.0)
+			if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[ffl_i], OF_SA_CORE.z)), 0.5, 240.0):
+				return false
+			return await _go(_of(Vector3(x, OF_FFL[ffl_i], OF_CORRIDOR_Z)), 0.6, 240.0)
+		if _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
 			# Same-floor guards count too (r255c: rover_gallery came up SA, dropped out of the count the moment he
 			# stepped onto the Executive floor, and met the pilot leaving E3 at 2 m).
 			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], true, 25.0)

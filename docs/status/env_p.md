@@ -29,7 +29,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   his loop (b) (seen at 7.7 m). Step 2 had no stair peek (the stair waits are step 4+), so step 2 now ends on SA's basement landing and waits
   for BB (12 m, walkers 15 m). haz_x: same to t=183, then waiting on the B landing behind SA's door, the vault guard walked east down BB
   past the door and saw the pilot at 2 m (t=189). lkprobe: SA's half landing (14.5, -2, 2) is seen from no BB or BC corridor point; the
-  pilot now waits there. haz_y is running.
+  pilot now waits there. **haz_y (r263): steps 1-3 PASS** (dock t=192, after a 10 s half-landing wait; keycard t=357). Step 4 alarm at
+  t=388: the LK → SA leg waited on the B landing for rover_hall on G, and rover_basement walked past SA's door and saw it at 1.5 m. That
+  phase-2 wait is now on the half landing too, and it climbs straight up from there (it used to step back out into BB). haz_z is running.
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick

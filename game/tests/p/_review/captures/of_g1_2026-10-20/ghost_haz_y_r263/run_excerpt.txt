@@ -1,0 +1,47 @@
+[OFP 272.3s t=10.8] GHOST rover_hall at the LD check (t=11)
+[OFP 294.5s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 294.5s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 304.5s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 327.1s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 337.1s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 347.1s t=73.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 357.3s t=78.5] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 46 s
+[OFP 374.6s t=95.8] GHOST rover_hall at the LD check (t=96)
+[OFP 393.7s t=104.0] GHOST LD occupied (rover_hall at (7.0, 0.0, 5.2) (not on MO / loop (c))): skipping this smoke window
+[OFP 414.8s t=125.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (10.5, 0.0, -3.3) walk
+[OFP 435.7s t=135.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (25.1, 0.0, -3.0) walk
+[OFP 445.7s t=145.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (41.0, 0.0, -4.5) walk
+[OFP 449.7s t=149.1] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 1.0 s) after 24 s
+[OFP 450.2s t=149.6] GHOST lane clear after 0 s
+[OFP 474.2s t=173.6] GHOST waiting for the dock corridor door: 
+[OFP 475.2s t=174.6] GHOST dock corridor door clear after 1 s
+[OFP 500.1s t=178.3] DETECT Npc_guard3 kind 0 meter 0.16 at (27.3, 0.0, 8.0), pilot (12.4, 0.0, 8.0) crouched false
+[OFP 500.9s t=179.1] DETECT Npc_guard3 kind 0 meter 0.62 at (26.1, 0.0, 8.0), pilot (14.3, 0.0, 7.4) crouched false
+[OFP 502.8s t=181.1] GHOST waiting for the stair core: 
+[OFP 506.3s t=184.6] GHOST rover_hall at the LD check (t=185)
+[OFP 512.3s t=190.6] GHOST stair core clear after 10 s
+[OFP 513.8s t=192.0] GHOST step _g2_dock done at t=192.0 (+159.0 s)
+[OFP 513.8s t=192.0] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 513.8s t=192.0] GHOST waiting for the LK WC: 
+[OFP 514.8s t=193.0] GHOST LK WC clear after 1 s
+[OFP 515.6s t=193.8] DETECT Npc_guard7 kind 0 meter 0.10 at (30.3, -4.0, 8.1), pilot (14.2, -4.0, 8.0) crouched false
+[OFP 591.1s t=269.3] GHOST rover_hall at the LD check (t=269)
+[OFP 676.5s t=340.9] GHOST manager at his WC stop (7.1, -4.0, 2.5), seen by 1 of 8 BB eyes
+[OFP 677.4s t=341.7] GHOST manager shouted from the WC hide: mode 6
+[OFP 698.0s t=357.2] GHOST step _g3_keycard done at t=357.2 (+165.1 s)
+[OFP 698.0s t=357.2] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 699.3s t=358.6] DETECT Npc_guard2 kind 0 meter 0.18 at (6.4, -4.0, 8.5), pilot (2.6, -4.0, 3.7) crouched false
+[OFP 699.5s t=358.8] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 699.5s t=358.8] GHOST waiting for the BB to SA: 
+[OFP 700.0s t=359.3] GHOST BB to SA not clear (Npc_guard2 (6.2, -4.0, 9.6) moving, Npc_guard5 (12.4, -4.0, 16.6) moving): waiting at (1.5, -3.8, 4.0)
+[OFP 701.3s t=360.6] GHOST rover_hall at the LD check (t=361)
+[OFP 704.1s t=363.3] GHOST BB to SA clear after 4 s
+[OFP 709.2s t=368.5] GHOST waiting for the stair core: Npc_guard3 (13.4, 0.0, 11.7)
+[OFP 719.2s t=378.5] GHOST waiting for the stair core: Npc_guard3 (23.7, 0.0, 16.3) moving, Npc_guard6 (11.0, 0.0, -3.1) moving
+[OFP 720.3s t=379.5] DETECT Npc_guard5 kind 0 meter 0.13 at (13.6, -4.0, 8.0), pilot (14.3, -4.0, 6.6) crouched false
+[OFP 720.8s t=380.0] DETECT Npc_guard5 kind 0 meter 0.58 at (14.4, -4.0, 8.0), pilot (14.3, -4.0, 6.6) crouched false
+[OFP 721.3s t=380.5] DETECT Npc_guard5 kind 0 meter 1.00 at (15.1, -4.0, 8.0), pilot (14.3, -4.0, 6.6) crouched false
+[OFP 729.2s t=388.5] GHOST waiting for the stair core: Npc_guard4 (16.0, 5.0, 8.0) moving
+[INFO][stealth][p1] ALARM: guard_radio (source 207)
+[OFP 729.5s t=388.8] ALARM guard_radio by Npc_guard5 (pilot at (14.3, -4.0, 6.6))
+[OFP 749.8s t=398.5] GHOST waiting for the stair core: Npc_guard4 (15.5, 5.0, 8.0)
