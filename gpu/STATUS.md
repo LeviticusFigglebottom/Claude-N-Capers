@@ -294,3 +294,23 @@ Suggestions for A: exclude frames that take a screenshot from HITCH (or log `sho
   right sides, with the glowing cut rims and the thermal drill on its tripod in frame. The char is dark, not a pale ash ring; any pale ring isn't noticeable against the soot.
 - rc_teller_workroom (the long view): floor around the ring 55.4 (GPU-14) -> 56.0, i.e. still no visible change at that distance. rc_burn_close is the camera to judge the scorch by.
 - rc_vault_hole soffit: 34.8 -> 34.8 (unchanged from GPU-14; the round-2 soot halo is still there).
+## GPU-17: OF done-assessment baseline on trunk e9c8744f (round 255)
+- Trunk checkout fast-forwarded to e9c8744f (exactly). Import exit 0, 10 s.
+- Same command/seed/difficulty as GPU-15 (auto_loud, Cataclysm, seed 1037, crew-dmg 0, hitch-ms 50, budget 240, 1920x1080 windowed Forward+).
+  Log `gpu/renders/a/of_r255.txt`, 9 PNGs in `gpu/renders/a/of_r255/`.
+- **RESULT: `[PO5 241.2s] RESULT FAIL (code 2)`**, `FAIL budget 240 s exceeded`.
+- **Nav errors ("most reachable polygons"): 0.** No unreachable FINDINGs.
+- **BondSafe still fails**, now with A's LOS diagnostic: `goto (15.9, -3.8, 20.5) FAILED at (13.2, -4.0, 20.1)` at 237.6 s, then
+  `aimed <none>, wanted .../Loot/BondSafe/Interactable (dist 2.21, angle 0.0 deg, avail '', LOS ray hit /root/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BZ0140_1_00 at (13.7, -2.6, 20.3))`.
+  **A wall segment (FloorB/BZ0140_1_00) sits between the pilot's stop point and the safe's interactable.** The pilot reached it later than in GPU-15 (237.6 s vs 222.8 s), so only 7 re-press attempts happened before the budget.
+- **Hitches > 50 ms: 81 total; 7 are po5 shot frames; 74 non-shot (15 at heist start, t < 8 s; 59 in the loud phase).** GPU-15 had 9 non-shot (3 loud).
+  - Non-shot worst: 3193 @0.1 (heist load), 191 @0.3, 148 @94.9, 142 @162.2, 127 @5.8, 124 @139.1, 113 @95.1, 106 @139.2.
+  - Shot frames for reference: 948 @1.2, 965 @6.4, 926 @127.3, 346 @207.2.
+- **Max frame time:** 3193 ms (heist load, t=0.1). Loud phase, excluding shots: 148 ms. Per-10 s TEL worst_frame (t=22..202):
+  68, 45, 63, 90, 91, 95, 61, 51, 148, 48, 75, 926 (shot), 124, 47, 47, 142, 53, 44, 40 ms
+  (GPU-15: 33, 44, 30, 35, 50, 44, 43, 33, 59, 32, 45, 857 (shot), 62, 40, 31, 69, 43, 30, 31 ms).
+- **This is a CPU regression vs GPU-15 (A ffc264d4 + C 595f57fe), not more enemies.** TEL averages over t >= 20 s:
+  physics 36.8 ms avg / 86.0 max (GPU-15: 22.7 / 29.9); process 14.5 / 31.9 (GPU-15: 6.5 / 18.6). Enemies are the same (avg 8.7 vs 8.8, peak 15, police=24 both runs).
+  Top contributor in the 62 loud-phase HITCH lines: `anim_driver` 34x, `npc_motor` 21x, crew_ai_brain 4x, police_brain 3x. The heist-load frame has anim_driver=86.2 ms (GPU-12: 24.6).
+- **Draw calls:** po5 has no main/total split. The only draw figure it logs is `draws=` on HITCH lines (the frame's total render draws).
+  For the 59 loud-phase non-shot hitch frames: min 352, max 2688, avg 929. The heist-load frame: 2747 draws, 3460 objects. For a map/cast split, heist_cast_perf (GPU-8.5 style) would be needed.
