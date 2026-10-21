@@ -19,7 +19,8 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   and the corridor-door wait counts building-side guards only. haz_h: he was only flagged at the late re-check, 24 m out heading for LD, after mask + ECM
   were spent, and the run followed haz_g's path. Tracking radius is now 35 m so the cue check catches him. haz_i: the same. He turns toward LD between
   the cue (t=78) and t=83. Restructured step 2 into one loop per smoke window: cue → LD clear → lane clear → mask → LD clear again → only then the
-  ECM and lockpick; a busy LD at the second check keeps the ECM for the next window. haz_j is running.
+  ECM and lockpick; a busy LD at the second check keeps the ECM for the next window. haz_j: that second check (~t=80) came 1-3 s before he turned
+  (~t 81-83). Now there's a 5 s watch after the mask, sampled every 0.5 s, before the ECM (the 20-40 s smoke window leaves ~10 s of slack). haz_k is running.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
   pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35

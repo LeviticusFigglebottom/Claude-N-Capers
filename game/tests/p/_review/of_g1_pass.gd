@@ -2564,9 +2564,13 @@ func _g2_dock() -> bool:
 		if not pilot.crew.masked:
 			if not await _mask():
 				return false
+		# Watch 5 s before committing the ECM (haz_j: one sample at t~80 missed rover_hall turning for LD at ~t 81-83).
 		ld_busy.call(20.0)
-		await wait_s(0.5)
-		who = ld_busy.call(20.0)
+		for _k: int in 10:
+			await wait_s(0.5)
+			who = ld_busy.call(20.0)
+			if who != "":
+				break
 		if who != "":
 			note("GHOST LD busy after the mask (%s): ECM kept, next smoke window" % who)
 			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
