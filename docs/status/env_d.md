@@ -4,6 +4,19 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **AH prep done on `prep/d-ah` 8238fdaa3 (held for AH's turn; branched from prep/d-rt, so merge RT first).**
+  - **dj_mix** (dfd7ce9bf), as reported below.
+  - **16 finish swaps, 0 new meshes:** bouncers c-g, bartenders c/d, club_waiter/_b (the gala waiters in Velvet violet),
+    patrons e-j, frd_agent_offduty. Every swap has the same per-mesh tri counts as its base. `recolor` is now one shared step
+    (`_outfit_build.apply_recolor`). There are 3 new library colours (char_satin_silver, _emerald, _coral). p5_cast has
+    the AH pools (bouncer 7, bartender 6, patron 20 = 10 club + 10 gala, dancer 10, off-duty, couriers 12) and
+    `tag_map.afterhours` (18 spawn tags) for A to mirror.
+  - **Checks:** test_p5_cast 17/17, cower_offsets, lod, outfits, scenes, skirt_drape, npcs, hit_zones, ragdoll, rig,
+    civ_panic, factions, character_warm, ah_clips and anims all pass; gdlint, ownership d and banned are clean.
+    Review: `_review/ah_d1/ah_{door,bar,patrons}_sheet.png` (+ 30 m lineups and silhouettes).
+  - **Known limit:** the off-duty cop's FRD letters are geometry, so they show as faint relief on the black leather
+    back up close. Removing them is a small recipe option, not a mesh. Say if you want it.
+  - **Next:** P's GH/OF loud screenshots, checking for NPC anim and clipping issues.
 - **WORKING: AH prep on `prep/d-ah`** (branched from prep/d-rt, so RT merges first and the anim library stays one line).
   - **`dj_mix` is pushed: prep/d-ah dfd7ce9bf.** The DJ at the 1.0 m booth, 120 BPM: left hand on the faders, right on
     the jog wheel, knee bounce and head nod on the beat, and once per loop the right hand to the headphone cup (`cue`@90).
