@@ -4,6 +4,23 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **Older-heist regression after today's AI changes (anim coverage, trunk b0bd47a0): 0 flags in all 5 runs** (no
+  FROZEN, MISMATCH, NO_CLIP, SLIDE or STATIC; 0 script errors).
+  | Run | Bodies | Flags |
+  |---|---|---|
+  | ND loud Routine (240 s, 3 crew AI) | 47 (25 patrol, 8 TAC Light, 6 Bulwark, 4 guards, 1 civilian, 3 crew) | 0 |
+  | GN loud Routine | 34 (17 civilians, 4 guards, 10 patrol, 3 crew) | 0 |
+  | DB loud Routine | 45 (22 patrol, 8 TAC Light, 5 Bulwark, 6 cartel, 1 civilian, 3 crew) | 0 |
+  | SL stealth Hazardous (300 s, alarm at 200 s) | 6 (4 guards, 2 civilians) | 0 |
+  | GN stealth Hazardous (300 s, alarm at 200 s) | 27 (18 civilians, 5 guards, 4 patrol) | 0 |
+  - In stealth, the guards patrol (walk, investigate_look, smoke) and civilians run their ambients (mop, phone_call,
+    browse, curator_inspect, desk_work); after the alarm, cower / cower_b / cower_c / cower_stand and flee. Neither SL
+    nor GN has a `civ_manager*` spawn, so the harness tie was skipped there (it was covered on OF).
+  - **Question for C/A:** an SL **guard** plays `teller_count` (cash counting), probably the reception post, and a GN
+    civilian does too. If the reception guard should look busy at the desk, `desk_work` or `check_desk_write` read better
+    than counting banknotes.
+  - SL Hazardous fielded only 2 civilians on this seed. Not anim; mentioned in case it is unexpected.
+  - **IDLE, can take X.**
 - **OF done check, anim coverage on trunk b0bd47a0: 0 flags in both runs** (no FROZEN, MISMATCH, NO_CLIP, SLIDE or STATIC).
   - **Stealth at Hazardous** (300 s, seed 1002, no bots; harness ties the manager at 60 s, alarm at 200 s): 29 bodies (19
     civilians, 6 Halden guards, 4 police). Clips seen: guard patrol walk / run / investigate_look / smoke; teller_count,
