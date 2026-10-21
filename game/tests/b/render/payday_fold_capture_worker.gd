@@ -13,7 +13,7 @@ func _run() -> void:
 	pd.cards_enabled = false
 	get_tree().root.add_child(pd)
 	await get_tree().process_frame
-	var ids: Array[StringName] = [&"achievement.first_score", &"achievement.of_quiet_weekend", &"achievement.of_no_harm_done"]
+	var ids: Array[StringName] = [&"achievement.first_score", &"achievement.of_quiet_weekend", &"achievement.of_burn_and_hoist"]
 	var p: PlayerProfile = PlayerProfile.new_default()
 	for a: AchievementDef in Achievements.all():
 		if not ids.has(a.id):

@@ -93,7 +93,7 @@ func _draw() -> void:
 
 func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 	var w: float = _font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-	var at: Vector2 = center - Vector2(w * 0.5, 0)
+	var at: Vector2 = Vector2(ObjectiveMarkers.label_x(center.x, w, size.x), center.y)  # r252: kept on screen
 	draw_string_outline(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 6, Color(0, 0, 0, 1))
 	draw_string(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)
 
