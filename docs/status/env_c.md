@@ -6,7 +6,7 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
-- 2026-10-21, round 252, item (c) DONE: door jambs on GH/ND/GN/DB/SL (nav bake only).
+- 2026-10-21, round 252, item (c) DONE on env/c-worlds 94d9b79a (GI .res in 213ca05d): door jambs on GH/ND/GN/DB/SL (nav bake only).
   - Survey (the OF test's pattern, new `game/tests/c/test_door_clearance_maps.gd`): every heist failed on the old
     bakes. Door/approach misses: GH 14, ND 11, GN 16, DB 6, SL 34.
   - Fix: one shared helper, `game/world/heists/shared/door_nav_clearance.gd`, called from each generator's `_bake`:
