@@ -1,0 +1,213 @@
+{
+	"achievements": {
+		"achievement.bag_man": {
+			"progress": 4,
+			"unlocked": false
+		},
+		"achievement.career_criminal": {
+			"progress": 1,
+			"unlocked": false
+		},
+		"achievement.clocked_in": {
+			"progress": 589,
+			"unlocked": false
+		},
+		"achievement.first_score": {
+			"progress": 1,
+			"unlocked": true
+		},
+		"achievement.grand_tour": {
+			"progress": 1,
+			"unlocked": false
+		},
+		"achievement.heavy_lifting": {
+			"progress": 4,
+			"unlocked": false
+		},
+		"achievement.of_bank_holiday": {
+			"progress": 1,
+			"unlocked": true
+		},
+		"achievement.of_burn_and_hoist": {
+			"progress": 1,
+			"unlocked": true
+		},
+		"achievement.offshore_million": {
+			"progress": 98560,
+			"unlocked": false
+		},
+		"achievement.offshore_ten_million": {
+			"progress": 98560,
+			"unlocked": false
+		},
+		"achievement.riot_season": {
+			"progress": 1,
+			"unlocked": false
+		},
+		"achievement.seasoned": {
+			"progress": 8,
+			"unlocked": false
+		},
+		"achievement.steady_work": {
+			"progress": 1,
+			"unlocked": false
+		},
+		"achievement.ten_alarms": {
+			"progress": 1,
+			"unlocked": false
+		},
+		"achievement.top_of_the_ladder": {
+			"progress": 8,
+			"unlocked": false
+		},
+		"achievement.wheelman": {
+			"progress": 1,
+			"unlocked": false
+		}
+	},
+	"active_skill_set": 0,
+	"banked_stealth_mult": 1.0,
+	"career": {
+		"bags": {
+			"loot.cash_bricks": 4
+		},
+		"difficulties": {
+			"0": {
+				"played": 1,
+				"won": 1
+			}
+		},
+		"heists": {
+			"ostrander_federal": {
+				"fastest_win_ms": 588933,
+				"loud_wins": 1,
+				"played": 1,
+				"won": 1,
+				"won_d0": 1
+			}
+		},
+		"totals": {
+			"bags": 4,
+			"civilians_killed": 0,
+			"downs": 0,
+			"headshots": 0,
+			"hits": 0,
+			"kills": 0,
+			"loud_wins": 1,
+			"played": 1,
+			"shots": 0,
+			"small_loot": 0,
+			"specials_killed": 0,
+			"spending_earned": 24640,
+			"stash_earned": 98560,
+			"time_played_s": 589,
+			"won": 1,
+			"xp_earned": 3900
+		},
+		"weapons": {
+			"weapon.corsair_ar": 1,
+			"weapon.kestrel_p9": 1
+		}
+	},
+	"cash": 24640,
+	"crew_loadouts": [
+		{
+			"armor": "",
+			"mask": "",
+			"mods": [],
+			"outfit": "",
+			"weapon": ""
+		},
+		{
+			"armor": "",
+			"mask": "",
+			"mods": [],
+			"outfit": "",
+			"weapon": ""
+		},
+		{
+			"armor": "",
+			"mask": "",
+			"mods": [],
+			"outfit": "",
+			"weapon": ""
+		}
+	],
+	"custom_masks": [],
+	"freshness": {
+		"completed": [
+			"ostrander_federal"
+		],
+		"last_run": {
+			"ostrander_federal": 1
+		},
+		"recent": [
+			"ostrander_federal"
+		],
+		"runs": 1
+	},
+	"held_skill_sets": [
+		{},
+		{},
+		{}
+	],
+	"level": 8,
+	"loadout": {
+		"armor": "armor.tailored_suit",
+		"deployable": "deployable.doctor_bag",
+		"deployable_secondary": "",
+		"heister": "",
+		"mask": "mask.gilded_heron",
+		"melee": "melee.folding_knife",
+		"perk_deck": "",
+		"perk_deck_cards": 0,
+		"primary": "weapon.corsair_ar",
+		"primary_mods": [],
+		"secondary": "weapon.kestrel_p9",
+		"secondary_mods": [],
+		"skills": {},
+		"throwable": ""
+	},
+	"music_choice": "",
+	"notoriety": 0,
+	"notoriety_choices": {},
+	"notoriety_xp": 0,
+	"owned_mask_parts": [
+		"mask_material.bronze",
+		"mask_pattern.guilloche"
+	],
+	"owned_masks": [
+		"mask.gilded_heron"
+	],
+	"owned_mods": [
+		"mod.p9_suppressor",
+		"mod.p9_reflex_sight",
+		"mod.p9_extended_mag"
+	],
+	"owned_weapons": [
+		"weapon.corsair_ar",
+		"weapon.kestrel_p9"
+	],
+	"perk_cards": {},
+	"pro_job_locks": {},
+	"profile_name": "Crew",
+	"settings": {
+		"onboarding_seen": [
+			"loud"
+		]
+	},
+	"skill_sets": [
+		{},
+		{},
+		{}
+	],
+	"stash": 98560,
+	"stats": {
+		"heists_completed": 1,
+		"heists_failed": 0
+	},
+	"unlocks": [],
+	"version": 10,
+	"weapon_finishes": {},
+	"xp": 3900
+}

@@ -161,3 +161,14 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
 
 - **Read for D-146:** glasshouse holds ~11 ms (about 90 fps) with tight maxes. OF loud averages 16-20 ms (50-60 fps) on this GPU, and every view has
   90-115 ms hitches within 120 frames. Cast draws run 1180-1280 in 5 of 6 views (vs ~600-680 quiet on trunk e960048e in GPU-2).
+## GPU-9: ENV B OF full-flow captures at 1080p (tree: env/b-content 2865f510, local branch gpu/b)
+- Import: exit 0, 8 s.
+- `--audio-driver Dummy --path game --resolution 1920x1080 --script res://tests/b/render/real_input_run_capture.gd -- <repo>\gpu\renders\b\of_real_input_1080 ostrander_federal`:
+  exit 0, 53 s, `RUN DONE`. 13 shots in `of_real_input_1080/ostrander_federal/` (heist select -> briefing -> preplanning -> loadout/pickers ->
+  in-heist casing/masked -> tab sheet -> payday -> hub). No ERRORs.
+- `--audio-driver Dummy --path game --resolution 1920x1080 --script res://tests/b/render/of_run_capture.gd -- <repo>\gpu\renders\b\of_loud_1080 loud`:
+  exit 0, 209 s, `OFRUN DONE 6`. 6 shots at both 1920x1080 and 1280x720 (HUD: drill delivery, vault drill, device saw, device thermal, escape wait; payday),
+  plus `profiles/profile_0.json(.bak)` written by the run.
+  - Payday: $123,200, loud, 9:49, achievements First Score / Bank Holiday / Burn and Hoist.
+  - ERRORs: `It's not expect to not find the most reachable polygons` x4 (navmesh). At exit: 43 Texture RIDs, 66 ShapedText RIDs, 4 Font RIDs leaked, and `1 resources still in use at exit`.
+- Console logs: `render_log.txt` in each folder. (If any `Â·` appears in a log, it's the UTF-8 middle dot; the log itself is fine.)

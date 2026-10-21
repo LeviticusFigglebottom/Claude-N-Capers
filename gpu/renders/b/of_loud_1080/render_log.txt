@@ -1,0 +1,211 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[INFO][rng][p1] run seed 5
+[INFO][variants][p1] seed 5 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_vault_ops"], &"code_pc": [&"pc_ao1"], &"officers": [&"off_2"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_hall"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_6"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 45.0, &"escape_eta_s": 90.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 527 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] DEV OPTION crew_damage_taken_mult = 0.25 (D-133 harness-only)
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 69 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[X4] ostrander_federal    0.0 s  launched seed 5, variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_vault_ops"], &"code_pc": [&"pc_ao1"], &"officers": [&"off_2"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_hall"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_6"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 45.0, &"escape_eta_s": 90.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[X4] ostrander_federal    0.1 s  DEV OPTION crew_damage_taken_mult=0.25 (D-133 harness-only; assault events on)
+[INFO][heist][p1] phase CASING -> STEALTH
+[X4] ostrander_federal    1.1 s  objective casing COMPLETED
+[INFO][crew][p1] slot 0 masked (forced=false)
+[INFO][stealth][p1] ALARM: x4_loud (source 0)
+[INFO][heist][p1] alarm (x4_loud): going loud
+[INFO][crew][p1] slot 1 masked (forced=true)
+[INFO][crew][p1] slot 2 masked (forced=true)
+[INFO][crew][p1] slot 3 masked (forced=true)
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[X4] ostrander_federal    1.1 s  objective keycard COMPLETED
+[X4] ostrander_federal    1.1 s  objective code_hint COMPLETED
+[X4] ostrander_federal    1.1 s  objective code_pc COMPLETED
+[X4] ostrander_federal    1.1 s  objective server COMPLETED
+[X4] ostrander_federal    1.1 s  objective vault_gate COMPLETED
+[X4] ostrander_federal    1.1 s  objective lasers COMPLETED
+[X4] ostrander_federal    1.1 s  ALARM x4_loud
+[X4] ostrander_federal    1.1 s  lockdown; the drill comes to [&"drop_terrace"] in 45.0 s
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_drill_delivery_1280x720.png
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_drill_delivery_1920x1080.png
+OFRUN HUD loud drill_delivery device_timers: 
+OFRUN HUD loud drill_delivery pager_panel: 
+OFRUN HUD loud drill_delivery objectives_panel: Objective | Get both thermal drill bags from the drop
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_vault_drill_1280x720.png
+[X4] ostrander_federal   47.4 s  pick up drill part 1: done
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_vault_drill_1920x1080.png
+OFRUN HUD loud vault_drill device_timers: 
+OFRUN HUD loud vault_drill pager_panel: 
+OFRUN HUD loud vault_drill objectives_panel: Objective | Get both thermal drill bags from the drop
+[X4] ostrander_federal   50.5 s  place drill part 1: done
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[X4] ostrander_federal   51.6 s  objective drill_delivery COMPLETED
+[X4] ostrander_federal   51.7 s  pick up drill part 2: done
+[X4] ostrander_federal   54.8 s  place drill part 2: done
+[X4] ostrander_federal   54.8 s  drill delivered 2/2, state 1
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_device_thermal_1280x720.png
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_device_thermal_1920x1080.png
+OFRUN HUD loud device_thermal device_timers: 
+OFRUN HUD loud device_thermal pager_panel: 
+OFRUN HUD loud device_thermal objectives_panel: Objective | Drill the marked slab in the teller workroom and hold the room | THERMAL DRILL 05:56
+[INFO][crew_ai][p1] bot 3 warped to the leader (blocked by a door it cannot open)
+[INFO][crew_ai][p1] bot 2 warped to the leader (blocked by a door it cannot open)
+[INFO][crew_ai][p1] bot 1 warped to the leader (blocked by a door it cannot open)
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[INFO][director][p1] assault event turret_van at (16.0, -0.75, 51.0) (TurretVan_1)
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 156 s)
+[X4] ostrander_federal  263.6 s  fix the drill (jam #1): done
+[INFO][director][p1] assault event breach at (14.0, 12.2, 6.85) (Breach_4)
+[X4] ostrander_federal  381.0 s  fix the drill (jam #2): done
+[INFO][director][p1] assault phase FADE (wave 2, 15 s)
+[INFO][prefab][p1] Lid disabled
+[INFO][prefab][p1] Hoist enabled
+[INFO][prefab][p1] RopeLadder enabled
+[X4] ostrander_federal  419.1 s  objective vault_drill COMPLETED
+[X4] ostrander_federal  419.1 s  objective vault_breach COMPLETED
+[X4] ostrander_federal  422.5 s  work the cash cage padlock: done
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_device_saw_1280x720.png
+[INFO][director][p1] assault phase CONTROL (wave 3, 40 s)
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_device_saw_1920x1080.png
+OFRUN HUD loud device_saw device_timers: 
+OFRUN HUD loud device_saw pager_panel: 
+OFRUN HUD loud device_saw objectives_panel: Objective | Bag the cash cage | SAW 00:23
+[X4] ostrander_federal  435.2 s  fix the padlock saw: done
+[X4] ostrander_federal  454.6 s  cash cage padlock beaten by saw
+[X4] ostrander_federal  455.9 s  bag VaultCash (10 left): done
+[X4] ostrander_federal  457.7 s  bag VaultCash (9 left): done
+[INFO][prefab][p1] Hoist: lift 0 -> 1 with 2 bag(s) (slot 0)
+[X4] ostrander_federal  461.9 s  send the hoist up (2 bags): done
+[X4] ostrander_federal  469.1 s  take Bag_cash_bricks off the hoist: done
+[INFO][director][p1] assault phase ANTICIPATION (wave 3, 30 s)
+[X4] ostrander_federal  470.0 s  secured loot.cash_bricks (1)
+[X4] ostrander_federal  471.2 s  take Bag_cash_bricks2 off the hoist: done
+[X4] ostrander_federal  472.0 s  secured loot.cash_bricks (2)
+[INFO][prefab][p1] Hoist: lift 1 -> 0 with 0 bag(s) (slot 0)
+[X4] ostrander_federal  475.5 s  call the hoist to landing 0: done
+[X4] ostrander_federal  482.7 s  bag VaultCash (8 left): done
+[X4] ostrander_federal  484.5 s  bag VaultCash (7 left): done
+[INFO][prefab][p1] Hoist: lift 0 -> 1 with 2 bag(s) (slot 0)
+[X4] ostrander_federal  488.7 s  send the hoist up (2 bags): done
+[X4] ostrander_federal  495.9 s  take Bag_cash_bricks off the hoist: done
+[X4] ostrander_federal  496.8 s  secured loot.cash_bricks (3)
+[X4] ostrander_federal  497.9 s  take Bag_cash_bricks2 off the hoist: done
+[X4] ostrander_federal  498.8 s  objective secure COMPLETED
+[X4] ostrander_federal  498.8 s  objective vault_loot COMPLETED
+[X4] ostrander_federal  498.8 s  secured loot.cash_bricks (4)
+[INFO][director][p1] assault phase BUILD (wave 3, 35 s)
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_escape_wait_1280x720.png
+[INFO][director][p1] assault event heli at (30.0, 23.2, 14.0) (HeliDrop_2)
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_hud_escape_wait_1920x1080.png
+OFRUN HUD loud escape_wait device_timers: 
+OFRUN HUD loud escape_wait pager_panel: 
+OFRUN HUD loud escape_wait objectives_panel: Objective | Hold until the escape arrives | ESCAPE 01:24
+[INFO][director][p1] assault phase SUSTAIN (wave 3, 208 s)
+[X4] ostrander_federal  588.9 s  objective escape_wait COMPLETED
+[INFO][heist][p1] phase LOUD -> ESCAPE
+[X4] ostrander_federal  588.9 s  objective escape COMPLETED
+[INFO][heist][p1] phase ESCAPE -> ENDED
+[INFO][progression][p1] achievement unlocked: achievement.first_score
+[INFO][progression][p1] achievement unlocked: achievement.of_bank_holiday
+[INFO][progression][p1] achievement unlocked: achievement.of_burn_and_hoist
+OFRUN loud route ok=true alarms=[&"x4_loud"] pagers=0 completed=[&"casing", &"keycard", &"code_hint", &"code_pc", &"server", &"vault_gate", &"lasers", &"drill_delivery", &"vault_drill", &"vault_breach", &"secure", &"vault_loot", &"escape_wait", &"escape"] secured=[&"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks"] failures=[]
+OFRUN PAYDAY loud result success=true stealth=false difficulty=0 time=589 bags=? small=0 kills=? pagers=?
+OFRUN PAYDAY loud payout={ "success": true, "stealth": false, "freshness": 1.0, "contract": 80000, "loot_lines": [{ "loot_id": &"loot.cash_bricks", "base": 8000, "value": 8000 }, { "loot_id": &"loot.cash_bricks", "base": 8000, "value": 8000 }, { "loot_id": &"loot.cash_bricks", "base": 8000, "value": 8000 }, { "loot_id": &"loot.cash_bricks", "base": 8000, "value": 8000 }], "loot": 32000, "small_loot": 0, "civilian_penalty": 0, "subtotal": 112000, "crew_alive_mult": 1.1, "freshness_money": 0, "gross": 123200, "total": 123200, "stash": 98560, "spending": 24640, "xp_lines": [{ "key": &"ui.results.xp.base", "amount": 3000 }, { "key": &"ui.results.xp.pro", "amount": 0 }, { "key": &"ui.results.xp.difficulty", "amount": 0 }, { "key": &"ui.results.xp.custody", "amount": 0 }, { "key": &"ui.results.xp.additive", "amount": 900 }, { "key": &"ui.results.xp.notoriety", "amount": 0 }, { "key": &"ui.results.xp.stealth", "amount": 0 }, { "key": &"ui.results.xp.freshness", "amount": 0 }], "xp_total": 3900, "stealth_bonus_consumed": false, "stealth_bonus_banked": 1.0 }
+OFRUN PAYDAY loud freshness={ "mult": 1.0, "kind": &"none", "n": 0, "since": -1, "k": 0 } achievements=[&"achievement.first_score", &"achievement.of_bank_holiday", &"achievement.of_burn_and_hoist"]
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_payday_1280x720.png
+QA ISSUE loud/payday@720 overlap 'Payday: Ostrander Federal' x 'Achievement unlocked'
+QA ISSUE loud/payday@720 overlap 'Payday: Ostrander Federal' x 'First Score'
+QA ISSUE loud/payday@720 overlap 'Heist complete' x 'First Score'
+OFRUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_loud_1080/loud_payday_1920x1080.png
+QA ISSUE loud/payday@1080 overlap 'Payday: Ostrander Federal' x 'Achievement unlocked'
+QA ISSUE loud/payday@1080 overlap 'Payday: Ostrander Federal' x 'First Score'
+QA ISSUE loud/payday@1080 overlap 'Heist complete' x 'First Score'
+OFRUN PAYDAY loud labels: Payday: Ostrander Federal | Heist complete | $123,200 | $98,560 to the stash | $24,640 spending cash | Went loud   ·   Time: 9:49   ·   Pagers answered: 0   ·   Routine | Cash | Contract pay | $80,000 | Cash Bricks x4 | $32,000 | Crew alive bonus x1.10 | $11,200 | Total payout | $123,200 | Experience | Heist experience | 3,000 | Crew and gear bonuses | 900 | Total experience | 3,900 | Level 8 | Level up! Now level 8 | Crew | Kills | Civilians killed | Player | 0 | 0 | AI 1 | 1 | 0 | AI 2 | 7 | 0 | AI 3 | 7 | 1 | Crew Honours | Iron Spine | Player | Clean Hands | Player | Achievements unlocked | First Score | Complete any heist. | Bank Holiday | Reward | Guilloche | Complete Ostrander Federal in under 20 minutes. Unlocks the Guilloche pattern. | Burn and Hoist | Reward | Statuary Bronze | Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out. Unlocks the Statuary Bronze material. | Achievement unlocked | First Score | Enter | Select
+OFRUN DONE 6
+ERROR: 43 RID allocations of type 'N10RendererRD14TextureStorage7TextureE' were leaked at exit.
+ERROR: 66 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.
+ERROR: 4 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+   at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _plan (res://systems/ai/crew_ai/crew_ai_brain.gd:1022)
+       [1] _steer (res://systems/ai/crew_ai/crew_ai_brain.gd:963)
+       [2] _think (res://systems/ai/crew_ai/crew_ai_brain.gd:378)
+       [3] _physics_step (res://systems/ai/crew_ai/crew_ai_brain.gd:309)
+       [4] _physics_process (res://systems/ai/crew_ai/crew_ai_brain.gd:265)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _plan (res://systems/ai/crew_ai/crew_ai_brain.gd:1022)
+       [1] _steer (res://systems/ai/crew_ai/crew_ai_brain.gd:963)
+       [2] _think (res://systems/ai/crew_ai/crew_ai_brain.gd:378)
+       [3] _physics_step (res://systems/ai/crew_ai/crew_ai_brain.gd:309)
+       [4] _physics_process (res://systems/ai/crew_ai/crew_ai_brain.gd:265)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _plan (res://systems/ai/crew_ai/crew_ai_brain.gd:1022)
+       [1] _steer (res://systems/ai/crew_ai/crew_ai_brain.gd:963)
+       [2] _think (res://systems/ai/crew_ai/crew_ai_brain.gd:378)
+       [3] _physics_step (res://systems/ai/crew_ai/crew_ai_brain.gd:309)
+       [4] _physics_process (res://systems/ai/crew_ai/crew_ai_brain.gd:265)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _plan (res://systems/ai/crew_ai/crew_ai_brain.gd:1022)
+       [1] _steer (res://systems/ai/crew_ai/crew_ai_brain.gd:963)
+       [2] _think (res://systems/ai/crew_ai/crew_ai_brain.gd:378)
+       [3] _physics_step (res://systems/ai/crew_ai/crew_ai_brain.gd:309)
+       [4] _physics_process (res://systems/ai/crew_ai/crew_ai_brain.gd:265)
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 50 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 650 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

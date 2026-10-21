@@ -1,0 +1,75 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/01_main_menu_1920x1080.png focus=@Button@10:<Button#428775311679>
+[INFO][ui][p1] safehouse scene unavailable (res://world/hub/safehouse/safehouse.tscn); 2D hub
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/02_hub_1920x1080.png focus=@Button@45:<Button#631007876883>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/03_heist_select_1920x1080.png focus=@Button@192:<Button#644949743767>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/04_briefing_1920x1080.png focus=@Button@280:<Button#729725016693>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/05_preplanning_1920x1080.png focus=Marker_pp_drop_lockers:<Button#1201231898480>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/06_loadout_1920x1080.png focus=@Button@422:<Button#1221700101751>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/07_loadout_secondary_picker_1920x1080.png focus=@Button@582:<Button#1237604902409>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/08_loadout_picker_locked_preview_1920x1080.png focus=@Button@587:<Button#1237823006191>
+[INFO][rng][p1] run seed 1792553903
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1792553903 resolved { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ao1"], &"officers": [&"off_2"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_hall"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust_6"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 210.0, &"drill_eta_s": 60.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 2, &"deposit_boxes": 6, "rare": [&"time_lock_glitch"] }
+[INFO][heist][p1] vfx prewarm: 510 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][prefab][p1] VaultBoxN07 disabled
+[INFO][prefab][p1] VaultBoxN08 disabled
+[INFO][prefab][p1] VaultBoxN09 disabled
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 70 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/09_in_heist_casing_1920x1080.png focus=<Object#null>
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+[INFO][crew][p1] slot 1 masked (forced=false)
+[INFO][crew][p1] slot 2 masked (forced=false)
+[INFO][crew][p1] slot 3 masked (forced=false)
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/10_in_heist_masked_1920x1080.png focus=<Object#null>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/11_tab_sheet_1920x1080.png focus=<Object#null>
+[INFO][heist][p1] phase STEALTH -> ENDED
+[INFO][progression][p1] achievement unlocked: achievement.first_score
+[INFO][progression][p1] achievement unlocked: achievement.of_quiet_weekend
+[INFO][progression][p1] achievement unlocked: achievement.of_no_harm_done
+[INFO][progression][p1] achievement unlocked: achievement.of_bank_holiday
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/12_payday_1920x1080.png focus=@Button@851:<Button#1306257268947>
+RUN SHOT C:\Users\Aaron\caperworks-gpu\gpu\renders\b\of_real_input_1080/ostrander_federal/13_hub_after_1920x1080.png focus=@Button@851:<Button#1306257268947>
+RUN DONE
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 456 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
