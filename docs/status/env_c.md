@@ -7,6 +7,33 @@ Newest entry first, keep the last 10.
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **Milestone 1 merged (RT-C1 8973f6c9 via the env/c-worlds merge, after cc55e5e9):** the RT G1 greybox builds.
+    - Generator `game/world/heists/rolling_thunder/greybox/` (the OF chain copy-adapted). Built: site, Skyway, trench,
+      hoarding and closures, car park ×3, diner ×2, cabins, magazine, frame, scaffold, crane, the stairs, rooms and zones,
+      12 player + 6×2 police spawns, 50 doors, 12 slot groups / 31 slots, 4 ConvoyLayout placeholder sets
+      (`TODO(A5-01/02/03)`, `TODO(QC-81)`), H1-H4, S1-S4, 13 preplan points, 28 review cams, graphs, assault markers.
+    - Results: regen twice identical; navmesh 2,588 polys (< 3,500); validate greybox (all variants) passes every check
+      but **`floating`** (5); gdlint, flake8, banned and ownership clean.
+    - The `floating` FAIL: the east-arm convoy boxes are tilted 8.9° flush on the ramp, and the probe starts at the
+      lowest corner. Your call: (a) I teach lc_check_floating tilted boxes (it touches every heist's validator), or
+      (b) accept it until A5-02's movers replace the boxes.
+    - **Menus:** the minimal `rolling_thunder_mission.gd` stub (A's file from here) makes RT "ready", so it shows in
+      the menus with a greybox. That's fine on held env/c-worlds; please decide before any trunk merge.
+    - Plan changes for you to accept:
+      - diner stair SC doors moved to (5, 17) (a mid-core door opened onto a flight);
+      - closure lorries W and S shortened to leave a ≥ 4 m police lane (§7.12);
+      - door kits: 1.0 m route doors use the 1.2 m service kit;
+      - 0.8 m deck slabs (2.7 m ceilings);
+      - walkthrough whitelist entries for level-change detours (reasons in the file).
+    - Asks for A: A5-01/02/03; burn_point.target (QC-81); a TacticalPoint `enabled` flag; a padlock that can gate a
+      hack_terminal (the signal cabinet); more than one `force_active` per rare event (gold_rush); the full mission.
+    - Asks for B: the RT-B1 values (per-difficulty values, rare-event keys, preplan costs/favors, briefing, D-143.5
+      allow-lists, `asset.c4_drop`) and the `staff_diner` / `staff_booth` tag rows. The resources file holds only the
+      $30k payout and the G0 weights.
+    - Pre-existing (the builder's own check, which I haven't repeated): 4 tests/b FAILs (contacts, heist_freshness,
+      p2_heist_content, payout_calculator). They fail with the RT mission removed too.
+    - Next for G1: window prefabs, the full COVER set, seats, civ_flee exits / call points, the man-gate mesh, bag_line
+      metas, then RT-C1b.
   - Building the G1 greybox in a separate worktree on a local `prep/c-rt` branch: emit_layout from the passing plan
     scripts, then the generator (copy-adapting the OF chain), the site and shells, stairs and ramps, rooms and zones,
     spawns, doors, contract nodes and the nav bake, then the slots and convoy placeholders. Validate and regen as
