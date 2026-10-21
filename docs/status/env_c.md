@@ -26,6 +26,34 @@ Newest entry first, keep the last 10.
   - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
     D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **G1 items + RT-C1b merged (prep/c-rt 2b776538..3d0ff857):**
+    - 17 breakable WindowPrefabs (shopfronts 3.0 × 2.4; frosted cabins not see-through).
+    - 93 COVER points: 57 always on, plus 36 per convoy layout with TacticalPoint `enabled = false` until the stop; the
+      mixer's tagged `mixer`.
+    - 4 `civ_flee` exits past the closures and 8 sidewalk call points (D-149.7).
+    - The man-gate 1.2 × 1.0 m mesh panel (see_through, D-142); the Tannery gates `opens_with = mixer_move`, BARRED and
+      baked closed until A5-02.
+    - 5 throw-spot bag_lines (camera-free in all 3 camera layouts).
+    - `test_rt_loud_nav_targets` (per convoy route: 146 targets, 0 bad); RT in `test_door_clearance_maps` (31 of 33
+      open doors checked, pass).
+    - Verified after the merge: regen twice identical; validate greybox PASS; the 2 new test runs + 6 b tests green;
+      gdlint, flake8, ownership and banned clean. Navmesh about 2,578.
+    - Review points for you:
+      (a) the man-gate panel is in the hoarding beside the gate, not in the leaf: a door leaf counts as see-through
+          only as glass (D-142);
+      (b) the per-layout points are tested on the street navmesh only until the movers and the per-layout nav regions
+          (D-149.1) exist.
+    - **Proposal, not coded (shared levelcheck; for you), QC-87c:** add one reachability / walkthrough run per node
+      with meta `convoy_layout`:
+      - activate its route slot and show only that set;
+      - enable its TacticalPoints and its pre-baked `layout_nav` region (once A5-02 exists), disabling the others;
+      - add its RearDoor and COVER targets, labelled `convoy=<route>_<mode>`;
+      - restore everything afterwards.
+      That needs a `set_layout_config` beside `set_variant_config` in lc_context.gd.
+    - **For A (queued):** `civilians_leave` returns early once loud, but RT calls it at the alarm (D-149.7). The
+      mission must enable the active layout's cover at the stop, and open the Tannery gates on `mixer_move`.
+    - **G1 is now complete on paper and on map, pending your review.** Remaining blockers are A5-01/02/03 and RT-B1
+      (B's values).
   - **D's cast cross-check folded in (32256261, merged 68fa63d6):**
     - waitress `counter_wipe`; cook at 0.30 m off the cookline;
     - 5 diner customers `sit_eat` on chairs. The 5th is at a 3rd table: a booth's 0.115 m bench-to-table strip can't
