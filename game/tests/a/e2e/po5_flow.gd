@@ -28,6 +28,8 @@ var _heist_list: UiHeistList = null
 var _shot: int = 0
 var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
+## _telemetry passes (a CENSUS line every 6th).
+var _tel_n: int = 0
 ## --po5-hitch-ms: log every heist frame (rendered or not) longer than this (ms; 0 = off), with the NPCs spawned in it.
 var _render_hitch_ms: float = 0.0
 var _render_hitches: int = 0
@@ -231,6 +233,37 @@ func _telemetry() -> void:
 			rt.phase, Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
 			Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
 			_alive_in(G.ENEMY), _alive_in(G.CIVILIAN), " ".join(cs)])
+		_tel_n += 1
+		if _tel_n % 6 == 0:
+			_census()
+
+
+## Every 60 s of game time (LEAD GPU-20c, hitch build-up): physics server load, nodes by class and the parents with
+## the most children, to find what accumulates over a long loud heist.
+func _census() -> void:
+	var by_class: Dictionary = {}
+	var by_parent: Dictionary = {}
+	var stack: Array[Node] = [get_tree().root]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		var k: String = n.get_class()
+		by_class[k] = int(by_class.get(k, 0)) + 1
+		var cc: int = n.get_child_count()
+		if cc >= 20:
+			by_parent[String(n.get_path()).trim_prefix("/root/")] = cc
+		for ch: Node in n.get_children():
+			stack.append(ch)
+	var cls: Array = by_class.keys()
+	cls.sort_custom(func(a: String, b: String) -> bool: return by_class[a] > by_class[b])
+	var par: Array = by_parent.keys()
+	par.sort_custom(func(a: String, b: String) -> bool: return by_parent[a] > by_parent[b])
+	note("CENSUS t=%.0f phys_active=%d pairs=%d islands=%d dead_npcs=%d classes={%s} parents={%s}" % [rt.heist_time_s,
+		PhysicsServer3D.get_process_info(PhysicsServer3D.INFO_ACTIVE_OBJECTS),
+		PhysicsServer3D.get_process_info(PhysicsServer3D.INFO_COLLISION_PAIRS),
+		PhysicsServer3D.get_process_info(PhysicsServer3D.INFO_ISLAND_COUNT),
+		get_tree().get_nodes_in_group(G.ENEMY).size() - _alive_in(G.ENEMY),
+		", ".join(cls.slice(0, 18).map(func(c: String) -> String: return "%s:%d" % [c, by_class[c]])),
+		", ".join(par.slice(0, 10).map(func(c: String) -> String: return "%s:%d" % [c, by_parent[c]]))])
 
 
 ## After heist_ended: screenshot the payday, click through it like a player until the hub shows.
