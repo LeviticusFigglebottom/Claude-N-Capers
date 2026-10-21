@@ -6,6 +6,16 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, f2f73be24: B's RT-B1 values are in the RT def and variants generator.
+  - Added: briefing_objectives, favors 5, asset.c4_drop.
+  - Fixed: Routine/Tense truck_count weights were 0.5/0.5 and are now 0.7/0.3.
+  - Checks: regen twice byte-identical, the scene is unchanged, validate greybox PASS.
+  - The def stays `rolling_thunder_wip_def.tres` until G1 approval. asset.c4_drop's .tres is on env/b-content.
+  - **A's convoy layouts (A5-02, b6d288620): I confirmed A's structure for RT-C2.** That means movers, per-layout
+    stops and nav, and `convoy_open_nav`; mixer and tannery go in their own `layout_group`s.
+  - **Ask (shared code, yours):** QC-87c `set_layout_config` treats every convoy_layout node as one set. Once the
+    mixer/tannery layouts exist it would test the mixer with every convoy layout off. Please make it iterate per
+    `layout_group` (meta default "convoy"), with one layout active per group.
 - 2026-10-21, r267 merged (ed52acb9): RT validate greybox PASS with your QC-87c layout runs; OF validate final PASS;
   ownership OK. Thanks for QC-87c.
   - **The overlap WARN (clean-vs-crash boxes of one route, `never_with`): please make that edit yourself.** This
