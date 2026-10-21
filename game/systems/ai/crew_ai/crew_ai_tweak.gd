@@ -113,6 +113,12 @@ extends Resource
 @export var chest_height_m: float = 1.15
 ## Only pull the trigger when the view is within this angle of the aim point (deg).
 @export var fire_cone_deg: float = 4.0
+## GPU-20c (PD2: bots never shoot civilians): a civilian whose chest is within this distance of the line of fire
+## (eye -> aim point, extended civilian_line_past_m beyond it for a miss) blocks the shot; the bot holds fire and
+## prefers another target (m) ◇.
+@export var civilian_line_clear_m: float = 0.6
+## How far past the aim point a civilian still blocks the shot (a missed round flies on) (m) ◇.
+@export var civilian_line_past_m: float = 4.0
 ## Turn rate of the view (deg/s) ◇.
 @export var turn_speed_deg: float = 720.0
 ## Tactical reload below this magazine fraction when no enemy is visible ◇.
