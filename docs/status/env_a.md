@@ -4,6 +4,18 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-13) hoist6 headless, plus the trunk r260 merge (1057052c) (11:20 UTC)
+- hoist6 (OF Cataclysm 1037, 1800 s, **no FOCUS**, 7d2cd968):
+  - Default pick order: `bond_safe -> 2` at t=777. (d) is confirmed.
+  - Gold went up the hoist and was secured twice (t=836 and t=1052).
+  - Still FAIL: no cash moved. With the cash cage shut, VaultCash was marked "unreachable for this run (no navmesh
+    path)" at t=634. The cage padlock was sawn 6 s later, but that mark was permanent.
+  - Fixed in e9bf7650 / 9fbfa229: a "no navmesh path" mark re-tests the path every 10 s and clears once the gate or
+    cage opens.
+- **GPU-20 (7c7a014b) will likely end the same way.** If it does, re-run it on **1057052c or later**.
+- Merged trunk r260 into env/a-core (1057052c). Targeted after the merge: of_mission 20/20, a1_08_npc_gunner 9/9,
+  po6_14 7/7, rt_ 7 (1 SKIP: the convoy defs).
+- hoist7 is running on the merged head.
 ### (-12) hoist5 headless: the hoist cycle works; two last pilot gaps fixed (7d2cd968); hoist6 running (10:50 UTC)
 - hoist5 (OF Cataclysm 1037, 1700 s, c307fb90): 5 cash bags went up, each cycle "Hoist sent" -> "unloading" ->
   `loot_secured loot.cash_bricks`, about 55 s apart (t=1079 / 1133 / 1191 / 1245 / 1299).
