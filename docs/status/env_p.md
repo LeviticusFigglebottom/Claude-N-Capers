@@ -5,7 +5,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 ## To the LEAD: (updated 2026-10-21 09:20 UTC)
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
-  haz_b is running. The BB window log (count/lengths) will go here for C if step 5 finds no window.
+  haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
+  'LD occupied' check also counts guards within 10 m of DockCorridorDoor, and that smoke window is skipped (≤ 4 tries). haz_c is running.
+  The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
   pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35
   every 20-40 s; the vault guard's only long absence is loop (b) RC (~30 s); Cataclysm's extra guards (Npc_guard7/9) walk BB east. In r257d no

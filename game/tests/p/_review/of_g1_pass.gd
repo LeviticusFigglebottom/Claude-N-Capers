@@ -2496,15 +2496,20 @@ func _g2_dock() -> bool:
 	var waited: float = 0.0
 	# Inside too: rover_hall's loop (b) checks LD (doc), so a smoke window with him in LD is no window (r256a: lockpicked
 	# into Npc_guard3 standing 5 m inside). Skip that cue and take the next one, up to 3 tries.
+	# ...and BC by DockCorridorDoor: rover_hall's loop (b) comes through it into LD (haz_b: waited inside LD, he walked in
+	# and found the pilot at 1 m). Inside the building = z > 0.5.
+	var cdoor_n: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
 	var ld_busy: Callable = func() -> String:
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g != null and g.is_alive() and g.global_position.z > 0.5 and absf(g.global_position.y) < 1.5 \
-					and pilot.flat_dist(g.global_position, door_at) < 8.0:
+			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
+				continue
+			if pilot.flat_dist(g.global_position, door_at) < 8.0 \
+					or (cdoor_n != null and pilot.flat_dist(g.global_position, cdoor_n.global_position) < 10.0):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
 	var clear: bool = await _smoke_cue(300.0)
-	for _try: int in 2:
+	for _try: int in 4:
 		var who: String = ld_busy.call()
 		if who == "":
 			break
