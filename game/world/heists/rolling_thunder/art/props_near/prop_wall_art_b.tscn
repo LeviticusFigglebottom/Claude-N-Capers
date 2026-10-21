@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/salon/prop_wall_art_b.tscn" id="1_base"]
+
+[node name="PropWallArtB" instance=ExtResource("1_base")]
+
+[node name="Art" parent="Model"]
+visibility_range_end = 24.0
+visibility_range_end_margin = 2.4
+visibility_range_fade_mode = 1
+cast_shadow = 0
+
+[editable path="Model"]

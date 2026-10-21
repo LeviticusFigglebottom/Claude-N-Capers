@@ -51,7 +51,11 @@ VARIANTS = {
         {
             "required": ["desk", "chair", "plan_chest", "whiteboard", "coat_rail", "light_fixture"],
             "optional": {"file_cabinet": 1, "bin": 1},
-            "assets_add": {"desk": ["prop_desk_office"], "chair": ["prop_chair_office"]},
+            "assets_add": {
+                "desk": ["prop_desk_office"],
+                "chair": ["prop_chair_office"],
+                "whiteboard": ["prop_whiteboard"],
+            },
             "clutter_items_add": {"desk": {"kettle": 0.8}},
             "lone_ok_add": ["plan_chest", "coat_rail"],
             "notes": "RT C1 site office cabin (3 x 9 m): desk, plan chest, whiteboard, coat rail, kettle.",
@@ -91,6 +95,7 @@ VARIANTS = {
                 "pallet": ["prop_pallet", "prop_pallet_loaded"],
                 "crate": ["prop_crate_wood"],
                 "box": ["prop_box_small", "prop_box_stack"],
+                "tote": ["prop_ibc_tote"],
             },
             "lone_ok_add": ["pallet", "crate", "tote", "ashtray", "hvac", "dumpster"],
             "notes": "RT YD diner yard (20 x 8 m): the bins (body_container) and the gates are the map's; the kit adds "

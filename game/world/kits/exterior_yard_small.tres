@@ -24,7 +24,8 @@ counts = {}
 assets = {
 &"box": PackedStringArray("prop_box_small", "prop_box_stack"),
 &"crate": PackedStringArray("prop_crate_wood"),
-&"pallet": PackedStringArray("prop_pallet", "prop_pallet_loaded")
+&"pallet": PackedStringArray("prop_pallet", "prop_pallet_loaded"),
+&"tote": PackedStringArray("prop_ibc_tote")
 }
 ceiling = {}
 notes = "Rolling Thunder (exterior), from exterior_alley: RT YD diner yard (20 x 8 m): the bins (body_container) and the gates are the map's; the kit adds pallets, crates, the waste-oil tote, the back-door lamp and an ashtray stand."

@@ -40,7 +40,8 @@ assets = {
 &"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
 &"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"),
 &"plant": PackedStringArray("prop_plant_tall"),
-&"rug": PackedStringArray("prop_rug_rect")
+&"rug": PackedStringArray("prop_rug_rect"),
+&"whiteboard": PackedStringArray("prop_whiteboard")
 }
 ceiling = {"prop_ceiling_panel_neutral": 2.4}
 notes = "Rolling Thunder (office), from office_small: RT C1 site office cabin (3 x 9 m): desk, plan chest, whiteboard, coat rail, kettle."
