@@ -4,6 +4,30 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **D-148 RT cast / clips: prep/d-rt 39f981cc7** (on top of 83cc1a187; still not on env/d-art).
+  - **Built this push:** `sit_eat` and `cook_stove` (implemented in the parked _anim_rt but never registered, so never
+    built), `sit_vehicle_drive` (the escort / crew driver: sit_vehicle's seat and glances, both hands on the wheel at
+    10 and 2 with small steering), `counter_wipe` (the waitress: bartender_wipe at the diner's 0.9 m counter; the bar
+    clip's 1.05 m would leave her hands 15 cm above the top). bartender_wipe now takes height / lean as parameters
+    (its own clip identical). Checks: reach error sit_eat 0, cook_stove 5.1 mm, drive 5.5 mm, counter_wipe 0; no skin
+    below the floor.
+  - **Reused, nothing to build (D-147):** escort officers in cars = the police looks via their EnemyDefs (duty and
+    faction variants on Routine / Tense) seated with `sit_vehicle` (passengers) or `sit_vehicle_drive` (drivers); convoy
+    guards bailing out = `vehicle_exit_l` / `_r` (crew and police roles); marshal `radio_call`; pedestrians `walk_text`;
+    bus queue `sit`; cowering `cower_seated` (booths, shelter benches) / `cower_stand`.
+  - **Tests (worktree):** d test_rt_clips 6 (now covers all 7 RT clips: presence, events, floor, loops; new: the
+    driver's wrists stay within 12 cm of the wheel rim points, counter_wipe's flat hand 0.15 m below bartender_wipe's),
+    test_anims 18 (clip count 248 -> 252), test_p5_cast 17, test_scenes 9. gdlint, check_ownership d, check_banned clean.
+  - **For A:** HINT_CLIPS / KNOWN_ACTIVITIES aliases for the new clips (`drive` -> sit_vehicle_drive, `counter_wipe`
+    / `wipe` -> counter_wipe; sit_eat / cook already there); seat the driver (Seat0) with sit_vehicle_drive and the
+    others with sit_vehicle; the dismount is vehicle_exit_* with curve.vehicle_exit_<side> root motion (existing
+    play_vehicle_exit). Check the Wrecker's dismount in the rear escort (bulky body through a car door) once C's car
+    exists.
+  - **For C (prop sizes the clips assume, from _anim_rt):** car seat cushion 0.36 m over the footwell floor
+    (rt_vehicle_placement); steering wheel rim centre 0.40 m ahead / 0.76 m up from the root, radius 0.18, face tilted
+    30 deg; diner counter top 0.90 m (waitress root 0.28 m behind its near edge, as the bar rule); booth table top
+    0.74 m, near edge 0.22 m ahead of the seated root; griddle top 0.90 m, front edge 0.30 m ahead of the cook.
+    (A SOURCE `rt_diner_placement` note will be added on the next library rebuild.)
 - **OF loud Cataclysm animation check:** A's gpu/renders/a/of_hitch* stills are first-person HUD frames with almost no
   NPC on screen, so they can't show NPC animation; the logs have no animation warnings. Instead I ran my headless
   `_tools/loud_anim_coverage.tscn` (P's AnimCoverage) on OF, Cataclysm, seed 1037, 3 bots, 240 s, 28-35 NPCs:
