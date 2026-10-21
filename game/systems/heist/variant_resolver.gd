@@ -12,7 +12,8 @@
 ## Rules may only reference groups resolved by EARLIER rules (heist_map.md v1.1); a forward or
 ## unknown reference is a contract violation (Log.error) and counts as "not active".
 ## Slots whose group has no rule stay active (logged as a warning).
-## Rare events are rolled first; `force_active` effects pin a slot active in its group.
+## Rare events are rolled first; `force_active` effects pin a slot active in its group. RT (C's ask, gold_rush pins
+## trucks_3 and t3_bullion): `force_active` may be one {group, slot} or an Array of them, each pinned.
 ## Rare `requires` / `excludes` (GN, same semantics as a rule's): the chance draw is still made first (same
 ## seed = same draws), but the event only fires when its condition holds. It is decided when its
 ## `force_active` group is resolved (referenced groups must come earlier in `rules`), or after all rules when it
@@ -159,28 +160,38 @@ static func resolve(table: HeistVariantTable, slots_by_group: Dictionary, diffic
 	return result
 
 
-## A rare event's `force_active` slot, pinned active in its group.
+## A rare event's `force_active` pins ({group, slot} or an Array of them).
+static func _force_actives(ev: Dictionary) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var fa: Variant = (ev.get("effects", {}) as Dictionary).get("force_active")
+	if fa is Dictionary:
+		out.append(fa as Dictionary)
+	elif fa is Array:
+		for one: Variant in fa as Array:
+			if one is Dictionary:
+				out.append(one as Dictionary)
+	return out
+
+
+## A rare event's `force_active` slots, each pinned active in its group.
 static func _pin_rare(ev: Dictionary, forced: Dictionary) -> void:
-	var fx: Dictionary = ev.get("effects", {})
-	if not fx.has("force_active"):
-		return
-	var fa: Dictionary = fx["force_active"]
-	var fg: StringName = StringName(fa.get("group", &""))
-	if not forced.has(fg):
-		forced[fg] = []
-	(forced[fg] as Array).append(StringName(fa.get("slot", &"")))
+	for fa: Dictionary in _force_actives(ev):
+		var fg: StringName = StringName(fa.get("group", &""))
+		if not forced.has(fg):
+			forced[fg] = []
+		(forced[fg] as Array).append(StringName(fa.get("slot", &"")))
 
 
-## GN (C's G1 rehearsal): a conditional rare event (`requires` / `excludes`) whose `force_active` targets `group`
-## is decided now, against the groups resolved so far, and pins its slot only when it holds.
+## GN (C's G1 rehearsal): a conditional rare event (`requires` / `excludes`) with a `force_active` pin in `group`
+## is decided now (the first of its pinned groups in rule order), against the groups resolved so far, and pins all
+## its slots only when it holds.
 static func _decide_rare_for(hits: Array[Dictionary], group: StringName, so_far: Dictionary,
 		forced: Dictionary) -> void:
 	for h: Dictionary in hits:
 		if int(h["ok"]) >= 0:
 			continue
 		var ev: Dictionary = h["ev"]
-		var fa: Variant = (ev.get("effects", {}) as Dictionary).get("force_active")
-		if not fa is Dictionary or StringName((fa as Dictionary).get("group", &"")) != group:
+		if not _force_actives(ev).any(func(fa: Dictionary) -> bool: return StringName(fa.get("group", &"")) == group):
 			continue
 		h["ok"] = 1 if _rare_conditions_ok(ev, so_far) else 0
 		if int(h["ok"]) == 1:

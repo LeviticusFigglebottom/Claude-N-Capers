@@ -54,6 +54,9 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 var runner: DeviceRunner = null
 ## QC-37: handheld saw progress (0..1, replicated).
 var saw_progress: float = 0.0
+## A5-01: scales the run time (and so the hand-saw time) of a device not yet placed: an armored_truck's lockdown
+## sets its SAW points to InteractionTweak.truck_lockdown_saw_mult (server).
+var duration_mult: float = 1.0
 ## QC-60: `requires_loot` bags delivered so far (replicated).
 var delivered: int = 0
 
@@ -76,6 +79,10 @@ func _default_interaction_time() -> float:
 
 ## Effective device run time (s).
 func effective_duration() -> float:
+	return _base_duration() * duration_mult
+
+
+func _base_duration() -> float:
 	if duration_s >= 0.0:
 		return duration_s
 	var tw: InteractionTweak = Tweak.interaction()

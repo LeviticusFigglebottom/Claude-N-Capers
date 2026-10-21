@@ -4,6 +4,74 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT convoy dismount vs A's ConvoyVehicle (trunk round 269) and the "Wrecker through a car door":** I CPU-skinned each
+  look in sit_vehicle / sit_vehicle_drive / vehicle_exit_l (root on the footwell floor):
+  | Look | Seated top | Half width | Through the door band: top | fore / aft (seat space, -z ahead) |
+  |---|---|---|---|---|
+  | patrol_officer_duty | 1.25 | 0.35 | 1.34 | -0.62 .. +0.13 |
+  | tac_light | 1.23 | 0.35 | 1.30 | -0.62 .. +0.13 |
+  | tac_heavy | 1.25 | 0.36 | 1.37 | -0.62 .. +0.14 |
+  | **wrecker / _sentinel** | 1.28 | 0.40 | **1.45** | -0.64 .. +0.21 |
+  | armored_car_crew | 1.21 | 0.35 | 1.28 | -0.62 .. +0.13 |
+  - **The Wrecker does not fit a car door**: its helmet passes the frame at 1.45 m above the footwell, and the
+    placeholder car (body 1.45 m tall from y 0.05) gives about 1.35. Give the Lethal `armored_escort` Wrecker an
+    SUV / van (door frame >= 1.50 m above its floor), or spawn it beside the vehicle (spawn_units' plain-body points),
+    never seated in a car. TAC Heavy needs >= 1.42.
+  - **For A, in `ConvoyVehicle` / `heist_mission.spawn_units` / `_seat` / `dismount_units`:**
+    1. **Facing:** the placeholder's `Seat0..3` markers have identity rotation, and `spawn_units` copies the marker
+       transform, so a seated NPC faces -Z, the car's rear (forward is +Z). Rotate the markers 180 deg (or the NPC).
+    2. **Height:** the NPC root goes at the marker (y 0.40). sit_vehicle wants the root on the footwell floor (cushion
+       0.36 m above it), so occupants would sit 0.36 m too high with their heads through the roof. **Seat marker y = the
+       footwell floor (about 0.05-0.10)**, or subtract 0.36.
+    3. **Rows:** Seat0/1 (z 0.4) and Seat2/3 (z -0.6) are 1.0 m apart, but a seated body spans 0.76 m ahead of its root
+       to 0.40 behind, so a rear sitter's knees go into the front sitter's back. **Rows >= 1.2 m apart** (e.g. z 0.5 /
+       -0.7).
+    4. **Pose:** `_seat` disables the NPC's processing without a `sit_vehicle` hint, so a visible occupant (car) freezes
+       in its spawn pose. Play `sit_vehicle` (or `sit_vehicle_drive` for the driver: the left seat, +X, when facing
+       +Z) before pausing, or keep the AnimationPlayer processing.
+    5. **Dismount:** `dismount_units` teleports 1.6 m sideways, and `play_vehicle_exit` has no caller. Play
+       `vehicle_exit_l` for seats at local +x (the character's left when facing +Z) and `_r` for -x, moving the root
+       along SOURCE `curve.vehicle_exit_<side>` (0.85 m), then hand over to the brain. Keep 1.10 m beside the seat clear.
+  - **My SOURCE note was wrong:** it said head about 1.0-1.05 m and liner >= 1.15 m, ignoring caps and helmets.
+    `rt_vehicle_placement` now gives the measured numbers: liner >= 1.33 m, door frame >= 1.33 / 1.42 / 1.50 m, rows
+    >= 1.2 m (SOURCE text only; the clips are byte-identical).
+- **RT diner (C's identity pass has not landed on env/c-worlds yet).** Ready-made numbers for when booths and stools arrive:
+  - **Booth (sit_eat):** bench seat top 0.47 m (+/- 2 cm), Seat marker 0.12 m forward of the cushion centre (the chair rule),
+    table top 0.74 with its near edge **0.22 m ahead of the root**; under the table keep 0.47 m ahead of the root open
+    from the floor to 0.70 m (knees and shins); backrest at least 0.35 m behind the root (plain looks reach 0.32-0.34);
+    sitters at least 0.80 m apart side to side (half width 0.39-0.40).
+  - **Counter stools:** D has no clip for sitting at a 0.90 m counter on a 0.65-0.75 m stool (sit_eat is chair height
+    over a 0.74 table). Stools are dressing only, unless you want me to build `sit_stool_eat`.
+  - **D data, done here:** `civ_diner` no longer shares the street pool. The 7 back-bag looks (cower_offsets) are out,
+    because their bags (0.47-0.56 m behind the root) would cross a chair or booth back. 14 looks for 5 seated diners,
+    no twins; test_p5_cast pool row split.
+  - **IDLE, can take X.**
+- **Polish #2 done: env/d-art efa651788** (merged into prep/d-ah, 932515b54, library rebuilt there with dj_mix too).
+  `idle_alert_b` (a wristwatch check and a slow weight shift, 150 f) and `idle_alert_c` (a thumb on the shoulder radio,
+  then a look round, 174 f). Frame 0 and the seam ARE idle_alert frame 0 (0.39 mm; the variant layer is zero at the
+  seam), so every chain into or out of idle_alert is untouched. Max step 9 deg, the root fixed. Tests: new
+  `test_idle_variants` (seam, loop, events, smoothness, floor, root), test_anims (+2 clips), reaction_steps, rt_clips,
+  npcs, crew_states, surrender_variants all pass. Windowed: `_review/d_polish/idle_alert_variants.png`.
+  **For A, one line to switch it on:** `VARIANT_GROUPS[&"idle_alert"] = [&"idle_alert", &"idle_alert_b", &"idle_alert_c"]`
+  (SOURCE `idle_alert_variants`).
+- **Polish #3: assessed, no change (not worth its risk).** breach_standback's 5.5 mm is `crouch_idle`'s own frame-0
+  toe (the back foot on its ball), which every crouch clip chains through: fixing it re-keys the crouch family for
+  an invisible shoe tip. death_kneel's 49 deg is the arms reacting to the hit, in line with the other deaths
+  (death_front 40, hit_head 49).
+- **RT re-check on trunk 0045c5d6 (C folded the cross-check in): all good except two items.**
+  - OK: waitress (24.68, counter_wipe), cook (28.25, cook_stove), bus queue (13.32, sit), the 5 customers on
+    prop_chair_task at 19.76 / 21.24 (the chair Seat moves them 0.12 m to 0.22 m from the table edge) with table 2 for the 5th,
+    the attendant on prop_chair_office (Seat to -15.65, 0.20 m from the desk's near edge; desk top 0.74 = desk_work),
+    and the cower marks at the counter (23.39) and the shelters (12.24), all 0.21 m off their wall.
+  - **C: CowerFrontW / CowerFrontE (20.5 / 22.5, z 14.41) sit under the front window** (opening x 20.0-23.0, sill
+    0.8 m), so a standing cower leans back into glass. The west wall is solid full height at z 18.5-21.4 (between the
+    window and the side door): **(14.41, 0, 19.2) and (14.41, 0, 20.7), yaw -90 (facing +X)**.
+  - **C/A: ReyesMixer** stands `idle` on foot at (-39, 0, -15.8) beside the MixerTruck box. The fiction puts him in
+    the cab, so once the cab exists: root on the cab floor under the seat, `sit_vehicle_drive`, wheel numbers as in
+    the cross-check. Fine as it is for G1.
+  - **D data, done here:** p5_cast tag_map.rolling_thunder gains `staff_waitress: [diner_waitress]`,
+    `staff_cook: [diner_cook]` (the spawns list them first). **A:** mirror the two rows into heist_tag_characters.
+  - **IDLE, can take X.**
 - **D-151: prep/d-rt is merged into env/d-art and ready for your next round** (prep/d-rt b221ec3ca + trunk edcb536e;
   no conflicts; the latest prep/d-rt carries the lineups, the g/h/i palette swaps, Reyes, cower offsets, the RT clips
   and the reaction-snap fix).

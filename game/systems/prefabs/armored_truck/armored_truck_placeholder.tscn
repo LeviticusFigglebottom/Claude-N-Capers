@@ -1,0 +1,70 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_body"]
+albedo_color = Color(0.32, 0.36, 0.3, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_door"]
+albedo_color = Color(0.4, 0.44, 0.38, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_cab"]
+albedo_color = Color(0.15, 0.17, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="mat_tyre"]
+albedo_color = Color(0.06, 0.06, 0.06, 1)
+
+[sub_resource type="BoxMesh" id="box_body"]
+material = SubResource("mat_body")
+size = Vector3(2.4, 2.6, 7.5)
+
+[sub_resource type="BoxMesh" id="box_door"]
+material = SubResource("mat_door")
+size = Vector3(2.3, 2.4, 0.06)
+
+[sub_resource type="BoxMesh" id="box_cab"]
+material = SubResource("mat_cab")
+size = Vector3(2.44, 1.0, 1.8)
+
+[sub_resource type="CylinderMesh" id="cyl_tyre"]
+material = SubResource("mat_tyre")
+top_radius = 0.5
+bottom_radius = 0.5
+height = 0.35
+
+[node name="ArmoredTruckPlaceholder" type="Node3D"]
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+mesh = SubResource("box_body")
+
+[node name="Cab" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 2.8)
+mesh = SubResource("box_cab")
+
+[node name="TyreFL" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, -1.1, 0.5, 2.4)
+mesh = SubResource("cyl_tyre")
+
+[node name="TyreFR" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 1.1, 0.5, 2.4)
+mesh = SubResource("cyl_tyre")
+
+[node name="TyreRL" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, -1.1, 0.5, -2.4)
+mesh = SubResource("cyl_tyre")
+
+[node name="TyreRR" type="MeshInstance3D" parent="."]
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 1.1, 0.5, -2.4)
+mesh = SubResource("cyl_tyre")
+
+[node name="Door" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 0.7, -3.75)
+
+[node name="Plate" type="MeshInstance3D" parent="Door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 1.2, -0.03)
+mesh = SubResource("box_door")
+
+[node name="DrillPoint" type="Marker3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.5, -3.8)
+
+[node name="LootAnchor" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -2.2)

@@ -117,6 +117,9 @@ extends Resource
 @export var hand_saw_safe_s: PackedFloat32Array = PackedFloat32Array([20.0, 40.0, 80.0])
 ## A SAW drill_point (cage gate, depository) cut by hand: x its device run time.
 @export var hand_saw_drill_point_mult: float = 1.0
+## A5-01 (Rolling Thunder QC-80): an armored_truck in lockdown (the early alarm) takes this much longer to saw,
+## placed and by hand; C4 and thermite are unchanged. Original, not PD2-sourced (D-149.9) ◇.
+@export var truck_lockdown_saw_mult: float = 1.5
 
 @export_group("Burn point (QC-38, D-064 Dockside Burn)")
 ## Hold to place the carried thermite bag (consumed), burn time, then the telegraph (warning cue) and the
