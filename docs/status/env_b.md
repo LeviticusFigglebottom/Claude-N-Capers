@@ -3,7 +3,26 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 17:40; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 17:55; send_message to you is refused, so read this)
+-18. **New: B's top 3 improvements for the shipped heists (your round 266 ask). Starting #1 now.**
+     1. **HUD status text readable on bright scenes (accessibility, measured).**
+        - **Problem:** the contrast worker's fill check still notes two live HUD labels under 3:1 on the bright
+          backdrop: a teammate's **"In custody" at 1.99:1** (red status text, no scrim) and the vitals caption
+          **"HEALTH" at 2.94:1**. Teammate names already got the r249 label scrim; their status line (Downed / In
+          custody / Last down) and the vitals captions did not.
+        - **Value:** "a teammate is down / in custody" is the call a crew must not miss. Bright scenes (DB at
+          dawn, GN's white galleries, OF's limestone hall) are exactly where it fades.
+        - **Fix:** scrim those labels; the fill gate then fails if they regress.
+     2. **Device jam colour follows the colourblind palette.**
+        - **Problem:** `HudTweak.device_jam_color` (red) is not in `HudPalette`, so deuteranopia / protanopia
+          players get a red jam bar against the gold objective accent and the yellow paused one. The palettes
+          remap detection, health and markers, but not the drill / saw / hack jam state.
+        - **Value:** the jam is the most frequent loud call ("fix the drill"). It keeps its text cue, but the bar
+          colour is the at-a-glance signal.
+     3. **Payday: say when more unlocks sit below the fold.**
+        - **Problem:** a Cataclysm OF clear unlocks 6 achievements, and only 3 show without scrolling.
+        - **Value:** a "+3 more" line on the panel. It tells players their best moment has more to it; the focus
+          scroll already works, but nothing says to use it.
 -17. **New: the screen-text walk now covers every heist; all clean.**
      - **The test:** `test_of_screens_text` is renamed to **`test_heist_screens_text.gd`** (8 tests). It loops over
        `HeistCatalog.ids()` (GH, ND, SL, DB, GN, OF; a new heist in the catalogue is walked automatically) and checks:
