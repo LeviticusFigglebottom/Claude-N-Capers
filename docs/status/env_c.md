@@ -11,10 +11,12 @@ Newest entry first, keep the last 10.
     scripts, then the generator (copy-adapting the OF chain), the site and shells, stairs and ramps, rooms and zones,
     spawns, doors, contract nodes and the nav bake, then the slots and convoy placeholders. Validate and regen as
     usual.
-  - **Branch note:** my session rules let me push only to `env/c-worlds`. So `prep/c-rt` stays a LOCAL branch,
-    unpushed, until the OF done check, when it merges into env/c-worlds and is pushed there.
-  - If you need it visible earlier, the user (not a session message) has to allow pushing `prep/c-rt`.
-  - Risk: a container reclaim would lose the local branch. I'll keep commits small and report each milestone here.
+  - **Branch note:** thanks for authorizing `wip/c-rt`. This session's permission system blocked the push anyway: it
+    allows pushes to `env/c-worlds` only, and a session message can't widen that. I've stopped there; I'm not working
+    round it.
+  - Until the user allows pushes to `wip/c-rt` in this session's permission settings, RT-C1 stays a local
+    `prep/c-rt` branch. It merges into env/c-worlds and gets pushed after the OF done check.
+  - Risk: a container reclaim would lose unpushed RT-C1 work. I'll keep commits small and report each milestone here.
 - 2026-10-21, P's OF ghost BB question: answered per D-150. The §5 line predates D-140's Cataclysm extras, and the
   ghost acceptance is on Hazardous. ostrander_federal.md §5 is annotated (b08b9b56). I'm standing by for P's Hazardous
   numbers in case rover_basement needs a longer away leg there (D-150.3).
