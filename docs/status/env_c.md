@@ -6,6 +6,14 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- **OF fix for cherry-pick: 8c034cdb** (docs only, ostrander_federal.md ghost step 2).
+  - P's Hazardous ghost (D-150) is blocked first at the dock, not BB: rover_hall's loop (b) LD dock check lands in 4 of
+    rover_dock's 5 smoke windows.
+  - Cause: guard_tweak `hub_loops` (A's) walks rover_hall's (a)/(b)/(c) in turn.
+  - Added a second cue: go once he has left LD for MO on (b). MO plus loop (c) keep him at BC's east end. This
+    matches P's one usable window.
+  - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
+    D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
   - **r258 rulings applied:**
     - (1) **floating:** the 5 tilted east-arm convoy placeholders carry meta `lc_ignore` with an `lc_ignore_reason`
