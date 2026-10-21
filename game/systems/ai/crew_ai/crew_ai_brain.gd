@@ -79,6 +79,9 @@ var give_way_left: float = 0.0
 var give_way_side: int = 0
 var give_way_target: Vector3 = Vector3.INF
 
+## Revive approach progress: the closest distance so far and the seconds without getting closer (revive_stall_s).
+var _revive_best_d: float = INF
+var _revive_stall_s: float = 0.0
 var _crew: CrewController = null
 var _rt: HeistRuntime = null
 var _yaw: float = 0.0
@@ -343,7 +346,13 @@ func _think(delta: float) -> CrewIntent:
 		cover_point = null
 		_give_way_reset()  # PO6-15: never leaves a revive
 		var d: float = _flat_dist(_crew.global_position, revive_target.global_position)
-		if d > tweak.revive_range_m:
+		if d < _revive_best_d - 0.05:
+			_revive_best_d = d  # still closing in
+			_revive_stall_s = 0.0
+		else:
+			_revive_stall_s += delta
+		var stalled: bool = d <= tweak.revive_stall_reach_m and _revive_stall_s >= tweak.revive_stall_s
+		if d > tweak.revive_range_m and not stalled:
 			wish = _steer(revive_target.global_position, delta)
 			goal_dist = d
 			_interact_ticks = 0
@@ -351,6 +360,8 @@ func _think(delta: float) -> CrewIntent:
 			look_point = revive_target.global_position + Vector3(0.0, 0.4, 0.0)
 			interacting = _hold_revive(i)
 	elif mobile:
+		_revive_best_d = INF
+		_revive_stall_s = 0.0
 		mode = Mode.FOLLOW
 		var goal: Vector3 = _bag_goal()
 		if mode != Mode.FETCH_BAG and mode != Mode.SECURE_BAG:
