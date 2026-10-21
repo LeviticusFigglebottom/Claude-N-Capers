@@ -1,0 +1,19 @@
+asset: char_club_patron_i
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.2, "beard_shadow": 0.3, "build": 0.35, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.76, "look": "patron_d", "note": "Club patron i (finish swap of club_patron_d): rust hoodie, navy beanie, jeans", "recolor": {"char_hoodie_cream": "char_hoodie_rust", "char_knit_grey": "char_knit_navy"}, "skin": 6}
+seed: 1683180108  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_patron_i
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0883, 0.1054] (model [0.0000, 1.2854, 0.1237], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0801, -0.0877] (model [0.0000, 1.6473, -0.0758], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1791, 0.0503, 0.0358] (model [0.1791, 0.9927, 0.0382], Godot axes, rest pose)
+body_faces_culled: 4820
+body_params: {"age": 0.2, "beard_shadow": 0.3, "build": 0.35, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.76, "lip": "auto", "skin": 6}
+bones: 52
+look: Club patron i (finish swap of club_patron_d): rust hoodie, navy beanie, jeans [char_hoodie_cream -> char_hoodie_rust, char_knit_grey -> char_knit_navy]
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 25930
+tris_by_mesh: {"Body": 9104, "Gear": 136, "Hair": 1728, "Headwear": 608, "Outfit": 14354}

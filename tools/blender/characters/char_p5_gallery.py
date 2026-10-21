@@ -109,6 +109,10 @@ from _outfit_build import Kit, build_character
 TRI_BUDGET = 35000
 EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
+WAITER = {"height": 1.77, "build": 0.35, "gender": 0.0, "age": 0.15, "skin": 4, "beard_shadow": 0.1,
+          "hair": "side_part", "hair_color": "brown", "look": "waiter"}
+WAITER_B = {"height": 1.68, "build": 0.5, "gender": 1.0, "age": 0.55, "skin": 2, "hair": "side_part",
+            "hair_color": "brown", "lip": "char_lip_rose", "look": "waiter_b"}
 VARIANTS = {
     "char_gallery_curator": {"height": 1.79, "build": 0.3, "gender": 1.0, "age": 0.6, "skin": 5, "hair": "bob",
                              "hair_color": "dark", "lip": "char_lip_rose", "look": "curator"},
@@ -164,11 +168,18 @@ VARIANTS = {
                               "hair": "short", "hair_color": "dark", "look": "patron_i"},
     "char_gallery_patron_j": {"height": 1.69, "build": 0.55, "gender": 1.0, "age": 0.62, "skin": 3, "hair": "bob",
                               "hair_color": "grey", "lip": "char_lip_rose", "look": "patron_j"},
-    "char_gallery_waiter": {"height": 1.77, "build": 0.35, "gender": 0.0, "age": 0.15, "skin": 4, "beard_shadow": 0.1,
-                            "hair": "side_part", "hair_color": "brown", "look": "waiter"},
+    "char_gallery_waiter": WAITER,
     # D-130 gala_extra: third waitstaff (cloakroom) and third attendant (drawings cabinet)
-    "char_gallery_waiter_b": {"height": 1.68, "build": 0.5, "gender": 1.0, "age": 0.55, "skin": 2, "hair": "side_part",
-                              "hair_color": "brown", "lip": "char_lip_rose", "look": "waiter_b"},
+    "char_gallery_waiter_b": WAITER_B,
+    # AH-D1 finish swaps (D-147, afterhours_cast_plan.md): the gala waiters re-dressed in the Velvet's violet for the
+    # Afterhours VIP bar and box office (the Halberd pin's enamel goes violet with them); _outfit_build.apply_recolor
+    "char_club_waiter": {**WAITER, "skin": 6, "hair_color": "dark", "recolor": {"char_gallery_wine": "char_club_violet"},
+                         "note": "Velvet VIP-bar waiter (finish swap of gallery_waiter): white shirt, black bow tie, violet "
+                                 "waistcoat with brass buttons, long black bistro apron, staff pin, brass name tag"},
+    "char_club_waiter_b": {**WAITER_B, "skin": 5, "hair_color": "dark",
+                           "recolor": {"char_gallery_wine": "char_club_violet", "char_hair_brown": "char_hair_dark"},
+                           "note": "Velvet box office / cloak (finish swap of gallery_waiter_b): short violet jacket with "
+                                   "brass buttons, white shirt, black bow tie, black trousers, staff pin, dark chignon"},
     "char_gallery_attendant_c": {"height": 1.78, "build": 0.6, "gender": 0.0, "age": 0.55, "skin": 6,
                                  "beard_shadow": 0.6, "hair": "bald", "hair_color": "dark", "look": "attendant_c"},
     "char_gallery_conservator": {"height": 1.75, "build": 0.45, "gender": 0.0, "age": 0.7, "skin": 2,

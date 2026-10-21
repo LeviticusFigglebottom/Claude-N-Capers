@@ -1,0 +1,19 @@
+asset: char_club_patron_h
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.3, "build": 0.45, "gender": 1.0, "hair": "side_part", "hair_color": "brown", "height": 1.68, "look": "patron_c", "note": "Club patron h (finish swap of club_patron_c): mustard knit top, brown chignon", "recolor": {"char_club_magenta": "char_knit_mustard", "char_hair_dark": "char_hair_brown"}, "skin": 2}
+seed: 324303578  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_patron_h
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0839, 0.0900] (model [0.0000, 1.2270, 0.1074], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1728, 0.0484, 0.0415] (model [0.1728, 0.9476, 0.0439], Godot axes, rest pose)
+body_faces_culled: 3484
+body_params: {"age": 0.3, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "side_part", "hair_color": "brown", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 2}
+bones: 52
+look: Club patron h (finish swap of club_patron_c): mustard knit top, brown chignon [char_club_magenta -> char_knit_mustard, char_hair_dark -> char_hair_brown]
+meshes: Body,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26380
+tris_by_mesh: {"Body": 11776, "Hair": 1856, "Headwear": 1584, "Outfit": 11164}

@@ -1,0 +1,19 @@
+asset: char_club_bartender_c
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.3, "beard_shadow": 0.95, "build": 0.5, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "height": 1.8, "look": "bartender", "note": "Velvet bartender c (finish swap of club_bartender): black shirt, leather bib apron", "recolor": {"char_denim": "char_apron_leather"}, "skin": 4}
+seed: 3143672626  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_bartender_c
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0902, 0.1044] (model [0.0000, 1.3146, 0.1231], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0819, -0.0897] (model [0.0000, 1.6847, -0.0776], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1804, 0.0513, 0.0349] (model [0.1804, 1.0153, 0.0374], Godot axes, rest pose)
+body_faces_culled: 4592
+body_params: {"age": 0.3, "beard_shadow": 0.95, "build": 0.5, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.8, "lip": "auto", "skin": 4}
+bones: 52
+look: Velvet bartender c (finish swap of club_bartender): black shirt, leather bib apron [char_denim -> char_apron_leather]
+meshes: Body,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 25340
+tris_by_mesh: {"Body": 9560, "Hair": 1856, "Outfit": 13924}

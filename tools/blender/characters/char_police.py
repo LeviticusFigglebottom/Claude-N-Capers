@@ -68,6 +68,12 @@ AGENT_VARIANTS = {
     "char_frd_agent_b": {"height": 1.72, "build": 0.4, "gender": 1.0, "age": 0.3, "skin": 5, "hair": "bob",
                          "hair_color": "dark", "unit": "frd_agent"},
     "char_frd_agent_sentinel": {**AGENT, "faction": "sentinel"},
+    # AH-D1 finish swap (D-147): Afterhours' off-duty cop in plain clothes: the windbreaker and its FRD marks in black
+    # leather (the marks read as seams), the gold belt badge and the holster stay as the tell; _outfit_build.apply_recolor
+    "char_frd_agent_offduty": {**AGENT, "skin": 4, "hair_color": "dark",
+                               "recolor": {"char_frd_navy": "char_leather_black", "char_frd_yellow": "char_leather_black"},
+                               "note": "Off-duty cop (finish swap of frd_agent): black leather jacket, white shirt, tie, suit "
+                                       "trousers, earpiece, gold belt badge, holster; bare head"},
 }
 #: D-145.3 (PO-18): no visible body armour on police at Routine/Tense: ``char_<id>_duty`` = the base look without the
 #: stab vest / plate carrier and (TAC) without the ballistic helmet; ENV A picks it there (EnemyDef visual_variant

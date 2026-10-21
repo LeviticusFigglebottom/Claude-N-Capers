@@ -9,9 +9,10 @@
 ## Federal by day, written to _review/of_d1_cast/): of_tellers, of_officers, of_customers, of_skirts (the
 ## skirt looks in walk / run / cower, front and side: <pool>_clips.png, no lineup), of_guards (Halden a-j +
 ## npc_bank_guard + the bodyguard), of_vip; RT-D1 (written to _review/rt_d1_cast/): rt_vaultline (crew a-f, the route
-## marshal, and the patrol officer and Halden officer he must not read as), rt_street_swaps (D-149 swaps); D-145.3: d145_police (written to
-## _review/d145_police/: the armoured police looks next to their Routine/Tense duty looks; d145_specials,
-## d145_factions the same for the specials and the faction TAC Lights).
+## marshal, and the patrol officer and Halden officer he must not read as), rt_street_swaps (D-149 swaps); AH-D1
+## (written to _review/ah_d1/): ah_door, ah_bar, ah_patrons; D-145.3: d145_police (written to _review/d145_police/:
+## the armoured police looks next to their Routine/Tense duty looks; d145_specials, d145_factions the same for the
+## specials and the faction TAC Lights).
 ## Writes to res://assets/characters/_review/d130_cast/ (or the pool's OUT_DIRS / of_ directory):
 ##   <pool>_sheet.png           per character: full body front (idle), three-quarter back mid-walk, head close-up
 ##   <pool>_lineup_30m.png      all of them side by side seen from 30 m (natural LOD switching, telephoto framing)
@@ -31,6 +32,9 @@ const OUT_DIRS: Dictionary = {
 	"of_vip": "res://assets/characters/_review/of_d1_cast/",
 	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
 	"rt_street_swaps": "res://assets/characters/_review/rt_d1_cast/",
+	"ah_door": "res://assets/characters/_review/ah_d1/",
+	"ah_bar": "res://assets/characters/_review/ah_d1/",
+	"ah_patrons": "res://assets/characters/_review/ah_d1/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
 	"d145_factions": "res://assets/characters/_review/d145_police/",
@@ -118,6 +122,20 @@ const POOLS: Dictionary = {
 	"rt_street_swaps": [
 		"char_street_pedestrian", "char_street_pedestrian_g", "char_street_pedestrian_b", "char_street_pedestrian_h",
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
+	],
+	# AH-D1 (D-147 finish swaps, afterhours_cast_plan.md): the door team and the off-duty cop, the bar staff and the DJ,
+	# the club patrons (the dancer looks)
+	"ah_door": [
+		"char_club_bouncer", "char_club_bouncer_b", "char_club_bouncer_c", "char_club_bouncer_d", "char_club_bouncer_e",
+		"char_club_bouncer_f", "char_club_bouncer_g", "char_frd_agent_offduty",
+	],
+	"ah_bar": [
+		"char_club_bartender", "char_club_bartender_b", "char_club_bartender_c", "char_club_bartender_d",
+		"char_club_waiter", "char_club_waiter_b", "char_club_dj",
+	],
+	"ah_patrons": [
+		"char_club_patron", "char_club_patron_b", "char_club_patron_c", "char_club_patron_d", "char_club_patron_e",
+		"char_club_patron_f", "char_club_patron_g", "char_club_patron_h", "char_club_patron_i", "char_club_patron_j",
 	],
 }
 const COLS: int = 9

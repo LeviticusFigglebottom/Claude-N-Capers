@@ -84,6 +84,22 @@ const NEW: Array[String] = [
 	"char_street_pedestrian_g",
 	"char_street_pedestrian_h",
 	"char_street_pedestrian_i",
+	"char_club_bouncer_c",
+	"char_club_bouncer_d",
+	"char_club_bouncer_e",
+	"char_club_bouncer_f",
+	"char_club_bouncer_g",
+	"char_club_bartender_c",
+	"char_club_bartender_d",
+	"char_club_waiter",
+	"char_club_waiter_b",
+	"char_club_patron_e",
+	"char_club_patron_f",
+	"char_club_patron_g",
+	"char_club_patron_h",
+	"char_club_patron_i",
+	"char_club_patron_j",
+	"char_frd_agent_offduty",
 ]
 ## heist -> roles the index must carry (D3-01 brief; D-075 renamed meridian_federal and added
 ## bank_officer).
@@ -137,7 +153,9 @@ const ROSTER_FALLBACK: Dictionary = {
 ## (cloakroom waitstaff + drawings-cabinet attendant): GN waitstaff 3, GN attendants 3. OF-D1 (an L heist, up to 6 guards,
 ## 4 tellers, 3 officers and 13 customers): OF Halden guards 10 (at least 3 women), tellers 5, officers 4, customers 12.
 ## D-140 twins audit: Glasshouse guards 10 (one Halden pool on every post + the operator), customers 12.
-## RT-D1 (three trucks x driver + custodian): Vaultline crew 6 (at least 2 women), site guards 10, street civilians 12.
+## RT-D1 (three trucks x driver + custodian): Vaultline crew 6 (at least 2 women), site guards 10, street civilians 21.
+## AH-D1 (D-147 finish swaps): bouncers 7 (2 fixed + 3 rovers + smoker + operator), bartenders 6, patrons 20 (10 club
+## + 10 gala), dancers 10 (the club looks; repeats across clusters accepted, LEAD 2026-10-21).
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
 		"cartel_quay", "cartel_reinf"], 12, 1],
@@ -166,6 +184,11 @@ const POOLS: Array = [
 	["rolling_thunder", ["diner_staff", "staff_diner"], 2, 1],
 	["rolling_thunder", ["carpark_attendant", "staff_booth"], 1, 0],
 	["rolling_thunder", ["ram_driver", "driver_mixer"], 1, 0],
+	["afterhours", ["club_bouncer", "guard_door", "guard_rope", "guard_floor", "guard_boh", "guard_upper", "guard_alley",
+		"security_operator"], 7, 0],
+	["afterhours", ["club_bartender", "civ_bar_main", "civ_bar_east", "civ_bar_vip", "civ_box_office", "civ_count"], 6, 3],
+	["afterhours", ["club_patron", "civ_patron"], 20, 8],
+	["afterhours", ["club_dancer", "civ_dancer"], 10, 5],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"
@@ -173,7 +196,7 @@ const NORTHGATE_SHIRT: String = "char_ng_shirt"
 const MIN_COUNT: Dictionary = {
 	"gallery_attendant": 3, "gallery_patron": 12, "gallery_waitstaff": 3, "bank_teller": 2, "bank_officer": 2,
 	"bank_customer": 4, "armored_car_crew": 2,
-	"club_bouncer": 2, "club_bartender": 2, "club_patron": 4,
+	"club_bouncer": 7, "club_bartender": 6, "club_patron": 20,
 }
 ## New characters whose pager is answered at Hip/Socket (a belt radio).
 const RADIO: Array[String] = [
@@ -182,7 +205,8 @@ const RADIO: Array[String] = [
 	"char_gallery_guard_j", "char_gallery_guard_k", "char_gallery_guard_l",
 	"char_armored_car_crew", "char_armored_car_crew_b", "char_club_bouncer", "char_club_bouncer_b",
 	"char_armored_car_crew_c", "char_armored_car_crew_d", "char_armored_car_crew_e", "char_armored_car_crew_f",
-	"char_armored_car_marshal",
+	"char_armored_car_marshal", "char_club_bouncer_c", "char_club_bouncer_d", "char_club_bouncer_e", "char_club_bouncer_f",
+	"char_club_bouncer_g",
 ]
 ## Halberd Gallery Security (D-130: nine faces a-i; twelve, a-l, for the Cataclysm inspection).
 const GN_GUARDS: Array[String] = [

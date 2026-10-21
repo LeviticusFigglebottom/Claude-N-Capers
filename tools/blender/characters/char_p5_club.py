@@ -44,25 +44,64 @@ from _outfit_build import Kit, build_character
 TRI_BUDGET = 35000
 EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
 
+BOUNCER = {"height": 1.88, "build": 1.0, "gender": 0.0, "age": 0.4, "skin": 6, "beard_shadow": 0.85, "hair": "bald",
+           "hair_color": "dark", "look": "bouncer"}
+BOUNCER_B = {"height": 1.86, "build": 0.95, "gender": 0.0, "age": 0.5, "skin": 2, "beard_shadow": 0.6, "hair": "buzz",
+             "hair_color": "brown", "look": "bouncer_b"}
+BARTENDER = {"height": 1.80, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 1, "beard_shadow": 0.95,
+             "hair": "side_part", "hair_color": "brown", "look": "bartender"}
+BARTENDER_B = {"height": 1.69, "build": 0.35, "gender": 1.0, "age": 0.25, "skin": 3, "hair": "side_part",
+               "hair_color": "blond", "look": "bartender_b"}
+PATRON = {"height": 1.72, "build": 0.3, "gender": 1.0, "age": 0.25, "skin": 1, "hair": "bob", "hair_color": "blond",
+          "lip": "char_lip_rose", "look": "patron"}
+PATRON_B = {"height": 1.81, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 4, "beard_shadow": 0.5, "hair": "buzz",
+            "hair_color": "dark", "look": "patron_b"}
+PATRON_C = {"height": 1.68, "build": 0.45, "gender": 1.0, "age": 0.3, "skin": 6, "hair": "side_part",
+            "hair_color": "dark", "look": "patron_c"}
+PATRON_D = {"height": 1.76, "build": 0.35, "gender": 0.0, "age": 0.2, "skin": 3, "beard_shadow": 0.3, "hair": "short",
+            "hair_color": "brown", "look": "patron_d"}
 VARIANTS = {
-    "char_club_bouncer": {"height": 1.88, "build": 1.0, "gender": 0.0, "age": 0.4, "skin": 6, "beard_shadow": 0.85,
-                          "hair": "bald", "hair_color": "dark", "look": "bouncer"},
-    "char_club_bouncer_b": {"height": 1.86, "build": 0.95, "gender": 0.0, "age": 0.5, "skin": 2, "beard_shadow": 0.6,
-                            "hair": "buzz", "hair_color": "brown", "look": "bouncer_b"},
-    "char_club_bartender": {"height": 1.80, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 1, "beard_shadow": 0.95,
-                            "hair": "side_part", "hair_color": "brown", "look": "bartender"},
-    "char_club_bartender_b": {"height": 1.69, "build": 0.35, "gender": 1.0, "age": 0.25, "skin": 3,
-                              "hair": "side_part", "hair_color": "blond", "look": "bartender_b"},
+    "char_club_bouncer": BOUNCER,
+    "char_club_bouncer_b": BOUNCER_B,
+    "char_club_bartender": BARTENDER,
+    "char_club_bartender_b": BARTENDER_B,
     "char_club_dj": {"height": 1.78, "build": 0.4, "gender": 0.0, "age": 0.3, "skin": 5, "beard_shadow": 0.5,
                      "hair": "short", "hair_color": "dark", "look": "dj"},
-    "char_club_patron": {"height": 1.72, "build": 0.3, "gender": 1.0, "age": 0.25, "skin": 1, "hair": "bob",
-                         "hair_color": "blond", "lip": "char_lip_rose", "look": "patron"},
-    "char_club_patron_b": {"height": 1.81, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 4, "beard_shadow": 0.5,
-                           "hair": "buzz", "hair_color": "dark", "look": "patron_b"},
-    "char_club_patron_c": {"height": 1.68, "build": 0.45, "gender": 1.0, "age": 0.3, "skin": 6, "hair": "side_part",
-                           "hair_color": "dark", "look": "patron_c"},
-    "char_club_patron_d": {"height": 1.76, "build": 0.35, "gender": 0.0, "age": 0.2, "skin": 3, "beard_shadow": 0.3,
-                           "hair": "short", "hair_color": "brown", "look": "patron_d"},
+    "char_club_patron": PATRON,
+    "char_club_patron_b": PATRON_B,
+    "char_club_patron_c": PATRON_C,
+    "char_club_patron_d": PATRON_D,
+    # AH-D1 finish swaps (D-147, afterhours_cast_plan.md): a base look's params with only skin, hair colour and garment
+    # materials changed (_outfit_build.apply_recolor); the same meshes, a new face for the pool
+    "char_club_bouncer_c": {**BOUNCER, "skin": 3, "hair_color": "dark", "recolor": {"char_nylon_black": "char_leather_black"},
+                            "note": "Velvet bouncer c (finish swap of club_bouncer): black leather bomber over a black tee"},
+    "char_club_bouncer_d": {**BOUNCER, "skin": 4, "hair_color": "dark", "recolor": {"char_nylon_black": "char_work_charcoal"},
+                            "note": "Velvet bouncer d (finish swap of club_bouncer): charcoal work bomber over a black tee"},
+    "char_club_bouncer_e": {**BOUNCER_B, "skin": 5, "hair_color": "dark", "recolor": {"char_shirt_black": "char_knit_graphite"},
+                            "note": "Velvet bouncer e (finish swap of club_bouncer_b): graphite tee, dark buzz cut"},
+    "char_club_bouncer_f": {**BOUNCER_B, "skin": 1, "hair_color": "blond", "recolor": {"char_shirt_black": "char_tux_black"},
+                            "note": "Velvet bouncer f (finish swap of club_bouncer_b): deep black tee, blond buzz cut"},
+    "char_club_bouncer_g": {**BOUNCER, "skin": 2, "hair_color": "dark", "recolor": {"char_nylon_black": "char_suit_dark"},
+                            "note": "Velvet bouncer g (finish swap of club_bouncer): dark wool bomber over a black tee"},
+    "char_club_bartender_c": {**BARTENDER, "skin": 4, "hair_color": "dark", "recolor": {"char_denim": "char_apron_leather"},
+                              "note": "Velvet bartender c (finish swap of club_bartender): black shirt, leather bib apron"},
+    "char_club_bartender_d": {**BARTENDER_B, "skin": 6, "hair_color": "dark",
+                              "recolor": {"char_club_violet": "char_waistcoat_graphite", "char_hair_blond": "char_hair_dark"},
+                              "note": "Velvet bartender d (finish swap of club_bartender_b): graphite waistcoat, dark chignon"},
+    "char_club_patron_e": {**PATRON, "skin": 3, "hair_color": "dark", "recolor": {"char_satin_gold": "char_satin_silver"},
+                           "note": "Club patron e (finish swap of club_patron): sleeveless silver satin mini dress, dark bob"},
+    "char_club_patron_f": {**PATRON, "skin": 6, "hair_color": "brown", "recolor": {"char_satin_gold": "char_satin_coral"},
+                           "note": "Club patron f (finish swap of club_patron): sleeveless coral satin mini dress, brown bob"},
+    "char_club_patron_g": {**PATRON_B, "skin": 1, "hair_color": "blond", "recolor": {"char_satin_teal": "char_satin_emerald"},
+                           "note": "Club patron g (finish swap of club_patron_b): emerald satin shirt, blond buzz cut"},
+    "char_club_patron_h": {**PATRON_C, "skin": 2, "hair_color": "brown",
+                           "recolor": {"char_club_magenta": "char_knit_mustard", "char_hair_dark": "char_hair_brown"},
+                           "note": "Club patron h (finish swap of club_patron_c): mustard knit top, brown chignon"},
+    "char_club_patron_i": {**PATRON_D, "skin": 6, "hair_color": "dark",
+                           "recolor": {"char_hoodie_cream": "char_hoodie_rust", "char_knit_grey": "char_knit_navy"},
+                           "note": "Club patron i (finish swap of club_patron_d): rust hoodie, navy beanie, jeans"},
+    "char_club_patron_j": {**PATRON_B, "skin": 2, "hair_color": "brown", "recolor": {"char_satin_teal": "char_satin_silver"},
+                           "note": "Club patron j (finish swap of club_patron_b): silver satin shirt, brown buzz cut"},
 }
 
 BLACK = "char_shirt_black"

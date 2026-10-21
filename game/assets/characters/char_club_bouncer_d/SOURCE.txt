@@ -1,0 +1,21 @@
+asset: char_club_bouncer_d
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.4, "beard_shadow": 0.85, "build": 1.0, "gender": 0.0, "hair": "bald", "hair_color": "dark", "height": 1.88, "look": "bouncer", "note": "Velvet bouncer d (finish swap of club_bouncer): charcoal work bomber over a black tee", "recolor": {"char_nylon_black": "char_work_charcoal"}, "skin": 4}
+seed: 158632810  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_bouncer_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0953, 0.1364] (model [0.0000, 1.3730, 0.1559], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0856, -0.0937] (model [0.0000, 1.7596, -0.0810], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2747, 0.0314, 0.0303] (model [0.2747, 1.0385, 0.0319], Godot axes, rest pose)
+body_faces_culled: 4818
+body_params: {"age": 0.4, "beard_shadow": 0.85, "build": 1.0, "gender": 0.0, "hair": "bald", "hair_color": "dark", "hair_peak": 0.0, "height": 1.88, "lip": "auto", "skin": 4}
+bones: 52
+faces_hidden_by_bomber: 2582
+hip_note: Hip seat = the radio clipped outside the bomber on its ribbed waistband (right hip); the pager rides there
+look: Velvet bouncer d (finish swap of club_bouncer): charcoal work bomber over a black tee [char_nylon_black -> char_work_charcoal]
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 27016
+tris_by_mesh: {"Body": 9108, "Gear": 1312, "Hair": 580, "Outfit": 16016}

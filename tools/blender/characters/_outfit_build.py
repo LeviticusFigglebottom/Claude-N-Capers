@@ -162,12 +162,26 @@ def default_seats(kit: Kit) -> None:
 SEAT_BONES = {"Head": "head", "Back": "chest", "Hip": "hips"}
 
 
+def apply_recolor(kit: Kit) -> None:
+    """D-147 finish swaps: a variant's ``recolor`` option ({library material: library material}) remaps the materials of
+    every outfit mesh after the recipe, so the swap keeps its base look's meshes exactly; its ``note`` option replaces
+    the look note (the mapping is appended)."""
+    table: dict[str, str] = kit.opts.get("recolor", {})
+    if not table:
+        return
+    for m in [kit.soft, kit.gear, kit.head, kit.slung, *getattr(kit, "extra", {}).values()]:
+        m.m = [table.get(x, x) for x in m.m]
+    mapping = ", ".join(f"{a} -> {b}" for a, b in sorted(table.items()))
+    kit.notes["look"] = f"{kit.opts.get('note', kit.notes.get('look', ''))} [{mapping}]"
+
+
 def build_character(ctx, recipe: Callable[[Kit], None]) -> None:
     bparams, opts = split_params(ctx.params)
     arm = rig.build_rig(ctx, bparams["height"])
     fit = Fit(bparams)
     kit = Kit(ctx, fit, opts)
     recipe(kit)
+    apply_recolor(kit)
     default_seats(kit)
     objs = body.build_body(ctx, arm, bparams)
     o.bake_body(objs, objs["data"])

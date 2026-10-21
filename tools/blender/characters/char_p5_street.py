@@ -28,9 +28,10 @@ sand/brown/amber.
   blazer over a white shirt, black trousers, low heels, a black leather shoulder bag, silver stud earrings.
 * ``char_street_pedestrian_g`` / ``_h`` / ``_i`` (D-147 / D-149: zero twins at the top roll, 21 live on 21 looks):
   **finish-only** swaps of a / b / f. The same meshes (body params, hair style, age and every garment unchanged),
-  with a new skin tone, hair colour and garment materials (``recolor``), so each is a new face for the pool:
-  g = the commuter in a teal mac over a navy roll-neck (skin 5, brown hair); h = the jogger in a cream hoodie and
-  navy joggers (skin 2, blond); i = the office worker in a grey blazer over an ivory silk shirt (skin 4, dark hair).
+  with a new skin tone, hair colour and garment materials (``recolor``, applied by ``_outfit_build.apply_recolor``),
+  so each is a new face for the pool: g = the commuter in a teal mac over a navy roll-neck (skin 5, brown hair);
+  h = the jogger in a cream hoodie and navy joggers (skin 2, blond); i = the office worker in a grey blazer over an
+  ivory silk shirt (skin 4, dark hair).
 
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (caps, bun, glasses, earrings).
 No blend shapes (baked at the params below).
@@ -264,11 +265,6 @@ _looks = {"waitress": waitress, "cook": cook, "attendant": attendant, "commuter"
 
 def recipe(kit: Kit) -> None:
     _looks[kit.opts["look"]](kit)
-    table: dict[str, str] = kit.opts.get("recolor", {})
-    if table:
-        for m in (kit.soft, kit.gear, kit.head, kit.slung):
-            m.m = [table.get(x, x) for x in m.m]
-        kit.notes["look"] = kit.opts["note"] + " [" + ", ".join(f"{a} -> {b}" for a, b in sorted(table.items())) + "]"
 
 
 def build(ctx) -> None:
