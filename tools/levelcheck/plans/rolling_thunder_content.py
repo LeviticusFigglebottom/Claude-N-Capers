@@ -35,6 +35,10 @@ BUS_QUEUE_X = [-38.5, -37.5, -30.5, -29.5]
 BUS_ROOT_Z = 13.32                  # the shelter bench centre (z 13.2) + 0.12
 TABLE_SEATS = [(19.88, 18.0, -90.0), (19.88, 22.0, -90.0), (21.12, 18.0, 90.0), (21.12, 22.0, 90.0),
                (19.88, 24.5, -90.0)]
+# GPU-21: the dining room's booths (centre z, along the west wall's inner face x 14.2) and counter stools (centre z, x
+# 23.15: 0.25 m off the counter's front)
+DINER_BOOTH_Z = [17.0, 19.45, 24.6]
+DINER_STOOL_Z = [17.9, 18.55, 19.2, 19.85, 20.5, 21.15, 21.8]
 # cower_stand marks (tag cower; a wall 0.21 m behind the root, ~0.7 m clear in front): [name, pos, facing yaw]
 COWER_DINER = [["CowerFrontW", [20.5, 0.0, 14.41], 180.0], ["CowerFrontE", [22.5, 0.0, 14.41], 180.0],
                ["CowerCounterN", [23.39, 0.0, 17.0], 90.0], ["CowerCounterS", [23.39, 0.0, 22.6], 90.0]]
@@ -335,6 +339,13 @@ def furniture() -> List[list]:
     # (navmesh: no navmesh on a prop).
     for i, z in enumerate([4.0, 8.0, 10.5]):
         out.append(B("DinerTable%d" % i, dn(6.5, 0.0, z), [0.8, 0.74, 0.8], 0.0, "table", True, "prop"))
+    # GPU-21 (the LEAD's render review: DR read as an office): fixed booths along the Orchard windows (no sitters: the
+    # sliver above; the table end against the glass, the side door z 21.5-22.5 and the review camera clear) and the
+    # fixed counter stools on the customers' side, clear of the counter's two cower marks (z 17.0 / 22.6, 0.7 m)
+    for i, z in enumerate(DINER_BOOTH_Z):
+        out.append(CAT("DinerBooth%d" % i, [14.82, 0.0, z], 0.0, "prop_diner_booth", {"kind": "booth"}))
+    for i, z in enumerate(DINER_STOOL_Z):
+        out.append(CAT("CounterStool%d" % i, [23.15, 0.0, z], -90.0, "prop_diner_stool", {"kind": "stool"}))
     out.append(B("Cookline", dn(13.55, 0.0, 4.0), [0.8, 0.9, 5.0], 0.0, "cookline", True, "counter"))
     out.append(B("PrepTable", dn(17.0, 0.0, 4.5), [2.0, 0.9, 0.8], 0.0, "table", True, "counter"))
     out.append(B("OfficeDesk", dn(9.5, 0.0, 13.5), [1.4, 0.75, 0.7], 0.0, "desk", True, "prop"))
@@ -798,11 +809,12 @@ def fixed_spawns() -> List[list]:
     for i, x in enumerate(BUS_QUEUE_X):
         out.append(S("BusQueue%d" % i, "CIVILIAN", [x, 0.0, BUS_ROOT_Z], 180.0, ["civ_bus"], "sit"))
     # customers 0-3 on the two tables' chairs (sit_eat: table near edge 0.22 m ahead; the chair's Seat is 0.12 m ahead
-    # of its pivot, so the spawn stands on the pivot and NpcSeatSpawns snaps it onto the Seat = D's root)
+    # of its pivot (prop_diner_chair, GPU-21: prop_chair_task's Seat, so the roots do not move), so the spawn stands
+    # on the pivot and NpcSeatSpawns snaps it onto the Seat = D's root)
     for i, (rx, rz, yaw) in enumerate(TABLE_SEATS):
         px = rx + (SEAT_FWD if yaw == 90.0 else -SEAT_FWD)
         out.append(S("DinerCustomer%d" % i, "CIVILIAN", [px, 0.0, rz], yaw, ["civ_diner"], "sit_eat", "",
-                     "prop_chair_task"))
+                     "prop_diner_chair"))
     out.append(S("Waitress", "CIVILIAN", [24.68, 0.0, 20.5], 90.0, ["staff_waitress", "staff_diner", "staff"],
                  "counter_wipe"))
     out.append(S("Cook", "CIVILIAN", [28.25, 0.0, 17.0], 90.0, ["staff_cook", "staff_diner", "staff"], "cook_stove"))
@@ -1312,7 +1324,9 @@ def review_cameras() -> List[list]:
     return [
         # TopDownPlan: the doc's rc_top_down (validate_level contract_nodes needs a TopDown* name; as Gallery Night)
         ["TopDownPlan", "", [12.0, 160.0, -9.0], [12.0, 0.0, -9.0]],
-        ["rc_ext_junction", "X3", [-22.0, 1.7, 14.0], [10.0, 4.0, -12.0]],
+        # GPU-21: from the plaza's corner by the Orchard kerb, past the bus shelters' east end, across the junction to
+        # the car park under the Skyway fascia (the old eye stood 1.3 m behind a shelter's back panel)
+        ["rc_ext_junction", "X3", [-16.5, 1.7, 17.5], [6.0, 3.5, -6.0]],
         ["rc_ext_north_arm", "X1", [-4.0, 1.7, -8.0], [-5.0, 2.0, -60.0]],
         ["rc_ext_east_arm", "X6", [40.0, 1.7, -12.6], [75.0, -3.0, 0.0]],
         ["rc_ext_plaza", "X3", [-16.0, 1.7, 22.0], [-40.0, 3.0, 28.0]],
@@ -1327,7 +1341,8 @@ def review_cameras() -> List[list]:
         ["rc_carpark_booth", "AB", [19.8, 1.7, -15.0], [17.0, 1.0, -18.0]],
         ["rc_carpark_plant", "CPL", [30.5, 1.7, -19.4], [36.0, 0.8, -15.0]],
         ["rc_carpark_stair", "STA", [17.4, 5.2, -45.0], [17.4, 4.0, -48.0]],
-        ["rc_diner_dining", "DR", [14.8, 1.7, 22.0], [24.0, 1.0, 16.0]],
+        # GPU-21: from the south-west corner: the Orchard booths left, the tables, the stools, counter and menu board
+        ["rc_diner_dining", "DR", [16.4, 1.7, 25.2], [22.5, 1.2, 15.5]],
         ["rc_diner_kitchen", "K", [32.8, 1.7, 21.0], [28.0, 1.0, 15.0]],
         ["rc_diner_function", "U1", [25.5, 5.2, 24.8], [16.0, 4.5, 15.0]],
         ["rc_diner_office", "OF", [22.6, 1.7, 26.6], [26.5, 0.8, 30.0]],

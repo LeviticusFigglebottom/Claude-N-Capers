@@ -707,6 +707,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_bay_lines_x3": {
+  "aabb": [
+   -3.65,
+   0.0,
+   -2.2,
+   7.3,
+   0.004,
+   4.4
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_bay_lines_x3/prop_bay_lines_x3.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "marking",
+  "mount": "",
+  "nodes": [
+   "Body"
+  ],
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_bay_lines_x3.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "concrete",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_beacon_hazard": {
   "aabb": [
    -0.25,
@@ -5222,6 +5255,252 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_diner_chair": {
+  "aabb": [
+   -0.22,
+   -0.0004,
+   -0.22,
+   0.44,
+   0.9114,
+   0.47
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_diner_chair/prop_diner_chair.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [
+   "table"
+  ],
+  "keepout": [],
+  "kind": "chair",
+  "mount": "",
+  "nodes": [
+   "Chair",
+   "Seat"
+  ],
+  "pin_only": true,
+  "place": "seat",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_diner_chair.tscn",
+  "seat": [
+   0.0,
+   0.47,
+   -0.12
+  ],
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "fabric",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_diner_counter_w250": {
+  "aabb": [
+   -1.254,
+   0.0,
+   -0.4,
+   2.508,
+   0.9,
+   0.804
+  ],
+  "clear": 1.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_diner_counter_w250/prop_diner_counter_w250.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "counter_service",
+  "mount": "",
+  "nodes": [
+   "Counter"
+  ],
+  "pin_only": true,
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_diner_counter_w250.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "wood",
+  "top": 0.9,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_diner_menu_board": {
+  "aabb": [
+   -1.23,
+   -0.48,
+   -0.045,
+   2.46,
+   0.96,
+   0.045
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_diner_menu_board/prop_diner_menu_board.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "menu_board",
+  "mount": "wall",
+  "nodes": [
+   "Board"
+  ],
+  "pin_only": true,
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_diner_menu_board.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_diner_stool": {
+  "aabb": [
+   -0.2,
+   0.0,
+   -0.2,
+   0.4,
+   0.72,
+   0.4
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_diner_stool/prop_diner_stool.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "stool",
+  "mount": "",
+  "nodes": [
+   "Stool"
+  ],
+  "pin_only": true,
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_diner_stool.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_diner_table_l120": {
+  "aabb": [
+   -0.604,
+   -0.0,
+   -0.404,
+   1.208,
+   0.74,
+   0.808
+  ],
+  "clear": 0.7,
+  "fixture": false,
+  "glb": "res://assets/props/prop_diner_table_l120/prop_diner_table_l120.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "table",
+  "mount": "",
+  "nodes": [
+   "Table"
+  ],
+  "pin_only": true,
+  "place": "center",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_diner_table_l120.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_diner_table_l180": {
+  "aabb": [
+   -0.904,
+   -0.0,
+   -0.404,
+   1.808,
+   0.74,
+   0.808
+  ],
+  "clear": 0.7,
+  "fixture": false,
+  "glb": "res://assets/props/prop_diner_table_l180/prop_diner_table_l180.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "table",
+  "mount": "",
+  "nodes": [
+   "Table"
+  ],
+  "pin_only": true,
+  "place": "center",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_diner_table_l180.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_diner_table_w80": {
+  "aabb": [
+   -0.404,
+   -0.0,
+   -0.404,
+   0.808,
+   0.74,
+   0.808
+  ],
+  "clear": 0.7,
+  "fixture": false,
+  "glb": "res://assets/props/prop_diner_table_w80/prop_diner_table_w80.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "table",
+  "mount": "",
+  "nodes": [
+   "Table"
+  ],
+  "pin_only": true,
+  "place": "center",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_diner_table_w80.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_display_case_island": {
   "aabb": [
    -0.626,
@@ -7923,6 +8202,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_hoarding_graphic_w600": {
+  "aabb": [
+   -3.0,
+   -0.7,
+   -0.022,
+   6.0,
+   1.4,
+   0.022
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_hoarding_graphic_w600/prop_hoarding_graphic_w600.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "signage",
+  "mount": "wall",
+  "nodes": [
+   "Body"
+  ],
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_hoarding_graphic_w600.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_hoist_cradle_w110": {
   "aabb": [
    -0.554,
@@ -10606,6 +10918,40 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_neon_eat": {
+  "aabb": [
+   -0.9524,
+   -0.46,
+   -0.113,
+   1.9048,
+   0.96,
+   0.113
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_neon_eat/prop_neon_eat.glb",
+  "group": "sales",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "neon_sign",
+  "mount": "wall",
+  "nodes": [
+   "Neon"
+  ],
+  "pin_only": true,
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/sales/prop_neon_eat.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_neon_halfway": {
   "aabb": [
    -1.4925,
@@ -13120,6 +13466,40 @@
   "surface": "wood",
   "top": 0.0,
   "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_pendant_diner": {
+  "aabb": [
+   -0.19,
+   -0.765,
+   -0.19,
+   0.38,
+   0.765,
+   0.38
+  ],
+  "clear": 0.0,
+  "fixture": true,
+  "glb": "res://assets/props/prop_pendant_diner/prop_pendant_diner.glb",
+  "group": "lighting",
+  "has_light": true,
+  "hosts": [],
+  "keepout": [],
+  "kind": "light_fixture",
+  "mount": "ceiling",
+  "nodes": [
+   "Pendant"
+  ],
+  "pin_only": true,
+  "place": "ceiling",
+  "prefab": "",
+  "scene": "res://world/props/lighting/prop_pendant_diner.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },

@@ -40,15 +40,17 @@ const PROP_ART: Dictionary = {
 	"Planter1": ["prop_planter_street", 0.0, 1, 2, true, true],
 	"Planter2": ["prop_planter_street", 0.0, 1, 2, true, true],
 	"Planter3": ["prop_planter_street", 0.0, 1, 2, true, true],
-	# the diner counter's front (-Z) faces the dining room (west)
-	"DinerCounter": ["prop_counter_sales", 90.0, 1, 3, false, true],
-	"DinerTable0": ["prop_table_round_d120", 0.0, 1, 1, false, true],
-	"DinerTable1": ["prop_table_round_d120", 0.0, 1, 1, false, true],
-	"DinerTable2": ["prop_table_round_d120", 0.0, 1, 1, false, true],
+	# the diner counter's front (-Z) faces the dining room (west). GPU-21 (the LEAD's render review: DR read as an
+	# office): three diner counter modules (exact fit, 3 x 2.5 m) and the diner's laminate tables (0.8 m, top 0.74)
+	"DinerCounter": ["prop_diner_counter_w250", 90.0, 1, 3, false, true],
+	"DinerTable0": ["prop_diner_table_w80", 0.0, 1, 1, false, true],
+	"DinerTable1": ["prop_diner_table_w80", 0.0, 1, 1, false, true],
+	"DinerTable2": ["prop_diner_table_w80", 0.0, 1, 1, false, true],
 	"PrepTable": ["prop_packing_table_steel", 0.0, 1, 1, false, true],
 	"OfficeDesk": ["prop_desk_office", 180.0, 1, 1, false, true],
-	"FunctionTable0": ["prop_table_break_l160", 0.0, 1, 1, false, true],
-	"FunctionTable1": ["prop_table_break_l160", 0.0, 1, 1, false, true],
+	# GPU-21: the function room's long tables in the diner's laminate (exact fit, 1.8 x 0.8 m)
+	"FunctionTable0": ["prop_diner_table_l180", 0.0, 1, 1, false, true],
+	"FunctionTable1": ["prop_diner_table_l180", 0.0, 1, 1, false, true],
 	"PlantPumps": ["prop_air_handler", 180.0, 2, 1, false, false],
 	"BlockPallet0": ["prop_pallet_loaded", 0.0, 1, 1, false, false],
 	"BlockPallet1": ["prop_pallet_loaded", 0.0, 1, 1, false, false],
@@ -107,6 +109,23 @@ const LANDMARKS: Array = [
 	["TrackE5", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, 65.0), 0.0, []],
 	# the heli-pad marking on the roof deck under E3 (4 mm over the finish)
 	["HeliPadMarking", "prop_heli_pad_marking", "Props/Dress", Vector3(32.0, 7.0, -34.0), 0.0, []],
+	# bay lines round the parked cars (each car in the middle bay of its set; the cars' length runs along x)
+	["BayLinesG0", "prop_bay_lines_x3", "Props/Dress", Vector3(28.5, 0.0, -42.0), 90.0, []],
+	["BayLinesG1", "prop_bay_lines_x3", "Props/Dress", Vector3(18.4, 0.0, -38.0), 90.0, []],
+	["BayLinesG2", "prop_bay_lines_x3", "Props/Dress", Vector3(34.0, 0.0, -36.0), 90.0, []],
+	["BayLinesG3", "prop_bay_lines_x3", "Props/Dress", Vector3(28.5, 0.0, -28.0), 90.0, []],
+	["BayLinesG4", "prop_bay_lines_x3", "Props/Dress", Vector3(18.4, 0.0, -26.0), 90.0, []],
+	["BayLinesG5", "prop_bay_lines_x3", "Props/Dress", Vector3(40.0, 0.0, -23.5), 90.0, []],
+	["BayLines20", "prop_bay_lines_x3", "Props/Dress", Vector3(28.5, 3.5, -42.0), 90.0, []],
+	["BayLines21", "prop_bay_lines_x3", "Props/Dress", Vector3(18.4, 3.5, -34.0), 90.0, []],
+	["BayLines22", "prop_bay_lines_x3", "Props/Dress", Vector3(34.0, 3.5, -30.0), 90.0, []],
+	["BayLines24", "prop_bay_lines_x3", "Props/Dress", Vector3(24.0, 3.5, -23.0), 90.0, []],
+	["BayLinesR1", "prop_bay_lines_x3", "Props/Dress", Vector3(36.0, 7.0, -18.0), 90.0, []],
+	["BayLinesR2", "prop_bay_lines_x3", "Props/Dress", Vector3(30.0, 7.0, -18.0), 90.0, []],
+	["BayLinesR3", "prop_bay_lines_x3", "Props/Dress", Vector3(24.0, 7.0, -18.0), 90.0, []],
+	# the hoarding graphic on its street faces: Orchard (east, between the vehicle gates and the man-gate) and Tannery
+	["HoardingGraphicE", "prop_hoarding_graphic_w600", "Props/Dress", Vector3(-13.9, 1.2, -30.0), -90.0, []],
+	["HoardingGraphicS", "prop_hoarding_graphic_w600", "Props/Dress", Vector3(-48.0, 1.2, -10.9), 180.0, []],
 ]
 
 ## Rooms the KitPlacer dresses although their purpose is exterior (walled yards).
@@ -172,9 +191,10 @@ const ROWS: Array = [
 ## Directly placed props: [name, asset, position, yaw, metas]. Wall mounts sit on the face at `position` (centred);
 ## ceiling mounts hang from it.
 const DIRECT_PROPS: Array = [
-	# DR (diner_dining): counter stools facing the counter (catalog stools seat only at benches)
-	["CounterStool2", "prop_stool_shop", Vector3(23.0, 0.0, 21.0), -90.0, {}],
-	["CounterStool3", "prop_stool_shop", Vector3(23.0, 0.0, 21.7), -90.0, {}],
+	# DR (diner_dining, GPU-21; the counter stools and booths are map-built, rolling_thunder_content.py): the menu
+	# board and the EAT / COFFEE PIE neon on the kitchen wall behind the counter (inner face x 26.9), facing the room
+	["DinerMenuBoard", "prop_diner_menu_board", Vector3(26.9, 2.15, 19.6), 90.0, {}],
+	["DinerNeonEat", "prop_neon_eat", Vector3(26.9, 2.2, 15.4), 90.0, {}],
 	# CP-R (car_park_roof): street lamps off the parapets, the arm over the deck (the placer finds no row on the roof
 	# between the parked cars, the head houses and the heli pad)
 	["RoofLampW0", "prop_street_lamp", Vector3(17.2, 7.0, -40.0), -90.0, {}],

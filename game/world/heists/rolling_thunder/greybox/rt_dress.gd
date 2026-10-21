@@ -37,7 +37,7 @@ const POLE_KINDS: Array[String] = ["street_lamp", "lamp_post"]
 ## (prop_traffic_signal: its pivot is the footprint centre, the pole at rolling_thunder.py SIGNAL_POLE).
 const POLE_OFF: Dictionary = {"traffic_signal": [-1.4, 0.14, 4.0]}
 ## Landmark kinds that cast no shadow (flat or low on the rail bank / the roof deck; D-146 shadow draws).
-const NO_SHADOW_KINDS: Array[String] = ["rail_track", "marking"]
+const NO_SHADOW_KINDS: Array[String] = ["rail_track", "marking", "signage"]
 const ART_SCALE_MIN: float = 0.55
 const ART_SCALE_MAX: float = 1.6
 ## Minimum horizontal width of a bake obstruction (two 0.1 m nav cells; rt_gameplay.RIG_NAV_MIN).

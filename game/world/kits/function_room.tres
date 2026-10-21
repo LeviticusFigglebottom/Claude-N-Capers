@@ -21,11 +21,11 @@ counts = {
 &"table": Vector2i(2, 3)
 }
 assets = {
-&"chair": PackedStringArray("prop_chair_break"),
+&"chair": PackedStringArray("prop_diner_chair"),
 &"counter_bar": PackedStringArray("prop_bar_lounge_w300"),
-&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"light_fixture": PackedStringArray("prop_pendant_diner"),
 &"plant": PackedStringArray("prop_plant_tall"),
-&"table": PackedStringArray("prop_table_break")
+&"table": PackedStringArray("prop_diner_table_l120")
 }
-ceiling = {"prop_ceiling_panel_neutral": 2.6}
-notes = "RT U1 upstairs function room: break tables with chairs beside the map's two long tables, the lounge bar on a wall, ceiling panels."
+ceiling = {"prop_pendant_diner": 3}
+notes = "RT U1 upstairs function room (the diner's party room): diner tables with chrome chairs beside the map's two long tables, the lounge bar on a wall, red enamel pendants (GPU-21: it read as an office)."

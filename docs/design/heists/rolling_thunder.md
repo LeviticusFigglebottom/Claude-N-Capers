@@ -1456,7 +1456,7 @@ set per layout. There are 28 shots: 1 top-down, 5 exterior, 4 landmarks (covered
 | Camera | Shows | Covers |
 |---|---|---|
 | `rc_top_down` | orthographic plan of the whole play space | top-down plan |
-| `rc_ext_junction` | from the plaza looking NE: the junction, the **green girder**, the car park, the diner corner | exterior 1, landmark 1 |
+| `rc_ext_junction` | from the plaza's Orchard corner (−16.5, 17.5) looking NE: the junction, the **green girder**, the car park, the diner corner (GPU-21: moved off the bus shelter's back panel) | exterior 1, landmark 1 |
 | `rc_ext_north_arm` | from the junction looking N under the Skyway: the convoy queue, piers, the site hoarding | exterior 2 |
 | `rc_ext_east_arm` | from the forecourt railing looking E: the ramp, the trench, the underpass mouth, the rail bridge | exterior 3 |
 | `rc_ext_plaza` | the shelters and the **clock pillar**, Ashby House behind | exterior 4, landmark 2 |
@@ -1471,7 +1471,7 @@ set per layout. There are 28 shots: 1 top-down, 5 exterior, 4 landmarks (covered
 | `rc_carpark_booth` | AB interior with the pay station through the window | AB |
 | `rc_carpark_plant` | CPL | CPL |
 | `rc_carpark_stair` | STA from the Deck 2 landing | STA |
-| `rc_diner_dining` | DR from the side door: booths, counter, glazing | DR (H2) |
+| `rc_diner_dining` | DR from the SW corner (16.4, 25.2) looking NNE: the Orchard booths, the tables, the stools and counter, the menu board and EAT neon, the Tannery glazing | DR (H2) |
 | `rc_diner_kitchen` | K | K |
 | `rc_diner_function` | U1 at the glazing over the junction | U1 (H2) |
 | `rc_diner_office` | OF with the safe | OF |
@@ -1483,6 +1483,29 @@ set per layout. There are 28 shots: 1 top-down, 5 exterior, 4 landmarks (covered
 | `rc_site_welfare` | C2 interior | C2 |
 | `rc_underpass` | from the west mouth into the underpass: E2 in the cut, the lorry | X2 (H4) |
 | `rc_sniper_skyway` | from S1 over the east arm and the car park (what the Longshot sees) | sniper LOS check |
+
+### G2 diner identity (RT-C2 GPU-21: the LEAD's review of the first GPU renders)
+The first renders read DR and U1 as offices (swivel chairs at café tables, a reception counter, terrazzo, a drop
+ceiling with downlights or troffers). Reuse-first still holds (D-147, `next_heist_rolling_thunder.md` §3c): each new
+prop below is a shared kit's form with the diner finish, and each has a reason. All are `pin_only` (no other kit's
+picks change), library materials only (`tools/blender/props/rolling_thunder.py`, SOURCE.txt each).
+
+| New prop / material | Kit + finish | Reason | Where |
+|---|---|---|---|
+| `prop_diner_stool` | pedestal stool, chrome + red vinyl, bolted flange | No fixed counter stool exists (`prop_stool_shop` is a workshop stool on a five-star base) | 7 at the counter's customer side (x 23.15, z 17.9–21.8; clear of the two counter cower marks) |
+| `prop_diner_chair` | tube chair, chrome + red vinyl; `Seat` at 0.47 m, `seat_fwd` 0.12 | The customers sat on `prop_chair_task` (an office swivel chair); same Seat, so the five roots and the seat snaps do not move | the customers' chairs; the DR / U1 kits' chairs |
+| `prop_diner_counter_w250` | counter module, cream laminate + red band between chrome strips, grey top at 0.90 m with a 0.22 m knee overhang | `prop_counter_sales` read as a reception desk | `DinerCounter` (3 modules, exact fit; collider, till and cover unchanged) |
+| `prop_diner_table_w80` / `_l120` / `_l180` | pedestal table, cream laminate + chrome band, top 0.74 m (D's number) | The round café table and the grey break tables read as office | `DinerTable0-2` (exact fit), the DR kit's tables; `FunctionTable0/1` (exact fit), the U1 kit's tables |
+| `prop_pendant_diner` | the pendant family, a 0.5 m stem and a red enamel dome (rim 0.72 m under the ceiling: 2.28 m clear under 3.0 m) | `prop_pendant_brass` hangs to 1.95 m; downlights and panels read office | the DR and U1 kits' ceiling grid (3.0 m) |
+| `prop_diner_menu_board` | letter board, black felt in a chrome frame, inlaid BREAKFAST / BURGERS / PIE / COFFEE headers and lines | No menu board in the catalog | DR, the kitchen wall behind the counter |
+| `prop_neon_eat` | the HALFWAY neon generator, text "EAT" (red) / "COFFEE  PIE" (mint) | Diner neon inside, as the LEAD asked | DR, the kitchen wall behind the counter |
+| `vinyl_checker` (texgen) | `vinyl_floor`'s model, 0.25 m cream / charcoal squares | Terrazzo and carpet read as a bank lobby / office | DR and U1 floors (ceilings: flat `plaster`, no drop grid) |
+| prop tints `rt_vinyl_red`, `rt_laminate_cream`, `rt_laminate_red`, `rt_enamel_red` | `_matlib.py` tints of library surfaces | the diner palette (red vinyl, cream formica) | the props above |
+
+`prop_diner_booth` (batch 3) is now placed: three fixed booths along the Orchard windows (`DinerBooth0-2`, x 14.82, z
+17.0 / 19.45 / 24.6; the side door and the review camera clear). Nobody sits in them: the bench-to-table sliver (the
+DinerTable note in `rolling_thunder_content.py`) still holds, so the five customers keep their tables. U5 (the staff
+break room) stays as it is.
 
 ## Budgets
 Targets from architecture §10 and D-038 QC-10, checked by the `perf` validator per review camera.
