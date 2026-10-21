@@ -451,3 +451,34 @@ PlayerTannery4 Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone
 PlayerTannery4 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerTannery4 Variants/Group_keycard/Slot_kc_manager_desk/Keycard
 PlayerTannery4 Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint
+
+#
+# Door-clearance bake (of_gameplay._jamb_clearance, ENV P ghost run 250): paths cross every door on the frame's centre
+# line instead of cutting the jamb corner, 1-3 % longer; these routes stood at 2.97-2.99x and now read 3.00-3.08x.
+# The same long walks as the groups above (vault level / gallery east rooms / terrace / roof via Stair A or B).
+PlayerPlaza1 Gameplay/Doors/GoldCageGate
+PlayerPlaza1 Gameplay/Doors/GoldCageGate/UsePoint
+PlayerPlaza1 Gameplay/Doors/GoldCageGate/Padlock
+PlayerPlaza1 Gameplay/Doors/GoldCageGate/Padlock/UsePoint
+PlayerPlaza1 Gameplay/Loot/VaultGold
+PlayerPlaza1 Gameplay/Loot/VaultGold/UsePoint
+PlayerPlaza3 Gameplay/Doors/ConferenceGalleryDoor/UsePoint
+PlayerPlaza3 Gameplay/Loot/HallBox22
+PlayerPlaza3 Gameplay/Loot/HallBox22/UsePoint
+PlayerPlaza4 Gameplay/Doors/ConferenceGalleryDoor/UsePoint
+PlayerLane1 Gameplay/Doors/JanitorDoorM/UsePoint
+PlayerLane1 Gameplay/Loot/VaultBoxN01
+PlayerLane1 Gameplay/Loot/VaultBoxN01/UsePoint
+PlayerLane3 Gameplay/Doors/StaffWCDoorW/UsePoint
+PlayerLane3 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
+PlayerLane4 Gameplay/Doors/HeadHouseDoor
+PlayerLane4 Gameplay/Doors/HeadHouseDoor/UsePoint
+PlayerTannery1 Gameplay/Doors/TreasuryDoor/UsePoint
+PlayerTannery1 Gameplay/Doors/TrainingDoor/UsePoint
+PlayerTannery1 Gameplay/Loot/HallBox14
+PlayerTannery1 Gameplay/Loot/HallBox14/UsePoint
+PlayerTannery1 Gameplay/Loot/HallBox20
+PlayerTannery1 Gameplay/Loot/HallBox20/UsePoint
+PlayerTannery2 Gameplay/Devices/PhonePC/UsePoint
+PlayerTannery2 Gameplay/Loot/HallBox19
+PlayerTannery2 Gameplay/Loot/HallBox19/UsePoint
