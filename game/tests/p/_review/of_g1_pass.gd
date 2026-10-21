@@ -1567,20 +1567,32 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 
 
 ## Doc §5: swipe at the gate when the vault guard is off VC (loops (b)/(c)) and rover_basement is east (r251g: seen at
-## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, or within 20 m
-## with LOS to it; logs the wait (max 180 s, then goes anyway).
-func _wait_spot_clear(spot: Vector3, y: float, label: String) -> void:
+## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, within 20 m
+## with LOS to it, or walking within 20 m; if not clear at once the crew waits at `hide` (LK, doc §3; r251h: waiting in BB
+## by the core, rover_basement walked down BB and saw it). Logs the wait (max 300 s, then goes anyway).
+func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> void:
 	var t: float = 0.0
-	while t < 180.0:
+	var hidden: bool = false
+	var last: Dictionary = {}
+	while t < 300.0:
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5:
 				continue
+			var id: int = g.get_instance_id()
+			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
+			last[id] = g.global_position
 			var d: float = pilot.flat_dist(g.global_position, spot)
-			if d < 8.0 or (d < 20.0 and _sees_core(g, spot)):
-				near.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
-		if near.is_empty():
+			if d < 8.0 or (d < 20.0 and (moving or _sees_core(g, spot))):
+				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
+		if not near.is_empty() and not hidden:
+			hidden = true
+			note("GHOST %s not clear (%s): waiting at %s" % [label, ", ".join(near), Po5Pilot._v(hide)])
+			await _go(hide, 0.5, 60.0)
+			last.clear()
+			continue
+		if near.is_empty() and t >= 1.0:
 			if t > 0.0:
 				note("GHOST %s clear after %.0f s" % [label, t])
 			return
@@ -1588,7 +1600,7 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String) -> void:
 			note("GHOST waiting for the %s: %s" % [label, ", ".join(near)])
 		await wait_s(0.5)
 		t += 0.5
-	note("GHOST %s NOT clear after 180 s (going anyway)" % label)
+	note("GHOST %s NOT clear after 300 s (going anyway)" % label)
 
 
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
@@ -2369,7 +2381,7 @@ func _g5_vault() -> bool:
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate != null and not gate.is_open:
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate")
+		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _of(GHOST_LK_WAIT))
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid
