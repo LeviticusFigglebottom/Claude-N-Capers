@@ -112,3 +112,14 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
   - `Condition "!is_inside_tree()" is true. Returning: Transform3D()`: burn x8
   - `Lambda capture at index 1 was freed. Passed "null" instead.`: throws x4, dock x2, fire_exit x1
 - Every run also logs the warning `Sub-surface scattering is not supported in viewports with a transparent background`.
+
+## GPU-8.1: ENV D wave review (tree: env/d-art f96168df, local branch gpu/d)
+- Import: exit 0, 9 s.
+- `--path game --resolution 1280x720 res://world/characters/_tools/render_d145_wave_review.tscn -- --out=<repo>\gpu\renders\d\wave`:
+  exit 0, 486 s (routine 240 s game, hazardous 222 s game), `[D145W] RESULT DONE`. No ERRORs.
+- Output: `gpu/renders/d/wave/` (sheet, 2 group shots, 8 unit shots, d145_wave_log.txt).
+- **Things for D to check:**
+  - `d145_wave_routine_unit1.png` (60 KB) and `routine_unit2.png` (141 KB) frame **no unit**: empty sky/ground gradient.
+    `routine_unit3.png` frames an interior door/hand, not the officer. The hazardous unit shots and both group shots look right.
+  - `hazardous: 0 of 6 units wear a _duty look` (4 patrol_officer, longshot, tac_light_frd), vs `routine: 4 of 4`.
+    If hazardous waves are meant to keep the _duty variant, this is a real miss.
