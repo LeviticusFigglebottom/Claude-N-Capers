@@ -134,6 +134,9 @@ const GHOST_SMOKE_AT: Vector3 = Vector3(48.0, 0.0, -5.0)
 const LANE_CLEAR_M: float = 20.0
 const GHOST_LK_WAIT: Vector3 = Vector3(3.0, -4.0, 4.0)
 const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
+## LK's NW corner beside LockerDoor (x 5, z 7): out of the door's sight line from BB (r251i: crouch-less wait at
+## GHOST_LK_WAIT, in line with the door, filled by rover_basement passing BB at 6 m).
+const GHOST_LK_HIDE: Vector3 = Vector3(0.8, -4.0, 6.2)
 const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
 const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
 const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
@@ -1590,16 +1593,20 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> 
 			hidden = true
 			note("GHOST %s not clear (%s): waiting at %s" % [label, ", ".join(near), Po5Pilot._v(hide)])
 			await _go(hide, 0.5, 60.0)
+			pilot.inp.press(&"crouch")  # a player waiting in a side room crouches
 			last.clear()
 			continue
 		if near.is_empty() and t >= 1.0:
-			if t > 0.0:
-				note("GHOST %s clear after %.0f s" % [label, t])
+			if hidden:
+				pilot.inp.release(&"crouch")
+			note("GHOST %s clear after %.0f s" % [label, t])
 			return
 		if int(t * 2.0) % 20 == 0:
 			note("GHOST waiting for the %s: %s" % [label, ", ".join(near)])
 		await wait_s(0.5)
 		t += 0.5
+	if hidden:
+		pilot.inp.release(&"crouch")
 	note("GHOST %s NOT clear after 300 s (going anyway)" % label)
 
 
@@ -2381,7 +2388,7 @@ func _g5_vault() -> bool:
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate != null and not gate.is_open:
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _of(GHOST_LK_WAIT))
+		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _of(GHOST_LK_HIDE))
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid

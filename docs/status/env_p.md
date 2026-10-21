@@ -6,7 +6,8 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
-  walked down BB and saw it. Now it waits in LK (doc §3) and also holds for guards walking within 20 m of the gate. Run r251i is in progress. A headless ghost run cannot work (the pilot's mouse needs a window).
+  walked down BB and saw it. r251i: it waited in LK (doc §3), but at (3, −4, 4), in line with LockerDoor, and standing; rover_basement
+  passing BB at 6 m filled the meter. Now it waits in LK's NW corner beside the door (0.8, −4, 6.2), crouched. Run r251j is in progress. A headless ghost run cannot work (the pilot's mouse needs a window).
 - **GPU-box ghost command**. It needs `game/tests/p/_review/of_g1_pass.gd` from env/p-play (≥ 88e06f40), which is newer than trunk's:
   `git checkout origin/env/p-play -- game/tests/p/_review/of_g1_pass.gd`, then
   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`
