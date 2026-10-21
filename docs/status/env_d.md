@@ -4,6 +4,22 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **Character render-warm for the OF loud hitches (for A to call):** `game/world/characters/character_warm.gd`
+  (class_name `CharacterWarm`, D-owned):
+  - `CharacterWarm.heist_cast_paths(heist) -> PackedStringArray`: every p5_cast look of the heist (pools + tag_map),
+    existing scene paths, sorted, unique (OF: 30+).
+  - `await CharacterWarm.warm(host, paths, frames := 3) -> int`: draws each scene once off-screen (a SubViewport that
+    shares the main World3D, the main viewport's AA settings, the real sun, plus an omni with shadows for the
+    positional-shadow variants), full meshes then CrowdLod proxies, then frees everything; returns looks drawn.
+  - **A's part:** at heist load (load screen), `paths = heist_cast_paths(heist)` + every EnemyDef the director can spawn
+    there at the run's difficulty via `NpcVisuals.def_scene_paths(def, difficulty)` (police, specials, `_duty` and
+    faction variants), then `await CharacterWarm.warm(runtime, paths)`. GPU-12's hitch log then shows whether the first
+    -spawn hitches are gone.
+  - Test `game/tests/d/test_character_warm.gd` (2 tests green): the OF list, and warm draws each look once and frees.
+  - Wave framing: close-ups now also need clear lines to the head and hips and try 1.4x the distance (routine_unit3's
+    door). A re-run of job 1 is optional.
+  Checks run: gdlint (character_warm.gd, test_character_warm.gd, render_d145_wave_review.gd), d test_character_warm,
+  check_ownership d, check_banned.
 - **GPU-8 review** (origin/gpu/renders gpu/renders/d/*):
   - **QC-67 CLOSED:** queue/qc67_log.txt: the queue customer (bank_customer_d at CustomerQueue1) plays `queue_idle_b`
     (the queue_idle variant group); queue_w_side.png shows him at the mark. The 4 tellers play teller_count (r249 PASS).
