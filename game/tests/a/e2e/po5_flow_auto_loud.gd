@@ -470,8 +470,8 @@ func _stalled(m: Dictionary) -> bool:
 	var id: StringName = StringName(m["id"])
 	if float(_stalls.get(id, 0.0)) < STALL_SKIP_S:
 		return false
-	if _usable_near(m["position"] as Vector3, 2.5) == null:
-		return true
+	if _usable_near(m["position"] as Vector3, 2.5) == null and _usable_on_prefab_at(m["position"] as Vector3) == null:
+		return true  # RT G1: a truck's jammed saw is fixed at its lock, 3.8 m from the truck's marker
 	_stalls[id] = 0.0
 	f.note("marker %s: usable again, back to it" % _marker_key(m))
 	return false
