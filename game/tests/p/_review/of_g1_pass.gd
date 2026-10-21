@@ -1522,7 +1522,17 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 		if absf(pilot.crew.global_position.y - OF_FFL[i]) < absf(pilot.crew.global_position.y - OF_FFL[cur]):
 			cur = i
 	if cur != ffl_i:
-		if _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
+		if _ghost_stair_wait and cur == 0:
+			# Leaving LK for SA (step 4): BB itself is the danger. With A's guard_vault loops the vault guard walks BB
+			# too (r255a: rover_basement saw the walk at 8 m after a 4 s core wait that skipped this floor). Wait in
+			# the probed LK hide, crouched, counting BB's guards as well.
+			await _go(_lk_hide(), 0.4, 60.0)
+			pilot.inp.press(&"crouch")
+			# 10 m on BB: the vault guard's VC post is ~12 m off and was never a problem standing (r251-r253 walked
+			# LK -> SA past it); walkers are caught by the 15 m moving rule.
+			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], true, 10.0)
+			pilot.inp.release(&"crouch")
+		elif _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
 			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i])
 		# Out to this floor's corridor first: Po5Pilot crosses an open door only toward a target beyond its plane (a
 		# room-to-core walk from SR has both behind the same wall and flipped in SecurityDoor, G1 run 2).
@@ -1537,7 +1547,7 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 
 ## Ghost line: a player peeks into the stair core before using it (r246 run: Npc_guard4 on SA at 0.9 m). Wait until no
 ## living guard is within 8 m of the SA core between `y_lo` and `y_hi`; logs the wait (max 180 s, then goes anyway).
-func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> void:
+func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false, same_r: float = 25.0) -> void:
 	# Guards on the floor the crew stands on see it whether it waits or not: count those on the stair flights and
 	# on the destination floor only (r246c: waiting by the ground core for a basement rover got the crew seen).
 	# `same_floor` counts them too: a walk across the core on this floor (EA -> E3, r251c: rover_gallery up SA).
@@ -1562,7 +1572,7 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 			# Same floor: any guard within 25 m holds the crossing, LOS or not. Rooms open onto the corridor
 			# (r251d/e: rover_gallery in an east room at the check, back out in XC 13 m off during the 8 s walk EA -> E3).
 			var same: bool = absf(g.global_position.y - from_y) <= 0.6
-			if (same and d < 25.0) or (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
+			if (same and d < same_r) or (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
 				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
 		if near.is_empty() and t >= 1.0:  # two samples: a guard's movement is known
 			if t > 1.0:

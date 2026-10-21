@@ -12,7 +12,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - **GH Tense on r255 (e9c8744f + P) is harder: 2/3 WIN, downs 3/3/2, median 3**, which misses the D-145 target (≤2). r251 was 2/3 with median 1, and
   all 3 won with A's revive fix. First downs come much earlier (4502: t=79 vs ~245 on r251). Per the LEAD, the Longshot cap is not in r255, so the
   suspects are the nav-cap lift or the GPU-17 hitch regression. I'll re-run ×3 on r256. Table: captures/d145_gh_2026-10-20/table.txt + tense_r255/.
-- **A's guard_vault loops** (a-core 46551745) are in a ready tree (r255 + A + P, imported). Ghost step 5+ runs right after the sweep.
+- **Ghost with A's guard_vault loops** (r255 + a-core 46551745 + P). r255a: steps 1-3 PASS. Then the vault guard now walks BB (loops (b)/(c)), and
+  rover_basement saw the LK → SA walk at 8 m (t=109) after a 4 s core wait that ignored BB's own guards. Harness: leaving the basement, the pilot waits
+  crouched in the probed LK hide and counts BB's guards (≤10 m standing, ≤15 m walking). Parse-checked; r255b is running.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
