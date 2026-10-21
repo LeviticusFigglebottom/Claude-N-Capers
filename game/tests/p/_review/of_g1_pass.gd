@@ -2532,44 +2532,49 @@ func _g2_dock() -> bool:
 					or (g.global_position.z < 12.0 and moving and dc < r):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
-	var clear: bool = await _smoke_cue(300.0)
-	for _try: int in 4:
+	# One loop per smoke window: the cue, LD clear, the lane clear, mask, then LD again before the ECM is spent (haz_h/i:
+	# rover_hall turned toward LD between the cue at t=78 and t=83, flagged only after the ECM was down).
+	var clear: bool = false
+	for _win: int in 5:
+		clear = await _smoke_cue(300.0)
 		ld_busy.call(20.0)  # first sample: walking needs two
 		await wait_s(0.5)
 		var who: String = ld_busy.call(20.0)
-		if who == "":
-			break
-		note("GHOST LD occupied (%s): skipping this smoke window" % who)
-		await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
-		clear = await _smoke_cue(300.0)
-	while waited < 600.0 and not clear:
-		clear = true
-		var where: PackedStringArray = PackedStringArray()
-		for n: Node in rt.npcs(&"guard"):
-			var g: NpcBase = n as NpcBase
-			if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
-				continue
-			where.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
-			if pilot.flat_dist(g.global_position, door_at) < LANE_CLEAR_M \
-					or pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0:
-				clear = false
-		if int(waited) % 20 == 0:
-			note("GHOST lane guards: %s" % (", ".join(where) if not where.is_empty() else "none"))
-		if not clear:
-			await wait_s(1.0)
-			waited += 1.0
-	note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
-	if not await _mask():
-		return false
+		if who != "":
+			note("GHOST LD occupied (%s): skipping this smoke window" % who)
+			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
+			continue
+		while waited < 600.0 and not clear:
+			clear = true
+			var where: PackedStringArray = PackedStringArray()
+			for n: Node in rt.npcs(&"guard"):
+				var g: NpcBase = n as NpcBase
+				if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
+					continue
+				where.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
+				if pilot.flat_dist(g.global_position, door_at) < LANE_CLEAR_M \
+						or pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0:
+					clear = false
+			if int(waited) % 20 == 0:
+				note("GHOST lane guards: %s" % (", ".join(where) if not where.is_empty() else "none"))
+			if not clear:
+				await wait_s(1.0)
+				waited += 1.0
+		note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
+		if not pilot.crew.masked:
+			if not await _mask():
+				return false
+		ld_busy.call(20.0)
+		await wait_s(0.5)
+		who = ld_busy.call(20.0)
+		if who != "":
+			note("GHOST LD busy after the mask (%s): ECM kept, next smoke window" % who)
+			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
+			continue
+		break
 	if not await _deploy_ecm():
 		return false
 	var door: Door = _x("ld_door") as Door
-	ld_busy.call(10.0)
-	await wait_s(0.5)
-	var late: String = ld_busy.call(10.0)
-	if late != "":
-		note("GHOST LD busy right before the lockpick (%s): waiting at the door" % late)
-		await wait_until(func() -> bool: return ld_busy.call(10.0) == "", 60.0)
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
 	# Peek through LD -> BC too: on Hazardous (D-150) rover_hall stood 1.7 m behind DockCorridorDoor when the pilot
