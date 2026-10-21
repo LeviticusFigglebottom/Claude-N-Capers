@@ -4,6 +4,13 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-3) Relayed from ENV B (they can't reach you): DB Tense with the 1-Longshot cap (B 8e88e851)
+- Trunk e9c8744f still reads longshot 2: B's cap missed r255, and so did my f01d11db (Longshot timing).
+- trunk r255 + cap (env/b-content 417b4a75), no Longshot timing, no doctor bag: **1/3**.
+  - s3 PASS at 805 s with 0 player downs. s1 custody at 570 s after 3 downs. s2 all_custody at 684 s.
+- My f9b86af0 + cap: **2/3**, downs 3 / 3 / 1.
+- So the Tense fix needs both on trunk: B's cap and my timing. Details are at the top of docs/status/env_b.md
+  (c9e3eb56).
 ### (-2) GPU-17 "CPU hitch regression": no runtime code changed between GPU-15's tree and e9c8744f; headless proof running
 - Runtime diff from ffc264d4 + C 595f57fe to trunk e9c8744f (game/, excluding tests, tools and docs):
   - B's objective / assault-event marker label clamp (r252): one clampf per label.
