@@ -1,0 +1,28 @@
+[OFP 288.8s t=10.8] GHOST rover_hall at the LD check (t=11)
+[OFP 311.0s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 311.0s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 321.0s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 343.2s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 353.2s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 363.2s t=73.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 373.6s t=78.5] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 46 s
+[OFP 390.9s t=95.8] GHOST rover_hall at the LD check (t=96)
+[OFP 409.3s t=104.0] GHOST LD occupied (rover_hall at (7.0, 0.0, 5.2) (not on MO / loop (c))): skipping this smoke window
+[OFP 430.4s t=125.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (10.5, 0.0, -3.3) walk
+[OFP 451.1s t=135.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (25.1, 0.0, -3.0) walk
+[OFP 461.1s t=145.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (41.0, 0.0, -4.5) walk
+[OFP 465.1s t=149.1] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 1.0 s) after 24 s
+[OFP 465.6s t=149.6] GHOST lane clear after 0 s
+[OFP 489.7s t=173.6] GHOST waiting for the dock corridor door: 
+[OFP 490.7s t=174.6] GHOST dock corridor door clear after 1 s
+[OFP 514.7s t=178.3] DETECT Npc_guard3 kind 0 meter 0.16 at (27.3, 0.0, 8.0), pilot (12.4, 0.0, 8.0) crouched false
+[OFP 515.4s t=179.1] DETECT Npc_guard3 kind 0 meter 0.62 at (26.1, 0.0, 8.0), pilot (14.3, 0.0, 7.4) crouched false
+[OFP 519.3s t=183.0] GHOST waiting for the stair core: Npc_guard2 (6.1, -4.0, 9.0)
+[OFP 520.9s t=184.6] GHOST rover_hall at the LD check (t=185)
+[OFP 524.4s t=188.1] DETECT Npc_guard2 kind 0 meter 0.13 at (13.8, -4.0, 8.0), pilot (14.3, -4.0, 6.2) crouched false
+[OFP 524.9s t=188.6] DETECT Npc_guard2 kind 0 meter 0.57 at (14.6, -4.0, 8.0), pilot (14.3, -4.0, 6.2) crouched false
+[OFP 525.4s t=189.1] DETECT Npc_guard2 kind 0 meter 1.00 at (15.3, -4.0, 8.0), pilot (14.3, -4.0, 6.2) crouched false
+[OFP 529.3s t=193.0] GHOST waiting for the stair core: Npc_guard2 (15.3, -4.0, 8.0)
+[INFO][stealth][p1] ALARM: guard_radio (source 204)
+[OFP 534.0s t=197.7] ALARM guard_radio by Npc_guard2 (pilot at (14.3, -4.0, 6.2))
+[OFP 564.8s t=203.0] GHOST waiting for the stair core: Npc_guard2 (14.6, -4.0, 7.3)

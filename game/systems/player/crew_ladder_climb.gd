@@ -17,6 +17,10 @@ extends RefCounted
 
 ## Farther than this from both the climb line and the Top marker (m): the crew was moved off the ladder.
 const LET_GO_M: float = 1.5
+## Step-off ticks with no horizontal progress (< 1 mm) near the Top marker before letting go: a wall closer to the marker
+## than the capsule radius stops the crew short of it while the step-off lift keeps it off the floor (ENV A, ND
+## AreawayLadder: soft-locked at 0.151 m with W overridden).
+const STEP_OFF_STALL_TICKS: int = 4
 
 ## The ladder attached to (null = not climbing).
 var ladder: Ladder = null
@@ -27,6 +31,8 @@ var _crew: CrewController = null
 var _ladders: Array[Ladder] = []
 var _scanned: bool = false
 var _jump_latch: bool = false
+var _step_last_m: float = INF
+var _step_stall: int = 0
 
 
 func _init(crew: CrewController) -> void:
@@ -77,7 +83,10 @@ func _climb(i: CrewIntent, delta: float, tw: CrewTweak) -> bool:
 	_jump_latch = _jump_latch and i.jump
 	if stepping_off:
 		var to: Vector3 = Vector3(top.x - pos.x, 0.0, top.z - pos.z)
-		if to.length() < 0.15 or (_crew.grounded and to.length() < 0.6):
+		var stalled: bool = to.length() < 0.6 and pos.y >= top.y - 0.05 and _step_last_m - to.length() < 0.001
+		_step_stall = _step_stall + 1 if stalled else 0
+		_step_last_m = to.length()
+		if to.length() < 0.15 or (_crew.grounded and to.length() < 0.6) or _step_stall >= STEP_OFF_STALL_TICKS:
 			_detach()
 			return false
 		var v: Vector3 = to.normalized() * tw.ladder_step_off_mps
@@ -103,6 +112,8 @@ func _climb(i: CrewIntent, delta: float, tw: CrewTweak) -> bool:
 func _detach() -> void:
 	ladder = null
 	stepping_off = false
+	_step_last_m = INF
+	_step_stall = 0
 
 
 func _still_ok(l: Ladder) -> bool:

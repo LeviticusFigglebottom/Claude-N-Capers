@@ -71,7 +71,7 @@ LEVELS: Dict[str, Level] = {
         Room("U1", "restaurant", (0, 0, 13, 12), 3.0), Room("U2", "storage", (13, 0, 20, 10), 2.8),
         Room("U3", "storage", (13, 10, 20, 18), 2.8), Room("U4", "restroom", (0, 12, 3, 15), 2.8),
         Room("J", "janitor", (0, 15, 3, 18), 2.8), Room("UC", "corridor", (3, 12, 5, 18), 2.8),
-        Room("SC", "stair", (5, 12, 8, 18)), Room("U5", "staff_room", (8, 12, 13, 18), 2.8),
+        Room("SC", "stair", (5, 12, 8, 18)), Room("U5", "break_room", (8, 12, 13, 18), 2.8),
     ]),
     "SG": Level("SG", (0, 0, 46, 45), [
         Room("C1", "office", (2, 30, 5, 39), 2.6), Room("C2", "break_room", (5, 30, 8, 39), 2.6),

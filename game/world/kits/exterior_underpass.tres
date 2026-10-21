@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_underpass"
+purpose = &"exterior"
+required_items = Array[StringName]([&"light_fixture", &"barrier"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.004
+max_density = 0.3
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"barrier", &"bin_street", &"bollard", &"cone", &"lamp_post", &"light_fixture", &"loot_spawn", &"pallet", &"skip", &"tote", &"vehicle"])
+seed_salt = 215
+seed_id = &"exterior_lane"
+counts = {}
+assets = {}
+ceiling = {}
+notes = "Rolling Thunder (exterior), from exterior_lane: RT X2 Tannery underpass and the east cut: caged bulkheads and cold battens under the rail bridge, barriers at the sidewalk ramps (placed from fixed tables, rt_dress_data.gd)."

@@ -1485,3 +1485,21 @@ cap, the Longshot timing), headless auto_loud, solo + 3 bots:
 
 GH Tense was already 3/3. No further Tense data lever (no Bulwark cap change). Seed 1's custody chain (about 640-690 s
 in both cells) is a low-priority look for A, not a blocker.
+
+## D-151: Rolling Thunder build opens now; level-70 gate; the LEAD makes judgement calls (2026-10-21, LEAD; PO delegated)
+PO: "Have the judgement calls be your own." From here the LEAD rules on design and process questions and records them,
+and asks the PO only for taste or scope calls the PO has asked to keep.
+1. **RT build opens now** (amends D-144 / D-148.2). Ostrander has met 5 of 6 done gates (heist_completion.md). The last
+   one, P's Hazardous ghost line, is P's work alone, so it no longer holds the other envs.
+   - env/c-worlds (RT G1 + RT-C2 batch 1) merges to trunk; prep/d-rt merges via env/d-art.
+   - A builds A5-01/02/03 plus C's mission asks; B lands the RT-B1 data; D's cast rows go to A's npc_visual_tweak.
+   - The LEAD adds QC-87c to the shared levelcheck.
+   - OF fixes still take priority in every round.
+2. **Lethal / Cataclysm gate: level 70** (was 80). Under D-148's XP curve, 80 took about 230 clears; 70 takes about 135,
+   the old time-to-Lethal. B changes the data and re-pins the gate test.
+3. **Older heists:** the r266 regression sweep stands as their check after today's systemic AI changes:
+   - loud Routine GH / ND / GN / DB PASS, SL stealth PASS;
+   - D's anim coverage: 0 flags;
+   - B's screen-text walk: all clean.
+
+   No further broad runs. Future changes get targeted tests only (D-088).

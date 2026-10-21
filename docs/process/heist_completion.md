@@ -101,7 +101,13 @@ Measured against D-115's six criteria, with D-140 / D-145 / D-146 / D-150 applie
    - The Cataclysm 2024 and 4711 losses are tase / Phantom custody: the accepted harness limit (D-148.4). The cuff loop
      the 2024 seed exposed is fixed (round 264).
    - Windowed: GPU-19 reached the vault, the president safe and 2 cash secured before the pilot fixes landed.
-   - **GPU-20b (windowed Cataclysm, all fixes) waits for free RAM on the PO's PC.**
+   - **GPU-20c (2026-10-21, PO's RX 9070 XT, Forward+ 1920x1080, A 0cb810a5, harness cap 2400): FIRST FULL WINDOWED
+     PASS**, from the menus through the escape van to payday: $1,157,728 in 22:38. GPU-20b on the same tree also got
+     bond_safe and gold. **Gate (b) MET.**
+   - Follow-ups (not blocking):
+     - the AI crew killed 6 civilians (A), and no cleaner cost was charged (B);
+     - hitches build up during the long carry phase: 0.82 % overall vs 0.046 % in GPU-20b (A, possibly C).
+   - Item 3 is MET (loud).
 4. **ENV P windowed real-input pass: OPEN on the ghost line.**
    - The G2 §7 pass is 10/10; the interact sweep had no failures.
    - Ghost line at Hazardous (D-150): steps 1-4 PASS; step 5+ in progress.
@@ -116,6 +122,4 @@ Also confirmed:
 - D-145 Tense: GH 3/3, DB 2/3 accepted.
 - GPU-18: the r256 frame times were fine; GPU-17's "regression" was other load on the box.
 
-**Verdict: not yet.** Two gates remain: (a) P's Hazardous ghost line, step 5 through escape; (b) one windowed loud run on
-real hardware (GPU-20b). If the PO's PC stays unavailable, the LEAD proposes accepting (b) from GPU-19 plus the
-headless PASS, as a PO call.
+**Verdict: not yet.** One gate remains: (a) P's Hazardous ghost line, now at step 6 (steps 1-5 pass). (b) is met by GPU-20c.
