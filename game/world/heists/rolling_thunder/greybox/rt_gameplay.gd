@@ -40,6 +40,10 @@ func build_item(parent: Node3D, it: Array) -> Node3D:
 			out = _tac_row(parent, it)
 		"catalog":
 			out = _catalog_row(parent, it)
+		"call":   # a sidewalk call point (CivilianTargets.CALL_POINT_GROUP; its reason meta call_reason)
+			out = marker(parent, String(it[1]), v3(it[2]), 0.0, "", "")
+			out.set_meta(&"call_reason", &"civilian_call")
+			out.add_to_group(&"civilian_call_point", true)
 		_:
 			errors.append("unknown content row %s" % [it])
 	return out

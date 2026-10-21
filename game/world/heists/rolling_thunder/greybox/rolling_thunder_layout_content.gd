@@ -409,6 +409,10 @@ const ALWAYS: Dictionary = {
 		],
 	],
 	"Gameplay/Markers": [
+		["call", "CallNWCorner", [-12.5, 0.0, -12.0]], ["call", "CallNECorner", [12.5, 0.0, -12.6]],
+		["call", "CallSECorner", [12.5, 0.0, 12.6]], ["call", "CallSWCorner", [-12.5, 0.0, 12.0]],
+		["call", "CallOrchardN", [-12.0, 0.0, -50.0]], ["call", "CallOrchardS", [12.0, 0.0, 45.0]],
+		["call", "CallPlaza", [-40.0, 0.0, 22.0]], ["call", "CallUnderpass", [70.0, -5.0, 9.5]],
 		["marker", "CasingJunction", [0.0, 0.0, 0.0], 0.0, "casing", "casing objective marker: the junction under the girder"],
 		["marker", "ConvoyMarker", [0.0, 0.0, -14.0], 0.0, "convoy", "the convoy's HUD marker (moves until the stop: B mocks it)"],
 		["marker", "AmbushMarker", [0.0, 0.0, 0.0], 0.0, "ambush", "the stop (clean or crash)"],
@@ -793,6 +797,16 @@ const GRAPHS: Dictionary = {
 			["PlazaE", "PlazaClock"], ["PlazaClock", "PlazaW"], ["PlazaW", "TanneryWS"], ["CowerShelter0", "TanneryWS"],
 			["CowerShelter1", "TanneryWS"], ["CowerShelter2", "SWCorner"],
 		],
+	],
+	"CivFlee": [
+		"civ_flee", 1,
+		{
+			"FleeNorth": [[-12.0, 0.0, -88.0], [0.0, 0.0], "", ["civ_flee", "exit"], null],
+			"FleeSouth": [[-12.0, 0.0, 70.0], [0.0, 0.0], "", ["civ_flee", "exit"], null],
+			"FleeWest": [[-78.0, 0.0, 9.5], [0.0, 0.0], "", ["civ_flee", "exit"], null],
+			"FleeEast": [[102.0, -5.0, -9.5], [0.0, 0.0], "", ["civ_flee", "exit"], null],
+		},
+		[["FleeNorth", "FleeWest"], ["FleeWest", "FleeSouth"], ["FleeSouth", "FleeEast"], ["FleeEast", "FleeNorth"]],
 	],
 	"DinerCower": [
 		"diner_cower", 1,

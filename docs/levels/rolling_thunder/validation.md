@@ -145,7 +145,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 2577 polygons, cell 0.10/0.10 m
-- 195 markers checked
+- 199 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomCPG` | 661 | 661 | 100% |
@@ -199,7 +199,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 32 variant configuration(s), 73668 spawn->target path queries
+- 32 variant configuration(s), 75204 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -210,12 +210,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## patrols: Patrol graphs
 
 - graph `street`: 18 points, 0 guard(s)
+- graph `civ_flee`: 4 points, 0 guard(s)
 - graph `diner_cower`: 4 points, 0 guard(s)
 - graph `site`: 14 points, 3 guard(s)
 - graph `marshal_carpark`: 4 points, 1 guard(s)
 - graph `marshal_site_corner`: 4 points, 1 guard(s)
 - graph `marshal_plaza`: 4 points, 1 guard(s)
-- 6 patrol graph(s)
+- 7 patrol graph(s)
 
 
 ## lasers: Laser grid bypass gaps

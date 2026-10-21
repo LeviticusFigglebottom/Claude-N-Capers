@@ -38,6 +38,15 @@ TABLE_SEATS = [(19.88, 18.0, -90.0), (19.88, 22.0, -90.0), (21.12, 18.0, 90.0), 
 COWER_DINER = [["CowerFrontW", [20.5, 0.0, 14.41], 180.0], ["CowerFrontE", [22.5, 0.0, 14.41], 180.0],
                ["CowerCounterN", [23.39, 0.0, 17.0], 90.0], ["CowerCounterS", [23.39, 0.0, 22.6], 90.0]]
 COWER_SHELTERS = [["CowerShelter%d" % i, [x, 0.0, 12.24], 0.0] for i, x in enumerate([-38.0, -30.0, -22.0])]
+# D-149.7 (QC-RT7): the street civilians leave by `civilians_leave(&"civ_flee")` at the alarm through the four closures
+# (PatrolPoints tagged civ_flee + exit, just past each closure on its sidewalk), and a panicking pedestrian phones from
+# a sidewalk call point (CivilianTargets.CALL_POINT_GROUP, reason civilian_call): no mobile-phone call exists.
+FLEE_EXITS = [["FleeNorth", [-12.0, 0.0, -88.0]], ["FleeSouth", [-12.0, 0.0, 70.0]], ["FleeWest", [-78.0, 0.0, 9.5]],
+              ["FleeEast", [102.0, -5.0, -9.5]]]
+CALL_POINTS = [["CallNWCorner", [-12.5, 0.0, -12.0]], ["CallNECorner", [12.5, 0.0, -12.6]],
+               ["CallSECorner", [12.5, 0.0, 12.6]], ["CallSWCorner", [-12.5, 0.0, 12.0]],
+               ["CallOrchardN", [-12.0, 0.0, -50.0]], ["CallOrchardS", [12.0, 0.0, 45.0]],
+               ["CallPlaza", [-40.0, 0.0, 22.0]], ["CallUnderpass", [70.0, -5.0, 9.5]]]
 CAB_N = -13.45  # the signal controller cabinet's north face (site z; rolling_thunder_geometry.site())
 CP = P.BUILDINGS["CP"]
 DN = P.BUILDINGS["D"]
@@ -559,6 +568,7 @@ def always() -> Dict[str, List[list]]:
             ),
         ],
         "Gameplay/Markers": [
+            *[["call", nm, pos] for nm, pos in CALL_POINTS],
             M("CasingJunction", [0.0, 0.0, 0.0], "casing", "casing objective marker: the junction under the girder"),
             M(
                 "ConvoyMarker",
@@ -701,6 +711,13 @@ def graphs() -> Dict[str, list]:
                  **{nm: [pos, [0.0, 0.0], "cower_stand", ["cower"], yaw] for nm, pos, yaw in COWER_SHELTERS}),
             STREET_EDGES + [["CowerShelter0", "TanneryWS"], ["CowerShelter1", "TanneryWS"],
                             ["CowerShelter2", "SWCorner"]],
+        ],
+        "CivFlee": [
+            "civ_flee",
+            1,
+            {nm: [pos, [0.0, 0.0], "", ["civ_flee", "exit"], None] for nm, pos in FLEE_EXITS},
+            [["FleeNorth", "FleeWest"], ["FleeWest", "FleeSouth"], ["FleeSouth", "FleeEast"],
+             ["FleeEast", "FleeNorth"]],
         ],
         "DinerCower": [
             "diner_cower",
