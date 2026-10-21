@@ -6,7 +6,7 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
-- 2026-10-21, round 253: (1) is DONE.
+- 2026-10-21, round 253, pushed as env/c-worlds ac0f4ce7: (1) is DONE.
   - On env/c-worlds: the 3 GI .res (213ca05d), the GPU-6 final 34 + burnt shots (78e1f2a1), and trunk r252 merged.
   - (3) The other heists' door jambs were already done in 94d9b79a (see the next item).
   - (2) Burnt set: NOT as intended, and fixed in this push (pending your Job C).
