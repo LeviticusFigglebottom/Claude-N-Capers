@@ -53,7 +53,18 @@ const PROP_ART: Dictionary = {
 	"BlockPallet0": ["prop_pallet_loaded", 0.0, 1, 1, false, false],
 	"BlockPallet1": ["prop_pallet_loaded", 0.0, 1, 1, false, false],
 	"PlanTable": ["prop_plan_chest", 90.0, 1, 2, false, true],
+	# RT-C2 batch 3 new generators: Reyes's mixer (front east, toward Orchard), the closures' lorries (Geometry/Site/
+	# Closures boxes: the collider stays, the art replaces the finish)
+	"MixerTruck": ["veh_mixer_truck", 90.0, 1, 1, false, false],
+	# the cookline faces the cook (east; D: top 0.90, the front edge 0.30 m ahead of the cook at x 28.25)
+	"Cookline": ["prop_cookline", -90.0, 1, 1, false, true],
+	"TMTruckN": ["veh_lorry_tm", 90.0, 1, 1, false, true],
+	"LorryS": ["veh_lorry", 90.0, 1, 1, false, true],
+	"LorryW": ["veh_lorry", 0.0, 1, 1, false, true],
+	"LorryE": ["veh_lorry_tm", 0.0, 1, 1, false, true],
 }
+## Geometry groups whose boxes may carry PROP_ART too (the art_mapbuilt pass also walks their children).
+const ART_GROUPS: Array[String] = ["Props/MapBuilt", "Geometry/Site/Closures"]
 
 ## Rooms the KitPlacer dresses although their purpose is exterior (walled yards).
 const PLACER_EXTERIOR: Array[String] = ["YD"]

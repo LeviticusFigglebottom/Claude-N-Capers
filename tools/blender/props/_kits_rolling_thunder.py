@@ -256,7 +256,7 @@ NEW_VARIANTS = {
         "exterior_street",
         "exterior",
         {
-            "lone_ok_add": ["convoy_car", "convoy_cash", "convoy_bullion"],
+            "lone_ok_add": ["convoy_car", "convoy_cash", "convoy_bullion", "vehicle"],
             "notes": "RT X1 Orchard / the junction / Tannery west: exterior_street with the convoy's vehicles "
             "(the G1 ConvoyLayout placeholders, A5-02's movers later) allowed alone: an escort stops 3-4 m off the "
             "truck it follows, and the density check's lone rule is per kit (no per-heist exemption exists).",

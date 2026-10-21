@@ -227,11 +227,14 @@ static func nav_thick(b: AABB) -> AABB:
 ## stays, nx x nz scaled copies of the asset fill the box (Visual, Visual2, ...). A cell within 3 % of the asset's
 ## footprint becomes a KitPlacer anchor of its room. The catalog props already in Props/MapBuilt (BoothDesk) anchor too.
 func art_mapbuilt() -> void:
-	var mb: Node = _root.get_node_or_null("Props/MapBuilt")
-	if mb == null:
-		_err("no Props/MapBuilt")
-		return
-	for c: Node in mb.get_children():
+	var bodies: Array[Node] = []
+	for grp: String in D.ART_GROUPS:
+		var g: Node = _root.get_node_or_null(grp)
+		if g == null:
+			_err("no %s" % grp)
+			continue
+		bodies.append_array(g.get_children())
+	for c: Node in bodies:
 		var cat_asset: String = String(_scene_asset.get(c.scene_file_path, "")) if c.scene_file_path != "" else ""
 		if cat_asset != "" and c is Node3D:
 			_mapbuilt.append([c, cat_asset, _gx(c as Node3D), aabb(cat_asset).end.y])
