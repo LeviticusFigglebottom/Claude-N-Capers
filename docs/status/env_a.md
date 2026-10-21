@@ -4,6 +4,81 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-21) GPU-20c follow-ups done; RT A5-01 / A5-02 / A5-03 in (20:30 UTC)
+**1. AI crew killed civilians: fixed, 6fa54bd59.**
+- Bots never targeted civilians (the scan only takes HOSTILE_ROLES). The kills were rounds through civilians on the
+  line of fire.
+- `crew_ai_brain._civilian_in_line`: a bot holds fire when a civilian's body, as a vertical segment from 0.2 to 1.7 m,
+  is within `civilian_line_clear_m` (0.6) of the shot line. The line runs from 0.3 m in front of the eye to
+  `civilian_line_past_m` (4) beyond the aim point, which covers a miss. At scan the bot also skips that target for
+  another.
+- New test `test_gpu20c_bot_civilian_fire`: a civilian kept on the bot's line means no round is spent and the civilian
+  is unharmed; once the civilian steps aside, the bot kills the cop. It fails without the fix.
+- Regression tests: l6 16/16, po6_14 7/7, l2_12 9/9.
+
+**2. Hitch build-up: no accumulation in the simulation, so not a VFX pool leak.**
+- Run: headless OF Cataclysm 1037, HITCH_MS=50, CREW_DMG=0 (the pilot survives the long run), with a new CENSUS line
+  every 60 s (22af03e38): node classes and the fullest parents.
+
+| t | nodes | GPUParticles3D | Decal | PhysicalBone3D | Area3D | enemies |
+|---|---|---|---|---|---|---|
+| 303 | 20,768 | 121 | 115 | 588 | 372 | 20 |
+| 603 | 19,846 | 131 | 121 | 468 | 308 | 18 |
+| 903 | 19,535 | 154 | 121 | 420 | 282 | 16 |
+| 1203 | 19,552 | 154 | 121 | 420 | 282 | 16 |
+
+- **Counts:**
+  - Decals sit at the pool cap (121).
+  - Particle emitters fill their capped pools by about t=900, then stay flat.
+  - Bones and areas follow the NPC count.
+  - Total nodes go down.
+- **Per-system costs:** flat over time (median ms per call in the hitch frames).
+- **Hitches per 150 s window:** 67 / 332 / 597 / 214 / 613 / 264 / 171. They follow the phase and action, not elapsed
+  time.
+- **GPU-20c's windowed data, re-binned:**
+  - Median hitch frames are 61-68 ms in every window.
+  - The rise in count comes with more draws (median 1,645 -> 2,023) and more process time during the cash-carry phase.
+  - VRAM is flat at 2.99 GB, and no pipeline compiles.
+- **Reading:** the GPU box's 26/190/439/604/118 is where the run is (the cash-carry route's draw load with 25+ enemies
+  near the pilot), not something piling up. GPU-20b on the same tree at 0.046% fits that: a different path.
+- Not a C or D-113 issue.
+- **To separate place from time,** the GPU box could do a windowed run with `FOCUS` / an early bag carry, so the
+  cash-carry route comes early. Same draws early means location.
+- **Side note:** the two headless OF Cataclysm 1037 runs at full or 0.25 damage lost to the known Cataclysm wipe
+  pattern (pilot downed, cuffed while bots revived, all 3 bots down near Brandt), not a regression.
+
+**3. RT build (D-151), all on env/a-core with tests:**
+- **b5f190684:** merged trunk r267.
+- **484adf31d A5-01 `armored_truck`:**
+  - Safe LARGE with saw + C4, charges_required 4, G.SAW_TARGET.
+  - `lockdown()`: saws ×1.5 placed and by hand, via InteractionTweak.truck_lockdown_saw_mult. New Safe
+    `hand_saw_duration_s` / `saw_time_mult` and DrillPoint `duration_mult`.
+  - Cargo inside until open.
+  - QC-81: burn_point `target` plus `fire_volume_size` ZERO means no fire.
+  - test_a5_01: 4 tests.
+- **e0ee068b6 + b6d288620 A5-02:**
+  - `convoy_vehicle` mover: Path3D drive, braking onto its stop marker, static after, `vehicle_stopped`, seats,
+    `_net_xform`.
+  - `ConvoyLayouts` plus `HeistRuntime.set_layout(id, group)`. Per-group layouts ("convoy", "mixer", "tannery")
+    swap their pre-baked nav regions and links, TacticalPoint cover, bodies and prefabs. `convoy_open_nav` marks the
+    open road they replace. Everything is off at heist start, and the state replicates in SVC_RUNTIME.
+  - test_a5_02: 4 tests. Coop loopback, c11 and C's test_rt_loud_nav_targets are still green.
+- **b0caf2b8a A5-03:**
+  - `item_pickup` prefab (`item.c4` × count).
+  - Pre-planning `item.*` drops become such a box (`params.count`). `asset.c4_drop` can use `drop = &"item.c4"`,
+    `drop_params {count: 4}`. B: HUD count.
+  - Truck method order: C4 before the saw, offered only to a crew member carrying 4 charges.
+  - test_a5_03: 2 tests.
+- **For the LEAD:**
+  - New prefab kinds `armored_truck`, `convoy_vehicle` and `item_pickup` need `gameplay_prefabs.md` rows. Proposed:
+    - armored_truck: Safe exports plus `lockdown()`; visual Body/Door/DrillPoint/LootAnchor (+Cab).
+    - convoy_vehicle: `vehicle_kind`, `speed_mps`, `accel_mps2`, `brake_mps2`; `drive(path, stop)` / `park(stop)`;
+      visual Body (+Seat0..n).
+    - item_pickup: `item_id`, `count`.
+  - QC-87c: `lc_context.set_layout_config` treats every `convoy_layout` node as one set. With groups, it could
+    iterate per `layout_group`. I've told C.
+- **Next:** RT-A5 (QC-83 raise_alarm(reason), spawn_units seated/dismount, the convoy cap share, civilians_leave at
+  the alarm), then C's other asks, then rolling_thunder_mission (reported not-ready until G1 plays end to end).
 ### (-20) GPU-20b: the heist cap is now a flag (17:20 UTC)
 - **01633ed17:** auto_loud's heist-time cap is `--po5-heist-cap=<s>`, or `HEIST_CAP=<s>` with run_po5.sh.
   - The default is now **2400 s** (it was a fixed 1500).
