@@ -137,7 +137,7 @@ const GHOST_LK_WAIT: Vector3 = Vector3(3.0, -4.0, 4.0)
 const GHOST_MGR_WC: Vector3 = Vector3(7.25, -4.0, 2.2)
 ## lkprobe (r260): behind WCPartitionLK2, hidden from his whole walk in and from BB; and where to step out to shout.
 const GHOST_MGR_WC_HIDE: Vector3 = Vector3(8.5, -4.0, 0.5)
-const GHOST_MGR_SHOUT: Vector3 = Vector3(8.6, -4.0, 2.1)
+const GHOST_MGR_SHOUT: Vector3 = Vector3(8.7, -4.0, 2.3)
 const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 ## LK hide for the step 5 wait, from --test=lkprobe on r252 (headless): floor navmesh reachable from GHOST_LK_WAIT and
 ## hidden at crouch height from 8 BB eyes outside LockerDoor (x 5, z 7). (1.5, 4.0) and its 4 neighbours see 0 of 8;
@@ -2713,7 +2713,8 @@ func _g3_keycard() -> bool:
 	# lkprobe: (8.5, 0.5) is seen by none of his 33 path samples and none of the 8 BB eyes. Go once BB is quiet.
 	var wc_hide: Vector3 = pilot.stand_point(_of(GHOST_MGR_WC_HIDE))
 	await _wait_spot_clear(wc_hide, OF_FFL[0], "LK WC", _lk_hide())
-	if not await _go(wc_hide, 0.3, 60.0):
+	# The LK navmesh runs through WCPartitionLK2 (not in the bake: haz_r stuck on it for 60 s): round its open end first.
+	if not await _go(pilot.stand_point(_of(GHOST_MGR_SHOUT)), 0.4, 40.0) or not await _go(wc_hide, 0.3, 20.0):
 		return false
 	pilot.inp.press(&"crouch")
 	await pilot.face(_of(GHOST_MGR_WC) + Vector3(0, 1.3, 0), 0.05, 0.6)

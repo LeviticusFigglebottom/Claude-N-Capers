@@ -8,7 +8,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   sight line (a tied civilian is a `restrained` stimulus: 15 m, LOS). haz_q waited for him to leave BB's sight before shouting, and he saw the
   pilot in the LK hide from LockerDoor at 5 m and ran to rover_basement (alarm t=352). NPCs see all round within 1.5 m and ~120° wide at 5 m,
   so no open LK spot hides from him. Fix: lkprobe now also samples his walk to his WC stop (ManagerLKWC (7.25, 2.2), 40-70 s). (8.5, 0.5),
-  behind WCPartitionLK2, is the one floor point hidden from his walk and from BB. The pilot waits there and shouts once he's dwelling. haz_r is running.
+  behind WCPartitionLK2, is the one floor point hidden from his walk and from BB. The pilot waits there and shouts once he's dwelling. haz_r: the pilot stuck 60 s on WCPartitionLK2. **For C (minor):** the LK navmesh
+  runs through both WC partitions (they aren't in the bake), so nav paths into the cubicles go through the partition. The harness now goes
+  round its open end (8.7, 2.3) first. haz_s is running.
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
