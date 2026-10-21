@@ -418,6 +418,7 @@ def emit() -> tuple:
         C.tactical(),
         doc="TacticalPoints: police entries, rappels, flanks, shield anchors, perches " "S1-S4, COVER.",
     )
+    s += const("LINES", C.LINES, doc="Levelcheck lines (bag_line): [name, metas, points at the crew's feet].")
     s += const("MAP_METAS", {"camera_layout_group": "camera"}, "Dictionary", "HeistMap metas for levelcheck.")
     s += const(
         "VARIABLES",

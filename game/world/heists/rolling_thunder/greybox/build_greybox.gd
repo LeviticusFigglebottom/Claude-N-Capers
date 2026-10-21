@@ -77,12 +77,13 @@ func _build() -> void:
 	build_preplan(n("Preplan"))
 	build_review_cameras(n("ReviewCameras"))
 	build_graphs(n("Patrols"))
-	for nm3: String in ["Doors", "Devices", "Loot", "Lifts", "Ladders", "Containers", "Markers"]:
+	for nm3: String in ["Doors", "Devices", "Loot", "Lifts", "Ladders", "Containers", "Markers", "Lines"]:
 		add(n("Gameplay"), node3d(nm3))
 	build_doors(n("Gameplay/Doors"))
 	build_always()
 	build_npcs_and_tactical()
 	build_variants(n("Variants"))
+	build_lines(n("Gameplay/Lines"))
 	bind_targets()
 	errors.append_array(AM.build(map_root, AE.TURRET_VANS, AE.HELI_ORBITS, AE.HELI_DROPS, [], _breaches(), obstructions))
 	build_nav_links(nav)

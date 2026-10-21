@@ -459,6 +459,22 @@ func build_graphs(patrols: Node3D) -> void:
 			pp.links = paths
 
 
+## Levelcheck lines (Gameplay/Lines, OF's build_lines): a Node3D with the line metas and Marker3D children at the
+## crew's feet.
+func build_lines(parent: Node3D) -> void:
+	for ln: Array in LC.LINES:
+		var root: Node3D = add(parent, node3d(String(ln[0]))) as Node3D
+		for mk: Variant in (ln[1] as Dictionary):
+			var v: Variant = ln[1][mk]
+			root.set_meta(StringName(String(mk)), PackedStringArray(v) if v is Array else v)
+		var pts: Array = ln[2]
+		for i: int in range(pts.size()):
+			var m: Marker3D = Marker3D.new()
+			m.name = "P%02d" % i
+			m.position = v3(pts[i])
+			add(root, m)
+
+
 func build_npcs_and_tactical() -> void:
 	for it: Array in LC.FIXED_SPAWNS:
 		build_item(n("Spawns"), it)

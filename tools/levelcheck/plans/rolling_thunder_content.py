@@ -47,6 +47,20 @@ CALL_POINTS = [["CallNWCorner", [-12.5, 0.0, -12.0]], ["CallNECorner", [12.5, 0.
                ["CallSECorner", [12.5, 0.0, 12.6]], ["CallSWCorner", [-12.5, 0.0, 12.0]],
                ["CallOrchardN", [-12.0, 0.0, -50.0]], ["CallOrchardS", [12.0, 0.0, 45.0]],
                ["CallPlaza", [-40.0, 0.0, 22.0]], ["CallUnderpass", [70.0, -5.0, 9.5]]]
+# The throw spots (RT plan §7.5, doc Loot path) as levelcheck bag lines (OF-C3 `bag_line`: camera-free in every site
+# camera layout): [name, metas, points at the crew's feet: the thrower's spot -> the landing], world m.
+LINES = [
+    ["ThrowOrchardWestBays", {"bag_line": "throw_orchard_west_bays", "throw_spot": True},
+     [[13.0, 0.0, -30.0], [18.0, 0.0, -30.0]]],
+    ["ThrowDeck2Forecourt", {"bag_line": "throw_deck2_forecourt", "throw_spot": True},
+     [[40.0, 3.5, -15.0], [40.0, 0.0, -12.5]]],
+    ["ThrowForecourtTrench", {"bag_line": "throw_forecourt_trench", "throw_spot": True},
+     [[50.0, 0.0, -12.0], [50.0, -2.5, -8.0]]],
+    ["ThrowSlabYard", {"bag_line": "throw_slab_yard", "throw_spot": True},
+     [[-42.0, 3.5, -30.5], [-42.0, 0.0, -28.0]]],
+    ["ThrowPadHover", {"bag_line": "throw_pad_hover", "throw_spot": True},
+     [[26.6, 7.0, -34.0], [32.0, 7.0, -34.0]]],
+]
 CAB_N = -13.45  # the signal controller cabinet's north face (site z; rolling_thunder_geometry.site())
 CP = P.BUILDINGS["CP"]
 DN = P.BUILDINGS["D"]

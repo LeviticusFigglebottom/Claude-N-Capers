@@ -23,7 +23,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | lasers | PASS | 0 | 0 |
 | camera_spine | skipped | 0 | 0 |
 | camera_screen | skipped | 0 | 0 |
-| bag_line | skipped | 0 | 0 |
+| bag_line | PASS | 0 | 0 |
 | hide_los | skipped | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | skipped | 0 | 0 |
@@ -222,6 +222,15 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## lasers: Laser grid bypass gaps
 
 - 0 laser grid(s), 0 with an asserted bypass gap
+
+
+## bag_line: Bag-carry lines are camera-free per camera layout (OF-C3)
+
+- bag line `throw_orchard_west_bays` (`Gameplay/Lines/ThrowOrchardWestBays`, 11 sample(s)): camera-free in cam_gate, cam_magazine, cam_mast_cabins
+- bag line `throw_deck2_forecourt` (`Gameplay/Lines/ThrowDeck2Forecourt`, 10 sample(s)): camera-free in cam_gate, cam_magazine, cam_mast_cabins
+- bag line `throw_forecourt_trench` (`Gameplay/Lines/ThrowForecourtTrench`, 11 sample(s)): camera-free in cam_gate, cam_magazine, cam_mast_cabins
+- bag line `throw_slab_yard` (`Gameplay/Lines/ThrowSlabYard`, 10 sample(s)): camera-free in cam_gate, cam_magazine, cam_mast_cabins
+- bag line `throw_pad_hover` (`Gameplay/Lines/ThrowPadHover`, 12 sample(s)): camera-free in cam_gate, cam_magazine, cam_mast_cabins
 
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)

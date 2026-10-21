@@ -990,6 +990,23 @@ const TACTICAL: Array = [
 	["tac", "CoverCraneBase", "COVER", [-23.4, 0.0, -24.0], 90.0, ["crane", "site"], false],
 	["tac", "CoverMixer", "COVER", [-34.0, 0.0, -18.6], 180.0, ["mixer", "site"], false],
 ]
+## Levelcheck lines (bag_line): [name, metas, points at the crew's feet].
+const LINES: Array = [
+	[
+		"ThrowOrchardWestBays", {"bag_line": "throw_orchard_west_bays", "throw_spot": true},
+		[[13.0, 0.0, -30.0], [18.0, 0.0, -30.0]],
+	],
+	[
+		"ThrowDeck2Forecourt", {"bag_line": "throw_deck2_forecourt", "throw_spot": true},
+		[[40.0, 3.5, -15.0], [40.0, 0.0, -12.5]],
+	],
+	[
+		"ThrowForecourtTrench", {"bag_line": "throw_forecourt_trench", "throw_spot": true},
+		[[50.0, 0.0, -12.0], [50.0, -2.5, -8.0]],
+	],
+	["ThrowSlabYard", {"bag_line": "throw_slab_yard", "throw_spot": true}, [[-42.0, 3.5, -30.5], [-42.0, 0.0, -28.0]]],
+	["ThrowPadHover", {"bag_line": "throw_pad_hover", "throw_spot": true}, [[26.6, 7.0, -34.0], [32.0, 7.0, -34.0]]],
+]
 ## HeistMap metas for levelcheck.
 const MAP_METAS: Dictionary = {"camera_layout_group": "camera"}
 ## The doc's 18 variables (rule order): [id, options, scalar?] (rolling_thunder_slots.py; the values are ENV B's).
