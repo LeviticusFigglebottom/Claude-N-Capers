@@ -259,3 +259,12 @@ Their process+physics is only 30-50 ms. The other ~850 ms is the synchronous 192
 **Without screenshots, the worst loud-phase frames are about 90-110 ms** (run1 100 @175.7 / 92 @129.6; run2 108 @176.2 / 106 @129.6; run3 94 @129.6 / 89 @176.7).
 Those repeat at about t=129.6 and t=176 in every run, so they are deterministic and worth A's profiling (t=176 is when the pilot fails `bond_safe`).
 Suggestions for A: exclude frames that take a screenshot from HITCH (or log `shot=1`), and print HITCHES on budget exit too.
+## GPU-14: ENV C scorch round 2 (tree: env/c-worlds 595f57fe, contains f2dab548; local branch gpu/c3)
+- Import exit 0, 7 s. `of_burn_variant.gd -- --out=user://of_burn_test.tscn --drops`: exit 0, 6 s.
+- `review_shots.tscn -- --scene=user://of_burn_test.tscn --warmup=60 --out=<repo>\docs\levels\ostrander_federal\g2\fix\burn_scorch --cameras=rc_vault_hole,rc_teller_workroom`:
+  exit 0, 12 s, no ERRORs. Output: `docs/levels/ostrander_federal/g2/fix/burn_scorch/` (2 JPEGs, contact_sheet, shots.md, render_log.txt).
+- Mean luminance vs the GPU-11a burnt shots (same camera, same pixels):
+  - **rc_vault_hole soffit around the hole (x650-1300, y380-620): 37.1 -> 34.8 (-6%).** A soot halo around the opening is now visible at full res,
+    mostly to the right of and below the glowing rim. Still subtle at contact-sheet scale.
+  - **rc_teller_workroom floor around the burn ring (x850-1150, y560-640): 55.7 -> 55.4 (no visible change).** The TW floor scorch still doesn't show
+    from this camera. It's about 25 m away at a grazing angle on dark navy carpet. Either the decal needs to be much darker/larger, or a closer TW camera is needed to judge it.

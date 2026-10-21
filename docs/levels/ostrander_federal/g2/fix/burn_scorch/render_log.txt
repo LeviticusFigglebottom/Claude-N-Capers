@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+  rc_teller_workroom -> rc_teller_workroom.jpg (176 KB)
+  rc_vault_hole -> rc_vault_hole.jpg (197 KB)
+review_shots: wrote C:\Users\Aaron\caperworks-gpu\docs\levels\ostrander_federal\g2\fix\burn_scorch
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
