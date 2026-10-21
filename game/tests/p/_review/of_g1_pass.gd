@@ -2501,18 +2501,26 @@ func _g2_dock() -> bool:
 	var cdoor_n: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
 	# 20 m at the cue: mask + ECM + the 8 s lockpick take ~15 s, about 22 m of rover_hall's walk (haz_c: > 10 m at the cue,
 	# 6 m off DockCorridorDoor once the pilot was in). Re-checked at 10 m right before the lockpick.
+	# Standing guards only within 8 m of either door: a posted guard at (19.5, 0, 1.1) held all 4 smoke windows (haz_e).
+	var ld_last: Dictionary = {}
 	var ld_busy: Callable = func(r: float) -> String:
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
 				continue
+			var id: int = g.get_instance_id()
+			var moving: bool = ld_last.has(id) and g.global_position.distance_to(ld_last[id]) > 0.15
+			ld_last[id] = g.global_position
 			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
-			if pilot.flat_dist(g.global_position, door_at) < 8.0 or (cdoor_n != null and g.global_position.z < 12.0 \
-					and pilot.flat_dist(g.global_position, cdoor_n.global_position) < r):
+			var dc: float = pilot.flat_dist(g.global_position, cdoor_n.global_position) if cdoor_n != null else 999.0
+			if pilot.flat_dist(g.global_position, door_at) < 8.0 or dc < 8.0 \
+					or (g.global_position.z < 12.0 and moving and dc < r):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
 	var clear: bool = await _smoke_cue(300.0)
 	for _try: int in 4:
+		ld_busy.call(20.0)  # first sample: walking needs two
+		await wait_s(0.5)
 		var who: String = ld_busy.call(20.0)
 		if who == "":
 			break
@@ -2541,6 +2549,8 @@ func _g2_dock() -> bool:
 	if not await _deploy_ecm():
 		return false
 	var door: Door = _x("ld_door") as Door
+	ld_busy.call(10.0)
+	await wait_s(0.5)
 	var late: String = ld_busy.call(10.0)
 	if late != "":
 		note("GHOST LD busy right before the lockpick (%s): waiting at the door" % late)
