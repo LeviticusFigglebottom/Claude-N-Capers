@@ -225,6 +225,9 @@ var _stray: Ladder = null
 ## Ghost line from step 4 on (no ECM window running): floor changes wait for a clear stair core (traversal tests have
 ## no NPCs; steps 2-3 go straight down under ECM #1 as the doc times them).
 var _ghost_stair_wait: bool = false
+## Walks may use ladders on purpose (the interact sweep's pass 2 crosses the hole by the rope ladder): the stray-ladder
+## watch stands down (r255 sweep: it climbed the pilot back down every time, a 15-min ping-pong).
+var _ladders_ok: bool = false
 
 
 func _ready() -> void:
@@ -882,7 +885,9 @@ func _watch_ladders() -> void:
 		var held: Variant = pilot.crew.get_meta(Ladder.META_CLIMBING) if pilot.crew.has_meta(Ladder.META_CLIMBING) \
 			else null
 		var free: CrewLadderClimb = pilot.crew.ladder
-		if not _climbing and _stray == null and held is Ladder:
+		if _ladders_ok:
+			pass
+		elif not _climbing and _stray == null and held is Ladder:
 			_stray = held as Ladder
 			note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
 		elif not _climbing and _stray == null and free != null and free.is_climbing():
@@ -2263,7 +2268,9 @@ func _test_interact() -> bool:
 	var hoist: BagLift = _x("hoist") as BagLift
 	if rope != null and hoist != null:
 		await _enable_hole(rope, hoist)
+	_ladders_ok = true
 	await _sweep(_nearest_order(late), rows, ok_n)
+	_ladders_ok = false
 	note("INTERACT summary: %d / %d started" % [ok_n[0], rows.size()])
 	await shot("interact_end")
 	return true
