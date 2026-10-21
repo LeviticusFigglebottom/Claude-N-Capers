@@ -1581,7 +1581,7 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 			# west down BB 9 m off, t=515; the upper-floor core check doesn't count BB).
 			if not await _go(pilot.stand_point(_of(GHOST_SA_MID)), 0.4, 60.0):
 				return false
-			await _wait_core_clear(GHOST_SA_MID.y, OF_FFL[0], true, 12.0, 120.0)
+			await _wait_bb_clear()
 		if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[ffl_i], OF_SA_CORE.z)), 0.5, 240.0):
 			return false
 	return await _go(_of(Vector3(x, OF_FFL[ffl_i], OF_CORRIDOR_Z)), 0.6, 240.0)
@@ -1803,6 +1803,34 @@ func _gate_threat(gate: Door) -> String:
 		if d_me < 8.0 or (d_me < 20.0 and _sees_core(g, me)) or d_gate < 8.0:
 			return "%s %s (%.0f m)" % [g.name, Po5Pilot._v(g.global_position), d_me]
 	return ""
+
+
+## Ghost line, SA's half landing -> BB (haz_za: the core check let a standing vault guard 6.5 m off in BB through, no LOS to
+## the core, and he saw the walk to LK). BB is one long sight line: wait until no living basement guard stands in BB's strip
+## (z 6.5-9.6) west of x 32, or within 6 m of SA's door; two samples in a row, up to `max_s`.
+func _wait_bb_clear(max_s: float = 120.0) -> void:
+	var door: Vector3 = _of(Vector3(OF_SA_CORE.x, OF_FFL[0], 7.5))
+	var t: float = 0.0
+	var ok_n: int = 0
+	while t < max_s:
+		var near: PackedStringArray = PackedStringArray()
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
+				continue
+			var p: Vector3 = g.global_position
+			if (p.z > 6.5 and p.z < 9.6 and p.x < 32.0) or pilot.flat_dist(p, door) < 6.0:
+				near.append("%s %s" % [g.name, Po5Pilot._v(p)])
+		ok_n = ok_n + 1 if near.is_empty() else 0
+		if ok_n >= 2:
+			if t > 0.5:
+				note("GHOST BB clear after %.0f s" % t)
+			return
+		if int(t * 2.0) % 20 == 0:
+			note("GHOST waiting on SA's half landing for BB: %s" % ", ".join(near))
+		await wait_s(0.5)
+		t += 0.5
+	note("GHOST BB NOT clear after %.0f s (going anyway)" % max_s)
 
 
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
@@ -2772,7 +2800,7 @@ func _g2_dock() -> bool:
 			or not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[1], OF_SA_CORE.z)), 0.4, 240.0) \
 			or not await _go(pilot.stand_point(_of(GHOST_SA_MID)), 0.4, 60.0):
 		return false
-	await _wait_core_clear(GHOST_SA_MID.y, OF_FFL[0], true, 12.0, 120.0)
+	await _wait_bb_clear()
 	return await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[0], OF_SA_CORE.z)), 0.5, 60.0)
 
 
