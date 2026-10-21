@@ -4,6 +4,8 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **r252 merged** (e91fa3c0, OF final art) into env/d-art 22fbee3e: import clean; d test_of_cast_clips 3/3 and
+  test_cower_offsets 2/2 still green on the final art (seats, worktops, cower walls unchanged for the cast).
 - **OF clip audit: PASS, new test** `game/tests/d/test_of_cast_clips.gd` (3 tests, green on env/d-art = r251 + D). For
   every OF CIVILIAN / GUARD SpawnPoint in the built map (variant slots included): the clip its activity resolves to
   (CivilianBrain KNOWN_ACTIVITIES, else idle; then HINT_CLIPS) exists in char_anim_humanoid with every variant-group
