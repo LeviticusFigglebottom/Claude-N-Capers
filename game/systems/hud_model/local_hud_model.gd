@@ -403,22 +403,29 @@ func refresh() -> void:
 		c = _runtime.crew_controller(slot) as CrewController
 	if _runtime != null:
 		_assign(&"heist_phase", int(_runtime.phase))
+	# LEAD (OF loud hitches: one hud_model frame of 458 ms at OF start): FrameProf sub-keys name the slow poll.
+	var fp: int = FrameProf.begin()
 	_poll_vitals(c, slot)
 	_poll_weapons(c)
 	_poll_inventory(c)
 	_poll_interaction(c, slot)
+	fp = FrameProf.lap(&"hud_model.player", fp)
 	_poll_detection(slot)
 	_poll_marks_and_timers(slot)
 	_publish_pagers()
+	fp = FrameProf.lap(&"hud_model.stealth", fp)
 	_poll_devices()
 	_poll_objectives()
+	fp = FrameProf.lap(&"hud_model.objectives", fp)
 	_poll_warnings(c)
 	_poll_dominate(c)
 	_poll_crew(slot)
 	_poll_crew_stats()
 	_poll_custody(c, slot)
 	_poll_captain()
-	_flush()
+	fp = FrameProf.lap(&"hud_model.crew", fp)
+	_flush()  # emits the changed groups: the HUD's own handlers run inside
+	FrameProf.end(&"hud_model.flush", fp)
 
 
 # --- Polling ----------------------------------------------------------------------
@@ -648,6 +655,8 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 			_marker_retry.erase(gone)
 	# P / lead (ND 1 Hz stutter): each find_by_tag walks the whole map, so only new / changed objectives are
 	# resolved, and an unresolved one retries with exponential back-off and gives up after MARKER_MAX_TRIES.
+	var todo: Array[StringName] = []
+	var tags: Array = []
 	for id: StringName in want:
 		var changed: bool = _marker_sig.get(id, "") != sigs[id] or not _marker_nodes.has(id)
 		if not changed:
@@ -658,11 +667,18 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 				continue
 		else:
 			_marker_retry.erase(id)
+		todo.append(id)
+		for t: Variant in want[id]:
+			if not tags.has(StringName(t)):
+				tags.append(StringName(t))
+	# LEAD (OF start: 477 ms here): every tag of every objective to resolve in ONE map walk.
+	var found: Dictionary = _runtime.find_by_tags(tags) if not tags.is_empty() else {}
+	for id: StringName in todo:
 		_marker_sig[id] = sigs[id]
 		var nodes: Array[Node3D] = []
 		for t: Variant in want[id]:
 			marker_lookups += 1
-			for n: Node in _runtime.find_by_tag(StringName(t)):
+			for n: Node in found.get(StringName(t), []):
 				if n is Node3D:
 					nodes.append(n as Node3D)
 		_marker_nodes[id] = nodes

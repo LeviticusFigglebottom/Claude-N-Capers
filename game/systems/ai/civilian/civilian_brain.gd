@@ -955,7 +955,7 @@ func _route_reachable(pos: Vector3) -> bool:
 	if _flat_distance(pos) <= tw.civilian_route_reach_m and absf(pos.y - from.y) <= tw.civilian_wander_floor_dy_m:
 		return true
 	if _targets != null and _targets.has_navigation():
-		var path: PackedVector3Array = NavigationServer3D.map_get_path(_npc.get_world_3d().navigation_map, from, pos, true)
+		var path: PackedVector3Array = NavPath.query(_npc.get_world_3d().navigation_map, from, pos, true)
 		return not path.is_empty() and path[path.size() - 1].distance_to(pos) <= tw.civilian_route_reach_m
 	return absf(pos.y - from.y) <= tw.civilian_wander_floor_dy_m
 

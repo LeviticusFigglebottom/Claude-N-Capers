@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## Root of a running heist: owns the map, the phase machine, services and crew. Owner: ENV A.
 ## Contracts: test_hooks.md (public API used by LEAD gates), events.md (lifecycle facts),
 ## heist_map.md (map structure), architecture.md §3-§5 (authority, services, events).
@@ -80,6 +81,10 @@ var replica_missing_ids: Array[String] = []
 ## HeistDropIn replaces a drop-in's slot and pushes again.
 var crew_loadouts: Dictionary = {}
 
+## begin_tag_scope() depth, and the shared tag index of the open scope (built at its first lookup).
+var _tag_scope: int = 0
+var _tag_scope_built: bool = false
+var _tag_scope_index: Dictionary = {}
 var _crew: Dictionary[int, CrewController] = {}
 var _bot_intents: Dictionary[int, CrewIntent] = {}
 var _services: Dictionary[StringName, Node] = {}
@@ -605,8 +610,13 @@ func _set_phase(p: Enums.HeistPhase) -> void:
 	var old: int = phase
 	phase = p
 	Log.info(&"heist", "phase %s -> %s" % [Enums.HeistPhase.keys()[old], Enums.HeistPhase.keys()[p]])
-	phase_changed.emit(old, p)
-	EventBus.heist_phase_changed.emit(old, p)
+	# LEAD (OF loud hitches: the alarm frame): with FrameProf on, each listener is booked under phase.* / bus_phase.*.
+	begin_tag_scope()  # the listeners' find_tagged calls share one map walk
+	if not FrameProf.enabled or not FrameProf.emit_timed(phase_changed, &"phase", [old, p]):
+		phase_changed.emit(old, p)
+	if not FrameProf.enabled or not FrameProf.emit_timed(EventBus.heist_phase_changed, &"bus_phase", [old, p]):
+		EventBus.heist_phase_changed.emit(old, p)
+	end_tag_scope()
 	Net.replicate_event(&"heist_phase_changed", [old, p])
 
 
@@ -808,16 +818,65 @@ func npcs(role: StringName = &"") -> Array[Node]:
 
 
 ## Gameplay prefabs (anything with an `objective_tag`) inside this heist.
-func find_by_tag(objective_tag: StringName) -> Array[Node]:
-	var out: Array[Node] = []
-	var stack: Array[Node] = [self]
-	while not stack.is_empty():
-		var n: Node = stack.pop_front()
+## LEAD (OF loud hitches: OF's _go_loud ran ~8 map walks in the alarm frame, 172 ms): between begin_tag_scope() and
+## end_tag_scope() (nested) every find_by_tag / find_by_tags shares ONE index of the map, built at the first lookup.
+## For synchronous cascades that only read tags (the phase change); a tag set inside the scope is not seen until it ends.
+func begin_tag_scope() -> void:
+	_tag_scope += 1
+
+
+func end_tag_scope() -> void:
+	_tag_scope = maxi(_tag_scope - 1, 0)
+	if _tag_scope == 0:
+		_tag_scope_built = false
+		_tag_scope_index = {}
+
+
+func _index_all_tags() -> Dictionary:
+	var index: Dictionary = {}
+	var queue: Array[Node] = [self]
+	var i: int = 0
+	while i < queue.size():
+		var n: Node = queue[i]
+		i += 1
 		var t: Variant = n.get(&"objective_tag")
-		if t != null and StringName(t) == objective_tag:
-			out.append(n)
-		for c: Node in n.get_children():
-			stack.append(c)
+		if t != null and StringName(t) != &"":
+			if not index.has(StringName(t)):
+				index[StringName(t)] = [] as Array[Node]
+			(index[StringName(t)] as Array).append(n)
+		queue.append_array(n.get_children())
+	return index
+
+
+func find_by_tag(objective_tag: StringName) -> Array[Node]:
+	return find_by_tags([objective_tag]).get(objective_tag, [] as Array[Node])
+
+
+## LEAD (OF loud hitches: hud_model.objectives 477 ms at OF start): ONE breadth-first walk for several tags,
+## objective_tag -> nodes (tree order). The walk advances an index (popping the front of an Array was O(n) per node
+## over ~18k nodes, once per tag); callers that resolve many tags at once (the HUD's markers) pass them together.
+func find_by_tags(tags: Array) -> Dictionary:
+	var out: Dictionary = {}
+	for t: Variant in tags:
+		out[StringName(t)] = [] as Array[Node]
+	if _tag_scope > 0:  # inside begin_tag_scope(): one full index for the whole synchronous cascade
+		if not _tag_scope_built:
+			_tag_scope_built = true
+			_tag_scope_index = _index_all_tags()
+		for k: StringName in out:
+			for n: Node in _tag_scope_index.get(k, []):
+				if is_instance_valid(n):
+					(out[k] as Array).append(n)
+		return out
+	var queue: Array[Node] = [self]
+	var i: int = 0
+	while i < queue.size():
+		var n: Node = queue[i]
+		i += 1
+		var t: Variant = n.get(&"objective_tag")
+		if t != null and out.has(StringName(t)):
+			(out[StringName(t)] as Array).append(n)
+		queue.append_array(n.get_children())
 	return out
 
 
