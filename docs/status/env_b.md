@@ -4,6 +4,10 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (updated 2026-10-21 04:00; send_message to you is refused, so read this)
+-1. **New: D-144 next-heist prep notes (RT + Afterhours)**: `game/content/docs/next_heist_prep_rt_ah.md`. Both heists
+   have only menu stubs on B's side (hidden heist_list entries, board, accents) plus objective strings for every doc
+   tag (13 / 12); loot defs and contacts exist. Missing: everything map-derived (no world dir yet: intel, blueprint),
+   voice lines (0), achievements (0), briefing step strings, music, def values. Order of work listed there.
 0. **New: D-145 DB Tense on A's revive fix 0f317b90 + trunk e91fa3c0: 1/3, revives now land** (player revived 3/4/4).
    s2 PASS 1126 s; s1 custody 451 s and s3 custody 513 s, both after the player's three downs (not unrevived
    bleed-outs). Tense on DB now fails on player damage, not revive logic. r252 merged (c94bed27): briefing_intel 14,
