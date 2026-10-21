@@ -138,6 +138,48 @@ const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 ## hidden at crouch height from 8 BB eyes outside LockerDoor (x 5, z 7). (1.5, 4.0) and its 4 neighbours see 0 of 8;
 ## GHOST_LK_WAIT (3, 4) is seen by 2 (r251i/r252b: rover_basement filled it through the door, crouched or not).
 const GHOST_LK_HIDES: Array[Vector3] = [Vector3(1.5, -4.0, 4.0), Vector3(2.0, -4.0, 4.5), Vector3(1.5, -4.0, 3.5)]
+const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
+const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
+const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
+## Runtime lookups (_x): prefab class + objective_tag (ENV C's G1 tags, wip/c-of-g1 f49df211) near a design-doc point;
+## the tag wins when present, else the nearest node of the class within `max` m. --resolve prints this table's
+## resolution against the map scene (FOUND by tag / FOUND near / FALLBACK far / MISSING).
+const EXPECT: Dictionary = {
+	"laser_grid": {"type": "LaserGrid", "tag": &"laser_grid", "near": OF_LASER_AT, "max": 8.0},
+	"vault_gate": {"type": "Door", "tag": &"vault_gate", "near": Vector3(17.0, -4.0, 9.0), "max": 4.0},
+	"keycard": {"type": "Node3D", "tag": &"keycard", "near": Vector3(22.0, 0.0, 3.0), "max": 60.0},
+	"time_lock": {"type": "Node3D", "tag": &"time_lock", "near": Vector3(33.0, -4.0, 12.0), "max": 6.0},
+	"vault_door": {"type": "Door", "tag": &"vault_door", "near": Vector3(30.0, -4.0, 13.0), "max": 4.0},
+	"vault_loot": {"type": "LootSpawn", "tag": &"vault_loot", "near": Vector3(24.0, -4.0, 18.5), "max": 8.0},
+	"code_pc": {"type": "Node3D", "tag": &"code_pc", "near": Vector3(19.0, 8.6, 3.0), "max": 6.0},
+	"drop_ladder": {"type": "Ladder", "tag": &"fire_escape", "near": OF_DROP_LADDER_AT, "max": 12.0},
+	"caged_ladder": {"type": "Ladder", "tag": &"", "near": OF_CAGED_LADDER_AT, "max": 6.0},
+	"hh_door": {"type": "Door", "tag": &"head_house", "near": OF_HH_DOOR, "max": 2.5},
+	# Pre-placed disabled (hidden) until the burn-through (QC-61): looked up hidden too.
+	"rope_ladder": {"type": "Ladder", "tag": &"", "near": Vector3(24.0, -2.0, 14.0), "max": 4.0, "hidden_ok": true},
+	"hoist": {"type": "BagLift", "tag": &"hoist", "near": Vector3(24.0, -4.0, 14.0), "max": 6.0, "hidden_ok": true},
+	"lid": {"type": "Node3D", "tag": &"lid", "near": OF_HOLE_AT, "max": 3.0},
+	"vault_drill": {"type": "Node3D", "tag": &"vault_drill", "near": OF_HOLE_AT, "max": 3.0},
+	"ld_door": {"type": "Door", "tag": &"dock_door", "near": OF_LD_DOOR, "max": 2.0},
+	"fire_exit": {"type": "Door", "tag": &"fire_exit", "near": OF_FIRE_EXIT, "max": 2.0},
+	"cash_lift": {"type": "BagLift", "tag": &"cash_lift", "near": GHOST_CQ_AT, "max": 8.0},
+	"e1_secure": {"type": "SecureZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
+	# C's G1 (ad972c5e): SecureTannery (50.4, 0, 14.3), SecureTerrace (42.5, 8.6, 26.0): 6.5 m off the doc's points.
+	"e2_secure": {"type": "SecureZone", "tag": &"", "near": OF_E2_AT, "max": 8.0},
+	"e3_secure": {"type": "SecureZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 8.0},
+	"e1_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
+	"e2_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E2_AT, "max": 6.0},
+	"e3_escape": {"type": "EscapeZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 6.0},
+}
+## Design-doc points the tests walk to / stand on (checked against the navmesh by --resolve --launch).
+const EXPECT_POINTS: Dictionary = {
+	"vc_west": OF_VC_WEST, "ga_stand": OF_GA_STAND, "terrace_e_stand": OF_TERRACE_E_STAND, "fe_roof": OF_FE_ROOF,
+	"lane_start": OF_LANE_START, "ld_in": OF_LD_IN, "bc_east": OF_BC_EAST, "sa_b": Vector3(14.0, -4.0, 8.2),
+	"sa_g": Vector3(14.0, 0.0, 8.2), "sa_gallery": Vector3(14.0, 5.0, 8.2), "sa_exec": Vector3(14.0, 8.6, 8.2),
+	"ghost_mask": GHOST_MASK_AT, "ghost_lk": GHOST_LK_WAIT, "ghost_e3": GHOST_E3_WAIT, "ghost_rc": GHOST_RC_WAIT,
+	"ghost_cq": GHOST_CQ_AT, "ghost_ld_stage": GHOST_LD_STAGE,
+}
+const EXPECT_SPAWN_TAGS: Array[StringName] = [&"preplan_spawn_lane", &"preplan_spawn_tannery"]
 
 # --- Dry-run anchors on existing heists (night_deposit seed 21 from nd_stealth_route.gd; glasshouse) ----------------
 const ND_SEED: int = 21
