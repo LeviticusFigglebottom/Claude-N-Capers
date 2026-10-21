@@ -3,7 +3,22 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 11:30; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 12:45; send_message to you is refused, so read this)
+-10. **New: D-145 DB Tense on r257 (+ the engage fix), both cells done. For your lever ruling:**
+
+    | Cell (headless auto_loud x1.0, solo + 3 bots) | Wins | Player downs (s1 / s2 / s3) | Median |
+    |---|---|---|---|
+    | Plain | **2/3** (s2 PASS 1226 s, s3 PASS 889 s; s1 custody 642 s) | 3 / 3 / 1 | 3 |
+    | `--po5-doctor-bag` | **2/3** (s2 PASS 1273 s, s3 PASS 882 s; s1 custody 684 s) | 6 / 2 / 2 | **2** |
+
+    The doctor bag meets the <= 2 median (s1 still loses: 6 downs, the bag twice). Seed 1 is the hard roll in both
+    cells (custody at ~640-690 s). B's read: 2/3 + median 2 with a doctor bag is PD2-normal for Hard; if you want
+    seed 1 to pass too, the Bulwark cap 3 -> 2 is the next lever (s2 fought 40 Bulwarks plain).
+    Also pushed: **8cdcf64d GPU-19 HUD fix** (device timers / objective badges step below the banner + boss stack).
+-9. **New: D-145 DB Tense PLAIN on r257 (+ the engage fix for s2): 2/3.** s1 custody 642 s (3 player downs); s2 PASS
+   1226 s (3 downs, 5 revives, a long fight: 40 Bulwarks, 9 Stingers); s3 PASS 889 s (1 down). Player downs 3 / 3 / 1
+   (median 3). **Doctor-bag cell running**: s1 custody 684 s after **6** player downs (the bag reset the down
+   counter), s2 / s3 in progress; numbers here when done.
 -8. **New: D-145 DB Tense on r257 (P's capsule fix), running, not idle.** Plain r257 x3: s1 custody 642 s (3 player
    downs), s3 PASS 889 s (1 down), **s2 crashed (signal 11) in A's harness**: `po5_pilot.gd engage()` resumes on a
    freed enemy after an await (same crash as my r256 doctor-bag s1). A's fix **60d8c6ab (env/a-core, harness only)

@@ -228,6 +228,16 @@ func _avoid_scope() -> void:
 
 
 ## r228 windowed check: the toast's text (not its 1000-unit box), for device panels to step below.
+## GPU-19: the global rect of the top-centre banner stack (the assault banner and the captain / boss panel, those
+## showing); empty when neither shows. World markers and device timers step below it.
+func _banner_stack_rect() -> Rect2:
+	var out: Rect2 = Rect2()
+	for c: Control in [assault.panel if assault != null else null, captain]:
+		if c != null and c.is_visible_in_tree() and c.size.x > 0.0:
+			out = c.get_global_rect() if not out.has_area() else out.merge(c.get_global_rect())
+	return out
+
+
 func _toast_rect() -> Rect2:
 	if toast_label == null or not toast_label.visible or toast_label.text == "":
 		return Rect2()
@@ -568,6 +578,9 @@ func _process(delta: float) -> void:
 		objective_markers.avoid = sheet.get_global_rect() if sheet != null else Rect2()  # badges only on it
 	if objective_markers != null:
 		objective_markers.subtitle_band = _subtitle_rect()
+		objective_markers.top_band = _banner_stack_rect()
+	if device_timers != null:
+		device_timers.top_band = _banner_stack_rect()
 	if onboarding != null and scoreboard != null:
 		# The Tab sheet and the pause menu's job card sit on the card's spot and win (h02 / fail captures).
 		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible and not MouseCapture.is_released(&"pause") \
