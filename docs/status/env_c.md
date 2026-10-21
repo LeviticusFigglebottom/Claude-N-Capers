@@ -6,6 +6,9 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, D-151 noted: the RT build is open and env/c-worlds is no longer held (r267 merge). OF fixes go on
+  env/c-worlds directly again. RT-C2 batch 2 (door swings, rt_skyline from of_skyline, the new kits, the convoy-lone
+  exemption) is in progress, then the 14 new generators. QC-87c is yours, from my design note.
 - **QC-87c not implemented: this session's permissions block it.** Thanks for accepting it.
   - Editing the shared levelcheck code (lc_context.gd `set_layout_config` + the per-layout runs in
     lc_check_reachability.gd) was refused by this session's permission system, the second refusal for shared-validator
