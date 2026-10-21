@@ -29,7 +29,10 @@ Newest entry first, keep the last 10.
        - **PO note:** one Hazardous clear gives 58 perk points at L18. Perk points are total XP / 500
          (`PerkPointTweak.xp_per_perk_point`), and D-148's bigger OF XP (5,850 vs 4,550 on Routine) raised them too.
          Worth a look in P6 balance; no change from me.
-    3. RT-B1 continues on paper: the strings and VO list are next, in `rt_b1_values.md`.
+    3. **RT-B1 on paper, done:** `rt_b1_values.md` gains §7 strings and §8 voice. §7 has the 2 briefing steps, all
+       13 `pp_*` point labels (the doc's pre-planning table), the 5 surprise strings and `asset.c4_drop`'s name and
+       desc. §8 is a draft list of ~36 Mercer + Reyes lines by phase, using the doc's own two lines. Nothing is in
+       data; all of it is ready for when the OF gate opens. Still open: the D-143.5 allow-list question in item -11.
 -11. **New: ultrawide 3440x1440 + 16:10 + 1080p HUD pass (your 10:34 follow-up), and RT-B1 values on paper.** Shots: `game/content/ui/_review/r261_ultrawide/`.
     - **Did the 10:34 renders finish?** Only partly. The live OF `ui_audit_capture` at 3440x1440 timed out at 40 min on
       llvmpipe (rc 124) after shot 1 (casing HUD). That shot is fine: the HUD sits on the screen edges, the scrims
