@@ -194,7 +194,7 @@ func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 
 func nav_path(to: Vector3) -> PackedVector3Array:
 	var map: RID = crew.get_world_3d().navigation_map
-	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW | Ladder.NAV_LAYER)
+	return NavPath.query(map, crew.global_position, to, true, NAV_LAYERS_CREW | Ladder.NAV_LAYER)
 
 
 ## OF-A6 (Haz seed 5: 15 min at the burnt hole's edge): the climbable Ladder whose NavLink the leg to `corner` takes, as

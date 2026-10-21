@@ -1421,3 +1421,24 @@ Tense losses traced to takedown rules, not tuning. Amends **D-093** and pd2_fide
    **judged on Forward+, measured on the GPU box**; levelcheck's Compatibility-based model stays as a conservative
    early-warning (report-only from now) because Compatibility is the fallback renderer. A heist passes D-146 when its
    worst views, Cataclysm cast, loud, measure ≤ 2,500 main / ≤ 4,000 total in Forward+ on the GPU box.
+
+## D-147: reuse-first for props and kits (2026-10-21, LEAD; PO question)
+The prop catalog has 520 entries (522 prop scenes). Ostrander used 296 distinct props, of which 245 (83 %) were reused
+and 51 were new bank-specific pieces (teller line, sunburst, vault gear). From the next heist on: **every map uses
+catalog props and kits first.** A new prop needs a one-line reason in the heist doc's art list: no catalog piece fits the
+role, or it is a landmark / hero piece. Generic dressing (furniture, office, kitchen, clutter, lighting, doors, exterior,
+vehicles) is never rebuilt per heist. Variants come from library finishes (materials/colour), not new meshes. C reports
+reused vs new counts in each G1/G2 review.
+
+## D-148: PO picks: next heist Rolling Thunder, XP option D, paper start now (2026-10-21, LEAD; product owner)
+PO: "Proceed with all your recommended options."
+1. **Next heist: Rolling Thunder** (`rolling_thunder`, the Vaultline convoy, D-075/D-141). Afterhours follows it.
+2. **Paper start now** (amends D-144 for paper only): the RT build plan, systems/content/cast audits and prep branches
+   may proceed while Ostrander finishes. Building on the env branches (maps, mission code, data) starts at the OF done
+   check. D's assembled cast waits on `prep/d-rt`.
+3. **XP pacing = option D** (B's progression_pace.md): the curve ×2 (= PD2's ~23 M total to level 100), heist-size base
+   XP (S 1,500 / M 2,000 / L 2,500-3,000), PD2 difficulty multipliers kept. B applies it, re-checks every level-locked
+   unlock (weapons, armor `unlock_level`, Bot Crew armors) against the new pace, and updates pd2_fidelity.
+4. **Hardest-difficulty OF loud vs the AI pilot** (Haz 0/3, Cata 0/2 with real bots): accepted as a harness limit; no
+   tuning for it. Human playtests decide later.
+5. **Reuse-first (D-147)** applies to RT from day one.

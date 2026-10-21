@@ -111,7 +111,8 @@ func raise_alarm(reason: StringName, source_net_id: int = 0) -> void:
 	alarm_raised = true
 	alarm_reason = reason
 	Log.info(&"stealth", "ALARM: %s (source %d)" % [reason, source_net_id])
-	EventBus.alarm_raised.emit(reason, source_net_id)
+	if not FrameProf.enabled or not FrameProf.emit_timed(EventBus.alarm_raised, &"alarm", [reason, source_net_id]):
+		EventBus.alarm_raised.emit(reason, source_net_id)
 	Net.replicate_event(&"alarm_raised", [reason, source_net_id])
 
 

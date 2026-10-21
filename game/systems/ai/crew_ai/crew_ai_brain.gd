@@ -1040,7 +1040,7 @@ func _plan(goal: Vector3) -> void:
 	var nav_map: RID = _crew.get_world_3d().navigation_map
 	if nav_map.is_valid() and NavigationServer3D.map_get_iteration_id(nav_map) > 0 \
 			and not NavigationServer3D.map_get_regions(nav_map).is_empty():
-		_path = NavigationServer3D.map_get_path(nav_map, _crew.global_position, goal, true)
+		_path = NavPath.query(nav_map, _crew.global_position, goal, true)
 	if _path.size() < 2:
 		_path = PackedVector3Array([goal])
 	else:

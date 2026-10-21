@@ -105,9 +105,9 @@ func _wave(diff: int) -> Array:
 	return imgs
 
 
-## A camera spot CLOSE_M from `at` with nothing between it and the unit (8 directions, the unit's facing first; a ray
-## from the unit's chest out to the eye and one back must both be clear, so the eye is neither behind nor inside a
-## wall, a bollard or a door), or null.
+## A camera spot CLOSE_M (then 1.4x) from `at` with nothing between it and the unit (8 directions, the unit's facing
+## first; rays from the chest, head and hips out to the eye and back must all be clear, so the eye is neither behind
+## nor inside a wall, a bollard or a door, and no door cuts across the body), or null.
 func _clear_eye(u: NpcBase, at: Vector3) -> Variant:
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 	var fwd: Vector3 = -u.global_transform.basis.z
@@ -116,15 +116,19 @@ func _clear_eye(u: NpcBase, at: Vector3) -> Variant:
 	var skip: Array[RID] = []
 	if u is CollisionObject3D:
 		skip.append((u as CollisionObject3D).get_rid())
-	for k: int in 8:
-		var dir: Vector3 = fwd.rotated(Vector3.UP, k * PI / 4.0)
-		var eye: Vector3 = at + dir * CLOSE_M + Vector3(0, 0.25, 0)
-		var out_q := PhysicsRayQueryParameters3D.create(at, eye)
-		out_q.exclude = skip
-		var back_q := PhysicsRayQueryParameters3D.create(eye, at)
-		back_q.exclude = skip
-		if space.intersect_ray(out_q).is_empty() and space.intersect_ray(back_q).is_empty():
-			return eye
+	for dist: float in [CLOSE_M, CLOSE_M * 1.4]:
+		for k: int in 8:
+			var dir: Vector3 = fwd.rotated(Vector3.UP, k * PI / 4.0)
+			var eye: Vector3 = at + dir * dist + Vector3(0, 0.25, 0)
+			var clear: bool = true
+			# chest, head and hips all visible both ways (a door or wall half across the body fails)
+			for target: Vector3 in [at, at + Vector3(0, 0.5, 0), at - Vector3(0, 0.45, 0)]:
+				for pair: Array in [[target, eye], [eye, target]]:
+					var q := PhysicsRayQueryParameters3D.create(pair[0], pair[1])
+					q.exclude = skip
+					clear = clear and space.intersect_ray(q).is_empty()
+			if clear:
+				return eye
 	return null
 
 
