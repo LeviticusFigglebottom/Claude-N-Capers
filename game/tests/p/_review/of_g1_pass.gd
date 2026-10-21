@@ -2509,6 +2509,25 @@ func _test_lkprobe() -> bool:
 		for k: int in int(ceilf(seg / 0.5)) + 1:
 			mgr_eyes.append(mgr_path[i - 1].lerp(mgr_path[i], minf(1.0, k * 0.5 / maxf(seg, 0.01))) + Vector3(0, 1.6, 0))
 	note("LKPROBE manager path %s (%d eye samples)" % [", ".join(Array(mgr_path).map(Po5Pilot._v)), mgr_eyes.size()])
+	# Per path sample: BB eyes on him (h 0.5, where he'd lie tied), and the first sample each candidate wait spot sees.
+	var rows: PackedStringArray = PackedStringArray()
+	for i: int in mgr_eyes.size():
+		rows.append("%d %s bb %d" % [i, Po5Pilot._v(mgr_eyes[i] - Vector3(0, 1.6, 0)), _bb_eyes_see(mgr_eyes[i] - Vector3(0, 1.6, 0), 0.5)])
+	note("LKPROBE manager samples: %s" % "; ".join(rows))
+	for xi: int in range(1, 20):
+		for zi: int in range(1, 14):
+			var cand: Vector3 = NavigationServer3D.map_get_closest_point(map, _of(Vector3(xi * 0.5, -4.0, zi * 0.5)))
+			if pilot.flat_dist(cand, _of(Vector3(xi * 0.5, -4.0, zi * 0.5))) > 0.15 or _bb_eyes_see(cand, 0.7) > 0:
+				continue
+			var first: int = -1
+			for i: int in mgr_eyes.size():
+				var q2: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(mgr_eyes[i], cand + Vector3(0, 0.7, 0), 1)
+				if space.intersect_ray(q2).is_empty():
+					first = i
+					break
+			if first >= 0 and pilot.flat_dist(mgr_eyes[first], cand) >= 3.5:
+				note("LKPROBE wait (%.1f, %.1f): first seen from sample %d at %.1f m" % [xi * 0.5, zi * 0.5, first,
+					pilot.flat_dist(mgr_eyes[first], cand)])
 	var hits: PackedStringArray = PackedStringArray()
 	for xi: int in range(1, 20):
 		for zi: int in range(1, 14):
@@ -2732,15 +2751,21 @@ func _g3_keycard() -> bool:
 	# can't see him (haz_p: tied in LockerDoor's sight line, rover_basement radioed at t=355).
 	note("GHOST manager at his WC stop %s, seen by %d of 8 BB eyes" % [Po5Pilot._v(mgr.global_position),
 		_bb_eyes_see(mgr.global_position, 0.5)])
-	pilot.inp.release(&"crouch")
-	await _go(pilot.stand_point(_of(GHOST_MGR_SHOUT)), 0.4, 6.0)
+	# Shout from the hide (haz_s: stepping out at 1.7 m, he filled 1.0 at once and ran). The all-round shout reaches a
+	# civilian within shout_all_within_m (6 m) by LOS or a short navmesh path, so the partition doesn't stop it.
 	var b: CivilianBrain = mgr.get_node_or_null(^"Brain") as CivilianBrain
 	for _k: int in 4:
 		if b == null or b.mode == CivilianBrain.Mode.DOWN:
 			break
-		await pilot.face(mgr.global_position + Vector3(0, 1.3, 0), 0.05, 0.6)
 		await pilot.inp.tap(&"shout")
 		await wait_s(0.8)
+	note("GHOST manager shouted from the WC hide: mode %d" % (b.mode if b != null else -1))
+	if b == null or b.mode != CivilianBrain.Mode.DOWN:
+		return false
+	# Down he is blind; tie him when rover_basement is away (one BB eye, west of LockerDoor, sees the WC stop).
+	await wait_until(_rover_basement_away, 30.0)
+	pilot.inp.release(&"crouch")
+	await _go(pilot.stand_point(_of(GHOST_MGR_SHOUT)), 0.4, 6.0)
 	var tie: InteractableComponent = _comp(mgr, &"cable_tie")
 	if tie == null or not await pilot.use(tie, 20.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED, true):
 		return false
