@@ -1805,9 +1805,20 @@ func _gate_threat(gate: Door) -> String:
 	return ""
 
 
+## True when no living basement guard is within 12 m of the pilot or of `spot`, moving or not (one sample).
+func _b_guards_clear(spot: Vector3) -> bool:
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g != null and g.is_alive() and absf(g.global_position.y - OF_FFL[0]) < 1.5 \
+				and (pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0
+					or pilot.flat_dist(g.global_position, spot) < 12.0):
+			return false
+	return true
+
+
 ## Ghost line, SA's half landing -> BB (haz_za: the core check let a standing vault guard 6.5 m off in BB through, no LOS to
 ## the core, and he saw the walk to LK). BB is one long sight line: wait until no living basement guard stands in BB's strip
-## (z 6.5-9.6) west of x 32, or within 6 m of SA's door; two samples in a row, up to `max_s`.
+## (z 6.5-9.6) west of x 32, in RC's front, or within 6 m of SA's door; two samples in a row, up to `max_s`.
 func _wait_bb_clear(max_s: float = 120.0) -> void:
 	var door: Vector3 = _of(Vector3(OF_SA_CORE.x, OF_FFL[0], 7.5))
 	var t: float = 0.0
@@ -1819,7 +1830,9 @@ func _wait_bb_clear(max_s: float = 120.0) -> void:
 			if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
 				continue
 			var p: Vector3 = g.global_position
-			if (p.z > 6.5 and p.z < 9.6 and p.x < 32.0) or pilot.flat_dist(p, door) < 6.0:
+			# ...and RC's front (x < 14, z < 14): the vault guard steps out of RC's door into BB (haz_zb, t=183.5).
+			if (p.z > 6.5 and p.z < 9.6 and p.x < 32.0) or (p.x < 14.0 and p.z < 14.0 and p.z > 6.5) \
+					or pilot.flat_dist(p, door) < 6.0:
 				near.append("%s %s" % [g.name, Po5Pilot._v(p)])
 		ok_n = ok_n + 1 if near.is_empty() else 0
 		if ok_n >= 2:
@@ -2850,6 +2863,14 @@ func _g3_keycard() -> bool:
 	# from LockerDoor at 5 m and ran to rover_basement; NPCs see all round within 1.5 m and 120 deg wide at 5 m).
 	# lkprobe: (8.5, 0.5) is seen by none of his 33 path samples and none of the 8 BB eyes. Go once BB is quiet.
 	var wc_hide: Vector3 = pilot.stand_point(_of(GHOST_MGR_WC_HIDE))
+	# Not clear from the foot of SA: back up to the half landing for BB rather than walk BB to the LK hide (haz_zb: the
+	# vault guard was 7 m off, moving, and the walk to the hide went straight past him).
+	for _k: int in 3:
+		if _b_guards_clear(wc_hide):
+			break
+		await _go(pilot.stand_point(_of(GHOST_SA_MID)), 0.4, 20.0)
+		await _wait_bb_clear()
+		await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[0], OF_SA_CORE.z)), 0.5, 30.0)
 	await _wait_spot_clear(wc_hide, OF_FFL[0], "LK WC", _lk_hide())
 	# The LK navmesh runs through WCPartitionLK2 (not in the bake: haz_r stuck on it for 60 s): round its open end first.
 	if not await _go(pilot.stand_point(_of(GHOST_MGR_SHOUT)), 0.4, 40.0) or not await _go(wc_hide, 0.3, 20.0):

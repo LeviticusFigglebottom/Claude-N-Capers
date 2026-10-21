@@ -35,7 +35,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   at t=515: coming down from E, the pilot stepped out of SA into BB with the vault guard walking BB 9 m off (the upper-floor core check
   doesn't count BB). The descent to B now waits on the half landing too. haz_za: steps 1-4 again, then the half-landing core check let the vault guard
   through: standing in BB 6.5 m off, no LOS to the core. He saw the walk to LK (t=519). Both half-landing → BB waits now use a BB rule:
-  no basement guard in BB's strip west of x 32 or within 6 m of SA's door, two samples running. haz_zb is running.
+  no basement guard in BB's strip west of x 32 or within 6 m of SA's door, two samples running. haz_zb: BB clear on the half landing at t=181-183, but the vault guard was just inside RC's door. He stepped out
+  into BB as the pilot reached the foot of SA, and step 3's "not clear" walked the pilot down BB to the LK hide past him (t=185). Now the
+  BB rule counts RC's front (x < 14, z < 14), and step 3 backs up to the half landing instead of walking BB. haz_zc is running.
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
