@@ -199,3 +199,10 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
   At contact-sheet scale, both look the same as GPU-6. If the goal is a visible char/scorch, the decal albedo/opacity (or the
   `modulate`/energy against this lighting) probably needs pushing a lot further.
 - Output: the 4 burnt JPEGs + contact_sheet + shots.md, replacing the GPU-6 set at the same path.
+## GPU-11b: ENV D wave review re-run, framing fix (tree: env/d-art dd3fab52, local branch gpu/d2)
+- Import exit 0, 6 s. `--path game --resolution 1280x720 res://world/characters/_tools/render_d145_wave_review.tscn -- --out=<repo>\gpu\renders\d\wave2`:
+  exit 0, 483 s, `[D145W] RESULT DONE`. No ERRORs.
+- Framing vs GPU-8.1: **routine_unit1 and routine_unit2 now frame their officers** (60 KB / 141 KB -> 880 KB / 861 KB), and the hazardous
+  unit0-3 shots all frame officers. **routine_unit3 still frames an interior door/hand, not the officer** (603 KB, same as before).
+- Looks: routine 4 of 4 `_duty`, hazardous 0 of 6 `_duty` (the same as GPU-8.1, and consistent with "duty looks on Routine/Tense" in A's 8aea4ae3, so probably intended).
+- Output: `gpu/renders/d/wave2/` (sheet, 2 group shots, 8 unit shots, d145_wave_log.txt, render_log.txt).

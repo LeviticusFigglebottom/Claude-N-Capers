@@ -1,0 +1,74 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[INFO][rng][p1] run seed 7
+[INFO][variants][p1] seed 7 resolved { &"guard_post": [&"alley_smoker"], &"back_door": [], &"open_window": [&"ow_breakroom_latched"], &"keycard": [&"kc_breakroom"], &"jeweler": [&"jw_working"], &"admin_clerk": [&"clerk_out"], &"salon": [&"salon_open"], &"extra_loot": [&"xl_none"], &"escape": [&"esc_pell"], &"customers": [&"cust_1", &"cust_4"], &"manager_present": [&"mgr_out"], &"safe_state": [&"safe_closed"], &"estate": [&"estate_none"], &"camera": [&"cam_c2", &"cam_c3"], &"security_room_staffed": [&"sec_empty"], &"code_note": [&"code_jeweler_notebook"], "rare": [] }
+[INFO][heist][p1] vfx prewarm: 467 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 65 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[INFO][stealth][p1] ALARM: d145_wave_review (source 0)
+[INFO][heist][p1] alarm (d145_wave_review): going loud
+[INFO][crew][p1] slot 0 masked (forced=true)
+[INFO][heist][p1] phase CASING -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][director][p1] assault events: 3 rows for glasshouse (tweak)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][combat][p1] slot 0 downed (1/3)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[INFO][combat][p1] slot 0 in custody
+[INFO][combat][p1] all humans in custody, no release path: heist failed
+[INFO][heist][p1] phase LOUD -> ENDED
+[D145W] routine: 4 director units after 240 s game (242 s wall)
+[D145W] routine: enemy.patrol_officer look patrol_officer_duty at (4.989159, -0.148673, 16.4549)
+[D145W] routine: enemy.patrol_officer look patrol_officer_duty at (4.951015, 0.000873, 14.82564)
+[D145W] routine: enemy.patrol_officer look patrol_officer_duty at (4.925674, 0.0, 13.94114)
+[D145W] routine: enemy.patrol_officer look patrol_officer_duty at (16.355, 0.001, 6.054196)
+[D145W] routine: 4 of 4 units wear a _duty look
+[INFO][rng][p1] run seed 7
+[INFO][variants][p1] seed 7 resolved { &"guard_post": [&"alley_smoker"], &"back_door": [], &"open_window": [&"ow_breakroom_latched"], &"keycard": [&"kc_breakroom"], &"jeweler": [&"jw_working"], &"admin_clerk": [&"clerk_out"], &"salon": [&"salon_open"], &"extra_loot": [&"xl_none"], &"escape": [&"esc_pell"], &"customers": [&"cust_1", &"cust_4"], &"manager_present": [&"mgr_out"], &"safe_state": [&"safe_closed"], &"estate": [&"estate_none"], &"camera": [&"cam_c2", &"cam_c3"], &"security_room_staffed": [&"sec_empty"], &"code_note": [&"code_jeweler_notebook"], "rare": [] }
+[INFO][heist][p1] vfx prewarm: 207 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 162 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[INFO][stealth][p1] ALARM: d145_wave_review (source 0)
+[INFO][heist][p1] alarm (d145_wave_review): going loud
+[INFO][crew][p1] slot 0 masked (forced=true)
+[INFO][heist][p1] phase CASING -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][director][p1] assault events: 3 rows for glasshouse (tweak)
+[INFO][combat][p1] slot 0 downed (1/3)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][combat][p1] slot 0 (downed) cuffed by police 66
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[INFO][stealth][p1] slot 0 freed from cuffs (by -1)
+[INFO][combat][p1] slot 0 (downed) cuffed by police 66
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 40 s)
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[INFO][stealth][p1] slot 0 freed from cuffs (by -1)
+[INFO][combat][p1] slot 0 (downed) cuffed by police 70
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[INFO][stealth][p1] slot 0 freed from cuffs (by -1)
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][combat][p1] slot 0 (downed) cuffed by police 71
+[INFO][director][p1] assault event turret_van at (15.0, -0.15, 24.6) (TurretVan_2)
+[D145W] hazardous: 6 director units after 222 s game (224 s wall)
+[D145W] hazardous: enemy.patrol_officer look patrol_officer at (2.602329, 0.000871, 15.33134)
+[D145W] hazardous: enemy.patrol_officer look patrol_officer at (3.597739, 0.001228, 15.15471)
+[D145W] hazardous: enemy.patrol_officer look patrol_officer at (3.961645, 0.0, 14.51609)
+[D145W] hazardous: enemy.patrol_officer look patrol_officer at (3.825397, 0.0, 13.83707)
+[D145W] hazardous: enemy.longshot look longshot at (0.0, 17.0, 36.0)
+[D145W] hazardous: enemy.tac_light look tac_light_frd at (18.8176, -0.15, 24.6)
+[D145W] hazardous: 0 of 6 units wear a _duty look
+[D145W] RESULT DONE C:\Users\Aaron\caperworks-gpu\gpu\renders\d\wave2
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+   at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 477 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

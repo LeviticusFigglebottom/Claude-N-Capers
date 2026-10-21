@@ -1,0 +1,14 @@
+routine: 4 director units after 240 s game (242 s wall)
+routine: enemy.patrol_officer look patrol_officer_duty at (4.989159, -0.148673, 16.4549)
+routine: enemy.patrol_officer look patrol_officer_duty at (4.951015, 0.000873, 14.82564)
+routine: enemy.patrol_officer look patrol_officer_duty at (4.925674, 0.0, 13.94114)
+routine: enemy.patrol_officer look patrol_officer_duty at (16.355, 0.001, 6.054196)
+routine: 4 of 4 units wear a _duty look
+hazardous: 6 director units after 222 s game (224 s wall)
+hazardous: enemy.patrol_officer look patrol_officer at (2.602329, 0.000871, 15.33134)
+hazardous: enemy.patrol_officer look patrol_officer at (3.597739, 0.001228, 15.15471)
+hazardous: enemy.patrol_officer look patrol_officer at (3.961645, 0.0, 14.51609)
+hazardous: enemy.patrol_officer look patrol_officer at (3.825397, 0.0, 13.83707)
+hazardous: enemy.longshot look longshot at (0.0, 17.0, 36.0)
+hazardous: enemy.tac_light look tac_light_frd at (18.8176, -0.15, 24.6)
+hazardous: 0 of 6 units wear a _duty look
