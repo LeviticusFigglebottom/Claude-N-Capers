@@ -327,6 +327,11 @@ func _convoy_sets(vs: VariantSlot, sid: String) -> void:
 			body.set_meta(&"kind", "convoy_" + String(v[1]))
 			body.set_meta(&"never_with", PackedStringArray(v[7]))   # the other layout of the route (one per stop)
 			body.set_meta(&"todo", "TODO(A5-02): convoy_vehicle placeholder (no collision until the mover exists)")
+			if up.y < 0.99999:
+				# LEAD r258 (RT-C1 `floating` ruling b): a box tilted flush on the east-arm ramp reads as floating from its
+				# lowest corner; RT-only exemption (lc_ignore, D-113: no collision here) until A5-02's movers replace it
+				body.set_meta(&"lc_ignore", true)
+				body.set_meta(&"lc_ignore_reason", "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)")
 			add(st, body)
 			var mi: MeshInstance3D = MeshInstance3D.new()
 			mi.name = "Mesh"

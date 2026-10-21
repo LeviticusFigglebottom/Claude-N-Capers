@@ -1,7 +1,7 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://contracts/map/heist_map.gd" id="1_rt"]
-[ext_resource type="Resource" path="res://world/heists/rolling_thunder/rolling_thunder_def.tres" id="2_rt"]
+[ext_resource type="Resource" path="res://world/heists/rolling_thunder/rolling_thunder_wip_def.tres" id="2_rt"]
 [ext_resource type="Resource" path="res://world/heists/rolling_thunder/rolling_thunder_variants.tres" id="3_rt"]
 [ext_resource type="Material" path="res://world/materials/grey_floor.tres" id="4_rt"]
 [ext_resource type="Material" path="res://world/materials/grey_wall_ext.tres" id="5_rt"]
@@ -13342,6 +13342,8 @@ collision_mask = 0
 metadata/kind = "convoy_bullion"
 metadata/never_with = PackedStringArray("CrashT1", "CrashT2", "CrashT3", "CrashRear")
 metadata/todo = "TODO(A5-02): convoy_vehicle placeholder (no collision until the mover exists)"
+metadata/lc_ignore = true
+metadata/lc_ignore_reason = "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)"
 
 [node name="Mesh" type="MeshInstance3D" parent="Variants/Group_convoy_route/Slot_route_east/Convoy/Clean/CleanT2" unique_id=102427]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
@@ -13359,6 +13361,8 @@ collision_mask = 0
 metadata/kind = "convoy_bullion"
 metadata/never_with = PackedStringArray("CrashT1", "CrashT2", "CrashT3", "CrashRear")
 metadata/todo = "TODO(A5-02): convoy_vehicle placeholder (no collision until the mover exists)"
+metadata/lc_ignore = true
+metadata/lc_ignore_reason = "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)"
 
 [node name="Mesh" type="MeshInstance3D" parent="Variants/Group_convoy_route/Slot_route_east/Convoy/Clean/CleanT3" unique_id=102430]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
@@ -13376,6 +13380,8 @@ collision_mask = 0
 metadata/kind = "convoy_car"
 metadata/never_with = PackedStringArray("CrashT1", "CrashT2", "CrashT3", "CrashRear")
 metadata/todo = "TODO(A5-02): convoy_vehicle placeholder (no collision until the mover exists)"
+metadata/lc_ignore = true
+metadata/lc_ignore_reason = "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)"
 
 [node name="Mesh" type="MeshInstance3D" parent="Variants/Group_convoy_route/Slot_route_east/Convoy/Clean/CleanRear" unique_id=102433]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
@@ -13427,6 +13433,8 @@ collision_mask = 0
 metadata/kind = "convoy_bullion"
 metadata/never_with = PackedStringArray("CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear")
 metadata/todo = "TODO(A5-02): convoy_vehicle placeholder (no collision until the mover exists)"
+metadata/lc_ignore = true
+metadata/lc_ignore_reason = "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)"
 
 [node name="Mesh" type="MeshInstance3D" parent="Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashT3" unique_id=102442]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
@@ -13444,6 +13452,8 @@ collision_mask = 0
 metadata/kind = "convoy_car"
 metadata/never_with = PackedStringArray("CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear")
 metadata/todo = "TODO(A5-02): convoy_vehicle placeholder (no collision until the mover exists)"
+metadata/lc_ignore = true
+metadata/lc_ignore_reason = "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)"
 
 [node name="Mesh" type="MeshInstance3D" parent="Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashRear" unique_id=102445]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
