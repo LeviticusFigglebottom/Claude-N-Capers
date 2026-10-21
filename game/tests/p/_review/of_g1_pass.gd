@@ -228,6 +228,9 @@ var _ghost_stair_wait: bool = false
 ## Walks may use ladders on purpose (the interact sweep's pass 2 crosses the hole by the rope ladder): the stray-ladder
 ## watch stands down (r255 sweep: it climbed the pilot back down every time, a 15-min ping-pong).
 var _ladders_ok: bool = false
+## Ghost line difficulty (--diff=hazardous|cataclysm|...). D-150: the no-kill ghost acceptance runs on Hazardous (6 guards);
+## Cataclysm stealth allows pager kills.
+var _ghost_diff: int = Enums.Difficulty.HAZARDOUS
 ## _vault_guard_off_vc: consecutive samples with the vault guard off VC.
 var _vg_away_n: int = 0
 
@@ -249,6 +252,7 @@ func _ready() -> void:
 			"resolve": _resolve = true
 			"launch": _resolve_launch = true
 			"line": _line = v
+			"diff": _ghost_diff = Enums.Difficulty.get(v.to_upper(), _ghost_diff)
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/of_g1_pass"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -2416,7 +2420,7 @@ func _sweep(list: Array[InteractableComponent], rows: PackedStringArray, ok_n: A
 ## Headless probe (no pilot movement needed): LK floor points on the navmesh at floor height, reachable from
 ## GHOST_LK_WAIT, and hidden at crouch height from BB eyes outside LockerDoor. Picks GHOST_LK_HIDES (r252b).
 func _test_lkprobe() -> bool:
-	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, _ghost_opts(), false):
+	if not await _launch(OF_HEIST, _of_seed(), _ghost_diff as Enums.Difficulty, _ghost_opts(), false):
 		return false
 	var map: RID = pilot.crew.get_world_3d().navigation_map
 	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
@@ -2448,7 +2452,7 @@ func _test_lkprobe() -> bool:
 func _test_ghost() -> bool:
 	var opts: Dictionary = _ghost_opts()
 	opts["loadouts"] = {0: _ghost_loadout()}
-	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, opts, false):
+	if not await _launch(OF_HEIST, _of_seed(), _ghost_diff as Enums.Difficulty, opts, false):
 		return false
 	_ghost_stair_wait = false
 	var t_start: float = rt.heist_time_s
