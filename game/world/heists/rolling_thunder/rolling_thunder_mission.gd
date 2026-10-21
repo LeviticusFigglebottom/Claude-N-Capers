@@ -132,6 +132,8 @@ var _opened: Dictionary = {}
 var _said: Dictionary = {}
 var _escape_called: bool = false
 var _movers_left: int = 0
+## Last published [trucks opened, escort down] (the poll publishes only changes).
+var _last_counts: Vector2i = Vector2i(-1, -1)
 
 
 func _on_mission_start() -> void:
@@ -426,17 +428,20 @@ func _poll() -> void:
 		if not _opened.has(t.get_instance_id()):
 			_opened[t.get_instance_id()] = true
 			_truck_opened(t)
-	update_objective_data(&"trucks", {"opened": opened, "total": _trucks.size()})
-	if not _trucks.is_empty() and opened >= _trucks.size():
-		_complete_once(&"trucks")
 	var down: int = 0
 	for u: NpcBase in _units:
 		if not is_instance_valid(u) or not u.alive:
 			down += 1
-	update_objective_data(&"escort", {"down": down, "total": _units_total})
-	if _units_total > 0 and down >= _units_total:
-		_complete_once(&"escort")
-		_say_once(VO_ESCORT_DOWN)
+	if opened != _last_counts.x:
+		update_objective_data(&"trucks", {"opened": opened, "total": _trucks.size()})
+		if not _trucks.is_empty() and opened >= _trucks.size():
+			_complete_once(&"trucks")
+	if down != _last_counts.y:
+		update_objective_data(&"escort", {"down": down, "total": _units_total})
+		if _units_total > 0 and down >= _units_total:
+			_complete_once(&"escort")
+			_say_once(VO_ESCORT_DOWN)
+	_last_counts = Vector2i(opened, down)
 	if not escape_open:
 		start_timer(&"poll", POLL_S, _poll)
 
