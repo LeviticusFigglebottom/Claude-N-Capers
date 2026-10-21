@@ -4,6 +4,12 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **Next-heist cast notes (notes only, D-144):** `game/assets/characters/_review/next_heist_cast_notes.md`.
+  Rolling Thunder: Vaultline / Halden / escorts (duty looks automatic) exist; parked wip/d-rt-civilians (diner staff,
+  attendant, 6 pedestrians, built not assembled) and wip/d-rt-clips (sit_vehicle, vehicle_exit_l/r); missing sit_eat +
+  cook_stove (A's HINT_CLIPS already names them) and 2 tag_map rows: about 1 D day. Afterhours: club looks exist but
+  pools are far short of D-130 (4 patron looks for 30-50 patrons/dancers, 2 bouncers for up to 7, 2 bartenders for 6),
+  no tag_map, no dj_mix: about 2 D days. Cast-side view: RT starts faster.
 - **r252 merged** (e91fa3c0, OF final art) into env/d-art 22fbee3e: import clean; d test_of_cast_clips 3/3 and
   test_cower_offsets 2/2 still green on the final art (seats, worktops, cower walls unchanged for the cast).
 - **OF clip audit: PASS, new test** `game/tests/d/test_of_cast_clips.gd` (3 tests, green on env/d-art = r251 + D). For
