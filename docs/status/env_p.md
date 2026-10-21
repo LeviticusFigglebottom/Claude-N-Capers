@@ -6,7 +6,20 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
-  'LD occupied' check also counts guards within 10 m of DockCorridorDoor, and that smoke window is skipped (≤ 4 tries). haz_c is running.
+  'LD occupied' check also counts guards within 10 m of DockCorridorDoor, and that smoke window is skipped (≤ 4 tries). haz_c: the same path
+  (deterministic); he was > 10 m off at the cue but 6 m off once the pilot was in, after ~15 s of mask + ECM + lockpick. Now 20 m at the cue, and
+  a 10 m re-check right before the lockpick. haz_d: the 20 m radius caught the lobby guard at his hall post (10.9, 0, 21.8), and every smoke window
+  was skipped. Now only the BC/LD side (z < 12) counts. haz_e: smoke windows at t≈78, 285, 430, 544 were all skipped, two of them by a posted guard
+  standing at (19.5, 0, 1.1) (the Cataclysm runs walked past that spot). Now within 20 m only walkers count; standing guards count within 8 m of either
+  door. haz_f: the pre-checks passed (rover_hall was still in the hall, z > 12, at the cue), then he came through BC into LD again and found the pilot
+  waiting inside (t=111, as in haz_b/c). Now when BC isn't clear, the pilot backs out to the lane beside the dock door (6, 0, −1.5), not inside LD.
+  Ghost runs from here on are on r260 (3a3885ad), per the LEAD. **haz_g (r260): waiting outside works.** rover_hall did his LD check (t≈108-118)
+  and missed the pilot beside the door. But by then the smoke window had ended, and rover_dock walked back and saw the pilot (t=139). That window
+  was never real: now the cue check also tracks rover_hall by tag (heading for DockCorridorDoor from ≤ 25 m means a loop (b) LD check → skip),
+  and the corridor-door wait counts building-side guards only. haz_h: he was only flagged at the late re-check, 24 m out heading for LD, after mask + ECM
+  were spent, and the run followed haz_g's path. Tracking radius is now 35 m so the cue check catches him. haz_i: the same. He turns toward LD between
+  the cue (t=78) and t=83. Restructured step 2 into one loop per smoke window: cue → LD clear → lane clear → mask → LD clear again → only then the
+  ECM and lockpick; a busy LD at the second check keeps the ECM for the next window. haz_j is running.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
   pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35

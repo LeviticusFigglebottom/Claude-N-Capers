@@ -1616,7 +1616,8 @@ func _lk_hide() -> Vector3:
 ## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, within 20 m
 ## with LOS to it, or walking within 20 m; if not clear at once the crew waits at `hide` (LK, doc §3; r251h: waiting in BB
 ## by the core, rover_basement walked down BB and saw it). Logs the wait (max 300 s, then goes anyway).
-func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, extra: Callable = Callable()) -> void:
+func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, extra: Callable = Callable(),
+		min_z: float = -INF) -> void:
 	var t: float = 0.0
 	var hidden: bool = false
 	var last: Dictionary = {}
@@ -1624,7 +1625,7 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, ext
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5:
+			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5 or g.global_position.z < min_z:
 				continue
 			var id: int = g.get_instance_id()
 			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
@@ -1704,6 +1705,13 @@ func _gate_window(gate: Door) -> bool:
 				var in_rc: bool = p.x < 14.0 and p.z > 9.5
 				return absf(p.y - OF_FFL[0]) > 1.5 or in_rc or p.x > 36.0
 	return true
+
+
+func _has_tag(g: NpcBase, tag: String) -> bool:
+	for t: Variant in g.spawn_info.get("tags", []):
+		if String(t) == tag:
+			return true
+	return false
 
 
 ## Step 5's peek before each leg of the LK -> gate walk: a guard walking within 20 m who sees the pilot or closes on the
@@ -2499,55 +2507,83 @@ func _g2_dock() -> bool:
 	# ...and BC by DockCorridorDoor: rover_hall's loop (b) comes through it into LD (haz_b: waited inside LD, he walked in
 	# and found the pilot at 1 m). Inside the building = z > 0.5.
 	var cdoor_n: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
-	var ld_busy: Callable = func() -> String:
+	# 20 m at the cue: mask + ECM + the 8 s lockpick take ~15 s, about 22 m of rover_hall's walk (haz_c: > 10 m at the cue,
+	# 6 m off DockCorridorDoor once the pilot was in). Re-checked at 10 m right before the lockpick.
+	# Standing guards only within 8 m of either door: a posted guard at (19.5, 0, 1.1) held all 4 smoke windows (haz_e).
+	var ld_last: Dictionary = {}
+	var ld_busy: Callable = func(r: float) -> String:
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
 				continue
-			if pilot.flat_dist(g.global_position, door_at) < 8.0 \
-					or (cdoor_n != null and pilot.flat_dist(g.global_position, cdoor_n.global_position) < 10.0):
+			var id: int = g.get_instance_id()
+			var moving: bool = ld_last.has(id) and g.global_position.distance_to(ld_last[id]) > 0.15
+			var was: Vector3 = ld_last.get(id, g.global_position)
+			ld_last[id] = g.global_position
+			# rover_hall heading for DockCorridorDoor from anywhere within 35 m is on his loop (b) LD check (haz_g: in
+			# the hall at the cue, through LD 30 s later; the smoke window had ended by the time he left).
+			if cdoor_n != null and moving and _has_tag(g, "guard_rover_hall"):
+				var dn: float = pilot.flat_dist(g.global_position, cdoor_n.global_position)
+				if dn < 35.0 and pilot.flat_dist(was, cdoor_n.global_position) - dn > 0.05:  # haz_h: 24 m 5 s after the cue
+					return "%s %s heading for LD" % [g.name, Po5Pilot._v(g.global_position)]
+			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
+			var dc: float = pilot.flat_dist(g.global_position, cdoor_n.global_position) if cdoor_n != null else 999.0
+			if pilot.flat_dist(g.global_position, door_at) < 8.0 or dc < 8.0 \
+					or (g.global_position.z < 12.0 and moving and dc < r):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
-	var clear: bool = await _smoke_cue(300.0)
-	for _try: int in 4:
-		var who: String = ld_busy.call()
-		if who == "":
-			break
-		note("GHOST LD occupied (%s): skipping this smoke window" % who)
-		await wait_until(func() -> bool: return ld_busy.call() == "", 90.0)
+	# One loop per smoke window: the cue, LD clear, the lane clear, mask, then LD again before the ECM is spent (haz_h/i:
+	# rover_hall turned toward LD between the cue at t=78 and t=83, flagged only after the ECM was down).
+	var clear: bool = false
+	for _win: int in 5:
 		clear = await _smoke_cue(300.0)
-	while waited < 600.0 and not clear:
-		clear = true
-		var where: PackedStringArray = PackedStringArray()
-		for n: Node in rt.npcs(&"guard"):
-			var g: NpcBase = n as NpcBase
-			if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
-				continue
-			where.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
-			if pilot.flat_dist(g.global_position, door_at) < LANE_CLEAR_M \
-					or pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0:
-				clear = false
-		if int(waited) % 20 == 0:
-			note("GHOST lane guards: %s" % (", ".join(where) if not where.is_empty() else "none"))
-		if not clear:
-			await wait_s(1.0)
-			waited += 1.0
-	note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
-	if not await _mask():
-		return false
+		ld_busy.call(20.0)  # first sample: walking needs two
+		await wait_s(0.5)
+		var who: String = ld_busy.call(20.0)
+		if who != "":
+			note("GHOST LD occupied (%s): skipping this smoke window" % who)
+			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
+			continue
+		while waited < 600.0 and not clear:
+			clear = true
+			var where: PackedStringArray = PackedStringArray()
+			for n: Node in rt.npcs(&"guard"):
+				var g: NpcBase = n as NpcBase
+				if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
+					continue
+				where.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
+				if pilot.flat_dist(g.global_position, door_at) < LANE_CLEAR_M \
+						or pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0:
+					clear = false
+			if int(waited) % 20 == 0:
+				note("GHOST lane guards: %s" % (", ".join(where) if not where.is_empty() else "none"))
+			if not clear:
+				await wait_s(1.0)
+				waited += 1.0
+		note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
+		if not pilot.crew.masked:
+			if not await _mask():
+				return false
+		ld_busy.call(20.0)
+		await wait_s(0.5)
+		who = ld_busy.call(20.0)
+		if who != "":
+			note("GHOST LD busy after the mask (%s): ECM kept, next smoke window" % who)
+			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
+			continue
+		break
 	if not await _deploy_ecm():
 		return false
 	var door: Door = _x("ld_door") as Door
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
 	# Peek through LD -> BC too: on Hazardous (D-150) rover_hall stood 1.7 m behind DockCorridorDoor when the pilot
-	# opened it (haz_a, t=100). Wait inside LD, 3 m back from that door, until BC beyond it is clear.
+	# opened it (haz_a, t=100). Not clear: back out to the lane beside the dock door, out of the doorway's line (haz_b/c/f:
+	# waiting inside LD, rover_hall's loop (b) walked in and found the pilot), and come back in once BC is clear.
 	var cdoor: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
 	if cdoor != null:
-		var back: Vector3 = (door.global_position - cdoor.global_position)
-		back.y = 0.0
-		var hide: Vector3 = pilot.stand_point(cdoor.global_position + back.normalized() * 3.0)
-		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide)
+		var hide: Vector3 = pilot.stand_point(door.global_position + Vector3(-2.0, 0.0, -1.5))
+		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide, Callable(), 0.5)
 	return await _of_to_floor(0)
 
 

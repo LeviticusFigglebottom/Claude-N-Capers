@@ -1,0 +1,63 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 16.0s t=-1.0] objective casing -> 1
+[OFP 16.0s t=-1.0] objective keycard -> 1
+[OFP 16.0s t=-1.0] objective code_hint -> 1
+[OFP 16.0s t=-1.0] objective code_pc -> 1
+[OFP 16.0s t=-1.0] objective server -> 1
+[OFP 16.0s t=-1.0] objective vault_gate -> 1
+[OFP 16.0s t=-1.0] objective lasers -> 1
+[OFP 16.0s t=-1.0] objective time_lock -> 0
+[OFP 16.0s t=-1.0] objective time_lock_wait -> 0
+[OFP 16.0s t=-1.0] objective vault_loot -> 0
+[OFP 16.0s t=-1.0] objective gold_cage -> 0
+[OFP 16.0s t=-1.0] objective drill_delivery -> 0
+[OFP 16.0s t=-1.0] objective vault_drill -> 0
+[OFP 16.0s t=-1.0] objective vault_breach -> 0
+[OFP 16.0s t=-1.0] objective secure -> 1
+[OFP 16.0s t=-1.0] objective deposit_boxes -> 1
+[OFP 16.0s t=-1.0] objective bond_safe -> 0
+[OFP 16.0s t=-1.0] objective president_safe -> 1
+[OFP 16.0s t=-1.0] objective server_drives -> 1
+[OFP 16.0s t=-1.0] objective escape_wait -> 0
+[OFP 16.0s t=-1.0] objective escape -> 0
+[OFP 32.2s t=0.0] launched ostrander_federal seed 1002 diff 2 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [], &"civ_extra": [&"cx_hall_1"], &"time_lock_s": 270.0, &"drill_eta_s": 45.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 241.2s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 241.2s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 267.4s t=8.2] pilot: t=5 at (37.9, -0.7, 40.1) corner (42.4, -0.6, 42.3) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01588615652872 bot=false
+[OFP 279.5s t=20.3] pilot: t=5 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(0.10,0.00) pin_yaw=0.09794857307133 bot=false
+[OFP 290.3s t=31.1] pilot: t=5 at (35.7, 0.0, -6.3) corner (33.4, 0.2, -6.4) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(1.50,0.00) pin_yaw=1.50226139555161 bot=false
+[OFP 292.2s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 292.2s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 302.2s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 318.2s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 328.2s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 338.2s t=73.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.3, 0.0, 0.2) walk
+[OFP 343.2s t=78.0] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 45 s
+[OFP 343.2s t=78.0] GHOST lane clear after 0 s
+[OFP 344.2s t=79.0] objective casing -> 2
+[OFP 344.8s t=79.6] masked true
+[OFP 347.6s t=82.3] ECM on
+[OFP 352.6s t=87.4] pilot: t=5 at (12.2, 0.0, -1.8) corner (10.2, 0.2, -1.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.86,0.00) pin_yaw=1.85905208980694 bot=false
+[OFP 362.0s t=96.7] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 362.3s t=97.1] GHOST dock corridor door not clear (Npc_guard3 (15.7, 0.0, 8.0)): waiting at (9.3, 0.2, 5.1)
+[OFP 364.2s t=99.0] GHOST waiting for the dock corridor door: Npc_guard3 (12.7, 0.0, 8.0)
+[OFP 366.8s t=101.5] DETECT Npc_guard3 kind 0 meter 0.19 at (9.6, 0.0, 7.8), pilot (9.2, 0.0, 4.8) crouched true
+[OFP 367.3s t=102.0] DETECT Npc_guard3 kind 0 meter 0.59 at (9.0, 0.0, 7.2), pilot (9.2, 0.0, 4.8) crouched true
+[OFP 367.8s t=102.5] DETECT Npc_guard3 kind 0 meter 1.00 at (8.6, 0.0, 6.8), pilot (9.2, 0.0, 4.8) crouched true
+[OFP 374.2s t=109.0] GHOST waiting for the dock corridor door: Npc_guard3 (8.8, 0.0, 5.9)
+[INFO][stealth][p1] ALARM: guard_radio (source 205)
+[OFP 376.3s t=111.0] ALARM guard_radio by Npc_guard3 (pilot at (9.2, 0.0, 4.8))
+[OFP 376.3s t=111.0] objective keycard -> 1
+[OFP 376.3s t=111.0] objective keycard -> 2
+[OFP 376.3s t=111.0] objective code_hint -> 1
+[OFP 376.3s t=111.0] objective code_hint -> 2
+[OFP 376.3s t=111.0] objective code_pc -> 1
+[OFP 376.3s t=111.0] objective code_pc -> 2
+[OFP 376.3s t=111.0] objective server -> 1
+[OFP 376.3s t=111.0] objective server -> 2
+[OFP 376.3s t=111.0] objective vault_gate -> 1
+[OFP 376.3s t=111.0] objective vault_gate -> 2
+[OFP 376.3s t=111.0] objective lasers -> 1
+[OFP 376.3s t=111.0] objective lasers -> 2
+[OFP 376.3s t=111.0] objective drill_delivery -> 1
+[OFP 376.3s t=111.0] objective drill_delivery -> 1

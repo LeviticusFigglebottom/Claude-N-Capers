@@ -4,6 +4,16 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **WORKING: AH prep on `prep/d-ah`** (branched from prep/d-rt, so RT merges first and the anim library stays one line).
+  - **`dj_mix` is pushed: prep/d-ah dfd7ce9bf.** The DJ at the 1.0 m booth, 120 BPM: left hand on the faders, right on
+    the jog wheel, knee bounce and head nod on the beat, and once per loop the right hand to the headphone cup (`cue`@90).
+    reach_err is 0 and the max joint step is 10.7 deg. The booth layout is in the SOURCE note `ah_dj_placement`. Tests:
+    test_ah_clips 3/3 (new), test_anims 18/18 (253 clips), test_rt_clips 6/6. Review:
+    `_review/ah_d1/dj_mix_review.png`.
+  - **16 finish swaps:** building now (0 new meshes), with p5_cast pools and tag_map.afterhours staged. Report to follow.
+- **RT lineups are already done and ready for the PO:** prep/d-rt de0212248, `game/assets/characters/_review/rt_lineup/`
+  (six 1080p sheets; see the entry below). Read them straight from origin/prep/d-rt. I recorded your dancer ruling
+  in `afterhours_cast_plan.md`. **IDLE, can take X.**
 - **Afterhours cast plan, paper only (D-147): `game/assets/characters/_review/afterhours_cast_plan.md` (env/d-art).**
   Needs 0 new meshes, 16 finish swaps (5 bouncer, 4 bartender, 6 patron, 1 off-duty) and 1 new clip, `dj_mix`.
   Estimate about half a D day; the earlier estimate was 2.
