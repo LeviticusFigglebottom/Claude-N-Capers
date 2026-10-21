@@ -1421,3 +1421,11 @@ Tense losses traced to takedown rules, not tuning. Amends **D-093** and pd2_fide
    **judged on Forward+, measured on the GPU box**; levelcheck's Compatibility-based model stays as a conservative
    early-warning (report-only from now) because Compatibility is the fallback renderer. A heist passes D-146 when its
    worst views, Cataclysm cast, loud, measure ≤ 2,500 main / ≤ 4,000 total in Forward+ on the GPU box.
+
+## D-147: reuse-first for props and kits (2026-10-21, LEAD; PO question)
+The prop catalog has 520 entries (522 prop scenes). Ostrander used 296 distinct props, of which 245 (83 %) were reused
+and 51 were new bank-specific pieces (teller line, sunburst, vault gear). From the next heist on: **every map uses
+catalog props and kits first.** A new prop needs a one-line reason in the heist doc's art list: no catalog piece fits the
+role, or it is a landmark / hero piece. Generic dressing (furniture, office, kitchen, clutter, lighting, doors, exterior,
+vehicles) is never rebuilt per heist. Variants come from library finishes (materials/colour), not new meshes. C reports
+reused vs new counts in each G1/G2 review.
