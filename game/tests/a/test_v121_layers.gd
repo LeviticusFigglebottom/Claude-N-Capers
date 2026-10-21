@@ -129,3 +129,29 @@ func test_left_hand_on_the_rifle_marker() -> void:
 		d.tick(0.05)
 	assert_true(String(d.clip).begins_with("reload_"), "reloading (%s)" % d.clip)
 	assert_near(d.left_hand_ik.influence, 0.0, 0.001, "the reload frees the left hand (IK out)")
+
+
+## LEAD (D's OF Cataclysm loud anim coverage: 21k errors at anim_layers.gd:75): the IK kept the previous weapon's
+## LeftHandIK marker, which is freed when the WeaponVisual is replaced (drop / swap). No error, and the IK fades out.
+func test_left_hand_ik_survives_a_freed_marker() -> void:
+	var crew: CrewController = await _bot(&"weapon.corsair_ar")
+	var d: AnimDriver = AnimDriver.of(crew)
+	if _missing(d, [&"idle_alert_rifle"], "left-hand IK"):
+		return
+	if crew.weapons.has_weapon(Enums.WeaponSlot.PRIMARY):
+		crew.weapons.equip(Enums.WeaponSlot.PRIMARY)
+		await wait_frames(2)
+		d.refresh_weapon()
+	var wv: WeaponVisual = d.weapon_visual as WeaponVisual
+	var marker: Node3D = wv.get_marker(&"LeftHandIK") if wv != null else null
+	if d.aim_family() != &"rifle" or marker == null:
+		print("[v121 layers] skip freed marker: no rifle with a LeftHandIK (%s)" % d.weapon_kind)
+		return
+	await wait_seconds(1.0)
+	assert_true(d.left_hand_ik.marker == marker, "the IK holds the rifle's marker")
+	d.set_process(false)
+	marker.free()  # the WeaponVisual replaced under the IK (drop / swap)
+	for _i: int in 20:
+		d.tick(0.05)
+	assert_true(d.left_hand_ik.influence < 1.0, "the IK fades out without its marker (%.2f)" % d.left_hand_ik.influence)
+	assert_false(d.left_hand_ik.active and not is_instance_valid(d.left_hand_ik.marker), "never active on a freed marker")

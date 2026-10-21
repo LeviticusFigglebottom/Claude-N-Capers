@@ -639,6 +639,7 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		return  # objectives published before the runtime is bound: resolve on a later poll
 	var want: Dictionary[StringName, Array] = {}
 	var sigs: Dictionary[StringName, String] = {}
+	var skips: Dictionary[StringName, Variant] = {}
 	for o: Dictionary in src:
 		var tags: Variant = (o.get("args", {}) as Dictionary).get("marker_tags", [])
 		if int(o["state"]) != Enums.ObjectiveState.ACTIVE or not (tags is Array) or (tags as Array).is_empty():
@@ -646,6 +647,7 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
 			continue  # e.g. Night Deposit's code / server steps in a lockdown (the panel hides them too)
 		want[StringName(o["id"])] = tags as Array
+		skips[StringName(o["id"])] = (o.get("args", {}) as Dictionary).get("marker_skip_prefixes", [])
 		sigs[StringName(o["id"])] = str(o.get("args", {}))  # any data update re-resolves (QC-60: runtime tags)
 	_marker_poll += 1
 	for gone: StringName in _marker_nodes.keys():
@@ -679,7 +681,7 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 		for t: Variant in want[id]:
 			marker_lookups += 1
 			for n: Node in found.get(StringName(t), []):
-				if n is Node3D:
+				if n is Node3D and not _marker_skipped(n, skips[id]):
 					nodes.append(n as Node3D)
 		_marker_nodes[id] = nodes
 		if nodes.is_empty():
@@ -701,6 +703,17 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 				out.append({"id": oid, "text_key": StringName(o2["text_key"]), "position": n3.global_position,
 					"state": int(o2["state"])})
 	_assign(&"objective_markers", out)
+
+
+## Objective data `marker_skip_prefixes` (Array of node-name prefixes): tagged nodes the mission does not mark yet
+## (OF: the vault-wall deposit boxes while the vault is sealed; the SD hall's boxes are marked).
+static func _marker_skipped(n: Node, prefixes: Variant) -> bool:
+	if not (prefixes is Array):
+		return false
+	for p: Variant in prefixes:
+		if String(n.name).begins_with(String(p)):
+			return true
+	return false
 
 
 ## PO6-03: device rows from the known device net ids (EventBus device_started on every peer, plus one scan of

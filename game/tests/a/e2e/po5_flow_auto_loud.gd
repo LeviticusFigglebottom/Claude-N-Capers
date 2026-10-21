@@ -270,8 +270,9 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c):
 			continue
-		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot", &"bag_body"]:
-			continue
+		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot", &"bag_body",
+				&"call_lift", &"send_lift"]:
+			continue  # lifts: empty-handed here (bags go first); OF Cata 1037 called the vault hoist for 450 s at a box wall
 		if c.availability(p.crew) != &"" or _is_unreachable(c):
 			continue
 		if _is_body_bag(c) or _is_tool_source(c):
