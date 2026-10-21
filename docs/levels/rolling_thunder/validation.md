@@ -199,7 +199,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 32 variant configuration(s), 75204 spawn->target path queries
+- 32 variant configuration(s), 4 convoy layout(s), 85188 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
