@@ -45,6 +45,8 @@ const PANEL_H: float = 62.0
 var avoid: Rect2 = Rect2()
 ## r228 windowed check: a panel under this rect (the toast's text, HUD units) steps down below it.
 var yield_rect: Rect2 = Rect2()
+## GPU-19: the top-centre banner stack (global rect, Hud sets it): a panel under it steps below it (step_below).
+var top_band: Rect2 = Rect2()
 var drawn: Array[Dictionary] = []
 ## Rows built from EventBus while the model has no `devices`: net_id -> {kind, duration, progress, state}.
 var tracked: Dictionary = {}
@@ -323,6 +325,11 @@ func _draw() -> void:
 			r.position.y = yield_rect.end.y + pad  # "Alarm raised" sat on DRILL JAMMED (r228)
 			d["yielded"] = true
 			c.y = r.end.y
+		var band: Rect2 = get_global_transform_with_canvas().affine_inverse() * top_band if top_band.has_area() else Rect2()
+		if band.has_area() and band.intersects(r):
+			r = step_below(r, band, pad)  # GPU-19: the Brandt panel drew over SAW 00:29
+			d["yielded"] = true
+			c.y = r.end.y
 		draw_rect(r, Color(UiTokens.INK_0, UiTokens.HUD_PANEL_ALPHA + 0.15))
 		draw_rect(r, accent, false, maxf(2.0 * s, 1.0))
 		_text(Vector2(r.position.x + pad, r.position.y + pad + fs), String(d["label"]), fs, UiTokens.PAPER_DIM, false)
@@ -371,3 +378,8 @@ func _world_pos(net_id: int) -> Variant:
 	if n == null or not is_instance_valid(n) or not n.is_inside_tree():
 		return null
 	return n.global_position + Vector3.UP * tweak.device_panel_up_m + n.global_basis.z.normalized() * tweak.device_panel_out_m
+
+
+## GPU-19: `r` moved down to start `gap` below `band` (a panel never sits under the top-centre banner stack).
+static func step_below(r: Rect2, band: Rect2, gap: float) -> Rect2:
+	return Rect2(Vector2(r.position.x, band.end.y + gap), r.size)
