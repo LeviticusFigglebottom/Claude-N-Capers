@@ -172,7 +172,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	var src: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
 	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
 	for o: Array in obstructions:
-		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
+		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	holder.queue_free()
 	await process_frame

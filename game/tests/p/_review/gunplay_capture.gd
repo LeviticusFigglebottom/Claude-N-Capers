@@ -150,7 +150,7 @@ func _fire_at(wid: StringName, t: Dictionary) -> Array[Image]:
 		if f == _frames[want]:
 			await RenderingServer.frame_post_draw
 			var img: Image = get_viewport().get_texture().get_image()
-			img.save_png("%s/%s_%s_f%02d.png" % [_out, String(wid).trim_prefix("weapon."), t["surface"], f])
+			img.save_png(PCaptureName.safe_path("%s/%s_%s_f%02d.png" % [_out, String(wid).trim_prefix("weapon."), t["surface"], f]))
 			out.append(img)
 			want += 1
 		f += 1
@@ -200,4 +200,4 @@ func _sheet(rows: Array[Array]) -> void:
 			img.convert(Image.FORMAT_RGBA8)
 			img.resize(w, h, Image.INTERPOLATE_BILINEAR)
 			sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i(x * w, y * h))
-	sheet.save_png("%s/gunplay_sheet.png" % _out)
+	sheet.save_png(PCaptureName.safe_path("%s/gunplay_sheet.png" % _out))

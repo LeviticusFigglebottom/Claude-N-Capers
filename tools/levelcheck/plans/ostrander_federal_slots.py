@@ -203,7 +203,9 @@ REVIEW_CAMERAS = [
     ("rc_atm", "G", "AV", 7.0, 30.0, 1.7, 1.0, 34.5, 1.2),
     ("rc_teller_workroom", "G", "TW", 9.0, 10.0, 1.7, 30.0, 15.0, 1.0),
     ("rc_client_lounge", "G", "PC", 41.0, 18.3, 1.7, 46.0, 10.0, 1.2),
-    ("rc_manager_office", "G", "BH", 37.5, 23.0, 1.7, 46.0, 23.0, 1.2),
+    # OF-C2 (PO GPU set: it faced the BM door from the hall): in BM's NW corner over the desk front, the manager's
+    # chair and the Tannery Street windows behind it
+    ("rc_manager_office", "G", "BM", 40.6, 19.8, 1.7, 47.6, 24.0, 1.0),
     ("rc_loan_office", "G", "LO", 7.2, 18.3, 1.7, 1.0, 10.0, 1.0),
     ("rc_back_corridor", "G", "BC", 10.7, 8.0, 1.7, 47.0, 8.0, 1.5),
     ("rc_security_room", "G", "SR", 21.5, 6.3, 1.7, 18.0, 0.5, 1.2),
@@ -234,7 +236,9 @@ GRADE = [
     ["Lane", [-16.0, -10.0, 48.2, -0.2], 0.0, "paving"],
     ["Tannery", [48.2, -14.0, 62.0, 38.0], 0.0, "asphalt"],
     ["Apron", [0.0, 36.2, 48.2, 38.0], 0.0, "paving"],
-    ["PlazaW", [-16.0, 36.0, 18.0, 48.0], PLAZA_Y, "paving"],
+    # PlazaW in two: west of the bank, and south of the apron (OF-C2: its bottom no longer runs coplanar under it)
+    ["PlazaW", [-16.0, 36.0, 0.0, 48.0], PLAZA_Y, "paving"],
+    ["PlazaWS", [0.0, 38.0, 18.0, 48.0], PLAZA_Y, "paving"],
     ["PlazaSteps", [18.0, 40.0, 30.0, 48.0], PLAZA_Y, "paving"],
     ["PlazaE", [30.0, 38.0, 48.0, 48.0], PLAZA_Y, "paving"],
     ["TanneryMouth", [48.0, 42.0, 66.0, 48.0], PLAZA_Y, "asphalt"],

@@ -50,6 +50,22 @@ VARIANTS = {
     **{f"prop_ladder_steel_h{h}_g{g:02d}": {"fn": "ladder", "h": h / 100.0, "gap": g / 100.0, "goose": False,
                                             "cat": {"prefab": "ladder", "kind": "ladder"}}
        for h, g in ((360, 0), (440, 0), (360, 25), (360, 40), (800, 40), (520, 22))},
+    # OF-C2 (Ostrander Federal): the roof -> terrace caged ladder (3.6 m, stiles 0.35 m off the facade, a safety cage
+    # from 2.2 m up past the parapet) and the lane fire-escape drop ladder (3.0 m, gooseneck onto the landing, no
+    # stand-offs: it hangs in front of the landing edge, nothing behind it).
+    "prop_ladder_steel_h360_g35_cage": {"fn": "ladder", "h": 3.6, "gap": 0.35, "goose": False, "cage": True,
+                                        "cat": {"prefab": "ladder", "kind": "ladder"}},
+    "prop_ladder_fire_escape_h300_g00": {"fn": "ladder", "h": 3.0, "gap": 0.0, "goose_back": 0.32,
+                                         "cat": {"prefab": "ladder", "kind": "ladder"}},
+    # OF-C2: the crew's rope ladder down the burn hole (4.0 m: its burn_height_m; hidden until the burn), its ropes
+    # shackled to two anchor plates bolted into the cut slab face 0.04 m behind them (nothing over the edge: the
+    # lid drill and the hall floor stay clear).
+    "prop_ladder_rope_h400": {"fn": "ladder_rope", "h": 4.0, "edge": 0.04,
+                              "cat": {"prefab": "ladder", "kind": "ladder"}},
+    # OF-C2: the burn-hole bag hoist (bag_lift visual): a 1.1 x 0.7 m cradle for the 1.0 x 0.75 car_size_m in the
+    # 1.19 x 0.78 m rig shaft (Ostrander Federal HOIST_RIG).
+    "prop_hoist_cradle_w110": {"fn": "hoist_cradle", "w": 1.1, "d": 0.7, "h": 1.0,
+                               "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
     "prop_padlock_brass": {"fn": "padlock", "cat": {"prefab": "padlock", "kind": "padlock"}},
     "prop_customs_seal": {"fn": "customs_seal", "cat": {"prefab": "padlock", "kind": "padlock"}},
     # hack_terminal prefab visual (Dockside Burn E1 `lift_dead`): the goods-lift breaker cabinet, wall-hung
@@ -407,7 +423,7 @@ def _ladder(k: Kit, p: dict) -> None:
             lp.bx((x - 0.03, -0.01, 0.0), (x + 0.03, 0.01, top - 0.25), "metal_dark")
             # gooseneck return to the landing at the top
             lp.rod((x, 0.0, top - 0.25), (x, -0.12, top), 0.017, "metal_dark", segs=10)
-            lp.rod((x, -0.12, top), (x, -0.35, top - 0.15), 0.017, "metal_dark", segs=10)
+            lp.rod((x, -0.12, top), (x, -p.get("goose_back", 0.35), top - 0.15), 0.017, "metal_dark", segs=10)
         # wall standoffs every 1.2 m (the wall is behind, Blender -Y)
         z = 0.6
         while gap > 0.0 and z < h - 0.3:
@@ -420,9 +436,66 @@ def _ladder(k: Kit, p: dict) -> None:
         if z > top - 0.3:
             break
         lp.rod((-rail_x, 0.0, z), (rail_x, 0.0, z), 0.0125, "metal_dark", segs=8)
+    if p.get("cage", False):
+        _ladder_cage(lad.part(bevel=0.0), rail_x, h + 0.95)
     lad.build()
     k.empty("Top", (0.0, -0.4, h))
     k.empty("Bottom", (0.0, 0.4, 0.0))
+
+
+def _ladder_rope(k: Kit, p: dict) -> None:
+    """Rescue rope ladder hung down a floor opening: two braided rope sides from the floor of the lower level to
+    eye shackles on two steel anchor plates bolted into the opening's cut face (``edge`` m behind the ropes, Blender
+    -Y, 0.06-0.2 m below the upper floor), aluminium rungs every 0.3 m held off the face by spacer blocks. Nothing
+    rises over the upper floor (the climber steps off onto it at Top). Top / Bottom as the steel ladders."""
+    h, edge = p["h"], p["edge"]
+    rope_x = 0.2
+    lad = k.obj("Rails")
+    rp = lad.part(bevel=0.0)
+    for sx in (-1, 1):
+        x = sx * rope_x
+        rp.rod((x, 0.0, 0.012), (x, 0.0, h - 0.13), 0.011, "rope_tan", segs=8)
+        rp.cyl(0.016, 0.03, (x, 0.0, 0.015), "rope_tan", segs=8)                       # whipped rope end
+    z = 0.25
+    while z < h - 0.3:
+        rp.rod((-rope_x - 0.02, 0.0, z), (rope_x + 0.02, 0.0, z), 0.014, "steel", segs=10)
+        for sx in (-1, 1):
+            rp.cbox((sx * rope_x, 0.025, z), (0.03, 0.03, 0.05), "metal_dark")
+        z += 0.3
+    an = lad.part(bevel=0.002)
+    for sx in (-1, 1):
+        x = sx * rope_x
+        an.bx((x - 0.05, -edge, h - 0.2), (x + 0.05, -edge + 0.012, h - 0.06), "metal_dark")   # anchor plate
+        for bz in (h - 0.18, h - 0.08):
+            an.cyl(0.009, 0.008, (x, -edge + 0.016, bz), "steel", axis="Y", segs=8)              # anchor bolts
+        an.torus(0.02, 0.005, (x, -0.014, h - 0.115), "steel", segs=12, rsegs=4, axis="X")      # eye shackle
+    lad.build()
+    k.empty("Top", (0.0, -0.4, h))
+    k.empty("Bottom", (0.0, 0.4, 0.0))
+
+
+def _ladder_cage(cp, rail_x: float, z_top: float) -> None:
+    """Safety cage on the climb side (Blender +Y): flat-bar hoops from 2.2 m every 0.75 m up to ``z_top``, each
+    springing off both stiles round a 0.36 m radius (0.71 m deep, EN ISO 14122-4 proportions), tied by five
+    vertical straps."""
+    r, cy = 0.36, 0.35
+    arc = [math.radians(180.0 - 15.0 * i) for i in range(13)]
+
+    def hoop(z: float) -> list:
+        pts = [(-rail_x, 0.0, z), (-r, 0.16, z)]
+        pts += [(r * math.cos(a), cy + r * math.sin(a), z) for a in arc]
+        return pts + [(r, 0.16, z), (rail_x, 0.0, z)]
+
+    zs = []
+    z = 2.2
+    while z <= z_top + 1e-6:
+        zs.append(z)
+        z += 0.75
+    for z in zs:
+        cp.tube(hoop(z), 0.008, "metal_dark", segs=6)
+    for a in (150.0, 120.0, 90.0, 60.0, 30.0):
+        x, y = r * math.cos(math.radians(a)), cy + r * math.sin(math.radians(a))
+        cp.rod((x, y, zs[0] - 0.03), (x, y, zs[-1] + 0.03), 0.007, "metal_dark", segs=6)
 
 
 def _ladder_wall(k: Kit, p: dict) -> None:
@@ -628,6 +701,52 @@ def _drill(k: Kit, p: dict) -> None:
 def build(ctx) -> None:
     k = Kit(ctx)
     globals()["_" + ctx.params["fn"]](k, ctx.params)
+
+
+def _hoist_cradle(k: Kit, p: dict) -> None:
+    """Crew-rigged bag hoist cradle (bag_lift visual, OF-C2 burn-hole hoist): a ``w`` x ``d`` chequer-plate tray (top
+    12 mm over the car origin) in an angle frame, 0.12 m kick rails on three sides, the -Y side (Godot +Z) lipped
+    only (bags come in over the shaft sill), four corner posts to ``h`` and four chain slings to a master ring
+    and hook block over the centre. `Car` carries it; `DoorL` / `DoorR` are markers (no gates: the prefab's door slide
+    moves nothing visible)."""
+    w, d, h = p["w"], p["d"], p["h"]
+    hw, hd = w / 2, d / 2
+    car = k.obj("Car")
+    tray = car.part(bevel=0.002)
+    tray.bx((-hw, -hd, 0.0), (hw, hd, 0.012), "metal_grey")
+    tread = car.part(bevel=0.0)
+    for i in range(6):
+        for j in range(4):
+            cx = -hw + (i + 0.5) * w / 6
+            cy = -hd + (j + 0.5) * d / 4
+            ang = 0.25 if (i + j) % 2 == 0 else -0.25
+            dx, dy = 0.06 * math.cos(ang * math.pi), 0.06 * math.sin(ang * math.pi)
+            tread.rod((cx - dx, cy - dy, 0.014), (cx + dx, cy + dy, 0.014), 0.004, "metal_grey", segs=4, square=True)
+    fr = car.part(bevel=0.002)
+    # perimeter angle (the -Y edge a low lip), kick rails W / E / +Y
+    fr.bx((-hw, -hd, 0.012), (hw, -hd + 0.03, 0.05), "metal_yellow")
+    fr.bx((-hw, hd - 0.03, 0.012), (hw, hd, 0.12), "metal_yellow")
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * hw, sx * (hw - 0.03)))
+        fr.bx((x0, -hd + 0.03, 0.012), (x1, hd - 0.03, 0.12), "metal_yellow")
+        for sy in (-1, 1):
+            y0, y1 = sorted((sy * hd, sy * (hd - 0.04)))
+            fr.bx((x0 if sx < 0 else x1 - 0.04, y0, 0.012), (x0 + 0.04 if sx < 0 else x1, y1, h), "metal_dark")
+        # top rail along each long side
+        fr.bx((x0 if sx < 0 else x1 - 0.04, -hd, h - 0.04), (x0 + 0.04 if sx < 0 else x1, hd, h), "metal_dark")
+    trim = car.part(bevel=0.0)
+    ring = (0.0, 0.0, h + 0.45)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            corner = (sx * (hw - 0.02), sy * (hd - 0.02), h)
+            trim.cyl(0.012, 0.03, (corner[0], corner[1], h + 0.015), "steel", segs=8)
+            trim.rod(corner, (ring[0] + sx * 0.03, ring[1] + sy * 0.03, ring[2] - 0.04), 0.006, "steel_galv", segs=6)
+    trim.torus(0.05, 0.009, ring, "steel", segs=16, rsegs=4, axis="Y")
+    trim.bx((-0.04, -0.03, ring[2] + 0.04), (0.04, 0.03, ring[2] + 0.16), "metal_yellow")      # hook block
+    trim.cyl(0.008, 0.25, (0.0, 0.0, ring[2] + 0.29), "steel_galv", segs=6)                  # hoist wire
+    car_obj = car.build()
+    k.empty("DoorL", (-hw / 2, hd, 0.0), parent=car_obj)
+    k.empty("DoorR", (hw / 2, hd, 0.0), parent=car_obj)
 
 
 def _lift_breaker(k: Kit, p: dict) -> None:

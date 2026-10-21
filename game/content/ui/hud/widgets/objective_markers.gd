@@ -44,6 +44,7 @@ var avoid: Rect2 = Rect2():
 ## over an on-screen marker ("8 m"); a marker that would land under it is lifted above the box.
 var subtitle_band: Rect2 = Rect2()
 var _font: Font
+var _scrim: StyleBoxFlat = UiBuild.label_scrim()
 var _pulse: float = 0.0
 var _last_current: StringName = &""
 ## Perf (lead): marker labels per objective id (cleared on refresh, i.e. when objectives change) and
@@ -264,5 +265,9 @@ func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 		var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * avoid
 		if local.intersects(Rect2(at - Vector2(0, fs), Vector2(w, fs + 4))):
 			return
+	# r249 contrast ruling: a rounded scrim behind the label (2.0:1 fill vs the OF stone without it).
+	var asc: float = _font.get_ascent(fs)
+	var pad: Vector2 = UiBuild.LABEL_SCRIM_PAD
+	draw_style_box(_scrim, Rect2(at - Vector2(pad.x, asc + pad.y), Vector2(w, asc + _font.get_descent(fs)) + pad * 2.0))
 	draw_string_outline(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 6, Color(0, 0, 0, 1))
 	draw_string(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)

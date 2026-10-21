@@ -3,9 +3,58 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-21: GPU-box queue for the LEAD (cross-session messages to the LEAD are refused: untrusted device)
+Run from the repo root on env/d-art 5f7778a2 or later; OUT = any output folder. Send back the output paths.
+1. D-145.3 GH loud wave, Routine vs Hazardous (no --fixed-fps; waits for the director's own units):
+   `godot --path game --resolution 1280x720 res://world/characters/_tools/render_d145_wave_review.tscn -- --out=OUT`
+   -> OUT/d145_wave_sheet.png, d145_wave_{routine,hazardous}_{group,unit0-3}.png, d145_wave_log.txt (unit look ids;
+   `*_duty` on Routine = no armour).
+2. Faction duty lineup (offline): `godot --path game --script res://world/characters/_tools/render_d130_cast_review.gd
+   -- --pool=d145_factions` -> _review/d145_police/d145_factions_*.png
+3. VIP walk sheet (offline): the same script with `-- --pool=of_vip` -> _review/of_d1_cast/of_vip_*.png
+4. OF queue-customer re-check: `godot --path game --fixed-fps 60 --resolution 1280x720
+   res://world/characters/_tools/render_of_qc67_review.tscn -- --out=OUT --no-alarm` -> OUT/queue_w_side.png,
+   OUT/qc67_log.txt ("queue ..." lines: each queue_idle customer's clip).
+5. heist_cast_perf (5f7778a2): glasshouse views, `*_loud.png`, per-view frame time (avg / max ms over --frames=N,
+   default 120, + GPU name). UNVERIFIED by a run here (a headless GH smoke run timed out before measuring; gdlint
+   clean): treat the first GPU run as its test. OF after C's cuts: `-- --heist=ostrander_federal --shadows-only
+   --view=rc_hall_entrance,rc_hall_counter,rc_hall_from_gallery,hall_south_eye`; GH: `-- --heist=glasshouse --detail
+   [--loud]`.
+
+## 2026-10-20: resumed (lead session_014E3p2DmSYTneJjytGwKKfc); OF-D1 QC-67, D-145.3 faction duty, OF cast perf
+### Done
+- Re-orientation: long-gun grip below 2 mm (P's test_p_finger_clip: every gun < 1 mm) and the SMG re-time were already
+  on trunk; D-145.3 police / specials duty looks (f23a384a, 4e62aaef) were already on env/d-art.
+- **QC-67 windowed** on C's OF map: `_tools/render_of_qc67_review.tscn` (tellers both sides of the counter, queue
+  customers, alarm + the 5 cower points; `--no-alarm`). All 5 cower points are 0.21 m in front of their ledge / wall /
+  pillar face (cower_stand's authored distance); the back-bag offset (cower_offsets.json) applies in game. Teller
+  placement matches teller_count (worktop 1.00 m / 0.30 m vs 0.28 m). Two activity bugs found and fixed by A: HINT_CLIPS
+  alias `teller_count` (fbbe47ed, r246) and CivilianBrain.KNOWN_ACTIVITIES `teller_count` / `queue_idle` (r249).
+  Evidence `_review/of_qc67/` (b796da07, 3fe9a7ab).
+- **Faction duty looks** `char_tac_light_{frd,sentinel,zero}_duty` (1ea150dd, r247): the duty look in the faction's
+  colours and back / chest / arm marks, no helmet decals, no Zero pauldrons or skull mask (`_faction.dress` keys on
+  `armored`); characters.json `variant_of: tac_light`, `variant: <faction>_duty` (A's resolver tries `<faction>_duty`
+  first on Routine / Tense, 684889cf). test_outfits covers them (chest gap vs the armoured faction look, no faction
+  helmet / mask on Headwear); existing looks rebuild byte-identical.
+- **OF cast perf** (`_tools/heist_cast_perf.tscn`, `--detail`, `--shadows-only`, `--view=a,b`): pre-r245 hall 6,052
+  draws (sun shadows = 73 %); r246 12,885 (6 spot + 1 omni shadowed lights added; shadows = 79 %; cast casts no
+  shadows -17 %). Numbers sent to C for D-146. Write-up: `_review/of_cast_perf/of_cast_perf_audit.md`.
+### In progress
+- Shadow breakdown per light kind on C's rc_hall_* views (320x180: draw counts are resolution-independent).
+- Teller + queue re-capture on r249; D-145.3 GH Routine vs Hazardous wave side-by-side
+  (`_tools/render_d145_wave_review.tscn`); faction duty lineup (`render_d130_cast_review.gd --pool=d145_factions`).
+### Gotchas
+- After a trunk merge, `godot --import` BEFORE any windowed run (new class_names otherwise fail to resolve).
+- OF on r246+ is ~12k draws: llvmpipe needs 320x180 for perf measurements and ~1 h per heist capture at 960x540;
+  keep each background command under the 2 h limit (one step per command).
+- `pkill -f <pattern>` matches the calling shell when the pattern is in its own command line: build the pattern
+  from two strings.
+### Ready for integration
+- yes (env/d-art head)
+
 ## 2026-10-17 (OF-D1): Ostrander Federal cast + clips
 ### Done
-- **VIP pair** (rare `vip_client`): `bank_vip_client` (camel overcoat, silk scarf, attaché) and `security_bodyguard`
+- **VIP pair** (rare `vip_client`): `bank_vip_client` (camel overcoat, silk scarf; correction 2026-10-20: no attaché was modelled) and `security_bodyguard`
   (Halden close protection: charcoal suit, earpiece, Halden pin). Halden guards g-j added: ten faces, a-j.
 - **D-130 pools sized for an L heist**: tellers `npc_bank_teller` a-e, officers `bank_officer` a-d, customers
   `bank_customer` a-j + `civilian_customer_a/b` (twelve faces). New materials: char_skirt_navy, char_knit_mustard,

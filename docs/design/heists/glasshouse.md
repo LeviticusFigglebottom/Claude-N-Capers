@@ -430,6 +430,7 @@ Each variable changes a decision.
   `amb_street_dusk` (traffic, distant city). The alley adds condenser hum.
 - **Music:** `glasshouse` (stealth 60–90 BPM bed with a glassy bell motif; assault 120–150 BPM).
 - **LUT:** `lut_glasshouse`, warm mids and slightly cool shadows.
+- **Render budget (D-146, enforced: map meta `perf_d146`):** main ≤ 2,500 and ≤ 4,000 draws per view including the shadow passes. Shadowed lights: the sun (2 splits over 30 m, was 4 over 120 m) and **1** chandelier-hall downlight (G5). The salon (G6) and workshop (G2) fixtures and the 2 neon fascia signs cast no shadow since D-146. Each re-drew 100 to 740 casters in every street and hall view (the renderer does not occlude lights). Their glow and pools stay. `RenderBudgetPolicy` (as Ostrander): interior dressing outside G5 and doors between two interior rooms cast no shadow, and dressing ranges outside G5 are cut to 24 m. Worst view after the change: `ExtAlleyMouth` at 3,555 (was `ChandelierLandmark` at 12,395).
 
 ## HeistDef (proposed data, `glasshouse_def.tres`)
 `id glasshouse`, display "Golden Hour" (D-117), contact `contact.vance`, mode STEALTH_OR_LOUD, base_payout

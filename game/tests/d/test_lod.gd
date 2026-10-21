@@ -2,7 +2,8 @@
 ## * LOD1: each big surface carries Godot's automatic LODs down to <= 50 % (import `generate_lods`).
 ## * LOD2: crowd NPCs and armed units have `Skeleton3D/CrowdLod`, ONE skinned surface with the shared
 ##   char_crowd_lod material at 8..25 % of the full tris, visible from the switch distance while every glb
-##   mesh ends there; heisters, contacts and specials with toggled meshes / overrides have none.
+##   mesh ends there, casting no shadow (D-146); heisters, contacts and specials with toggled meshes / overrides have
+##   none.
 extends TestCase
 
 const CLUB_PATRON_SCENE: String = "res://world/characters/club_patron/club_patron.tscn"  # LEAD: gdlint duplicated-load
@@ -103,6 +104,7 @@ func test_crowd_lod_shape_and_ranges() -> void:
 			bad_bone = bad_bone or b < 0 or b >= lod.skin.get_bind_count()
 		assert_false(bad_bone, "%s: LOD2 bone ids within the skin binds" % tag)
 		assert_near(lod.visibility_range_begin, want, 0.001, "%s: CrowdLod begins at %.0f m" % [tag, want])
+		assert_eq(lod.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "%s: CrowdLod casts no shadow (D-146)" % tag)
 		for mi: MeshInstance3D in meshes:
 			assert_near(mi.visibility_range_end, want, 0.001, "%s/%s ends at %.0f m" % [tag, mi.name, want])
 			assert_eq(mi.visibility_range_fade_mode, GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED,

@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"copy_room_of"
+purpose = &"office"
+required_items = Array[StringName]([&"copier", &"shelving", &"box", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"file_cabinet": 1
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 1.6
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"copier", &"shelving", &"box", &"file_cabinet"])
+seed_salt = 311
+seed_id = &"copy_room"
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"box": PackedStringArray("prop_box_stack"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "Ostrander Federal (office), from copy_room: K15 copy and mail: the copier is map-built; paper stock shelving, cartons, a cabinet."

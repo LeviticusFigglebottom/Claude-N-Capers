@@ -64,7 +64,7 @@ func _shot(nm: String) -> Image:
 	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
-	img.save_png("%s/%s.png" % [_out, nm])
+	img.save_png(PCaptureName.safe_path("%s/%s.png" % [_out, nm]))
 	return img
 
 
@@ -77,7 +77,7 @@ func _sheet(imgs: Array[Image]) -> void:
 		img.convert(Image.FORMAT_RGBA8)
 		img.resize(w, h, Image.INTERPOLATE_BILINEAR)
 		sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i((k % 2) * w, (k / 2) * h))
-	sheet.save_png("%s/gn_feel_sheet.png" % _out)
+	sheet.save_png(PCaptureName.safe_path("%s/gn_feel_sheet.png" % _out))
 
 
 func _ticks(n: int) -> void:

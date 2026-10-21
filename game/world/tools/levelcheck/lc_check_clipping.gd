@@ -50,9 +50,18 @@ static func _contained(a: LcProp, b: LcProp) -> bool:
 	return b.global_aabb.grow(0.01).encloses(a.global_aabb)
 
 
-## Props in different slots of the same group never coexist.
+## Props in different slots of the same group never coexist; nor do two props one of which names the other in its
+## meta `never_with` (node names: OF-C2, a prefab that is only enabled once the other is disabled, e.g. Ostrander
+## Federal's rope ladder, hidden and out of physics until the burn removes the lid it hangs through).
 static func _exclusive(a: LcProp, b: LcProp) -> bool:
-	return a.slot != null and b.slot != null and a.slot != b.slot and a.slot.slot_group == b.slot.slot_group
+	if a.slot != null and b.slot != null and a.slot != b.slot and a.slot.slot_group == b.slot.slot_group:
+		return true
+	return _never_with(a, b) or _never_with(b, a)
+
+
+static func _never_with(a: LcProp, b: LcProp) -> bool:
+	var names: Variant = a.node.get_meta(&"never_with", [])
+	return (names is Array or names is PackedStringArray) and String(b.node.name) in names
 
 
 func _query_shapes(p: LcProp) -> Array[Dictionary]:

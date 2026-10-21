@@ -27,6 +27,20 @@ const NEXT_FFL: Dictionary = {"B": 0.0, "G": 5.0, "M": 8.6, "E": 12.2, "R": 20.0
 const HASH: float = 2.0
 const NORMALS: Array[Vector3] = [Vector3.LEFT, Vector3.RIGHT, Vector3.DOWN, Vector3.UP, Vector3.FORWARD, Vector3.BACK]
 const FOLDER: String = "FinishD"
+## OF-C2 (zfight): the visuals our box pieces must not be laid coplanar over (_flush_pieces; of_finish_cut.gd).
+const CUT: GDScript = preload("res://world/heists/ostrander_federal/greybox/of_finish_cut.gd")
+const FOREIGN_ROOTS: Array[String] = ["Geometry/FinishA", "Geometry/Landmarks", "Geometry/Building", "Gameplay/Doors",
+	"AssaultEvents"]
+## OF-C2 (zfight): boxes whose MESH is drawn VISUAL_INSET m inside their collider on every side (the collider stays):
+## the fire-escape crossing's rails and steps sit in the parapet notch flush with its jambs, sill and coping ends; the
+## bandit glass runs into the teller bays' mullions and rails.
+const VISUAL_INSET_BOXES: Array[String] = [
+	"Geometry/Building/FireEscape/CrossingRailW", "Geometry/Building/FireEscape/CrossingRailE",
+	"Geometry/Building/FireEscape/CrossingStepOut", "Geometry/Building/FireEscape/CrossingStepIn",
+	"Geometry/Building/FireEscape/Landing4RailE", "Geometry/Building/Counter/BanditGlassW",
+	"Geometry/Building/Counter/BanditGlassE",
+]
+const VISUAL_INSET: float = 0.003
 
 var b: Object
 var root: Node3D
@@ -48,6 +62,10 @@ var _ogrid: Dictionary = {}
 var _runs: Dictionary = {}
 var _counts: Dictionary = {"boxes": 0, "mixed": 0, "skins": 0, "overrides": 0, "glass": 0, "trims": 0, "pilasters": 0,
 	"beams": 0, "cage_bars": 0, "trays": 0}
+## Box pieces held until every box is re-faced ([q, n, key, rid, group]; _flush_pieces).
+var _pending: Array[Array] = []
+## Other lanes' faces and the cut of our quads round them (of_finish_cut.gd).
+var _cut: RefCounted = CUT.new()
 
 
 func _init(builder: Object) -> void:
@@ -84,6 +102,8 @@ func build() -> void:
 		if lid != null and _grey_class(lid) != "":
 			lid.material_override = _triplanar(String(lp[1]))   # the lid: hidden with its prefab at the burn
 			_counts["overrides"] += 1
+	_insets()
+	_flush_pieces()
 	_trims()
 	_ceilings()
 	_vault_trays()
@@ -92,8 +112,9 @@ func build() -> void:
 	_flush(b.call(&"add", geo, b.call(&"node3d", FOLDER)) as Node3D)
 	report.append("finishes D: %d boxes re-faced (%d hall-lane boxes skinned with %d skins), %d overrides, %d glass, "
 		% [_counts["boxes"], _counts["mixed"], _counts["skins"], _counts["overrides"], _counts["glass"]]
-		+ "%d trim runs, %d pilasters, %d ceiling beams, %d cage bars, %d tray runs"
-		% [_counts["trims"], _counts["pilasters"], _counts["beams"], _counts["cage_bars"], _counts["trays"]])
+		+ "%d trim runs, %d pilasters, %d ceiling beams, %d cage bars, %d tray runs, %d pieces cut round other lanes' faces"
+		% [_counts["trims"], _counts["pilasters"], _counts["beams"], _counts["cage_bars"], _counts["trays"],
+			int(_cut.get(&"cuts"))])
 	var errs: PackedStringArray = b.get(&"errors")
 	for line: String in report:
 		printerr("finish D: " + line)
@@ -686,8 +707,38 @@ func _emit_piece(q: Array, n: Vector3, key: String, rid: String, group: String) 
 		return
 	if group == "Shell" and maxf(maxf((q[0] as Vector3).y, (q[1] as Vector3).y), (q[2] as Vector3).y) <= 0.001:
 		key = "concrete"   # below grade, facing no room: one finish (no two fallbacks meet coplanar)
-	_tile(group, rid)
-	acc.call(&"quad", group, key, q[0], q[1], q[2], q[3], n)
+	_pending.append([q, n, key, rid, group])
+
+
+## OF-C2 (zfight): VISUAL_INSET_BOXES draw a box mesh VISUAL_INSET smaller on every side (own mesh resource; the
+## material and the material_override stay).
+func _insets() -> void:
+	for path: String in VISUAL_INSET_BOXES:
+		var mi: MeshInstance3D = root.get_node_or_null(path + "/Mesh") as MeshInstance3D
+		if mi == null or not mi.mesh is BoxMesh:
+			report.append("ERROR inset: no box mesh %s" % path)
+			continue
+		var bm: BoxMesh = (mi.mesh as BoxMesh).duplicate() as BoxMesh
+		bm.size = (bm.size - Vector3.ONE * (2.0 * VISUAL_INSET)).max(Vector3.ONE * 0.001)
+		mi.mesh = bm
+
+
+## OF-C2 (zfight): the box pieces are drawn once every box is re-faced, minus the parts that lie in the plane (within
+## CUT.EPS_MM) of a face the other lanes draw there (FOREIGN_ROOTS: the hall lane's skins, the landmarks, the door
+## and breach visuals, the boxes that keep their own mesh), so no skin is laid coplanar over another lane's face.
+func _flush_pieces() -> void:
+	_cut.index(root, FOREIGN_ROOTS, func(n: Node) -> Transform3D: return b.call(&"global_xform", n) as Transform3D)
+	for pc: Array in _pending:
+		for sub: Array in _cut.minus(pc[0], pc[1], _rects_minus):
+			_tile(String(pc[4]), String(pc[3]))
+			acc.call(&"quad", String(pc[4]), String(pc[2]), sub[0], sub[1], sub[2], sub[3], pc[1])
+	_pending.clear()
+
+
+## A trim / ceiling / roof quad (drawn after _flush_pieces) minus the other lanes' coplanar faces, as the box pieces.
+func _quad(group: String, key: String, q: Array, n: Vector3) -> void:
+	for sub: Array in _cut.minus(q, n, _rects_minus):
+		acc.call(&"quad", group, key, sub[0], sub[1], sub[2], sub[3], n)
 
 
 func _tile(group: String, rid: String) -> void:
@@ -944,7 +995,7 @@ func _slab_box(g: String, lo: Vector3, hi: Vector3, key: String) -> void:
 		if f == 2:
 			continue
 		var q: Array[Vector3] = M._face(lo, hi, f)
-		acc.call(&"quad", g, key, q[0], q[1], q[2], q[3], NORMALS[f])
+		_quad(g, key, q, NORMALS[f])
 
 
 ## The neighbours seen from the play space: the parking structure's decks (spandrels, dark open slots, columns,
@@ -1037,7 +1088,7 @@ func _proud_box(g: String, along_x: bool, plane: float, sgn: float, u0: float, u
 		if f == back:
 			continue
 		var q: Array[Vector3] = M._face(lo, hi, f)
-		acc.call(&"quad", g, key, q[0], q[1], q[2], q[3], NORMALS[f])
+		_quad(g, key, q, NORMALS[f])
 
 
 ## A box standing on a +Z face plane at lo.z: every face but the back (-Z) one.
@@ -1046,11 +1097,11 @@ func _front_box(g: String, lo: Vector3, hi: Vector3, key: String) -> void:
 		if f == 4:
 			continue
 		var q: Array[Vector3] = M._face(lo, hi, f)
-		acc.call(&"quad", g, key, q[0], q[1], q[2], q[3], NORMALS[f])
+		_quad(g, key, q, NORMALS[f])
 
 
 func _floor_line(g: String, lo: Vector3, hi: Vector3, key: String) -> void:
-	acc.call(&"quad", g, key, lo, Vector3(hi.x, lo.y, lo.z), hi, Vector3(lo.x, lo.y, hi.z), Vector3.UP)
+	_quad(g, key, [lo, Vector3(hi.x, lo.y, lo.z), hi, Vector3(lo.x, lo.y, hi.z)], Vector3.UP)
 
 
 ## One trim strip (a box `depth` proud of the run's face from ya to yb): the front in the strip key, the top, the
@@ -1111,7 +1162,7 @@ func _strip_box(group: String, n: Vector3, plane: float, along_x: bool, ur: Vect
 		elif fn.is_equal_approx(-n) or (f == 2 and on_floor) or (f == 3 and at_ceiling):
 			continue
 		var q: Array[Vector3] = M._face(lo, hi, f)
-		acc.call(&"quad", group, k, q[0], q[1], q[2], q[3], fn)
+		_quad(group, k, q, fn)
 
 
 static func _trim_body(key: String) -> String:
@@ -1165,7 +1216,7 @@ func _pilasters(group: String, run: Array, ffl: float, h: float, st: Dictionary)
 			if fn.is_equal_approx(-n) or f == 2:
 				continue
 			var q: Array[Vector3] = M._face(lo, hi, f)
-			acc.call(&"quad", group, key, q[0], q[1], q[2], q[3], fn)
+			_quad(group, key, q, fn)
 		_counts["pilasters"] += 1
 
 
@@ -1227,7 +1278,7 @@ func _beam(group: String, key: String, lo: Vector3, hi: Vector3) -> void:
 		if f == 3:
 			continue
 		var q: Array[Vector3] = M._face(lo, hi, f)
-		acc.call(&"quad", group, key, q[0], q[1], q[2], q[3], NORMALS[f])
+		_quad(group, key, q, NORMALS[f])
 	_counts["beams"] += 1
 
 

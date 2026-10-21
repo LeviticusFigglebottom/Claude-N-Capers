@@ -30,6 +30,9 @@ const POLICY_DOOR_ROOTS: Array[String] = ["Gameplay/Doors"]
 const POLICY_CAST_KEEP: Array[String] = ["BH"]
 const POLICY_RANGE_KEEP: Array[String] = ["BH", "TW"]
 const POLICY_RANGE_CAP: float = 24.0
+## The hall's dressing moves to render layer 5, which the sun's shadow_caster_mask leaves out: the pendant still shadows
+## it, the sun's cascades do not re-draw it (the hall is roofed; its shafts come through the lantern and the windows).
+const SUN_SKIP_LAYER: int = 1 << 4
 
 ## VoxelGI per level band (doc GI): [node name, data file, AABB min, AABB max, subdiv, interior]. The bands meet at the
 ## slabs (basement | ground + gallery + the hall to the executive slab | executive storey); the footprint plus 0.3 m.
@@ -157,6 +160,7 @@ func environment(lighting: Node3D) -> void:
 	sun.shadow_blur = 1.5
 	sun.directional_shadow_mode = SUN_SHADOW_MODE
 	sun.directional_shadow_max_distance = SUN_SHADOW_MAX_DISTANCE
+	sun.shadow_caster_mask = 0xFFFFFFFF & ~SUN_SKIP_LAYER
 	sun.layers = 1 | VIEWMODEL_LIT_LAYER  # D-095 like every map light
 	lighting.add_child(sun)
 	sun.owner = root
@@ -165,9 +169,9 @@ func environment(lighting: Node3D) -> void:
 	_render_budget_policy(lighting, root)
 
 
-## The policy node, and the map's opt-in to levelcheck's enforced D-146 budgets (meta perf_d146).
+## The policy node. OF does not opt in to levelcheck's enforced perf budgets (meta perf_d146): D-146 addendum 6 judges
+## them on Forward+ on the GPU box; the Compatibility model stays report-only, as an early warning.
 func _render_budget_policy(lighting: Node3D, root: Node) -> void:
-	root.set_meta(&"perf_d146", true)
 	var pol: Node = Node.new()
 	pol.set_script(load(POLICY_SCRIPT))
 	pol.name = "RenderBudgetPolicy"
@@ -177,6 +181,7 @@ func _render_budget_policy(lighting: Node3D, root: Node) -> void:
 	pol.set(&"cast_keep_rooms", PackedStringArray(POLICY_CAST_KEEP))
 	pol.set(&"range_keep_rooms", PackedStringArray(POLICY_RANGE_KEEP))
 	pol.set(&"range_cap", POLICY_RANGE_CAP)
+	pol.set(&"sun_skip_layer", SUN_SKIP_LAYER)
 	lighting.add_child(pol)
 	pol.owner = root
 
