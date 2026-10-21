@@ -8,16 +8,20 @@ var _out: String = ""
 var _only: String = ""
 var _n: int = 0
 var _flow: MenuFlow = null
+## The heist the in-heist HUD shots play (4th arg, default HEIST): the LEAD's ultrawide / 16:10 pass runs OF.
+var _heist_id: StringName = HEIST
 
 
 func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/ui_audit"
 	_only = args[1] if args.size() > 1 else ""
-	# Lane 13: `expand` previews window/stretch/aspect="expand" (21:9 / 16:10 get a wider / taller canvas
-	# instead of black bars); the project default ("keep") letterboxes to 1920x1080.
+	# Lane 13: `expand` forces window/stretch/aspect="expand" (21:9 / 16:10 get a wider / taller canvas instead of
+	# black bars); project.godot uses "expand" already, so this only matters for an older project setting.
 	if args.size() > 2 and args[2] == "expand":
 		get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_EXPAND
+	if args.size() > 3 and args[3] != "":
+		_heist_id = StringName(args[3])
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -123,7 +127,7 @@ func _screens() -> void:
 
 
 func _heist() -> void:
-	_flow.launch(HEIST, Enums.Difficulty.ROUTINE, SaveService.load_profile(SLOT).loadout, 42)
+	_flow.launch(_heist_id, Enums.Difficulty.ROUTINE, SaveService.load_profile(SLOT).loadout, 42)
 	var t0: int = Time.get_ticks_msec()
 	while _hud() == null and Time.get_ticks_msec() - t0 < 60000:
 		await get_tree().process_frame
