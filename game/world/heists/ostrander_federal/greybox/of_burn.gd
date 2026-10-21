@@ -38,6 +38,8 @@ const SCORCH_SOOT_M: float = 0.6
 const SCORCH_ASH_M: float = 0.85
 const SCORCH_DECAL_OUT: float = 1.4
 const SCORCH_PX: int = 128
+const SCORCH_ASH_SOFFIT: Color = Color(0.3, 0.28, 0.26, 0.6)
+const SCORCH_ASH_FLOOR: Color = Color(0.46, 0.44, 0.41, 0.78)
 const HELI_HOVER: Vector3 = Vector3(20.0, 22.0, 33.0)
 const VAN_PARK: Vector3 = Vector3(14.0, 0.0, -6.75)
 
@@ -220,7 +222,7 @@ func _hole_mesh() -> ArrayMesh:
 func _scorch_decal(nm: String, y: float, up: bool) -> Decal:
 	var d: Decal = Decal.new()
 	d.name = nm
-	d.texture_albedo = _scorch_texture()
+	d.texture_albedo = _scorch_texture(SCORCH_ASH_SOFFIT if up else SCORCH_ASH_FLOOR)
 	d.size = Vector3(HOLE.size.x + 2.0 * SCORCH_DECAL_OUT, 0.3, HOLE.size.y + 2.0 * SCORCH_DECAL_OUT)
 	d.position = Vector3(HOLE.get_center().x, y, HOLE.get_center().y)
 	if up:
@@ -235,8 +237,9 @@ func _scorch_decal(nm: String, y: float, up: bool) -> Decal:
 ## GPU-11a (r255): the square gradient spent its dark band inside the hole and near-black soot barely showed on the TW
 ## carpet. Per pixel by the distance `t` (m) past the cut, with a fixed-seed noise ragging the bands: char (near black,
 ## opaque) to SCORCH_CHAR_M, soot to SCORCH_SOOT_M, a pale ash ring to SCORCH_ASH_M (contrast on the dark carpet), then
-## fading out by SCORCH_DECAL_OUT. Procedural, deterministic, no texture asset.
-func _scorch_texture() -> ImageTexture:
+## fading out by SCORCH_DECAL_OUT. Procedural, deterministic, no texture asset. GPU-14: the soffit reads; the TW floor
+## (navy carpet, little luminance contrast for black) takes a paler, denser ash ring (`ash_c`).
+func _scorch_texture(ash_c: Color) -> ImageTexture:
 	var w: float = HOLE.size.x + 2.0 * SCORCH_DECAL_OUT
 	var h: float = HOLE.size.y + 2.0 * SCORCH_DECAL_OUT
 	var px: int = SCORCH_PX
@@ -247,7 +250,6 @@ func _scorch_texture() -> ImageTexture:
 	var img: Image = Image.create(px, py, false, Image.FORMAT_RGBA8)
 	var char_c: Color = Color(0.012, 0.011, 0.01, 0.97)
 	var soot_c: Color = Color(0.045, 0.04, 0.035, 0.9)
-	var ash_c: Color = Color(0.3, 0.28, 0.26, 0.6)
 	for j: int in py:
 		for i: int in px:
 			var x: float = (float(i) + 0.5) / float(px) * w - w * 0.5

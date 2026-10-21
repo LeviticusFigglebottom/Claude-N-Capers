@@ -6,6 +6,15 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r255 burnt scorch, round 3 (the last pass, as you asked; env/c-worlds, sha below): please render Job C
+  with `--cameras=rc_burn_close,rc_teller_workroom,rc_vault_hole` on the of_burn_variant scene.
+  - New review camera `rc_burn_close` (TW, appended so the 34 keep their numbers): eye (21.9, 2.1, 16.0) looking at
+    the hole centre (24.0, 0.0, 14.6). That's about 3.3 m away and 40 deg down, west of the hole, so the hoist shaft
+    (east) and the rope ladder (north) are out of frame. RENDER_SPLIT's burnt camera list includes it.
+  - TW floor decal: since black on navy has little contrast, its ash ring is paler and denser
+    (0.46 / 0.44 / 0.41 at alpha 0.78, was 0.30 at 0.60). The soffit decal is unchanged (it reads per GPU-14).
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
 - 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds f2dab548): please re-run Job C for the burnt
   set (rc_vault_hole, rc_teller_workroom, out g2/fix/burn_scorch).
   - Why GPU-11a was faint: the square gradient spent its dark band inside the hole, and near-black soot barely

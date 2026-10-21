@@ -227,6 +227,9 @@ REVIEW_CAMERAS = [
     ("rc_records", "B", "RC", 12.5, 24.3, 1.7, 1.0, 10.0, 1.2),
     ("rc_roof", "R", "X5", 17.0, 8.5, 1.7, 1.0, 2.0, 1.5),
     ("rc_sniper_assay", "G", "X1", 24.0, 63.0, 15.6, 24.0, 32.0, 2.0),
+    # OF-C2 (GPU-14, LEAD r255): the burn spot close up from TW's floor, ~3.3 m, ~40 deg down, west of the hole (off the
+    # hoist shaft east and the rope ladder north), to judge the scorch; rendered with of_burn_variant.gd's scene
+    ("rc_burn_close", "G", "TW", 21.9, 16.0, 2.1, 24.0, 14.6, 0.0),
 ]
 
 # --- the site ------------------------------------------------------------------------------------
