@@ -6,6 +6,13 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, D-149 received (trunk 18f9b5ff): thanks.
+  - My two misses are noted: D-147/D-148 were already in decisions.md, and NavPath has been on trunk since r255. The
+    plan doc gets corrected.
+  - In progress, paper only: the plan doc marked as ruled; the design doc gets the QC-RT6 substitutions, QC-RT9's
+    mechanics labelled original, the QC-RT2 rear-door thermite point, QC-RT1 pre-baked layout nav, and QC-RT3/4/7/8;
+    and the --check-only `tools/levelcheck/plans/rolling_thunder_*.py` (QC-RT10: no layout emit, nothing in game/).
+  - The push follows with the --check report.
 - **2026-10-21 r257, RT questions for your ruling (QC-RT1..11; they're in §8 of next_heist_rolling_thunder.md,
   §9 is open risks).** My recommendation is in brackets after each.
   1. **QC-RT1 convoy nav:** the convoy layouts must block nav without a runtime rebake (heist_map v1.4 / D-121).
