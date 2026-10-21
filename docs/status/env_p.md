@@ -2,8 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 20:15 UTC)
-- **OF ghost on Hazardous, seed 1002, trunk r263 (67260f0b): step table** (time box to ~02:00 UTC per the LEAD):
+## To the LEAD: (updated 2026-10-21 23:25 UTC)
+- **OF ghost, time box result (23:25 UTC): no continuous run reached the escape. Step-wise evidence below for your D-151 call.**
+  Steps 1-5 pass unseen in ONE continuous run (haz_zd). Step 6's sub-moves each pass unseen; lift cycle 1 (bags 1-2 staged in LD, the
+  lift back down) passes unseen in ghost6_m, ghost6_t and ghost6_u. Cycle 2 dies the same way in ghost6_t and ghost6_u: bag 3 going out
+  at t≈1004. The run starts with the vault guard deep in RC (≥ 25 m by path). 15 s later he is back east down BB and meets the gate → CQ
+  dash. **Not a game/AI bug; a margin problem.** On Hazardous seed 1002 his loop (b)/(c) absences are ~30-40 s, every ~200 s
+  (ghost6_u_r263/vault_guard_positions.txt). A bag out needs ~20-25 s of BB clear, gate to CQ, plus rover_basement's sweeps (every
+  20-40 s). Six bags means six such windows in a row. If you want the line harness-provable on Hazardous: lengthen the vault guard's
+  loop (b) RC dwell (as you offered C/A for rover_basement), or stage the bags in VT and run fewer crossings. Route note for the GPU
+  box's human check: ghost_route_note_hazardous.md. A full run needs ~2.5 h wall, so none fits before 02:00.
+- **OF ghost on Hazardous, seed 1002, trunk r263 (67260f0b): step table**:
 
   | step | pass run | heist time | evidence (game/tests/p/_review/captures/of_g1_2026-10-20/) |
   |---|---|---|---|
@@ -12,7 +21,7 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   | 3 keycard (manager shouted from the WC hide, tied unseen) | haz_zd | t=357.2 | same |
   | 4 code (pc_exec hack) | haz_zd | t=466.4 | same |
   | 5 vault (gate, lasers, code, time lock in CQ's corner) | haz_zd | t=1483.8 | same |
-  | 6 bags | partial: bags 1-2 VT → cash lift → staged by LD's personnel door unseen (2/6, t=398), back down and the lift recalled (t=424; debug `--test=ghost6`, a SHORTCUT start at CQ) | 176 s / 114 s per bag, ~230 s per lift cycle | ghost6_m_r263/run_excerpt.txt |
+  | 6 bags | partial: bags 1-2 VT → cash lift → staged by LD's personnel door unseen (2/6, t=398), back down and the lift recalled (t=424; ghost6_m). ghost6_t/u: cycle 1 again (2/6 staged t≈825-832, lift back t=892), then bag 3: the vault guard back down BB at the gate → CQ dash (t≈1004, both runs). Debug `--test=ghost6`, a SHORTCUT start at CQ | 115-585 s per bag, ~230 s per lift cycle | ghost6_m_r263/, ghost6_t_r263/, ghost6_u_r263/ |
   | 7 lift, throw, escape | not reached yet | | |
 
   Route note for the steps not yet reached (positions, cues, timings, what failed), per the LEAD's fallback:

@@ -1912,6 +1912,10 @@ func _vc_window(max_age: float) -> bool:
 	var trip_s: float = 8.0 if max_age > 12.0 else 12.0
 	var far: bool = vp != Vector3.INF and absf(vp.y - OF_FFL[0]) < 1.5 and _nav_len(vp, gate_at) >= 25.0 \
 		and _nav_len(vp + _vg_vel * trip_s, gate_at) >= 12.0
+	# Out with a bag: only "far" counts, not a fresh absence (ghost6_t: an absence 0 s old was a short turn at RC's front;
+	# he came back east down BB within 10 s and met the gate -> CQ dash head on, t=1004).
+	if trip_s > 10.0 and not far:
+		return false
 	if not far and (_vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age):
 		return false
 	# Out with a bag, rover_basement away too (RC, east of x 36, off the floor: step 5's rule). Every out-trip death

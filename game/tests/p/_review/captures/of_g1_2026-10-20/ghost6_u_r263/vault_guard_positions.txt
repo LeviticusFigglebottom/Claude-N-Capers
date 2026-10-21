@@ -1,0 +1,58 @@
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (26.0, -4.0, 11.0) (away 0, since 8 s); others: Npc_guard5 (23.7, -4.0, 8.0)
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (25.6, -4.0, 11.0) (away 0, since 38 s); others: Npc_guard5 (9.5, -4.0, 10.5) closing
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (27.8, -4.0, 8.0) (away 0, since 68 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (38.9, -4.0, 11.3) (away 3, since 17 s); others: Npc_guard5 (35.1, -4.0, 7.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (22.9, -4.0, 10.4) (away 0, since 47 s); others: Npc_guard5 (23.9, -4.0, 7.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 77 s); others: Npc_guard5 (10.2, -4.0, 10.6) closing
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (14.5, -4.0, 8.0) (away 0, since 39 s); others: 
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (23.8, -4.0, 10.8) (away 0, since 69 s); others: 
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (18.5, -4.0, 8.3) (away 0, since 99 s); others: Npc_guard5 (12.2, -4.0, 14.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (34.3, -4.0, 8.3) (away 0, since 30 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 60 s); others: Npc_guard5 (21.0, -4.0, 6.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (6.1, -4.0, 9.3) (away 9, since 4 s); others: Npc_guard5 (7.5, -4.0, 8.3)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (7.8, -4.0, 8.3) (away 69, since 34 s); others: Npc_guard5 (20.4, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 64 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 11.0) (away 0, since 94 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (40.2, -4.0, 8.4) (away 6, since 2 s); others: Npc_guard5 (12.4, -4.0, 16.6)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (21.8, -4.0, 7.5) (away 0, since 32 s); others: Npc_guard5 (34.8, -4.0, 8.4)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 62 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (6.6, -4.0, 23.5) (away 27, since 13 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (18.4, -4.0, 10.7) (away 0, since 43 s); others: Npc_guard5 (12.4, -4.0, 16.6) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 11.0) (away 0, since 73 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (26.0, -4.0, 8.1) (away 0, since 103 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (41.2, -4.0, 9.9) (away 48, since 23 s); others: Npc_guard7 (32.7, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 53 s); others: Npc_guard5 (12.4, -4.0, 16.6) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (17.3, -4.0, 10.9) (away 0, since 83 s); others: Npc_guard5 (35.8, -4.0, 8.5)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (39.7, -4.0, 10.7) (away 6, since 150 s); others: Npc_guard5 (28.7, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 180 s); others: Npc_guard5 (19.1, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (14.8, -4.0, 8.3) (away 0, since 210 s); others: Npc_guard5 (8.1, -4.0, 10.4)
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (11.7, -4.0, 7.4) (away 45, since 41 s); others: Npc_guard5 (33.5, -4.0, 8.3) closing
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (26.0, -4.0, 11.0) (away 0, since 8 s); others: Npc_guard5 (23.7, -4.0, 8.0)
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (25.6, -4.0, 11.0) (away 0, since 38 s); others: Npc_guard5 (9.5, -4.0, 10.5) closing
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (27.8, -4.0, 8.0) (away 0, since 68 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (38.9, -4.0, 11.3) (away 3, since 17 s); others: Npc_guard5 (35.1, -4.0, 7.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (22.9, -4.0, 10.4) (away 0, since 47 s); others: Npc_guard5 (23.9, -4.0, 7.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 77 s); others: Npc_guard5 (10.2, -4.0, 10.6) closing
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (14.5, -4.0, 8.0) (away 0, since 39 s); others: 
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (23.8, -4.0, 10.8) (away 0, since 69 s); others: 
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (18.5, -4.0, 8.3) (away 0, since 99 s); others: Npc_guard5 (12.2, -4.0, 14.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (34.3, -4.0, 8.3) (away 0, since 30 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 60 s); others: Npc_guard5 (21.0, -4.0, 6.9) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (6.1, -4.0, 9.3) (away 9, since 4 s); others: Npc_guard5 (7.5, -4.0, 8.3)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (7.8, -4.0, 8.3) (away 69, since 34 s); others: Npc_guard5 (20.4, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 64 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 11.0) (away 0, since 94 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (40.2, -4.0, 8.4) (away 6, since 2 s); others: Npc_guard5 (12.4, -4.0, 16.6)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (21.8, -4.0, 7.5) (away 0, since 32 s); others: Npc_guard5 (34.8, -4.0, 8.4)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 62 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (6.6, -4.0, 23.5) (away 27, since 13 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (18.4, -4.0, 10.7) (away 0, since 43 s); others: Npc_guard5 (12.4, -4.0, 16.6) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 11.0) (away 0, since 73 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (26.0, -4.0, 8.1) (away 0, since 103 s); others: 
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (41.2, -4.0, 9.9) (away 48, since 23 s); others: Npc_guard7 (32.7, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 53 s); others: Npc_guard5 (12.4, -4.0, 16.6) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (17.3, -4.0, 10.9) (away 0, since 83 s); others: Npc_guard5 (35.8, -4.0, 8.5)
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (39.8, -4.0, 10.7) (away 23, since 150 s); others: Npc_guard5 (28.5, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 180 s); others: Npc_guard5 (18.9, -4.0, 8.0) closing
+ GHOST waiting to cross VC (VT -> CQ): vault guard at (14.6, -4.0, 8.3) (away 0, since 210 s); others: Npc_guard5 (7.9, -4.0, 10.4)
+ GHOST waiting to cross VC (CQ -> VT): vault guard at (11.9, -4.0, 7.3) (away 44, since 41 s); others: Npc_guard5 (33.3, -4.0, 8.3) closing
