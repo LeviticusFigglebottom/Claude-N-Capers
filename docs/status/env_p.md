@@ -8,7 +8,8 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
   'LD occupied' check also counts guards within 10 m of DockCorridorDoor, and that smoke window is skipped (≤ 4 tries). haz_c: the same path
   (deterministic); he was > 10 m off at the cue but 6 m off once the pilot was in, after ~15 s of mask + ECM + lockpick. Now 20 m at the cue, and
-  a 10 m re-check right before the lockpick. haz_d is running.
+  a 10 m re-check right before the lockpick. haz_d: the 20 m radius caught the lobby guard at his hall post (10.9, 0, 21.8), and every smoke window
+  was skipped. Now only the BC/LD side (z < 12) counts. haz_e is running.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
   pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35

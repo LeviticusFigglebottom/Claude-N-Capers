@@ -2506,8 +2506,9 @@ func _g2_dock() -> bool:
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
 				continue
-			if pilot.flat_dist(g.global_position, door_at) < 8.0 \
-					or (cdoor_n != null and pilot.flat_dist(g.global_position, cdoor_n.global_position) < r):
+			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
+			if pilot.flat_dist(g.global_position, door_at) < 8.0 or (cdoor_n != null and g.global_position.z < 12.0 \
+					and pilot.flat_dist(g.global_position, cdoor_n.global_position) < r):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
 	var clear: bool = await _smoke_cue(300.0)
