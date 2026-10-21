@@ -28,6 +28,8 @@ var _heist_list: UiHeistList = null
 var _shot: int = 0
 var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
+## --po5-direct: launch through MenuFlow.launch, not the Board (a staged heist).
+var _direct: bool = false
 ## _telemetry passes (a CENSUS line every 6th).
 var _tel_n: int = 0
 ## --po5-hitch-ms: log every heist frame (rendered or not) longer than this (ms; 0 = off), with the NPCs spawned in it.
@@ -68,6 +70,8 @@ func _run() -> void:
 			HeistLauncher.dev_options["crew_damage_taken_mult"] = a.substr(15).to_float()
 		elif a.begins_with("--po5-hitch-ms="):  # LEAD (OF loud GPU hitches): rendered frames too, from this many ms
 			_render_hitch_ms = a.substr(15).to_float()
+		elif a == "--po5-direct":  # LEAD (RT G1 pilot): a staged heist, launched through MenuFlow.launch, no Board
+			_direct = true
 	if _budget_s > 0.0:
 		_watchdog.call_deferred()
 	if not await enter_heist():
@@ -125,20 +129,40 @@ func _open_difficulty() -> void:
 
 ## main menu -> Safehouse -> Planning Table -> heist -> difficulty -> Briefing -> Continue -> Confirm plan
 ## -> Start Heist, by mouse clicks; then waits for the local crew to spawn.
+## --po5-direct (LEAD, RT G1 pilot): a heist the Board does not offer yet (staged: hidden, WIP def) is launched
+## through MenuFlow.launch (the Launch button's own path: solo session, bots, loadout, HUD) instead of the Board clicks;
+## everything after the load is the same flow. Named in the evidence.
+func _launch_direct() -> bool:
+	var flows: Array[Node] = get_tree().root.find_children("*", "MenuFlow", true, false)
+	if flows.is_empty():
+		await _fail("direct: no MenuFlow")
+		return false
+	var id: StringName = StringName(heist_name.strip_edges().to_snake_case())
+	var diff: int = maxi(Enums.Difficulty.keys().find(difficulty_name.to_upper()), 0)
+	var run_seed: int = HeistLauncher.next_seed_override if HeistLauncher.next_seed_override >= 0 else 1001
+	note("DEV OPTION direct launch: %s diff %d seed %d through MenuFlow.launch (staged heist, no Board)" % [id, diff, run_seed])
+	(flows[0] as MenuFlow).launch(id, diff, SaveService.load_profile().loadout, run_seed)
+	return true
+
+
 func enter_heist() -> bool:
 	_open_difficulty()
 	var t0: int = Time.get_ticks_msec()
 	while find_button("Safehouse") == null and Time.get_ticks_msec() - t0 < 30000:
 		await get_tree().process_frame
 	await shot("main_menu")
-	for step: String in ["Safehouse", "Planning Table", heist_name, difficulty_name, "Briefing", "Continue",
-			"Confirm plan", "Start Heist"]:
-		if not await click_text(step):
-			await _fail("menu: no '%s'" % step)
+	if _direct:
+		if not await _launch_direct():
 			return false
-		await seconds(1.0)
-		if step in ["Planning Table", "Briefing", "Continue", "Confirm plan"]:
-			await shot(step.to_snake_case())
+	else:
+		for step: String in ["Safehouse", "Planning Table", heist_name, difficulty_name, "Briefing", "Continue",
+				"Confirm plan", "Start Heist"]:
+			if not await click_text(step):
+				await _fail("menu: no '%s'" % step)
+				return false
+			await seconds(1.0)
+			if step in ["Planning Table", "Briefing", "Continue", "Confirm plan"]:
+				await shot(step.to_snake_case())
 	# LEAD (GPU-18 heist-load frame 3.1 s): like a player, the render loop stays on through the loading screen and the
 	# first heist frames (pipeline compiles land under the loading screen, as in play); fast mode after (_load_report).
 	var pipes0: int = _pipelines_total()
