@@ -254,6 +254,7 @@ var _vc_away_n: int = 0
 var _vc_away_since: float = -1.0
 ## Step 6: other basement guards' last sampled positions (closing on the gate).
 var _vc_last: Dictionary = {}
+var _vg_vel: Vector3 = Vector3.ZERO
 
 
 func _ready() -> void:
@@ -1896,6 +1897,7 @@ func _vc_window(max_age: float) -> bool:
 		var g: NpcBase = n as NpcBase
 		if g != null and g.is_alive() and _has_tag(g, "guard_vault"):
 			vp = g.global_position
+			_vg_vel = Vector3(g.velocity.x, 0.0, g.velocity.z)
 	var away: bool = vp == Vector3.INF or absf(vp.y - OF_FFL[0]) >= 1.5 or vp.x < 12.0 or vp.z > 13.5 or vp.x > 36.0
 	_vc_away_n = _vc_away_n + 1 if away else 0
 	if _vc_away_n == 1:
@@ -1903,10 +1905,14 @@ func _vc_window(max_age: float) -> bool:
 	var gate_at: Vector3 = _of(Vector3(14.5, OF_FFL[0], 9.5))
 	# ...or far enough by path that he can't be back at the gate within the trip (ghost6_i: clear of the others at
 	# t=179 / 299 with him 18-28 s into loop (b) / (c), refused on age alone). 25 m: ~17 s at his walk, a bag trip.
-	var far: bool = vp != Vector3.INF and absf(vp.y - OF_FFL[0]) < 1.5 and _nav_len(vp, gate_at) >= 25.0
+	# Where he will be at the end of the trip too (ghost6_n: 25 m by path but walking back west down BB from loop (c), at
+	# the gate 12 s later, t=309): linear, his velocity times the trip.
+	var trip_s: float = 8.0 if max_age > 12.0 else 12.0
+	var far: bool = vp != Vector3.INF and absf(vp.y - OF_FFL[0]) < 1.5 and _nav_len(vp, gate_at) >= 25.0 \
+		and _nav_len(vp + _vg_vel * trip_s, gate_at) >= 12.0
 	if not far and (_vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age):
 		return false
-	return _vc_others() == ""
+	return _vc_others(trip_s) == ""
 
 
 ## Navmesh path length (m) from `a` to `b` on the crew's map (INF when there is no path).
@@ -1921,13 +1927,17 @@ func _nav_len(a: Vector3, b: Vector3) -> float:
 
 
 ## Step 6: the first other basement guard that holds a VC crossing ("" = none), for the window and its log.
-func _vc_others() -> String:
+func _vc_others(trip_s: float = 0.0) -> String:
 	var gate_at: Vector3 = _of(Vector3(14.5, OF_FFL[0], 9.0))
 	var who: String = ""
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
 		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5 or _has_tag(g, "guard_vault"):
 			continue
+		# Also where he will be at the end of the trip (ghost6_n: Npc_guard7 walking in from BB's east end).
+		var ahead: Vector3 = g.global_position + Vector3(g.velocity.x, 0.0, g.velocity.z) * trip_s
+		if trip_s > 0.0 and who == "" and ahead.z > 6.5 and ahead.z < 9.6 and pilot.flat_dist(ahead, gate_at) < 20.0:
+			who = "%s %s in %.0f s" % [g.name, Po5Pilot._v(ahead), trip_s]
 		var p: Vector3 = g.global_position
 		var id: int = g.get_instance_id()
 		var d: float = pilot.flat_dist(p, gate_at)
