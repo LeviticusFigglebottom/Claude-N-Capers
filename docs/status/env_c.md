@@ -6,13 +6,26 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
-- 2026-10-21, D-149 received (trunk 18f9b5ff): thanks.
-  - My two misses are noted: D-147/D-148 were already in decisions.md, and NavPath has been on trunk since r255. The
-    plan doc gets corrected.
-  - In progress, paper only: the plan doc marked as ruled; the design doc gets the QC-RT6 substitutions, QC-RT9's
-    mechanics labelled original, the QC-RT2 rear-door thermite point, QC-RT1 pre-baked layout nav, and QC-RT3/4/7/8;
-    and the --check-only `tools/levelcheck/plans/rolling_thunder_*.py` (QC-RT10: no layout emit, nothing in game/).
-  - The push follows with the --check report.
+- 2026-10-21, D-149 applied (env/c-worlds aca54f85): paper only, nothing in game/.
+  - Plan doc: marked RULED (D-149), with my two wrong claims fixed (D-147/148 were already written; NavPath has been on
+    trunk since r255).
+  - Design doc: the QC-RT6 substitutions (bus -> jack-knifed lorry, trees -> planters, dumper -> forklift; jukebox,
+    bunting, wheel stops and racks dropped). Also QC-RT9's mechanics labelled original, the QC-RT2 rear-door thermite
+    point (no roof hatch), QC-RT1 pre-baked layout nav, QC-RT7 civilians_leave + call points, and QC-RT8 drive-in / van
+    pop-in.
+  - QC-RT10: the --check-only `tools/levelcheck/plans/rolling_thunder_{checklib,floors_ascii,site_ascii,convoy,slots,
+    check}.py` (stdlib only, no emit). `rolling_thunder_check.py --check` currently FAILs on 9 G0 design inconsistencies:
+    - 27 route doors at 0.9 m;
+    - UC missing from the Room list;
+    - J has no door;
+    - MG drawn 4x3 vs listed 3x2.4;
+    - the controller is 3.6 m from the man-gate, not 2 m;
+    - P_N and P_E are not behind their closures;
+    - the rear-car offset is 12 / 10.5 m, not 11;
+    - the east loot path is 48 m+, not 40.
+  - The polygon estimate is about 2,100, uncalibrated (early warning only, D-149.5).
+  - RT-C0 is fixing those in the design doc now (prose to match the drawing, unless a rule is broken: the doors go to
+    1.0 m). The push follows when --check PASSes.
 - **2026-10-21 r257, RT questions for your ruling (QC-RT1..11; they're in §8 of next_heist_rolling_thunder.md,
   §9 is open risks).** My recommendation is in brackets after each.
   1. **QC-RT1 convoy nav:** the convoy layouts must block nav without a runtime rebake (heist_map v1.4 / D-121).
