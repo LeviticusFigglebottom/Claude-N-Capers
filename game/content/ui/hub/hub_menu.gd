@@ -340,7 +340,9 @@ func _refresh_points() -> void:
 		parts.append(UiText.t(&"ui.hub.points.skills_one" if skills == 1 else &"ui.hub.points.skills", {"points": skills}))
 	if perks > 0:
 		parts.append(UiText.t(&"ui.hub.points.perks_one" if perks == 1 else &"ui.hub.points.perks", {"points": perks}))
-	skill_points_label.text = "  ·  ".join(parts)
+	# r262 OF payday + hub still: "20 SKILL POINTS · 58 PERK POINTS" ran past the card at 1080p; one count per line
+	# (the card grows with its content).
+	skill_points_label.text = "\n".join(parts)
 	skill_points_label.visible = not parts.is_empty()
 
 

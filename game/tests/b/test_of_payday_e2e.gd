@@ -12,6 +12,8 @@ const PAYOUT_MULTS: Array[float] = [1.0, 2.0, 2.6, 4.2, 7.2, 9.2]
 const STEALTH_SET: Array[StringName] = [&"achievement.of_quiet_weekend", &"achievement.of_no_harm_done",
 	&"achievement.of_bank_holiday"]
 const LOUD_SET: Array[StringName] = [&"achievement.of_burn_and_hoist", &"achievement.of_clearing_house"]
+## D-148 first-clear levels, Routine ... Cataclysm (content/docs/progression_pace.md).
+const D148_FIRST_CLEAR_LEVEL: Array[int] = [6, 11, 18, 23, 24, 25]
 
 
 func _def() -> HeistDef:
@@ -141,6 +143,41 @@ func test_a_second_clear_grants_nothing_twice() -> void:
 		if a.category == OF:
 			assert_false(again.has(a.id), "already unlocked: %s" % a.id)
 	assert_eq(p.owned_mask_parts.size(), parts, "no duplicate mask parts")
+
+
+## D-148 (option D): a first OF clear (6 bags, stealth, crew of 4 alive, fresh profile, freshness as PaydayScreen
+## applies it) lands on progression_pace.md's table.
+func test_d148_first_clear_levels_match_the_pace_table() -> void:
+	assert_eq((load("res://content/data/tweak/payout.tres") as PayoutTweak).base_xp_for(OF), 3000, "D-148: OF is an L heist (3,000 base XP)")
+	for d: int in DIFFICULTIES:
+		var p: PlayerProfile = PlayerProfile.new_default()
+		var loot: Array = _bags(&"loot.cash_bricks", 4) + _bags(&"loot.bearer_bonds", 2)
+		var fresh: Dictionary = HeistFreshness.evaluate(p, OF)
+		var payout: Dictionary = PayoutCalculator.compute(_result(d, true, loot), null, null, false, 0,
+				p.banked_stealth_mult, 1.0, 0.0, float(fresh.get("mult", 1.0)))
+		SaveService.apply_heist_payout(p, payout, XpCurve.level_for_xp)
+		assert_eq(p.level, D148_FIRST_CLEAR_LEVEL[d], "d%d first OF clear: %d XP -> L%d" % [d, int(payout["xp_total"]),
+				p.level])
+
+
+## Co-op parity: in a crew of four humans every slot's payday shows the same contract, loot, XP and level (PD2: the
+## crew shares one payout; only the payday card is per player).
+func test_coop_every_slot_gets_the_same_payday() -> void:
+	for d: int in DIFFICULTIES:
+		var r: Dictionary = _result(d, true, _bags(&"loot.cash_bricks", 4) + _bags(&"loot.bearer_bonds", 2))
+		for c: Dictionary in r["crew"]:
+			c["is_ai"] = false
+		var first: Dictionary = {}
+		for slot: int in range(4):
+			var p: PlayerProfile = PlayerProfile.new_default()
+			var payout: Dictionary = PayoutCalculator.compute(r, null, null, false, slot, p.banked_stealth_mult)
+			SaveService.apply_heist_payout(p, payout, XpCurve.level_for_xp)
+			var got: Dictionary = {"contract": payout["contract"], "loot": payout["loot"], "total": payout["total"],
+				"xp": payout["xp_total"], "level": p.level}
+			if slot == 0:
+				first = got
+			else:
+				assert_eq(got, first, "d%d slot %d matches slot 0" % [d, slot])
 
 
 ## Every unlocked OF achievement's reward parts are owned, exist in the catalog, and are named.

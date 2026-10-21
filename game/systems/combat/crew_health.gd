@@ -462,34 +462,26 @@ func _disable_revive() -> void:
 
 ## Down / helpless timers. True when the member is not standing (nothing else ticks).
 func _tick_down_states(delta: float) -> bool:
-	match _crew.crew_state:
-		Enums.CrewState.DOWNED:
-			bleedout_left -= delta
-			down_s += delta
-			if bleedout_left <= 0.0:
-				bleedout_left = 0.0
-				go_to_custody()
-			return true
-		Enums.CrewState.TASED:
-			# D-145 (PD2; amends D-093): a tase that runs out ends in a DOWN (bleed-out decides custody).
-			helpless_left -= delta
-			if helpless_left <= 0.0:
-				helpless_left = 0.0
-				tase_expired()
-			return true
-		Enums.CrewState.CLOAKER_DOWNED:
-			# D-145: a kick is a down: it bleeds out like DOWNED, custody only when the timer runs out.
-			bleedout_left -= delta
-			down_s += delta
-			if bleedout_left <= 0.0:
-				bleedout_left = 0.0
-				go_to_custody()
-			return true
-		Enums.CrewState.CUSTODY:
-			return true
-		Enums.CrewState.CUFFED:
-			return bleedout_left > 0.0  # L2.12: police-cuffed while downed, bleedout paused
-	return false
+	var st: int = _crew.crew_state
+	# DOWNED; D-145: a kick (CLOAKER_DOWNED) bleeds out like a down; L2.12 (LEAD 2026-10-21, Cataclysm 2024: 15
+	# CUFFED <-> DOWNED cycles over 15 min): a police-cuffed downed heister keeps bleeding out too (a teammate uncuffs and
+	# revives in time, else custody). Stealth cuffs (guards, S3.2) carry no bleed-out: not a down.
+	if st == Enums.CrewState.DOWNED or st == Enums.CrewState.CLOAKER_DOWNED \
+			or (st == Enums.CrewState.CUFFED and bleedout_left > 0.0):
+		bleedout_left -= delta
+		down_s += delta
+		if bleedout_left <= 0.0:
+			bleedout_left = 0.0
+			go_to_custody()
+		return true
+	if st == Enums.CrewState.TASED:
+		# D-145 (PD2; amends D-093): a tase that runs out ends in a DOWN (bleed-out decides custody).
+		helpless_left -= delta
+		if helpless_left <= 0.0:
+			helpless_left = 0.0
+			tase_expired()
+		return true
+	return st == Enums.CrewState.CUSTODY
 
 
 ## Server (PO6-17b): a breach blast / flashbang blinds this member for `seconds` (the longer of the two wins) and

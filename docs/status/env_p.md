@@ -2,7 +2,86 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 09:20 UTC)
+## To the LEAD: (updated 2026-10-21 UTC)
+- **Latest (r260 ghost, Hazardous, seed 1002):** steps 1-3 pass (haz_o/haz_p: dock t≈208, keycard t≈343). haz_p then FAILED at t=355:
+  guard_radio by rover_basement with no DETECT on the pilot (hidden at (1.7, -4, 4.1)), most likely because he saw the tied manager in LockerDoor's
+  sight line (a tied civilian is a `restrained` stimulus: 15 m, LOS). haz_q waited for him to leave BB's sight before shouting, and he saw the
+  pilot in the LK hide from LockerDoor at 5 m and ran to rover_basement (alarm t=352). NPCs see all round within 1.5 m and ~120° wide at 5 m,
+  so no open LK spot hides from him. Fix: lkprobe now also samples his walk to his WC stop (ManagerLKWC (7.25, 2.2), 40-70 s). (8.5, 0.5),
+  behind WCPartitionLK2, is the one floor point hidden from his walk and from BB. The pilot waits there and shouts once he's dwelling. haz_r: the pilot stuck 60 s on WCPartitionLK2. **For C (minor):** the LK navmesh
+  runs through both WC partitions (they aren't in the bake), so nav paths into the cubicles go through the partition. The harness now goes
+  round its open end (8.7, 2.3) first. haz_s: hidden all the way, he reached his stop unaware (t=341.5). The pilot stood and stepped out
+  at 1.7 m, he filled 1.0 at once and ran (a panicking civilian only goes down on a 50% roll), and guard5 cuffed the pilot in BB (t=363).
+  Now the pilot shouts from the hide: the all-round shout reaches a civilian within 6 m by a navmesh path, without LOS. It ties him once
+  he's down (blind), after rover_basement is away. lkprobe also found every point on his walk is seen by at least one BB eye at lying
+  height (the WC stop by 1, west of LockerDoor). **haz_t: steps 1-4 PASS** (keycard t=367: shouted DOWN from the hide on the first tap,
+  tied unseen; code t=529). Step 5: the BB → gate wait ran 300 s (t=642-946) with no window (vault guard on VC or rover_basement in BB), then
+  cleared on attempt 2 at t=981. Gate, lasers both ways, code entered t=996.5. The pilot then walked to the RC time-lock wait and met the vault
+  guard coming back from his loop (b) through RC (radio t=1008). Now it waits out the time lock in the LK hide, crouched, and peeks before
+  each leg back. haz_u: same path to t=1000.8, then the vault guard came out of RC (6.6, 10) heading for the gate while the pilot held in BB at
+  (13.8, 8.2), standing in his walk (radio t=1021). Now the time-lock refuge is CQ's SE corner (12.5, 3.5): lkprobe says no BB corridor
+  point (x 0-47) sees it, and CQ's door is 2 m from the gate, so the pilot goes there at once. **From haz_v on, runs are on r263
+  (67260f0b, with C's partition fix).** haz_v (r263): step 2 FAIL with no alarm. All 5 smoke windows were skipped: the queue-rail bake fix moved
+  rover_hall's loop (LD checks now t≈11, 96, 185, 269, 361, 449), and at every smoke cue (78, 149, 259, 317, 401) he was on BC at x 31-34
+  walking back to LD, 9-36 s from his check. Now at a cue with him heading in, the pilot lets his LD check pass inside that smoke window
+  (≤ 25 s), then goes, as r260's passing run did by luck. Walkers block only while closing on the corridor door. **haz_w (r263): step 2 PASS at t=183.6** (window 1 skipped: he was still inside LD at t=104 when the 25 s
+  ran out; window 2 taken). Step 3 alarm at t=185: done 24 s sooner, the pilot stepped out of SA into BB as the vault guard walked down BB on
+  his loop (b) (seen at 7.7 m). Step 2 had no stair peek (the stair waits are step 4+), so step 2 now ends on SA's basement landing and waits
+  for BB (12 m, walkers 15 m). haz_x: same to t=183, then waiting on the B landing behind SA's door, the vault guard walked east down BB
+  past the door and saw the pilot at 2 m (t=189). lkprobe: SA's half landing (14.5, -2, 2) is seen from no BB or BC corridor point; the
+  pilot now waits there. **haz_y (r263): steps 1-3 PASS** (dock t=192, after a 10 s half-landing wait; keycard t=357). Step 4 alarm at
+  t=388: the LK → SA leg waited on the B landing for rover_hall on G, and rover_basement walked past SA's door and saw it at 1.5 m. That
+  phase-2 wait is now on the half landing too, and it climbs straight up from there (it used to step back out into BB). **haz_z (r263): steps 1-4 PASS** (dock 192, keycard 357, half-landing wait 26 s, code 466). Step 5 alarm
+  at t=515: coming down from E, the pilot stepped out of SA into BB with the vault guard walking BB 9 m off (the upper-floor core check
+  doesn't count BB). The descent to B now waits on the half landing too. haz_za: steps 1-4 again, then the half-landing core check let the vault guard
+  through: standing in BB 6.5 m off, no LOS to the core. He saw the walk to LK (t=519). Both half-landing → BB waits now use a BB rule:
+  no basement guard in BB's strip west of x 32 or within 6 m of SA's door, two samples running. haz_zb: BB clear on the half landing at t=181-183, but the vault guard was just inside RC's door. He stepped out
+  into BB as the pilot reached the foot of SA, and step 3's "not clear" walked the pilot down BB to the LK hide past him (t=185). Now the
+  BB rule counts RC's front (x < 14, z < 14), and step 3 backs up to the half landing instead of walking BB. **haz_zc (r263): steps 1-4 PASS again** (BB wait 17 s after the dock,
+  dock 199.5, keycard 357, code 466). Step 5: BB was clear at t=517.5, then the vault guard walked out of VC into BB 5 m off as the pilot came
+  down (t=520). Now VC walkers count (his VC post standing doesn't). Every descent into BB shares one helper: half-landing wait → foot of SA →
+  back up if any basement guard is within 10 m (up to 4 tries). haz_zd is running.
+- **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
+  dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
+  haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
+  'LD occupied' check also counts guards within 10 m of DockCorridorDoor, and that smoke window is skipped (≤ 4 tries). haz_c: the same path
+  (deterministic); he was > 10 m off at the cue but 6 m off once the pilot was in, after ~15 s of mask + ECM + lockpick. Now 20 m at the cue, and
+  a 10 m re-check right before the lockpick. haz_d: the 20 m radius caught the lobby guard at his hall post (10.9, 0, 21.8), and every smoke window
+  was skipped. Now only the BC/LD side (z < 12) counts. haz_e: smoke windows at t≈78, 285, 430, 544 were all skipped, two of them by a posted guard
+  standing at (19.5, 0, 1.1) (the Cataclysm runs walked past that spot). Now within 20 m only walkers count; standing guards count within 8 m of either
+  door. haz_f: the pre-checks passed (rover_hall was still in the hall, z > 12, at the cue), then he came through BC into LD again and found the pilot
+  waiting inside (t=111, as in haz_b/c). Now when BC isn't clear, the pilot backs out to the lane beside the dock door (6, 0, −1.5), not inside LD.
+  Ghost runs from here on are on r260 (3a3885ad), per the LEAD. **haz_g (r260): waiting outside works.** rover_hall did his LD check (t≈108-118)
+  and missed the pilot beside the door. But by then the smoke window had ended, and rover_dock walked back and saw the pilot (t=139). That window
+  was never real: now the cue check also tracks rover_hall by tag (heading for DockCorridorDoor from ≤ 25 m means a loop (b) LD check → skip),
+  and the corridor-door wait counts building-side guards only. haz_h: he was only flagged at the late re-check, 24 m out heading for LD, after mask + ECM
+  were spent, and the run followed haz_g's path. Tracking radius is now 35 m so the cue check catches him. haz_i: the same. He turns toward LD between
+  the cue (t=78) and t=83. Restructured step 2 into one loop per smoke window: cue → LD clear → lane clear → mask → LD clear again → only then the
+  ECM and lockpick; a busy LD at the second check keeps the ECM for the next window. haz_j: that second check (~t=80) came 1-3 s before he turned
+  (~t 81-83). Now there's a 5 s watch after the mask, sampled every 0.5 s, before the ECM (the 20-40 s smoke window leaves ~10 s of slack). haz_k: the watch caught
+  rover_hall heading for LD (t=82) and kept the ECM, but the pilot then waited for the next window MASKED behind the dumpsters, and rover_dock walking
+  back from his smoke saw it at 14 m (t=118). The mask can't come off, so the 5 s watch now runs before the mask (unmasked in the public lane).
+  **haz_l: the harness is right, but no dock window on Hazardous seed 1002 (sent to C).** rover_dock's smoke windows: t≈78-118, 162-195, 285-322,
+  347-385, 429+ (every 85-120 s, 33-40 s long). rover_hall's loop (b) LD check falls inside 4 of the 5 (t=82 heading in, in LD ~108; 285 in BC;
+  348 / 430 heading in). Window 2 (t=168, him at 34 m east) may have been a false skip. After 5 windows: FAIL _g2_dock (no alarm). The dock
+  step has the same two-patrol clash as BB. C asked for window numbers: these are they. **C's answer (ostrander_federal.md 8c034cdb):** rover_hall
+  isn't random. A's hub_loops cycle him (a) TW/hall → (b) LD check → MO → (c) stair B / fire exit, so go in a smoke window only once he has LEFT LD
+  for MO (east, x > 40, two loops from the next LD visit). Harness: a watcher records his LD visits; a window counts only if his last LD check was
+  ≤ 90 s ago and he's now at x > 25. haz_m: he spawns into loop (b), with an LD check at t=11, so at the t=78 window he was on loop (a) at (35.3, 11.5) and
+  came back to LD at t=96 into the pilot. Timing alone can't tell the phases apart (both windows ~67 s after a check); position can: east now = x > 38
+  and z < 9.5 (BC corridor east = MO / loop (c)). **haz_n: step 2 PASS on Hazardous (t=207.7)**, C's cue working: the t=78 window was skipped
+  (rover_hall on loop (a)), the t=162 window was taken (him at BC east), and he passed DockCorridorDoor at t=185 while the pilot waited outside, unseen.
+  Step 3: the manager wait was still at GHOST_LK_WAIT (in LockerDoor's sight line), and rover_basement saw it through the door (t=267). Now step 3 waits
+  crouched in the probed LK hide too. **haz_o: steps 1-3 PASS on Hazardous** (dock t=207.7 again, keycard t=342.7). On the way to step 4, the BB-only core
+  check cleared at once, then rover_basement came west down BB and saw the LK → SA walk at 12 m (t=350). That BB crossing now uses the gate's window
+  (rover_basement in RC or far east, no walker closing in). haz_p is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
+  the LEAD and A with the numbers.
+  The BB window log (count/lengths) will go here for C if step 5 finds no window.
+- **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
+  pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35
+  every 20-40 s; the vault guard's only long absence is loop (b) RC (~30 s); Cataclysm's extra guards (Npc_guard7/9) walk BB east. In r257d no
+  moment in 300 s had both the vault guard and rover_basement away. Is §5 meant to be timed on Cataclysm with these patrols? If yes, rover_basement's
+  loops may need a longer away leg (A/C). If no, which difficulty should the ghost acceptance use? I'll keep iterating the harness meanwhile.
 - **GAME BUG FIXED (P's own, 0d0a1ab0): crew capsules were shared.** crew_member.tscn's CapsuleShape3D sub-resource was one shape for every
   crew member. Whenever anyone crouched, all the others' capsules shrank to 1.2 m under their 0.9 m standing offset, and they sank 0.30 m into the
   floor (until that crew member stood). Found with a watchdog in GH Tense 4502 (C showed the kerb itself is only 0.15 m and clean): at t=11.8,
@@ -50,7 +129,14 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   rover_basement, out of LOS east at that moment, turned back west down BB and saw the pilot at the gate (t=358). Now walkers within 20 m that are
   closing on the gate count too (doc: 'rover_basement is east'). r257b: the same failure (he was likely standing in SD, out of LOS, when the wait cleared).
   No snapshot rule predicts that, so now the pilot walks LK → gate in legs (BB west, the core, the gate), peeks before each one, and retreats
-  to LK if a guard shows up (≤ 4 tries). r257c is running.
+  to LK if a guard shows up (≤ 4 tries). r257c: the peek caught rover_basement coming back down BB at 12 m, but the retreat runs west along the
+  same straight 48 m corridor and he filled 1.0 anyway. His positions (r256d/r257c) show him sweeping BB x 5-35 every 20-40 s; his only long stops
+  are RC (blind aisles per doc) or far east at SS. Now the gate window also requires rover_basement in RC or past x 36. **r257d: steps 1-4 PASS. Over
+  ~700 s of waiting in LK there were 3 windows (t≈784, 986, 1006); each closed within 3-4 s at the first peek (vault guard/rover back, or guard9
+  on BB east), and the pilot retreated unseen each time.** After the 4th try the harness goes anyway and was seen (harness give-up, not a finding).
+  At Cataclysm the BB-crossing window is effectively absent with these patrols. See the design question above.
+  **If this doesn't hold, my read is that at Cataclysm (extra BB guards + rover_basement's short loops) the doc's step-5 window is very
+  tight. I'd then like a design call (C/LEAD) on whether ghost §5 is meant to be timed on Cataclysm, or at a lower difficulty.**
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
