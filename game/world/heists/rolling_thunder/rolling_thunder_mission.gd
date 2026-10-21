@@ -480,9 +480,10 @@ func _truck_opened(t: ArmoredTruck) -> void:
 		spawn_loot_at(LOOT_GOLD if bullion else LOOT_CASH, _cargo_spot(t), n)
 
 
+## Where spawned cargo lands: the rear step (the truck's UsePoint), outside the hold's collision box. G1 pilot: bags at
+## the LootAnchor sat inside the body, and the hold blocked the pick-up's line of sight (doc: bagged from the rear step).
 func _cargo_spot(t: ArmoredTruck) -> Node3D:
-	var rear: Node3D = t.visual_node("LootAnchor") as Node3D
-	return rear if rear != null else t
+	return t.use_point if t.use_point != null else t
 
 
 func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void:
