@@ -18,7 +18,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   tied unseen; code t=529). Step 5: the BB → gate wait ran 300 s (t=642-946) with no window (vault guard on VC or rover_basement in BB), then
   cleared on attempt 2 at t=981. Gate, lasers both ways, code entered t=996.5. The pilot then walked to the RC time-lock wait and met the vault
   guard coming back from his loop (b) through RC (radio t=1008). Now it waits out the time lock in the LK hide, crouched, and peeks before
-  each leg back. haz_u is running.
+  each leg back. haz_u: same path to t=1000.8, then the vault guard came out of RC (6.6, 10) heading for the gate while the pilot held in BB at
+  (13.8, 8.2), standing in his walk (radio t=1021). Now the time-lock refuge is CQ's SE corner (12.5, 3.5): lkprobe says no BB corridor
+  point (x 0-47) sees it, and CQ's door is 2 m from the gate, so the pilot goes there at once. **From haz_v on, runs are on r263
+  (67260f0b, with C's partition fix).**
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick

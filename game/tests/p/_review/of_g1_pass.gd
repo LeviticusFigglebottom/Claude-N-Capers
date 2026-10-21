@@ -145,6 +145,8 @@ const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 const GHOST_LK_HIDES: Array[Vector3] = [Vector3(1.5, -4.0, 4.0), Vector3(2.0, -4.0, 4.5), Vector3(1.5, -4.0, 3.5)]
 const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
 const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
+## lkprobe (r260): CQ floor point no BB corridor eye (x 0-47, z 7.6 / 8.4) sees: the time-lock refuge (haz_u).
+const GHOST_CQ_HIDE: Vector3 = Vector3(12.5, -4.0, 3.5)
 const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
 ## Runtime lookups (_x): prefab class + objective_tag (ENV C's G1 tags, wip/c-of-g1 f49df211) near a design-doc point;
 ## the tag wins when present, else the nearest node of the class within `max` m. --resolve prints this table's
@@ -1781,19 +1783,6 @@ func _gate_threat(gate: Door) -> String:
 	return ""
 
 
-## A living guard on the basement floor within 8 m of the pilot, or within 20 m with a line of sight to it ("" if none).
-func _near_threat() -> String:
-	var me: Vector3 = pilot.crew.global_position
-	for n: Node in rt.npcs(&"guard"):
-		var g: NpcBase = n as NpcBase
-		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
-			continue
-		var d_me: float = pilot.flat_dist(g.global_position, me)
-		if d_me < 8.0 or (d_me < 20.0 and _sees_core(g, me)):
-			return "%s %s (%.0f m)" % [g.name, Po5Pilot._v(g.global_position), d_me]
-	return ""
-
-
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
 ## the core walls cannot see the flights (r248: Npc_guard10's ground-floor post 7 m off held the wait for 180 s).
 func _sees_core(g: NpcBase, core: Vector3) -> bool:
@@ -2563,6 +2552,23 @@ func _test_lkprobe() -> bool:
 					mseen += 1
 			hits.append("(%.1f, %.1f) seen_by %d mgr %d" % [xi * 0.5, zi * 0.5, seen, mseen])
 	note("LKPROBE from %s: %d floor points: %s" % [Po5Pilot._v(from), hits.size(), "; ".join(hits)])
+	# CQ (x 10-13, z 3-7) as the time-lock refuge (haz_u): BB corridor eye points (x 0-47, z 7.6 / 8.4) seeing each point.
+	var cq: PackedStringArray = PackedStringArray()
+	for xi: int in range(21, 26):
+		for zi: int in range(7, 14):
+			var want: Vector3 = _of(Vector3(xi * 0.5, -4.0, zi * 0.5))
+			var got: Vector3 = NavigationServer3D.map_get_closest_point(map, want)
+			if pilot.flat_dist(got, want) > 0.15:
+				continue
+			var seers: PackedStringArray = PackedStringArray()
+			for bx: int in range(0, 48):
+				for bz: float in [7.6, 8.4]:
+					var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(_of(Vector3(bx, -4.0 + 1.6, bz)),
+						got + Vector3(0, 0.7, 0), 1)
+					if space.intersect_ray(q).is_empty():
+						seers.append("%d/%.1f" % [bx, bz])
+			cq.append("(%.1f, %.1f) %d [%s]" % [xi * 0.5, zi * 0.5, seers.size(), ",".join(seers)])
+	note("LKPROBE CQ: %s" % "; ".join(cq))
 	return true
 
 
@@ -2858,25 +2864,15 @@ func _g5_vault() -> bool:
 		return false
 	if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false, OF_LASER_LEAD_M):
 		return false
-	# Wait out the time lock in the LK hide, not RC (haz_t: RC is the vault guard's loop (b); walking there after the
-	# code, the pilot met him coming back through RC's door, t=1008). Back the way it came, peeking before each leg.
-	var hide_tl: Vector3 = _lk_hide()
-	var back: Array[Vector3] = [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0)),
-		pilot.stand_point(_of(Vector3(13.5, OF_FFL[0], 8.2))), pilot.stand_point(_of(Vector3(8.0, OF_FFL[0], 8.2))), hide_tl]
-	for leg: Vector3 in back:
-		var waited: float = 0.0
-		var who: String = _near_threat()
-		while who != "" and waited < 30.0:
-			if waited == 0.0:
-				note("GHOST back to LK: %s, holding" % who)
-			await wait_s(0.5)
-			waited += 0.5
-			who = _near_threat()
-		await _go(leg, 0.5, 30.0)
+	# Wait out the time lock in CQ's SE corner, not RC (haz_t: RC is the vault guard's loop (b); walking there after the
+	# code, the pilot met him coming back out of RC, t=1008). Not LK either (haz_u: holding in BB on the way, the pilot
+	# stood in his RC -> BB -> gate walk, t=1010). lkprobe: no BB corridor point (x 0-47) sees GHOST_CQ_HIDE; CQ's door
+	# is 2 m from the gate. Go at once.
+	await _go(pilot.stand_point(_of(GHOST_CQ_HIDE)), 0.3, 20.0)
 	pilot.inp.press(&"crouch")
 	var vault: Door = _x("vault_door") as Door
 	Engine.time_scale = TIME_LOCK_SCALE
-	note("SHORTCUT time lock wait in LK at x%.0f" % TIME_LOCK_SCALE)
+	note("SHORTCUT time lock wait in CQ at x%.0f" % TIME_LOCK_SCALE)
 	var open_or_alarm: Callable = func() -> bool:
 		return (vault != null and vault.is_open) or _objective(&"time_lock_wait") == 2 or _alarm != &""
 	await wait_until(open_or_alarm, 400.0)
