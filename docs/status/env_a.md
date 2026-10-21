@@ -19,7 +19,99 @@ Newest entry first, keep the last 10.
     10/10.
 - **OF Cataclysm budget:** my runs use 1800 s (>= 420 s).
 - **test_x4_of_loud 3/3** with the vault-marker change. test_x4_of_hard and test_of_coop_loopback are still running.
-- **RT systems audit (D-148):** coming in this file, as its own section (I own no docs/process file).
+- **RT systems audit (D-148):** below, under its own heading. I own no docs/process file, so it lives here.
+### Rolling Thunder: ENV A systems audit (D-148, paper; no RT code until the OF done check)
+Checked rolling_thunder.md (trunk) against env/a-core game/systems/**. No RT mission or map exists yet.
+
+**1. Convoy vehicles on a route (A5-02 / QC-82; §Convoy, §Budgets "≤ 8 movers"): L.**
+- Exists:
+  - AssaultTurretVan (director/events/assault_turret_van.gd): a straight-line ease-out drive-in on an AnimatableBody3D,
+    with doors and an `on_dismount` callback.
+  - AssaultEventEntity: a replicated entity (stage diffs, cues). AssaultHeli: a flight.
+  - Transforms replicate (heist_net_sync `_send_xforms`, NetEntityCodec), but clients snap: no interpolation.
+- New:
+  - A Path3D follower that brakes over the last 12 m and emits `vehicle_stopped`.
+  - Client interpolation, and seats or occupants.
+  - Nav for a stopped vehicle: maps use pre-baked navmesh, and NavigationObstacle3D only carves at bake time.
+- Deps: C (Path3Ds, the 4 ConvoyLayout marker sets, vehicle props with Seat/Body nodes).
+
+**2. Ram / mixer: S on top of 1.**
+- The ram is a convoy_vehicle on its own path with a scripted impact that raises `alarm_raised(&"ambush")`.
+- Crash layouts are pre-authored markers (doc), so no vehicle physics or damage model is needed. Explosion.apply exists.
+- Deps: C (mixer prop, crash markers), B (`cue.mixer_ram`).
+
+**3. Stopping and opening the trucks (A5-01 / QC-80/81/84; §Truck targets): M.**
+- Exists:
+  - Safe has methods drill / saw / c4 / lockpick / code / keycard, `charges_required` (A5-03), the C4 fuse and blast,
+    `saw_cut` + G.SAW_TARGET, `saw_duration_s`, `open_by_device`, and contents on LootAnchor (PO6-05).
+  - Door and Padlock reuse Safe's charge helpers. DrillPoint SAW and BurnPoint (thermite) exist.
+- New:
+  - An `armored_truck`: a Safe subclass with `lockdown()` (saw ×1.5), the truck's own hand-saw time, a roof-hatch
+    binding, LOCKPICK cab doors, and Body/DoorL/DoorR/CabDoor/RoofHatch visual nodes.
+  - QC-81: BurnPoint gets a `target` (calls `open_by_device`) and a no-fire-volume mode. It has neither today.
+  - C4 as a pickup: no generic `item_pickup` exists (keycard_pickup / gear_pickup hard-code their items), and no
+    `item.c4` pre-plan drop is registered.
+- Deps: C/D (truck mesh), B (`asset.c4_drop`, HUD item count, strings).
+
+**4. Police escort cars and spawns (QC-83b/c, QC-89; §Police spawns, §Specials): M.**
+- Exists:
+  - AssaultDirector: `valid_spawn_points` (POLICE_SPAWN + ENTRY, skips `breach_only`), LOS and crew-distance rules,
+    path-cost choice, `spawn_enemy`, `police_delay_s`.
+  - RappelLinks (QC-41 one-way links, police-only islands): covers QC-89's rappel part.
+  - Turret-van squad dismount. AnimDriver.play_vehicle_exit exists but has no caller.
+- New:
+  - A per-unit spawn-point filter (`wrecker_ok`).
+  - `police_budget()` subtracts cartel only; convoy units must count too (QC-83c).
+  - Seated-occupant spawn.
+- Deps: C (spawn / TacticalPoint placement, the P_SKY island), D (`vehicle_exit_l/_r` clips).
+
+**5. Stealth-start ambush (QC-83a/d; §Modes): M.**
+- Exists: StealthDirector.raise_alarm(reason, id); HeistMission `_on_alarm`, `schedule_at`, `spawn_guards`,
+  `start_timer`, `say`; GuardBrain `walk_to_post`.
+  - OF's `armored_car_early` is only 2 Vaultline guards walking to the gate, with no vehicle.
+- New:
+  - A public HeistMission.raise_alarm(&"ambush") (S).
+  - A seated/vehicle state on NPCs: seated pose, hitboxes by vehicle hardness (armoured cab no / soft car through
+    glass), and a timed dismount into COMBAT (M).
+  - A convoy unit that spots a masked crew member during the 8 s window raises "ambush", not a pager (S).
+- Deps: D (`sit_vehicle` and exit clips), B (VO).
+
+**6. Loot from vehicles (§Loot path): S.**
+- LootSpawn, the Safe content stow, LootBag throw, SecureZone, the `bag_only` escape, BagLift, HEAVY gold,
+  HeistMission.spawn_loot / require_loot.
+- The secure zone is static at the escape (doc), so no moving zone is needed.
+- Check: the truck's rear-step UsePoint must sit on the per-layout navmesh (depends on 1).
+
+**7. Escape (§Escape): S, polish.**
+- EscapeZone: van/heli, `arrival_delay_s`, `bag_only`, activate_escape(tag).
+- Arrival is a pop-in today. A drive-in or fly-in could reuse 1 or the AssaultHeli flight.
+
+**Holdouts and level change:** no new system. The director already picks spawns nearest the crew by path cost, so the
+fight follows the crew between H1 and H4. The stopped convoy as cover depends on 1's nav answer.
+
+**QC-88 (open-street civilians): M.**
+- Today, `civilians_leave` returns 0 once loud.
+- New: loud flee to `civ_flee` exits, then despawn; exterior mobile-phone calls via a REASON_PHONE call point and the
+  existing `phone_call` clip.
+
+**Proposed A order of work**
+1. QC-81 BurnPoint target and no-volume mode (S).
+2. HeistMission.raise_alarm, convoy units in police_budget, and the wrecker_ok filter (S).
+3. A5-01 armored_truck (M).
+4. Generic item_pickup + the c4 pre-plan drop (S-M).
+5. QC-83 seated occupants and dismount (M).
+6. A5-02 convoy_vehicle with interpolation and the mixer ram (L).
+7. QC-88 (M).
+8. rolling_thunder_mission.gd after C's G1 (M).
+
+**Questions for the lead / C**
+- (a) Nav for stopped vehicles: should C bake one navmesh region set per layout (A switches them), or should A rebake at
+  runtime?
+- (b) Do seated convoy units count against the enemy cap, or only once they dismount?
+- (c) For G1, is "seated = not hittable until dismount" acceptable?
+- (d) Are client interpolation and the escape drive-in in A5-02's scope, or polish?
+- (e) Who authors the vehicle props with Seat / Body / Door / RoofHatch / LootAnchor nodes: C or D?
+
 ### (0) OF-done blocker "bond_safe / deposit_boxes not reachable" (Cataclysm loud): fixed in the mission, 6fcbb559
 - Cause: both side objectives were ACTIVE from the start, with markers inside the sealed vault.
   - BondSafe (14.7, -4, 20.5) and the vault-wall boxes (VaultBoxN01 = (15.0, -3.0, 13.3)) sit behind the vault's west
