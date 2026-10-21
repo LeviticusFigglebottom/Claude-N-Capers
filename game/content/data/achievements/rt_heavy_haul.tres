@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.rt_heavy_haul"
+name_key = &"achievement.rt_heavy_haul.name"
+desc_key = &"achievement.rt_heavy_haul.desc"
+condition = {"event": &"heist_completed", "heist": &"rolling_thunder", "loot_min": {&"loot.gold": 4}, "count": 1}
+unlock = &""
+order = 781
+category = &"rolling_thunder"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

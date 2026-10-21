@@ -2794,6 +2794,18 @@ item.asset.intel_route.desc,"You know which way the convoy comes in, and where t
 item.asset.c4_drop.name,C4 drop
 item.asset.c4_drop.desc,"Four breaching charges left at the drop point. Faster than the saw on a truck door."
 ui.achievements.category.rolling_thunder,Rolling Thunder
+achievement.rt_clean_stop.name,Clean Stop
+achievement.rt_clean_stop.desc,"Clear Rolling Thunder with the junction signals rigged: the convoy stops on the red."
+achievement.rt_heavy_haul.name,Heavy Haul
+achievement.rt_heavy_haul.desc,"Secure four bags of gold on Rolling Thunder."
+achievement.rt_full_convoy.name,Nothing Left on the Road
+achievement.rt_full_convoy.desc,"Secure every bag the convoy carried on Rolling Thunder."
+achievement.rt_iron_crew.name,Iron Crew
+achievement.rt_iron_crew.desc,"Clear Rolling Thunder on Hazardous or higher without anyone going down."
+achievement.rt_quick.name,Green Light
+achievement.rt_quick.desc,"Clear Rolling Thunder in under 15 minutes."
+achievement.rt_cataclysm.name,End of the Line
+achievement.rt_cataclysm.desc,"Clear Rolling Thunder on Cataclysm."
 ui.briefing.step.rolling_thunder.setup,"Rig the junction signals, and raid the site stores if there is time"
 ui.briefing.step.rolling_thunder.trucks,Open the trucks and bag the cargo
 ui.briefing.sec.event.rolling_thunder.marshal_early,the route marshal is early and walks two checks
