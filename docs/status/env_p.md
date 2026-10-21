@@ -2,7 +2,7 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 08:50 UTC)
+## To the LEAD: (updated 2026-10-21 09:20 UTC)
 - **GAME BUG FIXED (P's own, 0d0a1ab0): crew capsules were shared.** crew_member.tscn's CapsuleShape3D sub-resource was one shape for every
   crew member. Whenever anyone crouched, all the others' capsules shrank to 1.2 m under their 0.9 m standing offset, and they sank 0.30 m into the
   floor (until that crew member stood). Found with a watchdog in GH Tense 4502 (C showed the kerb itself is only 0.15 m and clean): at t=11.8,
@@ -16,6 +16,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   send_lift 0.74 m + LandingPanel1 call_lift 0.76 m, CashLift send_lift 1.09 m + LandingPanel1 1.01 m. Gated by design: LidDrill aims
   correctly at 1.51 m but is `ui.blocked.requires_item` (drill parts); the 40 Hall/Vault deposit boxes are saw-opened (take_loot is enabled after the
   cut); TimeLockConsole is disabled because the shortcut opened the vault door. The vault door itself was not swept (the shortcut opened it).
+- **GH Tense on r257 (70471c50, with the capsule fix): 2/3 WIN, downs 1/3/3, median 3**, still over the D-145 target (≤2). The sink is gone (the pilot never
+  goes below the road, y ≥ −0.1), and so are the t≈82 downs (first downs t=270/275/131). What remains is loud difficulty plus pilot snags in A's
+  auto_loud pilot (9-10 STUCK per run: the stairs at (9.9, 0, 5.0) toward a point 4.4 m up, Bulwark shields). The bots now move differently, so
+  each run's path differs from r256. Your call: is median 3 on Tense with this pilot acceptable, or a tuning ask for A? Table: tense_r257/.
 - **GH Tense on r256 (3312326b + P): 2/3 WIN, downs 2/3/3, median 3**, still over the D-145 target (≤2). The Longshot cap/timing didn't bring
   it back to r251's median 1. 4502's first down is still very early (t=82 vs ~245 on r251; on r255 t=79), so whatever moved it is in r255, not r256.
   4502 won with the pilot in custody. Suspects (LEAD): the nav-cap lift (cops path differently) or the GPU-17 hitch regression.
@@ -38,7 +42,15 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   gate wait because is_open was true, and walked into him. Harness: the gate wait now runs whether it's open or not. **Ghost now on r256** (3312326b + P).
   r256a: step 1 PASS. Step 2: guard timings shifted on r256 (smoke cue t=88 vs 66), and rover_hall (Npc_guard3) stood in LD 5 m inside the dock door
   when the pilot lockpicked it (doc: rover_hall loop (b) checks LD). Harness: a smoke window with a guard in LD is skipped for the next one.
-  r256b is running.
+  **r256b/c: steps 1-4 PASS, and step 5's core works**: gate swiped with the keycard (t=505), laser crossed, code entered at the time lock (t=513),
+  laser recrossed, all unseen. Both runs were then seen leaving: the vault guard had only been on BB's east leg, 13-20 s from the gate. Harness: wait
+  until he's deep in loop (b) (RC, x < 12 or z > 13.5; in r256c that leg ran t 347-377). r256d: steps 1-4 PASS. He made two RC trips (t 347-377 and
+  557-597), but both windows were held by Cataclysm's extra BB guards walking x 28-36 (counted within 20 m with no LOS). Walkers now count
+  within 12 m, or within 20 m with LOS. r257a (r257 70471c50 + P): steps 1-4 PASS, and the gate cleared after 36 s on the vault guard's first RC trip.
+  rover_basement, out of LOS east at that moment, turned back west down BB and saw the pilot at the gate (t=358). Now walkers within 20 m that are
+  closing on the gate count too (doc: 'rover_basement is east'). r257b: the same failure (he was likely standing in SD, out of LOS, when the wait cleared).
+  No snapshot rule predicts that, so now the pilot walks LK → gate in legs (BB west, the core, the gate), peeks before each one, and retreats
+  to LK if a guard shows up (≤ 4 tries). r257c is running.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement

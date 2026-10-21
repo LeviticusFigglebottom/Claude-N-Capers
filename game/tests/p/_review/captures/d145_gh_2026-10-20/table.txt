@@ -28,3 +28,8 @@ Tense seed=4503 rc=0 downs=2 custody=0 win_lines=1 | [PO5 289.9s] RESULT PASS (c
 Tense seed=4501 rc=0 downs=2 custody=0 win_lines=1 | [PO5 345.9s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4501
 Tense seed=4502 rc=0 downs=3 custody=1 win_lines=1 | [PO5 315.9s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4502
 Tense seed=4503 rc=1 downs=3 custody=1 win_lines=0 | [PO5 399.1s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4503
+
+# Tense on trunk r257 70471c50 (+ P's shared-capsule fix), solo + 3 bots, headless: 2/3 WIN, downs 1/3/3 (median 3; target <=2 still missed). No sinking (pilot min y 0.0/-0.1 = road). First downs t=270/275/131 (r256: 281/82/298).
+Tense seed=4501 rc=0 downs=1 custody=0 win_lines=1 | [PO5 297.7s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4501
+Tense seed=4502 rc=1 downs=3 custody=1 win_lines=0 | [PO5 574.1s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4502
+Tense seed=4503 rc=0 downs=3 custody=0 win_lines=1 | [PO5 306.5s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4503

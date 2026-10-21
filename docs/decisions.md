@@ -1442,3 +1442,38 @@ PO: "Proceed with all your recommended options."
 4. **Hardest-difficulty OF loud vs the AI pilot** (Haz 0/3, Cata 0/2 with real bots): accepted as a harness limit; no
    tuning for it. Human playtests decide later.
 5. **Reuse-first (D-147)** applies to RT from day one.
+
+## D-149: Rolling Thunder paper rulings (QC-RT1..11, escort looks) (2026-10-21, LEAD)
+Rulings on C's `docs/process/next_heist_rolling_thunder.md` §8 and D's cast note (env/d-art 3411484a). Each item
+takes the recommendation the env gave.
+1. **QC-RT1 convoy nav:** pre-baked nav regions per convoy layout, swapped at the stop. The same applies to the mixer
+   and the Tannery gate. No runtime rebake (heist_map v1.4, D-121). A adds a TacticalPoint `enabled` flag.
+2. **QC-RT2 bullion hatch:** a ground-level thermite point on the truck's rear doors. No truck-roof traversal.
+3. **QC-RT3 size:** M (15-25 min). It sets the e2e budgets and the D-120 checks. Base XP is 2,000 (D-148).
+4. **QC-RT4 P5 gate:** RT has no stealth win. Its gate is a clean-setup run instead of a ghost run: signals rigged,
+   marshal handled, no early alarm.
+5. **QC-RT5 path cap:** A's uncapped NavPath has been on trunk since round 255 (ffc264d4). C's ≤ 3,500-polygon target is
+   an early warning, not a hard G1 rule.
+6. **QC-RT6:** the D-147 substitutions (trees, dumper, bus, jukebox, cycle racks, bunting, wheel stops) are accepted.
+   C updates the design doc.
+7. **QC-RT7:** civilians reuse `civilians_leave` plus sidewalk call points. No new flee-exit system.
+8. **QC-RT8:** the convoy and mixer drive in (≤ 8 movers, then static), and the escape van pops in.
+9. **QC-RT9:** the early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window stay, labelled as original
+   (not PD2-sourced) in pd2_fidelity.
+10. **QC-RT10:** C may write the `--check`-only plan scripts (`tools/levelcheck/plans/rolling_thunder_*.py`) before
+    the OF done check. Paper only: no map.
+11. **QC-RT11:** D-147 and D-148 are already in this file.
+12. **Escort looks (D):** `convoy_lead` and `convoy_rear` are carved out of the "every spawn tag maps to a look" rule.
+    They are EnemyDefs, so NpcVisuals resolves them by difficulty (D-145.3 duty looks, faction reskins, tac_heavy).
+    A adds a test that they never get a capsule.
+
+## D-150: OF ghost acceptance difficulty (2026-10-21, LEAD)
+P's ghost line (seed 1002): steps 1-4 pass on every run, and step 5's gate, lasers and time lock work unseen. At
+Cataclysm (8 guards, D-140), BB has no window with both rover_basement and the vault guard away (r257d: three
+windows in 700 s, each under 4 s). PD2's top-difficulty bank stealth relies on kills within the pager cap rather
+than pure ghosting. Ruling:
+1. **The no-kill ghost acceptance runs on Hazardous** (6 guards). That is the OF ghost gate for the done check.
+2. **On Cataclysm, the stealth acceptance is a stealth win.** Guard kills are allowed within the pager cap (D-140), plus
+   body bagging. Patrols are not lengthened to make a Cataclysm ghost possible. Density is the difficulty lever.
+3. If the Hazardous ghost also finds no BB window, C and A lengthen rover_basement's away leg at that difficulty
+   only.

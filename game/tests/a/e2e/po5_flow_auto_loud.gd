@@ -22,7 +22,8 @@ const CLEAR_RANGE_M: float = 20.0
 ## Longest fight before picking the bag back up anyway, and the walk leg between threat checks (s).
 const CLEAR_LIMIT_S: float = 40.0
 const CARRY_LEG_S: float = 4.0
-## _lift_bag: a hoist landing this close (m, on the crew's floor) takes a bag the route would carry up a ladder; tries.
+## _lift_bag: a hoist landing this close (m, on the crew's floor) takes a bag the route would carry up a ladder; failed
+## tries in a row before the pilot gives up on the hoist.
 const LIFT_NEAR_M: float = 15.0
 const LIFT_TRIES_MAX: int = 6
 ## Give up carrying one bag to the van after this long (s).
@@ -771,6 +772,8 @@ func _lift_bag() -> bool:
 	await p.use(panel, 10.0, func() -> bool: return lift.is_moving())
 	f.note("hoist: %s sent from landing %d with %d bag(s) (t=%.0f)" % [lift.name, li, lift.bags_in_car().size(),
 		rt.heist_time_s])
+	if lift.is_moving():
+		_lift_tries = 0  # the cap counts failed tries in a row, not trips
 	return lift.is_moving()
 
 

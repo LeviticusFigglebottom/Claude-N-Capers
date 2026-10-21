@@ -4,6 +4,72 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-9) Merge ask: env/a-core 60d8c6ab (pilot engage() vs freed target) for the next round
+- ENV B hit signal 11 in po5_pilot.engage again: plain DB Tense s2 on trunk r257 70471c50, which does not carry the
+  fix. The crash kills the run.
+- B is re-running on r257 + 60d8c6ab (cherry-picked) for now. r257 plain so far: s1 custody at 642 s (3 downs),
+  s3 PASS at 889 s.
+### (-8) OF hoist-carry validation: two more blockers found and fixed, re-run going (09:15 UTC)
+- **hoist2** (headless OF Cataclysm 1037, 1700 s, CREW_DMG=0, 0210e889c): the pilot's hoist routine works.
+  - It made 6 trips ("hoist: Hoist sent from landing 0 with 1 bag(s)"), and cash was secured at t=721 and t=725.
+  - The run still ended "no heist end within 1500 s": only 2 of 6 bags were secured.
+- **Game fix (crew AI, d6163c75f): bots took the bags out of the hoist car.**
+  - The PO6-14 rule fetches any bag a human just threw (G / drop_bag is a throw), and that included bags thrown into
+    the hoist car. Slots 1-3 then stood at the rope ladder with the cash for 4 min, since a carried bag can't climb.
+  - Now a thrown bag lying in a BagLift car rides the lift. New test test_of_bot_leaves_a_bag_in_the_hoist_car fails
+    without the fix. po6_14 7/7, l6 15/15, a3_09 bag lift 8/8, po6_15 4/4.
+- **Pilot:** the hoist try cap counted trips, not failures, so the pilot gave up after 6 good sends. Fixed.
+- **Your call:** a cop in melee range (0.4 s windup + 3.0 s cooldown) cancels every empty-mag reload (3.5-7 s).
+  - The pilot sat at 0/131 for 140 s. It now draws its loaded sidearm, else melees (0210e889c).
+  - Real players hit the same lockout, and it is PD2-like (a melee shove cancels a reload), so I'm proposing no change.
+- **hoist3 is running** with all of this. The GPU command follows when it passes.
+### (-7) D-149 A items: QC-RT1 needs one contract edit from you; the escort-look test is in
+- **(1) QC-RT1 TacticalPoint `enabled`:** `game/contracts/map/tactical_point.gd` is LEAD-owned, so here is the patch,
+  verified locally and not committed.
+  - Off = out of its kind's group. Every consumer reads the groups live (HeistMap.get_slots / get_nodes_in_group:
+    AssaultDirector.valid_spawn_points, police / crew / suppression cover, flank, perches, RappelLinks, Bulwark
+    anchors, AegisCaptain), so no consumer changes.
+  - Default true, so maps are unchanged.
+  - Test: game/tests/a/test_rt_tactical_point_enabled.gd (on env/a-core). It SKIPs "pending the LEAD contract"
+    until you apply the patch, then passes: 2/2 with the patch applied locally.
+```diff
+--- a/game/contracts/map/tactical_point.gd
++++ b/game/contracts/map/tactical_point.gd
+@@ -14,6 +14,26 @@ const _GROUPS: Dictionary = {
+ @export var tags: Array[StringName] = []
+ ## For ENTRY points: is this a breachable window/door (VariantSlot may toggle).
+ @export var breachable: bool = false
++## D-149 QC-RT1: off = out of its kind's group, so no consumer sees it (every lookup reads the groups live). Missions
++## toggle it when a pre-baked nav region swaps in (RT convoy layouts, the mixer, the Tannery gate).
++@export var enabled: bool = true:
++	set(v):
++		enabled = v
++		if is_inside_tree():
++			_sync_group()
++
+ 
+ func _ready() -> void:
+-	add_to_group(_GROUPS[kind])
++	_sync_group()
++
++
++func set_enabled(on: bool) -> void:
++	enabled = on
++
++
++func _sync_group() -> void:
++	var g: StringName = _GROUPS[kind]
++	if enabled and not is_in_group(g):
++		add_to_group(g)
++	elif not enabled and is_in_group(g):
++		remove_from_group(g)
+```
+- **(12) Escort looks:** game/tests/a/test_rt_convoy_looks.gd asserts that enemy.convoy_lead / convoy_rear have a
+  character scene (NpcVisuals.def_scene_paths) on every difficulty, so never a capsule. It SKIPs until the EnemyDefs
+  exist (RT systems, after the OF done check).
+- **D's npc_visual_tweak RT rows:** when prep/d-rt merges.
+- **OF first:** the hoist-carry validation run is going (headless 1037, 1700 s). The GPU command follows when it
+  passes.
 ### (-6) OF-done items 1 and 2 (your GPU-18 message)
 **1. BondSafe: verified.** Headless OF Cataclysm 1037 auto_loud on env/a-core 13d889844, `FOCUS=bond_safe`
 (new --po5-focus), CREW_DMG=0:

@@ -1624,9 +1624,14 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, ext
 				continue
 			var id: int = g.get_instance_id()
 			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
-			last[id] = g.global_position
 			var d: float = pilot.flat_dist(g.global_position, spot)
-			if d < 8.0 or (d < 20.0 and (moving or _sees_core(g, spot))):
+			var closing: bool = moving and pilot.flat_dist(last[id], spot) - d > 0.05
+			last[id] = g.global_position
+			# Walkers count within 12 m; out to 20 m only with LOS to the spot (r256d: Cataclysm's extra BB guards walking
+			# x 28-36 held both of the vault guard's RC windows, t 347-377 and 557-597).
+			# ...and any walker within 20 m heading this way (r257a: rover_basement out of LOS east at the 'clear', back
+			# west down BB to the gate 5 s later; doc: 'rover_basement is east').
+			if d < 8.0 or (moving and d < 12.0) or (d < 20.0 and (closing or _sees_core(g, spot))):
 				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
 		if not near.is_empty() and not hidden:
 			hidden = true
@@ -1658,9 +1663,9 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, ext
 	note("GHOST %s NOT clear after 300 s (going anyway)" % label)
 
 
-## Doc §5: the vault guard is on loop (b) (RC) or (c) (SD, CP), not on (a) in VC: outside VC and > 12 m from the gate on
-## two samples in a row (r256b: "clear" while he stood out of sight at VC's east end, back at the gate 20 s later).
-func _vault_guard_off_vc(gate: Door) -> bool:
+## Doc §5: the vault guard is on loop (b) (RC, west of BB / south): two samples in a row (r256b/c: "clear" while he was on
+## VC's / BB's east end, back at the gate 13-20 s later).
+func _vault_guard_off_vc(_gate: Door) -> bool:
 	var vg: NpcBase = null
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
@@ -1671,10 +1676,29 @@ func _vault_guard_off_vc(gate: Door) -> bool:
 				vg = g
 	if vg == null:
 		return true
+	# Away = deep in loop (b)'s RC (west / south of BB), not merely out of VC: r256c went at "out of VC, > 12 m" with him
+	# on BB east (31.7, 8.3), 13 s from the gate again. Loop (b) in r256c: RC at t 347-377, back at the gate t 387.
 	var p: Vector3 = vg.global_position
-	var in_vc: bool = absf(p.y - OF_FFL[0]) < 1.5 and p.x > 16.0 and p.x < 34.0 and p.z > 6.5 and p.z < 13.5
-	_vg_away_n = _vg_away_n + 1 if not in_vc and pilot.flat_dist(p, gate.global_position) > 12.0 else 0
+	var away: bool = absf(p.y - OF_FFL[0]) < 1.5 and (p.x < 12.0 or p.z > 13.5)
+	_vg_away_n = _vg_away_n + 1 if away else 0
 	return _vg_away_n >= 2
+
+
+## Step 5's peek before each leg of the LK -> gate walk: a guard walking within 20 m who sees the pilot or closes on the
+## gate, or the vault guard back off his RC leg. "" when the next leg is safe.
+func _gate_threat(gate: Door) -> String:
+	if not _vault_guard_off_vc(gate):
+		return "vault guard not on RC"
+	var me: Vector3 = pilot.crew.global_position
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
+			continue
+		var d_me: float = pilot.flat_dist(g.global_position, me)
+		var d_gate: float = pilot.flat_dist(g.global_position, gate.global_position)
+		if d_me < 8.0 or (d_me < 20.0 and _sees_core(g, me)) or d_gate < 8.0:
+			return "%s %s (%.0f m)" % [g.name, Po5Pilot._v(g.global_position), d_me]
+	return ""
 
 
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
@@ -2602,7 +2626,23 @@ func _g5_vault() -> bool:
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate != null:  # open or not (r255d: the vault guard's loop (b)/(c) left it open; no wait, walked into him in VC)
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide(), _vault_guard_off_vc.bind(gate))
+		# A player walks LK -> gate in legs and peeks before each, retreating to LK when a guard shows up (r257a/b: the
+		# 'clear' was right, then rover_basement stepped out of SD into BB and met the pilot at the gate 5 s later).
+		var hide: Vector3 = _lk_hide()
+		var legs: Array[Vector3] = [_of(Vector3(8.0, OF_FFL[0], 8.2)), _of(Vector3(13.5, OF_FFL[0], 8.2))]
+		for attempt: int in 4:
+			await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", hide, _vault_guard_off_vc.bind(gate))
+			var ok: bool = true
+			for leg: Vector3 in legs + [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0))]:
+				var who: String = _gate_threat(gate)
+				if who != "":
+					note("GHOST vault gate approach %d: %s, back to LK" % [attempt + 1, who])
+					ok = false
+					break
+				await _go(pilot.stand_point(leg), 0.5, 30.0)
+			if ok:
+				break
+			await _go(hide, 0.4, 60.0)
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid

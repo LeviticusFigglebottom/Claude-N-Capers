@@ -28,6 +28,8 @@ const LINE_DOOR_M: float = 1.0
 ## shoots_from_floor: at most this many alive enemies within FLOOR_FIGHT_M (m) for a downed pilot to fight back.
 const FLOOR_FIGHT_MAX: int = 3  # LEAD: hold fire with 4+ enemies near
 const FLOOR_FIGHT_M: float = 20.0
+## engage(): with an empty mag, an enemy this close (m) gets the other weapon or a melee strike (_close_quarters).
+const CLOSE_QUARTERS_M: float = 2.5
 const THROUGH_LOOKAHEAD_M: float = 4.0
 ## goto: standing at the end of a nav path that stops this far (m, flat) short of the target = unreachable (OF-X2).
 const UNREACHABLE_M: float = 2.0
@@ -997,15 +999,25 @@ func has_los(point: Vector3, target: Node = null) -> bool:
 ## Aim at the head and fire in short bursts for up to `max_s` or until it dies / leaves sight.
 func engage(npc: NpcBase, max_s: float) -> void:
 	var t: float = 0.0
-	while t < max_s and npc.is_alive():
+	# B (DB Tense r256 s1, doctor-bag cell): signal 11 at the fire loop's await; the target can be freed (killed and
+	# cleaned up) during any await here, so check it after each one.
+	while t < max_s and is_instance_valid(npc) and npc.is_alive():
 		var aim_pt: Vector3 = _aim_point(npc)
 		if aim_pt == Vector3.INF:
 			break
 		await face(aim_pt, 0.03, 0.25)
-		if not has_los(aim_pt, npc):
+		if not is_instance_valid(npc) or not has_los(aim_pt, npc):
 			break
 		if not await _ensure_ammo():
-			break  # both weapons dry: nothing to shoot with
+			# Headless OF 1037: a cop in melee range (strike every 0.4 + 3.0 s) cancels every 3.5 s+ empty reload, so
+			# the pilot sat at 0/131 for 140 s. Like a PD2 player: the loaded sidearm, else a melee strike.
+			if not is_instance_valid(npc) or npc.global_position.distance_to(crew.global_position) > CLOSE_QUARTERS_M:
+				break  # both weapons dry: nothing to shoot with
+			await _close_quarters(npc)
+			t += 0.5
+			continue
+		if not is_instance_valid(npc):
+			break
 		inp.press(&"fire")
 		await inp.ticks(2)
 		inp.release(&"fire")
@@ -1013,6 +1025,23 @@ func engage(npc: NpcBase, max_s: float) -> void:
 		await inp.ticks(6)
 		t += 0.25 + 8.0 * dt()
 	inp.release(&"fire")
+
+
+## An enemy in reach and an empty mag that a melee keeps cancelling: swap to the other weapon when its mag is loaded,
+## else strike (melee) at the enemy's chest.
+func _close_quarters(npc: NpcBase) -> void:
+	var w: CrewWeapons = crew.weapons
+	var other: int = Enums.WeaponSlot.PRIMARY if w.equipped_slot == Enums.WeaponSlot.SECONDARY \
+		else Enums.WeaponSlot.SECONDARY
+	if w.has_weapon(other) and w.mag(other) > 0:
+		d.note("pilot: %s in reach with an empty mag: drawing the %s" % [npc.name, w.weapon_id(other)])
+		await inp.tap(&"slot_primary" if other == Enums.WeaponSlot.PRIMARY else &"slot_secondary")
+		await inp.ticks(30)  # draw
+		return
+	d.note("pilot: %s in reach with an empty mag: melee" % npc.name)
+	await face(npc.global_position + Vector3(0, 1.2, 0), 0.08, 0.3)
+	await inp.tap(&"melee")
+	await inp.ticks(30)
 
 
 ## P's GN-P1 rerun (b): the pilot sat at 0/90 firing an empty gun. Like a player: an empty mag with reserve left is
