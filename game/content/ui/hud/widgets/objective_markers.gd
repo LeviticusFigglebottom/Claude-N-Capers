@@ -257,9 +257,15 @@ func _glyph(kind: StringName, c: Vector2, u: float, col: Color) -> void:
 			draw_colored_polygon(pts, col)
 
 
+## r252 GPU loud run: a badge clamped to the screen edge drew its centred label half off-screen ("URRET VAN"); the
+## label x stays inside [margin, width - margin] (the badge itself stays where it is).
+static func label_x(center_x: float, w: float, width: float, margin: float = 6.0) -> float:
+	return clampf(center_x - w * 0.5, margin, maxf(margin, width - w - margin))
+
+
 func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 	var w: float = _font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-	var at: Vector2 = center - Vector2(w * 0.5, 0)
+	var at: Vector2 = Vector2(label_x(center.x, w, size.x, UiBuild.LABEL_SCRIM_PAD.x + 2.0), center.y)
 	if avoid.has_area():
 		# Lane 2 audit: over the Tab sheet a label crossed its text (LOOT SECURED); there only the badge shows.
 		var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * avoid

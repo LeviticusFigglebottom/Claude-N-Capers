@@ -3,7 +3,23 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 04:00; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 05:00; send_message to you is refused, so read this)
+-2. **New: GPU-9 review (gpu/renders/b): fixed on env/b-content.**
+   - 1080p real-input OF (13 shots): clean. Loud OF HUD (6 shots): the Turret Van event marker clamped to the left
+     edge drew its label off-screen ("URRET VAN") -> labels of objective and assault-event markers now stay inside the
+     screen (ObjectiveMarkers.label_x; test_assault_events).
+   - Loud payday at 720p: the third achievement description ran under the fold -> payday descriptions cap at 2 lines
+     with an ellipsis (the trimmed tail repeats the REWARD line). Evidence _review/r252_gpu_review (before/after).
+   - The 6 "QA ISSUE overlap" lines (payday title / Heist complete x the achievement toast) are rect false positives:
+     full-width labels under the toast, no text overlap in the shots.
+   - of_run_capture + crew_capture now keep profiles under user:// (they wrote profiles/ into the out dir).
+   - For A (not B): with a saw running on the cash-cage padlock the prompt says "Press F to open / Can't do that right
+     now" (ui.blocked.state); a device-running reason fits better, and B's ui.blocked.device_running string reads "The
+     drill is running", so a per-device key (or a neutral "Already being cut") is needed if A switches to it.
+-1. **New: D-144 next-heist prep notes (RT + Afterhours)**: `game/content/docs/next_heist_prep_rt_ah.md`. Both heists
+   have only menu stubs on B's side (hidden heist_list entries, board, accents) plus objective strings for every doc
+   tag (13 / 12); loot defs and contacts exist. Missing: everything map-derived (no world dir yet: intel, blueprint),
+   voice lines (0), achievements (0), briefing step strings, music, def values. Order of work listed there.
 0. **New: D-145 DB Tense on A's revive fix 0f317b90 + trunk e91fa3c0: 1/3, revives now land** (player revived 3/4/4).
    s2 PASS 1126 s; s1 custody 451 s and s3 custody 513 s, both after the player's three downs (not unrevived
    bleed-outs). Tense on DB now fails on player damage, not revive logic. r252 merged (c94bed27): briefing_intel 14,
