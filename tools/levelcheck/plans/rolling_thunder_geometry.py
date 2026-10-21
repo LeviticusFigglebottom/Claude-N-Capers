@@ -42,6 +42,10 @@ DINER_ROOF = 7.0
 CABIN_TOP = 2.65  # cabin ceiling (Room list 2.6)
 SITE_SLAB = (3.2, 3.5)  # the frame's first-floor slab (FG 3.2 m clear)
 HOARDING_H = 2.4
+# The Orchard man-gate's 1.2 x 1.0 m mesh vision panel (doc site notes; RT plan §7.6: in `see_through`), LOCAL z on the
+# hoarding E line, y. G1: in the hoarding beside the gate (a Door leaf is see-through only when it is glass, D-142), on
+# the cabinet -> sidewalk sight line's north edge; LEAD review (the doc draws it in the gate).
+MANGATE_PANEL = (38.1, 39.3, 1.0, 2.0)
 YARD_WALL_H = 2.4
 PALISADE_H = 1.8
 RAIL_Y = 1.2
@@ -803,7 +807,7 @@ def site() -> Tuple[List[list], List[list]]:
     hz = [
         ("N", "x", 0.0, 0.0, 46.0, []),
         ("W", "z", 0.0, 0.0, 45.0, []),
-        ("E", "z", 46.0, 0.0, 45.0, [(10.3, 12.3), (12.7, 14.7), (39.4, 40.6)]),
+        ("E", "z", 46.0, 0.0, 45.0, [(10.3, 12.3), (12.7, 14.7), MANGATE_PANEL[:2], (39.4, 40.6)]),
         ("S", "x", 45.0, 0.0, 46.0, [(24.3, 26.3), (26.7, 28.7)]),
     ]
     for nm, axis, fixed, a0, a1, gaps in hz:
@@ -842,6 +846,14 @@ def site() -> Tuple[List[list], List[list]]:
                     )
                 )
         for g0, g1 in gaps:  # the gate heads (2.2 m openings in the 2.4 m hoarding)
+            if (g0, g1) == MANGATE_PANEL[:2]:   # the vision panel: hoarding below and above, the mesh in between
+                y0, y1 = MANGATE_PANEL[2:]
+                xa, xb = fixed - HOARD_T / 2 + sx, fixed + HOARD_T / 2 + sx
+                b.append(box("Hoarding", "ManGatePanelSill", xa, 0.0, g0 + sz, xb, y0, g1 + sz, "trim"))
+                b.append(box("Hoarding", "ManGatePanelHead", xa, y1, g0 + sz, xb, HOARDING_H, g1 + sz, "trim"))
+                b.append(box("Hoarding", "ManGatePanel", fixed - 0.02 + sx, y0, g0 + sz, fixed + 0.02 + sx, y1, g1 + sz,
+                             "mesh"))
+                continue
             if axis == "x":
                 b.append(
                     box(

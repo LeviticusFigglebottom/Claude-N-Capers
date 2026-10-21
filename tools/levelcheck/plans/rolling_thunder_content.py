@@ -176,7 +176,8 @@ GATES: List[list] = [
         -1,
         "S",
         "BARRED",
-        {"todo": "TODO(A5-02): opens when the mixer leaves"},
+        {"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
+         "opens_with": "mixer_move"},
     ],
     [
         "SiteTanneryGateE",
@@ -185,7 +186,8 @@ GATES: List[list] = [
         1,
         "S",
         "BARRED",
-        {"todo": "TODO(A5-02): opens when the mixer leaves"},
+        {"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
+         "opens_with": "mixer_move"},
     ],
 ]
 

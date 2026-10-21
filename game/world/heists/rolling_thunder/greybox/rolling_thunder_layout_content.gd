@@ -162,11 +162,17 @@ const DOORS: Array = [
 	["SiteVehicleGateS", "SG", [-14.0, 0.0, -42.3], -90.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8, {}],
 	[
 		"SiteTanneryGateW", "SG", [-34.7, 0.0, -11.0], 180.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,
-		{"todo": "TODO(A5-02): opens when the mixer leaves"},
+		{
+			"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
+			"opens_with": "mixer_move",
+		},
 	],
 	[
 		"SiteTanneryGateE", "SG", [-32.3, 0.0, -11.0], 180.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,
-		{"todo": "TODO(A5-02): opens when the mixer leaves"},
+		{
+			"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
+			"opens_with": "mixer_move",
+		},
 	],
 	[
 		"RailLaneGate", "X5", [60.0, 0.0, -72.0], 0.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,

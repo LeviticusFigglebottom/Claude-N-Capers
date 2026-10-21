@@ -35,6 +35,7 @@ const CLASS_MAT: Dictionary = {
 	"roof": "grey_floor", "ceiling": "grey_ceiling", "stair": "grey_stair", "glass": "grey_glass",
 	"counter": "grey_counter", "prop": "grey_prop", "trim": "grey_trim", "frame": "grey_frame", "paving": "grey_floor",
 	"asphalt": "grey_floor", "door": "grey_door", "handrail": "grey_trim", "rail": "grey_frame",
+	"mesh": "grey_frame",
 }
 ## Not-standable guard tops (D-104 `slopes`): class "rail" boxes get a ridged collider (world/kits/ridge_top.gd).
 const RT: GDScript = preload("res://world/kits/ridge_top.gd")
@@ -144,8 +145,9 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, cls: String) -> S
 
 ## Clear glazing (all greybox glass is clear at G1): meta `see_through` (levelcheck) + the persistent group
 ## `see_through` (D-142: vision passes it; it still blocks movement and bullets).
+## (class "mesh": a steel mesh panel, e.g. the RT man-gate's vision panel, is see-through the same way)
 static func _glaze(body: StaticBody3D, cls: String) -> void:
-	if cls == "glass":
+	if cls == "glass" or cls == "mesh":
 		body.set_meta(&"see_through", true)
 		body.add_to_group(&"see_through", true)
 
