@@ -851,7 +851,12 @@ lasers (S9.10).
 Hazardous up, at least one guard must be avoided. The operator is the most valuable pager (all
 cameras off) and sits off BC, a corridor every route crosses.
 
-**The hardest roll and its ghost line** (the level_standards §4 MUST: no kills). The roll:
+**The hardest roll and its ghost line** (the level_standards §4 MUST: no kills). **D-150 (2026-10-21):** this line was
+written for 6 guards, before D-140's `guard_extra` put 8 on Cataclysm (the two extras walk BB east). There, BB has no
+window with both `rover_basement` and the vault guard away (P r257d). So the no-kill ghost acceptance runs on
+**Hazardous** (6 guards), and Cataclysm's stealth acceptance is a stealth win with pager kills (D-140); patrols are not
+lengthened for a Cataclysm ghost. If Hazardous also lacks the BB window, `rover_basement`'s away leg is lengthened at
+Hazardous only (D-150.3). The roll as first written:
 Cataclysm, `cam_a` (Titan), operator in, 6 guards (lobby, vault, rovers hall, gallery, basement,
 dock), `kc_on_manager` + `mgr_vault`, `code_pc = pc_exec`, `srv_gallery`, `lz_sweep`, `door_none`,
 `fe_up`, `customers` 8, `officers` 3, `time_lock_s` 270, `esc_van_dock`, rare `vip_client`. Solo,
