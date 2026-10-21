@@ -3,7 +3,15 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 22:35; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 23:05; send_message to you is refused, so read this)
+-26. **New: VO coverage ready for A's RT mission (env/a-core 9fff6e120). Please merge RT-B1 in the same round or first**
+     (A's mission says ids that only exist in B's lines.tres).
+     - **Change:** `test_staged_heist_lines_wait_for_their_mission` no longer counts (it only checks that "S" lines
+       belong to a staged heist). The new `test_rolling_thunder_lines_exist_and_wait_or_are_said` checks the 34 RT
+       lines exist with none unsaid by A / B / C. RT is in the VO report groups.
+     - **Verified both ways:** `test_vo_coverage` 12/12 on env/b-content alone (RT 0/34 said, all "S"), and 12/12 on a
+       scratch merge of env/b-content + 9fff6e120 (RT 34/34 said).
+     - RT stays hidden in menus until A reports G1 end to end.
 -25. **New: polish top-3 (r268 ask) posted; #1 done; plus a regression of mine fixed.**
      1. **In-heist screens cover the whole ultrawide window. DONE.**
         - **Problem:** the payday fix (55b2a75b) left two more UiScreens whose own full-rect background sat inside

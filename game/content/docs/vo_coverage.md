@@ -8,7 +8,7 @@ A line is said when a trigger site can emit its id: a literal id in game code or
 (`%s` = one identifier), or one of B's builders (ContactRadio from each heist's HeistDef and mission
 objective calls; BriefingModel.voice_lines). Owner = whose code must say it (B: briefing / radio;
 C: heist mission lines; A: barks, acks and system lines; B reserve: generic radio lines no current heist
-reaches, kept for RadioTweak.speaker_overrides and new heists). Heists iterated: dev_sandbox, dockside_burn, gallery_night, glasshouse, night_deposit, ostrander_federal, shadow_ledger.
+reaches, kept for RadioTweak.speaker_overrides and new heists). Heists iterated: dev_sandbox, dockside_burn, gallery_night, glasshouse, night_deposit, ostrander_federal, rolling_thunder_wip, shadow_ledger.
 
 ## Summary
 
@@ -19,7 +19,8 @@ reaches, kept for RadioTweak.speaker_overrides and new heists). Heists iterated:
 | shadow_ledger | 40 | 40 | 0 | 0 | 0 | 0 | 0 |
 | dockside_burn | 47 | 47 | 0 | 0 | 0 | 0 | 0 |
 | gallery_night | 65 | 65 | 0 | 0 | 0 | 0 | 0 |
-| shared | 406 | 356 | 50 | 0 | 0 | 16 | 0 |
+| rolling_thunder | 34 | 0 | 34 | 0 | 0 | 0 | 0 |
+| shared | 372 | 356 | 16 | 0 | 0 | 16 | 0 |
 
 Missing (code can say it, the table has no such line): 0.
 
@@ -336,6 +337,45 @@ None.
 | `vo.vance.gallery_night_radio_loot_tidewater_saint` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_tidewater_saint) via gallery_night |
 | `vo.vance.gallery_night_radio_loot` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_lantern_bearer) via gallery_night<br>ContactRadio radio.loot_secured (loot.painting_salt_orchard) via gallery_night<br>ContactRadio radio.loot_secured (loot.painting_widow_in_blue) via gallery_night<br>ContactRadio radio.loot_secured (loot.painting_tidewater_saint) via gallery_night<br>ContactRadio radio.loot_secured (loot.painting_study) via gallery_night |
 
+## rolling_thunder
+
+| Line | Event | Owner | Trigger site(s) |
+|---|---|---|---|
+| `vo.mercer.rolling_thunder_intro` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_eta_60` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_eta_30` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_marshal` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_signals_done` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_signals_remind` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_c4_found` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_thermite_found` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sighted` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_stopped` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_go` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_alerted` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_escort_down` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_police` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_saw_on` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_saw_jam` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_deadbolts` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_truck_open` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_c4_armed` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_thermite_burn` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_gold` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_bonds` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_lift_dead` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_skyway` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_rail` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_sniper_crane` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_secured` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_van_eta` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_heli_eta` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.mercer.rolling_thunder_escape` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_crash` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_ready` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_boxed` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+| `vo.reyes.rolling_thunder_payday` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
+
 ## shared
 
 | Line | Event | Owner | Trigger site(s) |
@@ -510,11 +550,11 @@ None.
 | `vo.mercer.pager_last` | pager_last_answer | A | systems/stealth/pager_system.gd:314<br>systems/vo/bark_tweak.tres:12 |
 | `vo.mercer.dev_start` | dev_start | A | systems/dev/dev_sandbox_mission.gd:12 |
 | `vo.guard.cuff_warning` | cuff_warning | A | systems/stealth/stealth_tweak.gd:309 |
-| `vo.crew.ack_follow` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_hold` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_carry_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_drop_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
-| `vo.crew.ack_revive` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:176 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_follow` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:180 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_hold` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:180 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_carry_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:180 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_drop_bag` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:180 (builder `vo.crew.ack_%s`) |
+| `vo.crew.ack_revive` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:180 (builder `vo.crew.ack_%s`) |
 | `vo.vance.radio_objective_done_1` | radio.objective_done | R | **UNSAID**: generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_done_2` | radio.objective_done | R | **UNSAID**: generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_done_3` | radio.objective_done | R | **UNSAID**: generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
@@ -614,27 +654,27 @@ None.
 | `vo.mercer.radio_objective_failed_1` | radio.objective_failed | R | **UNSAID**: generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_2` | radio.objective_failed | R | **UNSAID**: generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_3` | radio.objective_failed | R | **UNSAID**: generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
-| `vo.mercer.radio_alarm_1` | radio.alarm | B | ContactRadio radio.alarm via dev_sandbox (generic) |
-| `vo.mercer.radio_alarm_2` | radio.alarm | B | ContactRadio radio.alarm via dev_sandbox (generic) |
-| `vo.mercer.radio_alarm_3` | radio.alarm | B | ContactRadio radio.alarm via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_build_1` | radio.assault_build | B | ContactRadio radio.assault_build via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_build_2` | radio.assault_build | B | ContactRadio radio.assault_build via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_build_3` | radio.assault_build | B | ContactRadio radio.assault_build via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_sustain_1` | radio.assault_sustain | B | ContactRadio radio.assault_sustain via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_sustain_2` | radio.assault_sustain | B | ContactRadio radio.assault_sustain via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_sustain_3` | radio.assault_sustain | B | ContactRadio radio.assault_sustain via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_fade_1` | radio.assault_fade | B | ContactRadio radio.assault_fade via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_fade_2` | radio.assault_fade | B | ContactRadio radio.assault_fade via dev_sandbox (generic) |
-| `vo.mercer.radio_assault_fade_3` | radio.assault_fade | B | ContactRadio radio.assault_fade via dev_sandbox (generic) |
+| `vo.mercer.radio_alarm_1` | radio.alarm | B | ContactRadio radio.alarm via dev_sandbox (generic)<br>ContactRadio radio.alarm via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_alarm_2` | radio.alarm | B | ContactRadio radio.alarm via dev_sandbox (generic)<br>ContactRadio radio.alarm via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_alarm_3` | radio.alarm | B | ContactRadio radio.alarm via dev_sandbox (generic)<br>ContactRadio radio.alarm via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_build_1` | radio.assault_build | B | ContactRadio radio.assault_build via dev_sandbox (generic)<br>ContactRadio radio.assault_build via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_build_2` | radio.assault_build | B | ContactRadio radio.assault_build via dev_sandbox (generic)<br>ContactRadio radio.assault_build via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_build_3` | radio.assault_build | B | ContactRadio radio.assault_build via dev_sandbox (generic)<br>ContactRadio radio.assault_build via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_sustain_1` | radio.assault_sustain | B | ContactRadio radio.assault_sustain via dev_sandbox (generic)<br>ContactRadio radio.assault_sustain via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_sustain_2` | radio.assault_sustain | B | ContactRadio radio.assault_sustain via dev_sandbox (generic)<br>ContactRadio radio.assault_sustain via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_sustain_3` | radio.assault_sustain | B | ContactRadio radio.assault_sustain via dev_sandbox (generic)<br>ContactRadio radio.assault_sustain via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_fade_1` | radio.assault_fade | B | ContactRadio radio.assault_fade via dev_sandbox (generic)<br>ContactRadio radio.assault_fade via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_fade_2` | radio.assault_fade | B | ContactRadio radio.assault_fade via dev_sandbox (generic)<br>ContactRadio radio.assault_fade via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_assault_fade_3` | radio.assault_fade | B | ContactRadio radio.assault_fade via dev_sandbox (generic)<br>ContactRadio radio.assault_fade via rolling_thunder_wip (generic) |
 | `vo.mercer.radio_escape_available_1` | radio.escape_available | B | ContactRadio radio.escape_available via dev_sandbox (generic) |
 | `vo.mercer.radio_escape_available_2` | radio.escape_available | B | ContactRadio radio.escape_available via dev_sandbox (generic) |
 | `vo.mercer.radio_escape_available_3` | radio.escape_available | B | ContactRadio radio.escape_available via dev_sandbox (generic) |
 | `vo.mercer.radio_escape_1` | radio.escape | B | ContactRadio radio.escape via dev_sandbox (generic) |
 | `vo.mercer.radio_escape_2` | radio.escape | B | ContactRadio radio.escape via dev_sandbox (generic) |
 | `vo.mercer.radio_escape_3` | radio.escape | B | ContactRadio radio.escape via dev_sandbox (generic) |
-| `vo.mercer.radio_loot_secured_1` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via dev_sandbox (generic) |
-| `vo.mercer.radio_loot_secured_2` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via dev_sandbox (generic) |
-| `vo.mercer.radio_loot_secured_3` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via dev_sandbox (generic) |
+| `vo.mercer.radio_loot_secured_1` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via dev_sandbox (generic)<br>ContactRadio radio.loot_secured (loot.cash_bricks) via rolling_thunder_wip (generic)<br>ContactRadio radio.loot_secured (loot.gold) via rolling_thunder_wip (generic)<br>ContactRadio radio.loot_secured (loot.bearer_bonds) via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_loot_secured_2` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via dev_sandbox (generic)<br>ContactRadio radio.loot_secured (loot.cash_bricks) via rolling_thunder_wip (generic)<br>ContactRadio radio.loot_secured (loot.gold) via rolling_thunder_wip (generic)<br>ContactRadio radio.loot_secured (loot.bearer_bonds) via rolling_thunder_wip (generic) |
+| `vo.mercer.radio_loot_secured_3` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via dev_sandbox (generic)<br>ContactRadio radio.loot_secured (loot.cash_bricks) via rolling_thunder_wip (generic)<br>ContactRadio radio.loot_secured (loot.gold) via rolling_thunder_wip (generic)<br>ContactRadio radio.loot_secured (loot.bearer_bonds) via rolling_thunder_wip (generic) |
 | `vo.accountant.briefing_ostrander_federal_1` | briefing | B | BriefingModel.voice_lines via ostrander_federal (contact.accountant) |
 | `vo.accountant.briefing_ostrander_federal_2` | briefing | B | BriefingModel.voice_lines via ostrander_federal (contact.accountant) |
 | `vo.accountant.briefing_ostrander_federal_3` | briefing | B | BriefingModel.voice_lines via ostrander_federal (contact.accountant) |
@@ -712,37 +752,3 @@ None.
 | `vo.accountant.ostrander_federal_radio_loot_gold` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.gold) via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_loot_bearer_bonds` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.bearer_bonds) via ostrander_federal |
 | `vo.accountant.ostrander_federal_radio_loot_server_drives` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.server_drives) via ostrander_federal |
-| `vo.mercer.rolling_thunder_intro` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_eta_60` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_eta_30` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_marshal` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_signals_done` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_signals_remind` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_c4_found` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_thermite_found` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_sighted` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_stopped` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_go` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_alerted` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_escort_down` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_police` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_saw_on` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_saw_jam` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_deadbolts` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_truck_open` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_c4_armed` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_thermite_burn` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_gold` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_bonds` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_lift_dead` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_sniper_skyway` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_sniper_rail` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_sniper_crane` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_secured` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_van_eta` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_heli_eta` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.mercer.rolling_thunder_escape` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.reyes.rolling_thunder_crash` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.reyes.rolling_thunder_ready` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.reyes.rolling_thunder_boxed` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
-| `vo.reyes.rolling_thunder_payday` | mission | S | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `mission` fact to its lines |
