@@ -247,8 +247,9 @@ var _vg_away_n: int = 0
 ## Ghost step 2 (C's cue, ostrander_federal.md 8c034cdb): heist time rover_hall was last within 8 m of DockCorridorDoor
 ## (his loop (b) LD check); -1 before he's been seen there.
 var _rh_ld_t: float = -1.0
-## When the vault guard's current absence from VC began (heist s), for step 6's crossing windows.
-var _vg_away_since: float = -1.0
+## Step 6's window: samples in a row with the vault guard on loop (b) or (c), and when that absence began.
+var _vc_away_n: int = 0
+var _vc_away_since: float = -1.0
 
 
 func _ready() -> void:
@@ -1751,8 +1752,6 @@ func _vault_guard_off_vc(_gate: Door) -> bool:
 	var p: Vector3 = vg.global_position
 	var away: bool = absf(p.y - OF_FFL[0]) < 1.5 and (p.x < 12.0 or p.z > 13.5)
 	_vg_away_n = _vg_away_n + 1 if away else 0
-	if _vg_away_n == 1:
-		_vg_away_since = rt.heist_time_s
 	return _vg_away_n >= 2
 
 
@@ -1858,12 +1857,23 @@ func _down_to_bb() -> bool:
 	return true
 
 
-## Step 6's VC crossing window: the vault guard deep in loop (b) (two samples) since at most `max_age` s (his absences
+## Step 6's VC crossing window: the vault guard on loop (b) or (c) (two samples) since at most `max_age` s (his absences
 ## run ~30-40 s), no other guard in VC or in BB's strip west of x 40, and no other
 ## basement guard within 15 m of the gate (the CQ <-> gate leg is BB).
 func _vc_window(max_age: float) -> bool:
-	# A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was back in VC 5 s later).
-	if not _vault_guard_off_vc(null) or rt.heist_time_s - _vg_away_since > max_age:
+	# Doc §6: a window is the vault guard on loop (b) (RC: west / south) or (c) (east, SD: x > 36); ghost6_g saw (c) at
+	# t=280 / 490 / 670 unused. A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was
+	# back in VC 5 s later).
+	var vp: Vector3 = Vector3.INF
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g != null and g.is_alive() and _has_tag(g, "guard_vault"):
+			vp = g.global_position
+	var away: bool = vp == Vector3.INF or absf(vp.y - OF_FFL[0]) >= 1.5 or vp.x < 12.0 or vp.z > 13.5 or vp.x > 36.0
+	_vc_away_n = _vc_away_n + 1 if away else 0
+	if _vc_away_n == 1:
+		_vc_away_since = rt.heist_time_s
+	if _vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age:
 		return false
 	var gate_at: Vector3 = _of(Vector3(14.5, OF_FFL[0], 9.0))
 	for n: Node in rt.npcs(&"guard"):
