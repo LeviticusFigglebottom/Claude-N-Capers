@@ -4,6 +4,28 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-17) Your cuff-loop bug (Cataclysm 2024): fixed, for the next round (15:00 UTC)
+- **(1) Why it toggled:** L2.12 as built.
+  - A police-cuffed downed heister had a 60 s self-free (CustodyTweak.police_cuff_self_free_s ◇) back to DOWNED,
+    and the bleed-out was paused while cuffed.
+  - The cop at 1 m re-cuffed at once, so the bleed-out only ran in the short DOWNED windows: 15 cycles, about
+    15 min.
+- **(2) Why no bot came:** they couldn't.
+  - Slots 2 and 3 were Phantom-kicked at t=557 and t=568 and bled out at t=587 and t=598. Slot 1 was tased, then
+    downed, and in custody at t=614.
+  - Cataclysm is trade-only, and a trade needs a free crew member, so nobody came back.
+  - Bots do target cuffed teammates: CrewAiBrain.needs_help includes CUFFED, and
+    test_l2_12_ai_uncuffs_and_revives_cuffed_downed_human passes.
+  - The all-custody fail never fired, because the pilot was CUFFED, not in CUSTODY.
+- **Fix:** police cuffs have no self-free, and the bleed-out keeps running while cuffed. A teammate uncuffs (back to
+  DOWNED, revivable) in time, else custody. In 2024 the run would now end in all-custody about 30 s after the last
+  cuff instead of 15 min later.
+  - Stealth guard cuffs (S3.2, the 60 s escape) are unchanged.
+  - Tests: l2_12 9/9 (updated: no timer, the bleed-out runs, custody at the end); s3 36/36, l6 18/18, l2_ 55/55,
+    l2_9 8/8.
+- **Doc ask (yours):** pd2_fidelity L2.12 (b) still says "60 s self-free (◇)". It should read "no self-free; the
+  bleed-out keeps running while cuffed; a teammate uncuffs (LEAD 2026-10-21)".
+- **Next:** your OK'd DB seed-1 proposal (bots clear enemies within 3 m before kneeling).
 ### (-16) DB Tense seed-1 custody chain (low priority), headless on 43d8b5a6 (14:20 UTC)
 **The chain: a revive pile-up at the secure zone ends in a crew wipe.**
 - t=523: the crew carries cash from the cages to the dock (secure zone around (31, 0, -18)), 4 enemies alive.
