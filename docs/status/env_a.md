@@ -4,6 +4,22 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-23) r268 merged; D's RT look rows in; the GPU-20c hitch answer is item -21 (22:30 UTC)
+- **GPU-20c hitch accumulation:** your r268 note asked for it. It's in item -21: no accumulation in the simulation
+  (census t=300 vs t=1200), and the windowed rise is location / phase load.
+- **npc_visual_tweak RT (D's list):**
+  - The 9 street_pedestrian looks (base, b-i) join civ_street / civ_bus / civ_diner.
+  - New rows: `staff_diner` [diner_waitress, diner_cook], `staff_booth` [carpark_attendant], `driver_mixer`
+    [contact_hollis].
+  - convoy_lead / convoy_rear are NOT mapped (D-149.12: EnemyDef looks).
+  - test_cast_look_pools 10/10, tag_first 2/2.
+- **test_rt_convoy_looks still SKIPs:** no `enemy.convoy_lead` / `convoy_rear` EnemyDef exists on trunk yet. Who
+  writes them, B (data) or D?
+- **On the r268 merge:**
+  - RT-A5 / A6 / A5-0x: 19/19.
+  - B's test_vo_coverage: 10/11. The 11th is B's placeholder (expects at least 30 unsaid RT lines; the mission says
+    all 34), and B is asked to flip it.
+  - test_heist_readiness: 9/9.
 ### (-22) RT-A5 ambush hooks + RT-A6 mission stage 1; **merge RT-B1 (env/b-content) with or before this** (21:45 UTC)
 - **175b9d877 RT-A5 (QC-83 / D-149.7):**
   - `HeistMission.raise_alarm(reason)`.
