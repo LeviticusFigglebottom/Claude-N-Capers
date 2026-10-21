@@ -314,3 +314,26 @@ Suggestions for A: exclude frames that take a screenshot from HITCH (or log `sho
   Top contributor in the 62 loud-phase HITCH lines: `anim_driver` 34x, `npc_motor` 21x, crew_ai_brain 4x, police_brain 3x. The heist-load frame has anim_driver=86.2 ms (GPU-12: 24.6).
 - **Draw calls:** po5 has no main/total split. The only draw figure it logs is `draws=` on HITCH lines (the frame's total render draws).
   For the 59 loud-phase non-shot hitch frames: min 352, max 2688, avg 929. The heist-load frame: 2747 draws, 3460 objects. For a map/cast split, heist_cast_perf (GPU-8.5 style) would be needed.
+## GPU-17b: control, GPU-15 tree vs trunk e9c8744f back to back
+- **Machine state** (before the runs, 03:0x local): power plan **Balanced** (381b4222...); i9-12900K 16C/24T, 32 GB (9.4 GB free); RX 9070 XT.
+  Temps can't be read without admin/vendor tools. During the runs the CPU ran at about 143% of base clock (turbo), so it wasn't throttled at that moment.
+  I did not close the owner's apps (not mine to close). **Background load on this PC, from other local sessions/apps:**
+  - 1 python.exe pinned at 100% of a core since 2026-10-16 (stdin script); Chrome about 1-1.2 cores; Steam; Defender; about 15 long-running `grep --line-buffered` log watchers.
+  - **From 03:14:28, another local session's `tools/slot.mjs run -- py -3 -I tools/an3_scale_survey.py --jobs 4`** (4 worker processes at about 100% each, 20-min timeout),
+    plus a recursive `grep -rhoi` at 03:17. Total CPU was 35-40% (about 9 of 24 threads busy) right after the runs.
+- Runs (same command as GPU-15/17), one straight after the other: (1) gpu/a3 2fd5d066 = GPU-15's exact tree, 03:09-03:13; (2) trunk e9c8744f, 03:14-03:18
+  (it **started the same minute as the 4-worker survey**). Both `RESULT FAIL (code 2)` budget, 0 nav errors.
+  Logs/PNGs: `gpu/renders/a/of_17b_gpu15tree{,.txt}`, `gpu/renders/a/of_17b_r255{,.txt}`.
+
+| run | when | TEL phys avg/max (t >= 20 s) | TEL proc avg/max | enemies avg | non-shot frames > 50 ms (t < 8 / loud) | loud worst (ms @ t) |
+|---|---|---|---|---|---|---|
+| GPU-15 original (gpu/a3) | 01:28 | 22.7 / 29.9 | 6.5 / 18.6 | 8.8 | 9 (6 / 3) | 69 @163.1, 62 @139.9, 59 @95.8 |
+| GPU-17 original (e9c8744f) | 02:19 | 36.8 / 86.0 | 14.5 / 31.9 | 8.7 | 74 (15 / 59) | 148 @94.9, 142 @162.2, 124 @139.1 |
+| **17b (1) GPU-15 tree** | 03:09 | **30.0 / 39.2** | **11.9 / 27.0** | 9.2 | **107 (14 / 93)** | 279 @34.2, 251 @34.7, 235 @34.1 |
+| **17b (2) e9c8744f** | 03:14 | **45.8 / 109.7** | **17.4 / 47.3** | 8.5 | **210 (12 / 198)** | 181 @60.5, 158 @162.0, 147 @94.7 |
+
+**Verdict: A is right, it's machine state, not code.** GPU-15's exact tree, re-run now, is much worse than its own original run (9 -> 107 non-shot hitches, phys 22.7 -> 30.0 ms),
+which is worse than the original GPU-17 run at r255. The metrics track background CPU load, which has been rising over the night (the r255 control overlapped a 4-process
+CPU-bound survey and is the worst of all). The GPU-17 "regression" (vs GPU-15) is not evidence of a code change.
+**Caveat for GPU-18 and future perf numbers:** this box is shared with other sessions' CPU jobs. I'll log the background CPU load next to each perf run. Only a GPU-15 vs GPU-18
+comparison made under similar load is meaningful; ideally both trees get re-run back to back when the box is idle.

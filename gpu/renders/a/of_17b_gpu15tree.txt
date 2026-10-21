@@ -1,0 +1,323 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[PO5 5.4s] harness: Cataclysm opened in memory (locked in the build)
+[INFO][boot][p1] CAPERWORKS boot, args={ "po5-flow": "auto_loud", "po5-out": "C:\\Users\\Aaron\\gpu17b\\of_17b_gpu15tree", "po5-budget": "240", "po5-heist": "Ostrander Federal", "po5-difficulty": "Cataclysm", "po5-seed": "1037", "po5-crew-dmg": "0", "po5-hitch-ms": "50" }
+[PO5 17.2s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/01_main_menu.png
+[INFO][ui][p1] safehouse scene unavailable (res://world/hub/safehouse/safehouse.tscn); 2D hub
+[PO5 21.2s] click 'SAFEHOUSE' at (872.0, 711.3334)
+[PO5 21.2s] click '' at (1382.0, 428.6667)
+[PO5 22.3s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/02_planning_table.png
+[PO5 22.4s] click 'Ostrander Federal' at (818.6667, 806.6667)
+[PO5 23.4s] click 'CATACLYSM' at (2438.0, 666.6667)
+[PO5 32.1s] click 'Briefing' at (2701.333, 1318.667)
+[PO5 32.3s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/03_briefing.png
+[PO5 32.5s] click 'Continue' at (2722.667, 1340.0)
+[PO5 33.5s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/04_continue.png
+[PO5 33.8s] click 'Confirm plan' at (2722.667, 1334.0)
+[PO5 34.6s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/05_confirm_plan.png
+[PO5 37.0s] click 'Start Heist' at (2701.333, 1318.667)
+[INFO][rng][p1] run seed 1037
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1037 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_6"], &"side_door": [&"door_fire_propped"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_pc", &"cx_sd"], &"time_lock_s": 270.0, &"drill_eta_s": 45.0, &"escape_eta_s": 120.0, &"cash_bags": 8, &"gold_bags": 2, &"deposit_boxes": 12, "rare": [&"time_lock_glitch"] }
+[INFO][heist][p1] vfx prewarm: 554 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] DEV OPTION crew_damage_taken_mult = 0.00 (D-133 harness-only)
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 416 ms
+[INFO][prefab][p1] Keycard carried by Npc_civilian8
+[PO5 46.9s] HITCH frame=2709ms t=0.1 drawn=1 nodes=19035 enemies=9 top: anim_driver=102.3ms(30) npc_motor=10.3ms(216) custody_system=6.4ms(8) stealth_director=2.1ms(8) civilian_brain=1.1ms(144) crew_ai_brain=1.0ms(24) guard_brain=0.4ms(72) guard_brain.calm=0.2ms(72) npc_gunner=0.2ms(72) heist_runtime=0.0ms(8)
+[PO5 46.9s] HITCH frame=2709ms t=0.1 process=2.4ms physics=0.2ms draws=2747 objects=3460 nodes=19035 enemies=9 spawned=[] top: anim_driver=102.3ms(30) npc_motor=10.3ms(216) custody_system=6.4ms(8) stealth_director=2.1ms(8) civilian_brain=1.1ms(144) crew_ai_brain=1.0ms(24) guard_brain=0.4ms(72) guard_brain.calm=0.2ms(72)
+[PO5 47.0s] HITCH frame=150ms t=0.3 process=8589.4ms physics=39.6ms draws=2746 objects=3457 nodes=19032 enemies=9 spawned=[] top: anim_driver=21.4ms(30) hud_model=13.8ms(1) hud_model.objectives=13.1ms(1) npc_motor=8.9ms(216) stealth_director=1.1ms(8) crew_ai_brain=0.9ms(24) civilian_brain=0.5ms(144) hud_model.player=0.3ms(1)
+[PO5 47.1s] HITCH frame=63ms t=0.3 process=8589.4ms physics=39.6ms draws=2743 objects=3451 nodes=19057 enemies=9 spawned=[] top: anim_driver=18.1ms(30) npc_motor=5.0ms(135) hud_model=0.9ms(1) stealth_director=0.7ms(5) crew_ai_brain=0.5ms(15) hud_model.objectives=0.4ms(1) civilian_brain=0.3ms(90) hud_model.player=0.2ms(1)
+[PO5 47.7s] in heist ostrander_federal seed 1037 diff 5 phase 1 crew at (21.8, -0.8, 44.0)
+[PO5 47.7s] DEV OPTION crew_damage_taken_mult=0.00 (D-133 harness-only; assault events on)
+[PO5 48.6s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/06_heist_start.png
+[PO5 48.7s] HITCH frame=914ms t=1.2 process=43.6ms physics=4.6ms draws=2832 objects=4190 nodes=19054 enemies=9 spawned=[] top: npc_motor=7.3ms(216) anim_driver=1.9ms(30) stealth_director=1.1ms(8) crew_ai_brain=1.0ms(24) civilian_brain=0.5ms(144) guard_brain=0.3ms(72) custody_system=0.2ms(8) npc_gunner=0.1ms(72)
+[PO5 49.5s] mouse captured by the game (MouseCapture)
+[PO5 49.5s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 49.6s] HITCH frame=68ms t=2.0 process=5.4ms physics=7.2ms draws=2832 objects=4190 nodes=19054 enemies=9 spawned=[] top: anim_driver=1.3ms(30) hud_model=0.0ms(1)
+[INFO][heist][p1] phase CASING -> STEALTH
+[PO5 50.5s] EVENT objective casing -> 2 t=3
+[INFO][crew][p1] slot 0 masked (forced=false)
+[INFO][crew][p1] slot 1 masked (forced=false)
+[INFO][crew][p1] slot 2 masked (forced=false)
+[INFO][crew][p1] slot 3 masked (forced=false)
+[PO5 51.1s] HITCH frame=56ms t=3.5 process=4.5ms physics=24.5ms draws=2832 objects=4190 nodes=19061 enemies=9 spawned=[] top: anim_driver=1.2ms(30) npc_motor=0.8ms(27) hud_model=0.8ms(1) hud_model.objectives=0.3ms(1) hud_model.player=0.2ms(1) stealth_director=0.2ms(1) hud_model.crew=0.1ms(1) crew_ai_brain=0.1ms(3)
+[PO5 51.3s] HITCH frame=89ms t=3.8 process=4.5ms physics=24.5ms draws=2832 objects=4190 nodes=19081 enemies=9 spawned=[] top: anim_driver=1.2ms(30) npc_motor=1.1ms(27) stealth_director=0.3ms(1) crew_ai_brain=0.1ms(3) civilian_brain=0.1ms(18) guard_brain=0.0ms(9) door=0.0ms(1) custody_system=0.0ms(1)
+[PO5 51.4s] HITCH frame=56ms t=3.9 process=4.5ms physics=24.5ms draws=2503 objects=3138 nodes=19081 enemies=9 spawned=[] top: npc_motor=6.2ms(162) stealth_director=2.1ms(6) anim_driver=1.6ms(30) hud_model=1.1ms(1) crew_ai_brain=0.7ms(18) civilian_brain=0.4ms(108) hud_model.objectives=0.4ms(1) door=0.2ms(6)
+[INFO][stealth][p1] ALARM: guard_radio (source 204)
+[INFO][heist][p1] alarm (guard_radio): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[PO5 53.1s] EVENT objective keycard -> 1 t=6
+[PO5 53.1s] EVENT objective keycard -> 2 t=6
+[PO5 53.1s] EVENT objective code_hint -> 1 t=6
+[PO5 53.1s] EVENT objective code_hint -> 2 t=6
+[PO5 53.1s] EVENT objective code_pc -> 1 t=6
+[PO5 53.1s] EVENT objective code_pc -> 2 t=6
+[PO5 53.1s] EVENT objective server -> 1 t=6
+[PO5 53.1s] EVENT objective server -> 2 t=6
+[PO5 53.1s] EVENT objective vault_gate -> 1 t=6
+[PO5 53.1s] EVENT objective vault_gate -> 2 t=6
+[PO5 53.1s] EVENT objective lasers -> 1 t=6
+[PO5 53.1s] EVENT objective lasers -> 2 t=6
+[PO5 53.1s] EVENT objective drill_delivery -> 1 t=6
+[PO5 53.1s] EVENT objective drill_delivery -> 1 t=6
+[PO5 53.2s] HITCH frame=107ms t=5.6 process=11.9ms physics=34.4ms draws=2481 objects=3069 nodes=19083 enemies=9 spawned=[] top: guard_brain=55.8ms(9) guard_brain.alarmed=55.0ms(1) alarm.HeistRuntime._on_alarm_raised=51.4ms(1) phase.Mission._on_phase_changed=48.0ms(1) npc_motor=8.4ms(27) anim_driver=2.6ms(30) alarm.CuePlayer._on_alarm_raised=1.4ms(1) guard_brain.combat=0.8ms(8)
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[PO5 53.3s] HITCH frame=134ms t=5.7 process=11.9ms physics=34.4ms draws=2592 objects=3270 nodes=19165 enemies=10 spawned=["patrol_officer"] top: npc_motor=24.9ms(195) assault_director=8.4ms(7) crew_ai_brain=5.9ms(21) spawn_npc.enter_tree=4.8ms(1) anim_driver=3.1ms(30) door=0.9ms(21) npc_gunner=0.7ms(69) guard_brain=0.7ms(63)
+[PO5 53.4s] HITCH frame=133ms t=5.8 process=11.9ms physics=34.4ms draws=2158 objects=2416 nodes=19165 enemies=10 spawned=[] top: npc_motor=17.5ms(224) crew_ai_brain=4.7ms(24) anim_driver=3.2ms(31) hud_model=1.4ms(1) door=0.7ms(24) npc_gunner=0.6ms(80) hud_model.objectives=0.5ms(1) guard_brain=0.5ms(72)
+[PO5 53.7s] loud: phase=3 went_loud=true
+[PO5 53.8s] HITCH frame=60ms t=6.2 process=11.9ms physics=34.4ms draws=2255 objects=3014 nodes=19251 enemies=11 spawned=[] top: npc_motor=2.7ms(29) anim_driver=2.0ms(32) crew_ai_brain=1.0ms(3) door=0.2ms(2) guard_brain=0.1ms(9) assault_director=0.1ms(1) civilian_brain=0.1ms(18) custody_system=0.0ms(1)
+[PO5 54.7s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/07_auto_6.png
+[PO5 54.8s] HITCH frame=1032ms t=6.3 process=11.9ms physics=34.4ms draws=2251 objects=3007 nodes=19251 enemies=11 spawned=[] top: npc_motor=17.6ms(232) anim_driver=12.1ms(32) civilian_brain=7.9ms(144) crew_ai_brain=6.8ms(24) door=0.9ms(24) police_brain=0.6ms(16) guard_brain=0.5ms(72) assault_director=0.3ms(8)
+[PO5 55.2s] HITCH frame=78ms t=6.7 process=16.2ms physics=10.7ms draws=2488 objects=2745 nodes=19251 enemies=11 spawned=[] top: npc_motor=8.4ms(87) crew_ai_brain=5.3ms(9) anim_driver=3.5ms(32) hud_model=2.2ms(1) hud_model.objectives=1.0ms(1) hud_model.player=0.6ms(1) hud_model.crew=0.4ms(1) door=0.3ms(6)
+[PO5 55.3s] HITCH frame=69ms t=6.8 process=16.2ms physics=10.7ms draws=2488 objects=2745 nodes=19251 enemies=11 spawned=[] top: npc_motor=24.0ms(116) crew_ai_brain=6.4ms(12) anim_driver=2.6ms(32) guard_brain=0.7ms(36) door=0.5ms(8) guard_brain.combat=0.4ms(36) civilian_brain=0.4ms(72) police_brain=0.4ms(8)
+[PO5 55.4s] HITCH frame=52ms t=6.9 process=16.2ms physics=10.7ms draws=2488 objects=2745 nodes=19251 enemies=11 spawned=[] top: npc_motor=15.9ms(116) crew_ai_brain=8.3ms(12) anim_driver=1.6ms(32) door=0.5ms(8) guard_brain=0.5ms(36) police_brain=0.4ms(8) civilian_brain=0.3ms(72) guard_brain.combat=0.3ms(36)
+[PO5 59.6s] pilot: t=5 at (36.1, -0.3, 37.5) corner (39.5, 0.2, 37.2) yaw_err -0.00 fwd=true path=63 mouse_mode=2 state=0 look=(-1.50,0.00) pin_yaw=-1.49721270334567 bot=false
+[PO5 60.4s] TEL worst_frame=9001ms t=12 phase=3 phys=29.2ms proc=28.1ms nodes=19251 enemies=11 civs=18 crew=[0:0@(39.0, 0.0, 37.3) 1:0@(34.5, -0.7, 39.6) 2:0@(35.5, -0.4, 41.6) 3:0@(36.8, -0.7, 39.5) nearest_enemy=15.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 64.6s] pilot: t=10 at (48.7, 0.0, 31.6) corner (48.8, 0.2, 27.6) yaw_err 0.00 fwd=true path=59 mouse_mode=2 state=0 look=(-0.03,0.00) pin_yaw=-0.02761471026179 bot=false
+[PO5 70.3s] pilot: t=15 at (49.2, 0.0, 14.2) corner (49.2, 0.2, 13.7) yaw_err -0.00 fwd=true path=44 mouse_mode=2 state=0 look=(-0.01,0.00) pin_yaw=-0.01262020738261 bot=false
+[PO5 70.4s] TEL worst_frame=48ms t=22 phase=3 phys=24.8ms proc=5.6ms nodes=19448 enemies=12 civs=17 crew=[0:0@(49.2, 0.0, 14.0) 1:0@(51.8, 0.0, 19.9) 2:0@(50.4, 0.0, 20.1) 3:0@(52.4, 0.0, 18.2) nearest_enemy=5.3m within15=7 input_enabled=true captured=true paused_by={  }]
+[INFO][prefab][p1] CameraStation: camera operator neutralised by 232: all cameras off
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[PO5 76.5s] pilot: t=20 at (46.0, 0.0, -1.0) corner (38.8, 0.2, -2.4) yaw_err 0.00 fwd=true path=22 mouse_mode=2 state=0 look=(1.38,0.00) pin_yaw=1.37534780624355 bot=false
+[PO5 79.0s] HITCH frame=108ms t=30.5 process=5.6ms physics=24.1ms draws=1454 objects=1548 nodes=19459 enemies=9 spawned=[] top: npc_motor=8.5ms(78) crew_ai_brain=5.9ms(9) anim_driver=5.5ms(34) hud_model=2.1ms(1) hud_model.objectives=0.9ms(1) npc_gunner=0.8ms(39) hud_model.player=0.7ms(1) police_brain=0.4ms(12)
+[PO5 79.1s] HITCH frame=76ms t=30.6 process=5.6ms physics=24.1ms draws=1454 objects=1548 nodes=19459 enemies=9 spawned=[] top: npc_motor=15.2ms(156) crew_ai_brain=8.8ms(18) anim_driver=1.6ms(34) police_brain=1.3ms(24) npc_gunner=1.1ms(78) guard_brain=0.4ms(30) npc_gunner.los=0.4ms(24) assault_director=0.4ms(6)
+[PO5 79.2s] HITCH frame=91ms t=30.7 process=26.8ms physics=70.9ms draws=1454 objects=1548 nodes=19459 enemies=9 spawned=[] top: anim_driver=18.1ms(34) npc_motor=13.3ms(156) crew_ai_brain=7.1ms(18) hud_model=2.3ms(1) npc_gunner=1.1ms(78) hud_model.objectives=1.0ms(1) hud_model.player=0.8ms(1) police_brain=0.6ms(24)
+[PO5 79.2s] HITCH frame=54ms t=30.8 process=26.8ms physics=70.9ms draws=1454 objects=1548 nodes=19459 enemies=9 spawned=[] top: npc_motor=9.1ms(130) crew_ai_brain=6.0ms(15) npc_gunner=3.5ms(65) anim_driver=1.5ms(34) npc_gunner.fired=1.4ms(2) npc_gunner.fx=0.7ms(2) npc_gunner.hit=0.5ms(2) police_brain=0.5ms(20)
+[PO5 80.3s] HITCH frame=64ms t=31.9 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19459 enemies=9 spawned=[] top: npc_motor=12.2ms(78) crew_ai_brain=7.0ms(9) anim_driver=6.0ms(34) police_brain=1.7ms(12) npc_gunner=1.0ms(39) npc_gunner.los=0.4ms(12) guard_brain=0.3ms(15) civilian_brain=0.2ms(54)
+[PO5 80.4s] HITCH frame=64ms t=31.9 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19459 enemies=9 spawned=[] top: npc_motor=10.2ms(78) crew_ai_brain=8.0ms(9) anim_driver=4.2ms(34) guard_brain=0.9ms(15) npc_gunner=0.8ms(39) guard_brain.combat=0.8ms(15) police_brain=0.8ms(12) guard_brain.pick_target=0.6ms(5)
+[PO5 80.5s] HITCH frame=70ms t=32.0 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19459 enemies=9 spawned=[] top: npc_motor=14.2ms(104) crew_ai_brain=7.1ms(12) anim_driver=4.7ms(34) hud_model=1.7ms(1) npc_gunner=1.2ms(52) hud_model.player=0.7ms(1) police_brain=0.6ms(16) hud_model.objectives=0.5ms(1)
+[PO5 80.5s] TEL worst_frame=108ms t=32 phase=3 phys=30.5ms proc=7.9ms nodes=19459 enemies=9 civs=17 crew=[0:0@(34.2, 0.0, -3.3) 1:0@(45.3, 0.0, -0.7) 2:0@(39.0, 0.0, -2.7) 3:0@(39.5, 0.0, -4.8) nearest_enemy=13.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 80.6s] HITCH frame=101ms t=32.1 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=10.1ms(104) crew_ai_brain=4.6ms(12) anim_driver=2.3ms(34) npc_gunner=0.8ms(52) police_brain=0.7ms(16) guard_brain=0.3ms(20) npc_gunner.los=0.3ms(16) assault_director=0.2ms(4)
+[PO5 80.7s] HITCH frame=108ms t=32.2 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=21.3ms(175) crew_ai_brain=11.7ms(21) anim_driver=4.3ms(34) hud_model=2.2ms(1) police_brain=1.5ms(28) npc_gunner=1.4ms(91) hud_model.objectives=0.8ms(1) hud_model.player=0.8ms(1)
+[PO5 80.8s] HITCH frame=111ms t=32.3 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=20.6ms(175) crew_ai_brain=12.6ms(21) anim_driver=4.2ms(34) hud_model=2.1ms(1) npc_gunner=1.6ms(91) police_brain=1.0ms(28) hud_model.objectives=0.9ms(1) hud_model.player=0.7ms(1)
+[PO5 80.9s] HITCH frame=126ms t=32.4 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=19.2ms(200) crew_ai_brain=9.0ms(24) npc_gunner=4.4ms(104) anim_driver=3.1ms(34) hud_model=1.8ms(1) npc_gunner.fired=1.5ms(2) police_brain=1.0ms(32) guard_brain=0.8ms(32)
+[PO5 81.0s] HITCH frame=62ms t=32.5 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=12.4ms(150) crew_ai_brain=6.8ms(18) npc_gunner=2.2ms(78) anim_driver=2.2ms(34) hud_model=1.4ms(1) police_brain=1.0ms(24) hud_model.objectives=0.8ms(1) npc_gunner.fired=0.7ms(1)
+[PO5 81.1s] HITCH frame=106ms t=32.6 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=11.8ms(100) crew_ai_brain=6.0ms(12) anim_driver=3.1ms(34) npc_gunner=1.0ms(52) police_brain=0.5ms(16) guard_brain=0.4ms(16) npc_gunner.los=0.4ms(12) assault_director=0.3ms(4)
+[PO5 81.2s] HITCH frame=75ms t=32.7 process=7.9ms physics=30.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=12.9ms(150) crew_ai_brain=9.2ms(18) hud_model=3.8ms(1) anim_driver=2.5ms(34) hud_model.objectives=1.8ms(1) hud_model.player=1.1ms(1) police_brain=1.0ms(24) npc_gunner=1.0ms(78)
+[PO5 81.2s] HITCH frame=56ms t=32.8 process=42.7ms physics=59.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=11.1ms(125) crew_ai_brain=5.0ms(15) anim_driver=2.2ms(34) hud_model=1.4ms(1) police_brain=1.2ms(20) npc_gunner=0.8ms(65) hud_model.player=0.5ms(1) hud_model.objectives=0.5ms(1)
+[PO5 81.4s] HITCH frame=51ms t=33.0 process=42.7ms physics=59.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=10.2ms(75) crew_ai_brain=4.7ms(9) anim_driver=3.0ms(34) hud_model=2.4ms(1) hud_model.player=1.2ms(1) npc_gunner=0.7ms(39) hud_model.objectives=0.7ms(1) guard_brain=0.6ms(12)
+[PO5 81.5s] HITCH frame=58ms t=33.1 process=42.7ms physics=59.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=7.0ms(75) crew_ai_brain=2.6ms(9) anim_driver=2.0ms(34) hud_model=1.1ms(1) npc_gunner=0.6ms(39) hud_model.objectives=0.5ms(1) police_brain=0.3ms(12) hud_model.player=0.3ms(1)
+[PO5 81.9s] HITCH frame=58ms t=33.5 process=42.7ms physics=59.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=12.8ms(50) anim_driver=6.4ms(34) crew_ai_brain=5.5ms(6) npc_gunner=1.0ms(26) guard_brain=0.7ms(8) police_brain=0.6ms(8) guard_brain.combat=0.6ms(8) guard_brain.pick_target=0.3ms(3)
+[PO5 81.9s] pilot: t=25 at (29.3, 0.0, -4.3) corner (28.5, 0.2, -4.4) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(1.38,0.00) pin_yaw=1.37571523643152 bot=false
+[PO5 82.0s] HITCH frame=66ms t=33.5 process=42.7ms physics=59.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=10.6ms(75) crew_ai_brain=8.1ms(9) anim_driver=5.1ms(34) police_brain=1.1ms(12) npc_gunner=0.9ms(39) guard_brain=0.4ms(12) npc_gunner.los=0.4ms(9) guard_brain.combat=0.3ms(12)
+[PO5 82.1s] HITCH frame=98ms t=33.6 process=42.7ms physics=59.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=11.7ms(100) crew_ai_brain=7.0ms(12) anim_driver=3.2ms(34) police_brain=0.9ms(16) npc_gunner=0.9ms(52) civilian_brain=0.3ms(72) npc_gunner.los=0.3ms(12) assault_director=0.3ms(4)
+[PO5 82.2s] HITCH frame=118ms t=33.7 process=42.7ms physics=59.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=26.9ms(150) crew_ai_brain=12.4ms(18) anim_driver=10.6ms(34) npc_gunner=2.1ms(78) hud_model=1.4ms(1) police_brain=1.3ms(24) npc_gunner.los=0.8ms(18) guard_brain=0.7ms(24)
+[PO5 82.4s] HITCH frame=178ms t=33.8 process=17.4ms physics=47.9ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=39.3ms(175) crew_ai_brain=17.0ms(21) anim_driver=5.8ms(34) police_brain=5.0ms(28) hud_model=3.8ms(1) npc_gunner=2.8ms(91) assault_director=2.8ms(7) hud_model.objectives=1.4ms(1)
+[PO5 82.5s] HITCH frame=167ms t=33.9 process=17.4ms physics=47.9ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=30.4ms(200) crew_ai_brain=18.3ms(24) anim_driver=6.7ms(34) npc_gunner=4.5ms(104) hud_model=3.2ms(1) police_brain=1.4ms(32) hud_model.player=1.2ms(1) hud_model.objectives=1.1ms(1)
+[PO5 82.8s] HITCH frame=235ms t=34.1 process=17.4ms physics=47.9ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=51.7ms(200) crew_ai_brain=26.6ms(24) npc_gunner=11.8ms(104) anim_driver=5.6ms(34) npc_gunner.fired=3.5ms(2) hud_model=3.0ms(1) police_brain=2.6ms(32) guard_brain=2.5ms(32)
+[PO5 83.1s] HITCH frame=279ms t=34.2 process=17.4ms physics=47.9ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=40.2ms(200) crew_ai_brain=23.3ms(24) anim_driver=8.0ms(34) hud_model=4.9ms(1) npc_gunner=3.0ms(104) hud_model.objectives=1.7ms(1) police_brain=1.6ms(32) hud_model.player=1.4ms(1)
+[PO5 83.2s] HITCH frame=132ms t=34.3 process=17.4ms physics=47.9ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=25.7ms(200) crew_ai_brain=15.5ms(24) anim_driver=4.2ms(34) hud_model=2.3ms(1) police_brain=2.1ms(32) npc_gunner=2.0ms(104) hud_model.player=0.9ms(1) hud_model.objectives=0.9ms(1)
+[PO5 83.4s] HITCH frame=197ms t=34.5 process=23.6ms physics=108.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=46.3ms(200) crew_ai_brain=22.6ms(24) anim_driver=4.8ms(34) npc_gunner=3.6ms(104) hud_model=3.2ms(1) police_brain=2.8ms(32) npc_gunner.los=1.4ms(24) hud_model.player=1.3ms(1)
+[PO5 83.6s] HITCH frame=203ms t=34.6 process=23.6ms physics=108.7ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=45.6ms(200) crew_ai_brain=24.1ms(24) anim_driver=5.8ms(34) npc_gunner=3.4ms(104) hud_model=2.9ms(1) guard_brain=2.5ms(32) guard_brain.combat=2.0ms(32) police_brain=1.9ms(32)
+[PO5 83.8s] HITCH frame=251ms t=34.7 process=23.6ms physics=108.7ms draws=1454 objects=1548 nodes=19465 enemies=8 spawned=[] top: npc_motor=40.8ms(200) crew_ai_brain=17.9ms(24) npc_gunner=6.0ms(104) anim_driver=5.3ms(34) hud_model=2.9ms(1) police_brain=2.0ms(32) npc_gunner.fx=1.3ms(1) npc_gunner.los=1.2ms(24)
+[PO5 84.0s] HITCH frame=154ms t=34.9 process=23.6ms physics=108.7ms draws=1454 objects=1548 nodes=19465 enemies=8 spawned=[] top: npc_motor=30.1ms(200) crew_ai_brain=14.7ms(24) npc_gunner=7.3ms(104) hud_model=3.1ms(1) anim_driver=2.7ms(34) npc_gunner.fired=2.7ms(2) npc_gunner.fx=1.5ms(2) police_brain=1.3ms(32)
+[PO5 84.1s] HITCH frame=135ms t=35.0 process=23.6ms physics=108.7ms draws=1454 objects=1548 nodes=19465 enemies=8 spawned=[] top: npc_motor=30.7ms(200) crew_ai_brain=12.8ms(24) anim_driver=5.4ms(34) police_brain=2.7ms(32) hud_model=2.5ms(1) npc_gunner=1.9ms(104) hud_model.objectives=1.0ms(1) hud_model.player=0.8ms(1)
+[PO5 84.2s] HITCH frame=119ms t=35.1 process=20.7ms physics=99.4ms draws=1454 objects=1548 nodes=19465 enemies=8 spawned=[] top: npc_motor=19.0ms(200) crew_ai_brain=7.5ms(24) anim_driver=3.2ms(34) hud_model=1.4ms(1) npc_gunner=1.3ms(104) police_brain=1.0ms(32) guard_brain=0.7ms(32) hud_model.objectives=0.6ms(1)
+[PO5 84.3s] HITCH frame=61ms t=35.2 process=20.7ms physics=99.4ms draws=1454 objects=1548 nodes=19465 enemies=8 spawned=[] top: npc_motor=12.9ms(150) crew_ai_brain=5.2ms(18) anim_driver=2.9ms(34) hud_model=1.2ms(1) npc_gunner=1.0ms(78) hud_model.objectives=0.6ms(1) police_brain=0.5ms(24) npc_gunner.los=0.4ms(18)
+[PO5 84.7s] HITCH frame=55ms t=35.6 process=20.7ms physics=99.4ms draws=1454 objects=1548 nodes=19465 enemies=8 spawned=[] top: anim_driver=3.2ms(34) npc_motor=1.5ms(25) crew_ai_brain=1.1ms(3) npc_gunner=0.2ms(13) police_brain=0.1ms(4) guard_brain=0.1ms(4) npc_gunner.los=0.1ms(3) civilian_brain=0.0ms(18)
+[PO5 85.3s] HITCH frame=63ms t=36.2 process=13.7ms physics=47.6ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: npc_motor=4.7ms(50) anim_driver=1.9ms(34) crew_ai_brain=1.7ms(6) npc_gunner=0.2ms(26) police_brain=0.2ms(8) assault_director=0.1ms(2) civilian_brain=0.1ms(36) npc_gunner.los=0.1ms(6)
+[PO5 86.7s] HITCH frame=59ms t=37.6 process=15.8ms physics=50.5ms draws=1454 objects=1548 nodes=19469 enemies=8 spawned=[] top: anim_driver=17.4ms(34) npc_motor=6.3ms(75) crew_ai_brain=3.0ms(9) npc_gunner=0.4ms(39) guard_brain=0.3ms(12) police_brain=0.3ms(12) guard_brain.combat=0.3ms(12) guard_brain.pick_target=0.2ms(4)
+[PO5 86.8s] HITCH frame=76ms t=37.7 process=15.8ms physics=50.5ms draws=1895 objects=2095 nodes=19469 enemies=8 spawned=[] top: anim_driver=8.8ms(34) npc_motor=3.1ms(50) crew_ai_brain=2.9ms(6) npc_gunner=0.3ms(26) police_brain=0.1ms(8) assault_director=0.1ms(2) npc_gunner.los=0.1ms(6) guard_brain=0.1ms(8)
+[PO5 86.9s] HITCH frame=60ms t=37.8 process=15.8ms physics=50.5ms draws=1906 objects=2112 nodes=19469 enemies=8 spawned=[] top: npc_motor=9.6ms(100) crew_ai_brain=5.9ms(12) anim_driver=2.6ms(34) hud_model=2.2ms(1) npc_gunner=1.9ms(52) hud_model.objectives=0.7ms(1) npc_gunner.fired=0.7ms(1) hud_model.player=0.6ms(1)
+[PO5 87.0s] HITCH frame=66ms t=37.9 process=15.8ms physics=50.5ms draws=1857 objects=2035 nodes=19475 enemies=7 spawned=[] top: npc_motor=5.9ms(96) crew_ai_brain=3.9ms(12) hud_model=1.9ms(1) anim_driver=1.8ms(34) hud_model.objectives=0.6ms(1) hud_model.player=0.5ms(1) npc_gunner=0.4ms(52) hud_model.flush=0.4ms(1)
+[PO5 88.7s] pilot: reload in a lull (weapon.corsair_ar 3/30, reserve 106)
+[PO5 91.1s] TEL worst_frame=279ms t=42 phase=3 phys=39.2ms proc=9.5ms nodes=19483 enemies=5 civs=17 crew=[0:0@(16.2, 0.0, -4.8) 1:0@(18.7, 0.0, -2.4) 2:0@(19.5, 0.0, -5.1) 3:0@(18.3, 0.0, -7.4) nearest_enemy=15.0m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 91.4s] HITCH frame=65ms t=42.4 process=9.5ms physics=39.2ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: anim_driver=3.1ms(34) npc_motor=2.2ms(22) crew_ai_brain=1.1ms(3) police_brain=0.1ms(4) assault_director=0.1ms(1) npc_gunner=0.1ms(13) civilian_brain=0.1ms(18) custody_system=0.1ms(1)
+[PO5 92.0s] HITCH frame=78ms t=42.9 process=9.5ms physics=39.2ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: anim_driver=5.3ms(34) npc_motor=4.4ms(44) crew_ai_brain=2.0ms(6) police_brain=0.3ms(8) npc_gunner=0.1ms(26) civilian_brain=0.1ms(36) assault_director=0.1ms(2) custody_system=0.1ms(2)
+[PO5 92.1s] HITCH frame=63ms t=43.0 process=9.5ms physics=39.2ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: npc_motor=10.8ms(110) crew_ai_brain=8.6ms(15) anim_driver=3.1ms(34) hud_model=1.8ms(1) hud_model.objectives=0.8ms(1) hud_model.player=0.5ms(1) police_brain=0.5ms(20) assault_director=0.4ms(5)
+[PO5 92.1s] HITCH frame=58ms t=43.0 process=11.6ms physics=58.8ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: npc_motor=10.9ms(88) crew_ai_brain=7.9ms(12) anim_driver=3.3ms(34) police_brain=0.8ms(16) civilian_brain=0.5ms(72) npc_gunner=0.4ms(52) assault_director=0.3ms(4) custody_system=0.3ms(4)
+[PO5 92.2s] HITCH frame=54ms t=43.2 process=11.6ms physics=58.8ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: npc_motor=9.5ms(66) crew_ai_brain=6.5ms(9) anim_driver=4.2ms(34) police_brain=1.1ms(12) civilian_brain=0.4ms(54) npc_gunner=0.3ms(39) assault_director=0.3ms(3) custody_system=0.2ms(3)
+[PO5 92.5s] HITCH frame=67ms t=43.4 process=11.6ms physics=58.8ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: anim_driver=2.9ms(34) hud_model=1.8ms(1) npc_motor=1.7ms(22) crew_ai_brain=1.0ms(3) hud_model.objectives=0.7ms(1) hud_model.player=0.6ms(1) hud_model.crew=0.3ms(1) police_brain=0.1ms(4)
+[PO5 93.0s] HITCH frame=77ms t=43.9 process=11.6ms physics=58.8ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: anim_driver=4.9ms(34) npc_motor=2.8ms(22) crew_ai_brain=2.2ms(3) assault_director=0.2ms(1) police_brain=0.2ms(4) npc_gunner=0.1ms(13) civilian_brain=0.1ms(18) custody_system=0.1ms(1)
+[PO5 97.7s] HITCH frame=54ms t=48.7 process=20.2ms physics=32.8ms draws=1783 objects=1969 nodes=19483 enemies=5 spawned=[] top: anim_driver=18.1ms(34) npc_motor=4.5ms(66) crew_ai_brain=2.6ms(9) hud_model=0.9ms(1) hud_model.objectives=0.4ms(1) hud_model.player=0.3ms(1) police_brain=0.2ms(12) civilian_brain=0.2ms(54)
+[PO5 99.6s] EVENT objective vault_drill -> 1 t=51
+[PO5 99.6s] HITCH frame=53ms t=50.6 process=11.4ms physics=38.2ms draws=757 objects=806 nodes=19426 enemies=5 spawned=[] top: anim_driver=1.2ms(33) npc_motor=0.8ms(22) crew_ai_brain=0.7ms(3) police_brain=0.1ms(4) assault_director=0.0ms(1) npc_gunner=0.0ms(13) civilian_brain=0.0ms(17) custody_system=0.0ms(1)
+[PO5 101.1s] TEL worst_frame=78ms t=52 phase=3 phys=32.8ms proc=22.2ms nodes=19332 enemies=5 civs=17 crew=[0:0@(8.5, 0.0, -0.8) 1:0@(10.0, 0.0, -0.7) 2:0@(11.5, 0.0, -2.4) 3:0@(8.7, 0.0, -3.9) nearest_enemy=12.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 103.8s] HITCH frame=57ms t=54.8 process=11.3ms physics=30.3ms draws=964 objects=1032 nodes=19145 enemies=5 spawned=[] top: npc_motor=1.9ms(22) anim_driver=1.6ms(30) crew_ai_brain=0.7ms(3) police_brain=0.5ms(4) assault_director=0.0ms(1) npc_gunner=0.0ms(10) civilian_brain=0.0ms(17) custody_system=0.0ms(1)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[PO5 107.6s] HITCH frame=70ms t=58.5 process=9.0ms physics=35.4ms draws=964 objects=1032 nodes=19613 enemies=10 spawned=[] top: npc_motor=1.1ms(27) anim_driver=1.1ms(35) crew_ai_brain=0.5ms(3) police_brain=0.1ms(9) assault_director=0.1ms(1) civilian_brain=0.0ms(17) npc_gunner=0.0ms(15) custody_system=0.0ms(1)
+[PO5 107.6s] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[PO5 110.4s] pilot: t=5 at (9.2, 0.0, 6.7) corner (9.4, 0.2, 7.9) yaw_err 0.00 fwd=true path=56 mouse_mode=2 state=0 look=(3.30,0.00) pin_yaw=3.29765529259669 bot=false
+[PO5 111.1s] TEL worst_frame=70ms t=62 phase=3 phys=27.8ms proc=12.0ms nodes=19609 enemies=10 civs=17 crew=[0:0@(10.5, 0.0, 7.8) 1:0@(7.1, 0.0, 6.9) 2:0@(4.2, 0.0, 4.7) 3:0@(5.7, 0.0, 5.0) nearest_enemy=5.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 115.4s] pilot: t=10 at (15.0, -1.5, 3.1) corner (15.0, -1.7, 2.6) yaw_err 0.01 fwd=true path=38 mouse_mode=2 state=0 look=(6.36,0.00) pin_yaw=6.37197095740623 bot=false
+[PO5 117.1s] HITCH frame=78ms t=68.0 process=14.5ms physics=35.5ms draws=1186 objects=1330 nodes=19421 enemies=10 spawned=[] top: npc_motor=1.9ms(27) crew_ai_brain=1.7ms(3) anim_driver=0.9ms(33) police_brain=0.4ms(9) assault_director=0.1ms(1) npc_gunner=0.0ms(13) civilian_brain=0.0ms(17) custody_system=0.0ms(1)
+[PO5 117.2s] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[PO5 117.2s] HITCH frame=51ms t=68.1 process=14.5ms physics=35.5ms draws=1186 objects=1330 nodes=19327 enemies=10 spawned=[] top: police_brain=9.8ms(36) npc_motor=8.2ms(108) crew_ai_brain=5.8ms(12) anim_driver=1.7ms(33) assault_director=1.0ms(4) door=0.2ms(4) npc_gunner=0.2ms(50) civilian_brain=0.1ms(68)
+[PO5 117.2s] HITCH frame=54ms t=68.2 process=14.5ms physics=35.5ms draws=839 objects=893 nodes=19327 enemies=10 spawned=[] top: npc_motor=8.0ms(108) crew_ai_brain=5.7ms(12) anim_driver=1.9ms(32) hud_model=1.5ms(1) police_brain=0.7ms(36) hud_model.objectives=0.5ms(1) hud_model.player=0.5ms(1) assault_director=0.3ms(4)
+[PO5 117.3s] HITCH frame=63ms t=68.2 process=14.5ms physics=35.5ms draws=840 objects=898 nodes=19327 enemies=10 spawned=[] top: npc_motor=4.7ms(81) crew_ai_brain=4.6ms(9) police_brain=2.7ms(27) anim_driver=1.9ms(32) assault_director=0.2ms(3) door=0.2ms(3) npc_gunner=0.1ms(36) civilian_brain=0.1ms(51)
+[PO5 119.3s] HITCH frame=55ms t=70.3 process=12.7ms physics=29.8ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=3.0ms(30) npc_motor=2.4ms(27) crew_ai_brain=1.1ms(3) police_brain=0.6ms(9) assault_director=0.1ms(1) civilian_brain=0.1ms(17) custody_system=0.1ms(1) npc_gunner=0.1ms(10)
+[PO5 121.1s] TEL worst_frame=78ms t=72 phase=3 phys=29.2ms proc=7.7ms nodes=19139 enemies=10 civs=17 crew=[0:0@(6.4, -4.0, 8.4) 1:0@(10.5, -4.0, 8.0) 2:0@(9.7, -4.0, 8.0) 3:0@(10.9, -4.0, 7.5) nearest_enemy=8.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 121.2s] HITCH frame=66ms t=72.1 process=7.7ms physics=29.2ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: npc_motor=1.4ms(27) anim_driver=0.9ms(30) crew_ai_brain=0.9ms(3) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(17) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 121.2s] pilot: use RecordsDoor (open_door) -> OK in 0.0 s
+[PO5 122.0s] pilot: t=15 at (6.2, -4.0, 9.6) corner (6.2, -4.0, 9.9) yaw_err 0.00 fwd=true path=23 mouse_mode=2 state=0 look=(3.09,0.00) pin_yaw=3.09203912634905 bot=false
+[PO5 122.4s] HITCH frame=61ms t=73.4 process=6.3ms physics=63.9ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: crew_ai_brain=3.8ms(3) anim_driver=3.6ms(30) npc_motor=2.2ms(27) police_brain=0.2ms(9) assault_director=0.1ms(1) civilian_brain=0.1ms(17) custody_system=0.0ms(1) npc_gunner=0.0ms(10)
+[PO5 125.6s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part2/Interactable for its drill (18 m)
+[PO5 130.7s] pilot: t=5 at (11.9, -4.0, 7.7) corner (12.3, -3.8, 7.6) yaw_err -0.00 fwd=true path=35 mouse_mode=2 state=0 look=(-1.51,0.00) pin_yaw=-1.50817033154533 bot=false
+[PO5 131.1s] TEL worst_frame=66ms t=82 phase=3 phys=33.7ms proc=12.8ms nodes=19139 enemies=10 civs=17 crew=[0:0@(13.2, -4.0, 7.6) 1:0@(7.6, -4.0, 7.9) 2:0@(9.6, -4.0, 8.2) 3:0@(6.1, -4.0, 9.0) nearest_enemy=2.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 131.8s] HITCH frame=73ms t=82.7 process=12.8ms physics=33.7ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: npc_motor=6.0ms(81) crew_ai_brain=4.5ms(9) anim_driver=3.9ms(30) hud_model=2.7ms(1) hud_model.objectives=1.0ms(1) hud_model.player=0.9ms(1) police_brain=0.6ms(27) hud_model.crew=0.5ms(1)
+[PO5 132.6s] HITCH frame=54ms t=83.5 process=11.2ms physics=44.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: crew_ai_brain=10.7ms(6) npc_motor=8.3ms(54) anim_driver=2.4ms(30) police_brain=1.0ms(18) assault_director=0.3ms(2) npc_gunner=0.2ms(20) civilian_brain=0.2ms(34) custody_system=0.2ms(2)
+[PO5 132.7s] HITCH frame=66ms t=83.6 process=11.2ms physics=44.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: crew_ai_brain=11.0ms(12) npc_motor=10.4ms(108) anim_driver=3.7ms(30) police_brain=0.9ms(36) assault_director=0.5ms(4) guard_brain=0.3ms(4) guard_brain.combat=0.2ms(4) civilian_brain=0.2ms(68)
+[PO5 132.7s] HITCH frame=55ms t=83.6 process=11.2ms physics=44.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: npc_motor=9.9ms(108) crew_ai_brain=9.2ms(12) anim_driver=1.9ms(30) hud_model=1.2ms(1) police_brain=1.0ms(36) hud_model.objectives=0.5ms(1) assault_director=0.4ms(4) hud_model.player=0.4ms(1)
+[PO5 132.8s] HITCH frame=76ms t=83.7 process=11.2ms physics=44.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: npc_motor=6.7ms(81) crew_ai_brain=4.6ms(9) police_brain=3.7ms(27) anim_driver=1.3ms(30) assault_director=0.3ms(3) npc_gunner=0.2ms(30) civilian_brain=0.1ms(51) custody_system=0.1ms(3)
+[PO5 132.9s] HITCH frame=78ms t=83.8 process=11.2ms physics=44.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: police_brain=17.1ms(36) npc_motor=14.0ms(108) crew_ai_brain=10.0ms(12) hud_model=2.2ms(1) anim_driver=2.1ms(30) hud_model.player=0.8ms(1) hud_model.objectives=0.8ms(1) assault_director=0.4ms(4)
+[PO5 132.9s] HITCH frame=64ms t=83.8 process=11.2ms physics=44.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: npc_motor=10.9ms(135) crew_ai_brain=8.6ms(15) anim_driver=2.4ms(30) police_brain=1.1ms(45) assault_director=0.4ms(5) civilian_brain=0.3ms(85) npc_gunner=0.2ms(50) custody_system=0.2ms(5)
+[PO5 133.3s] HITCH frame=52ms t=84.2 process=12.1ms physics=49.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: npc_motor=2.1ms(27) anim_driver=2.0ms(30) crew_ai_brain=1.7ms(3) police_brain=0.2ms(9) civilian_brain=0.1ms(17) assault_director=0.1ms(1) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 133.5s] HITCH frame=58ms t=84.5 process=12.1ms physics=49.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: npc_motor=6.0ms(81) crew_ai_brain=5.2ms(9) anim_driver=3.2ms(30) police_brain=0.9ms(27) assault_director=0.3ms(3) civilian_brain=0.2ms(51) npc_gunner=0.2ms(30) custody_system=0.1ms(3)
+[PO5 133.6s] HITCH frame=63ms t=84.6 process=12.1ms physics=49.3ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=14.5ms(30) npc_motor=6.5ms(81) police_brain=5.9ms(27) crew_ai_brain=4.1ms(9) assault_director=0.4ms(3) npc_gunner=0.2ms(30) custody_system=0.1ms(3) civilian_brain=0.1ms(51)
+[PO5 134.9s] HITCH frame=70ms t=85.8 process=28.0ms physics=43.8ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=7.3ms(30) npc_motor=5.8ms(54) police_brain=5.4ms(18) crew_ai_brain=2.4ms(6) hud_model=1.2ms(1) hud_model.objectives=0.6ms(1) hud_model.player=0.3ms(1) hud_model.crew=0.2ms(1)
+[PO5 135.5s] HITCH frame=59ms t=86.4 process=16.0ms physics=41.1ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=10.0ms(30) npc_motor=5.6ms(81) crew_ai_brain=4.3ms(9) police_brain=0.6ms(27) assault_director=0.2ms(3) npc_gunner=0.1ms(30) civilian_brain=0.1ms(51) custody_system=0.1ms(3)
+[PO5 135.6s] HITCH frame=64ms t=86.5 process=16.0ms physics=41.1ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=15.2ms(30) npc_motor=8.2ms(81) crew_ai_brain=5.7ms(9) hud_model=1.1ms(1) police_brain=0.7ms(27) hud_model.objectives=0.4ms(1) civilian_brain=0.4ms(51) hud_model.player=0.4ms(1)
+[PO5 135.6s] HITCH frame=65ms t=86.6 process=16.0ms physics=41.1ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=31.9ms(30) npc_motor=5.7ms(108) crew_ai_brain=4.0ms(12) police_brain=0.5ms(36) assault_director=0.3ms(4) civilian_brain=0.1ms(68) npc_gunner=0.1ms(40) custody_system=0.1ms(4)
+[PO5 135.7s] pilot: t=10 at (14.5, 0.0, 7.7) corner (14.5, 0.0, 6.1) yaw_err 0.00 fwd=true path=19 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318524779104 bot=false
+[PO5 139.0s] HITCH frame=58ms t=89.9 process=32.1ms physics=33.9ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: police_brain=3.5ms(9) anim_driver=3.2ms(30) npc_motor=3.0ms(27) hud_model=2.2ms(1) crew_ai_brain=1.7ms(3) hud_model.objectives=1.0ms(1) hud_model.player=0.7ms(1) hud_model.crew=0.4ms(1)
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[PO5 140.7s] pilot: t=15 at (8.1, -0.0, 1.4) corner (8.1, 0.2, 1.0) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-6.15,0.00) pin_yaw=-6.14510384570974 bot=false
+[PO5 141.1s] TEL worst_frame=78ms t=92 phase=3 phys=31.6ms proc=27.0ms nodes=19143 enemies=10 civs=17 crew=[0:0@(8.0, -0.3, -0.0) 1:0@(4.7, -0.3, 6.6) 2:0@(4.0, -0.3, 6.4) 3:0@(7.5, 0.0, 7.8) nearest_enemy=12.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 144.9s] EVENT objective drill_delivery -> 1 t=96
+[PO5 144.9s] HITCH frame=87ms t=95.8 process=18.0ms physics=33.1ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=6.3ms(30) police_brain=2.3ms(9) npc_motor=1.3ms(27) crew_ai_brain=0.8ms(3) assault_director=0.1ms(1) civilian_brain=0.0ms(17) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 144.9s] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[PO5 144.9s] carrying loot.thermal_drill_part to LidDrill
+[PO5 147.6s] HITCH frame=53ms t=98.5 process=14.2ms physics=29.5ms draws=535 objects=573 nodes=19139 enemies=10 spawned=[] top: anim_driver=15.6ms(30) npc_motor=5.9ms(54) crew_ai_brain=4.1ms(6) police_brain=0.3ms(18) assault_director=0.3ms(2) civilian_brain=0.1ms(34) custody_system=0.1ms(2) npc_gunner=0.1ms(20)
+[INFO][director][p1] assault event heli at (36.0, 10.25, 46.0) (HeliDrop_3)
+[PO5 147.7s] HITCH frame=56ms t=98.6 process=14.2ms physics=29.5ms draws=535 objects=573 nodes=19154 enemies=10 spawned=[] top: assault_director=31.2ms(2) crew_ai_brain=2.4ms(6) npc_motor=2.2ms(54) anim_driver=1.9ms(30) police_brain=0.2ms(18) civilian_brain=0.1ms(34) custody_system=0.1ms(2) npc_gunner=0.0ms(20)
+[PO5 148.9s] HITCH frame=56ms t=99.8 process=32.1ms physics=37.3ms draws=535 objects=573 nodes=19154 enemies=10 spawned=[] top: anim_driver=23.5ms(30) npc_motor=7.2ms(81) crew_ai_brain=3.8ms(9) police_brain=0.5ms(27) assault_director=0.3ms(3) civilian_brain=0.1ms(51) custody_system=0.1ms(3) npc_gunner=0.1ms(30)
+[PO5 148.9s] HITCH frame=67ms t=99.9 process=32.1ms physics=37.3ms draws=535 objects=573 nodes=19154 enemies=10 spawned=[] top: anim_driver=11.7ms(30) police_brain=8.0ms(36) npc_motor=6.7ms(108) crew_ai_brain=2.8ms(12) hud_model=1.3ms(1) hud_model.objectives=0.6ms(1) hud_model.player=0.4ms(1) assault_director=0.3ms(4)
+[PO5 149.6s] HITCH frame=61ms t=100.6 process=32.5ms physics=36.4ms draws=535 objects=573 nodes=19154 enemies=10 spawned=[] top: anim_driver=17.9ms(30) npc_motor=4.9ms(81) police_brain=2.8ms(27) crew_ai_brain=2.3ms(9) assault_director=0.2ms(3) civilian_brain=0.1ms(51) npc_gunner=0.1ms(30) custody_system=0.1ms(3)
+[PO5 149.8s] HITCH frame=74ms t=100.8 process=32.5ms physics=36.4ms draws=535 objects=573 nodes=19154 enemies=10 spawned=[] top: anim_driver=17.0ms(30) npc_motor=4.0ms(54) crew_ai_brain=2.8ms(6) police_brain=0.3ms(18) assault_director=0.2ms(2) civilian_brain=0.1ms(34) custody_system=0.1ms(2) npc_gunner=0.1ms(20)
+[PO5 149.9s] pilot: t=5 at (8.2, 0.0, 0.6) corner (8.1, 0.0, 0.9) yaw_err 0.00 fwd=true path=32 mouse_mode=2 state=0 look=(-3.19,0.00) pin_yaw=-3.18755954077722 bot=false
+[PO5 151.1s] TEL worst_frame=87ms t=102 phase=3 phys=29.7ms proc=7.4ms nodes=19154 enemies=10 civs=17 crew=[0:0@(8.5, 0.0, 2.6) 1:0@(7.4, 0.0, 2.0) 2:0@(6.5, 0.0, 2.3) 3:0@(7.9, 0.0, -0.0) nearest_enemy=9.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 154.9s] pilot: t=10 at (10.8, 0.0, 7.8) corner (10.9, 0.0, 7.8) yaw_err -0.00 fwd=true path=24 mouse_mode=2 state=0 look=(-1.62,0.00) pin_yaw=-1.62111224096668 bot=false
+[PO5 161.1s] TEL worst_frame=43ms t=112 phase=3 phys=28.6ms proc=4.9ms nodes=19154 enemies=10 civs=17 crew=[0:0@(14.3, -0.3, 8.2) 1:0@(12.0, 0.0, 7.5) 2:0@(20.5, 0.0, 8.0) 3:0@(6.7, 0.0, 8.0) nearest_enemy=3.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 165.2s] HITCH frame=54ms t=116.1 process=3.7ms physics=23.1ms draws=535 objects=573 nodes=19154 enemies=10 spawned=[] top: anim_driver=1.0ms(30) npc_motor=0.9ms(27) crew_ai_brain=0.3ms(3) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(17) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 165.2s] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[PO5 168.9s] HITCH frame=55ms t=119.9 process=22.0ms physics=32.8ms draws=1630 objects=1929 nodes=19435 enemies=13 spawned=["tac_light"] top: assault_director=7.3ms(1) spawn_npc.enter_tree=6.9ms(1) police_brain=2.4ms(11) anim_driver=2.3ms(32) npc_motor=1.8ms(27) crew_ai_brain=0.8ms(3) spawn_npc.instantiate=0.1ms(1) npc_gunner=0.0ms(12)
+[PO5 169.2s] pilot: t=15 at (18.4, -0.3, 11.2) corner (19.5, 0.2, 11.5) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(-1.87,0.00) pin_yaw=-1.87385021749322 bot=false
+[PO5 169.6s] HITCH frame=52ms t=120.5 process=17.6ms physics=50.2ms draws=1630 objects=1929 nodes=19435 enemies=13 spawned=[] top: npc_motor=10.1ms(54) anim_driver=5.3ms(33) crew_ai_brain=4.0ms(6) police_brain=1.2ms(24) assault_director=1.0ms(2) loot_bag=0.4ms(4) npc_gunner=0.2ms(26) civilian_brain=0.2ms(34)
+[PO5 169.7s] HITCH frame=68ms t=120.6 process=17.6ms physics=50.2ms draws=1630 objects=1929 nodes=19435 enemies=13 spawned=[] top: npc_motor=12.4ms(108) crew_ai_brain=5.5ms(12) anim_driver=4.6ms(33) hud_model=2.6ms(1) police_brain=1.5ms(48) assault_director=1.0ms(4) hud_model.objectives=1.0ms(1) hud_model.player=0.9ms(1)
+[PO5 171.1s] TEL worst_frame=68ms t=122 phase=3 phys=28.8ms proc=13.3ms nodes=19529 enemies=14 civs=17 crew=[0:0@(21.5, -0.3, 12.2) 1:0@(19.3, -0.3, 14.6) 2:0@(21.5, 0.0, 15.8) 3:0@(18.1, -0.3, 11.5) nearest_enemy=3.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 177.0s] HITCH frame=71ms t=127.9 process=7.0ms physics=29.6ms draws=1630 objects=1929 nodes=19618 enemies=15 spawned=[] top: anim_driver=1.5ms(35) npc_motor=1.4ms(32) hud_model=0.8ms(1) hud_model.objectives=0.4ms(1) crew_ai_brain=0.3ms(3) police_brain=0.2ms(13) hud_model.crew=0.2ms(1) hud_model.player=0.1ms(1)
+[PO5 177.0s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 177.9s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/08_auto_127.png
+[PO5 177.9s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part/Interactable for its drill (21 m)
+[PO5 178.0s] HITCH frame=915ms t=128.1 process=860.1ms physics=67.2ms draws=2739 objects=3596 nodes=19618 enemies=15 spawned=[] top: npc_motor=8.7ms(256) crew_ai_brain=2.0ms(24) anim_driver=1.7ms(35) police_brain=1.1ms(104) hud_model=1.1ms(1) hud_model.objectives=0.4ms(1) civilian_brain=0.3ms(136) hud_model.player=0.3ms(1)
+[PO5 181.8s] TEL worst_frame=915ms t=132 phase=3 phys=27.3ms proc=14.2ms nodes=19618 enemies=15 civs=17 crew=[0:0@(14.2, 0.0, 8.4) 1:0@(17.0, 0.0, 13.2) 2:0@(17.7, 0.0, 12.4) 3:0@(16.2, 0.0, 15.9) nearest_enemy=4.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 182.6s] HITCH frame=54ms t=132.8 process=15.2ms physics=32.7ms draws=1116 objects=1223 nodes=19618 enemies=15 spawned=[] top: npc_motor=4.1ms(32) anim_driver=2.8ms(35) crew_ai_brain=1.7ms(3) police_brain=0.4ms(13) assault_director=0.1ms(1) civilian_brain=0.1ms(17) npc_gunner=0.1ms(14) custody_system=0.0ms(1)
+[PO5 182.8s] pilot: t=5 at (11.6, 0.0, 8.0) corner (10.9, 0.2, 7.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(-4.75,0.00) pin_yaw=-4.74518491248049 bot=false
+[PO5 187.8s] pilot: t=10 at (12.8, 0.0, -2.9) corner (15.1, 0.2, -4.0) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-7.41,0.00) pin_yaw=-7.41491900715076 bot=false
+[PO5 188.6s] HITCH frame=53ms t=138.8 process=8.7ms physics=35.0ms draws=1116 objects=1223 nodes=19618 enemies=15 spawned=[] top: anim_driver=10.6ms(35) npc_motor=4.6ms(96) police_brain=3.0ms(39) crew_ai_brain=2.7ms(9) assault_director=0.1ms(3) npc_gunner=0.1ms(42) civilian_brain=0.1ms(51) custody_system=0.1ms(3)
+[PO5 189.7s] EVENT objective drill_delivery -> 1 t=140
+[PO5 189.7s] EVENT objective drill_delivery -> 2 t=140
+[PO5 189.8s] HITCH frame=95ms t=139.9 process=32.6ms physics=32.5ms draws=1116 objects=1223 nodes=19618 enemies=15 spawned=[] top: anim_driver=4.9ms(35) npc_motor=2.1ms(32) crew_ai_brain=1.2ms(3) police_brain=0.2ms(13) assault_director=0.1ms(1) npc_gunner=0.0ms(14) civilian_brain=0.0ms(17) custody_system=0.0ms(1)
+[PO5 189.8s] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[PO5 189.8s] carrying loot.thermal_drill_part to LidDrill
+[PO5 189.9s] HITCH frame=74ms t=140.0 process=32.6ms physics=32.5ms draws=1116 objects=1223 nodes=19618 enemies=15 spawned=[] top: npc_motor=9.6ms(192) anim_driver=6.1ms(35) crew_ai_brain=5.1ms(18) police_brain=1.5ms(78) hud_model=1.3ms(1) hud_model.flush=0.6ms(1) hud_model.objectives=0.3ms(1) assault_director=0.3ms(6)
+[PO5 191.8s] TEL worst_frame=95ms t=142 phase=3 phys=29.7ms proc=25.7ms nodes=19622 enemies=15 civs=17 crew=[0:0@(11.7, 0.0, -2.4) 1:0@(8.6, 0.0, -1.9) 2:0@(10.0, 0.0, -1.6) 3:0@(8.0, 0.0, 0.0) nearest_enemy=10.1m within15=4 input_enabled=true captured=true paused_by={  }]
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[PO5 194.8s] pilot: t=5 at (8.2, 0.0, 0.6) corner (8.1, 0.0, 0.9) yaw_err 0.00 fwd=true path=32 mouse_mode=2 state=0 look=(-3.19,0.00) pin_yaw=-3.18738447100944 bot=false
+[PO5 199.8s] pilot: t=10 at (10.8, 0.0, 7.8) corner (10.9, 0.0, 7.8) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(-1.62,0.00) pin_yaw=-1.62129482529011 bot=false
+[PO5 201.8s] TEL worst_frame=47ms t=152 phase=3 phys=25.6ms proc=9.7ms nodes=18782 enemies=6 civs=17 crew=[0:0@(13.8, -0.3, 8.9) 1:0@(11.5, 0.0, 8.0) 2:0@(10.5, -0.3, 7.9) 3:0@(6.7, 0.0, 8.0) nearest_enemy=3.8m within15=5 input_enabled=true captured=true paused_by={  }]
+[PO5 204.8s] pilot: t=15 at (17.7, -0.3, 11.0) corner (18.1, 0.2, 11.1) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-1.87,0.00) pin_yaw=-1.86917070646044 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[PO5 211.8s] TEL worst_frame=40ms t=162 phase=3 phys=33.0ms proc=5.4ms nodes=18686 enemies=5 civs=17 crew=[0:0@(25.4, -0.3, 14.2) 1:0@(27.5, 0.0, 15.9) 2:0@(22.4, 0.0, 15.6) 3:0@(20.5, 0.0, 15.9) nearest_enemy=4.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 212.1s] HITCH frame=53ms t=162.2 process=6.6ms physics=26.1ms draws=2238 objects=2486 nodes=18686 enemies=5 spawned=[] top: npc_motor=2.0ms(22) anim_driver=1.3ms(25) crew_ai_brain=0.3ms(3) police_brain=0.2ms(4) civilian_brain=0.1ms(17) loot_bag=0.0ms(1) assault_director=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 213.0s] HITCH frame=117ms t=163.1 process=6.6ms physics=26.1ms draws=2238 objects=2486 nodes=18690 enemies=5 spawned=[] top: anim_driver=1.6ms(25) npc_motor=1.2ms(22) crew_ai_brain=0.3ms(3) police_brain=0.1ms(4) civilian_brain=0.0ms(17) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 213.0s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 213.1s] HITCH frame=51ms t=163.2 process=6.6ms physics=26.1ms draws=2757 objects=2984 nodes=18690 enemies=5 spawned=[] top: npc_motor=7.9ms(132) crew_ai_brain=2.2ms(18) anim_driver=1.4ms(25) police_brain=0.5ms(24) assault_director=0.3ms(6) civilian_brain=0.3ms(102) custody_system=0.2ms(6) guard_brain=0.2ms(6)
+[PO5 213.1s] HITCH frame=62ms t=163.3 process=16.8ms physics=113.5ms draws=2829 objects=3053 nodes=18691 enemies=5 spawned=[] top: npc_motor=5.1ms(110) anim_driver=2.4ms(25) hud_model=2.2ms(1) crew_ai_brain=1.9ms(15) hud_model.objectives=0.7ms(1) hud_model.flush=0.6ms(1) hud_model.player=0.4ms(1) hud_model.crew=0.3ms(1)
+[PO5 218.8s] HITCH frame=52ms t=169.0 process=8.0ms physics=30.1ms draws=2773 objects=3004 nodes=18672 enemies=5 spawned=[] top: anim_driver=1.6ms(25) npc_motor=1.1ms(22) crew_ai_brain=0.4ms(3) police_brain=0.1ms(4) civilian_brain=0.0ms(17) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 221.8s] TEL worst_frame=117ms t=172 phase=3 phys=31.1ms proc=4.9ms nodes=18672 enemies=5 civs=17 crew=[0:0@(25.4, -0.3, 14.2) 1:0@(27.5, 0.0, 15.9) 2:0@(22.4, 0.0, 15.6) 3:0@(20.5, 0.0, 15.9) nearest_enemy=4.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 228.0s] pilot: t=5 at (14.4, 0.0, 6.3) corner (14.4, 0.0, 6.1) yaw_err 3.06 fwd=false path=41 mouse_mode=2 state=0 look=(-9.34,0.00) pin_yaw=-9.14716366091628 bot=false
+[PO5 231.8s] TEL worst_frame=47ms t=182 phase=3 phys=25.8ms proc=11.6ms nodes=18766 enemies=6 civs=17 crew=[0:0@(14.3, -4.0, 6.1) 1:0@(14.4, -2.0, 2.4) 2:0@(15.0, -1.4, 3.3) 3:0@(15.0, -0.8, 4.2) nearest_enemy=3.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 233.0s] pilot: t=10 at (12.7, -4.0, 7.9) corner (6.1, -3.8, 8.5) yaw_err 0.00 fwd=true path=26 mouse_mode=2 state=0 look=(-4.62,0.00) pin_yaw=-4.62215435411375 bot=false
+[PO5 241.5s] FAIL budget 240 s exceeded
+[PO5 242.2s] shot C:\Users\Aaron\gpu17b\of_17b_gpu15tree/09_budget_exceeded.png
+[PO5 242.2s] STATS difficulty=5 police=24 peak_alive=15 specials={ &"enemy.longshot": 1, &"enemy.bulwark": 1 } composition={ &"enemy.security_officer": 9, &"enemy.patrol_officer": 5, &"enemy.tac_light": 7, &"enemy.tac_heavy": 1, &"enemy.longshot": 1, &"enemy.bulwark": 1 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+INTAKE pilot standing loud 186 s, 0 dmg, 0.00 dmg/s, 2.4 enemies within 20 m on average | by attacker [hits, dmg, nulled] { "enemy.security_officer": [0, 0.0, 48] } | by range {  }
+[PO5 242.2s] RESULT FAIL (code 2) flow=auto_loud heist=Ostrander Federal seed=1037
+[PO5 242.2s] HITCH frame=700ms t=191.8 process=5.7ms physics=24.8ms draws=1584 objects=2534 nodes=18766 enemies=6 spawned=[] top: crew_ai_brain=1.3ms(3) npc_motor=1.2ms(23) anim_driver=0.9ms(26) police_brain=0.1ms(5) npc_gunner=0.1ms(6) assault_director=0.0ms(1) npc_gunner.los=0.0ms(1) custody_system=0.0ms(1)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] play_cue (res://world/audio/cue_player.gd:220)
+       [1] _device_one_shot (res://world/audio/cue_player.gd:529)
+       [2] _on_device_jammed (res://world/audio/cue_player.gd:501)
+       [3] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [4] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [5] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Playback can only happen when a node is inside the scene tree
+   at: play_basic (scene/audio/audio_stream_player_internal.cpp:145)
+   GDScript backtrace (most recent call first):
+       [0] play_cue (res://world/audio/cue_player.gd:221)
+       [1] _device_one_shot (res://world/audio/cue_player.gd:529)
+       [2] _on_device_jammed (res://world/audio/cue_player.gd:501)
+       [3] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [4] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [5] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 472 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 6 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
