@@ -2221,6 +2221,73 @@ func _civ_near(at: Vector3, r: float) -> NpcBase:
 	return null
 
 
+## LEAD 2026-10-21 (GPU-15: the pilot got "aimed <none> at 2.22 m" at the BondSafe): can a player use every OF loud
+## interactable from its UsePoint? Loud (alarm via the StealthDirector, NPCs out), vault gate + vault door opened
+## instantly (SHORTCUT, logged), burn-through done (lid, rope ladder, hoist on). Then for each Safe / DrillPoint /
+## BagLift / DepositBox / vault door / time lock / lid component: walk to its stand like a player, aim, press interact
+## and log whether the hold STARTED (component `started`) within 6 s, plus availability and the aimed component.
+func _test_interact() -> bool:
+	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.ROUTINE, _of_opts({}, OF_SPAWN_LANE), true):
+		return false
+	if not await _mask():
+		return await _fail("mask")
+	var rope: Ladder = _x("rope_ladder") as Ladder
+	var hoist: BagLift = _x("hoist") as BagLift
+	if rope != null and hoist != null:
+		await _enable_hole(rope, hoist)
+	for tag: StringName in [&"vault_gate", &"vault_door"]:
+		var d: Door = (_tagged(tag) if tag == &"vault_gate" else _x("vault_door")) as Door
+		if d != null and not d.is_open:
+			d.set_open(true, true)
+			note("SHORTCUT %s opened instantly" % d.name)
+	await wait_s(1.0)
+	var isys: InteractionSystem = rt.interaction
+	var rows: PackedStringArray = PackedStringArray()
+	var ok_n: int = 0
+	var comps: Array[InteractableComponent] = []
+	for n: Node in rt.find_children("*", "InteractableComponent", true, false):
+		var ic: InteractableComponent = n as InteractableComponent
+		var o: Node = ic.owner_node()
+		var nm: String = String(o.name) if o != null else ""
+		if o is Safe or o is DrillPoint or o is BagLift or o is DepositBox or o == _x("vault_door") \
+				or nm.contains("TimeLock") or nm.contains("Lid") or nm.contains("Thermal"):
+			comps.append(ic)
+	note("INTERACT sweep: %d components" % comps.size())
+	for ic: InteractableComponent in comps:
+		if not is_instance_valid(ic):
+			continue
+		var o: Node = ic.owner_node()
+		var label: String = "%s/%s (%s)" % [o.name if o != null else "?", ic.name, ic.kind]
+		if not ic.enabled:
+			rows.append("%s: disabled" % label)
+			continue
+		var started: Array[bool] = [false]
+		var cb: Callable = func(c: Node) -> void:
+			if c == pilot.crew:
+				started[0] = true
+		ic.started.connect(cb)
+		var avail0: StringName = ic.availability(pilot.crew)
+		var ret: bool = await pilot.use(ic, 6.0, func() -> bool: return started[0])
+		ic.started.disconnect(cb)
+		pilot.inp.release(&"interact")
+		var aimed: InteractableComponent = isys.aimed_component(pilot.crew)
+		var dist: float = pilot.crew.eye_position().distance_to(ic.global_position)
+		var row: String = "%s: %s (avail before '%s', after '%s', aimed %s, eye dist %.2f, use() %s)" % [label,
+			"STARTED" if started[0] else "NOT STARTED", avail0, ic.availability(pilot.crew),
+			aimed.owner_node().name if aimed != null and aimed.owner_node() != null else "<none>", dist, ret]
+		note("INTERACT " + row)
+		rows.append(row)
+		if started[0]:
+			ok_n += 1
+		await wait_s(1.0)
+		var sess: Dictionary = isys.session(pilot.crew.slot)
+		if not sess.is_empty():  # walk off to cancel a hold still running
+			await _go(pilot.crew.global_position + Vector3(0.8, 0, 0), 0.3, 3.0)
+	note("INTERACT summary: %d / %d started" % [ok_n, rows.size()])
+	await shot("interact_end")
+	return true
+
+
 ## Headless probe (no pilot movement needed): LK floor points on the navmesh at floor height, reachable from
 ## GHOST_LK_WAIT, and hidden at crouch height from BB eyes outside LockerDoor. Picks GHOST_LK_HIDES (r252b).
 func _test_lkprobe() -> bool:
