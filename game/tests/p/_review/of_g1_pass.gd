@@ -2470,6 +2470,19 @@ func _sweep(list: Array[InteractableComponent], rows: PackedStringArray, ok_n: A
 			await _go(pilot.crew.global_position + Vector3(0.8, 0, 0), 0.3, 3.0)
 
 
+## How many of 8 BB eye points outside LockerDoor see `pos` at chest height (the lkprobe set).
+func _bb_eyes_see(pos: Vector3, h: float = 0.7) -> int:
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	var seen: int = 0
+	for e: Vector2 in [Vector2(4.0, 8.5), Vector2(5.0, 9.0), Vector2(6.0, 9.0), Vector2(6.5, 10.0), Vector2(8.0, 8.5),
+			Vector2(3.0, 8.5), Vector2(10.0, 8.5), Vector2(5.0, 11.0)]:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(_of(Vector3(e.x, -4.0 + 1.6, e.y)),
+			pos + Vector3(0, h, 0), 1)
+		if space.intersect_ray(q).is_empty():
+			seen += 1
+	return seen
+
+
 ## Headless probe (no pilot movement needed): LK floor points on the navmesh at floor height, reachable from
 ## GHOST_LK_WAIT, and hidden at crouch height from BB eyes outside LockerDoor. Picks GHOST_LK_HIDES (r252b).
 func _test_lkprobe() -> bool:
@@ -2686,11 +2699,18 @@ func _g3_keycard() -> bool:
 	await wait_until(func() -> bool:
 		found[0] = _civ_near(_of(GHOST_LK_WAIT), 6.0)
 		return found[0] != null, 600.0)
-	pilot.inp.release(&"crouch")
 	var mgr: NpcBase = found[0]
 	if mgr == null:
 		note("manager never came to LK")
 		return false
+	# Doc §3 'leave him in a cubicle': a tied civilian can't be moved, so tie him only where BB can't see him (haz_p:
+	# tied in LockerDoor's sight line, rover_basement saw him from BB and radioed at t=355 with the pilot hidden).
+	var shown: Array[int] = [8]
+	await wait_until(func() -> bool:
+		shown[0] = _bb_eyes_see(mgr.global_position, 0.5)
+		return shown[0] == 0, 60.0)
+	note("GHOST manager at %s, seen by %d of 8 BB eyes when shouted" % [Po5Pilot._v(mgr.global_position), shown[0]])
+	pilot.inp.release(&"crouch")
 	var b: CivilianBrain = mgr.get_node_or_null(^"Brain") as CivilianBrain
 	for _k: int in 4:
 		if b == null or b.mode == CivilianBrain.Mode.DOWN:
