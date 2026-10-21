@@ -17,6 +17,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 """
 
 import _anim as anim
+import _anim_ah as ah
 import _anim_assault as assault
 import _anim_bank as bank
 import _anim_civ_panic as civ
@@ -301,6 +302,9 @@ CLIPS = {
     # (bartender_wipe at the 0.9 m diner counter)
     "sit_vehicle_drive": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
     "counter_wipe": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
+    # AH-D1 Afterhours (QC-74, _anim_ah): the DJ at the 1.0 m booth on the stage, 120 BPM (16 beats per loop), the right
+    # hand on the headphone cup at `cue`; booth layout in SOURCE `ah_dj_placement`
+    "dj_mix": {"frames": 240, "loop": True, "speed": 0.0, "priority": 10, "events": {"cue": 90}},
 }
 # D-116 frame-locked weapon holds on the move (_anim_loco_holds, SOURCE `locomotion_holds`): hold_<kind>_<gait>, the
 # base clip's frames / loop / events
@@ -340,7 +344,7 @@ def build(ctx) -> None:
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
                 or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP or name in bank.KEEP
-                or name in rt.KEEP):
+                or name in rt.KEEP or name in ah.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -366,6 +370,8 @@ def build(ctx) -> None:
             row += bank.check_row(sk, CLIPS, name, baked)
         if name in rt.NAMES:
             row += rt.check_row(sk, CLIPS, name, baked, keep)
+        if name in ah.NAMES:
+            row += ah.check_row(sk, CLIPS, name, baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -406,6 +412,8 @@ def build(ctx) -> None:
     for key, text in bank.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in rt.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
+    for key, text in ah.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in loco.source_notes().items():
         ctx.source_extra[key] = text
