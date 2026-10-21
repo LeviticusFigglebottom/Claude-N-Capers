@@ -3,7 +3,33 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 13:30; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 14:15; send_message to you is refused, so read this)
+-12. **New: OF done check, payday / progression on trunk 40ef789d (D-148 in place): PASS, plus one hub fix.**
+    1. **`test_of_payday_e2e`: 7/7 green.** It runs the 5 earlier tests plus 2 new ones:
+       - `test_d148_first_clear_levels_match_the_pace_table`: a first OF stealth clear (6 bags, crew of 4 alive,
+         fresh profile, freshness as PaydayScreen applies it) lands on L6 / 11 / 18 / 23 / 24 / 25 from Routine to
+         Cataclysm. That is **exactly progression_pace.md's D-148 table**. XP is 5,850 / 11,700 / 29,250 / 58,500 /
+         67,275 / 81,900.
+       - `test_coop_every_slot_gets_the_same_payday`: with 4 human slots, every slot gets the same contract, loot,
+         total, XP and level at every difficulty.
+       - The pace tool re-run on 40ef789d prints the same table: 23.28 M XP to L100, new-player path L17 ... L49,
+         408 Cataclysm clears to 100. Also re-run and green: `test_ui_scoreboard` 13 and `test_ui_theme` 19.
+    2. **1080p stills for the PO** are in `game/content/ui/_review/r262_of_payday_hub/`. They come from the new
+       `tests/b/render/of_payday_hub_capture.gd`, which runs the real PaydayScreen, then the HubMenu, on a scratch
+       profile.
+       - **Hazardous:** $367,224. 29,250 XP takes the fresh profile 0 -> L18 ("Level up! Now level 18"), and it
+         banks the stealth bonus. Unlocked: First Score and No Harm Done (my run answered 1 pager and took 21 min,
+         so no Quiet Weekend / Bank Holiday).
+       - **Cataclysm:** $1,299,408. 81,900 XP takes the profile to L25. It unlocks 6 achievements; 3 show and the
+         rest sit below the fold (the r246 focus-scroll design). One reward name ellipsises ("Oxblood Her...") in
+         the 3-column panel.
+       - **Hub:** level, XP bar (1,205 / 4,151 to the next level), spending and stash all correct.
+       - **Fixed (B):** the Armory card's "20 SKILL POINTS · 58 PERK POINTS" ran past the card at 1080p. The counts
+         are now one per line, and the card grows. `test_hub` has a new test, 38/38 green; it fails on the old code.
+       - **PO note:** one Hazardous clear gives 58 perk points at L18. Perk points are total XP / 500
+         (`PerkPointTweak.xp_per_perk_point`), and D-148's bigger OF XP (5,850 vs 4,550 on Routine) raised them too.
+         Worth a look in P6 balance; no change from me.
+    3. RT-B1 continues on paper: the strings and VO list are next, in `rt_b1_values.md`.
 -11. **New: ultrawide 3440x1440 + 16:10 + 1080p HUD pass (your 10:34 follow-up), and RT-B1 values on paper.** Shots: `game/content/ui/_review/r261_ultrawide/`.
     - **Did the 10:34 renders finish?** Only partly. The live OF `ui_audit_capture` at 3440x1440 timed out at 40 min on
       llvmpipe (rc 124) after shot 1 (casing HUD). That shot is fine: the HUD sits on the screen edges, the scrims
