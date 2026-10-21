@@ -92,6 +92,8 @@ var _post_fwd: Vector3 = Vector3.FORWARD
 var _retarget_left: float = 0.0
 var _target_visible: bool = false
 var _closing: bool = false
+## Seconds in combat wanting to fire with the gunner not engaging (no shot line), _tick_combat.
+var _no_shot_s: float = 0.0
 var _cuff_left: float = 0.0
 var _cuff_origin: Vector3 = Vector3.ZERO
 ## QC-57: a scripted post set by walk_to_post (kept by _start, no patrol route).
@@ -677,7 +679,13 @@ func _tick_combat(delta: float) -> void:
 		return
 	var tpos: Vector3 = target.global_position
 	var d: float = _flat(tpos - _npc.global_position).length()
-	if not _target_visible or d > tweak.combat_standoff_max_m:
+	# D's GH Tense coverage: a guard who sees the crew through a pane bullets cannot pass (a glazed door leaf; D-142 vision)
+	# held the standoff aiming for minutes. Like a PD2 guard he moves for a shot: no shot line for
+	# combat_no_shot_close_s -> close in until the gunner engages.
+	var gun: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
+	var shot_line: bool = gun == null or gun.engaging or not wants_to_fire
+	_no_shot_s = 0.0 if shot_line else _no_shot_s + delta
+	if not _target_visible or d > tweak.combat_standoff_max_m or _no_shot_s >= tweak.combat_no_shot_close_s:
 		_closing = true
 	elif d <= tweak.combat_standoff_pref_m:
 		_closing = false
