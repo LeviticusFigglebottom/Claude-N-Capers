@@ -253,6 +253,17 @@ SLOT_DOORS: Dict[str, Dict[str, str]] = {
 }
 
 # --------------------------------------------------------------------------------------------- furniture / cover
+# street parked cars [name, base, yaw] (1.9 x 1.45 x 4.6 greybox bodies, length along local z)
+STREET_CARS = [
+    ("StreetCarOW1", [-9.0, 0.0, 30.0], 0.0),
+    ("StreetCarOW2", [-9.0, 0.0, 45.0], 0.0),
+    ("StreetCarOE1", [9.0, 0.0, 40.0], 0.0),
+    ("StreetCarOE2", [9.0, 0.0, 55.0], 0.0),
+    ("StreetCarTW1", [-30.0, 0.0, 7.0], 90.0),
+    ("StreetCarTW2", [-50.0, 0.0, 7.0], 90.0),
+    ("StreetCarON1", [8.5, 0.0, -30.0], 0.0),
+]
+COVER_OFF = 0.6           # a COVER point stands this far off its cover's face, facing it (OF's pier points)
 _CARS = {  # car-park parked cars (plan `cc`, local x, z), 4.6 x 1.9 x 1.45 greybox bodies, along x
     "G": [(12.5, 8.0), (2.4, 12.0), (18.0, 14.0), (12.5, 22.0), (2.4, 24.0), (24.0, 26.5)],
     "2": [(12.5, 8.0), (2.4, 16.0), (18.0, 20.0), (25.5, 33.0), (8.0, 27.0)],
@@ -279,16 +290,7 @@ def furniture() -> List[list]:
                 )
             )
     # street: parked cars on Orchard / Tannery kerbs, bus shelters, the newsstand, the clock pillar, planters
-    street = [
-        ("StreetCarOW1", [-9.0, 0.0, 30.0], 0.0),
-        ("StreetCarOW2", [-9.0, 0.0, 45.0], 0.0),
-        ("StreetCarOE1", [9.0, 0.0, 40.0], 0.0),
-        ("StreetCarOE2", [9.0, 0.0, 55.0], 0.0),
-        ("StreetCarTW1", [-30.0, 0.0, 7.0], 90.0),
-        ("StreetCarTW2", [-50.0, 0.0, 7.0], 90.0),
-        ("StreetCarON1", [8.5, 0.0, -30.0], 0.0),
-    ]
-    for nm, p, yaw in street:
+    for nm, p, yaw in STREET_CARS:
         out.append(B(nm, p, [1.9, 1.45, 4.6], yaw, "car", False, "prop", {"cover": "hard"}))
     for i, x in enumerate([-38.0, -30.0, -22.0]):
         out.append(B("BusShelter%d" % i, [x, 0.0, 12.6], [5.0, 2.6, 0.3], 0.0, "bus_shelter", False, "prop"))
@@ -541,8 +543,9 @@ def always() -> Dict[str, List[list]]:
                 90.0,
                 {"capacity": 2},
                 None,
-                {"kind": "skip"},
-                "prop_skip",
+                {"kind": "dumpster"},
+                # prop_skip has no `Lid` / `Inside` (body_container visual slots): the dumpster until the skip variant
+                "prop_dumpster",
             ),
             Pf(
                 "body_container",
@@ -867,6 +870,51 @@ def tactical() -> List[list]:
             )
     for cx, cz in ((16, 11), (22, 16), (28, 21), (16, 21)):
         out.append(T("CoverFrameCol%d_%d" % (cx, cz), "COVER", si(cx - 0.6, 0.0, cz), -90.0, ["frame_column"]))
+    return out + static_cover()
+
+
+def static_cover() -> List[list]:
+    """The always-present COVER set (doc Loud, "COVER ~70": with the active convoy layout's points, which live in the
+    ConvoyLayout sets, disabled until the stop): parked cars, shelters, the newsstand, the clock, the diner counter,
+    formwork, cabins, the crane base, the mixer (tag mixer: the mission disables it when the mixer moves, D-149.1)."""
+    out = []
+    o = COVER_OFF + 0.95                       # a car's half width + the offset
+    ys = {"G": 0.0, "2": 3.5, "R": 7.0}
+    for lvl, cars in _CARS.items():            # car-park cars lie along z (yaw 90): the point on their east side
+        for i, (x, z) in enumerate(cars):
+            out.append(T("CoverCar%s%d" % (lvl, i), "COVER", cp(x + o, ys[lvl], z), 90.0, ["parked_car", "carpark"]))
+    for nm, (x, _y, z), yaw in STREET_CARS:    # street cars: the point on their road side
+        if yaw == 90.0:
+            out.append(T("Cover" + nm, "COVER", [x, 0.0, z - o], 180.0, ["parked_car", "street"]))
+        else:
+            sx = 1.0 if x < 0 else -1.0
+            out.append(T("Cover" + nm, "COVER", [x + sx * o, 0.0, z], 90.0 if sx > 0 else -90.0,
+                         ["parked_car", "street"]))
+    for i, x in enumerate([-38.0, -30.0, -22.0]):   # the shelters' backs (beside the cower marks)
+        out.append(T("CoverShelter%d" % i, "COVER", [x + 1.5, 0.0, 12.45 - COVER_OFF], 180.0, ["shelter", "plaza"]))
+    out.append(T("CoverNewsstand", "COVER", [-12.0, 0.0, -13.2 + COVER_OFF], 0.0, ["kiosk", "street"]))
+    out.append(T("CoverClock", "COVER", [-26.0, 0.0, 20.4 + COVER_OFF], 0.0, ["clock", "plaza"]))
+    for i, z in enumerate([17.5, 21.5]):            # the counter's staff side
+        out.append(T("CoverCounter%d" % i, "COVER", [24.4 + COVER_OFF, 0.0, z], 90.0, ["counter", "diner"]))
+    for i, (x, z) in enumerate([(14.0, 13.5), (25.0, 18.5), (31.0, 9.0), (19.0, 23.5)]):   # formwork stacks
+        out.append(T("CoverFormwork%d" % i, "COVER", si(x, 0.0, z + 0.6 + COVER_OFF), 0.0, ["formwork", "site"]))
+    out.append(T("CoverCabinsE", "COVER", [-46.0 + COVER_OFF, 0.0, -22.0], 90.0, ["cabins", "site"]))
+    out.append(T("CoverCabinsW", "COVER", [-58.0 - COVER_OFF, 0.0, -22.0], -90.0, ["cabins", "site"]))
+    out.append(T("CoverCraneBase", "COVER", [-24.0 + COVER_OFF, 0.0, -24.0], 90.0, ["crane", "site"]))
+    out.append(T("CoverMixer", "COVER", si(26.0, 0.0, 38.0 - COVER_OFF), 180.0, ["mixer", "site"]))
+    return out
+
+
+def convoy_cover(nm: str, x: float, z: float, yaw: float, wd: float, route: str) -> List[list]:
+    """Two COVER points beside a convoy vehicle (its local +-x sides, COVER_OFF off its faces, facing it)."""
+    t = math.radians(yaw)
+    lx, lz = math.cos(t), -math.sin(t)        # the vehicle's local +x in the world
+    d = wd / 2.0 + COVER_OFF
+    out = []
+    for side, sgn in (("R", 1.0), ("L", -1.0)):
+        px, pz = x + sgn * lx * d, z + sgn * lz * d
+        py = r3(ST.ramp_y(px)) if route == "east" else 0.0
+        out.append([nm + "Cover" + side, [r3(px), py, r3(pz)], r3(yaw + 90.0 * sgn)])
     return out
 
 
@@ -1129,6 +1177,7 @@ def convoy_sets() -> Dict[str, List[list]]:
                     [r3(q) for q in rear],
                     round(slope, 5),
                     other,
+                    convoy_cover(nm, x, z, ry, wd, route),
                 ]
             )
         out["route_" + route].append([mode, rows])

@@ -387,6 +387,12 @@ func _convoy_sets(vs: VariantSlot, sid: String) -> void:
 			mi.mesh = _box_mesh(Vector3(size.z, size.y, size.x), String(CONVOY_CLASS[String(v[1])]))
 			mi.position = Vector3(0.0, size.y * 0.5, 0.0)
 			add(body, mi)
+			# per-layout COVER (doc Loud): out of the cover group until the stop shows this layout (TacticalPoint
+			# `enabled`, D-149.1 / QC-RT1; the mission enables the active layout's points)
+			for cv: Array in v[8]:
+				var tp: TacticalPoint = _tac_row(st, ["tac", String(cv[0]), "COVER", cv[1], float(cv[2]),
+					["convoy", String(st.get_meta(&"convoy_layout"))], false])
+				tp.enabled = false
 			if String(v[1]) != "car":
 				var m: Marker3D = marker(st, String(v[0]) + "RearDoor", v3(v[5]), float(v[4]) + 180.0, "", "TODO(A5-01): "
 					+ "the truck's rear-step UsePoint / DrillPoint SAW / LootAnchor%s" % (

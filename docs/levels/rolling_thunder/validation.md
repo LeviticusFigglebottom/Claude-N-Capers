@@ -139,12 +139,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 441354 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 441314 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2578 polygons, cell 0.10/0.10 m
+- navmesh: 2577 polygons, cell 0.10/0.10 m
 - 195 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -183,7 +183,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomSTW` | 15 | 15 | 100% |
 | `Rooms/RoomFG` | 775 | 775 | 100% |
 | `Rooms/RoomF1` | 843 | 843 | 100% |
-| `Rooms/RoomX4` | 738 | 738 | 100% |
+| `Rooms/RoomX4` | 741 | 741 | 100% |
 | `Rooms/RoomX1` | 836 | 836 | 100% |
 | `Rooms/RoomX2` | 473 | 473 | 100% |
 | `Rooms/RoomX3` | 818 | 818 | 100% |
