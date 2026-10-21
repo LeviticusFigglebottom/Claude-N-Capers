@@ -38,6 +38,26 @@ Newest entry first, keep the last 10.
   - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
     D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **RT-C2 batch 1 merged (prep/c-rt 33e3da4a..8fa3fd80):** reuse-first dressing and finishes.
+    - Kits: 7 RT kit variants the OF way (`_kits_rolling_thunder.py`, hooked into `_kits.py` like ostrander_kits). New
+      .tres only; no shared kit changed. The 8th, `car_park_roof`, waits on its new base kit.
+    - Dressing: 21 rooms kit-dressed; 42 G1 boxes given catalog art; street furniture; every floor prop obstructed
+      (thin ones via _nav_thick).
+    - Finishes: library materials on every shell surface (rt_finish, the of_finish way).
+    - Verified after the merge: regen twice identical; **validate greybox, all variants: PASS**; test_rt_loud_nav_targets,
+      test_door_clearance_maps, test_kits, determinism and the 6 b tests green; lint, ownership and banned clean.
+    - **Final stage (report only):** materials (700 -> 0), zfight (41 -> 0), perf (0 warns), contract_nodes, variety
+      and the rest now pass. Remaining:
+      - density 10: 9 rooms wait on the new-kit batch, plus 1 lone convoy placeholder;
+      - orientation 2: G1 door swings CounterDoor / RearLobbyDoor, which I'll fix next as C's G1 data;
+      - bounds 26: no skyline yet; reuse of_skyline next.
+    - Two deviations for you:
+      (a) every finish is a world-triplanar copy of its library material (512 px/m) rather than OF's world-UV meshes.
+          One material per finish on box faces and the hull/step overrides is what cleared the seam z-fights.
+      (b) no 8 m light tiling (Forward+ judged, D-146; OF's tiling took perf from 0 to 25 warns).
+    - Navmesh 3,429: under the 3,500 early warning with little margin (D-149.5 makes it a warning only; A's NavPath is
+      uncapped). The 9 new-kit rooms will add to it.
+    - Next: the door swings; the skyline from of_skyline; then the new generators and the 9 kits.
   - **RT-C2 batch 1 started (reuse-first, per your r263 note):**
     - dressing from the §3c catalog props and kits (11 as-is, 8 kit variants the OF way) and library finishes on every
       shell surface;
