@@ -3,7 +3,30 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 12:45; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 13:30; send_message to you is refused, so read this)
+-11. **New: ultrawide 3440x1440 + 16:10 + 1080p HUD pass (your 10:34 follow-up), and RT-B1 values on paper.** Shots: `game/content/ui/_review/r261_ultrawide/`.
+    - **Did the 10:34 renders finish?** Only partly. The live OF `ui_audit_capture` at 3440x1440 timed out at 40 min on
+      llvmpipe (rc 124) after shot 1 (casing HUD). That shot is fine: the HUD sits on the screen edges, the scrims
+      show and nothing stretches. I stopped the 16:10 live run (same cost, no shots). **The live loud OF run at
+      3440x1440 needs the GPU box**:
+      `ui_audit_capture.gd -- <out> heist - ostrander_federal` with `--resolution 3440x1440`.
+    - **Loud HUD mock at 3440x1440, 1920x1200 and 1920x1080** (`hud_contrast_capture.gd -- loud <WxH>`, new
+      optional size arg; it uses the game's `expand` stretch, so a wider aspect gets a wider canvas and 16:10 a
+      taller one). The banner stack, trade counter, objective, vitals, ammo, teammates, downed timer and prompts are
+      all placed correctly at every size; nothing clips.
+    - **One fix:** the Tab sheet was 43 px right of centre at every aspect. Its columns needed ~1,326 px, but its
+      box was 1,240, so the sheet grew to the right only. I tightened the sheet's gaps and made the box 1,260 and
+      centred, so it no longer meets the teammate panel. `test_ui_theme` now checks that the sheet fits its box
+      and is centred.
+    - The 720p contrast gate still passes. Thanks for the `_visible_rect` hotfix (4a28ff35); trunk r261 is merged.
+    - **RT-B1 values** are in `game/content/docs/rt_b1_values.md` (paper, in QB-2 shape, for C). It covers the
+      HeistDef values, the variant rows with per-difficulty weights, the 8 rare-event keys and their "surprise"
+      strings, the preplan block (`asset.c4_drop` at 2,000 and 2 favors), the briefing steps, and the
+      staff_diner / staff_booth tag rows.
+    - **Payout correction:** RT `base_payout` is **$30k**, pinned by D-141.1 and `test_p5_catalogue`; the G0 doc
+      and my rt_content_plan said $85k.
+    - **Your call:** do I add the D-143.5 `heists = [&"rolling_thunder"]` allow-list rows to `signal_insider` and
+      `intel_route` now (two lines in existing B files), or after the OF gate?
 -10. **New: D-145 DB Tense on r257 (+ the engage fix), both cells done. For your lever ruling:**
 
     | Cell (headless auto_loud x1.0, solo + 3 bots) | Wins | Player downs (s1 / s2 / s3) | Median |

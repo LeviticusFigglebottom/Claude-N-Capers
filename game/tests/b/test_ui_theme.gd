@@ -300,6 +300,11 @@ func test_objective_markers_label_and_current() -> void:
 	# Lane 2 audit: marker text stays off the sheet (a label crossed LOOT SECURED); off again once it closes.
 	assert_true(_hud.objective_markers.avoid.has_area(), "the sheet is avoided")
 	assert_eq(_hud.objective_markers.avoid, _hud.scoreboard.sheet.get_global_rect())
+	# r261 ultrawide pass: the sheet fits its centred box (it grew right only, 43 px off centre at every aspect).
+	var box: Rect2 = _hud.scoreboard.get_global_rect()
+	var sheet: Rect2 = _hud.scoreboard.sheet.get_global_rect()
+	assert_true(sheet.size.x <= box.size.x + 0.5, "sheet %s wider than its box %s" % [sheet, box])
+	assert_near(sheet.get_center().x, box.get_center().x, 1.0, "the sheet is centred")
 	_hud.scoreboard.set_shown(false)
 	await wait_frames(2)
 	assert_false(_hud.objective_markers.avoid.has_area(), "nothing avoided without the sheet")
