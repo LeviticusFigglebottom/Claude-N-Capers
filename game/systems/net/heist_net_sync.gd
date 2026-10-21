@@ -337,7 +337,7 @@ func services_state() -> Dictionary:
 	var custody: CustodySystem = _runtime.service(CustodySystem.SERVICE) as CustodySystem
 	if custody != null:
 		out[SVC_CUSTODY] = custody.net_state()
-	out[SVC_RUNTIME] = {"phase": int(_runtime.phase), "loud": _runtime.went_loud, "layout": _runtime.convoy_layout}
+	out[SVC_RUNTIME] = {"phase": int(_runtime.phase), "loud": _runtime.went_loud, "layouts": _runtime.layouts.duplicate()}
 	if _runtime.stats != null:
 		out[SVC_STATS] = _runtime.stats.net_state()
 	out[SVC_CAPTAIN] = captain_state()
@@ -525,7 +525,7 @@ func apply_services(svc: Dictionary) -> void:
 		var r: Dictionary = svc[SVC_RUNTIME] as Dictionary
 		phase_replicated.emit(int(r.get("phase", _runtime.phase)), bool(r.get("loud", _runtime.went_loud)))
 		if not Net.is_authority():
-			_runtime.apply_replicated_convoy_layout(String(r.get("layout", _runtime.convoy_layout)))  # A5-02
+			_runtime.apply_replicated_layouts(r.get("layouts", {}) as Dictionary)  # A5-02
 	if svc.has(SVC_CAPTAIN) and not Net.is_authority():
 		var cs: Dictionary = svc[SVC_CAPTAIN] as Dictionary
 		var next: Dictionary = {"present": bool(cs.get("present", false)),
