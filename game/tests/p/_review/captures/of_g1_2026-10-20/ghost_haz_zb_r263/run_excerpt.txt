@@ -1,0 +1,34 @@
+[OFP 269.0s t=10.8] GHOST rover_hall at the LD check (t=11)
+[OFP 291.2s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 291.2s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 301.2s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 324.1s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (49.2, 0.0, 0.4) walk
+[OFP 334.1s t=63.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 344.1s t=73.0] GHOST lane guards (waiting for the smoke cue): none
+[OFP 349.6s t=78.5] GHOST smoke cue: Npc_guard6 at (46.2, 0.0, -4.7) clip 'smoke' (still 1.0 s) after 46 s
+[OFP 366.9s t=95.8] GHOST rover_hall at the LD check (t=96)
+[OFP 379.8s t=104.0] GHOST LD occupied (rover_hall at (7.0, 0.0, 5.2) (not on MO / loop (c))): skipping this smoke window
+[OFP 400.9s t=125.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (10.5, 0.0, -3.3) walk
+[OFP 421.9s t=135.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (25.1, 0.0, -3.0) walk
+[OFP 431.9s t=145.1] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (41.0, 0.0, -4.5) walk
+[OFP 435.9s t=149.1] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 1.0 s) after 24 s
+[OFP 436.4s t=149.6] GHOST lane clear after 0 s
+[OFP 460.6s t=173.6] GHOST waiting for the dock corridor door: 
+[OFP 461.6s t=174.6] GHOST dock corridor door clear after 1 s
+[OFP 489.1s t=178.3] DETECT Npc_guard3 kind 0 meter 0.16 at (27.3, 0.0, 8.0), pilot (12.4, 0.0, 8.0) crouched false
+[OFP 489.9s t=179.1] DETECT Npc_guard3 kind 0 meter 0.62 at (26.1, 0.0, 8.0), pilot (14.3, 0.0, 7.4) crouched false
+[OFP 491.8s t=181.1] GHOST waiting on SA's half landing for BB: 
+[OFP 493.8s t=183.0] GHOST step _g2_dock done at t=183.0 (+150.0 s)
+[OFP 493.8s t=183.0] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 493.8s t=183.0] GHOST waiting for the LK WC: 
+[OFP 494.3s t=183.5] GHOST LK WC not clear (Npc_guard2 (6.7, -4.0, 8.6) moving): waiting at (1.5, -3.8, 4.0)
+[OFP 494.9s t=184.1] DETECT Npc_guard2 kind 0 meter 0.21 at (7.5, -4.0, 8.4), pilot (14.3, -4.0, 7.7) crouched false
+[OFP 495.4s t=184.6] DETECT Npc_guard2 kind 0 meter 0.66 at (8.2, -4.0, 8.2), pilot (13.4, -4.0, 7.8) crouched false
+[OFP 495.4s t=184.6] GHOST rover_hall at the LD check (t=185)
+[OFP 495.9s t=185.1] DETECT Npc_guard2 kind 0 meter 1.00 at (8.8, -4.0, 8.1), pilot (11.6, -4.0, 7.7) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 204)
+[OFP 496.2s t=185.5] ALARM guard_radio by Npc_guard2 (pilot at (10.3, -4.0, 7.7))
+[OFP 508.9s t=198.2] GHOST waiting for the LK WC: Npc_guard (9.3, -4.0, 7.5) moving, Npc_guard2 (4.6, -4.0, 7.7) moving, Npc_guard5 (5.9, -4.0, 8.1) moving, Npc_guard7 (5.3, -4.0, 7.8) moving, Npc_guard8 (5.2, -4.0, 7.2) moving
+[OFP 518.9s t=208.2] GHOST waiting for the LK WC: Npc_guard (5.0, -4.0, 8.4) moving, Npc_guard2 (5.1, -4.0, 6.8) moving, Npc_guard3 (6.4, -4.0, 7.4) moving, Npc_guard4 (5.7, -4.0, 8.7) moving, Npc_guard5 (5.7, -4.0, 7.7) moving, Npc_guard6 (5.4, -4.0, 7.4) moving, Npc_guard7 (4.7, -4.0, 7.7) moving, Npc_guard8 (6.0, -4.0, 8.5) moving
+[OFP 528.9s t=218.2] GHOST waiting for the LK WC: Npc_guard (3.5, -4.0, 5.6) moving, Npc_guard2 (2.1, -4.0, 4.0) moving, Npc_guard3 (4.3, -4.0, 5.9) moving, Npc_guard4 (1.4, -4.0, 3.5) moving, Npc_guard5 (3.6, -4.0, 5.0) moving, Npc_guard6 (1.0, -4.0, 3.4), Npc_guard7 (2.7, -4.0, 4.9) moving, Npc_guard8 (4.0, -4.0, 5.4) moving
+[OFP 538.9s t=228.2] GHOST waiting for the LK WC: Npc_guard (1.4, -4.0, 1.9), Npc_guard2 (1.4, -4.0, 2.6), Npc_guard3 (1.3, -4.0, 3.2), Npc_guard4 (1.4, -4.0, 1.3), Npc_guard6 (1.0, -4.0, 3.4), Npc_guard7 (1.4, -4.0, 2.9), Npc_guard8 (1.4, -4.0, 2.3)

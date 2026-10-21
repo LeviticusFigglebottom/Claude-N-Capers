@@ -88,6 +88,33 @@ func test_walk_in_climbs_up_and_steps_off_no_forced_animation() -> void:
 		"stood on the landing near the Top marker")
 
 
+## ENV A (ND AreawayLadder): a wall 0.15 m past the Top marker stops the capsule 0.2 m short of it, the step-off lift
+## holds it off the floor, and the climb never let go (W soft-locked). It must detach once the step-off stalls.
+func test_step_off_against_a_wall_past_the_top_lets_go() -> void:
+	var c: CrewController = await _setup()
+	var top: Vector3 = _lad.top_position()
+	var wall: StaticBody3D = StaticBody3D.new()
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	var box: BoxShape3D = BoxShape3D.new()
+	box.size = Vector3(4.0, 3.0, 0.4)
+	shape.shape = box
+	wall.add_child(shape)
+	_rt.map.add_child(wall)
+	wall.global_position = Vector3(top.x, top.y + 1.5, top.z + 0.15 + 0.2)  # near face 0.15 m past the Top marker
+	await wait_physics_frames(3)
+	await _to_bottom(c)
+	await _pilot.face(_lad.global_position + Vector3(0, 2.2, 0), 0.03, 1.5)
+	var off: Callable = func() -> bool: return c.global_position.y > top.y - 0.15 and not c.ladder.is_climbing()
+	var ok: bool = await _hold_w(off, _lad.height_m / Tweak.crew().ladder_climb_speed_mps + 4.0)
+	assert_true(ok, "let go on the landing against the wall (at %s, top %s, stepping_off %s)" % [c.global_position, top,
+		c.ladder.stepping_off])
+	var x0: float = c.global_position.x
+	await _pilot.face(c.global_position + Vector3(3.0, 1.5, 0.0), 0.03, 1.0)  # along the ledge, not over its edge
+	await _hold_w(func() -> bool: return c.global_position.x > x0 + 0.5, 2.0)
+	assert_true(c.global_position.x > x0 + 0.3, "W walks again after the step-off (x %.2f -> %.2f)" % [x0,
+		c.global_position.x])
+
+
 func test_full_look_while_attached() -> void:
 	var c: CrewController = await _setup()
 	await _to_bottom(c)
