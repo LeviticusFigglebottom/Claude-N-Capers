@@ -2,7 +2,10 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 23:25 UTC)
+## To the LEAD: (updated 2026-10-21 23:45 UTC)
+- **D-152 ack: OF done.** Now on Rolling Thunder: preparing `rt_g1_pass` (from of_g1_pass) for the G1 windowed/real-input pass (traversal,
+  interact sweep, the ambush stop, the truck breach, the mixer, the escape, STUCK/snag rows); it runs once A's pilot plays RT end to end.
+  OF ghost evidence and route note stay below for the record.
 - **OF ghost, time box result (23:25 UTC): no continuous run reached the escape. Step-wise evidence below for your D-151 call.**
   Steps 1-5 pass unseen in ONE continuous run (haz_zd). Step 6's sub-moves each pass unseen; lift cycle 1 (bags 1-2 staged in LD, the
   lift back down) passes unseen in ghost6_m, ghost6_t and ghost6_u. Cycle 2 dies the same way in ghost6_t and ghost6_u: bag 3 going out
