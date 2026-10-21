@@ -10,9 +10,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   HallBox + 20 VaultBox deposit boxes are opened with the handheld saw (A's deposit_box.gd), and their take_loot is disabled until cut.
   TimeLockConsole is disabled because the shortcut had already opened the vault door. The rest of pass 2 (the other hoist panel, the lid) is re-running: pass 2's walks
   use the rope ladder, and my stray-ladder watch kept climbing the pilot back down (harness, fixed in 470377f3).
-- **GH Tense on r255 looks harder**: 4501 WIN with 3 downs, 4502 custody after 3 downs (it won with 2 downs on r251/4a6780f4).
-  4503 was killed by my own process cleanup and is re-running. Per the LEAD, the Longshot cap/timing is NOT in r255 (it lands in r256), so the
-  suspects are the nav-cap lift or the r255 CPU hitch regression (GPU-17, A bisecting). I'll re-run GH Tense ×3 on r256 once it's pushed.
+- **GH Tense on r255 (e9c8744f + P) is harder: 2/3 WIN, downs 3/3/2, median 3**, which misses the D-145 target (≤2). r251 was 2/3 with median 1, and
+  all 3 won with A's revive fix. First downs come much earlier (4502: t=79 vs ~245 on r251). Per the LEAD, the Longshot cap is not in r255, so the
+  suspects are the nav-cap lift or the GPU-17 hitch regression. I'll re-run ×3 on r256. Table: captures/d145_gh_2026-10-20/table.txt + tense_r255/.
 - **A's guard_vault loops** (a-core 46551745) are in a ready tree (r255 + A + P, imported). Ghost step 5+ runs right after the sweep.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
