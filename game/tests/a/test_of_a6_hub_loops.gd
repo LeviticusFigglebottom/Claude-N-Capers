@@ -4,7 +4,10 @@
 ## west, the Tannery corner smoke stop and the Tannery bay every cycle; rover_basement visits RC, SD + SS and CP + PL and
 ## never enters the vault concourse (VC*, the vault post's points on the same graph). rover_hall (BC hub) walks
 ## TW <-> BH, the LD dock check + MO and the SB fire-exit check; rover_gallery (UC hub) walks WL -> GA -> EL, OF -> GA ->
-## CF and loop (c) SA up -> XC -> PR door -> XL terrace -> SB down (P's ghost step 4 times its E3 wait on it).
+## CF and loop (c) SA up -> XC -> PR door -> XL terrace -> SB down (P's ghost step 4 times its E3 wait on it). The fixed
+## posts too (P: the vault guard never left VC): post_vault (VCPost hub) (a) up to the gate (VCLaserW, out of its
+## swing), (b) the RC aisle, (c) SD desk + CP;
+## post_lobby (HallLobby hub) (a) vestibule / windows / PW, (b) teller gate -> TW -> PC, (c) LO -> TW -> BC -> SR -> PC.
 extends TestCase
 
 const MAP_PATH: String = "res://world/heists/ostrander_federal/ostrander_federal.tscn"
@@ -85,6 +88,9 @@ func test_of_rover_loops() -> void:
 	var cases: Dictionary = {
 		&"guard_rover_dock": ["Patrols/Lane", ["LaneWest", "LaneCorner", "TanneryBay"], []],
 		&"guard_rover_basement": ["Patrols/BankBasement", ["RCEast", "SDDesk", "SS", "CP", "PL"], ["VC"]],
+		&"guard_vault": ["Patrols/BankBasement", ["VCLaserW", "RCNorth", "RCSouth", "RCEast", "SDDesk", "CP"], []],
+		&"guard_lobby": ["Patrols/BankGround",
+			["HallVestibule", "HallWindowsW", "HallPW", "HallGate", "TWGate", "PC", "LO", "SRCoffee"], []],
 		&"guard_rover_hall": ["Patrols/BankGround",
 			["TWWest", "HallLobby", "TWEast", "LDCheck", "MO", "StairBG", "BCFireExit"], ["SR"]],
 		&"guard_rover_gallery": ["Patrols/BankUpper",

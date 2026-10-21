@@ -3,7 +3,42 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 05:00; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 10:00; send_message to you is refused, so read this)
+-7. **New: D-145 DB Tense on trunk r256 3312326b** (cap 1 Longshot + A's Longshot timing + revive fixes, headless
+   auto_loud x1.0, solo + 3 bots, no doctor bag): **1/3**. s3 PASS 873 s (player downs 1); s1 custody 583 s and s2
+   custody 664 s, both after the player's 3 downs (revives land: 5 and 3). Police 171 / 186 / 101, Longshots 2-3 per
+   run, Bulwarks 11-21. Across the four Tense batches since the revive fix: 1/3, 2/3, 1/3, 1/3: Tense on DB still
+   fails on the player's damage over the ~10 min loud phase. Next lever is A's / yours (damage grace, Stinger,
+   health, or the opt-in doctor bag in the harness); B's data levers left: Tense Bulwark cap 3 -> 2 or Stinger 1 -> 0.
+-6. **New: r255 note + DB Tense on trunk.** Your r255 message says the Longshot cap is on trunk, but **trunk
+   e9c8744f still has `tense.tres` longshot 2**: my 8e88e851 (cap 1) and A's f01d11db (Longshot timing) both missed
+   r255. env/b-content (417b4a75 = trunk r255 + the cap) is ready to merge. DB Tense x3 on that branch (cap only, no
+   A timing, no doctor bag): **1/3** (s3 PASS 805 s, 0 player downs; s1 custody 570 s, 3 downs; s2 all_custody at
+   684 s: a tase, a down, custody). With A's timing added (my run on A's f9b86af0 + the cap): **2/3**. So the
+   ruling needs both commits on trunk; then I re-run on trunk.
+-5. **New: D-148 XP option D applied** (xp_curve scale 1.0 = PD2's 23.28 M; `PayoutTweak.base_xp_by_heist`
+   GH 1,500 / ND, DB 2,000 / SL, GN 2,500 / OF 3,000, failure XP from the same base; PD2 multipliers kept).
+   Tests updated (xp_curve, payout_calculator + a D-148 test, heist_freshness: also fixed its stale v9 pin, the
+   save is v10 since PO-19). Pace re-run and the **level-unlock re-check** in `game/content/docs/progression_pace.md`
+   (D-148 section): every item unlock (<= L45) still comes within ~32 clears (was 24); **the board's level-80 Lethal /
+   Cataclysm gate now takes ~230 clears (was 131)**: PO call, B suggests lowering it to 70 (135 clears = the old
+   time-to-Lethal); not changed.
+   **pd2_fidelity is yours (docs/design/):** suggested P1 "Ours" text: "Level 0-100, same point formula (120). XP
+   curve: PD2's 900 -> 1,000,000 per level (~23.3 M), D-148. Base heist XP by size (S 1,500 / M 2,000 / L 2,500-3,000,
+   PayoutTweak.base_xp_by_heist) + 250 per bag, PD2 difficulty multipliers."
+-4. **New: D-145 DB Tense with the 1-Longshot cap (8e88e851) + A's Longshot timing (f01d11db) + nav fix: 2/3**
+   (s2 PASS 1008 s, s3 PASS 865 s, s1 custody 599 s). Player downs 3 / 3 / 1 (median 3, target <= 2). No doctor bag.
+   **New: RT content plan** (paper, no RT data): `game/content/docs/rt_content_plan.md`: def values (base $85k, D-148
+   base XP 2,500), strings (13 objective keys exist; ~40 new: preplan points, briefing steps, rare events, mode label),
+   ~35-40 VO lines (Mercer + Reyes), briefing/blueprint after C's G1, preplan (all assets exist except
+   `asset.c4_drop`, needs A's QC-84), 6 achievements (5 on existing conditions, 1 needs a variant condition).
+-3. **New: XP progression pace model for the PO: `game/content/docs/progression_pace.md`** (no data changed;
+   docs/design/ is not B-owned). Script `tests/b/tools/progression_pace.gd` drives the real payout / freshness /
+   stealth-bank / XpCurve code. Findings: XP is flat per heist (2000 + 250/bag x difficulty); our curve has PD2's
+   endpoints (900 -> 1 M per level) at half PD2's 23 M total; 6 Routine clears = L21, one first Cataclysm clear =
+   L26-29; level 100 = 221 Cataclysm / 310 Brutal / ~3,100 Routine clears rotating (grinding OF alone ~6x slower,
+   D-139). Options A (curve x4), B (flatter multipliers), C (heist-size base), D (curve x2 = PD2 + size base;
+   B's pick: first OF clear L6 / L25, 6 Routine clears L17, ~408 Cataclysm clears to 100) with tables.
 -2. **New: GPU-9 review (gpu/renders/b): fixed on env/b-content.**
    - 1080p real-input OF (13 shots): clean. Loud OF HUD (6 shots): the Turret Van event marker clamped to the left
      edge drew its label off-screen ("URRET VAN") -> labels of objective and assault-event markers now stay inside the

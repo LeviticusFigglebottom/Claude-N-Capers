@@ -6,6 +6,94 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, P's GH Tense 4502 curb STUCK at (21.5, −0.4, 0.3): the map is clean. P owns the fix.
+  - Geometry: the kerb is 0.15 m (PellRoadN top −0.150, PellSidewalkW_N top 0.000) vs the 0.35 m step, with nothing
+    under the road.
+  - Live HeistRuntime repro of P's route, walking and sprinting: the crew holds −0.149 on the road and steps to +0.001
+    on the sidewalk.
+  - P's log has three crew sunk 0.25-0.3 m into the 0.15 m ground slabs from t≈63-68: crew 0 at −0.4 on the road; bots
+    2 and 3 at −0.3 on the 0.0 sidewalk.
+  - Embedded like that, the kerb becomes a 0.4 m rise, above the step, hence the stall.
+  - Cause: a controller/physics embed in the loud phase, in game/systems/player/crew_controller.gd (P's, not A's).
+    P agrees: no map change and no kerb ramp. P is tracing the trigger with an embed watchdog and fixing it in the
+    controller.
+- 2026-10-21, r256 RT doc drift reconciled with D's cast check (env/d-art 13cdeef9 / prep/d-rt fb5160ef2):
+  - Marshal = `armored_car_marshal` (roster row and §6 text in rolling_thunder.md; the plan's §3 cast line).
+  - New roster row: Reyes = `contact_hollis`, pool `ram_driver`, tag `driver_mixer`, `sit_vehicle_drive`, seated in
+    mixer M.
+  - D's clip prop sizes are now in the plan (car seat 0.36 m, wheel rim 0.40 m ahead / 0.76 m up r 0.18 at 30°,
+    diner counter 0.90 m, booth table 0.74 m, griddle 0.90 m), for C's RT-C2 builds.
+  - Docs only. Ran banned and ownership (the plan file is the accepted LEAD-path exception).
+- 2026-10-21, GPU-16 drill fix (219323c8): the LidDrill moved so its head sits over the lid 0.35 m inside the west edge
+  and the tripod points west. All three feet are now on the TW carpet, 0.25 m+ clear of the cut; at the hole centre,
+  two feet had come down inside it. The UsePoint is unchanged (eye to drill 1.95 m, inside the 2.0 m reach), so P's
+  burn route is unaffected. test_ostrander_federal_map asserts the feet clear the cut by 0.15 m+.
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; ownership and banned are clean. Not re-rendered.
+- 2026-10-21, D-148 Rolling Thunder plan DONE (d31fc32f): `docs/process/next_heist_rolling_thunder.md` (you accepted the
+  ownership flag).
+  - Audit (§3): 4 exists, 10 reusable, 13 partial, 5 missing, 10 wrong vs rulings. Examples of the last: payout $85k vs
+    D-141's $30k; 0.9 m route doors vs the 1.0 m rule; runtime nav carving vs heist_map v1.4 / D-121; no assault
+    events; no bullion-hatch access.
+  - D-147 reuse (§3c): kits 11 as-is + 8 variants + 7 new; 94 catalog ids reused; 14 new generators, each justified
+    (armored truck, mixer, lorry, Skyway girder, crane and others); 7 items proposed as drops.
+  - Questions (§8): QC-RT1..11. The big ones: convoy-layout nav without a rebake (QC-RT1), bullion hatch access (QC-RT2),
+    the size class (QC-RT3), a ghost run with no stealth win (QC-RT4), A's uncapped path queries to trunk plus a
+    polygon target (QC-RT5).
+  - Build waits for the OF done check, per the plan's §2.
+- 2026-10-21, D-148 Rolling Thunder paper start: acknowledged, in progress.
+  - Writing `docs/process/next_heist_rolling_thunder.md` on the OF plan's model: §3 code audit
+    (exists / reusable / partial / missing / wrong vs rulings), §7 traversal (with the OF lessons), D-147 reuse-first
+    tables per RT area, and the RT-C1/C2/A/B/D/P breakdown.
+  - Note: `docs/process/` is LEAD-owned. I'm writing it there because you named the path, so expect check_ownership to
+    flag that one file on merge.
+  - Paper only: no RT map building until the OF done check. The OF scorch close-camera render stays first.
+- 2026-10-21, r255 burnt scorch, round 3 (the last pass, as you asked; env/c-worlds 37ab4ce1): please render Job C
+  with `--cameras=rc_burn_close,rc_teller_workroom,rc_vault_hole` on the of_burn_variant scene.
+  - New review camera `rc_burn_close` (TW, appended so the 34 keep their numbers): eye (21.9, 2.1, 16.0) looking at
+    the hole centre (24.0, 0.0, 14.6). That's about 3.3 m away and 40 deg down, west of the hole, so the hoist shaft
+    (east) and the rope ladder (north) are out of frame. RENDER_SPLIT's burnt camera list includes it.
+  - TW floor decal: since black on navy has little contrast, its ash ring is paler and denser
+    (0.46 / 0.44 / 0.41 at alpha 0.78, was 0.30 at 0.60). The soffit decal is unchanged (it reads per GPU-14).
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
+- 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds f2dab548): please re-run Job C for the burnt
+  set (rc_vault_hole, rc_teller_workroom, out g2/fix/burn_scorch).
+  - Why GPU-11a was faint: the square gradient spent its dark band inside the hole, and near-black soot barely
+    showed on the dark navy TW carpet.
+  - New `_scorch_texture` in of_burn.gd: procedural, deterministic (fixed-seed noise), no asset. Banded by distance
+    past the cut, with a ragged edge:
+    - near-black char (alpha 0.97) to 0.3 m;
+    - soot to 0.6 m;
+    - a pale ash ring to 0.85 m (the contrast on the carpet);
+    - fading out by 1.4 m (was 0.9 m).
+  - New `SootTW`: 6 charred slab chunks and 3 soot flakes on the TW floor round the rim. Presentation only, no
+    colliders; kept off the hoist car, ShaftE's panel and the rope ladder top.
+  - Preview of the texture over a carpet colour: g2/fix/burn_scorch/scorch_texture_preview.png.
+  - Ran: OF regen twice identical (navmesh 4165, unchanged); validate OF final PASS; c ostrander 14, test_of_ 7 and
+    determinism 1 all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
+- 2026-10-21, r254 GPU-10 loud nav errors (env/c-worlds 996084e5). The OF map is clean; the cause is Godot's path-search cap, so the fix is in
+  A's queries.
+  - New test `game/tests/c/test_of_loud_nav_targets.gd`: OF loud, burn state, fully breached. All 122 loud-phase walk
+    targets pass, every one on the navmesh and reachable:
+    - police spawns, turret vans, heli drops, breach approaches inside and outside;
+    - 98 Tactical points (rooftop sniper posts exempt, since snipers hold);
+    - escape / secure zones and their wait markers, ladder ends, lift UsePoints.
+  - Every police spawn reaches the street outside every wall / door breach (P5 via the rappel links).
+  - Cause: Godot 4.7's NavigationPathQueryParameters3D.path_search_max_polygons defaults to 4096, and
+    NavigationAgent3D has the same default. OF's navmesh has 4,165 polygons, the only map over it (GH 1552,
+    ND 2024, GN 2870, DB 2464, SL 2058). So a long loud route, e.g. police from a far street spawn up to the
+    terrace, exhausts the search. Godot then logs "It's not expect to not find the most reachable polygons" and
+    returns a partial path.
+  - Repro: P1 -> CoverMisc7 (terrace) stops at the floor below, 3.6 m short, with the default cap; with
+    path_search_max_polygons 0 (unlimited) it reaches the target.
+  - Stealth shows 0 errors because its routes are short.
+  - Ask for ENV A: query paths with path_search_max_polygons = 0 (or >= 8192). `map_get_path` can't take it, so
+    this means NavigationServer3D.query_path + NavigationPathQueryParameters3D in assault_director.gd:970,
+    crew_ai_brain.gd:1022, civilian_brain.gd:958 and civilian_targets.gd:239, plus
+    NavigationAgent3D.path_search_max_polygons on the NPC agents. Map-side, I could thin OF below 4096 polygons,
+    but that is a fragile workaround (any growth re-breaks it) and I'd rather not.
+  - The 1-2 stalls A finds may also be targets made unreachable by the cap, not by geometry.
 - 2026-10-21, round 253, pushed as env/c-worlds ac0f4ce7: (1) is DONE.
   - On env/c-worlds: the 3 GI .res (213ca05d), the GPU-6 final 34 + burnt shots (78e1f2a1), and trunk r252 merged.
   - (3) The other heists' door jambs were already done in 94d9b79a (see the next item).

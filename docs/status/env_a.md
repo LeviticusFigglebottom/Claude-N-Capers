@@ -3,7 +3,332 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21 03:40 UTC update; newest at top)
+## To the LEAD: (2026-10-21 update; newest at top)
+### (-6) OF-done items 1 and 2 (your GPU-18 message)
+**1. BondSafe: verified.** Headless OF Cataclysm 1037 auto_loud on env/a-core 13d889844, `FOCUS=bond_safe`
+(new --po5-focus), CREW_DMG=0:
+```
+[PO5 590.6s] EVENT objective vault_breach -> 2 t=563
+[PO5 590.7s] EVENT objective bond_safe -> 1 t=563        (appears with the burn-through, 6fcbb559)
+[PO5 599.8s] pilot: use BondSafe (place_drill) -> OK in 3.0 s
+[PO5 622.3s] pilot: use BondSafe (fix_drill) -> OK in 2.0 s
+[PO5 668.0s] EVENT objective bond_safe -> 2 t=638        (completed)
+```
+- The cash-cage handoff works in the same run:
+  - The pilot sawed the CashCage Padlock (place_saw 616 s, fix_drill 637 / 655 s).
+  - `[vault_loot]` switched to the cash at t=630 (`vault_loot -> 1 t=630`, the marker update).
+  - `use VaultCash (bag_loot) -> OK` at 663 s.
+- **New pilot gap after that:** carrying the cash, it tried the rope ladder up for 3+ min ("RopeLadder up -> FAILED"
+  ×20). Ladders refuse a carried bag (S10.1b); the doc's way up is the hoist.
+  - Harness fix in progress: goto stops at a ladder when carrying a bag, and the pilot takes it up the hoist like a
+    player (call the car, drop the bag in, send it, climb empty-handed, carry it on).
+  - A validation run is going now. Not game code.
+- **Stair stall (b480, Npc_police13/14 on SAFlight2W):** the pilot only side-stepped. It now shoots a live enemy it
+  is pressed against (13d889844; new line "pilot: <npc> blocks the way: shoot"). The next GPU run shows whether it
+  clears.
+- **`goto (3.5, 0.2, -4.3) FAILED` ×4 at 322-335 s:** not failures. These were the pilot's own 4 s carry legs with
+  the server-drives bag, progressing each time; the bag was secured at 338 s. Those legs are quiet now.
+
+**2. Heist-load 3.1 s frame (t=0.1): a harness artifact, not what a player sees.**
+- PO-5 turned rendering off (`set_fast(true)`) right at "Start Heist". No heist frame rendered under the loading
+  screen, so every pipeline compile (78 surface + 49 spec) and anim_driver's first ticks landed on the first frame the
+  harness drew.
+- In play the render loop stays on: HeistLauncher.launch() awaits two physics frames plus the nav sync with the 3D
+  world rendering under MenuFlow's opaque loading screen (CanvasLayer 50), and returns only then.
+- 13d889844 makes the harness do the same, rendering through the loading screen and the first 5 heist frames. A new
+  line reports where the compiles land:
+  `LOAD pipelines compiled under the loading screen N, over the first 5 heist frames M (worst frame X ms)`
+- **Ask:** on the next GPU run, if M > 0, those are compiles a player sees: I'll prewarm them (render the crew and NPC
+  looks under the loading screen; D's CharacterWarm has the API). If M = 0, nothing to do.
+### (-5) Relayed from ENV B: DB Tense ×3 on trunk r256 (3312326b: cap 1 Longshot + my Longshot timing + the revive fixes) = 1/3
+- Setup: headless auto_loud ×1.0, no doctor bag.
+  - s3 PASS at 873 s with 1 player down. s1 custody at 583 s after 3 downs. s2 custody at 664 s after 3 downs.
+  - Revives land (5 and 3). Per run: Longshots 2-3, Bulwarks 11-21, Stingers 4-8. Details at the top of
+    docs/status/env_b.md.
+- Tense batches since the revive fix: 1/3, 2/3, 1/3, 1/3. The pilot runs out of downs over the ~10 min loud phase.
+- B's remaining data levers: Tense Bulwark cap 3 -> 2, or Stinger 1 -> 0 (B's files; your call).
+- **Update (08:20), from ENV P:** env/p-play 0d0a1ab0 fixes a shared crew CapsuleShape3D. Any crew member crouching
+  (bots crouch in cover) shrank everyone's capsule, so the others sank 0.30 m and a 0.15 m kerb became a 0.45 m wall:
+  stuck under fire. That likely fed these "3 downs" losses. **Re-run DB Tense ×3 with P's fix merged before touching
+  any data lever.**
+- **A's recommendation:**
+  0. Merge P's 0d0a1ab0, then re-run DB Tense ×3.
+  1. Then run the doctor-bag cell (`--po5-doctor-bag`, harness only). A PD2 player brings a doctor bag to a 10 min
+     loud job, and it resets downs; the losses are all "3 downs".
+  2. If Tense still sits at about 1/3 with the bag, take the Bulwark cap 3 -> 2. That is the PD2-plausible lever for
+     Hard (from memory, not verified: PD2's lower difficulties allow about 2 shields alive at once). Keep the Stinger at
+     1: one taser is PD2 Hard's rhythm.
+  3. Hazardous+ stays a harness limit, per the PO.
+### (-4) Headless check of GPU-17: no code regression between GPU-15's tree and trunk e9c8744f (07:40 UTC)
+- Setup: OF Cataclysm 1037 auto_loud, 240 s, HITCH_MS=50, headless on this box, one run after another.
+  - Trees: ffc264d4 (GPU-15's A side), trunk e9c8744f (GPU-17's tree) ×2, and env/a-core HEAD 89a831f1c (from the
+    main checkout and from a clean worktree), plus single-file reverts on HEAD.
+
+| tree | TEL phys avg | TEL proc avg | heist frames in 240 s | wall |
+|---|---|---|---|---|
+| ffc264d4 | 56.3 ms | 15.2 ms | n/a (old summary only prints at heist end) | 259 s |
+| e9c8744f | 55.0 / 56.8 ms | 15.0 / 13.1 ms | n/a | 259 / 247 s |
+| HEAD 89a831f1c | 33.5 / 31.8 / 31.0 ms | 11.7 / 11.6 / 13.3 ms | 18,681 / 20,864 / 20,376 | 247-255 s |
+| HEAD, old IK (anim_layers @ffc264d4) | 31.8 ms | 11.4 ms | 19,577 | 246 s |
+| HEAD, old OF mission only | 53.0 / 59.8 / 56.0 ms | 12.0-15.1 ms | 18,123 / 15,909 | 246-247 s |
+
+- **ffc264d4 = e9c8744f** within noise. The round-255 merges (B's label clamp, D's uncalled CharacterWarm, P's tests)
+  cost nothing measurable. **The GPU-15 -> GPU-17 gap is not in the code.** GPU-17b, your control re-run, should show
+  the same.
+- **My r256 vault-marker change is the one code effect, in the good direction.** Reverting only
+  ostrander_federal_mission.gd brings TEL phys back to ~55 ms.
+  - The old mission marked [bond_safe] and the 9 vault-wall boxes from the start: ~10 more live markers.
+  - Headless frame rate: ~70 fps with those markers, ~80 fps without, about 1.8 ms per frame. This is the
+    HUD/marker path, not navigation: TIME_NAVIGATION_PROCESS stays at 0.0-0.1 ms throughout.
+  - The pilot's own path queries are small too (FrameProf po5.nav_path about 1.4 ms in the hitch frames).
+- **Caveat on the metric: TEL `phys` is not per-step cost.** 31-56 ms against 12-14 ms frames means it covers more
+  than one step's work. Compare trees by frame rate (heist frames / 240 s) and wall time, not by TEL phys.
+- **Not the freed-marker flood.** HEAD with the old IK code is just as fast, and none of the headless runs printed
+  the set_target error (0 lines).
+- **Ask for GPU-17b / GPU-18:** compare the `HITCHES n of m heist frames` line (m / 240 = fps) next to TEL. When the
+  vault opens, r256 marks the in-vault loot again, so expect a slightly lower frame rate after the burn.
+### (-3) Relayed from ENV B (they can't reach you): DB Tense with the 1-Longshot cap (B 8e88e851)
+- Trunk e9c8744f still reads longshot 2: B's cap missed r255, and so did my f01d11db (Longshot timing).
+- trunk r255 + cap (env/b-content 417b4a75), no Longshot timing, no doctor bag: **1/3**.
+  - s3 PASS at 805 s with 0 player downs. s1 custody at 570 s after 3 downs. s2 all_custody at 684 s.
+- My f9b86af0 + cap: **2/3**, downs 3 / 3 / 1.
+- So the Tense fix needs both on trunk: B's cap and my timing. Details are at the top of docs/status/env_b.md
+  (c9e3eb56).
+### (-2) GPU-17 "CPU hitch regression": no runtime code changed between GPU-15's tree and e9c8744f; headless proof running
+- Runtime diff from ffc264d4 + C 595f57fe to trunk e9c8744f (game/, excluding tests, tools and docs):
+  - B's objective / assault-event marker label clamp (r252): one clampf per label.
+  - D's character_warm.gd: nothing calls it yet.
+  - P's changes are test files only.
+- The two GPU logs follow the same simulation: the TEL crew positions and enemy counts match to 0.3 m.
+- GPU-17 is uniformly slower from t=12 s on, before any loud fight: TEL phys 22.1 / 29.9 / 22.1 ms became 34.5 / 42.3 /
+  35.3; proc 5.3 / 5.4 / 4.7 became 29.6 / 11.2 / 11.0.
+  - FrameProf's per-script totals in GPU-17's HITCH lines add up to only 5-20 ms of 50-95 ms frames.
+  - So the time is outside our scripts: the engine's physics step, or the machine itself (another process, power or
+    thermal state, or a shader cache rebuild after the update).
+- The 21k freed-marker SCRIPT ERRORs (D's run) are fixed in 1d7aef14 (anim_layers / IK).
+  - With the same simulation they would hit both GPU runs alike, so they don't explain a GPU-15 vs GPU-17 gap.
+- Running now (headless OF Cataclysm 1037, 240 s, HITCH_MS=50, the same box, one after another): ffc264d4, trunk
+  e9c8744f, and env/a-core HEAD. Numbers will follow here.
+- Suggestion for the GPU box: re-run GPU-15's tree (ffc264d4 + 595f57fe) once now, on the same machine state, next to
+  r256. If it is also slow, the regression is the machine.
+- New run_po5.sh env: `HITCH_MS=50`, so the GPU box command takes the same flag.
+- Pilot BondSafe stand: _marker_stand() takes the nearest prefab's UsePoint (p._use_stand).
+  - The GPU-17 stand (13.2, -4, 20.1) was the navmesh end short of the wall, because the vault was shut.
+  - With 6fcbb559 the marker only appears once the vault is open. test_of_bond_safe_usable_from_its_use_point checks
+    the UsePoint path and the aim.
+- All green on HEAD: test_x4_of_loud 3/3, test_x4_of_stealth 5/5, test_of_coop_loopback 1/1 (test_x4_of_hard: 5 opt-in
+  skips).
+### (-1) Your GPU-15 / anim / D-148 messages
+- **guard_vault loops (P step 5): pushed** in 6fd7e59a (with guard_lobby), with tests. P has been told.
+- **Anim error flood (anim_layers.gd:75): fixed** in 1d7aef14. The IK never passes a freed LeftHandIK marker; it fades
+  out instead.
+  - New test test_v121_layers: it reproduces your exact SCRIPT ERROR without the fix and passes with it.
+  - Also green: d132_anim_lod 9/9, v123_mask_throw 10/10.
+- **BondSafe aim: not a map bug; nothing for C.**
+  - The pilot's stand (13.2, -4, 20.1) is outside the vault's west wall. The [bond_safe] marker sent it there before
+    the vault opened.
+  - That marker is now hidden until the vault is reachable (6fcbb559, item (0) below).
+  - New test test_of_bond_safe_usable_from_its_use_point: once the vault is open, the UsePoint is on the navmesh from
+    the vault door and the aim from it resolves to the safe. From the old stand it does not. test_of_mission_flow
+    10/10.
+- **OF Cataclysm budget:** my runs use 1800 s (>= 420 s).
+- **test_x4_of_loud 3/3** with the vault-marker change. test_x4_of_hard and test_of_coop_loopback are still running.
+- **RT systems audit (D-148):** below, under its own heading. I own no docs/process file, so it lives here.
+### Rolling Thunder: ENV A systems audit (D-148, paper; no RT code until the OF done check)
+Checked rolling_thunder.md (trunk) against env/a-core game/systems/**. No RT mission or map exists yet.
+
+**1. Convoy vehicles on a route (A5-02 / QC-82; §Convoy, §Budgets "≤ 8 movers"): L.**
+- Exists:
+  - AssaultTurretVan (director/events/assault_turret_van.gd): a straight-line ease-out drive-in on an AnimatableBody3D,
+    with doors and an `on_dismount` callback.
+  - AssaultEventEntity: a replicated entity (stage diffs, cues). AssaultHeli: a flight.
+  - Transforms replicate (heist_net_sync `_send_xforms`, NetEntityCodec), but clients snap: no interpolation.
+- New:
+  - A Path3D follower that brakes over the last 12 m and emits `vehicle_stopped`.
+  - Client interpolation, and seats or occupants.
+  - Nav for a stopped vehicle: maps use pre-baked navmesh, and NavigationObstacle3D only carves at bake time.
+- Deps: C (Path3Ds, the 4 ConvoyLayout marker sets, vehicle props with Seat/Body nodes).
+
+**2. Ram / mixer: S on top of 1.**
+- The ram is a convoy_vehicle on its own path with a scripted impact that raises `alarm_raised(&"ambush")`.
+- Crash layouts are pre-authored markers (doc), so no vehicle physics or damage model is needed. Explosion.apply exists.
+- Deps: C (mixer prop, crash markers), B (`cue.mixer_ram`).
+
+**3. Stopping and opening the trucks (A5-01 / QC-80/81/84; §Truck targets): M.**
+- Exists:
+  - Safe has methods drill / saw / c4 / lockpick / code / keycard, `charges_required` (A5-03), the C4 fuse and blast,
+    `saw_cut` + G.SAW_TARGET, `saw_duration_s`, `open_by_device`, and contents on LootAnchor (PO6-05).
+  - Door and Padlock reuse Safe's charge helpers. DrillPoint SAW and BurnPoint (thermite) exist.
+- New:
+  - An `armored_truck`: a Safe subclass with `lockdown()` (saw ×1.5), the truck's own hand-saw time, a roof-hatch
+    binding, LOCKPICK cab doors, and Body/DoorL/DoorR/CabDoor/RoofHatch visual nodes.
+  - QC-81: BurnPoint gets a `target` (calls `open_by_device`) and a no-fire-volume mode. It has neither today.
+  - C4 as a pickup: no generic `item_pickup` exists (keycard_pickup / gear_pickup hard-code their items), and no
+    `item.c4` pre-plan drop is registered.
+- Deps: C/D (truck mesh), B (`asset.c4_drop`, HUD item count, strings).
+
+**4. Police escort cars and spawns (QC-83b/c, QC-89; §Police spawns, §Specials): M.**
+- Exists:
+  - AssaultDirector: `valid_spawn_points` (POLICE_SPAWN + ENTRY, skips `breach_only`), LOS and crew-distance rules,
+    path-cost choice, `spawn_enemy`, `police_delay_s`.
+  - RappelLinks (QC-41 one-way links, police-only islands): covers QC-89's rappel part.
+  - Turret-van squad dismount. AnimDriver.play_vehicle_exit exists but has no caller.
+- New:
+  - A per-unit spawn-point filter (`wrecker_ok`).
+  - `police_budget()` subtracts cartel only; convoy units must count too (QC-83c).
+  - Seated-occupant spawn.
+- Deps: C (spawn / TacticalPoint placement, the P_SKY island), D (`vehicle_exit_l/_r` clips).
+
+**5. Stealth-start ambush (QC-83a/d; §Modes): M.**
+- Exists: StealthDirector.raise_alarm(reason, id); HeistMission `_on_alarm`, `schedule_at`, `spawn_guards`,
+  `start_timer`, `say`; GuardBrain `walk_to_post`.
+  - OF's `armored_car_early` is only 2 Vaultline guards walking to the gate, with no vehicle.
+- New:
+  - A public HeistMission.raise_alarm(&"ambush") (S).
+  - A seated/vehicle state on NPCs: seated pose, hitboxes by vehicle hardness (armoured cab no / soft car through
+    glass), and a timed dismount into COMBAT (M).
+  - A convoy unit that spots a masked crew member during the 8 s window raises "ambush", not a pager (S).
+- Deps: D (`sit_vehicle` and exit clips), B (VO).
+
+**6. Loot from vehicles (§Loot path): S.**
+- LootSpawn, the Safe content stow, LootBag throw, SecureZone, the `bag_only` escape, BagLift, HEAVY gold,
+  HeistMission.spawn_loot / require_loot.
+- The secure zone is static at the escape (doc), so no moving zone is needed.
+- Check: the truck's rear-step UsePoint must sit on the per-layout navmesh (depends on 1).
+
+**7. Escape (§Escape): S, polish.**
+- EscapeZone: van/heli, `arrival_delay_s`, `bag_only`, activate_escape(tag).
+- Arrival is a pop-in today. A drive-in or fly-in could reuse 1 or the AssaultHeli flight.
+
+**Holdouts and level change:** no new system. The director already picks spawns nearest the crew by path cost, so the
+fight follows the crew between H1 and H4. The stopped convoy as cover depends on 1's nav answer.
+
+**QC-88 (open-street civilians): M.**
+- Today, `civilians_leave` returns 0 once loud.
+- New: loud flee to `civ_flee` exits, then despawn; exterior mobile-phone calls via a REASON_PHONE call point and the
+  existing `phone_call` clip.
+
+**Proposed A order of work**
+1. QC-81 BurnPoint target and no-volume mode (S).
+2. HeistMission.raise_alarm, convoy units in police_budget, and the wrecker_ok filter (S).
+3. A5-01 armored_truck (M).
+4. Generic item_pickup + the c4 pre-plan drop (S-M).
+5. QC-83 seated occupants and dismount (M).
+6. A5-02 convoy_vehicle with interpolation and the mixer ram (L).
+7. QC-88 (M).
+8. rolling_thunder_mission.gd after C's G1 (M).
+
+**Questions for the lead / C**
+- (a) Nav for stopped vehicles: should C bake one navmesh region set per layout (A switches them), or should A rebake at
+  runtime?
+- (b) Do seated convoy units count against the enemy cap, or only once they dismount?
+- (c) For G1, is "seated = not hittable until dismount" acceptable?
+- (d) Are client interpolation and the escape drive-in in A5-02's scope, or polish?
+- (e) Who authors the vehicle props with Seat / Body / Door / RoofHatch / LootAnchor nodes: C or D?
+
+### (0) OF-done blocker "bond_safe / deposit_boxes not reachable" (Cataclysm loud): fixed in the mission, 6fcbb559
+- Cause: both side objectives were ACTIVE from the start, with markers inside the sealed vault.
+  - BondSafe (14.7, -4, 20.5) and the vault-wall boxes (VaultBoxN01 = (15.0, -3.0, 13.3)) sit behind the vault's west
+    and north walls.
+  - The pilot walked to them before the burn-through: the nav path ends 2.5 m short, and its LOS ray hit wall BZ0140.
+- Same run, after the burn: the [vault_loot] marker was the cash itself, inside the locked cash cage
+  (CashCageGate BARRED; ways in: keypad with the vault code, or C's padlock).
+  - The pilot pushed into the cage mesh for 24 s, then skipped the cash for the rest of the run: no bags, budget FAIL.
+- Fix (gameplay, PD2-style waypoints):
+  - [bond_safe] starts HIDDEN and appears with the vault (open_vault or burn_through).
+  - [deposit_boxes] marks only the SD hall's boxes until then (new objective data `marker_skip_prefixes`, honoured by
+    LocalHudModel).
+  - [vault_loot] marks the cage padlock and keypad until CashCageGate opens, then the cash.
+- Also fixed: [vault_gate] no longer completes when a guard walks through the locked gate.
+  - Door.npc_open opens it while it stays locked; the new guard_vault loops do this. Before the fix that completed the
+    objective and broke test_x4_of_stealth.
+- Pilot (harness only): it no longer calls the vault hoist at a box wall. It did that for 450 s in the same run.
+- Tests: test_of_mission_flow 9/9 (+2 new: vault side loot markers and the cage handoff; a guard passing the gate);
+  test_of_mission 19/19, test_hud_marker_lookups, test_x4_of_stealth 5/5, test_of_a6_hub_loops 3/3,
+  test_of_mission_loud 6/6, test_x4_nd_stealth.
+  - Still running at push time: test_x4_of_loud, test_x4_of_hard, test_of_coop_loopback, then a headless OF Cataclysm 1037 auto_loud run. Results go in the next status update.
+### (1) HITCH lines (your GPU-13 ask), b922571a
+- Each HITCH line now carries `shot=1` on screenshot frames, plus `pipelines=[mesh,surface,draw,spec,canvas]` (pipeline
+  compilations that frame, from RenderingServer) and `vram=..MB`.
+- `HITCHES n of m heist frames over N ms (k of them screenshot frames), worst x ms, without a shot y ms` prints at heist
+  end and on budget exit.
+- Headless OF Cataclysm 1037: t≈127-131 shows 80-97 ms frames, with police_brain at 29 ms over 65 calls.
+  - police_brain now has sub-keys (pick_target / choose_position / move).
+  - The GPU t≈129.6 / 176 frames need your next GPU run with these lines: a non-zero `pipelines` count there means a
+    shader compile, which is D's prewarm.
+### (2) P's ghost line: guard_vault and guard_lobby hub_loops pushed (6fd7e59a).
+
+### (earlier, 05:40 UTC)
+### (1) Navmesh polygon cap: done, ffc264d4
+- New NavPath.query: NavigationPathQueryParameters3D with path_search_max_polygons = 0 (no cap). Used by the assault
+  director, civilian_brain, civilian_targets, crew_ai_brain and the PO-5 pilot. NpcMotor's NavigationAgent3Ds get the
+  same (NavPath.configure_agent).
+- test_x4_of_loud: "not expect to not find the most reachable polygons" 357 -> **0** (they came from crew_ai_brain's
+  paths after the burn-through).
+- New test test_nav_path_polygon_cap: OF P1 -> CoverMisc7 reaches the terrace; agent cap lifted.
+  - C's pair also routes with the old call here, so the x4 count is the evidence.
+- Green: l6 15, a3_05 12, l1_assault_director 7, po6_17 15, x5_ 16, d122, a3_10 ladder, l5_ 8, s5_ 28, po5_ 55,
+  integration p1 10 / p3_loud 10.
+### (2) DB Tense Longshots
+- f01d11db: Routine / Tense laser aim lock 2.5 / 2.0 s and re-aim 4.5 / 3.5 s; Hazardous+ unchanged (1.2 / 2.5); per-hit
+  damage kept.
+- PD2 cite, charactertweakdata presets.weapon.sniper: aim_delay {0, 0.1}, use_laser, FALLOFF recoil {2,4} / {3,4} / {3,5}
+  s at 7 / 35 / 100 m, focus_delay 7. The values come from a decompile summary, not verbatim lines.
+  - Tense uses PD2 Hard's mid-range 3.5 s, with a telegraph longer than PD2's.
+- New test (Tense: >= 1.9 s lock, >= 3.4 s between shots); l4_7 6/6.
+- **Max 1 alive on Tense** is B's file (content/data/difficulty/tense.tres longshot 2 -> 1). I asked B; Routine is
+  already 1. Then B re-runs DB Tense x3.
+- Harness option for that re-run: --po5-doctor-bag (opt-in, 14f85b5a). The pilot carries a doctor bag and uses it at
+  2 downs.
+  - Verified on DB Tense s1: deployed at 2 downs and used, downs reset.
+  - That run still ended in custody after 5 downs in total.
+### (3) GPU prewarm: waiting for GPU-12's HITCH lines.
+
+### (05:00 UTC)
+### OF loud hitches (your GPU-8.5 item); env/a-core 8e5412e9
+- CPU hitches found headless (OF Cataclysm seed 1037) and fixed:
+  - At OF start, the HUD's objective markers took 477 ms in one frame. HeistRuntime.find_by_tag walked the 18k-node map
+    with Array.pop_front (O(n) per node), once per tag. Now the walk is linear and the HUD resolves all tags in one walk
+    (find_by_tags): 0.6 ms.
+  - The alarm frame cost 172 ms in OF's _go_loud: about 8 find_tagged walks. A tag scope around the phase change now
+    shares one index: 36 ms.
+- Still under investigation: the 200-300 ms frames at t=0.1 / t=4.3 headless (anim_driver / npc_motor first ticks; the
+  box is loaded, so the size is unclear). The GPU-side cost (pipeline compiles on first draw of each police character /
+  material) can only be measured on your GPU.
+- **GPU-box command** (cmd.exe from the repo root, G=godot\Godot_v4.7.2-stable_win64_console.exe, trunk + env/a-core
+  >= 8e5412e9). Run `mkdir gpu\renders\a\of_hitch` first:
+  `%G% --path game --resolution 1920x1080 res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-out=%CD%\gpu\renders\a\of_hitch --po5-budget=240 --po5-heist="Ostrander Federal" --po5-difficulty=Cataclysm --po5-seed=1037 --po5-crew-dmg=0 --po5-hitch-ms=50 > gpu\renders\a\of_hitch.log 2>&1`
+  - `--po5-crew-dmg=0` keeps the solo pilot alive, so the loud phase actually runs (Cataclysm downs it in about 20 s).
+  - Every frame over 50 ms prints `HITCH frame=.. process=.. physics=.. draws=.. objects=.. spawned=[ids] top: <FrameProf>`.
+    A HITCH with small process / physics and big frame is GPU or render-side; `spawned=` names the units spawned in it.
+  - At the heist end: `HITCHES n of m heist frames over 50 ms, worst x ms`.
+  - Commit the log. Next step, with D (character materials): prewarm what the HITCH lines name (a character render-warm at
+    load if spawned= lines line up; spread spawns otherwise).
+### DB vs GH Tense damage intake (your ask); headless auto_loud x1.0, solo + 3 bots, on 30a0d429
+
+| run | result | standing loud | damage | dmg/s | Longshot dmg (share) | top source |
+|---|---|---|---|---|---|---|
+| GH 4501 | WIN | 263 s | 449 | 1.71 | 0 | tac_light 243 |
+| GH 4502 | WIN | 239 s | 420 | 1.76 | 90 (21 %) | tac_light 192 |
+| GH 4503 | custody | 326 s | 777 | 2.38 | 0 | bulwark 355 (<10 m) |
+| DB 1 | custody | 466 s | 973 | 2.09 | 360 (37 %) | longshot 360, tac_light 291 |
+| DB 2 | WIN | 899 s | 962 | 1.07 | 450 (47 %) | longshot 450, tac_light 272 |
+| DB 3 | custody | 378 s | 728 | 1.92 | 225 (31 %) | tac_light 291, longshot 225 |
+
+- Per second, DB is NOT harsher than GH (1.1-2.1 vs 1.7-2.4 dmg/s; 1.3-1.8 enemies within 20 m vs 1.8-2.7).
+- DB is longer. The pilot stands loud 1.5-3.5x as long, so the same per-second intake adds up to 3 downs.
+- On DB's open yard, 31-47 % of the damage comes from Longshots at 30 m+; GH has almost none. Per hit they are within
+  PD2 Hard (the earlier table), so I would not cut their damage.
+- Proposal, harness first: a PD2 player survives a long loud heist with a doctor bag. Our pilot never carries or uses one,
+  though the game has doctor bags (heal + reset downs). Let the pilot bring a doctor bag and use it at 2 downs used,
+  plus first aid if loadout-legal. I expect that to bring DB to median <= 2 downs.
+- Game option if you want DB itself gentler on Tense: cap Longshots to 1 alive on Routine / Tense (DifficultyDef
+  special_limits; now about 3-4 per run).
+- Your call on both. I do the harness one unless you say no.
+- Note: test_of_coop_loopback failed 2 of 5 runs, only inside the full test_of_ batch under load; it passes alone.
+  Timing-sensitive two-process test.
+
+### (03:40 UTC)
 - Merged r252 (390c6d92). Green: d145_ 15, l6 15, a3_05 12, s8_1_cameras 10, po5_pilot_corner 3, a3_09_bag_lift 8,
   of_a6_hub_loops 3, l2_ 55; earlier x4_of_ 13 (5 skip), of_coop_loopback 1/1.
 - Hold-fire set to your number: the pilot fights from the floor on Haz+ only with <= 3 enemies within 20 m.

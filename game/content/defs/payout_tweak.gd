@@ -18,8 +18,13 @@ extends Resource
 # --- XP (applied in C6 order) ----------------------------------------------------
 ## ◇ Base heist XP for a successful heist (before loot XP).
 @export var base_xp_success: int = 2000
+## D-148 (PO, option D): base success XP by heist size (PD2: a bigger job pays more XP); heists not listed use
+## base_xp_success. Failure XP scales from the same base. See content/docs/progression_pace.md.
+@export var base_xp_by_heist: Dictionary = {&"glasshouse": 1500, &"night_deposit": 2000, &"shadow_ledger": 2500,
+	&"dockside_burn": 2000, &"gallery_night": 2500, &"ostrander_federal": 3000}
 ## ◇ Base XP on failure = base_xp_success x this. No loot XP on failure.
 @export var base_xp_failure_fraction: float = 0.25
+
 ## ◇ Base XP per secured loot bag (tool bags, LootDef.is_tool (D-068), and bags in xp_loot_excluded_ids
 ## don't count).
 @export var xp_per_loot_bag: int = 250
@@ -47,3 +52,8 @@ extends Resource
 @export var repeat_floor: float = 0.10
 @export var rotation_step: float = 0.01
 @export var rotation_cap: float = 0.10
+
+
+## D-148: the base success XP for `heist_id` (base_xp_by_heist, else base_xp_success).
+func base_xp_for(heist_id: StringName) -> int:
+	return int(base_xp_by_heist.get(heist_id, base_xp_success))

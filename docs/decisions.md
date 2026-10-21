@@ -1421,3 +1421,48 @@ Tense losses traced to takedown rules, not tuning. Amends **D-093** and pd2_fide
    **judged on Forward+, measured on the GPU box**; levelcheck's Compatibility-based model stays as a conservative
    early-warning (report-only from now) because Compatibility is the fallback renderer. A heist passes D-146 when its
    worst views, Cataclysm cast, loud, measure ≤ 2,500 main / ≤ 4,000 total in Forward+ on the GPU box.
+
+## D-147: reuse-first for props and kits (2026-10-21, LEAD; PO question)
+The prop catalog has 520 entries (522 prop scenes). Ostrander used 296 distinct props, of which 245 (83 %) were reused
+and 51 were new bank-specific pieces (teller line, sunburst, vault gear). From the next heist on: **every map uses
+catalog props and kits first.** A new prop needs a one-line reason in the heist doc's art list: no catalog piece fits the
+role, or it is a landmark / hero piece. Generic dressing (furniture, office, kitchen, clutter, lighting, doors, exterior,
+vehicles) is never rebuilt per heist. Variants come from library finishes (materials/colour), not new meshes. C reports
+reused vs new counts in each G1/G2 review.
+
+## D-148: PO picks: next heist Rolling Thunder, XP option D, paper start now (2026-10-21, LEAD; product owner)
+PO: "Proceed with all your recommended options."
+1. **Next heist: Rolling Thunder** (`rolling_thunder`, the Vaultline convoy, D-075/D-141). Afterhours follows it.
+2. **Paper start now** (amends D-144 for paper only): the RT build plan, systems/content/cast audits and prep branches
+   may proceed while Ostrander finishes. Building on the env branches (maps, mission code, data) starts at the OF done
+   check. D's assembled cast waits on `prep/d-rt`.
+3. **XP pacing = option D** (B's progression_pace.md): the curve ×2 (= PD2's ~23 M total to level 100), heist-size base
+   XP (S 1,500 / M 2,000 / L 2,500-3,000), PD2 difficulty multipliers kept. B applies it, re-checks every level-locked
+   unlock (weapons, armor `unlock_level`, Bot Crew armors) against the new pace, and updates pd2_fidelity.
+4. **Hardest-difficulty OF loud vs the AI pilot** (Haz 0/3, Cata 0/2 with real bots): accepted as a harness limit; no
+   tuning for it. Human playtests decide later.
+5. **Reuse-first (D-147)** applies to RT from day one.
+
+## D-149: Rolling Thunder paper rulings (QC-RT1..11, escort looks) (2026-10-21, LEAD)
+Rulings on C's `docs/process/next_heist_rolling_thunder.md` §8 and D's cast note (env/d-art 3411484a). Each item
+takes the recommendation the env gave.
+1. **QC-RT1 convoy nav:** pre-baked nav regions per convoy layout, swapped at the stop. The same applies to the mixer
+   and the Tannery gate. No runtime rebake (heist_map v1.4, D-121). A adds a TacticalPoint `enabled` flag.
+2. **QC-RT2 bullion hatch:** a ground-level thermite point on the truck's rear doors. No truck-roof traversal.
+3. **QC-RT3 size:** M (15-25 min). It sets the e2e budgets and the D-120 checks. Base XP is 2,000 (D-148).
+4. **QC-RT4 P5 gate:** RT has no stealth win. Its gate is a clean-setup run instead of a ghost run: signals rigged,
+   marshal handled, no early alarm.
+5. **QC-RT5 path cap:** A's uncapped NavPath has been on trunk since round 255 (ffc264d4). C's ≤ 3,500-polygon target is
+   an early warning, not a hard G1 rule.
+6. **QC-RT6:** the D-147 substitutions (trees, dumper, bus, jukebox, cycle racks, bunting, wheel stops) are accepted.
+   C updates the design doc.
+7. **QC-RT7:** civilians reuse `civilians_leave` plus sidewalk call points. No new flee-exit system.
+8. **QC-RT8:** the convoy and mixer drive in (≤ 8 movers, then static), and the escape van pops in.
+9. **QC-RT9:** the early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window stay, labelled as original
+   (not PD2-sourced) in pd2_fidelity.
+10. **QC-RT10:** C may write the `--check`-only plan scripts (`tools/levelcheck/plans/rolling_thunder_*.py`) before
+    the OF done check. Paper only: no map.
+11. **QC-RT11:** D-147 and D-148 are already in this file.
+12. **Escort looks (D):** `convoy_lead` and `convoy_rear` are carved out of the "every spawn tag maps to a look" rule.
+    They are EnemyDefs, so NpcVisuals resolves them by difficulty (D-145.3 duty looks, faction reskins, tac_heavy).
+    A adds a test that they never get a capsule.

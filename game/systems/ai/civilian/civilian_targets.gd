@@ -236,7 +236,7 @@ func nav_path_length(from: Vector3, to: Vector3) -> float:
 	if not has_navigation():
 		return INF
 	var nav_map: RID = get_viewport().world_3d.navigation_map
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, from, to, true)
+	var path: PackedVector3Array = NavPath.query(nav_map, from, to, true)
 	if path.size() < 2:
 		return INF
 	var total: float = 0.0

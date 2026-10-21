@@ -18,3 +18,13 @@ Tense seed=4501 rc=1 downs=1 custody=1 win_lines=0 | [PO5 294.7s] RESULT FAIL (c
 Tense seed=4502 rc=0 downs=2 custody=0 win_lines=1 | [PO5 291.9s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4502
 Tense seed=4503 rc=0 downs=1 custody=0 win_lines=1 | [PO5 278.4s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4503
 # 4501: same bleedout with no bot revive (t=249 -> 279). A's e640362d (not in r251) fixes it: 4501 PASS on a-core 441b6870 (A's run)
+
+# Tense on trunk r255 e9c8744f + P, solo + 3 bots, headless: 2/3 WIN, downs 3/3/2 (median 3, D-145 target <=2 missed). First downs much earlier (4502 t=79 vs ~245 on r251).
+Tense seed=4501 rc=0 downs=3 custody=0 win_lines=1 | [PO5 343.2s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4501
+Tense seed=4502 rc=1 downs=3 custody=1 win_lines=0 | [PO5 324.7s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4502
+Tense seed=4503 rc=0 downs=2 custody=0 win_lines=1 | [PO5 289.9s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4503
+
+# Tense on trunk r256 3312326b + P (Longshot cap + timing, guard_vault/lobby loops), solo + 3 bots, headless: 2/3 WIN, downs 2/3/3 (median 3; D-145 target <=2 missed again). 4502 first down t=82 (r251: ~245). 4502 won with the pilot in custody.
+Tense seed=4501 rc=0 downs=2 custody=0 win_lines=1 | [PO5 345.9s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4501
+Tense seed=4502 rc=0 downs=3 custody=1 win_lines=1 | [PO5 315.9s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4502
+Tense seed=4503 rc=1 downs=3 custody=1 win_lines=0 | [PO5 399.1s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4503
