@@ -3,7 +3,33 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21 05:00 UTC update; newest at top)
+## To the LEAD: (2026-10-21 05:40 UTC update; newest at top)
+### (1) Navmesh polygon cap: done, ffc264d4
+- New NavPath.query: NavigationPathQueryParameters3D with path_search_max_polygons = 0 (no cap). Used by the assault
+  director, civilian_brain, civilian_targets, crew_ai_brain and the PO-5 pilot. NpcMotor's NavigationAgent3Ds get the
+  same (NavPath.configure_agent).
+- test_x4_of_loud: "not expect to not find the most reachable polygons" 357 -> **0** (they came from crew_ai_brain's
+  paths after the burn-through).
+- New test test_nav_path_polygon_cap: OF P1 -> CoverMisc7 reaches the terrace; agent cap lifted.
+  - C's pair also routes with the old call here, so the x4 count is the evidence.
+- Green: l6 15, a3_05 12, l1_assault_director 7, po6_17 15, x5_ 16, d122, a3_10 ladder, l5_ 8, s5_ 28, po5_ 55,
+  integration p1 10 / p3_loud 10.
+### (2) DB Tense Longshots
+- f01d11db: Routine / Tense laser aim lock 2.5 / 2.0 s and re-aim 4.5 / 3.5 s; Hazardous+ unchanged (1.2 / 2.5); per-hit
+  damage kept.
+- PD2 cite, charactertweakdata presets.weapon.sniper: aim_delay {0, 0.1}, use_laser, FALLOFF recoil {2,4} / {3,4} / {3,5}
+  s at 7 / 35 / 100 m, focus_delay 7. The values come from a decompile summary, not verbatim lines.
+  - Tense uses PD2 Hard's mid-range 3.5 s, with a telegraph longer than PD2's.
+- New test (Tense: >= 1.9 s lock, >= 3.4 s between shots); l4_7 6/6.
+- **Max 1 alive on Tense** is B's file (content/data/difficulty/tense.tres longshot 2 -> 1). I asked B; Routine is
+  already 1. Then B re-runs DB Tense x3.
+- Harness option for that re-run: --po5-doctor-bag (opt-in, 14f85b5a). The pilot carries a doctor bag and uses it at
+  2 downs.
+  - Verified on DB Tense s1: deployed at 2 downs and used, downs reset.
+  - That run still ended in custody after 5 downs in total.
+### (3) GPU prewarm: waiting for GPU-12's HITCH lines.
+
+### (05:00 UTC)
 ### OF loud hitches (your GPU-8.5 item); env/a-core 8e5412e9
 - CPU hitches found headless (OF Cataclysm seed 1037) and fixed:
   - At OF start, the HUD's objective markers took 477 ms in one frame. HeistRuntime.find_by_tag walked the 18k-node map
