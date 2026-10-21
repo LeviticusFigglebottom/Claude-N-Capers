@@ -1227,8 +1227,8 @@ static func _is_tasing_crew(npc: NpcBase) -> bool:
 
 
 func _is_hostile(npc: NpcBase) -> bool:
-	if not npc.alive or NpcBase.BLIND_STATES.has(npc.alert_state):
-		return false
+	if not npc.alive or NpcBase.BLIND_STATES.has(npc.alert_state) or npc.has_meta(HeistMission.META_SEATED_IN):
+		return false  # QC-83: a unit still seated in its vehicle is not a target until it gets out
 	if npc.role == &"guard" or npc.role == CartelBrain.ROLE:  # QC-36: sleeping cartel posts are left alone
 		return npc.alert_state == Enums.AlertState.COMBAT or npc.alert_state == Enums.AlertState.ALARMED
 	return HOSTILE_ROLES.has(npc.role)
