@@ -4,6 +4,20 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-8) OF hoist-carry validation: two more blockers found and fixed, re-run going (09:15 UTC)
+- **hoist2** (headless OF Cataclysm 1037, 1700 s, CREW_DMG=0, 0210e889c): the pilot's hoist routine works.
+  - It made 6 trips ("hoist: Hoist sent from landing 0 with 1 bag(s)"), and cash was secured at t=721 and t=725.
+  - The run still ended "no heist end within 1500 s": only 2 of 6 bags were secured.
+- **Game fix (crew AI, d6163c75f): bots took the bags out of the hoist car.**
+  - The PO6-14 rule fetches any bag a human just threw (G / drop_bag is a throw), and that included bags thrown into
+    the hoist car. Slots 1-3 then stood at the rope ladder with the cash for 4 min, since a carried bag can't climb.
+  - Now a thrown bag lying in a BagLift car rides the lift. New test test_of_bot_leaves_a_bag_in_the_hoist_car fails
+    without the fix. po6_14 7/7, l6 15/15, a3_09 bag lift 8/8, po6_15 4/4.
+- **Pilot:** the hoist try cap counted trips, not failures, so the pilot gave up after 6 good sends. Fixed.
+- **Your call:** a cop in melee range (0.4 s windup + 3.0 s cooldown) cancels every empty-mag reload (3.5-7 s).
+  - The pilot sat at 0/131 for 140 s. It now draws its loaded sidearm, else melees (0210e889c).
+  - Real players hit the same lockout, and it is PD2-like (a melee shove cancels a reload), so I'm proposing no change.
+- **hoist3 is running** with all of this. The GPU command follows when it passes.
 ### (-7) D-149 A items: QC-RT1 needs one contract edit from you; the escort-look test is in
 - **(1) QC-RT1 TacticalPoint `enabled`:** `game/contracts/map/tactical_point.gd` is LEAD-owned, so here is the patch,
   verified locally and not committed.
