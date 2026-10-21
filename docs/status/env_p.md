@@ -18,7 +18,24 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   tied unseen; code t=529). Step 5: the BB → gate wait ran 300 s (t=642-946) with no window (vault guard on VC or rover_basement in BB), then
   cleared on attempt 2 at t=981. Gate, lasers both ways, code entered t=996.5. The pilot then walked to the RC time-lock wait and met the vault
   guard coming back from his loop (b) through RC (radio t=1008). Now it waits out the time lock in the LK hide, crouched, and peeks before
-  each leg back. haz_u is running.
+  each leg back. haz_u: same path to t=1000.8, then the vault guard came out of RC (6.6, 10) heading for the gate while the pilot held in BB at
+  (13.8, 8.2), standing in his walk (radio t=1021). Now the time-lock refuge is CQ's SE corner (12.5, 3.5): lkprobe says no BB corridor
+  point (x 0-47) sees it, and CQ's door is 2 m from the gate, so the pilot goes there at once. **From haz_v on, runs are on r263
+  (67260f0b, with C's partition fix).** haz_v (r263): step 2 FAIL with no alarm. All 5 smoke windows were skipped: the queue-rail bake fix moved
+  rover_hall's loop (LD checks now t≈11, 96, 185, 269, 361, 449), and at every smoke cue (78, 149, 259, 317, 401) he was on BC at x 31-34
+  walking back to LD, 9-36 s from his check. Now at a cue with him heading in, the pilot lets his LD check pass inside that smoke window
+  (≤ 25 s), then goes, as r260's passing run did by luck. Walkers block only while closing on the corridor door. **haz_w (r263): step 2 PASS at t=183.6** (window 1 skipped: he was still inside LD at t=104 when the 25 s
+  ran out; window 2 taken). Step 3 alarm at t=185: done 24 s sooner, the pilot stepped out of SA into BB as the vault guard walked down BB on
+  his loop (b) (seen at 7.7 m). Step 2 had no stair peek (the stair waits are step 4+), so step 2 now ends on SA's basement landing and waits
+  for BB (12 m, walkers 15 m). haz_x: same to t=183, then waiting on the B landing behind SA's door, the vault guard walked east down BB
+  past the door and saw the pilot at 2 m (t=189). lkprobe: SA's half landing (14.5, -2, 2) is seen from no BB or BC corridor point; the
+  pilot now waits there. **haz_y (r263): steps 1-3 PASS** (dock t=192, after a 10 s half-landing wait; keycard t=357). Step 4 alarm at
+  t=388: the LK → SA leg waited on the B landing for rover_hall on G, and rover_basement walked past SA's door and saw it at 1.5 m. That
+  phase-2 wait is now on the half landing too, and it climbs straight up from there (it used to step back out into BB). **haz_z (r263): steps 1-4 PASS** (dock 192, keycard 357, half-landing wait 26 s, code 466). Step 5 alarm
+  at t=515: coming down from E, the pilot stepped out of SA into BB with the vault guard walking BB 9 m off (the upper-floor core check
+  doesn't count BB). The descent to B now waits on the half landing too. haz_za: steps 1-4 again, then the half-landing core check let the vault guard
+  through: standing in BB 6.5 m off, no LOS to the core. He saw the walk to LK (t=519). Both half-landing → BB waits now use a BB rule:
+  no basement guard in BB's strip west of x 32 or within 6 m of SA's door, two samples running. haz_zb is running.
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick
