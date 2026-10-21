@@ -337,3 +337,35 @@ which is worse than the original GPU-17 run at r255. The metrics track backgroun
 CPU-bound survey and is the worst of all). The GPU-17 "regression" (vs GPU-15) is not evidence of a code change.
 **Caveat for GPU-18 and future perf numbers:** this box is shared with other sessions' CPU jobs. I'll log the background CPU load next to each perf run. Only a GPU-15 vs GPU-18
 comparison made under similar load is meaningful; ideally both trees get re-run back to back when the box is idle.
+## GPU-18: OF loud on trunk 3312326b (round 256: board line) + same-load control
+- Trunk fast-forwarded to 3312326b. Same command as GPU-15/17 (auto_loud, Cataclysm, seed 1037, crew-dmg 0, hitch-ms 50, budget 240, 1920x1080 windowed Forward+).
+- **Box load:** another local session's `an3_scale_survey.py --jobs 4`, node test runners (val_server, a2_test, b3_test) and the long-running python were all active.
+  CPU sampled every 5 s across both 240 s runs (`gpu/renders/a/of_r256_cpu_load.txt`): **avg 32.7%, min 16.6, max 55.7**. So I re-ran GPU-15's tree (gpu/a3) right after r256 as a same-load control.
+- Logs/PNGs: `gpu/renders/a/of_r256{,.txt}`, `of_18_gpu15tree{,.txt}`, `of_r256_b480{,.txt}`.
+
+| metric | **r256 (3312326b)** | control: GPU-15 tree, same load | GPU-15 original (01:28, quiet box) |
+|---|---|---|---|
+| RESULT | FAIL (code 2), budget 240 | FAIL (code 2), budget 240 | FAIL (code 2), budget 240 |
+| nav errors ("most reachable") | **0** | 0 | 0 |
+| po5 `HITCHES` line | `48 of 43846 heist frames over 50 ms (3 of them screenshot frames), worst 3133 ms, without a shot 3133 ms` | (old po5, no line) | (old po5, no line) |
+| non-shot > 50 ms: total / t < 8 s / loud | **45 / 12 / 33** | 110 / 10 / 100 | 9 / 6 / 3 |
+| max frame | 3133 ms (heist load, t=0.1) | 2750 ms (heist load) | 2181 ms (heist load) |
+| loud worst, non-shot (ms @ t) | **129 @175.3, 125 @147.6, 123 @77.5** | 266 @98.8, 228 @99.2, 194 @98.6 | 69 @163.1, 62 @139.9 |
+| TEL phys avg/max (t >= 20 s) | **20.0 / 26.3 ms** | 33.4 / 63.6 | 22.7 / 29.9 |
+| TEL proc avg/max | **9.6 / 24.1 ms** | 11.3 / 27.4 | 6.5 / 18.6 |
+| draws on loud-phase hitch frames min/avg/max | 986 / 1466 / 2628 | 648 / 1388 / 2842 | n/a |
+
+- **r256 vs the control under the same load: clearly better** (physics -40%, loud-phase hitches 33 vs 100, worst 129 vs 266 ms). So A's anim fix pays off.
+  The heist-load frame is still 3.1 s, with `anim_driver=115.2ms(30)` and 78 surface + 49 specialization pipeline compiles in that frame (the new HITCH `pipelines=` field).
+  Pipeline compiles in the loud phase are rare (spec+2 @103.8, spec+3 @175.4).
+- **Draw calls (main vs total):** po5 still logs only `draws=` (the frame total) on HITCH frames, so there's no main/total split (see above).
+- **BondSafe: not reached in r256, so A's marker fix is unverified.**
+  - In the 240 s run the heist only started at 49.5 s wall (it was 23-31 s on a quiet box). The pilot did both LidDrill placements (185.8 s, 225.5 s) and the budget ran out before BondSafe. No `aimed <none>`/LOS lines.
+    The control (old tree) did reach BondSafe and failed as before: `LOS ray hit .../Walls/FloorB/BZ0140_1_00 at (13.7, -2.5, 20.x)`, dist 2.02.
+  - **Extra run, r256 with `--po5-budget=480`** (my addition, to reach BondSafe): `RESULT FAIL (code 2)` budget 480. **This time the pilot took a different route and never went for BondSafe**
+    (0 mentions). It did PresidentSafe (place_drill 281 s, fix_drill 368 s, objective president_safe -> 2 at t=424), ServerDrives secured (t=307), LidDrill again (407 s).
+    It got STUCK on the SAFlight2W stair, blocked by police (Npc_police13/14), 4 times between 353 and 390 s, and had 4 `goto (3.5, 0.2, -4.3) FAILED` at 322-335 s.
+    `HITCHES 1560 of 35747 heist frames over 50 ms (9 screenshot), worst 2755 ms`. The hitches pile up after t=240 (338 / 428 / 477 per minute)
+    with 26-29 enemies alive and box CPU at 59% at the end. That's not comparable to the 240 s runs.
+  - So A's BondSafe fix needs a run where the pilot actually goes there. Seed 1037's route on r256 doesn't reach it within 240 s on this box, and the 480 s route skipped it.
+- Recommendation: re-run r256 (240 s and a longer budget) when the box is idle, for clean perf numbers. For BondSafe, a po5 flag or flow that targets it directly would avoid route variance.
