@@ -2558,12 +2558,11 @@ func _g2_dock() -> bool:
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
 	# Peek through LD -> BC too: on Hazardous (D-150) rover_hall stood 1.7 m behind DockCorridorDoor when the pilot
-	# opened it (haz_a, t=100). Wait inside LD, 3 m back from that door, until BC beyond it is clear.
+	# opened it (haz_a, t=100). Not clear: back out to the lane beside the dock door, out of the doorway's line (haz_b/c/f:
+	# waiting inside LD, rover_hall's loop (b) walked in and found the pilot), and come back in once BC is clear.
 	var cdoor: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
 	if cdoor != null:
-		var back: Vector3 = (door.global_position - cdoor.global_position)
-		back.y = 0.0
-		var hide: Vector3 = pilot.stand_point(cdoor.global_position + back.normalized() * 3.0)
+		var hide: Vector3 = pilot.stand_point(door.global_position + Vector3(-2.0, 0.0, -1.5))
 		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide)
 	return await _of_to_floor(0)
 
