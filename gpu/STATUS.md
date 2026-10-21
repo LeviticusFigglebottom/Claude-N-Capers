@@ -69,3 +69,12 @@ Checkout: `C:\Users\Aaron\caperworks-gpu`, depth-1 trunk clone, cone sparse-inde
 | rc_hall_from_gallery | 1397 (861/536) | 1749 (827/922) |
 
 NPC placement is seeded but animation/tier state at capture time may differ, so check the per-NPC lines in the txt before treating this as a regression.
+## GPU-5: C Job A, OF VoxelGI re-bake (tree: env/c-worlds 3c9b2fdf, local branch gpu/of-final)
+- `--headless --path game --import`: exit 0.
+- `godot\Godot_v4.7.2-stable_win64_console.exe --path game --script res://world/heists/ostrander_federal/greybox/bake_gi.gd`
+  (windowed, Vulkan Forward+ on RX 9070 XT): exit 0, 24 s, no ERRORs.
+- Output, committed here from gpu/of-final:
+  - `ostrander_federal_voxelgi_basement.res`: 1,644,288 octree bytes, err 0
+  - `ostrander_federal_voxelgi_ground.res`: 3,895,552 octree bytes, err 0
+  - `ostrander_federal_voxelgi_executive.res`: 1,255,712 octree bytes, err 0
+- No other files in the tree changed (no .import churn).
