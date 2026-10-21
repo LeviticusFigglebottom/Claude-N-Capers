@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[INFO][rng][p1] run seed 1037
+[INFO][variants][p1] seed 1037 resolved { &"guard_post": [&"alley_smoker", &"rover_upper"], &"back_door": [], &"open_window": [&"ow_breakroom_open"], &"keycard": [&"kc_manager"], &"jeweler": [&"jw_gone"], &"admin_clerk": [&"clerk_in"], &"salon": [&"salon_locked"], &"extra_loot": [&"xl_manager_cash"], &"escape": [&"esc_pell"], &"customers": [&"cust_1", &"cust_2", &"cust_4", &"cust_5"], &"manager_present": [&"mgr_out"], &"safe_state": [&"safe_open"], &"estate": [&"estate_none"], &"camera": [&"cam_c2", &"cam_c3", &"cam_c4", &"cam_c5", &"cam_c6"], &"security_room_staffed": [&"sec_staffed"], &"code_note": [&"code_jeweler_notebook"], "rare": [&"safe_left_open"] }
+[INFO][heist][p1] vfx prewarm: 537 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 115 ms
+[CASTPERF] heist=glasshouse seed=1037 loud=false npcs=11 by_role={ "guard": 4, "civilian": 7 }
+[CASTPERF] view=sales_floor_entrance frame ms avg 11.36 max 18.14 over 120 frames (AMD Radeon RX 9070 XT)
+[CASTPERF] view=sales_floor_entrance attached never-LOD geometry: 6 nodes, 444 tris; hiding it: draws 2274 -> 2326, prims 1076528 -> 1132191
+[CASTPERF] view=sales_floor_entrance never-LOD nodes by name: WeaponSilhouette x4, Visual x2
+[CASTPERF] view=sales_floor_entrance shadowed lights { "SpotLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2274 -> 1024
+[CASTPERF] view=sales_floor_entrance cast shadows off: draws 2274 -> 1985; off beyond 15 m only: -> 2328
+[CASTPERF] view=sales_floor_entrance sun Sun mode=1 max_distance=30 m: 2 splits -> 2354 draws; max_distance 15 m -> 2185 draws
+[CASTPERF] view=sales_floor_entrance cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2274 -> 2299
+[CASTPERF] view=sales_floor_entrance per-NPC draws (top 8 of 11 on screen): security_officer_e 104 @5m, security_officer_g 70 @15m, security_officer_h 64 @11m, bank_customer_h 60 @10m, security_officer_f 50 @7m, civilian_customer_a 50 @5m, civilian_sales_b 48 @5m, civilian_sales 45 @9m
+[CASTPERF] view=sales_floor_entrance draws=2274 (map 1640, cast 634) prims=1076528 (cast 517658) objects=2669 (cast 641) tiers={ "full": 10, "proxy": 0, "offscreen": 1 } anim_bands={ "FULL": 11 }
+[CASTPERF] view=ext_harlow_corner frame ms avg 11.10 max 22.33 over 120 frames (AMD Radeon RX 9070 XT)
+[CASTPERF] view=ext_harlow_corner attached never-LOD geometry: 6 nodes, 444 tris; hiding it: draws 2289 -> 2302, prims 643576 -> 650845
+[CASTPERF] view=ext_harlow_corner never-LOD nodes by name: WeaponSilhouette x4, Visual x2
+[CASTPERF] view=ext_harlow_corner shadowed lights { "SpotLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2289 -> 1111
+[CASTPERF] view=ext_harlow_corner cast shadows off: draws 2289 -> 2118; off beyond 15 m only: -> 2229
+[CASTPERF] view=ext_harlow_corner sun Sun mode=1 max_distance=30 m: 2 splits -> 2314 draws; max_distance 15 m -> 1416 draws
+[CASTPERF] view=ext_harlow_corner cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2289 -> 2234
+[CASTPERF] view=ext_harlow_corner per-NPC draws (top 8 of 11 on screen): security_officer_e 26 @30m, civilian_sales 20 @34m, bank_customer_h 16 @33m, bank_customer_i 15 @33m, civilian_customer_a 12 @29m, security_officer_g 7 @40m, security_officer_f 1 @34m, civilian_sales_b 1 @30m
+[CASTPERF] view=ext_harlow_corner draws=2289 (map 2102, cast 187) prims=643576 (cast 125810) objects=2682 (cast 196) tiers={ "full": 0, "proxy": 11, "offscreen": 0 } anim_bands={ "NEAR": 4, "FAR": 3, "FULL": 4 }
+[CASTPERF] view=ext_shopfront frame ms avg 11.01 max 16.59 over 120 frames (AMD Radeon RX 9070 XT)
+[CASTPERF] view=ext_shopfront attached never-LOD geometry: 6 nodes, 444 tris; hiding it: draws 2829 -> 2818, prims 829504 -> 829232
+[CASTPERF] view=ext_shopfront never-LOD nodes by name: WeaponSilhouette x4, Visual x2
+[CASTPERF] view=ext_shopfront shadowed lights { "SpotLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2829 -> 1484
+[CASTPERF] view=ext_shopfront cast shadows off: draws 2829 -> 2524; off beyond 15 m only: -> 2675
+[CASTPERF] view=ext_shopfront sun Sun mode=1 max_distance=30 m: 2 splits -> 2829 draws; max_distance 15 m -> 2159 draws
+[CASTPERF] view=ext_shopfront cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2829 -> 2749
+[CASTPERF] view=ext_shopfront per-NPC draws (top 8 of 11 on screen): security_officer_e 88 @16m, security_officer_f 65 @22m, security_officer_h 65 @22m, civilian_customer_a 39 @14m, civilian_sales 20 @17m, bank_customer_h 18 @15m, bank_customer_i 15 @16m, security_officer_g 8 @26m
+[CASTPERF] view=ext_shopfront draws=2829 (map 2513, cast 316) prims=829504 (cast 149298) objects=3454 (cast 317) tiers={ "full": 5, "proxy": 6, "offscreen": 0 } anim_bands={ "NEAR": 6, "FULL": 5 }
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 299 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

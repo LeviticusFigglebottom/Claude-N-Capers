@@ -140,3 +140,24 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
 - Output: `gpu/renders/d/queue/`: 6 shots (tellers_w/e x staff/customer side, teller_counter_profile, queue_w_side), qc67_log.txt, render_log.txt.
 - Shutdown ERRORs (engine cleanup, not the review): `1 RID allocations of type 'N10RendererRD15MaterialStorage6ShaderE' were leaked at exit`
   and `1 shaders of type SceneForwardClusteredShaderRD were never freed`.
+## GPU-8.5: ENV D heist_cast_perf with frame times (tree: env/d-art f96168df)
+- `--audio-driver Dummy --resolution 1920x1080 --path game res://world/characters/_tools/heist_cast_perf.tscn -- <args>`, windowed Forward+ on RX 9070 XT.
+  - `--heist=glasshouse --detail`: exit 0, 27 s, npcs=11 (guard 4, civilian 7). **Glasshouse views now work (3).**
+  - `--heist=ostrander_federal --seed=1037 --loud --seconds=90 --detail`: exit 0, 153 s, npcs=33 (guard 10, civilian 19, police 4).
+- Console: `gpu/renders/d/perf_<heist>.txt`. PNGs: `gpu/renders/d/perf_<heist>/` (only PNGs written during that run; the OF ones now carry a `_loud` suffix, so there's no overwrite).
+- No ERRORs.
+
+| heist | view | frame ms avg / max (120 frames) | draws (map, cast) |
+|---|---|---|---|
+| glasshouse | sales_floor_entrance | 11.36 / 18.14 | 2274 (1640, 634) |
+| glasshouse | ext_harlow_corner | 11.10 / 22.33 | 2289 (2102, 187) |
+| glasshouse | ext_shopfront | 11.01 / 16.59 | 2829 (2513, 316) |
+| OF loud | hall_south_eye | 18.69 / **114.54** | 2637 (1418, 1219) |
+| OF loud | hall_south_high | 16.69 / 92.74 | 2476 (1259, 1217) |
+| OF loud | hall_west_diag | 19.94 / 105.24 | 2708 (1432, 1276) |
+| OF loud | rc_hall_entrance | 20.26 / 104.37 | 2643 (1439, 1204) |
+| OF loud | rc_hall_counter | 16.51 / 102.71 | 1580 (1372, 208) |
+| OF loud | rc_hall_from_gallery | 15.89 / 86.67 | 2007 (823, 1184) |
+
+- **Read for D-146:** glasshouse holds ~11 ms (about 90 fps) with tight maxes. OF loud averages 16-20 ms (50-60 fps) on this GPU, and every view has
+  90-115 ms hitches within 120 frames. Cast draws run 1180-1280 in 5 of 6 views (vs ~600-680 quiet on trunk e960048e in GPU-2).
