@@ -1914,6 +1914,10 @@ func _vc_window(max_age: float) -> bool:
 		and _nav_len(vp + _vg_vel * trip_s, gate_at) >= 12.0
 	if not far and (_vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age):
 		return false
+	# Out with a bag, rover_basement away too (RC, east of x 36, off the floor: step 5's rule). Every out-trip death
+	# (ghost6_m/n/o/p/q/r/s) was a BB guard near the gate during the dash, mostly him; the in-trips never failed.
+	if trip_s > 10.0 and not _rover_basement_away():
+		return false
 	return _vc_others(trip_s) == ""
 
 
