@@ -6,7 +6,7 @@
 ## Tab sheet, an assault event's marker (a director event as A's PO6-17 runs it), then a won payday with the RT
 ## achievements (scripted result: 4 gold + 2 cash, signals rigged, Hazardous, no downs).
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --audio-driver Dummy --path game --resolution 1280x720 \
-##       --script res://tests/b/render/rt_hud_capture.gd -- <out_dir>
+##       --script res://tests/b/render/rt_hud_capture.gd -- <out_dir> [stub_trucks]
 ## Headless (`--headless` instead of xvfb-run) logs the same HUD state without saving frames (llvmpipe: the windowed
 ## loud part takes > 25 min; the GPU box takes the shots).
 ## Prints "RTHUD SHOT <path>", "RTHUD <state>" lines and "RTHUD DONE <issues>".

@@ -3,7 +3,20 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-22 00:10; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-22 00:55; send_message to you is refused, so read this)
+-28. **New: RT HUD re-checked on A's fix (env/a-core aab423484; A's message said 7e83bc1f0, which does not exist).
+     All clean, 0 harness issues. Please merge aab423484.**
+     - **Run:** a scratch merge of env/b-content + aab423484, headless `rt_hud_capture.gd -- <out> stub_trucks`. The
+       new opt-in `stub_trucks` puts armored_trucks on the G1 placeholder boxes, as A's
+       `--po5-rt-stub-trucks` does, harness only, until C's convoy swap.
+     - **Objective line:** after the stop it leads with "Take down the escort and the Vaultline crews" (was stuck on
+       [signals]). Fixed by A.
+     - **Saw timers:** 6 trucks with saws -> 6 timer rows. At a truck's rear doors the HUD draws "SAW 02:00". The
+       timers are world-anchored by design (hidden past `device_panel_max_m`, behind the camera or a wall), so the
+       harness now checks the rows for all saws and the drawn panel at one truck.
+     - **Assault event:** "HELICOPTER". **Payday:** `rt_heavy_haul` and `rt_iron_crew` unlocked on the profile.
+     - **Harness fixes:** the payday check reads the profile (the run's own payday can unlock Iron Crew first), and
+       the timer check no longer expects panels from across the map.
 -27. **New (r270 #1): RT's in-heist HUD driven through A's mission (stage 1). B's HUD reads RT correctly; two gaps are
      on A / C's side.**
      - **Harness:** the new `tests/b/render/rt_hud_capture.gd`. It launches direct through `MenuFlow.launch`, using

@@ -7,6 +7,9 @@ const WIP_DEF: String = "res://world/heists/rolling_thunder/rolling_thunder_wip_
 var _out: String = ""
 var _flow: MenuFlow = null
 var _issues: int = 0
+## 2nd arg "stub_trucks": armored_trucks on the G1 placeholder boxes (A's po5 --po5-rt-stub-trucks, harness only, until
+## C's convoy swap ships real trucks).
+var _stub_trucks: bool = false
 ## Test-only fixture (as test_heist_screens_text): held so the cache keeps them for the run.
 var _wip: Resource = null
 var _list: UiHeistList = null
@@ -15,6 +18,7 @@ var _list: UiHeistList = null
 func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/rt_hud"
+	_stub_trucks = args.size() > 1 and args[1] == "stub_trucks"
 	DirAccess.make_dir_recursive_absolute(_out)
 	SaveService.root_dir = "user://rt_hud_profiles_%d" % OS.get_process_id()  # never the player's profile
 	GameSettings.root_dir = SaveService.root_dir + "_settings"
@@ -38,6 +42,8 @@ func _run() -> void:
 		return
 	var rt: HeistRuntime = _flow.runtime as HeistRuntime
 	var mission: Node = rt.mission
+	if _stub_trucks:
+		_stub_rt_trucks(rt)
 	await _seconds(3.0)
 	_state("casing")
 	await _shot("01_casing")
@@ -66,12 +72,23 @@ func _run() -> void:
 		var t: ArmoredTruck = n as ArmoredTruck
 		if t != null and t.runner != null and not t.opened:
 			t.runner.place(0, t.saw_duration())  # stated shortcut: the saw interaction's result
-	await _seconds(3.0)
+	await _seconds(2.0)
 	var hud: Hud = _hud()
-	print("RTHUD timers %s" % [hud.device_timers.drawn.map(func(d: Dictionary) -> String: return "%s %.0f%%" % [
-			d.get("label", "?"), float(d.get("progress", 0.0)) * 100.0])])
-	if trucks.size() > 0 and hud.device_timers.drawn.is_empty():
-		_issue("timers", "trucks have saws running but the HUD draws no device timer")
+	# Device timers are world-anchored (hidden past device_panel_max_m, behind the camera or a wall): every running
+	# saw is tracked, and the one the player stands at is drawn (stated shortcut: the player is moved to its rear doors).
+	var saws: int = trucks.filter(func(n: Node) -> bool: return n is ArmoredTruck and not (n as ArmoredTruck).opened).size()
+	print("RTHUD timer rows %d for %d running saws" % [hud.device_timers.rows().size(), saws])
+	if hud.device_timers.rows().size() != saws:
+		_issue("timers", "%d saws running, %d timer rows" % [saws, hud.device_timers.rows().size()])
+	if me != null and not trucks.is_empty():
+		var t0n: Node3D = trucks[0] as Node3D
+		var stand: Vector3 = t0n.global_position - t0n.global_basis.z * 5.0
+		me.teleport(Transform3D(Basis.looking_at(t0n.global_position - stand, Vector3.UP), stand))
+		await _seconds(2.0)
+	print("RTHUD timers drawn %s" % [hud.device_timers.drawn.map(func(d: Dictionary) -> String: return "%s %s" % [
+			d.get("label", "?"), d.get("time_text", "?")])])
+	if saws > 0 and hud.device_timers.drawn.is_empty():
+		_issue("timers", "standing at a truck with a running saw, the HUD draws no timer")
 	_state("saws")
 	await _shot("05_truck_saws")
 	var dir: AssaultDirector = rt.service(G.SVC_DIRECTOR) as AssaultDirector
@@ -97,11 +114,37 @@ func _run() -> void:
 		pd.skip_count()
 		await _frames(10)
 		print("RTHUD payday achievements %s" % [pd.achievements_unlocked])
+		# The run's own payday (end_heist) may already have unlocked one (a run with no downs): read the profile.
 		for id: StringName in [&"achievement.rt_heavy_haul", &"achievement.rt_iron_crew"]:
-			if not pd.achievements_unlocked.has(id):
-				_issue("payday", "%s did not unlock on the scripted clear" % id)
+			if not Achievements.is_unlocked(pd.profile, id):
+				_issue("payday", "%s is not unlocked after the scripted clear" % id)
 		await _shot("08_payday")
 	_done()
+
+
+## Harness only (A's po5_flow._stub_rt_trucks): an armored_truck on each G1 convoy placeholder box (cash / bullion).
+func _stub_rt_trucks(rt: HeistRuntime) -> void:
+	var scene: PackedScene = load("res://systems/prefabs/armored_truck/armored_truck.tscn") as PackedScene
+	var n: int = 0
+	for layout: Node3D in ConvoyLayouts.layouts(rt.map):
+		for body: Node in layout.get_children():
+			var kind: String = String(body.get_meta(&"kind", ""))
+			if not body is StaticBody3D or not kind in ["convoy_cash", "convoy_bullion"]:
+				continue
+			var rear: Node3D = layout.get_node_or_null(NodePath(String(body.name) + "RearDoor")) as Node3D
+			var t: ArmoredTruck = scene.instantiate() as ArmoredTruck
+			t.name = String(body.name) + "Truck"
+			if kind == "convoy_bullion":
+				t.saw_duration_s = 180.0
+				t.hand_saw_duration_s = 90.0
+			layout.add_child(t)
+			var at: Vector3 = (body as Node3D).global_position
+			var to_rear: Vector3 = (rear.global_position - at) if rear != null else -(body as Node3D).global_basis.z
+			to_rear.y = 0.0
+			t.global_transform = Transform3D(Basis.looking_at(to_rear.normalized(), Vector3.UP), at)
+			n += 1
+	rt.set_layout(String(rt.layouts.get(ConvoyLayouts.DEFAULT_GROUP, "")))
+	print("RTHUD stub trucks %d (harness only, until C's convoy swap)" % n)
 
 
 ## Test-only fixture: RT's WIP def at the convention def path, RT un-hidden on the cached heist list.
