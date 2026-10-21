@@ -26,7 +26,11 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   **haz_l: the harness is right, but no dock window on Hazardous seed 1002 (sent to C).** rover_dock's smoke windows: t≈78-118, 162-195, 285-322,
   347-385, 429+ (every 85-120 s, 33-40 s long). rover_hall's loop (b) LD check falls inside 4 of the 5 (t=82 heading in, in LD ~108; 285 in BC;
   348 / 430 heading in). Window 2 (t=168, him at 34 m east) may have been a false skip. After 5 windows: FAIL _g2_dock (no alarm). The dock
-  step has the same two-patrol clash as BB. C asked for window numbers: these are they.
+  step has the same two-patrol clash as BB. C asked for window numbers: these are they. **C's answer (ostrander_federal.md 8c034cdb):** rover_hall
+  isn't random. A's hub_loops cycle him (a) TW/hall → (b) LD check → MO → (c) stair B / fire exit, so go in a smoke window only once he has LEFT LD
+  for MO (east, x > 40, two loops from the next LD visit). Harness: a watcher records his LD visits; a window counts only if his last LD check was
+  ≤ 90 s ago and he's now at x > 25. haz_m (seed 1002) is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
+  the LEAD and A with the numbers.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
   pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35

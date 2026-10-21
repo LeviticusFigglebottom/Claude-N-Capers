@@ -233,6 +233,9 @@ var _ladders_ok: bool = false
 var _ghost_diff: int = Enums.Difficulty.HAZARDOUS
 ## _vault_guard_off_vc: consecutive samples with the vault guard off VC.
 var _vg_away_n: int = 0
+## Ghost step 2 (C's cue, ostrander_federal.md 8c034cdb): heist time rover_hall was last within 8 m of DockCorridorDoor
+## (his loop (b) LD check); -1 before he's been seen there.
+var _rh_ld_t: float = -1.0
 
 
 func _ready() -> void:
@@ -1336,6 +1339,7 @@ func _watch_detection() -> void:
 				note("DETECT %s kind %d meter %.2f at %s, pilot %s crouched %s" % [_observer_name(id), int(e["kind"]), v,
 					Po5Pilot._v(e["world_pos"]), Po5Pilot._v(pilot.crew.global_position), pilot.crew.crouched])
 			seen[id] = band
+		_track_rover_hall()  # ghost step 2's dock cue (non-traversal runs only have this watcher)
 		await wait_s(0.25)
 
 
@@ -1705,6 +1709,36 @@ func _gate_window(gate: Door) -> bool:
 				var in_rc: bool = p.x < 14.0 and p.z > 9.5
 				return absf(p.y - OF_FFL[0]) > 1.5 or in_rc or p.x > 36.0
 	return true
+
+
+func _track_rover_hall() -> void:
+	var cd: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D if rt != null else null
+	if cd == null:
+		return
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g != null and g.is_alive() and _has_tag(g, "guard_rover_hall") \
+				and pilot.flat_dist(g.global_position, cd.global_position) < 8.0:
+			if _rh_ld_t < 0.0 or rt.heist_time_s - _rh_ld_t > 5.0:
+				note("GHOST rover_hall at the LD check (t=%.0f)" % rt.heist_time_s)
+			_rh_ld_t = rt.heist_time_s
+
+
+## C's step 2 cue: rover_hall has done his loop (b) LD check within the last 90 s and is now east (x > 25: MO, then
+## loop (c) stair B / fire exit), so the next LD visit is two loops away.
+func _rover_hall_gone_east() -> String:
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive() or not _has_tag(g, "guard_rover_hall"):
+			continue
+		if _rh_ld_t < 0.0:
+			return "rover_hall not seen at LD yet"
+		if rt.heist_time_s - _rh_ld_t > 90.0:
+			return "rover_hall's LD check %.0f s ago" % (rt.heist_time_s - _rh_ld_t)
+		if g.global_position.x < 25.0:
+			return "rover_hall at %s (not east yet)" % Po5Pilot._v(g.global_position)
+		return ""
+	return ""
 
 
 func _has_tag(g: NpcBase, tag: String) -> bool:
@@ -2512,6 +2546,9 @@ func _g2_dock() -> bool:
 	# Standing guards only within 8 m of either door: a posted guard at (19.5, 0, 1.1) held all 4 smoke windows (haz_e).
 	var ld_last: Dictionary = {}
 	var ld_busy: Callable = func(r: float) -> String:
+		var rh: String = _rover_hall_gone_east()
+		if rh != "":
+			return rh
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
@@ -2520,12 +2557,6 @@ func _g2_dock() -> bool:
 			var moving: bool = ld_last.has(id) and g.global_position.distance_to(ld_last[id]) > 0.15
 			var was: Vector3 = ld_last.get(id, g.global_position)
 			ld_last[id] = g.global_position
-			# rover_hall heading for DockCorridorDoor from anywhere within 35 m is on his loop (b) LD check (haz_g: in
-			# the hall at the cue, through LD 30 s later; the smoke window had ended by the time he left).
-			if cdoor_n != null and moving and _has_tag(g, "guard_rover_hall"):
-				var dn: float = pilot.flat_dist(g.global_position, cdoor_n.global_position)
-				if dn < 35.0 and pilot.flat_dist(was, cdoor_n.global_position) - dn > 0.05:  # haz_h: 24 m 5 s after the cue
-					return "%s %s heading for LD" % [g.name, Po5Pilot._v(g.global_position)]
 			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
 			var dc: float = pilot.flat_dist(g.global_position, cdoor_n.global_position) if cdoor_n != null else 999.0
 			if pilot.flat_dist(g.global_position, door_at) < 8.0 or dc < 8.0 \
