@@ -4,6 +4,45 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-16) DB Tense seed-1 custody chain (low priority), headless on 43d8b5a6 (14:20 UTC)
+**The chain: a revive pile-up at the secure zone ends in a crew wipe.**
+- t=523: the crew carries cash from the cages to the dock (secure zone around (31, 0, -18)), 4 enemies alive.
+- t=543: the pilot picks up a cash bag beside the zone. A wave lands: 13 enemies, 3 within 15 m.
+- t=546-576: all four crew go down or get tased within 4 m of each other. Bots kneel to revive with enemies 0.6-1.0 m
+  away (TEL `nearest_enemy=0.6m`, "bots while down: 1:REVIVE ... 2:REVIVE ... 3:REVIVE").
+  - Each revive is broken off or followed by the reviver's own down. One last-stand revive lands (slot 3, t=575).
+- t=592-606: all 4 in custody (bleed-out).
+- Pilot intake: 610 damage in 549 s loud, 1.11 dmg/s, mostly from under 10 m: tac_light 262, Bulwark 127.5,
+  patrol 75, Longshot 45.
+
+**Read: no bug; a tactics gap in the bot revive rule.** PD2 bots do revive under fire, but they are tanky (PD2
+team AI takes reduced damage). Ours revive at full exposure with the attacker in arm's reach.
+
+**Proposal (A-owned, small; your call, since DB Tense is accepted at 2/3):** before kneeling, a bot spends up to
+crew_ai_tweak.revive_clear_s (2 s) on any enemy within revive_clear_m (3 m) of the downed member. This is the
+pilot's REVIVE_THREAT rule applied to bots.
+- Last stand (the final revive before custody) skips the clear.
+- I'd validate with DB Tense ×3 and GH Tense ×1, not merged before you say so.
+### (-15) OF robustness headless (your 12:59 ask), on env/a-core 43d8b5a6 = trunk 40ef789d + A (13:50 UTC)
+| run | result | end | how it ended |
+|---|---|---|---|
+| **Routine 1037**, crew dmg ×1.0 | **PASS** | heist_ended success, time_s **1307.9** | 4 cash secured (t=716 / 911 / 1103 / 1157), secure -> 2 at t=1157, escape. |
+| Cataclysm 2024, CREW_DMG=0 | FAIL | custody at t=1476 (budget 1800) | A Stinger tase at t=596 -> DOWNED -> CUFFED. Then 15 cycles CUFFED <-> DOWNED about every 61 s with no rescue, until custody. |
+| Cataclysm 4711, CREW_DMG=0 | FAIL | custody at t=1221 | A Phantom kick (CLOAKER_DOWNED) at t=1113 -> downed -> custody. |
+- **Both Cataclysm losses are the accepted hardest-difficulty harness limit** (PO, D-148 note). CREW_DMG=0 nulls
+  damage, but not tase, cuffs or the Phantom kick.
+  - No systems gap: the hoist cycle ran (4711: sent and unloaded at t=1087).
+  - The cage re-test fired: "VaultCash has a navmesh path again" at t=705.
+  - The t≈1025 "could not reach VaultCash" were the pilot boxed in by live police (Npc_police5 / 6) in a corridor
+    mid-fight, not a nav gap.
+- **Pilot inefficiency left** (harness, not blocking): 4711 still lost two missed hoist tosses (t=714, 855) to bots
+  that caught them before the pilot could pick them up. A drop instead of a throw would be the real fix, but the
+  player's G is always a throw; C-held drop is ENV P's input. If you want it, I'd ask P for a "short toss when looking
+  down past N°".
+- **Game question (yours):** seed 2024's 15 CUFFED <-> DOWNED cycles. A cuffed player goes back to DOWNED every
+  60 s (the cuff timeout?) and is re-cuffed at once, with the bots never freeing them on Cataclysm.
+  - Per PD2, the arrest should go to custody straight away rather than loop. If the loop isn't intended, I'll look at
+    CustodySystem's cuff -> custody path next (A-owned).
 ### (-14) **OF loud Cataclysm PASSES headless** (hoist7, env/a-core 1057052c = trunk r260 + A) (11:40 UTC)
 OF Cataclysm, seed 1037, auto_loud, no FOCUS, CREW_DMG=0, budget 1800:
 ```
