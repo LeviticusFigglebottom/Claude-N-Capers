@@ -4,6 +4,42 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-6) OF-done items 1 and 2 (your GPU-18 message)
+**1. BondSafe: verified.** Headless OF Cataclysm 1037 auto_loud on env/a-core 13d889844, `FOCUS=bond_safe`
+(new --po5-focus), CREW_DMG=0:
+```
+[PO5 590.6s] EVENT objective vault_breach -> 2 t=563
+[PO5 590.7s] EVENT objective bond_safe -> 1 t=563        (appears with the burn-through, 6fcbb559)
+[PO5 599.8s] pilot: use BondSafe (place_drill) -> OK in 3.0 s
+[PO5 622.3s] pilot: use BondSafe (fix_drill) -> OK in 2.0 s
+[PO5 668.0s] EVENT objective bond_safe -> 2 t=638        (completed)
+```
+- The cash-cage handoff works in the same run:
+  - The pilot sawed the CashCage Padlock (place_saw 616 s, fix_drill 637 / 655 s).
+  - `[vault_loot]` switched to the cash at t=630 (`vault_loot -> 1 t=630`, the marker update).
+  - `use VaultCash (bag_loot) -> OK` at 663 s.
+- **New pilot gap after that:** carrying the cash, it tried the rope ladder up for 3+ min ("RopeLadder up -> FAILED"
+  ×20). Ladders refuse a carried bag (S10.1b); the doc's way up is the hoist.
+  - Harness fix in progress: goto stops at a ladder when carrying a bag, and the pilot takes it up the hoist like a
+    player (call the car, drop the bag in, send it, climb empty-handed, carry it on).
+  - A validation run is going now. Not game code.
+- **Stair stall (b480, Npc_police13/14 on SAFlight2W):** the pilot only side-stepped. It now shoots a live enemy it
+  is pressed against (13d889844; new line "pilot: <npc> blocks the way: shoot"). The next GPU run shows whether it
+  clears.
+- **`goto (3.5, 0.2, -4.3) FAILED` ×4 at 322-335 s:** not failures. These were the pilot's own 4 s carry legs with
+  the server-drives bag, progressing each time; the bag was secured at 338 s. Those legs are quiet now.
+
+**2. Heist-load 3.1 s frame (t=0.1): a harness artifact, not what a player sees.**
+- PO-5 turned rendering off (`set_fast(true)`) right at "Start Heist". No heist frame rendered under the loading
+  screen, so every pipeline compile (78 surface + 49 spec) and anim_driver's first ticks landed on the first frame the
+  harness drew.
+- In play the render loop stays on: HeistLauncher.launch() awaits two physics frames plus the nav sync with the 3D
+  world rendering under MenuFlow's opaque loading screen (CanvasLayer 50), and returns only then.
+- 13d889844 makes the harness do the same, rendering through the loading screen and the first 5 heist frames. A new
+  line reports where the compiles land:
+  `LOAD pipelines compiled under the loading screen N, over the first 5 heist frames M (worst frame X ms)`
+- **Ask:** on the next GPU run, if M > 0, those are compiles a player sees: I'll prewarm them (render the crew and NPC
+  looks under the loading screen; D's CharacterWarm has the API). If M = 0, nothing to do.
 ### (-5) Relayed from ENV B: DB Tense ×3 on trunk r256 (3312326b: cap 1 Longshot + my Longshot timing + the revive fixes) = 1/3
 - Setup: headless auto_loud ×1.0, no doctor bag.
   - s3 PASS at 873 s with 1 player down. s1 custody at 583 s after 3 downs. s2 custody at 664 s after 3 downs.
