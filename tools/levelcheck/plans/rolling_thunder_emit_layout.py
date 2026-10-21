@@ -170,7 +170,7 @@ ROOM_KIT = {
     "C4": "site_tool_store",
     "FG": "site_frame_ground",
     "F1": "site_frame_slab",
-    "X1": "exterior_street",
+    "X1": "exterior_street_rt",
     "X2": "exterior_underpass",
     "X3": "exterior_plaza",
     "X4": "exterior_site",

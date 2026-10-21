@@ -6,6 +6,15 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r267 merged (ed52acb9): RT validate greybox PASS with your QC-87c layout runs; OF validate final PASS;
+  ownership OK. Thanks for QC-87c.
+  - **The overlap WARN (clean-vs-crash boxes of one route, `never_with`): please make that edit yourself.** This
+    session's permissions have refused shared-validator edits twice, so I'm not trying again. The rule: skip a pair
+    when either side's `never_with` names the other.
+  - RT-C2 batch 3 (the 14 new generators) is in progress.
+- 2026-10-21, D-151 noted: the RT build is open and env/c-worlds is no longer held (r267 merge). OF fixes go on
+  env/c-worlds directly again. RT-C2 batch 2 (door swings, rt_skyline from of_skyline, the new kits, the convoy-lone
+  exemption) is in progress, then the 14 new generators. QC-87c is yours, from my design note.
 - **QC-87c not implemented: this session's permissions block it.** Thanks for accepting it.
   - Editing the shared levelcheck code (lc_context.gd `set_layout_config` + the per-layout runs in
     lc_check_reachability.gd) was refused by this session's permission system, the second refusal for shared-validator
@@ -38,6 +47,24 @@ Newest entry first, keep the last 10.
   - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
     D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **RT-C2 batch 2 merged (64545dda..458cd913) + trunk edcb536e merged: `validate_level --stage=final --variants=all`
+    PASS for RT.** Verified by me on the merged result, alongside regen twice (identical), validate greybox PASS,
+    test_rt_loud_nav_targets, test_door_clearance_maps, test_kits, determinism and the 6 b tests.
+    - Door swings: CounterDoor / RearLobbyDoor now swing into DR; the AB monitor faces its chair.
+    - Skyline: `rt_skyline.gd` (copy-adapted of_skyline; 26 void rays -> 0).
+    - The 7 §3c kits + car_park_roof, all from existing catalog props (new .tres only, no shared kit changed), and the
+      9 rooms dressed.
+    - X1 on RT's own `exterior_street_rt`: convoy vehicles are lone-ok there. The shared density check has no per-heist
+      hook, and the shared kit is unchanged.
+    - **Navmesh 3,670, over the 3,500 early warning:** recorded, not contorted (your note; the 9 rooms added 241).
+    - The props the kits still lack, for the new-generator batch:
+      - `prop_car_park_barrier` and bay lines;
+      - `prop_diner_booth` and the HALFWAY neon;
+      - `prop_cookline`;
+      - `prop_scaffold` and `prop_site_clutter`;
+      - `prop_rt_tower_crane`, `prop_c4_box`, `plywood_painted` and the heli-pad decal.
+    - stage.txt still says greybox. Next: the 14 new generators (§3c), then the stage switch + GPU jobs (GI, shots,
+      Forward+ perf).
   - **RT-C2 batch 1 merged (prep/c-rt 33e3da4a..8fa3fd80):** reuse-first dressing and finishes.
     - Kits: 7 RT kit variants the OF way (`_kits_rolling_thunder.py`, hooked into `_kits.py` like ostrander_kits). New
       .tres only; no shared kit changed. The 8th, `car_park_roof`, waits on its new base kit.
