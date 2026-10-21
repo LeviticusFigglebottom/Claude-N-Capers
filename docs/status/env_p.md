@@ -19,7 +19,7 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   summaries). The burn/hole alarms are the harness going loud on purpose (the hoist is loud-only). **One GAME bug, sent to A**: a camera
   disabled via GameplayPrefab.set_enabled(false) still observes. SecurityCamera.can_observe() ignores prefab_enabled, so in throws
   'CameraC9 disabled' at t=2 raised the alarm at t=35.9 (in G1 too). The fix is one line in A's file; it also matters for cameras placed with
-  enabled_at_start=false.
+  enabled_at_start=false. **A fixed it in env/a-core 3dbea1c4** (can_observe requires prefab_enabled; new test_s8_1_disabled_camera_sees_nothing; test_s8_ 31/31).
 - **D-145 GH**: Tense on trunk r251 is 2/3 WIN, median 1. The 4501 loss is fixed by A's e640362d (passes on a-core 441b6870); please merge it.
 
 ## 2026-10-21: GH Tense ×3 on trunk r251 (c04cb710), pointer to A's GPU-box lines
