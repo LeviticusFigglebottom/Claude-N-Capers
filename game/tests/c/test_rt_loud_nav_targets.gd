@@ -4,12 +4,10 @@
 ## spawns, the AssaultEvents markers (turret vans, heli drops, each door breach's room-side approach and the street
 ## outside it), the Tactical points (the sniper perches S1-S4 excepted: police-only posts), the escape / secure zones
 ## and their wait markers, the ladder ends and the lift UsePoints, and per convoy route both ConvoyLayout sets (clean,
-## crash): each vehicle's COVER points (enabled for the test, as the mission does at the stop) and each truck's
-## rear-door marker (the UsePoint / DrillPoint / LootAnchor spot behind its doors).
-## Without movers (A5-02) the layout vehicles have no collision and no per-layout nav region (D-149.1), so this checks
-## the points against the street navmesh only; when the movers and the pre-baked layout regions land, the same test
-## must enable the layout's region pair before the queries. One run per route (the convoy_route rule's weights forced
-## through the launcher's `variant_table` option). Owner: ENV C.
+## crash): each vehicle's COVER points (enabled for the test, as the mission does at the stop), checked here against
+## the open-road navmesh. The trucks' rear steps on each layout's own pre-baked region (D-149.1, RT-C2) are
+## test_rt_convoy_layouts.gd's. One run per route (the convoy_route rule's weights forced through the launcher's
+## `variant_table` option). Owner: ENV C.
 extends TestCase
 
 const HEIST: StringName = &"rolling_thunder"
@@ -180,8 +178,6 @@ func _targets(layouts: Array[Node]) -> Array[Array]:
 		var lid: String = String(st.get_meta(&"convoy_layout"))
 		for tp: Node in st.find_children("*", "TacticalPoint", true, false):
 			out.append(["%s/%s" % [lid, tp.name], (tp as Node3D).global_position])
-		for mk2: Node in st.find_children("*RearDoor", "Marker3D", true, false):
-			out.append(["%s/%s" % [lid, mk2.name], (mk2 as Node3D).global_position])
 	return out
 
 

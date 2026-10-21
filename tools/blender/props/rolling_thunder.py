@@ -5,13 +5,19 @@ Vehicles (one parametric truck family; the length runs along Y, the front at Ble
 Blender +Y = Godot -Z, as the van and the limo; static visual scenes that A5-01 / A5-02's movers can wrap):
 
 * ``veh_armored_truck_cash`` (7.5 m) / ``veh_armored_truck_bullion`` (9 m, the rear-door thermite plate, D-149.2):
-  the Vaultline cash-in-transit truck (A5-01's visual). Cab (the floor 1.2 m up: the cab dismount needs van_exit or a
-  root drop), an armoured box with a brass band, two rear doors on hinge pivots `RearDoorL` / `RearDoorR` (closed),
-  one visible saw point (the lock plate, `SawPoint` at its centre, D-138), the cargo hold inside (a floor, two racks,
-  `LootAnchor`), the rear step with `RearStepUse` on the road behind it. D's clip numbers
-  (rolling_thunder_convoy.py SEAT_REQ): `SeatDriver` / `SeatPassenger` at the cushion (0.36 m over the cab floor),
-  `WheelCentre` 0.40 m ahead / 0.76 m up, cab doors `CabDoorL` / `CabDoorR` from 0.30 m behind to 0.65 m ahead of the
-  seat centre with the sill <= 0.22 m over the cab floor.
+  the Vaultline cash-in-transit truck, split in two prefab visuals on one frame (the full truck's pivot, bottom-centre;
+  RT-C2 convoy: one collider per part, no stacked bodies):
+  * the hold (``veh_armored_truck_*``, A5-01 ``armored_truck``'s visual, Safe slots): `Body` (the armoured box, open at
+    the rear, with the cargo floor and two racks inside: the truck's collision is fitted to it), `Door` (one rear door
+    on its hinge pivot at +X, the leaf toward -X, so Safe's ``rotation.y = -open`` swings it out; the lock plate and,
+    on the bullion truck, the thermite plate ride on it), `DrillPoint` (the one saw point on the lock, -Z into it,
+    D-138), `LootAnchor` (the hold floor), `ThermitePoint` (bullion), `Rear` (the rear step and tail lights, outside
+    `Body`) and the rear axles;
+  * the cab (``veh_armored_cab_*``, A5-02 ``convoy_vehicle``'s visual): `Body` (the cab and the front chassis: the
+    mover's collision is fitted to it), `Seat0` (driver) / `Seat1` (passenger) at the cushion (0.36 m over the cab
+    floor 1.2 m up: the cab dismount needs van_exit or a root drop), `WheelCentre` 0.40 m ahead / 0.76 m up, cab doors
+    `CabDoorL` / `CabDoorR` from 0.30 m behind to 0.65 m ahead of the seat centre with the sill <= 0.22 m over the cab
+    floor (D's clip numbers, rolling_thunder_convoy.py SEAT_REQ), and the front axle.
 * ``veh_mixer_truck``: Reyes's concrete mixer (8 m): cab, chassis, the drum on `Drum` (its pivot on the drum axis, so a
   mover can turn it), the chute and ladder at the rear.
 * ``veh_lorry``: an articulated lorry, tractor unit + box trailer (``ln`` overall, ``w`` wide; the closures' sizes).
@@ -27,16 +33,46 @@ from _pb import Kit, lettering
 TRI_BUDGET = 20000
 _VEH = {"kind": "vehicle", "group": "exterior", "place": "none", "surface": "metal"}
 VARIANTS = {
-    "veh_armored_truck_cash": {"fn": "truck", "style": "armored", "ln": 7.5, "w": 2.5, "h": 3.2, "cat": dict(_VEH)},
+    "veh_armored_truck_cash": {
+        "fn": "truck",
+        "style": "armored",
+        "part": "hold",
+        "ln": 7.5,
+        "w": 2.5,
+        "h": 3.2,
+        "cat": {"prefab": "armored_truck", "kind": "armored_truck", "surface": "metal"},
+    },
     "veh_armored_truck_bullion": {
         "fn": "truck",
         "style": "armored",
+        "part": "hold",
         "ln": 9.0,
         "w": 2.5,
         "h": 3.6,
         "bullion": True,
-        "cat": dict(_VEH),
+        "cat": {"prefab": "armored_truck", "kind": "armored_truck", "surface": "metal"},
     },
+    "veh_armored_cab_cash": {
+        "fn": "truck",
+        "style": "armored",
+        "part": "cab",
+        "ln": 7.5,
+        "w": 2.5,
+        "h": 3.2,
+        "cat": {"prefab": "convoy_vehicle", "kind": "convoy_vehicle", "surface": "metal"},
+    },
+    "veh_armored_cab_bullion": {
+        "fn": "truck",
+        "style": "armored",
+        "part": "cab",
+        "ln": 9.0,
+        "w": 2.5,
+        "h": 3.6,
+        "cat": {"prefab": "convoy_vehicle", "kind": "convoy_vehicle", "surface": "metal"},
+    },
+    # QC-81: the bullion truck's rear-door thermite (A's burn_point visual): only `Fire`, the molten patch on the
+    # thermite plate (BurnPoint shows it while burning); the plate itself rides on the truck's `Door`
+    "prop_thermite_lock": {"fn": "thermite_lock", "cat": {"prefab": "burn_point", "kind": "burn_point"}},
     "veh_mixer_truck": {"fn": "truck", "style": "mixer", "ln": 8.0, "w": 2.5, "h": 3.5, "cat": dict(_VEH)},
     "veh_lorry": {"fn": "truck", "style": "lorry", "ln": 14.0, "w": 2.0, "h": 3.9, "cat": dict(_VEH)},
     "veh_lorry_tm": {"fn": "truck", "style": "tm", "ln": 9.0, "w": 2.5, "h": 3.4, "cat": dict(_VEH)},
@@ -152,6 +188,10 @@ WHEEL_R = 0.5
 # prop_traffic_signal: the pole stands this far -X of the pivot (the footprint centre).
 SIGNAL_POLE = 1.4
 CAB_FLOOR = 1.2
+# the armoured truck: its cab length (the cab visual ends there, the hold starts 0.06 m behind it), and the rear
+# door's lock edge (x): the leaf hangs from the +X hinge, the lock near its free (-X) edge
+ARMORED_CAB = 2.1
+LOCK_X = -0.85
 
 
 def _wheels(run, w: float, ys: list[float], dual: list[bool]) -> None:
@@ -209,7 +249,7 @@ def _cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str) -
 def _cab_markers(k: Kit, w: float, yf: float) -> None:
     """D's driver / passenger clip numbers (SEAT_REQ): seats at the cushion, the wheel, the cab doors (closed)."""
     seat_y = yf + 1.0
-    for name, sx in (("SeatDriver", -1), ("SeatPassenger", 1)):
+    for name, sx in (("Seat0", -1), ("Seat1", 1)):  # driver, passenger (ConvoyVehicle.seats())
         k.empty(name, (sx * (w / 2 - 0.6), seat_y, CAB_FLOOR + 0.36))
     k.empty("WheelCentre", (-(w / 2 - 0.6), seat_y - 0.40, CAB_FLOOR + 0.76))
     for name, sx in (("CabDoorL", -1), ("CabDoorR", 1)):
@@ -222,58 +262,73 @@ def _cab_markers(k: Kit, w: float, yf: float) -> None:
 
 
 def _armored(k: Kit, p: dict, body, w: float, ln: float, h: float, yf: float, yr: float) -> None:
-    cab = 2.1
-    _cab(k, body, w, yf, cab, h - 0.3, "rt_vaultline")
+    """The armoured truck as two prefab visuals on one frame (``part``): the cab (the mover) or the hold (the Safe)."""
+    y0 = yf + ARMORED_CAB + 0.06
+    if p["part"] == "cab":
+        _cab(k, body, w, yf, ARMORED_CAB, h - 0.3, "rt_vaultline")
+        skirt = body.part(bevel=0.03, segments=2)
+        skirt.bx((-w / 2 + 0.05, yf + 0.5, 0.55), (w / 2 - 0.05, yf + ARMORED_CAB, 0.95), "metal_dark")  # chassis
+        body.build()
+        _cab_markers(k, w, yf)
+        run = k.obj("Wheels")
+        _wheels(run.part(bevel=0.0), w, [yf + 1.1], [False])
+        run.build()
+        return
     shell = body.part(bevel=0.03, segments=2)
     trim = body.part(bevel=0.004)
     inner = body.part(bevel=0.0)
-    y0 = yf + cab + 0.06
-    shell.bx((-w / 2, y0, 0.95), (w / 2, yr, h), "rt_vaultline")  # armoured box
-    shell.bx((-w / 2 + 0.05, yf + 0.5, 0.55), (w / 2 - 0.05, yr - 0.2, 0.95), "metal_dark")  # chassis skirt
+    t = 0.06  # the armour: five walls, open at the rear behind the door
+    shell.bx((-w / 2, y0, h - t), (w / 2, yr, h), "rt_vaultline")  # roof
+    shell.bx((-w / 2, y0, 0.95), (w / 2, yr, 0.95 + t), "rt_vaultline")  # floor plate
+    shell.bx((-w / 2, y0, 0.95), (w / 2, y0 + t, h), "rt_vaultline")  # bulkhead
+    for sx in (-1, 1):
+        s0, s1 = sorted((sx * w / 2, sx * (w / 2 - t)))
+        shell.bx((s0, y0, 0.95), (s1, yr, h), "rt_vaultline")  # side walls
+    shell.bx((-w / 2 + 0.05, y0, 0.55), (w / 2 - 0.05, yr - 0.2, 0.95), "metal_dark")  # chassis skirt
     for sx in (-1, 1):
         b0, b1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 + 0.012)))
         trim.bx((b0, y0 + 0.1, 1.55), (b1, yr - 0.1, 1.75), "rt_vaultline_band")  # brass band
         for gy in (y0 + 1.0, y0 + 2.2):  # gun ports
             trim.bx((b0, gy, 2.1), (b1, gy + 0.18, 2.28), "metal_dark")
-        l0, l1 = sorted((sx * (w / 2 - 0.3), sx * (w / 2 - 0.06)))
-        trim.bx((l0, yr + 0.004, 0.62), (l1, yr + 0.03, 0.9), "metal_red")  # tail lights
     trim.bx((-0.5, y0 + 1.0, h), (0.5, y0 + 1.8, h + 0.08), "metal_dark")  # roof hatch (shut)
     trim.bx((-0.6, y0, h), (0.6, y0 + 0.25, h + 0.25), "plastic_black")  # roof beacon box
-    trim.bx((-w / 2 + 0.05, yr - 0.05, 0.4), (w / 2 - 0.05, yr + 0.35, 0.52), "steel")  # rear step
-    # the cargo hold (behind the doors): floor, two racks of shelves
-    inner.bx((-w / 2 + 0.08, y0 + 0.1, 0.95), (w / 2 - 0.08, yr - 0.1, 1.0), "steel_galv")
+    # the cargo hold: the floor, two racks of shelves
+    inner.bx((-w / 2 + t, y0 + t, 0.95 + t), (w / 2 - t, yr - 0.1, 1.0 + t), "steel_galv")
     for sx in (-1, 1):
         for z in (1.4, 1.9, 2.4):
-            r0, r1 = sorted((sx * (w / 2 - 0.08), sx * (w / 2 - 0.55)))
+            r0, r1 = sorted((sx * (w / 2 - t), sx * (w / 2 - 0.55)))
             inner.bx((r0, y0 + 0.4, z), (r1, yr - 0.3, z + 0.03), "steel_galv")
     body.build()
-    _cab_markers(k, w, yf)
-    # the rear doors (hinged on the outer edges, closed), the lock plate between them: the one saw point (D-138)
+    # outside `Body` (the fitted collision stops at the doors): the rear step and the tail lights
+    rear = k.obj("Rear")
+    rp = rear.part(bevel=0.004)
+    rp.bx((-w / 2 + 0.05, yr - 0.05, 0.4), (w / 2 - 0.05, yr + 0.35, 0.52), "steel")  # rear step
+    for sx in (-1, 1):
+        l0, l1 = sorted((sx * (w / 2 - 0.3), sx * (w / 2 - 0.06)))
+        rp.bx((l0, yr + 0.004, 0.62), (l1, yr + 0.03, 0.9), "metal_red")  # tail lights
+    rear.build()
+    # the rear door: Safe's one `Door` pivot (hinge at +X, the leaf toward -X, closed); the lock plate on its free edge
     dh = h - 1.05
-    for name, sx in (("RearDoorL", -1), ("RearDoorR", 1)):
-        piv = k.empty(name, (sx * (w / 2 - 0.03), yr + 0.01, 1.0))
-        dm = k.obj(name + "Mesh", parent=piv)
-        dp = dm.part(bevel=0.006)
-        x0, x1 = sorted((0.0, -sx * (w / 2 - 0.04)))
-        dp.bx((x0, 0.0, 0.0), (x1, 0.06, dh), "rt_vaultline")
-        h0, h1 = sorted((-sx * 0.05, -sx * 0.3))
-        dp.bx((h0, 0.06, dh * 0.45), (h1, 0.09, dh * 0.45 + 0.06), "steel")  # handle
-        dm.build()
-    lock = k.obj("LockPlate")
-    lp = lock.part(bevel=0.004)
-    lp.bx((-0.16, yr + 0.07, 1.45), (0.16, yr + 0.1, 1.95), "steel")
+    hx = w / 2 - 0.03
+    door = k.empty("Door", (hx, yr + 0.01, 1.0))
+    dm = k.obj("DoorMesh", parent=door)
+    dp = dm.part(bevel=0.006)
+    dp.bx((-(w - 0.06), 0.0, 0.0), (0.0, 0.06, dh), "rt_vaultline")  # leaf
+    dp.bx((-(w - 0.06) / 2 - 0.01, 0.06, 0.05), (-(w - 0.06) / 2 + 0.01, 0.065, dh - 0.05), "metal_dark")  # seam
+    lx = LOCK_X - hx
+    dp.bx((lx - 0.16, 0.06, 0.45), (lx + 0.16, 0.09, 0.95), "steel")  # lock plate
+    dp.bx((lx + 0.2, 0.06, 0.62), (lx + 0.45, 0.09, 0.68), "steel")  # handle
     if p.get("bullion"):
-        # D-149.2: the thermite plate on the lock (ground-level burn point, its UsePoint on the rear step)
-        lp.bx((-0.22, yr + 0.1, 1.5), (0.22, yr + 0.115, 1.9), "metal_orange")
-        k.empty("ThermitePoint", (0.0, yr + 0.12, 1.7))
-    lock.build()
-    k.empty("SawPoint", (0.0, yr + 0.1, 1.7))
-    k.empty("LootAnchor", (0.0, (y0 + yr) / 2, 1.0))
-    k.empty("RearStepUse", (0.0, yr + 0.9, 0.0))
-    axles = [yf + 1.1, yr - 1.6] + ([yr - 2.9] if ln > 8.0 else [])
+        # D-149.2: the thermite plate under the lock (the ground-level burn point, its UsePoint on the road)
+        dp.bx((lx - 0.22, 0.06, 0.0), (lx + 0.22, 0.075, 0.38), "metal_orange")
+    dm.build()
+    if p.get("bullion"):
+        k.empty("ThermitePoint", (LOCK_X, yr + 0.08, 1.19))
+    k.empty("DrillPoint", (LOCK_X, yr + 0.1, 1.7), rotation=(0.0, 0.0, math.pi))
+    k.empty("LootAnchor", (0.0, (y0 + yr) / 2, 1.0 + t))
+    axles = [yr - 1.6] + ([yr - 2.9] if ln > 8.0 else [])
     run = k.obj("Wheels")
-    rp = run.part(bevel=0.0)
-    _wheels(rp, w, axles, [False] + [True] * (len(axles) - 1))
+    _wheels(run.part(bevel=0.0), w, axles, [True] * len(axles))
     run.build()
 
 
@@ -492,6 +547,18 @@ def _c4_box(k: Kit, p: dict) -> None:
     for lx in (-0.1, 0.1):
         t.bx((lx - 0.03, 0.15, 0.08), (lx + 0.03, 0.17, 0.14), "steel")  # latches
     body.build()
+
+
+def _thermite_lock(k: Kit, p: dict) -> None:
+    """The burning thermite on a 0.44 x 0.38 m door plate: a molten patch (the pivot at its bottom centre, on the
+    plate's face) with slag runs below and a bright core; Blender +Y is the outside (Godot -Z, off the door)."""
+    fire = k.obj("Fire")
+    f = fire.part(bevel=0.003)
+    f.bx((-0.2, 0.0, 0.03), (0.2, 0.012, 0.36), "emit_ember")  # the burning face
+    f.bx((-0.12, 0.012, 0.1), (0.12, 0.024, 0.3), "emit_fire")  # the core
+    for i, (x, ln) in enumerate(((-0.14, 0.03), (-0.05, 0.0), (0.06, 0.02), (0.15, 0.01))):
+        f.bx((x - 0.012, 0.0, ln), (x + 0.012, 0.016, 0.06 + 0.01 * i), "emit_fire")  # slag runs
+    fire.build()
 
 
 def _barrier_arm(k: Kit, p: dict) -> None:

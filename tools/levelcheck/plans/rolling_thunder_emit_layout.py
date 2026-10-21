@@ -402,9 +402,9 @@ def emit() -> tuple:
         "CONVOY",
         C.convoy_sets(),
         "Dictionary",
-        "ConvoyLayout placeholder sets (G1; TODO(A5-01/02/03), "
-        "TODO(QC-81)) under the convoy_route slots: {route slot: [[clean|crash, [[vehicle, kind, centre, size "
-        "[length, height, width], yaw, rear-door point]]]]}.",
+        "The convoy under each convoy_route slot (RT-C2, A5-01 / A5-02, D-149.1): {route slot: {movers [[node, "
+        "kind, start pivot, yaw, path [[point, in, out]]]], layouts [[clean|crash, [[stop node, kind, pivot, yaw, "
+        "slope, size [length, height, width], cover]]]]}}.",
     )
     s += const(
         "GRAPHS",

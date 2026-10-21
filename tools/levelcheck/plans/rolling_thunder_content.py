@@ -1,8 +1,8 @@
 # Rolling Thunder: per-item map content for the G1 greybox (RT-C1): the door lock table, furniture / cover boxes,
 # ENV A's gameplay prefabs, NPC spawns, patrol graphs, tactical points (police entries, rappels, perches, anchors,
 # flanks, COVER),
-# holdout / objective markers, every VariantSlot's content, the four ConvoyLayout placeholder sets, preplan points and
-# review cameras. Owner: ENV C. Imported by rolling_thunder_emit_layout.py. Copy-adapted from
+# holdout / objective markers, every VariantSlot's content, the convoy (movers, paths, the four layouts), preplan
+# points and review cameras. Owner: ENV C. Imported by rolling_thunder_emit_layout.py. Copy-adapted from
 # ostrander_federal_content.py (D-147), but every position here is ABSOLUTE (site x, y, z), not floor-relative.
 #
 # Row formats (the emitted layout's formats, read by rt_gameplay.gd build_item()):
@@ -12,9 +12,10 @@
 #   ["marker", name, pos, yaw, objective_tag, todo]
 #   ["tac", name, KIND, pos, yaw, tags, breachable]
 # yaw: the node's front (-Z) faces 0 N, 90 W, 180 S, -90 E.
-# G1 placeholders (D-075 / D-149, doc "Truck targets"): the trucks, the escort cars and the mixer are greybox boxes in
-# the ConvoyLayout sets with TODO(A5-01) / TODO(A5-02) markers; the C4 boxes are markers (TODO(A5-03)); the bullion
-# rear-door thermite point is a marker (TODO(QC-81)). The design source is docs/design/heists/rolling_thunder.md.
+# RT-C2: the convoy is ENV A's movers (A5-02) carrying the trucks (A5-01, the bullion rear-door burn_point QC-81) with
+# a `<Veh>Stop` marker per layout; the mixer is still a static box (TODO(A5-02)); the C4 boxes are markers
+# (TODO(A5-03)).
+# The design source is docs/design/heists/rolling_thunder.md.
 import math
 import os
 import sys
@@ -1169,52 +1170,96 @@ def _support_line(x_lo: float, x_hi: float) -> Tuple[float, float]:
     return s_c, s_c * ST.RAMP_X[0]
 
 
-def convoy_sets() -> Dict[str, List[list]]:
-    """{route slot: [[mode, [vehicle rows]]]}: [name, kind, base centre [x, y, z], size [len, h, w], yaw (deg about +y,
-    0 = the vehicle's length along +z), rear point [x, y, z], slope (the support line's -dy/dx along +x: the body is
-    tilted onto it), never_with (the other layout's vehicles)] (rolling_thunder_convoy.LAYOUTS). Clean and crash
-    never stand at once (the stop picks one), so each body names the other set's in `never_with`."""
-    height = {"car": 1.5, "cash": 3.2, "bullion": 3.6}
-    out: Dict[str, List[list]] = {"route_north": [], "route_east": []}
-    names = {
-        key: ["%s%s" % (key.split("_")[1].capitalize(), v[0].capitalize()) for v in vs]
-        for key, vs in CV.LAYOUTS.items()
-    }
-    for key, vs in CV.LAYOUTS.items():
-        route, mode = key.split("_")
-        other = names["%s_%s" % (route, "crash" if mode == "clean" else "clean")]
-        rows = []
-        for v, nm in zip(vs, names[key]):
-            _n, kind, a0, a1, lat, yaw = v
-            c = (a0 + a1) / 2.0
-            ln, wd = CV.LEN[kind], CV.WIDTH[kind]
-            slope = 0.0
-            if route == "north":
-                x, z, y = lat, c, 0.0
-                ry = float(yaw)
-                rear = [lat, 0.0, min(a0, a1) - 0.6]  # rear doors north (away from the stop)
-            else:
-                x, z = c, lat
-                ry = 90.0 + float(yaw)
-                ext = ln / 2.0 * math.cos(math.radians(yaw)) + wd / 2.0 * abs(math.sin(math.radians(yaw)))
-                slope, y0 = _support_line(x - ext, x + ext)
-                y = y0 - slope * x
-                rear = [max(a0, a1) + 0.6, 0.0, lat]  # rear doors east
-                rear[1] = r3(ST.ramp_y(rear[0]))
-            rows.append(
-                [
-                    nm,
-                    kind,
-                    [r3(x), r3(y), r3(z)],
-                    [ln, height[kind], wd],
-                    r3(ry),
-                    [r3(q) for q in rear],
-                    round(slope, 5),
-                    other,
-                    convoy_cover(nm, x, z, ry, wd, route),
-                ]
-            )
-        out["route_" + route].append([mode, rows])
+VEH_NODE = {"lead": "Lead", "T1": "T1", "T2": "T2", "T3": "T3", "rear": "Rear"}
+VEH_HEIGHT = {"car": 1.5, "cash": 3.45, "bullion": 3.85}   # the art's tops (roof beacon), for the nav obstructions
+LEAD_BEND = 14.0           # the lead car's path leaves the lane this far (along the arm) before its crash stop
+
+
+def _ry(route: str, yaw: float) -> float:
+    """Godot yaw of a vehicle whose cab (+Z) points at the junction, from a LAYOUTS yaw (`corners` convention)."""
+    return r3(float(yaw)) if route == "north" else r3(-90.0 - float(yaw))
+
+
+def _stop_base(route: str, v: tuple) -> Tuple[list, float]:
+    """A vehicle's pivot (bottom-centre) on the road and the slope (-dy/dx) of the line it rests on (east ramp)."""
+    _n, kind, a0, a1, lat, yaw = v
+    c = (a0 + a1) / 2.0
+    if route == "north":
+        return [r3(lat), 0.0, r3(c)], 0.0
+    ln, wd = CV.LEN[kind], CV.WIDTH[kind]
+    ext = ln / 2.0 * math.cos(math.radians(yaw)) + wd / 2.0 * abs(math.sin(math.radians(yaw)))
+    slope, y0 = _support_line(c - ext, c + ext)
+    return [r3(c), r3(y0 - slope * c), r3(lat)], round(slope, 5)
+
+
+def _lane_pt(route: str, along: float, lat: float) -> list:
+    if route == "north":
+        return [r3(lat), 0.0, r3(along)]
+    y = -5.0 if along >= ST.RAMP_X[1] else (0.0 if along <= ST.RAMP_X[0] else ST.ramp_y(along))
+    return [r3(along), r3(y), r3(lat)]
+
+
+def _path(route: str, start: tuple) -> List[list]:
+    """A mover's drive-in Path3D (world): [[point, in handle, out handle]] from its start pivot along the convoy lane
+    (the trench floor, the ramp) past the lead stops into the junction; the lead car's bends onto its crash stop
+    (the clean stop's nearest curve point stays on the straight lane)."""
+    nm, _kind, a0, a1, lat, _yaw = start
+    sgn = -1.0 if route == "north" else 1.0          # along the arm, away from the junction
+    pts = [[_lane_pt(route, (a0 + a1) / 2.0, lat), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]
+    if route == "east":
+        for x in (ST.RAMP_X[1], ST.RAMP_X[0]):       # the ramp's ends (the trench floor, the crest)
+            pts.append([_lane_pt(route, x, lat), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
+    if nm != "lead":
+        pts.append([_lane_pt(route, CV.PATH_END[route], lat), [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
+        return pts
+    lead = CV.CRASH_LEAD_VEH[route + "_crash"]
+    base, _s = _stop_base(route, lead)
+    t = math.radians(_ry(route, lead[5]))
+    fwd = (math.sin(t), math.cos(t))
+    c_along = (lead[2] + lead[3]) / 2.0
+    bend = _lane_pt(route, c_along + sgn * LEAD_BEND, lat)
+    out_h = [0.0, 0.0, 4.0] if route == "north" else [-4.0, 0.0, 0.0]
+    pts.append([bend, [-v for v in out_h], out_h])
+    pts.append([base, [r3(-fwd[0] * 3.0), 0.0, r3(-fwd[1] * 3.0)], [r3(fwd[0] * 2.0), 0.0, r3(fwd[1] * 2.0)]])
+    pts.append([[r3(base[0] + fwd[0] * 4.0), base[1], r3(base[2] + fwd[1] * 4.0)], [0.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0]])
+    return pts
+
+
+def convoy_sets() -> Dict[str, dict]:
+    """{route slot: {movers, layouts}} (rolling_thunder_convoy LAYOUTS / CRASH_LEAD_VEH / starts, RT-C2): movers:
+    [[node, kind, start pivot, yaw, path]] (A5-02 ConvoyVehicle at its path's start, a truck carrying its A5-01
+    ArmoredTruck); layouts: [[mode, [[stop node, kind, pivot, yaw, slope, size [length, height, width], cover
+    rows]]]] (the `<Veh>Stop` markers at the mover pivot, bottom-centre, cab +Z; slope = the east ramp's -dy/dx the
+    marker is tilted onto; `RearStop2` the trucks_2 queue end; cover rows [name, pos, yaw] beside each vehicle, not
+    beside RearStop2)."""
+    out: Dict[str, dict] = {}
+    for route in ("north", "east"):
+        movers = []
+        for v in CV.starts(route):
+            base, _s = _stop_base(route, v)
+            base[1] = CV.LANE_Y[route]
+            movers.append([VEH_NODE[v[0]], v[1], base, _ry(route, 0.0), _path(route, v)])
+        layouts = []
+        for mode in ("clean", "crash"):
+            key = "%s_%s" % (route, mode)
+            rows = []
+            for v in CV.stops(key):
+                kind = v[1]
+                base, slope = _stop_base(route, v)
+                ry = _ry(route, v[5])
+                if v[0] == "rear2":
+                    nm, cover = "RearStop2", []
+                else:
+                    nm = VEH_NODE[v[0]] + "Stop"
+                    cover = convoy_cover("%s%s" % (mode.capitalize(), VEH_NODE[v[0]]), base[0], base[2], ry,
+                                         CV.WIDTH[kind], route)
+                rows.append([nm, kind, base, ry, slope, [CV.LEN[kind], VEH_HEIGHT[kind], CV.WIDTH[kind]], cover])
+            layouts.append([mode, rows])
+        out["route_" + route] = {
+            "movers": movers,
+            "layouts": layouts,
+        }
     return out
 
 
