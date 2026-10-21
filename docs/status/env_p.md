@@ -12,7 +12,7 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   | 3 keycard (manager shouted from the WC hide, tied unseen) | haz_zd | t=357.2 | same |
   | 4 code (pc_exec hack) | haz_zd | t=466.4 | same |
   | 5 vault (gate, lasers, code, time lock in CQ's corner) | haz_zd | t=1483.8 | same |
-  | 6 bags | partial: bags 1-2 VT → cash lift car unseen, and the lift up to LD (debug `--test=ghost6`, a SHORTCUT start at CQ) | 176 s / 114 s per bag | ghost6_j_r263/run_excerpt.txt |
+  | 6 bags | partial: bags 1-2 VT → cash lift → staged by LD's personnel door unseen (2/6, t=398; debug `--test=ghost6`, a SHORTCUT start at CQ) | 176 s / 114 s per bag | ghost6_l_r263/run_excerpt.txt |
   | 7 lift, throw, escape | not reached yet | | |
 
   No game/AI bug found in steps 1-6 so far: every failure was harness timing or route choice. Minor content notes for C: CashLift's car count

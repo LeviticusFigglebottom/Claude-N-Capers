@@ -1629,11 +1629,11 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 			return await _go(_of(Vector3(x, OF_FFL[ffl_i], OF_CORRIDOR_Z)), 0.6, 240.0)
 		if _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
 			# Same-floor guards count too (r255c: rover_gallery came up SA, dropped out of the count the moment he
-			# stepped onto the Executive floor, and met the pilot leaving E3 at 2 m). From LD after staging (step 6):
-			# 12 m, and at most 60 s (ghost6_l: the posted guard at (19.5, 0, 1.1), 11 m off behind walls, held a 25 m
-			# wait while rover_hall's next LD check came due).
+			# stepped onto the Executive floor, and met the pilot leaving E3 at 2 m). From LD after staging (step 6): no
+			# same-floor radius (walkers within 15 m and posts with LOS still count) and at most 60 s (ghost6_l: the posted
+			# guard at (19.5, 0, 1.1), 7 m off behind walls, held a 25 m wait until rover_hall's LD check found the pilot).
 			var from_ld: bool = cur == 1 and ffl_i == 0
-			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], true, 12.0 if from_ld else 25.0, 60.0 if from_ld else 180.0)
+			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], true, 0.0 if from_ld else 25.0, 60.0 if from_ld else 180.0)
 		# Out to this floor's corridor first: Po5Pilot crosses an open door only toward a target beyond its plane (a
 		# room-to-core walk from SR has both behind the same wall and flipped in SecurityDoor, G1 run 2).
 		if cur != 4 and not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[cur], OF_CORRIDOR_Z)), 0.6, 240.0):
