@@ -3,7 +3,82 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 14:45; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 17:40; send_message to you is refused, so read this)
+-17. **New: the screen-text walk now covers every heist; all clean.**
+     - **The test:** `test_of_screens_text` is renamed to **`test_heist_screens_text.gd`** (8 tests). It loops over
+       `HeistCatalog.ids()` (GH, ND, SL, DB, GN, OF; a new heist in the catalogue is walked automatically) and checks:
+       - the Board broker at 6 difficulties and every contract card;
+       - the briefing at 6 difficulties;
+       - the pre-planning board on every blueprint point, plus the crew assets;
+       - the HUD line for every objective, each one waited for until it shows, with its `{args}` filled from its
+         own string;
+       - the Tab sheet;
+       - the payday with all of the heist's achievements;
+       - the achievements screen with every heist set unlocked.
+     - **Result:** green on trunk r263, **no string problems in any heist**.
+     - **Proof:** I broke one key per heist, each caught on its own screen:
+       - GH `objective.glasshouse.keycard`: HUD line and Tab sheet;
+       - ND `ui.preplan.point.pp_drop_quay`: that preplan point;
+       - SL `heist.shadow_ledger.briefing`: briefing d0-d5;
+       - DB `achievement.db_all_hands.name`: payday and achievements screen;
+       - GN `heist.gallery_night.name`: broker d0-d5 and briefing.
+
+       The file was restored afterwards (no diff).
+-16. **Your two questions, answered.**
+     1. **What the OF string sweep found: nothing.** I found no missing key, raw id, `{placeholder}` or dev tag on
+        any OF screen: the Board broker / cards, the briefing at 6 difficulties, the preplan board on all 14 points,
+        the HUD line for every objective, the Tab sheet, the payday with every OF achievement, and the achievements
+        screen. The walk is `test_of_screens_text` (item -14). It is proven by breaking two keys on purpose, which it
+        caught.
+     2. **D-148 regression on trunk b0bd47a0: green, nothing out of reach.** Each suite ran once:
+        - payday / progression: `of_payday_e2e` 7, `payout_calculator` 20, `xp_curve` 4, `heist_freshness` 14,
+          `payday_sum` 2, `payday_cards` 10, `ui_payday` 14, `ui_progression` 3, `difficulty_unlock` 3;
+        - menu reach: `menu_reach` 2, `reach_today` 5, `heist_readiness` 9;
+        - briefing: `briefing` 38, `briefing_cap` 3, `briefing_intel` 14.
+
+        **New `test_d148_pace.gd` (3 tests):**
+        - **Every heist's first-clear level is pinned to progression_pace.md** at all 6 difficulties (L2...L19 for
+          GH; L4...L22 for ND / SL / DB / GN; L6...L25 for OF), and it asserts every offered heist is pinned.
+        - **Every level gate is reachable:** 36 weapons + 7 armors (max L45), the Board's L80 Lethal / Cataclysm
+          gate and Notoriety's L100 all sit inside 0-100, with a finite XP cost (23.28 M to L100), and each is
+          reached at its XP.
+        - **A new player reaches every item unlock within 40 clears** (Routine, Tense, Hazardous rotations, then
+          Brutal; the pace doc says ~32).
+
+        The only gate that moved is the one already flagged: Board L80 now takes ~230 Brutal clears (it was 131). It
+        is still the PO's call, kept at 80; B suggests 70.
+-15. **New: AH values on paper, `game/content/docs/ah_b1_values.md`** (the same shape as RT-B1, for C's generator).
+     - **What's in it:** HeistDef values; variant rows with per-difficulty weights (guard posts 1 / 2 / 3, crowd
+       12-20, dance clusters 4-6, safe bags, lasers, camera operator); the 6 rare events with 4 surprise strings;
+       the pre-planning block (**every AH asset already exists, nothing to build**); briefing steps; the
+       `heist_tag_characters[&"afterhours"]` rows from the doc's roster; 15 point labels; ~28 voice lines; and 6
+       achievements on existing condition keys.
+     - **Corrections found** (all on paper; nothing in data):
+       (a) **base_payout is $40k** (D-143, pinned by `test_p5_catalogue`), not the doc's and my plan's $75k.
+       (b) The doc's HeistDef `escape_options [van, walk]` contradicts its own Escape section and D-075: should be
+           `[van]` (C).
+       (c) The doc's loot table still has the pre-D-120 values (C).
+       (d) `ah_last_call` ("safe opened by code") needs the AH mission to record `open_method` on `[safe]`, as
+           Glasshouse's does (C).
+-14. **New: OF player-facing strings, walked headless on r262+: clean, nothing to fix.**
+     - **New test** `tests/b/test_of_screens_text.gd` (7 tests). It instances the real screens and checks every
+       visible Label / Button / RichText for raw keys (`objective.` / `ui.` / `item.` / `asset.` / `achievement.` ...),
+       `{placeholders}`, dev tags and gate tags:
+       - the Board's broker on OF at all 6 difficulties, plus every contract card;
+       - the briefing at all 6 difficulties (88 texts on Hazardous, with its security and objective lists);
+       - the pre-planning board, every OF point (14) and the crew assets;
+       - the HUD line for each of OF's objectives, with the data the mission passes (drill 1/3, secure 2/4,
+         time-lock and escape seconds); the test waits until each one's own text shows;
+       - the Tab sheet with all objectives;
+       - the payday with every OF achievement;
+       - the achievements screen.
+     - **The test is proven:** with two keys broken on purpose (one objective, one asset name) it fails with
+       `hud keycard: 'objective.ostrander_federal.keycard'` and
+       `preplan board: 'item.asset.intel_code_pc.name - $8,000, 2 favors'`. Restored afterwards.
+     - **Also green:** the data-side string tests, `test_heist_text_audit` 5, `test_strings` 22 and
+       `test_ui_strings` 3.
+     - **RT allow-list:** noted as ruled "after the OF done check". The two exact lines are in `rt_b1_values.md` §10.
+     - **Next:** the AH values on paper.
 -13. **New: your payday nit ("Oxblood Her..."), fixed on r262.**
      - **Fix:** an achievement's "REWARD <name>" no longer ellipsises. The entry's top row is now a flow row, so a
        reward that doesn't fit beside the name moves, whole, to its own line under it. Splitting "Oxblood / Herald"

@@ -81,3 +81,45 @@ as low priority and does not hold the start:
 - **OF-X4 (P): CLOSED** (P c7c4414d live look 0 stuck + C headless regression). Was: a longer windowed PO-7 look with NPCs firing (flash_check.tscn saw no shots in 10 s; the regression test covers it).
 - Parked: D-132 D1 (PO real-GPU bench, README_bench.md).
 **Verdict: the D-115 gate is met for Ostrander Federal (D-136). Kickoff sent 2026-10-17.**
+
+## Ostrander Federal done assessment, DRAFT (2026-10-21 16:50, LEAD; trunk b0bd47a0 = round 264)
+Measured against D-115's six criteria, with D-140 / D-145 / D-146 / D-150 applied.
+1. **Content against the design doc: MET.**
+   - test_of_mission 20/20.
+   - The headless loud pilot completes every loud objective, including the hoist cycle. Bagged loot reaches the secure
+     zone, then the escape.
+   - P's loud interact sweep found no failures across the 6 usable interactables, and the rest are gated by design.
+   - BondSafe verified (A, bond_safe -> 2).
+2. **Final art (G2): MET.**
+   - Stage final since round 252; GI re-baked on the PO's GPU; final 34 shots.
+   - Burnt scorch accepted (GPU-16); the drill tripod moved off the cut.
+   - validate_level OF final PASS (round 263, after C's thin-partition nav fix a6d88e84).
+   - D-146: judged on Forward+ (addendum 6); loud is about 2-2.7k draws on the GPU box.
+3. **E2E on the real menus: loud MET headless; windowed Cataclysm proof OPEN.**
+   - Headless loud: Cataclysm 1037 PASS (escape t=1329, 6 cash via the hoist; capture on env/a-core d9dddd87) and
+     Routine 1037 PASS (t=1308).
+   - The Cataclysm 2024 and 4711 losses are tase / Phantom custody: the accepted harness limit (D-148.4). The cuff loop
+     the 2024 seed exposed is fixed (round 264).
+   - Windowed: GPU-19 reached the vault, the president safe and 2 cash secured before the pilot fixes landed.
+   - **GPU-20c (2026-10-21, PO's RX 9070 XT, Forward+ 1920x1080, A 0cb810a5, harness cap 2400): FIRST FULL WINDOWED
+     PASS**, from the menus through the escape van to payday: $1,157,728 in 22:38. GPU-20b on the same tree also got
+     bond_safe and gold. **Gate (b) MET.**
+   - Follow-ups (not blocking):
+     - the AI crew killed 6 civilians (A), and no cleaner cost was charged (B);
+     - hitches build up during the long carry phase: 0.82 % overall vs 0.046 % in GPU-20b (A, possibly C).
+   - Item 3 is MET (loud).
+4. **ENV P windowed real-input pass: OPEN on the ghost line.**
+   - The G2 §7 pass is 10/10; the interact sweep had no failures.
+   - Ghost line at Hazardous (D-150): steps 1-4 PASS; step 5+ in progress.
+5. **Briefing, strings, HUD: MET.** B's string sweep is running as a final check.
+   - test_of_payday_e2e 7/7 with D-148 XP; the co-op payday is the same for every slot.
+   - The HUD passes at 3440x1440, 16:10 and 1080p; the boss panel no longer covers markers (round 260); payday reward
+     names wrap (round 263).
+6. **Assault events: MET.** The Turret Van, Commander Brandt / Aegis and the Longshot heli are seen in every Cataclysm run.
+
+Also confirmed:
+- D's anim coverage found 0 flags on loud Cataclysm, stealth Hazardous and loud Routine.
+- D-145 Tense: GH 3/3, DB 2/3 accepted.
+- GPU-18: the r256 frame times were fine; GPU-17's "regression" was other load on the box.
+
+**Verdict: not yet.** One gate remains: (a) P's Hazardous ghost line, now at step 6 (steps 1-5 pass). (b) is met by GPU-20c.
