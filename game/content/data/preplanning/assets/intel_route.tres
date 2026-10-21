@@ -10,3 +10,4 @@ cost = 1500
 favors = 1
 reveals = Array[StringName]([&"convoy_route", &"marshal_walk"])
 tags = Array[StringName]([&"stealth"])
+heists = Array[StringName]([&"rolling_thunder"])

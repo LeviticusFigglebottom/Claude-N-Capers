@@ -29,7 +29,7 @@ Brutal 572, Lethal 498, Cataclysm 408 (pre-D-148: 3,097 / 1,548 / 619 / 310 / 27
 ### Level-locked unlocks re-checked against the new pace
 
 Realistic path: one rotation each on Routine, Tense, Hazardous, then Brutal (Lethal / Cataclysm are board-gated at
-level 80, `board_tweak.difficulty_min_level`), Cataclysm from level 80. Clears to reach each gate:
+level 70 since D-151, `board_tweak.difficulty_min_level`), Cataclysm from level 70. Clears to reach each gate:
 
 | Level | What it gates | Clears, D-148 | Clears, pre-D-148 |
 |---|---|---|---|
@@ -38,15 +38,15 @@ level 80, `board_tweak.difficulty_min_level`), Cataclysm from level 80. Clears t
 | 30 | heavy armor, late weapons (21-30) | 16 | 13 |
 | 45 | **every item unlock_level** (max 45) | 32 | 24 |
 | 60 | (no gate) | 76 | 47 |
-| 70 | (no gate) | 135 | 79 |
-| 80 | **Lethal + Cataclysm on the board** | **230** | 131 |
+| 70 | **Lethal + Cataclysm on the board (D-151)** | **135** | 79 |
+| 80 | (no gate since D-151) | 230 | 131 |
 | 100 | max | 484 | 268 |
 
 - Item unlocks (all <= 45) stay inside the first ~32 clears (was ~24): no data change needed.
-- **The level-80 board gate is the one to decide on.** At ~230 Brutal clears it is ~1.75x later than before.
-  Options for the PO: keep 80 (Lethal is end-game), or lower
-  it to **60** (76 clears, about where 80 was reached before D-148: 131) or **70** (135 clears = the old pace to 80).
-  B recommends 70: it keeps the old time-to-Lethal. Not changed (PO call).
+- **D-151 (PO): the Lethal / Cataclysm board gate is level 70** (`board_tweak.tres difficulty_min_level`
+  [0, 0, 0, 0, 70, 70]). At 80 it would have taken ~230 Brutal clears under D-148 (~1.75x the old pace); 70 is
+  reached in ~135 clears, about the old pace to 80 (131). Pinned by `tests/b/test_d148_pace.gd`
+  (`test_d151_lethal_gate_is_70_and_keeps_the_old_time_to_lethal`) and `test_board.gd`.
 
 ## How XP worked before D-148
 

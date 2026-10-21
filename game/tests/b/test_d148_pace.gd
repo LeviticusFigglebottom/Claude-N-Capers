@@ -45,7 +45,7 @@ func test_no_level_gate_is_out_of_reach() -> void:
 		gates["weapon %s" % w.get("id")] = int(w.get("unlock_level"))
 	for a: Resource in ContentDB.all_armors():
 		gates["armor %s" % a.get("id")] = int(a.get("unlock_level"))
-	var board: Array = (load("res://content/data/board/board_tweak.tres") as Resource).get("difficulty_min_level")
+	var board: Array = BoardTweak.load_default().difficulty_min_level
 	for d: int in range(board.size()):
 		gates["board d%d" % d] = int(board[d])
 	gates["notoriety"] = int((load("res://content/data/tweak/notoriety.tres") as Resource).get("required_level"))
@@ -60,7 +60,7 @@ func test_no_level_gate_is_out_of_reach() -> void:
 
 
 ## The item gates (<= 45) sit inside a new player's first rotations: Routine, Tense, Hazardous, then Brutal clears
-## (pace doc: L45 after ~32 clears). Lethal+ opens from the Board's level 80 (~230 Brutal clears; PO call kept).
+## (pace doc: L45 after ~32 clears). Lethal+ opens from the Board's level 70 (D-151; ~135 clears, test below).
 func test_item_gates_open_inside_the_early_rotations() -> void:
 	var item_max: int = 0
 	for w: Resource in ContentDB.all_weapons():
@@ -98,3 +98,24 @@ func _result(h: StringName, d: int) -> Dictionary:
 		crew.append({"slot": slot, "is_ai": slot > 0, "kills": 0, "downs": 0, "civilians_killed": 0, "in_custody": false})
 	return {"heist_id": h, "success": true, "stealth": bool(STEALTH.get(h, true)), "time_s": 900.0, "difficulty": d,
 		"contract_pay": 0, "loot": loot, "small_loot": 0, "crew": crew, "pagers_answered": 0}
+
+
+## D-151: the Board's Lethal / Cataclysm gate is level 70, reached on the realistic path (one rotation each on
+## Routine, Tense and Hazardous, then Brutal) in about the clears the old pace took to level 80 (pace doc: 135 vs
+## 131 pre-D-148; 230 at 80 under D-148).
+func test_d151_lethal_gate_is_70_and_keeps_the_old_time_to_lethal() -> void:
+	var board: Array = BoardTweak.load_default().difficulty_min_level
+	assert_eq(int(board[Enums.Difficulty.LETHAL]), 70, "D-151 Lethal gate")
+	assert_eq(int(board[Enums.Difficulty.CATACLYSM]), 70, "D-151 Cataclysm gate")
+	var p: PlayerProfile = PlayerProfile.new_default()
+	var clears: int = 0
+	for d: int in [0, 1, 2]:
+		for h: StringName in HeistCatalog.ids():
+			_clear(p, h, d)
+			clears += 1
+	while p.level < 70 and clears < 400:
+		for h: StringName in HeistCatalog.ids():
+			_clear(p, h, Enums.Difficulty.BRUTAL)
+			clears += 1
+	assert_true(p.level >= 70, "L70 reached")
+	assert_true(clears >= 110 and clears <= 160, "L70 in %d clears (pace doc ~135; the old pace took 131 to L80)" % clears)

@@ -10,7 +10,8 @@ const BAGS: Dictionary = {&"glasshouse": 2, &"night_deposit": 4, &"shadow_ledger
 	&"gallery_night": 2, &"ostrander_federal": 6}
 const STEALTH: Dictionary = {&"dockside_burn": false}
 const DIFF_NAMES: Array[String] = ["routine", "tense", "hazardous", "brutal", "lethal", "cataclysm"]
-## Levels that gate something: armor / weapon / mask unlock_level values (max 45) and the board's Lethal+ gate (80).
+## Levels that gate something: armor / weapon / mask unlock_level values (max 45) and the board's Lethal+ gate
+## (70 since D-151; 80 is kept for the comparison).
 const MILESTONES: Array[int] = [10, 20, 30, 45, 60, 70, 80, 100]
 
 var _curve: XpCurveTweak = null

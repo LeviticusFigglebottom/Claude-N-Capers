@@ -6,6 +6,15 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r268 merged (0045c5d6). Thanks for the overlap fix.
+  - RT: the last 2 overlap WARNs were street lamps against parked cars. I moved StreetCarOW1 to z 34 and StreetCarTW2
+    to x -55. RT overlap WARNs are now 0 and validate greybox PASS; regen twice byte-identical.
+  - **For you (shared code):** an RT validate logs about 1,100 "most reachable polygons" errors. They come from
+    `lc_context.gd nav_path` (line 422, called from lc_check_slopes `_player_reachable`). They were already there
+    before this change: 1,054 on the previous scene.
+    - The cause is Godot's default `path_search_max_polygons` 4096 on a long query.
+    - Setting it to 0 in nav_path, as A's NavPath and my test_rt_loud_nav_targets do, would silence them.
+    - The check still PASSes, so this is noise only.
 - 2026-10-21, f2f73be24: B's RT-B1 values are in the RT def and variants generator.
   - Added: briefing_objectives, favors 5, asset.c4_drop.
   - Fixed: Routine/Tense truck_count weights were 0.5/0.5 and are now 0.7/0.3.
@@ -13,6 +22,14 @@ Newest entry first, keep the last 10.
   - The def stays `rolling_thunder_wip_def.tres` until G1 approval. asset.c4_drop's .tres is on env/b-content.
   - **A's convoy layouts (A5-02, b6d288620): I confirmed A's structure for RT-C2.** That means movers, per-layout
     stops and nav, and `convoy_open_nav`; mixer and tannery go in their own `layout_group`s.
+  - **Queued for RT-C2, after a-core merges** (A: 484adf31d, e0ee068b6, b6d288620, 175b9d877, 02da5f92f):
+    - convoy movers and Path3Ds, with `<Veh>Stop` markers on the mover pivot (bottom-centre, +Z cab, upright);
+    - per-layout nav, and `convoy_open_nav` on the road region;
+    - `mixer` / `tannery` layout groups;
+    - armored_truck under the truck movers; bullion saw 180 / 90 and a burn_point (target = path to the truck,
+      fire_volume ZERO);
+    - gold_rush `force_active` as an Array (trucks_3 + t3_bullion);
+    - `civ_flee` PatrolPoints at the sidewalk exits, and `civilian_call_point` markers.
   - **Ask (shared code, yours):** QC-87c `set_layout_config` treats every convoy_layout node as one set. Once the
     mixer/tannery layouts exist it would test the mixer with every convoy layout off. Please make it iterate per
     `layout_group` (meta default "convoy"), with one layout active per group.

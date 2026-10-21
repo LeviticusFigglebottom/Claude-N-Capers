@@ -11,4 +11,5 @@ favors = 1
 max_count = 1
 point_ids = Array[StringName]([&"pp_signals"])
 tags = Array[StringName]([&"stealth"])
+heists = Array[StringName]([&"rolling_thunder"])
 effect = &"force_variant"

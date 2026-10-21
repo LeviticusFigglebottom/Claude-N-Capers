@@ -9,7 +9,7 @@
 ## Federal by day, written to _review/of_d1_cast/): of_tellers, of_officers, of_customers, of_skirts (the
 ## skirt looks in walk / run / cower, front and side: <pool>_clips.png, no lineup), of_guards (Halden a-j +
 ## npc_bank_guard + the bodyguard), of_vip; RT-D1 (written to _review/rt_d1_cast/): rt_vaultline (crew a-f, the route
-## marshal, and the patrol officer and Halden officer he must not read as); D-145.3: d145_police (written to
+## marshal, and the patrol officer and Halden officer he must not read as), rt_street_swaps (D-149 swaps); D-145.3: d145_police (written to
 ## _review/d145_police/: the armoured police looks next to their Routine/Tense duty looks; d145_specials,
 ## d145_factions the same for the specials and the faction TAC Lights).
 ## Writes to res://assets/characters/_review/d130_cast/ (or the pool's OUT_DIRS / of_ directory):
@@ -30,6 +30,7 @@ const OUT_DIRS: Dictionary = {
 	"of_guards": "res://assets/characters/_review/of_d1_cast/",
 	"of_vip": "res://assets/characters/_review/of_d1_cast/",
 	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
+	"rt_street_swaps": "res://assets/characters/_review/rt_d1_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
 	"d145_factions": "res://assets/characters/_review/d145_police/",
@@ -112,6 +113,11 @@ const POOLS: Dictionary = {
 		"char_armored_car_crew", "char_armored_car_crew_b", "char_armored_car_crew_c", "char_armored_car_crew_d",
 		"char_armored_car_crew_e", "char_armored_car_crew_f", "char_armored_car_marshal", "char_patrol_officer",
 		"char_security_officer",
+	],
+	# D-149: the three finish-only street swaps, each beside the look it reuses the meshes of (a / g, b / h, f / i).
+	"rt_street_swaps": [
+		"char_street_pedestrian", "char_street_pedestrian_g", "char_street_pedestrian_b", "char_street_pedestrian_h",
+		"char_street_pedestrian_f", "char_street_pedestrian_i",
 	],
 }
 const COLS: int = 9

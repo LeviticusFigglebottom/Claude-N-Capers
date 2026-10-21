@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 15 |
+| furniture_logic | PASS | 0 | 2 |
 
 ## contract_nodes: Contract nodes
 
@@ -139,12 +139,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 443694 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 443678 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3670 polygons, cell 0.10/0.10 m
+- navmesh: 3671 polygons, cell 0.10/0.10 m
 - 199 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -184,7 +184,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomFG` | 745 | 745 | 100% |
 | `Rooms/RoomF1` | 832 | 832 | 100% |
 | `Rooms/RoomX4` | 723 | 723 | 100% |
-| `Rooms/RoomX1` | 836 | 836 | 100% |
+| `Rooms/RoomX1` | 837 | 837 | 100% |
 | `Rooms/RoomX2` | 468 | 468 | 100% |
 | `Rooms/RoomX3` | 770 | 770 | 100% |
 | `Rooms/RoomX5` | 779 | 779 | 100% |
@@ -261,16 +261,3 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): door_clear: in the clear zone of door `Gameplay/Doors/LiftDoorG` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.74 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): use_point: stands in the user's spot of `Gameplay/Doors/LiftDoorG` (UsePoint @ (20.50, 0.00, -47.70)) by 0.64 m (gameplay prefab / variant content: review)
-- WARN `Props/Dress/Streets/OrchardW_S/StreetLamp0` @ (-10.50, 0.00, 28.00): overlap: bounds interpenetrate `Props/MapBuilt/StreetCarOW1` by 0.46 m (not a stack or a tucked seat)
-- WARN `Props/Dress/Streets/TanneryE_N/StreetLamp0` @ (25.50, 0.00, -8.50): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashT2` by 0.21 m (not a stack or a tucked seat)
-- WARN `Props/Dress/Streets/TanneryW_S/StreetLamp0` @ (-50.00, 0.00, 8.50): overlap: bounds interpenetrate `Props/MapBuilt/StreetCarTW2` by 1.05 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_east/Convoy/Clean/CleanLead` @ (18.50, 0.00, -4.00): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashT1` by 1.11 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_east/Convoy/Clean/CleanLead` @ (18.50, 0.00, -4.00): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashT2` by 1.50 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_east/Convoy/Clean/CleanT1` @ (27.75, 0.00, -4.00): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashT2` by 2.17 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_north/Convoy/Clean/CleanLead` @ (-6.00, 0.00, -18.50): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_north/Convoy/Crash/CrashT1` by 0.35 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_north/Convoy/Clean/CleanLead` @ (-6.00, 0.00, -18.50): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_north/Convoy/Crash/CrashT2` by 0.64 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_north/Convoy/Clean/CleanT1` @ (-6.00, 0.00, -27.75): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_north/Convoy/Crash/CrashT2` by 3.45 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_north/Convoy/Clean/CleanT1` @ (-6.00, 0.00, -27.75): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_north/Convoy/Crash/CrashT3` by 1.17 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_north/Convoy/Clean/CleanT2` @ (-6.00, 0.00, -39.00): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_north/Convoy/Crash/CrashRear` by 1.50 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_north/Convoy/Clean/CleanT2` @ (-6.00, 0.00, -39.00): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_north/Convoy/Crash/CrashT3` by 3.20 m (not a stack or a tucked seat)
-- WARN `Variants/Group_convoy_route/Slot_route_north/Convoy/Clean/CleanT3` @ (-6.00, 0.00, -51.00): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_north/Convoy/Crash/CrashRear` by 0.76 m (not a stack or a tucked seat)

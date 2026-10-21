@@ -127,6 +127,20 @@ func test_unsaid_c_allowlist() -> void:
 	_check_allowlist("C", UNSAID_C)
 
 
+## RT-B1 (D-151): a staged heist's lines (heist_list "hidden", no mission yet) wait for its mission as owner "S".
+## Only staged heists may hold them: once the heist is offered the A / B / C rules apply and every line must be said.
+func test_staged_heist_lines_wait_for_their_mission() -> void:
+	var staged: Array[Dictionary] = VoCoverage.call(&"unsaid", _r, "S") as Array[Dictionary]
+	var rt: int = 0
+	for row: Dictionary in staged:
+		var h: StringName = VoCoverage.call(&"staged_heist_of", StringName(row["id"])) as StringName
+		assert_ne(h, &"", "%s waits only while its heist is staged" % row["id"])
+		if h == &"rolling_thunder":
+			rt += 1
+	assert_true(rt >= 30, "Rolling Thunder's drafted lines wait for its mission (%d)" % rt)
+	assert_eq(VoCoverage.call(&"staged_heist_of", &"vo.mercer.ostrander_federal_intro"), &"", "OF is offered")
+
+
 func test_heist_mission_lines_are_said() -> void:
 	for h: StringName in HEISTS:
 		var c: Dictionary = VoCoverage.call(&"counts", _r, h)
