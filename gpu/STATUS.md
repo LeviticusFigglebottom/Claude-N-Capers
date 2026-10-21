@@ -441,3 +441,12 @@ comparison made under similar load is meaningful; ideally both trees get re-run 
 - **HITCHES: `1385 of 169002 heist frames over 50 ms (18 of them screenshot frames), worst 2824 ms, without a shot 2824 ms`** = 0.82%, vs GPU-20b's 0.046%.
   By 5-min heist window: 26 / 190 / 439 / **604** / 118. They build up during the long cash-carry phase (peak 31 enemies alive). Box load: CPU avg 26.5% (max 40.7), free RAM 6.0-10.9 GB.
   Not a clean perf comparison with GPU-20b (different route, more enemies alive, more background load). A same-load control would be needed before reading anything into it.
+## GPU-21: Rolling Thunder first review renders (trunk 05275e84, round 269)
+- Trunk fast-forwarded to 05275e84 (`[RT-A] round 269: board line`). Import exit 0, 47 s. RAM gate 5 GB (render job): 7.0 GB free at 16:36:56.
+- `godot\Godot_v4.7.2-stable_win64_console.exe --path game --resolution 1920x1080 res://world/tools/review_shots.tscn -- --heist=rolling_thunder --stage=greybox --out=<repo>\docs\levels\rolling_thunder\gpu_review --warmup=120`
+  (`--stage` is only a label in review_shots; RT's stage.txt says greybox). Exit 0, **34 s**, Vulkan Forward+ on RX 9070 XT. **No ERRORs or WARNINGs at all.**
+- Output: `docs/levels/rolling_thunder/gpu_review/`: TopDownPlan + **28 rc_* cameras** (ext_junction, ext_north_arm, ext_east_arm, ext_plaza, ext_tannery_west, diner_neon,
+  convoy_cash, convoy_bullion, carpark_ground/deck2/ramp/roof/booth/plant/stair, diner_dining/kitchen/function/office/staff, site_controller/frame/slab/cabins/welfare,
+  underpass, sniper_skyway) + contact_sheet.jpg + shots.md + render_log.txt.
+- Framing notes from the contact sheet (for C): `rc_convoy_cash` and `rc_convoy_bullion` are dominated by a large dark block filling the frame centre (presumably the greybox convoy
+  vehicle; the cash/bullion isn't readable). `rc_ext_junction` is about half-blocked by a dark wall face on the left. The exteriors under the overpass/deck read very dark overhead. Interiors (diner, carpark booth, site cabins) all read fine.
