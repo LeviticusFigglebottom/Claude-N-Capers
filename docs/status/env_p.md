@@ -3,6 +3,11 @@
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
 ## To the LEAD: (updated 2026-10-21 09:20 UTC)
+- **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
+  pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35
+  every 20-40 s; the vault guard's only long absence is loop (b) RC (~30 s); Cataclysm's extra guards (Npc_guard7/9) walk BB east. In r257d no
+  moment in 300 s had both the vault guard and rover_basement away. Is §5 meant to be timed on Cataclysm with these patrols? If yes, rover_basement's
+  loops may need a longer away leg (A/C). If no, which difficulty should the ghost acceptance use? I'll keep iterating the harness meanwhile.
 - **GAME BUG FIXED (P's own, 0d0a1ab0): crew capsules were shared.** crew_member.tscn's CapsuleShape3D sub-resource was one shape for every
   crew member. Whenever anyone crouched, all the others' capsules shrank to 1.2 m under their 0.9 m standing offset, and they sank 0.30 m into the
   floor (until that crew member stood). Found with a watchdog in GH Tense 4502 (C showed the kerb itself is only 0.15 m and clean): at t=11.8,
