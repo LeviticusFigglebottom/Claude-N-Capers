@@ -6,8 +6,9 @@
 ##
 ## Hooks (docs/levels/ostrander_federal/g2/c/burn_hooks.md):
 ##   Props/DressC/BurnThrough            Node3D, hidden. The scorched hole edge + cut faces (HoleEdge, with the ember
-##                                       glow EmberGlow), the fallen lid's plate and rubble on the vault floor (Debris),
-##                                       the dust (DustBurst under the hole, DustPuff over it in TW, DustHaze lingering).
+##                                       glow EmberGlow and the ScorchTW / ScorchVT decals), the fallen lid's plate and
+##                                       rubble on the vault floor (Debris), the dust (DustBurst under the hole, DustPuff
+##                                       over it in TW, DustHaze lingering).
 ##     BurnAnim (AnimationPlayer)        play(&"burn") on device_finished (the drill burns through): shows the root,
 ##                                       drops the debris (0.8 s), bursts the dust, cools the glow over 20 s, the haze
 ##                                       settles by 60 s. play(&"burnt") = the end state at once (late join / restore).
@@ -31,6 +32,8 @@ const SLAB_BOTTOM: float = -0.8
 const VAULT_FLOOR: float = -4.0
 ## The scorch ring on the TW floor (over the LidPanel's 2.4 x 2.4 m border) and under the vault ceiling.
 const SCORCH_OUT: float = 0.6
+## The projected scorch's reach past the cut on each side (m).
+const SCORCH_DECAL_OUT: float = 0.9
 const HELI_HOVER: Vector3 = Vector3(20.0, 22.0, 33.0)
 const VAN_PARK: Vector3 = Vector3(14.0, 0.0, -6.75)
 
@@ -90,6 +93,8 @@ func _burn_through(parent: Node3D) -> void:
 	glow.shadow_enabled = false
 	glow.layers = 1 | (1 << 20)
 	_own(edge, glow)
+	_own(edge, _scorch_decal("ScorchTW", SLAB_TOP, false))
+	_own(edge, _scorch_decal("ScorchVT", SLAB_BOTTOM, true))
 	var debris: Node3D = Node3D.new()
 	debris.name = "Debris"
 	_own(root, debris)
@@ -201,6 +206,35 @@ func _hole_mesh() -> ArrayMesh:
 	st2.set_material(rim)
 	st2.commit(am)
 	return am
+
+
+## GPU-6 review (r253): the flat rings sit mm off the TW carpet / the VT soffit and lose the depth test at camera
+## distance, so the burn read as an ember rim only. A projected scorch (procedural square-falloff gradient, no texture
+## asset) over the floor around the hole (`up` = false, projecting down) or the soffit (`up`, projecting up): charcoal
+## at the cut, fading out SCORCH_DECAL_OUT past it. Forward+ draws decals (Compatibility skips them).
+func _scorch_decal(nm: String, y: float, up: bool) -> Decal:
+	var g: Gradient = Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.55, 0.78, 1.0])
+	g.colors = PackedColorArray([Color(0.03, 0.025, 0.02, 0.95), Color(0.03, 0.025, 0.02, 0.92),
+		Color(0.08, 0.07, 0.06, 0.55), Color(0.12, 0.11, 0.1, 0.0)])
+	var tex: GradientTexture2D = GradientTexture2D.new()
+	tex.gradient = g
+	tex.fill = GradientTexture2D.FILL_SQUARE
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(1.0, 0.5)
+	tex.width = 128
+	tex.height = 128
+	var d: Decal = Decal.new()
+	d.name = nm
+	d.texture_albedo = tex
+	d.size = Vector3(HOLE.size.x + 2.0 * SCORCH_DECAL_OUT, 0.3, HOLE.size.y + 2.0 * SCORCH_DECAL_OUT)
+	d.position = Vector3(HOLE.get_center().x, y, HOLE.get_center().y)
+	if up:
+		d.rotation = Vector3(PI, 0.0, 0.0)   # project upward onto the soffit
+	d.upper_fade = 0.1
+	d.lower_fade = 0.1
+	d.cull_mask = 1
+	return d
 
 
 ## A flat scorch ring of width `w` around the hole at height `y`: charred black at the hole, fading out by vertex alpha.

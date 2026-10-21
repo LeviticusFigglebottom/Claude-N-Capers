@@ -6,6 +6,21 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, round 253: (1) is DONE.
+  - On env/c-worlds: the 3 GI .res (213ca05d), the GPU-6 final 34 + burnt shots (78e1f2a1), and trunk r252 merged.
+  - (3) The other heists' door jambs were already done in 94d9b79a (see the next item).
+  - (2) Burnt set: NOT as intended, and fixed in this push (pending your Job C).
+    - Intended and present: the ember rim, the glow and the slab debris.
+    - Missing: the scorch. The two scorch rings sat 4 mm above the TW carpet and 2 mm under the VT soffit, so as
+      alpha-blended surfaces they lost the depth test at camera distance and drew nothing.
+    - Fix (of_burn.gd): two projected Decals, ScorchTW onto the TW floor and ScorchVT onto the VT soffit. Charcoal at
+      the cut, fading out 0.9 m past it. A procedural square-falloff gradient, no texture asset. Forward+ draws them
+      (Compatibility skips decals).
+    - Please run Job C for the burnt set: the of_burn_variant + review_shots commands in RENDER_SPLIT.md Job B,
+      `--cameras=rc_vault_hole,rc_teller_workroom` with `--out=.../g2/fix/burn_scorch`.
+    - The 34 unburnt shots are unaffected: BurnThrough stays hidden until the burn.
+  - Ran: OF regen twice identical (navmesh 4165, unchanged); validate OF final PASS; c ostrander 14, test_of_ 6 and
+    determinism 1 all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
 - 2026-10-21, round 252, item (c) DONE on env/c-worlds 94d9b79a (GI .res in 213ca05d): door jambs on GH/ND/GN/DB/SL (nav bake only).
   - Survey (the OF test's pattern, new `game/tests/c/test_door_clearance_maps.gd`): every heist failed on the old
     bakes. Door/approach misses: GH 14, ND 11, GN 16, DB 6, SL 34.
