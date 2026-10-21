@@ -1885,8 +1885,8 @@ func _down_to_bb() -> bool:
 
 
 ## Step 6's VC crossing window: the vault guard on loop (b) or (c) (two samples) since at most `max_age` s (his absences
-## run ~30-40 s), or >= 25 m by path from the gate; and no other basement guard in VC, within 12 m of the gate, or
-## walking in BB toward it within 32 m (the gate -> CQ leg is BB).
+## run ~30-40 s), or >= 25 m by path from the gate; and no other basement guard in VC, within 12 m of the gate, in BB
+## within 20 m, or walking in BB toward it within 32 m (the gate -> CQ leg is BB).
 func _vc_window(max_age: float) -> bool:
 	# Doc §6: a window is the vault guard on loop (b) (RC: west / south) or (c) (east, SD: x > 36); ghost6_g saw (c) at
 	# t=280 / 490 / 670 unused. A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was
@@ -1936,8 +1936,11 @@ func _vc_others() -> String:
 		# BB is one sight line, but VC is walled off from it: the exposed leg is the gate -> CQ dash. A BB walker
 		# heading for the gate within 32 m holds it (ghost6_d: 19 m east, walking west, 1.0 in 1.5 s, t=576); one
 		# walking away or standing far off does not (ghost6_i: rover_basement's BB sweep held every window).
+		# ...but anyone in BB within 20 m does, standing or not (ghost6_m: rover_basement standing 14 m east facing west
+		# filled 1.0 on the CQ -> gate leg, t=572).
+		var in_bb: bool = p.z > 6.5 and p.z < 9.6
 		if who == "" and ((p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or d < 12.0
-				or (p.z > 6.5 and p.z < 9.6 and d < 32.0 and closing)):
+				or (in_bb and (d < 20.0 or (d < 32.0 and closing)))):
 			who = "%s %s%s" % [g.name, Po5Pilot._v(p), " closing" if closing else ""]
 	return who
 
