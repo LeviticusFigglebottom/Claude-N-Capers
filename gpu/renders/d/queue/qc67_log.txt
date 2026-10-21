@@ -1,0 +1,12 @@
+seed 1
+teller Npc_civilian tags [&"civ_teller"] look npc_bank_teller_b clip teller_count at (15.0, 0.0, 16.07) station 0.00 m facing -180
+teller Npc_civilian2 tags [&"civ_teller"] look npc_bank_teller_c clip teller_count at (17.0, 0.0, 16.07) station 0.00 m facing -180
+teller Npc_civilian3 tags [&"civ_teller"] look npc_bank_teller_d clip teller_count at (31.0, 0.0, 16.07) station 0.00 m facing -180
+teller Npc_civilian4 tags [&"civ_teller", &"civ_teller_rotating"] look npc_bank_teller_e clip teller_count at (33.0, 0.00087, 16.05172) station 0.02 m facing -180
+queue Npc_civilian12 activity queue_idle look bank_customer_d clip queue_idle_b at (12.0, 0.0, 20.88) mark 0.50 m
+shot tellers_w_staff_side
+shot tellers_w_customer_side
+shot tellers_e_staff_side
+shot tellers_e_customer_side
+shot teller_counter_profile
+shot queue_w_side

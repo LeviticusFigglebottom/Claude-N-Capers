@@ -1,0 +1,62 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[INFO][rng][p1] run seed 1
+[INFO][variants][p1] seed 1 resolved { &"manager_route": [&"mgr_floor"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_vault_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_hall"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_b"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust_4"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 270.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 486 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 68 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[QC67] seed 1
+[QC67] teller Npc_civilian tags [&"civ_teller"] look npc_bank_teller_b clip teller_count at (15.0, 0.0, 16.07) station 0.00 m facing -180
+[QC67] teller Npc_civilian2 tags [&"civ_teller"] look npc_bank_teller_c clip teller_count at (17.0, 0.0, 16.07) station 0.00 m facing -180
+[QC67] teller Npc_civilian3 tags [&"civ_teller"] look npc_bank_teller_d clip teller_count at (31.0, 0.0, 16.07) station 0.00 m facing -180
+[QC67] teller Npc_civilian4 tags [&"civ_teller", &"civ_teller_rotating"] look npc_bank_teller_e clip teller_count at (33.0, 0.00087, 16.05172) station 0.02 m facing -180
+[QC67] queue Npc_civilian12 activity queue_idle look bank_customer_d clip queue_idle_b at (12.0, 0.0, 20.88) mark 0.50 m
+[QC67] shot tellers_w_staff_side
+[QC67] shot tellers_w_customer_side
+[QC67] shot tellers_e_staff_side
+[QC67] shot tellers_e_customer_side
+[QC67] shot teller_counter_profile
+[QC67] shot queue_w_side
+[QC67] RESULT DONE C:\Users\Aaron\caperworks-gpu\gpu\renders\d\queue
+ERROR: 1 RID allocations of type 'N10RendererRD15MaterialStorage6ShaderE' were leaked at exit.
+ERROR: 1 shaders of type SceneForwardClusteredShaderRD were never freed
+   at: ~ShaderRD (servers/rendering/renderer_rd/shader_rd.cpp:1236)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 500 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

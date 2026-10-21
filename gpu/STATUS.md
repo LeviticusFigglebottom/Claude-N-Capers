@@ -134,3 +134,9 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
 - Wrote `_review/of_d1_cast/of_vip_{sheet,lineup_30m,silhouette_30m,pair}.png` (these are tracked on env/d-art, so the tree shows them modified;
   I copied them to `gpu/renders/d/vip/` (+ render_log.txt) and restored the env/d-art versions in my tree).
 - Sheet: 9 looks (bank_vip_client, security_bodyguard, bank_customer/_b, civilian_customer_a/_b, bank_officer/_b, bank_manager), all rendered.
+## GPU-8.4: ENV D OF teller/queue review (QC67) (tree: env/d-art f96168df)
+- `--path game --fixed-fps 60 --resolution 1280x720 res://world/characters/_tools/render_of_qc67_review.tscn -- --out=<repo>\gpu\renders\d\queue --no-alarm`:
+  exit 0, 19 s, `[QC67] RESULT DONE`.
+- Output: `gpu/renders/d/queue/`: 6 shots (tellers_w/e x staff/customer side, teller_counter_profile, queue_w_side), qc67_log.txt, render_log.txt.
+- Shutdown ERRORs (engine cleanup, not the review): `1 RID allocations of type 'N10RendererRD15MaterialStorage6ShaderE' were leaked at exit`
+  and `1 shaders of type SceneForwardClusteredShaderRD were never freed`.
