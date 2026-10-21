@@ -2791,6 +2791,29 @@ item.asset.signal_insider.name,Insider: signal cabinet
 item.asset.signal_insider.desc,A council contact leaves the junction controller cabinet unlocked.
 item.asset.intel_route.name,Insider: convoy route
 item.asset.intel_route.desc,"You know which way the convoy comes in, and where the route marshal walks."
+item.asset.c4_drop.name,C4 drop
+item.asset.c4_drop.desc,"Four breaching charges left at the drop point. Faster than the saw on a truck door."
+ui.achievements.category.rolling_thunder,Rolling Thunder
+ui.briefing.step.rolling_thunder.setup,"Rig the junction signals, and raid the site stores if there is time"
+ui.briefing.step.rolling_thunder.trucks,Open the trucks and bag the cargo
+ui.briefing.sec.event.rolling_thunder.marshal_early,the route marshal is early and walks two checks
+ui.briefing.sec.event.rolling_thunder.convoy_early,the convoy runs 45 seconds early
+ui.briefing.sec.event.rolling_thunder.crane_sniper,a police marksman in the crane cab
+ui.briefing.sec.event.rolling_thunder.armored_escort,a Wrecker rides with the rear escort
+ui.briefing.sec.event.rolling_thunder.rush_hour,rush hour: more people on the street
+ui.preplan.point.rolling_thunder.pp_spawn_plaza,Bus interchange
+ui.preplan.point.rolling_thunder.pp_spawn_carpark,Car park: Deck 2 stair lobby
+ui.preplan.point.rolling_thunder.pp_spawn_underpass,Underpass: north sidewalk
+ui.preplan.point.rolling_thunder.pp_drop_site,Building site: inside the Orchard gate
+ui.preplan.point.rolling_thunder.pp_drop_carpark,Car park: Deck 2 south bays
+ui.preplan.point.rolling_thunder.pp_drop_diner_yard,Halfway Diner: the yard
+ui.preplan.point.rolling_thunder.pp_drop_underpass,Underpass: north abutment
+ui.preplan.point.rolling_thunder.pp_escape_carpark,Van: car park
+ui.preplan.point.rolling_thunder.pp_escape_underpass,Van: Tannery underpass
+ui.preplan.point.rolling_thunder.pp_escape_roof,Helicopter: car park roof
+ui.preplan.point.rolling_thunder.pp_perch_roof,Sniper perch: car park roof
+ui.preplan.point.rolling_thunder.pp_perch_frame,Sniper perch: the building frame
+ui.preplan.point.rolling_thunder.pp_signals,Junction signal cabinet
 heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
 heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. The Accountant wants its books and its count room emptied before the doors close."
