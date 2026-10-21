@@ -2110,6 +2110,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_bank as bank  # noqa: PLC0415 - OF-D1 bank customers; imports this module
 
     extra.update(bank.clips(sk, solver, table))
+    import _anim_rt as rt  # noqa: PLC0415 - RT-D1 Rolling Thunder; imports this module
+
+    extra.update(rt.clips(sk, solver, table))
     import _anim_holds as holds  # noqa: PLC0415 - D-116 third-person weapon holds; imports this module
 
     extra.update(holds.clips(sk, solver, table))

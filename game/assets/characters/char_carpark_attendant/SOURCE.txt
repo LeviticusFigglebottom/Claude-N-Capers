@@ -1,0 +1,19 @@
+asset: char_carpark_attendant
+script: tools/blender/characters/char_p5_street.py
+params: {"age": 0.6, "beard_shadow": 0.3, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.76, "look": "attendant", "skin": 6}
+seed: 911715237  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_carpark_attendant
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0886, 0.1132] (model [0.0000, 1.2854, 0.1315], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0801, -0.0877] (model [0.0000, 1.6473, -0.0758], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1906, 0.0502, 0.0348] (model [0.1906, 0.9927, 0.0372], Godot axes, rest pose)
+body_faces_culled: 4132
+body_params: {"age": 0.6, "beard_shadow": 0.3, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "grey", "hair_peak": 0.0, "height": 1.76, "lip": "auto", "skin": 6}
+bones: 52
+look: Car-park attendant (RT-D1 staff_booth): teal polo under a dark espresso fleece gilet, the staff lanyard and white card, grey slacks, black belt and shoes, watch (no hi-vis)
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 29174
+tris_by_mesh: {"Body": 10480, "Gear": 802, "Hair": 1728, "Outfit": 16164}
