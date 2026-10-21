@@ -6,6 +6,21 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds, sha in this push's log): please re-run Job C for the burnt
+  set (rc_vault_hole, rc_teller_workroom, out g2/fix/burn_scorch).
+  - Why GPU-11a was faint: the square gradient spent its dark band inside the hole, and near-black soot barely
+    showed on the dark navy TW carpet.
+  - New `_scorch_texture` in of_burn.gd: procedural, deterministic (fixed-seed noise), no asset. Banded by distance
+    past the cut, with a ragged edge:
+    - near-black char (alpha 0.97) to 0.3 m;
+    - soot to 0.6 m;
+    - a pale ash ring to 0.85 m (the contrast on the carpet);
+    - fading out by 1.4 m (was 0.9 m).
+  - New `SootTW`: 6 charred slab chunks and 3 soot flakes on the TW floor round the rim. Presentation only, no
+    colliders; kept off the hoist car, ShaftE's panel and the rope ladder top.
+  - Preview of the texture over a carpet colour: g2/fix/burn_scorch/scorch_texture_preview.png.
+  - Ran: OF regen twice identical (navmesh 4165, unchanged); validate OF final PASS; c ostrander 14, test_of_ 7 and
+    determinism 1 all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
 - 2026-10-21, r254 GPU-10 loud nav errors (env/c-worlds 996084e5). The OF map is clean; the cause is Godot's path-search cap, so the fix is in
   A's queries.
   - New test `game/tests/c/test_of_loud_nav_targets.gd`: OF loud, burn state, fully breached. All 122 loud-phase walk
