@@ -4,6 +4,19 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **Loud screenshot review (NPC anim and clipping):** there are no GH loud captures on any branch (P's GH captures are
+  stealth, po6_gh). I reviewed the newest OF loud frames on gpu/renders: `a/of_a6_b1800_partial` (GPU-20),
+  `a/of_a5_b1500` and `a/of_r256_b480`, about 35 frames at full resolution where it mattered.
+  - **No NPC animation or mesh-clipping defects found.** Firing and aim poses (TAC Light / Heavy, the Zero reskins, the
+    crew), the deaths and the lying bodies, civilians cowering and with hands up, and the Commander Brandt wave all
+    read correctly. Weapons sit in the hands, and nothing sinks into the floor or walls.
+  - **One recurring issue, not an animation bug:** in every `stuck_*` frame the bot pilot is pressed against a TAC unit
+    and the camera ends up inside it (a6 `13_stuck_3`: the inside of a Zero TAC Light's plate and arm fills the view;
+    a5 `12_stuck_1` is the same). The aim pose's arms and rifle reach about 0.6 m in front of the NPC, more than the
+    player-to-NPC capsule gap. **For A/P, low priority:** keep NPCs about 0.8 m from a player root (motor separation),
+    or treat it as a harness artefact of the stuck pilot. PD2 lets enemies get this close too.
+  - Also seen: a crew AI teammate standing in the player's face (a6 `09_auto_212`). That is crew AI spacing (A).
+  - **IDLE, can take X.**
 - **AH prep done on `prep/d-ah` 8238fdaa3 (held for AH's turn; branched from prep/d-rt, so merge RT first).**
   - **dj_mix** (dfd7ce9bf), as reported below.
   - **16 finish swaps, 0 new meshes:** bouncers c-g, bartenders c/d, club_waiter/_b (the gala waiters in Velvet violet),
