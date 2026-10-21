@@ -1827,7 +1827,7 @@ func _down_to_bb() -> bool:
 
 
 ## Step 6's VC crossing window: the vault guard deep in loop (b) (two samples) since at most `max_age` s (his absences
-## run ~30-40 s), no other guard in VC, and no other
+## run ~30-40 s), no other guard in VC or in BB's strip west of x 40, and no other
 ## basement guard within 15 m of the gate (the CQ <-> gate leg is BB).
 func _vc_window(max_age: float) -> bool:
 	# A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was back in VC 5 s later).
@@ -1839,7 +1839,10 @@ func _vc_window(max_age: float) -> bool:
 		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5 or _has_tag(g, "guard_vault"):
 			continue
 		var p: Vector3 = g.global_position
-		if (p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or pilot.flat_dist(p, gate_at) < 15.0:
+		# BB is one sight line: the gate -> CQ leg runs along it (ghost6_d: rover_basement 19 m east, walking west,
+		# filled 1.0 on the bag trip in 1.5 s, t=576).
+		if (p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or pilot.flat_dist(p, gate_at) < 15.0 \
+				or (p.z > 6.5 and p.z < 9.6 and p.x < 40.0):
 			return false
 	return true
 
