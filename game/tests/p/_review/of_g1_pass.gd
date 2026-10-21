@@ -1541,8 +1541,11 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 			# 10 m on BB: the vault guard's VC post is ~12 m off and was never a problem standing (r251-r253 walked
 			# LK -> SA past it); walkers are caught by the 15 m moving rule. Phase 1 is BB only (r255b: counting every floor
 			# at once never cleared in 180 s with A's loops); phase 2 peeks up the flights from the foot of SA.
-			await _wait_core_clear(OF_FFL[cur], OF_FFL[cur], true, 10.0)
+			# haz_o: the BB-only core check cleared at once, then rover_basement came west down BB and saw the LK -> SA walk
+			# at 12 m. Crossing BB needs the same window as the vault gate: rover_basement away + no walker closing in.
 			pilot.inp.release(&"crouch")
+			await _wait_spot_clear(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), OF_FFL[cur], "BB to SA", _lk_hide(),
+				_rover_basement_away)
 			if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), 0.4, 240.0):
 				return false
 			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], false, 25.0, 60.0)
@@ -1699,6 +1702,11 @@ func _vault_guard_off_vc(_gate: Door) -> bool:
 func _gate_window(gate: Door) -> bool:
 	if not _vault_guard_off_vc(gate):
 		return false
+	return _rover_basement_away()
+
+
+## rover_basement is in RC (aisles blind from BB) or far east (SS), not sweeping BB.
+func _rover_basement_away() -> bool:
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
 		if g == null or not g.is_alive():

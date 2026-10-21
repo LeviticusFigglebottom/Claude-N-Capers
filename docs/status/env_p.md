@@ -34,7 +34,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   and z < 9.5 (BC corridor east = MO / loop (c)). **haz_n: step 2 PASS on Hazardous (t=207.7)**, C's cue working: the t=78 window was skipped
   (rover_hall on loop (a)), the t=162 window was taken (him at BC east), and he passed DockCorridorDoor at t=185 while the pilot waited outside, unseen.
   Step 3: the manager wait was still at GHOST_LK_WAIT (in LockerDoor's sight line), and rover_basement saw it through the door (t=267). Now step 3 waits
-  crouched in the probed LK hide too. haz_o is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
+  crouched in the probed LK hide too. **haz_o: steps 1-3 PASS on Hazardous** (dock t=207.7 again, keycard t=342.7). On the way to step 4, the BB-only core
+  check cleared at once, then rover_basement came west down BB and saw the LK → SA walk at 12 m (t=350). That BB crossing now uses the gate's window
+  (rover_basement in RC or far east, no walker closing in). haz_p is running. If no window turns up in ~6-8 min, C will put a Hazardous patrol change to
   the LEAD and A with the numbers.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
