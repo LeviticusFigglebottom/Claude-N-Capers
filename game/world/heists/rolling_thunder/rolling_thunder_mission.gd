@@ -48,6 +48,16 @@ const LAYOUT_TANNERY_OPEN: String = "tannery_open"
 
 const RARE_MARSHAL_EARLY: StringName = &"marshal_early"
 const RARE_CONVOY_EARLY: StringName = &"convoy_early"
+const RARE_INFORMANT: StringName = &"informant_tip"
+const RARE_CRANE: StringName = &"crane_sniper"
+const RARE_ARMORED_ESCORT: StringName = &"armored_escort"
+const RARE_RUSH_HOUR: StringName = &"rush_hour"
+## Perch tags (the map): S3 in the crane cab only on crane_sniper; S4 (Ashby) from Hazardous (doc Perches active).
+const PERCH_CRANE: StringName = &"crane_sniper"
+const PERCH_ASHBY: StringName = &"ashby"
+const WRECKER: StringName = &"enemy.wrecker"
+## Street pedestrians (`civilians` scalar 6 / 9 / 12; rush_hour 12).
+const TAG_CIV_STREET: StringName = &"civ_street"
 
 ## Convoy units per vehicle (doc "Convoy units per difficulty"): escorts by difficulty (Routine/Tense patrol cars,
 ## Hazardous+ SUVs), two Vaultline crew per truck.
@@ -123,8 +133,11 @@ var _movers_left: int = 0
 
 
 func _on_mission_start() -> void:
-	_eta_s = float(_scalar(&"convoy_eta_s", 180.0)) - (CONVOY_EARLY_S if _rare(RARE_CONVOY_EARLY) else 0.0)
+	_eta_s = float(_scalar(&"convoy_eta_s", 180.0))
+	if _rare(RARE_CONVOY_EARLY):
+		_eta_s += float(_fx(RARE_CONVOY_EARLY, &"convoy_eta_add_s", -CONVOY_EARLY_S))
 	police_delay_s = float(_scalar(&"police_delay_s", 60.0))
+	_apply_rare_setup()
 	_add(&"casing", Enums.ObjectiveState.ACTIVE, [&"casing"])
 	_add(&"signals", Enums.ObjectiveState.ACTIVE, [TAG_SIGNALS])
 	if not find_tagged(&"charges").is_empty():
@@ -138,7 +151,8 @@ func _on_mission_start() -> void:
 	_add(&"secure", Enums.ObjectiveState.HIDDEN, [TAG_SECURE], {"count": 0, "total": REQUIRED_BAGS, "optional_more": true})
 	_add(&"escape_wait", Enums.ObjectiveState.HIDDEN, [TAG_ESCAPE_WAIT])
 	_add(&"escape", Enums.ObjectiveState.HIDDEN, [TAG_ESCAPE])
-	var marshal_lead: float = MARSHAL_EARLY_LEAD_S if _rare(RARE_MARSHAL_EARLY) else MARSHAL_LEAD_S
+	var marshal_lead: float = float(_fx(RARE_MARSHAL_EARLY, &"marshal_lead_s", MARSHAL_EARLY_LEAD_S)) \
+		if _rare(RARE_MARSHAL_EARLY) else MARSHAL_LEAD_S
 	schedule_at(maxf(_eta_s - marshal_lead, 1.0), &"marshal", _spawn_marshal)
 	schedule_at(maxf(_eta_s - 60.0, 1.0), &"eta_60", _eta_60)
 	schedule_at(maxf(_eta_s - 30.0, 1.0), &"eta_30", func() -> void: _say_once(VO_ETA_30))
@@ -153,6 +167,20 @@ func _on_mission_start() -> void:
 	on_event(&"special_spawned", _on_special_spawned)
 	say(VO_INTRO)
 	say(VO_REYES_READY, {}, SPEAKER_REYES)
+
+
+## Rare events and difficulty rows at the start (doc Rare events / Convoy units per difficulty): the street's
+## pedestrian count, the informant's reveals, the perches.
+func _apply_rare_setup() -> void:
+	var civs: int = int(_fx(RARE_RUSH_HOUR, &"civilians", int(_scalar(&"civilians", 9)))) if _rare(RARE_RUSH_HOUR) \
+		else int(_scalar(&"civilians", 9))
+	thin_civilians(TAG_CIV_STREET, civs)
+	if _rare(RARE_INFORMANT):
+		for g: Variant in _fx(RARE_INFORMANT, &"reveal", []) as Array:
+			reveal_variant_group(StringName(g))
+	set_sniper_perches_open(PERCH_CRANE, _rare(RARE_CRANE))
+	if _runtime != null and _runtime.difficulty < Enums.Difficulty.HAZARDOUS:
+		set_sniper_perches_open(PERCH_ASHBY, false)
 
 
 func _add(id: StringName, state: Enums.ObjectiveState, tags: Array, data: Dictionary = {}) -> void:
@@ -335,7 +363,9 @@ func _spawn_convoy_units() -> void:
 		if veh == "Lead":
 			ids = ESCORT_LEAD_HIGH if high else ESCORT_LOW
 		elif veh == "Rear":
-			ids = ESCORT_REAR_HIGH if high else ESCORT_LOW
+			ids = (ESCORT_REAR_HIGH if high else ESCORT_LOW).duplicate()
+			if _rare(RARE_ARMORED_ESCORT):
+				ids.append(WRECKER)  # Lethal+: a Wrecker rides in the rear escort
 		var seat: bool = clean_stop and not went_loud and body is ConvoyVehicle
 		for i: int in ids.size():
 			var got: Array[NpcBase] = spawn_units(ids[i], 1, &"", seat, body)
@@ -551,6 +581,12 @@ func _tagged(n: Node, tag: StringName) -> bool:
 
 func _rare(id: StringName) -> bool:
 	return rare_effects().has(id)
+
+
+## A rolled rare event's effect value (`fallback` when the event did not roll or has no such key).
+func _fx(event_id: StringName, key: StringName, fallback: Variant) -> Variant:
+	var fx: Variant = rare_effects().get(event_id)
+	return (fx as Dictionary).get(key, fallback) if fx is Dictionary else fallback
 
 
 func _scalar(id: StringName, fallback: Variant) -> Variant:

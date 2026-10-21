@@ -5,6 +5,7 @@
 extends TestCase
 
 const HEIST: StringName = &"rolling_thunder"
+const VARIANTS: String = "res://world/heists/rolling_thunder/rolling_thunder_variants.tres"
 const TRUCK: PackedScene = preload("res://systems/prefabs/armored_truck/armored_truck.tscn")
 
 var _rt: HeistRuntime = null
@@ -15,9 +16,18 @@ func _available() -> bool:
 	return path != "" and ResourceLoader.exists(path)
 
 
-func _launch(seed_value: int = 4101) -> RollingThunderMission:
-	_rt = await HeistLauncher.launch(HEIST, seed_value, Enums.Difficulty.ROUTINE, self,
-		{"crew_ai": false, "ai_teammates": 0, "skip_casing": true})
+func _launch(seed_value: int = 4101, rares: Array = [], difficulty: int = Enums.Difficulty.ROUTINE) -> RollingThunderMission:
+	var o: Dictionary = {"crew_ai": false, "ai_teammates": 0, "skip_casing": true}
+	if not rares.is_empty():  # exactly these rare events roll (every other at 0)
+		var vt: HeistVariantTable = (load(VARIANTS) as HeistVariantTable).duplicate(true) as HeistVariantTable
+		var rows: Array[Dictionary] = []
+		for ev: Dictionary in vt.rare_events:
+			var e: Dictionary = ev.duplicate(true)
+			e["chance"] = 1.0 if rares.has(StringName(e.get("id", &""))) else 0.0
+			rows.append(e)
+		vt.rare_events = rows
+		o["variant_table"] = vt
+	_rt = await HeistLauncher.launch(HEIST, seed_value, difficulty, self, o)
 	await wait_physics_frames(3)
 	return _rt.mission as RollingThunderMission
 
@@ -102,3 +112,26 @@ func _open_and_secure(m: RollingThunderMission, truck: ArmoredTruck) -> void:
 	assert_eq(m.objective_state(&"secure"), Enums.ObjectiveState.COMPLETED, "four bags")
 	assert_eq(m.objective_state(&"escape_wait"), Enums.ObjectiveState.ACTIVE, "the ride is called")
 	assert_true(m.timer_left(&"escape_eta") > 60.0, "after escape_eta_s")
+
+
+func test_rare_events_at_the_setup() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch(4101, [&"convoy_early", &"marshal_early", &"rush_hour", &"informant_tip"])
+	var eta: float = float(m.variant(&"convoy_eta_s")) - RollingThunderMission.CONVOY_EARLY_S
+	assert_near(m.timer_left(&"convoy") + m.elapsed_s, eta, 1.0, "convoy_early: 45 s sooner")
+	assert_near(m.timer_left(&"marshal") + m.elapsed_s, eta - RollingThunderMission.MARSHAL_EARLY_LEAD_S, 1.0,
+		"marshal_early: ETA - 90")
+	assert_true(m.is_variant_revealed(&"convoy_route") and m.is_variant_revealed(&"marshal_walk"), "informant_tip")
+	var street: int = 0
+	for n: Node in _rt.npcs(&"civilian"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(&"civ_street"):
+			street += 1
+	assert_eq(street, 12, "rush_hour: 12 pedestrians on the street")
+	var crane_open: bool = SpecialSpawner.open_perches(_rt).any(func(tp: TacticalPoint) -> bool:
+		return tp.tags.has(RollingThunderMission.PERCH_CRANE))
+	assert_false(crane_open, "no crane_sniper: S3 closed")
+	var ashby_open: bool = SpecialSpawner.open_perches(_rt).any(func(tp: TacticalPoint) -> bool:
+		return tp.tags.has(RollingThunderMission.PERCH_ASHBY))
+	assert_false(ashby_open, "Routine: S4 closed")
