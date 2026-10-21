@@ -4,6 +4,25 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-16) DB Tense seed-1 custody chain (low priority), headless on 43d8b5a6 (14:20 UTC)
+**The chain: a revive pile-up at the secure zone ends in a crew wipe.**
+- t=523: the crew carries cash from the cages to the dock (secure zone around (31, 0, -18)), 4 enemies alive.
+- t=543: the pilot picks up a cash bag beside the zone. A wave lands: 13 enemies, 3 within 15 m.
+- t=546-576: all four crew go down or get tased within 4 m of each other. Bots kneel to revive with enemies 0.6-1.0 m
+  away (TEL `nearest_enemy=0.6m`, "bots while down: 1:REVIVE ... 2:REVIVE ... 3:REVIVE").
+  - Each revive is broken off or followed by the reviver's own down. One last-stand revive lands (slot 3, t=575).
+- t=592-606: all 4 in custody (bleed-out).
+- Pilot intake: 610 damage in 549 s loud, 1.11 dmg/s, mostly from under 10 m: tac_light 262, Bulwark 127.5,
+  patrol 75, Longshot 45.
+
+**Read: no bug; a tactics gap in the bot revive rule.** PD2 bots do revive under fire, but they are tanky (PD2
+team AI takes reduced damage). Ours revive at full exposure with the attacker in arm's reach.
+
+**Proposal (A-owned, small; your call, since DB Tense is accepted at 2/3):** before kneeling, a bot spends up to
+crew_ai_tweak.revive_clear_s (2 s) on any enemy within revive_clear_m (3 m) of the downed member. This is the
+pilot's REVIVE_THREAT rule applied to bots.
+- Last stand (the final revive before custody) skips the clear.
+- I'd validate with DB Tense ×3 and GH Tense ×1, not merged before you say so.
 ### (-15) OF robustness headless (your 12:59 ask), on env/a-core 43d8b5a6 = trunk 40ef789d + A (13:50 UTC)
 | run | result | end | how it ended |
 |---|---|---|---|
