@@ -55,21 +55,21 @@ HOLDOUTS: Dict[str, Tuple[float, float, str]] = {
     "H1": (35, -32, "car_park"), "H2": (24, 23, "diner"), "H3": (-38, -40, "site"), "H4": (75, 0, "underpass"),
 }
 POLICE: Dict[str, Tuple[float, float, float]] = {
-    "P_N": (6, -86, 0.0), "P_S": (0, 68, 0.0), "P_W": (-78, 0, 0.0), "P_E": (102, 4, -5.0), "P_NE": (60, -76, 0.0),
+    "P_N": (6, -88, 0.0), "P_S": (0, 68, 0.0), "P_W": (-78, 0, 0.0), "P_E": (102, 4, -5.0), "P_NE": (60, -76, 0.0),
     "P_SKY": (0, -84, 9.0),
 }
 # Doc spawn -> holdout table (flat m).
 DOC_SPAWN_TABLE: Dict[str, Tuple[int, int, int, int]] = {
-    "P_N": (61, 110, 64, 110), "P_S": (106, 51, 115, 101), "P_W": (117, 105, 57, 153), "P_E": (76, 80, 147, 27),
+    "P_N": (63, 112, 65, 112), "P_S": (106, 51, 115, 101), "P_W": (117, 105, 57, 153), "P_E": (76, 80, 147, 27),
     "P_NE": (51, 105, 104, 78), "P_SKY": (63, 110, 58, 113),
 }
 MIN_CREW_DISTANCE = 15.0                     # DirectorTweak.min_crew_distance_m (L1.4)
 # Closure vehicles (site rect) and the side their spawn must be on ("-z" = further north than the vehicle, etc.).
 CLOSURES: Dict[str, Tuple[Rect, str, str]] = {
-    "P_N": ((1, -88, 10, -86), "-z", "traffic-management truck, x 1-10; z drawn on the -88 row (no z extent stated)"),
+    "P_N": ((1, -85.5, 10, -83), "-z", "traffic-management truck, x 1-10, z -85.5..-83 (RT-C0 check)"),
     "P_S": ((-8, 64, 10, 66), "+z", "jack-knifed lorry (was the stalled bus, D-149.6), x -8-10, z 64-66"),
     "P_W": ((-76, -8, -74, 8), "-x", "articulated lorry x -76-74"),
-    "P_E": ((98, 0, 102, 8), "+x", "jack-knifed lorry z 0-8, x 98-102"),
+    "P_E": ((96, 0, 100, 8), "+x", "jack-knifed lorry z 0-8, x 96-100 (RT-C0 check: moved 2 m west)"),
 }
 ESCAPES: Dict[str, Tuple[float, float, float, str]] = {
     "E1": (23, -30, 0.0, "car_park"), "E2": (92, -4, -5.0, "cut"), "E3": (32, -34, 7.0, "car_park"),
@@ -92,7 +92,8 @@ RAPPELS: List[Pt] = [(-13, -26), (13, 20)]
 SHIELD_ANCHORS: List[Pt] = [(0, 0), (24, -11), (64, 0), (-33, -8), (24, 11), (-3, -40)]
 STORM_DRAIN: Tuple[Pt, Pt] = ((-40, 14), (75, 9))
 CONTROLLER: Pt = (-16, -13)
-DOC_CONTROLLER_TO_MAN_GATE = 2.0
+DOC_CONTROLLER_TO_MAN_GATE = 3.6     # RT-C0 check (was 2 m)
+CLOSURE_CLEAR = 2.0                  # a police spawn stands >= 2 m beyond its closure's far face
 # Sniper perches (x, z, y) and the doc's distances: (target, point, doc m).
 PERCHES: Dict[str, Tuple[float, float, float]] = {
     "S1": (12, -20, 10.1), "S2": (75, -24, 7.5), "S3": (-28, -24, 30.0), "S4": (-30, 36, 15.5),
@@ -191,10 +192,17 @@ def check_bounds(rep: Report) -> None:
         rep.expect(on_edge, "rappel (%g, %g) on the deck edge over a sidewalk (drop %.1f m)" % (p + (SKYWAY_DECK_Y,)))
     for a in SHIELD_ANCHORS:
         rep.expect(inside(a, PLAY), "shield anchor %s in the play space" % (a,))
-    d = dist(CONTROLLER, ENTRIES["site_man_gate"][:2])
-    if abs(d - DOC_CONTROLLER_TO_MAN_GATE) > 0.5:
-        rep.fail("signal controller %s is %.1f m from the man-gate %s; the doc says %.0f m (site notes)"
-                 % (CONTROLLER, d, ENTRIES["site_man_gate"][:2], DOC_CONTROLLER_TO_MAN_GATE))
+    gate = ENTRIES["site_man_gate"][:2]
+    d = dist(CONTROLLER, gate)
+    if abs(d - DOC_CONTROLLER_TO_MAN_GATE) > 0.1:
+        rep.fail("signal controller %s is %.1f m from the man-gate %s; the doc says %.1f m (site notes)"
+                 % (CONTROLLER, d, gate, DOC_CONTROLLER_TO_MAN_GATE))
+    else:
+        rep.ok("signal controller %.1f m from the man-gate (doc %.1f)" % (d, DOC_CONTROLLER_TO_MAN_GATE))
+    ux, uz = (gate[0] - CONTROLLER[0]) / d, (gate[1] - CONTROLLER[1]) / d
+    seen = [k for k in (2.0, 3.0, 4.0, 5.0) if any(inside((gate[0] + ux * k, gate[1] + uz * k), s) for s in ORCHARD_SW)]
+    rep.expect(bool(seen), "a pedestrian sees the controller through the man-gate panel from the sidewalk %s m beyond "
+               "the gate (the setup's tension point holds at %.1f m)" % (seen, d))
     rep.info("storm drain FLANK %s -> %s: %.0f m as a vent-layer nav link (DB culvert precedent)"
              % (STORM_DRAIN[0], STORM_DRAIN[1], dist(*STORM_DRAIN)))
 
@@ -212,9 +220,11 @@ def check_spawns(rep: Report) -> None:
                    % (sp, MIN_CREW_DISTANCE, min(got)))
     for sp, (r, side, note) in CLOSURES.items():
         x, z, _y = POLICE[sp]
-        behind = {"-z": z < r[1], "+z": z > r[3], "-x": x < r[0], "+x": x > r[2]}[side]
+        beyond = {"-z": r[1] - z, "+z": z - r[3], "-x": r[0] - x, "+x": x - r[2]}[side]
+        across = (r[0] <= x <= r[2]) if "z" in side else (r[1] <= z <= r[3])
+        behind = beyond >= CLOSURE_CLEAR and across
         if behind:
-            rep.ok("%s (%g, %g) is behind its closure (%s)" % (sp, x, z, note))
+            rep.ok("%s (%g, %g) is %.1f m behind its closure (%s)" % (sp, x, z, beyond, note))
         else:
             edge = {"-z": r[1], "+z": r[3], "-x": r[0], "+x": r[2]}[side]
             rep.fail("%s (%g, %g) is not behind its closure (%s): the closure's far face is at %s = %g"

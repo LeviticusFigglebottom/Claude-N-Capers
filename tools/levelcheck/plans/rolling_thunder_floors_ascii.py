@@ -30,10 +30,15 @@ BUILDINGS: Dict[str, Tuple[float, float]] = {"CP": (16.0, -50.0), "D": (14.0, 14
 LEVEL_BUILDING = {"CP-G": "CP", "CP-2": "CP", "CP-R": "CP", "DG": "D", "DU": "D", "SG": "S", "SU": "S"}
 LEVEL_FFL = {"CP-G": 0.0, "CP-2": 3.5, "CP-R": 7.0, "DG": 0.0, "DU": 3.5, "SG": 0.0, "SU": 3.5}
 
-# Legend widths (doc "Floor plans" legend): personnel 0.9 m, service 1.0-1.2 m (lower bound used), diner front 1.8 m.
-PERSONNEL = 0.9
+# Legend widths (doc "Floor plans" legend, RT-C0 check): personnel 1.0 m on routes, 0.9 m only for the non-route WCs and
+# the electrical closet; service 1.0-1.2 m (lower bound used); diner front and lift landings 1.8 m; pedestrian gates
+# 1.2 m.
+PERSONNEL = 1.0
+NONROUTE = 0.9
 SERVICE = 1.0
 DOUBLE = 1.8
+GATE = 1.2
+JAMB = 0.2                # wall left beside an opening before the next crossing wall (door frame + trim)
 ROUTE_DOOR_MIN = 1.0      # next_heist.md §7 item 7 (D-104), OF plan §7.12, RT plan §7.4
 
 CP_FOOT: Rect = (0, 0, 36, 36)
@@ -81,20 +86,20 @@ OPENINGS: List[Opening] = [
     # --- car park ground ---
     Opening("CP-G", "sta_street", 0, 4, "z", PERSONNEL, True, "stair A -> Orchard sidewalk"),
     Opening("CP-G", "sta_lobby", 3, 5, "z", PERSONNEL, True, "stair A -> lobby / deck"),
-    Opening("CP-G", "lf_door", 4.5, 3, "x", None, True, "lift landing DD (width not stated)"),
+    Opening("CP-G", "lf_door", 4.5, 3, "x", DOUBLE, True, "lift landing DD, 1.8 m"),
     Opening("CP-G", "ab_door", 5, 33, "z", PERSONNEL, True, "attendant booth"),
-    Opening("CP-G", "cwc_door", 12, 32, "x", PERSONNEL, False, "staff WC"),
+    Opening("CP-G", "cwc_door", 12, 32, "x", NONROUTE, False, "staff WC"),
     Opening("CP-G", "cpl_door", 17, 30, "x", PERSONNEL, True, "plant: the lift breaker (lift_dead)"),
     Opening("CP-G", "sb_door", 33, 31, "z", PERSONNEL, True, "stair B"),
     Opening("CP-G", "fire_door", 36, 15, "z", PERSONNEL, True, "east fire door -> rail lane (push bar)"),
     Opening("CP-G", "entrance", 8, 36, "x", 4.0, True, "vehicle entrance x 6-10, barrier arm, 2.4 m height bar"),
     # --- car park deck 2 ---
     Opening("CP-2", "sta_lobby", 3, 5, "z", PERSONNEL, True, "stair A"),
-    Opening("CP-2", "lf_door", 4.5, 3, "x", None, True, "lift landing DD"),
+    Opening("CP-2", "lf_door", 4.5, 3, "x", DOUBLE, True, "lift landing DD, 1.8 m"),
     Opening("CP-2", "sb_door", 33, 31, "z", PERSONNEL, True, "stair B"),
     # --- car park roof ---
     Opening("CP-R", "hha_door", 3, 5, "z", PERSONNEL, True, "head house A (perch_carpark_roof)"),
-    Opening("CP-R", "lf_door", 4, 3, "x", None, True, "lift landing (drawn as a single D on the roof)"),
+    Opening("CP-R", "lf_door", 4.5, 3, "x", DOUBLE, True, "lift landing DD, 1.8 m (RT-C0 check: redrawn double)"),
     Opening("CP-R", "hhb_door", 33, 31, "z", PERSONNEL, True, "head house B (escape route, unlocked)"),
     # --- diner ground + yard ---
     Opening("DG", "front", 4.5, 0, "x", DOUBLE, True, "front double door (Tannery)"),
@@ -103,33 +108,34 @@ OPENINGS: List[Opening] = [
     Opening("DG", "k_bc", 16, 8, "x", PERSONNEL, True, "kitchen -> BC"),
     Opening("DG", "dr_bc", 13, 9, "z", PERSONNEL, True, "behind the counter -> BC"),
     Opening("DG", "bc_st", 16, 10, "x", PERSONNEL, True, "BC -> dry store"),
-    Opening("DG", "e_door", 19, 12, "x", PERSONNEL, False, "electrical"),
+    Opening("DG", "e_door", 19, 12, "x", NONROUTE, False, "electrical"),
     Opening("DG", "dr_r", 4, 12, "x", PERSONNEL, True, "dining -> rear lobby"),
     Opening("DG", "dr_of", 11, 12, "x", PERSONNEL, True, "back of the counter -> office (safe)"),
-    Opening("DG", "w1", 3, 13, "z", PERSONNEL, False, "customer WC 1"),
-    Opening("DG", "w2", 3, 16, "z", PERSONNEL, False, "customer WC 2"),
+    Opening("DG", "w1", 3, 13, "z", NONROUTE, False, "customer WC 1"),
+    Opening("DG", "w2", 3, 16, "z", NONROUTE, False, "customer WC 2"),
     Opening("DG", "r_sc", 5, 15, "z", PERSONNEL, True, "rear lobby -> stair SC"),
     Opening("DG", "fire_exit", 4, 18, "x", PERSONNEL, True, "R push-bar fire exit -> yard"),
     Opening("DG", "st_service", 16, 18, "x", SERVICE, True, "dry-store service door -> yard"),
-    Opening("DG", "yard_gate_w", 0, 22, "z", None, True, "yard gate W (Orchard)"),
-    Opening("DG", "yard_gate_e", 20, 23, "z", None, True, "yard gate E (laundromat yard)"),
+    Opening("DG", "yard_gate_w", 0, 22, "z", GATE, True, "yard gate W (Orchard)"),
+    Opening("DG", "yard_gate_e", 20, 23, "z", GATE, True, "yard gate E (laundromat yard)"),
     # --- diner upper ---
     Opening("DU", "u1_u2", 13, 5, "z", PERSONNEL, True, "function room -> storage"),
     Opening("DU", "u1_u3", 13, 11, "z", PERSONNEL, True, "function room -> dry goods"),
     Opening("DU", "u1_uc", 4, 12, "x", PERSONNEL, True, "function room -> landing corridor"),
     Opening("DU", "u1_u5", 11, 12, "x", PERSONNEL, True, "function room -> staff room"),
-    Opening("DU", "u4", 3, 13, "z", PERSONNEL, False, "WC"),
+    Opening("DU", "u4", 3, 13, "z", NONROUTE, False, "WC"),
     Opening("DU", "uc_sc", 5, 15, "z", PERSONNEL, True, "landing corridor -> stair SC"),
+    Opening("DU", "j", 3, 16, "z", NONROUTE, False, "janitor closet -> UC (RT-C0 check: added, as W2 below)"),
     # --- Tanner's Reach ---
     Opening("SG", "vehicle_gate", 46, 12.5, "z", 5.0, True, "Orchard vehicle gate z 10-15 (chained, LOCKPICK 8 s)"),
-    Opening("SG", "man_gate", 46, 40, "z", None, True, "Orchard man-gate (mesh vision panel)"),
+    Opening("SG", "man_gate", 46, 40, "z", GATE, True, "Orchard man-gate (mesh vision panel)"),
     Opening("SG", "tannery_gate", 26.5, 45, "x", 5.0, True, "Tannery gate x 24-29 (the mixer waits inside)"),
     Opening("SG", "c1", 3, 39, "x", PERSONNEL, True, "site office"),
     Opening("SG", "c2", 6, 39, "x", PERSONNEL, True, "welfare"),
-    Opening("SG", "c3", 9, 39, "x", PERSONNEL, False, "WCs"),
+    Opening("SG", "c3", 9, 39, "x", NONROUTE, False, "WCs"),
     Opening("SG", "c4", 12, 39, "x", PERSONNEL, True, "tool store (LOCKPICK 8 s; the thermite bag)"),
     Opening("SG", "mg", 37, 7, "x", PERSONNEL, True, "magazine door (padlock; UsePoint outside)"),
-    Opening("SG", "stw_foot", 26, 32, "x", 1.2, True, "scaffold stair tower entry (stair width; drawn closed)"),
+    Opening("SG", "stw_foot", 26, 26, "x", 1.2, True, "scaffold tower street entry, north face x 25-27 (RT-C0 check)"),
 ]
 
 # Vertical connections (graph edges between levels): (level a, room a, level b, room b, kind).
@@ -143,17 +149,14 @@ VERTICAL: List[Tuple[str, str, str, str, str]] = [
     ("SG", "STW", "SU", "F1", "scaffold stair"), ("SG", "X4", "SU", "F1", "ladder (no bags)"),
 ]
 # Openings this script assumes because the drawing does not show them (reported as WARN).
-ASSUMED: Dict[str, str] = {
-    "SG stw_foot": "the scaffold stair tower is drawn closed at street level (SSSSS on all sides); an entry is assumed "
-                   "on its south face (RT-C0: draw it)",
-}
+ASSUMED: Dict[str, str] = {}
 
 # Room list sizes (doc "Room list"; sizes between wall centre lines). ST is "7 x 8 less E" (56 - 4 m2).
 ROOM_LIST: Dict[str, Tuple[float, float]] = {
     "STA": (3, 6), "SB": (3, 6), "HHA": (3, 6), "HHB": (3, 6), "LF": (3, 3), "AB": (5, 6), "CWC": (3, 4),
     "CPL": (7, 6), "DR": (13, 12), "K": (7, 8), "BC": (7, 2), "E": (2, 2), "W1": (3, 3), "W2": (3, 3), "R": (2, 6),
     "SC": (3, 6), "OF": (5, 6), "U1": (13, 12), "U2": (7, 10), "U3": (7, 8), "U4": (3, 3), "J": (3, 3), "U5": (5, 6),
-    "YD": (20, 8), "C1": (3, 9), "C2": (3, 9), "C3": (3, 9), "C4": (3, 9), "MG": (3, 2.4), "STW": (4, 6),
+    "YD": (20, 8), "C1": (3, 9), "C2": (3, 9), "C3": (3, 9), "C4": (3, 9), "MG": (4, 3), "STW": (4, 6), "UC": (2, 6),
 }
 ROOM_LIST_AREA = {"ST": 7 * 8 - 4}
 ZONE_SIZES = {"FG": ((10, 6, 34, 26), (24, 20)), "F1": ((10, 6, 34, 26), (24, 20))}
@@ -190,8 +193,11 @@ HEADROOM = 2.1            # lc_check_scale.gd HEADROOM
 # Storey makeup (doc vertical table): (name, ceiling, plenum / slab / downstand, floor-to-floor)
 STOREYS = [("car park", 2.7, 0.3 + 0.5, 3.5), ("diner dining", 3.0, 0.5, 3.5), ("diner back rooms", 2.8, 0.7, 3.5)]
 # Guards / barriers a crew member must not get over (height, what, can a 0.35 m step stand next to it?).
+# 1.1 m is intentional (doc legend, RT-C0 check): non-standable tops (handrail or >= 50 deg coping) and nothing
+# standable within 0.5 m on the crew side, as Ostrander's parapets.
 BARRIERS = [("car-park facade crash barrier", 1.1), ("car-park ramp guards", 1.1), ("roof parapet", 1.1),
             ("F1 edge protection", 1.1), ("retaining-wall parapet", 1.1), ("hoarding", 2.4), ("rail palisade", 1.8)]
+GUARD_INTENTIONAL = 1.1
 GUARD_MIN = 1.0           # QC-33 guard height
 # The F1 slab's edge-protection openings: (name, clear width along the edge) from the drawn 'r' runs.
 SLAB_GAPS = [("ladder landing at the NW corner (rail from x 11 and z 7)", 1.0),
@@ -282,12 +288,17 @@ def check_openings(rep: Report) -> None:
         if ra == rb:
             rep.fail("%s is not on a wall (%s both sides)" % (tag, ra))
             continue
+        lo, hi = op.span()
+        wide = Opening(op.level, op.name, op.x, op.z, op.along, (hi - lo) + 2 * JAMB, op.route)
+        wa, wb = lv.sides(wide)
+        if wa != a or wb != b:
+            rep.fail("%s leaves < %.1f m of wall to a crossing wall (jamb)" % (tag, JAMB))
         if op.route:
             if op.width is None:
                 unstated.append(tag)
             elif op.width < ROUTE_DOOR_MIN:
                 narrow.append("%s %.1f m" % (tag, op.width))
-    rep.ok("%d openings lie on walls between two rooms" % len(OPENINGS))
+    rep.ok("%d openings lie on walls between two rooms, >= %.1f m jambs" % (len(OPENINGS), JAMB))
     if narrow:
         rep.fail("%d route doors are narrower than %.1f m (the legend's 0.9 m personnel doors; RT plan §3 Wrong 2): %s"
                  % (len(narrow), ROUTE_DOOR_MIN, "; ".join(narrow)))
@@ -356,6 +367,9 @@ def check_traversal(rep: Report) -> None:
     for nm, h in BARRIERS:
         if h < GUARD_MIN:
             rep.fail("%s %.2f m below the %.1f m guard rule" % (nm, h, GUARD_MIN))
+        elif h - JUMP_APEX < 0.05 and abs(h - GUARD_INTENTIONAL) < 1e-6:
+            rep.ok("%s %.2f m: %.2f m over the %.2f m jump apex, intentional (doc legend): non-standable top, nothing "
+                   "standable within 0.5 m" % (nm, h, h - JUMP_APEX, JUMP_APEX))
         elif h - JUMP_APEX < 0.05:
             rep.warn("%s %.2f m clears the %.2f m jump apex by only %.2f m: nothing standable (kerb, wheel stop, "
                      "step <= %.2f m) within 0.5 m of it" % (nm, h, JUMP_APEX, h - JUMP_APEX, STEP))

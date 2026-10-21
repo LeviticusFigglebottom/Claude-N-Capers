@@ -48,7 +48,8 @@ LAYOUTS: Dict[str, List[Veh]] = {
 }
 CRASH_LEAD = {"north_crash": (-2.0, 2.0), "east_crash": (4.0, -2.0)}
 DOC_QUEUE_END = {("north", 2): -52.0, ("north", 3): -63.0}
-DOC_THIRD_TRUCK_SHIFT = 11.0                             # "the 3rd truck puts the rear car 11 m further back"
+DOC_CASH_REAR = {"north": (-57.0, -62.0), "east": (57.0, 62.0)}   # Convoy composition (RT-C0 check)
+DOC_THIRD_TRUCK_SHIFT = {"bullion": 12.0, "cash": 10.5}   # truck_count row (RT-C0 check): T3 length + the 3 m gap
 # Doc rear-door points (Loot path).
 DOC_REAR = {"north_clean": {"T1": (-6, -32), "T2": (-6, -44), "T3": (-6, -56)},
             "east_clean": {"T1": (33, -4), "T2": (45, -4), "T3": (56, -4)}}
@@ -73,7 +74,7 @@ PATHS: List[Tuple[str, float, List[Pt]]] = [
     ("east T3 -> entrance -> E1 (uphill)", 50, [(56, -4), ENTRANCE, E1]),
     ("east T1 -> E2", 60, [(33, -4), E2]),
     ("east T3 -> E2", 36, [(56, -4), E2]),
-    ("east T1 -> entrance -> lift (E3)", 40, [(33, -4), ENTRANCE, LIFT]),
+    ("east T1 -> entrance -> lift (E3)", 50, [(33, -4), ENTRANCE, LIFT]),
     ("crash -> entrance -> E1", 45, [JUNCTION, ENTRANCE, E1]),
     ("crash -> E2", 95, [JUNCTION, E2]),
     ("crash -> stair A door -> lift (E3)", 50, [JUNCTION, STAIR_A_DOOR, LIFT]),
@@ -122,11 +123,17 @@ def check_clean(rep: Report) -> None:
             for n, end in ((2, two), (3, three)):
                 doc = DOC_QUEUE_END[("north", n)]
                 rep.expect(abs(end - doc) <= 1.0, "north queue end with %d trucks z %.1f (doc %g)" % (n, end, doc))
-            shift = two - three
-            if abs(shift - DOC_THIRD_TRUCK_SHIFT) > 0.5:
-                cash = shift - (LEN["bullion"] - LEN["cash"])
-                rep.fail("the 3rd truck moves the rear car %.1f m back with a bullion T3 (%.1f with a cash T3); "
-                         "the doc says %g m (variable table, truck_count)" % (shift, cash, DOC_THIRD_TRUCK_SHIFT))
+            for t3, doc in DOC_THIRD_TRUCK_SHIFT.items():
+                shift = LEN[t3] + GAP
+                rep.expect(abs(shift - doc) < 1e-6 and (t3 != "bullion" or abs((two - three) - doc) < 1e-6),
+                           "a %s T3 moves the rear car %.1f m back (doc %.1f)" % (t3, shift, doc))
+            cash_rear = (vs[3][2] - LEN["cash"] - GAP, vs[3][2] - LEN["cash"] - GAP - LEN["car"])
+            rep.expect(cash_rear == DOC_CASH_REAR["north"], "north rear car with t3_cash z %g..%g (doc %s)"
+                       % (cash_rear + (DOC_CASH_REAR["north"],)))
+        else:
+            cash_rear = (vs[3][2] + LEN["cash"] + GAP, vs[3][2] + LEN["cash"] + GAP + LEN["car"])
+            rep.expect(cash_rear == DOC_CASH_REAR["east"], "east rear car with t3_cash x %g..%g (doc %s)"
+                       % (cash_rear + (DOC_CASH_REAR["east"],)))
         for t, pt in DOC_REAR.get(key, {}).items():
             v = next(x for x in vs if x[0] == t)
             rear = v[3]
@@ -137,8 +144,6 @@ def check_clean(rep: Report) -> None:
             pt = DOC_REAR[key][t]
             rep.expect(abs(S.ramp_y(pt[0]) - y) <= 0.1, "%s %s rear point height %.2f (doc %.1f)"
                        % (key, t, S.ramp_y(pt[0]), y))
-    rep.info("the layout positions assume a 9 m bullion T3; with t3_cash (7.5 m) the rear car's marker is 1.5 m "
-             "too far back unless cargo_t3 picks its own marker (doc does not say)")
 
 
 def check_fit(rep: Report) -> None:

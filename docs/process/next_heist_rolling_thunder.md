@@ -115,8 +115,9 @@ B = `game/content/**`, C = `game/world/**`, `game/assets/**`, `tools/blender/**`
 - Map: no `game/world/heists/rolling_thunder/`; def, variants, mission, blueprint. The `--check`-only plan scripts now
   exist (D-149.10): `tools/levelcheck/plans/rolling_thunder_{checklib,floors_ascii,site_ascii,convoy,slots,check}.py`;
   `python3 tools/levelcheck/plans/rolling_thunder_check.py` runs all four reports. First run (2026-10-21): FAIL with 9
-  design-doc inconsistencies for RT-C0 (route doors 0.9 m, the upper corridor and J's door, MG size, controller ↔
-  man-gate distance, P_N / P_E vs their closures, the 3rd-truck shift, the east T1 → lift distance); no emitter yet.
+  design-doc inconsistencies (route doors 0.9 m, the upper corridor and J's door, MG size, controller ↔ man-gate
+  distance, P_N / P_E vs their closures, the 3rd-truck shift, the east T1 → lift distance). Fixed in the doc (RT-C0
+  check, 2026-10-21): **PASS**, 1 warning left for G1 (HEAVY throw over the car-park west barrier, §7.5). No emitter yet.
 - 15 of the 26 kits the room list names (§3c). New props/vehicles (§3c). Assault events (none in the doc).
 - B (per its prep doc): VO text (0 of the doc's 42 lines), briefing steps, preplan/room labels (D-141.5, after G1), achievements,
   briefing intel + blueprint (need the map), `asset.c4_drop`, cue ids for audio_cues v1.4 (QC-85).

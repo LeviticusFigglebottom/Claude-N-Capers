@@ -188,10 +188,10 @@ Cross-env requests are QC-80..QC-89; QC-80/82/84 are now ENV A roadmap rows A5-0
 
 | Edge | Closure |
 |---|---|
-| Orchard north (z −90) | A **traffic-management truck** with an arrow board and water-filled barriers across the northbound lanes (x 1…10); the **P_N** spawn is behind it (6, −86). The southbound lanes (x −10…−1) stay open as the **convoy lane** for `route_north`. Beyond z −92 is an `OUT_OF_BOUNDS` zone (D-040, respawn at `oob_respawn` spawns on the north sidewalks). Vista: Orchard continuing under the Skyway to a bend at z −200 (facades). |
+| Orchard north (z −90) | A **traffic-management truck** with an arrow board and water-filled barriers across the northbound lanes (x 1…10, z −85.5…−83); the **P_N** spawn is behind it at (6, −88), 2.5 m beyond its far face (RT-C0 check: P_N was on the crew side of the truck). The southbound lanes (x −10…−1) stay open as the **convoy lane** for `route_north`. Beyond z −92 is an `OUT_OF_BOUNDS` zone (D-040, respawn at `oob_respawn` spawns on the north sidewalks). Vista: Orchard continuing under the Skyway to a bend at z −200 (facades). |
 | Orchard south (z 72) | A **jack-knifed articulated lorry** (tractor + trailer; replaces the stalled bus, D-149.6) across the carriageway (x −8…10, z 64…66) and barriers on both sidewalks; **P_S** behind it (0, 68). Vista to z −250 under the Skyway (OOB beyond z 72). |
 | Tannery west (x −80) | An articulated lorry across the road (x −76…−74) and barriers on the sidewalks; **P_W** behind (−78, 0). Vista: Tannery to x −300, the low sun at the end of it. |
-| Underpass east (x 104, −5.0) | A **jack-knifed lorry** across the eastbound lanes (z 0…8, x 98…102), leaving the westbound lanes (z −8…0) as the **convoy lane** for `route_east`; **P_E** behind it (102, 4, −5.0). OOB beyond x 104. The cut walls (5 m) close the sides. |
+| Underpass east (x 104, −5.0) | A **jack-knifed lorry** across the eastbound lanes (z 0…8, x 96…100), leaving the westbound lanes (z −8…0) as the **convoy lane** for `route_east`; **P_E** behind it (102, 4, −5.0), 2 m beyond its far face (RT-C0 check: the lorry moves 2 m west; P_E was on its far face). OOB beyond x 104. The cut walls (5 m) close the sides. |
 | Rail palisades (x 64 / x 86) | 1.8 m steel palisade (bars, see-through, bullet-transparent); the tracks are dressing and not reachable (no gate on our side). |
 | Rail lane north (z −90) | Palisade gate (P_NE ENTRY, breachable). **P_NE** behind it (60, −76) under a footbridge. |
 | West / north neighbours | Warehouse facades with no openings at ground (x < −62); Tanner's Reach hoarding (2.4 m, solid, blocks LOS and bullets) except its three gates. |
@@ -221,9 +221,9 @@ Legend:
       -80  -70  -60  -50  -40  -30  -20  -10  0    10   20   30   40   50   60   70   80   90   100
   -92 %%%%%%%%%                        :.          .:                   |     |  H    H  |
       %%%%%%%%%                        :.  PSKY    .:                   |     |  H    H  |
-  -88 %%%%%%%%%                        :.     KKKKK.:                   |     |  H    H  |
+  -88 %%%%%%%%%                        :.        PN.:                   |     |  H    H  |
       %%%%%%%%%                        :.          .:                   |     |  H    H  |
-  -84 %%%%%%%%%                        :.        PN.:                   |     |  H    H  |
+  -84 %%%%%%%%%                        :.     KKKKK.:                   |     |  H    H  |
       %%%%%%%%%                        :.          .:                   |     |  H    H  |
   -80 %%%%%%%%%                        :.          .:                   |     |  H    H  |
       %%%%%%%%%                        :.          .:                   |  PNE|  H    H  |
@@ -265,10 +265,10 @@ Legend:
         K                              :.          .:                          UNDERPASS
    -4   K       TANNERY RD  W          :.          .:                            H    H    E2
         K                              :.          .:           RAMP 0>-5        H    H
-    0 PWK                              :.          .:                            H    H        KK
-        K                              :.          .:                            H H4 H        KKPE
-    4   K                              :.          .:                            H    H        KK
-        K                              :.          .:                            H    H        KK
+    0 PWK                              :.          .:                            H    H       KK
+        K                              :.          .:                            H H4 H       KK PE
+    4   K                              :.          .:                            H    H       KK
+        K                              :.          .:                            H    H       KK
     8 .................................:.          .:............................H....H.....P......
       .................................:.          .:............................H....H............
    12                     bbbbb        :.          .:          wwwwwwwwwwwwwww|wwHwwwwHww|wwwwwwwww
@@ -316,8 +316,14 @@ with the Dockside Burn tool, its `--check` mode verifies that:
 
 Legend:
 - **Walls and openings:** `#` exterior or core wall; `|`/`-` interior wall; `D` door (personnel
-  0.9 m, service 1.0–1.2 m; diner front `DD` 1.8 m double); `W` window; `g` gate; `r` 1.1 m guard
-  barrier (open car-park façade, ramp edges, slab-edge protection); `p` roof parapet 1.1 m.
+  1.0 m on every route, 0.9 m only for the non-route WCs and the electrical closet; service 1.0–1.2 m; diner
+  front `DD` and the lift landings `DD` 1.8 m double; RT-C0 check: D-104 / next_heist.md §7, so 27 route doors
+  that were 0.9 m are now 1.0 m; every one still fits its wall run with ≥ 0.2 m jambs, so no plan is redrawn); `W` window; `g` gate (pedestrian gates 1.2 m:
+  the site man-gate, the diner yard gates; RT-C0 check); `r` 1.1 m guard barrier (open car-park façade, ramp
+  edges, slab-edge protection); `p` roof parapet 1.1 m. **The 1.1 m guard height is intentional** (RT-C0 check): it
+  is 0.02 m over the 1.08 m jump apex, as on Ostrander's parapets, so every guard top is a handrail or a coping
+  sloped ≥ 50° (nothing to stand on) and nothing standable (kerb, wheel stop, step ≤ 0.35 m) stands within 0.5 m
+  of it on the crew side.
 - **Stairs and ramps:** `^v` U-stair; `vv`/`==` the scaffold stair seen from above; `A` ramp
   surface rising north (car park); `v` where a ramp arrives from below; `L` ladder (site frame, no
   bags; S10.1b).
@@ -420,7 +426,8 @@ Ground notes:
   - The **entrance** (local x 6…10, site x 22…26) has a barrier arm `_` and a 2.4 m height bar.
   - Stair A has a pedestrian door onto the Orchard sidewalk (local 0, 4) and one onto the lobby
     (local 3, 5).
-  - The **lift** LF serves 0.0, 3.5 and 7.0 (`bag_lift`, 2 bags, 8 s per floor).
+  - The **lift** LF serves 0.0, 3.5 and 7.0 (`bag_lift`, 2 bags, 8 s per floor); its landing doors are 1.8 m
+    double leaves (`DD`) on all three levels (RT-C0 check: the roof's was drawn single).
 - **Attendant booth AB:** windows N and W, plus the **pay station** `S` (local 9, 29: `safe` SMALL,
   `methods [saw, drill, c4]`, `small_loot` ×2).
 - **Escape and ramp:** E1 (the escape van) waits in the west aisle. The ramp R1 foot is at the south
@@ -485,7 +492,7 @@ Deck 2 notes:
     0 #######pppppppppppppppppppppppppppppp
       #HH#LF#                             p
     2 #^v#  #                             p
-      #^v#D##                             p
+      #^v#DD#                             p
     4 #^v#   P P                   v      p
       #  D                                p
     6 #### l                     l     r  p
@@ -583,7 +590,7 @@ Local origin = the diner's NW corner (site 14, 14): **site x = local x + 14, sit
       #U4DR|SC|U5  |      #
    14 #  | |^v|    |      #
       ---- D^v|    |      #
-   16 #  | |^v|    |      #
+   16 #J D |^v|    |      #
       #  | |  |    |      #
    18 ###|#|##|####|#######
 ```
@@ -636,7 +643,7 @@ Local origin = the hoarding's NW corner (site −60, −56): **site x = local x 
       |                                             |
    24 |                                             |
       |                                   C         |
-   26 |         o     o     o SSSSS     o           |
+   26 |         o     o     o S  SS     o           |
       |                       S   S                 |
    28 |  C                    S^v S                 |
       |                       S^v S                 |
@@ -697,7 +704,9 @@ Site notes:
   - On the slab: starter bars, pallets of blocks, a mortar mixer.
   - Every open slab edge has **edge protection**: a 1.1 m double guard rail plus a toe board and
     mesh (`r`; QC-33 guard ≥ 1.0 m).
-  - It is reached by the **scaffold stair tower** (S, bags allowed) and the **ladder** (L, no
+  - It is reached by the **scaffold stair tower** (S, bags allowed; its street entry is a 1.2 m opening in the
+    tower's north face at x 25…27, from FG under the slab edge, because the U-stair's foot and head are at the
+    same north end; RT-C0 check) and the **ladder** (L, no
     bags).
 - **Cabins (C1…C4, single-storey 3 × 9 m units):** each has a door S and windows N.
   - C1: site office.
@@ -705,7 +714,7 @@ Site notes:
   - C3: WCs.
   - C4: tool store (LOCKPICK 8 s). In `stores_thermite`/`stores_both` it holds the **thermite bag**
     (`loot.thermite`; a thermic-lance kit in the fiction), at `L`.
-- **Magazine (MG):** a 3 × 2.4 m steel explosives store with a padlocked door (`padlock`: lockpick
+- **Magazine (MG):** a 4 × 3 m steel explosives store (as drawn; RT-C0 check) with a padlocked door (`padlock`: lockpick
   8 s or the hand saw; G.SAW_TARGET). In `stores_c4`/`stores_both` it holds **two boxes of
   breaking charges** (`item.c4` ×4 each, QC-84). One box opens one truck by C4.
 - **Signal controller (X):** a street cabinet in the hoarding's SE corner at local (44, 43), site
@@ -713,8 +722,9 @@ Site notes:
   - Its door is a `padlock` (`ctrl_locked`: lockpick 8 s or saw; `ctrl_open`: ajar).
   - Inside is a `hack_terminal` "signal rig": `duration_s` 15, `interruptions` 0–1 (◇), objective
     `[signals]`, silent.
-  - It sits 2 m from the Orchard man-gate: a pedestrian on the sidewalk can see through the gate's
-    mesh panel. That is the setup's tension point.
+  - It sits 3.6 m from the Orchard man-gate (as drawn; RT-C0 check, was "2 m"): a pedestrian on the
+    sidewalk can still see it through the gate's 1.2 × 1.0 m mesh panel (the line from the cabinet through
+    the panel lands on the sidewalk 2–5 m beyond the gate). That is the setup's tension point.
 - **Crane and mixer:**
   - Crane base T: the mast ladder is caged and locked (dressing); the cab is S3 (police only,
     rare).
@@ -750,14 +760,15 @@ Sizes are between wall centre lines (m).
 | U2 | storage | 7 × 10 | 2.8 | `storage_archive` | Old furniture, boxes of menus, Christmas decorations. |
 | U3 | storage (dry goods overflow) | 7 × 8 | 2.8 | `storage_receiving` | Shelving. |
 | U4 | restroom | 3 × 3 | 2.8 | `restroom_single` | WC for the function room. |
-| J | janitor | 3 × 3 | 2.8 | `janitor_closet` | Mop sink, buckets (U-level, under U4's partition). |
+| J | janitor | 3 × 3 | 2.8 | `janitor_closet` | Mop sink, buckets (U-level, under U4's partition). Door (0.9 m, non-route) onto the landing corridor UC at (3, 16), as W2 below it (RT-C0 check: it had none). |
+| UC | corridor (upper landing) | 2 × 6 | 2.8 | `corridor_service` | Upper landing over R (local x 3…5, z 12…18): U1, U4, J and stair SC open off it (RT-C0 check: drawn, was missing from the list). |
 | U5 | staff_room | 5 × 6 | 2.8 | `break_room` | Staff break room: fridge, table + chairs, counter + sink, microwave, coffee, bulletin board. |
 | YD | exterior (diner yard) | 20 × 8 | — | `exterior_yard_small` | Bins (`body_container`), crates, waste oil, the staff smoking chair. |
 | C1 | office (site office) | 3 × 9 | 2.6 | `site_office` | Plan table, drawings on the wall, kettle, hard-hat rack, the site's radio. |
 | C2 | break_room (welfare) | 3 × 9 | 2.6 | `break_room` | Mess table, microwave, fridge, sink, notice board. |
 | C3 | restroom | 3 × 9 | 2.6 | `site_wc` | 3 WC cubicles, wash trough. |
 | C4 | storage (tool store) | 3 × 9 | 2.6 | `site_tool_store` | Racks of tools, gas bottles (dressing), the thermite bag slot. LOCKPICK door. |
-| MG | — (a container prop, no RoomVolume) | 3 × 2.4 | 2.2 inside | — | The steel explosives magazine; padlocked door. Its 2.2 m interior is below every room band, so it is a prop, not a room. The C4 boxes are `item_pickup`s (QC-84) reached from the open door's UsePoint. |
+| MG | — (a container prop, no RoomVolume) | 4 × 3 (as drawn; RT-C0 check) | 2.2 inside | — | The steel explosives magazine; padlocked door. Its 2.2 m interior is below every room band, so it is a prop, not a room. The C4 boxes are `item_pickup`s (QC-84) reached from the open door's UsePoint. |
 | FG | exterior (frame, ground) | 24 × 20 | 3.2 (slab soffit) | `site_frame_ground` | Columns, formwork stacks, rebar bundles, a site forklift (cover; replaces the dumper truck, D-149.6). |
 | F1 | exterior (frame slab +3.5) | 24 × 20 | open | `site_frame_slab` | Edge protection, block pallets, starter bars, a mortar mixer. H3. |
 | X1 | exterior (Orchard Ave + junction + Tannery west) | — | — | `exterior_street` | Signals on gantries, lamp posts, parked cars, bins, a newsstand, Skyway piers. |
@@ -868,7 +879,8 @@ applies (QC-83).
 - **Composition** (in driving order): a lead escort car (5 m), then Truck 1 (always a **cash van**,
   `vl_cash`, 7.5 m), Truck 2 (always a **bullion truck**, `vl_bullion`, 9 m), Truck 3 (with
   `trucks_3`: cash or bullion by `cargo_t3`, 7.5/9 m), then the rear escort car (5 m). The gaps are
-  3 m.
+  3 m. The layout positions below are for a bullion T3 (9 m); with `t3_cash` (7.5 m) the rear car's marker is
+  1.5 m nearer the stop line (north z −57…−62, east x 57…62, ramp −3.6…−4.4), so the 3 m gap holds (RT-C0 check).
 - **Routes** (`convoy_route`):
   - `route_north`: southbound down **Orchard Avenue** under the Skyway, in the west lanes
     (x −6), through the north closure's convoy lane.
@@ -1045,7 +1057,7 @@ The table gives flat distances from each spawn to each holdout centroid. All are
 
 | Spawn (tag) | Position (x, z, y) | Occluder (out of LOS of loot and escapes) | → H1 | → H2 | → H3 | → H4 |
 |---|---|---|---|---|---|---|
-| **P_N** `police_n` (Orchard north) | (6, −86, 0) | the traffic-management truck + its arrow board | 61 | 110 | 64 | 110 |
+| **P_N** `police_n` (Orchard north) | (6, −88, 0) (RT-C0 check) | the traffic-management truck + its arrow board | 63 | 112 | 65 | 112 |
 | **P_S** `police_s` (Orchard south) | (0, 68, 0) | the jack-knifed lorry (D-149.6) | 106 | 51 | 115 | 101 |
 | **P_W** `police_w` (Tannery west) | (−78, 0, 0) | the articulated lorry + the low sun behind it | 117 | 105 | 57 | 153 |
 | **P_E** `police_e` (underpass east) | (102, 4, −5.0) | the jack-knifed lorry, the cut walls | 76 | 80 | 147 | 27 |
@@ -1143,7 +1155,8 @@ enabled when they open, with its UsePoint on the rear step. No interior navmesh 
   - **E1:** T1 → entrance (24, −14) → van: ≈ 35 m; T3 ≈ 50 m uphill.
   - **E2:** T1 ≈ 60 m, T3 ≈ 36 m, all downhill in the trench (S2's lane). **The short one**
     for the rear trucks.
-  - **E3:** T1 → entrance → lift ≈ 40 m + 16 s; by the ramps ≈ 95 m.
+  - **E3:** T1 → entrance → lift ≈ 50 m + 16 s (the straight-line chain through the entrance is already
+    48.1 m; RT-C0 check, was ≈ 40 m); by the ramps ≈ 95 m.
 - **Crash stops** (the junction, ~(0, 0)): E1 ≈ 45 m, E2 ≈ 95 m, E3 ≈ 50 m + lift.
 - **Gold is HEAVY** (×0.5 speed, no sprint, jump ×0.5, 2 m throw; D-102): on the long routes, `carry_bag` orders and
   the lift decide the run.
@@ -1229,7 +1242,7 @@ weights use A2-08 / A3-10 (QC-18).
 | variable | options (slot ids) | weights | gameplay effect (the decision it changes) |
 |---|---|---|---|
 | `convoy_route` | `route_north`, `route_east` | 0.55, 0.45 | **Where the fight is and which holdouts matter.** North: the queue under the Skyway (S1-blind), held from H1/H3, E1 short. East: the queue in the trench, held from H1/H2/H4, E2 short for the rear trucks. |
-| `truck_count` | `trucks_2`, `trucks_3` | per difficulty (Convoy units table) | **How much there is to open and how far the queue reaches** (the 3rd truck puts the rear car 11 m further back: on the east route, deep in the trench). |
+| `truck_count` | `trucks_2`, `trucks_3` | per difficulty (Convoy units table) | **How much there is to open and how far the queue reaches** (the 3rd truck puts the rear car its own length + the 3 m gap further back: 12.0 m with a bullion T3, 10.5 m with a cash T3; RT-C0 check. On the east route that is deep in the trench). |
 | `cargo_t3` | `t3_cash`, `t3_bullion` | 0.5, 0.5; `requires: {truck_count: [trucks_3]}` | **Whether the third truck is a fast saw (cash, MEDIUM) or a long saw/thermite target with HEAVY gold.** |
 | `cash_bags` (scalar) | 4, 5, 6 per cash van | Routine 0.3/0.5/0.2; Brutal+ 0.2/0.4/0.4 | **Whether one cash van alone meets the 4 required.** |
 | `gold_bags` (scalar) | 3, 4 per bullion truck | 0.5, 0.5 | **How much HEAVY loot is worth the haul.** |
@@ -1268,7 +1281,7 @@ weights use A2-08 / A3-10 (QC-18).
   - The last holdout is the ground deck, with H1 overhead.
 - **Van in the underpass (E2):** in the east cut (92, −4, −5.0), behind the lorry's gap.
   - Same rules. The last holdout is H4.
-  - P_E is 10 m beyond the lorry: the van arrives through the police's own lane (it is "Reyes's
+  - P_E is 10 m beyond the van, 2 m behind the lorry (RT-C0 check): the van arrives through the police's own lane (it is "Reyes's
     nephew in a borrowed council van", so the police let it pass).
 - **Heli on the car park roof (E3):** escape type `heli` over the pad (32, −34, +7.0),
   `arrival_delay_s = escape_eta_s` + 20 s (approach).
