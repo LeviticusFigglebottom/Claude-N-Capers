@@ -369,3 +369,26 @@ comparison made under similar load is meaningful; ideally both trees get re-run 
     with 26-29 enemies alive and box CPU at 59% at the end. That's not comparable to the 240 s runs.
   - So A's BondSafe fix needs a run where the pilot actually goes there. Seed 1037's route on r256 doesn't reach it within 240 s on this box, and the 480 s route skipped it.
 - Recommendation: re-run r256 (240 s and a longer budget) when the box is idle, for clean perf numbers. For BondSafe, a po5 flag or flow that targets it directly would avoid route variance.
+## GPU-19: full OF loud proof attempt (A's new pilot work)
+- Tree: local branch gpu/a5 = trunk 18f9b5ff + merge of env/a-core 0210e889 (clean, merge c35bcdd2). Import exit 0, 28 s.
+- Same command as GPU-18 with `--po5-budget=1500`. Ran 04:50:14-05:15:17. Log `gpu/renders/a/of_a5_b1500.txt`, 26 PNGs in `gpu/renders/a/of_a5_b1500/`.
+- **RESULT: `[PO5 1501.8s] RESULT FAIL (code 2) flow=auto_loud heist=Ostrander Federal seed=1037`** (`FAIL budget 1500 s exceeded`). The phase never left LOUD.
+- **Objective EVENTs** (t = heist time): casing 2 @3; keycard, code_hint, code_pc, server, vault_gate, lasers 1->2 @6; vault_drill 1 @51; drill_delivery 2 @147;
+  server_drives secured @311 and @450 (objective server_drives -> 2 @450); **president_safe -> 2 @422**; **vault_drill -> 2, vault_breach -> 2 @562**, which made
+  **`bond_safe -> 1`**, deposit_boxes -> 1, vault_loot -> 1, gold_cage -> 1 available @562; cash_bricks secured @646 and @650 (secure -> 1).
+  **No objective event after t=650** (the last 850 s of the run). **bond_safe never got past 1**, and the pilot never targeted BondSafe (no BondSafe/aimed lines).
+- **Where it stalled: bagged vault loot can't get out of the basement.**
+  - The pilot bags VaultCash in the vault and calls the Hoist. 3 hoist sends happened, each `Hoist: lift 0 -> 1 with 1 bag(s)`, but no loot_secured follows any of them,
+    so nobody takes the bag off the top landing.
+  - From 1163 s: `FINDING a bag to take up a ladder and no hoist landing within 15 m (or 6 tries spent)`, then **331x `pilot: RopeLadder ahead with a bag: not climbing (the bag goes by the hoist)`**
+    once a second, from 1163 s until the budget ran out at 1500 s. The pilot is stuck at the ladder with a bag.
+  - Crew bag-carry: `FINDING slot N carries loot.cash_bricks: leading it to the secure zone` x4, and the leading goto to the secure zone keeps failing at the same spot:
+    `goto (3.5, 0.2, -4.3) FAILED at (4.6, 0.0, -1.2) after 10.0 s` (752.9 s, 891.7 s, 1030.5 s; also at 493 s from (8.0, 0.0, -1.0)).
+- **STUCK: 15** (mostly police bodies in the path, e.g. `rays: ... Npc_police@(8.1, 0.1, 1.2)` around 705-716 s), with detours.
+  **FAILED gotos: 7** (the 5 secure-zone ones above, plus `(25.6, 0.2, 14.6) FAILED at (14.1, 5.0, 7.8) after 20.2 s` @541.5 and `(30.4, -3.8, 19.0) FAILED at (28.1, -4.0, 18.9)` @646.5,
+  then `could not reach .../Loot/VaultGold/Interactable (bag_loot)`).
+  **"blocks the way": 2** (`Npc_police blocks the way: shoot` @523.6 and @713.2). Empty-mag melee: 1 (`Npc_police in reach with an empty mag: melee` @542.1). A's new engage logic fires.
+- **HITCHES:** `HITCHES 778 of 231088 heist frames over 50 ms (20 of them screenshot frames), worst 2789 ms, without a shot 2789 ms` (heist load).
+  0.34% of frames over 50 ms across 25 min. Cataclysm escalated to police=67, peak 29 alive (13 bulwark, 2 longshot, corpsman, brandt).
+- **CPU load** (5 s samples over the run, `gpu/renders/a/of_a5_b1500_cpu_load.txt`): **avg 29.5%, min 10.5, max 62.9**. Other local sessions' jobs were sharing the box.
+  No same-load control: a second 25-min run of an older tree wouldn't reach these phases (BondSafe/vault) anyway. Treat the HITCHES figure as measured under about 30% background load.
