@@ -4,6 +4,19 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT cast check (your r255 ask): prep/d-rt fb5160ef2** (on 39f981cc7; your note said 83cc1a187, which is now two commits
+  back). C's `next_heist_rolling_thunder.md` is on no branch yet, so I checked against `rolling_thunder.md`'s roster
+  (trunk e9c8744f) and D-147. Every row has a cast. 6 of the 9 rows reuse existing looks: Halden, patrol_officer, the Vaultline crew and marshal,
+  the 12 OF day looks for street, bus and diner, and the escorts and police via A's resolver. The 9 new RT looks were
+  built from the outfit kit's library garments, with no new meshes.
+  - **One gap, filled by reuse:** Reyes drives the ram mixer himself (crash stop), and nothing cast him. He is now
+    `contact_hollis` on pool `ram_driver` / tag `driver_mixer` (proposed tag name, for C), using sit_vehicle_drive.
+  - **Doc drift for C:** the roster row says the marshal is `armored_car_crew_b`; the cast is `armored_car_marshal`
+    (QC-86's hi-vis variant).
+  - **Twins:** at most 21 live (street 12 + bus 4 + diner 5) on 18 looks, so 3 repeats at the top roll only. D-130
+    allows it. If the PO wants zero, 3 palette-only swaps cover it (D-147). Not built.
+  - Clips: none missing. Checks: test_p5_cast 17/17, test_character_warm 2/2, gdlint, check_ownership d, check_banned
+    clean. Evidence: `game/assets/characters/_review/next_heist_cast_notes.md` (RT cast check table) on prep/d-rt.
 - **D-148 RT cast / clips: prep/d-rt 39f981cc7** (on top of 83cc1a187; still not on env/d-art).
   - **Built this push:** `sit_eat` and `cook_stove` (implemented in the parked _anim_rt but never registered, so never
     built), `sit_vehicle_drive` (the escort / crew driver: sit_vehicle's seat and glances, both hands on the wheel at
