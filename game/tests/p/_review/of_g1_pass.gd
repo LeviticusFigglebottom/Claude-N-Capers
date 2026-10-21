@@ -1875,6 +1875,11 @@ func _vc_window(max_age: float) -> bool:
 		_vc_away_since = rt.heist_time_s
 	if _vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age:
 		return false
+	return _vc_others() == ""
+
+
+## Step 6: the first other basement guard that holds a VC crossing ("" = none), for the window and its log.
+func _vc_others() -> String:
 	var gate_at: Vector3 = _of(Vector3(14.5, OF_FFL[0], 9.0))
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
@@ -1885,8 +1890,8 @@ func _vc_window(max_age: float) -> bool:
 		# filled 1.0 on the bag trip in 1.5 s, t=576).
 		if (p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or pilot.flat_dist(p, gate_at) < 15.0 \
 				or (p.z > 6.5 and p.z < 9.6 and p.x < 40.0):
-			return false
-	return true
+			return "%s %s" % [g.name, Po5Pilot._v(p)]
+	return ""
 
 
 func _wait_vc_window(label: String, max_age: float, max_s: float = 900.0) -> void:
@@ -1898,7 +1903,8 @@ func _wait_vc_window(label: String, max_age: float, max_s: float = 900.0) -> voi
 				var g: NpcBase = n as NpcBase
 				if g != null and g.is_alive() and _has_tag(g, "guard_vault"):
 					vg = Po5Pilot._v(g.global_position)
-			note("GHOST waiting to cross VC (%s): vault guard at %s" % [label, vg])
+			note("GHOST waiting to cross VC (%s): vault guard at %s (away %d, since %.0f s); others: %s" % [label, vg,
+				_vc_away_n, rt.heist_time_s - _vc_away_since, _vc_others()])
 		await wait_s(0.5)
 		t += 0.5
 	note("GHOST VC %s %s after %.0f s" % [label, "window" if t < max_s else "NO window (going anyway)", t])
