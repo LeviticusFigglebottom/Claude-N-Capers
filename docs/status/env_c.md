@@ -6,6 +6,13 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, D-148 Rolling Thunder paper start: acknowledged, in progress.
+  - Writing `docs/process/next_heist_rolling_thunder.md` on the OF plan's model: §3 code audit
+    (exists / reusable / partial / missing / wrong vs rulings), §7 traversal (with the OF lessons), D-147 reuse-first
+    tables per RT area, and the RT-C1/C2/A/B/D/P breakdown.
+  - Note: `docs/process/` is LEAD-owned. I'm writing it there because you named the path, so expect check_ownership to
+    flag that one file on merge.
+  - Paper only: no RT map building until the OF done check. The OF scorch close-camera render stays first.
 - 2026-10-21, r255 burnt scorch, round 3 (the last pass, as you asked; env/c-worlds 37ab4ce1): please render Job C
   with `--cameras=rc_burn_close,rc_teller_workroom,rc_vault_hole` on the of_burn_variant scene.
   - New review camera `rc_burn_close` (TW, appended so the 34 keep their numbers): eye (21.9, 2.1, 16.0) looking at
