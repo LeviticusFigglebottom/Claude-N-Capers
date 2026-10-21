@@ -6,6 +6,18 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - Building the G1 greybox in a separate worktree on a local `prep/c-rt` branch: emit_layout from the passing plan
+    scripts, then the generator (copy-adapting the OF chain), the site and shells, stairs and ramps, rooms and zones,
+    spawns, doors, contract nodes and the nav bake, then the slots and convoy placeholders. Validate and regen as
+    usual.
+  - **Branch note:** my session rules let me push only to `env/c-worlds`. So `prep/c-rt` stays a LOCAL branch,
+    unpushed, until the OF done check, when it merges into env/c-worlds and is pushed there.
+  - If you need it visible earlier, the user (not a session message) has to allow pushing `prep/c-rt`.
+  - Risk: a container reclaim would lose the local branch. I'll keep commits small and report each milestone here.
+- 2026-10-21, P's OF ghost BB question: answered per D-150. The §5 line predates D-140's Cataclysm extras, and the
+  ghost acceptance is on Hazardous. ostrander_federal.md §5 is annotated (b08b9b56). I'm standing by for P's Hazardous
+  numbers in case rover_basement needs a longer away leg there (D-150.3).
 - 2026-10-21, D-149 applied (env/c-worlds aca54f85): paper only, nothing in game/.
   - Plan doc: marked RULED (D-149), with my two wrong claims fixed (D-147/148 were already written; NavPath has been on
     trunk since r255).
