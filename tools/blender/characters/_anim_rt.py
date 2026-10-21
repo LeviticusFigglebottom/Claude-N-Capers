@@ -30,11 +30,12 @@ import numpy as np
 
 import _anim as A
 import _anim_humanoid as H
+import _anim_p5 as P5
 from _anim import FPS, TAU, Clip, Keys, LegIK, Pose, Skeleton, Solver, add_rot, hand_on, hand_shape, rxd, ryd, rzd, \
     smooth, spine, unit, v3
 
 #: the clips this module builds (each one row in anim_humanoid.CLIPS)
-NAMES = ("sit_vehicle", "vehicle_exit_l", "vehicle_exit_r", "sit_eat", "cook_stove")
+NAMES = ("sit_vehicle", "vehicle_exit_l", "vehicle_exit_r", "sit_eat", "cook_stove", "sit_vehicle_drive", "counter_wipe")
 EXITS = ("vehicle_exit_l", "vehicle_exit_r")
 KEEP = NAMES
 
@@ -51,6 +52,14 @@ EXIT_X = 0.85
 FRAME_GRIP = (0.44, 0.12, 1.02)
 #: sit_eat: the booth table top and its near edge ahead of the root (the seat is sit_chair's, H.SEAT_H); the plate
 #: centre, the glass and the left hand's rest place on the top (x, y)
+#: sit_vehicle_drive (D-148): the steering wheel's rim centre (x, y forward, z up from the root on the footwell floor), its
+#: radius and the tilt of its face toward the driver (deg from vertical); the hands at 10 and 2 o'clock.
+WHEEL_C = (0.0, 0.40, 0.76)
+WHEEL_R = 0.18
+WHEEL_TILT = 30.0
+#: counter_wipe (D-148): the diner counter top (rolling_thunder.md: 0.9 m); bartender_wipe at this height, leaning more.
+COUNTER_Z = 0.90
+COUNTER_LEAN = 25.0
 TABLE_Z = 0.74
 TABLE_EDGE = 0.22
 PLATE = (0.0, 0.42)
@@ -153,6 +162,47 @@ def sit_vehicle(sk: Skeleton, f: int, N: int) -> Pose:
     _thigh_hand(sk, pose, "L", 0.02 * _cyc(t, T, 1, 0.3))
     _thigh_hand(sk, pose, "R", 0.015 * _cyc(t, T, 2, 1.1))
     return pose
+
+
+def _wheel_hand(sk: Skeleton, pose: Pose, sfx: str, steer: float) -> None:
+    """The hand gripping the wheel rim at 10 (L) / 2 (R) o'clock, ``steer`` deg of wheel turn."""
+    k = sk.scale
+    sx = A.side_x(sfx)
+    a = math.radians(WHEEL_TILT)
+    n = v3(0.0, -math.cos(a), math.sin(a))          # the wheel face, toward the driver and up
+    up = v3(0.0, math.sin(a), math.cos(a))          # the rim's 12 o'clock direction in the wheel plane
+    right = v3(1.0, 0.0, 0.0)
+    ang = math.radians(60.0 * sx + steer)           # 60 deg from 12 o'clock on the hand's side, turned by steer
+    rim = right * math.sin(ang) + up * math.cos(ang)
+    c = v3(*WHEEL_C) * k
+    p = c + rim * WHEEL_R * k
+    tangent = unit(np.cross(n, rim))                # along the rim
+    hand_on(sk, pose, sfx, p, unit(tangent * sx + up * 0.3), unit(-rim * 0.8 - n * 0.4), pole=v3(sx * 0.6, -0.3, -0.8),
+            along_share=0.45, palm_off=0.016)
+    pose.hands[sfx] = hand_shape("grip", 0.85)
+
+
+def sit_vehicle_drive(sk: Skeleton, f: int, N: int) -> Pose:
+    """The driver: sit_vehicle's bucket seat and glances (ahead, the left window, the mirror), both hands on the wheel
+    at 10 and 2 o'clock with small steering corrections."""
+    t = f / FPS
+    T = N / FPS
+    pose = Pose()
+    vehicle_seated(sk, pose, lean=4.0)
+    g_l = _win(t, T, 1.8, 2.8, 0.4)
+    g_r = _win(t, T, 4.4, 5.1, 0.3)
+    H.look(pose, yaw=2.0 * _cyc(t, T, 1, 0.4) + 30.0 * g_l - 20.0 * g_r, pitch=-1.0 + 1.0 * _cyc(t, T, 2, 1.0) - 4.0 * g_r,
+           tilt=1.5 * _cyc(t, T, 1, 2.0) - 2.0 * g_l)
+    H.breathe(pose, t, T / 3.0, 0.9)
+    steer = 3.0 * _cyc(t, T, 2, 0.7)
+    _wheel_hand(sk, pose, "L", steer)
+    _wheel_hand(sk, pose, "R", steer)
+    return pose
+
+
+def counter_wipe(sk: Skeleton, f: int, N: int) -> Pose:
+    """The diner waitress wiping the 0.9 m counter (bartender_wipe at COUNTER_Z, leaning further in)."""
+    return P5.bartender_wipe(sk, f, N, bar_z=COUNTER_Z, lean=COUNTER_LEAN)
 
 
 # =============================================================================================
@@ -406,7 +456,8 @@ def cook_stove(sk: Skeleton, f: int, N: int) -> Pose:
 # =============================================================================================
 # table hook
 # =============================================================================================
-BUILDERS = {"sit_vehicle": sit_vehicle, "sit_eat": sit_eat, "cook_stove": cook_stove}
+BUILDERS = {"sit_vehicle": sit_vehicle, "sit_eat": sit_eat, "cook_stove": cook_stove,
+            "sit_vehicle_drive": sit_vehicle_drive, "counter_wipe": counter_wipe}
 
 
 def clips(sk: Skeleton, solver: Solver, table: dict) -> dict[str, Clip]:

@@ -13,7 +13,18 @@ const CLIPS: Dictionary = {
 	"sit_vehicle": [180, true, {}],
 	"vehicle_exit_l": [45, false, {"foot_out": 14, "step_r": 26, "step_l": 37}],
 	"vehicle_exit_r": [45, false, {"foot_out": 14, "step_l": 26, "step_r": 37}],
+	"sit_eat": [240, true, {"bite": 48, "bite_2": 117, "sip": 183}],
+	"cook_stove": [180, true, {"flip": 48, "flip_2": 102, "look_up": 129}],
+	"sit_vehicle_drive": [180, true, {}],
+	"counter_wipe": [180, true, {}],
 }
+## D-148 sit_vehicle_drive: the wheel rim points at 10 / 2 o'clock in Godot root space (_anim_rt WHEEL_C (0, 0.40, 0.76),
+## WHEEL_R 0.18, face tilted 30 deg), and how far the wrist (hand bone origin) may sit from them
+const WHEEL_L: Vector3 = Vector3(-0.156, 0.838, -0.445)
+const WHEEL_R: Vector3 = Vector3(0.156, 0.838, -0.445)
+const WRIST_TOL: float = 0.12
+## D-148 counter_wipe: bartender_wipe at the 0.90 m diner counter instead of the 1.05 m bar
+const COUNTER_DROP: float = 0.15
 ## exit clip -> Godot x sign of its root travel
 const EXITS: Dictionary = {"vehicle_exit_l": -1.0, "vehicle_exit_r": 1.0}
 ## the exits' total sideways root travel (m)
@@ -198,3 +209,21 @@ func test_exits_start_seated_end_on_idle_alert() -> void:
 			assert_true(a.distance_to(b) < 0.03, "%s: the landed foot stays planted (%f m)" % [clip, a.distance_to(b)])
 		var h_end: Vector3 = _snapshot(clip, n)[hips] + Vector3(sx * vals[n].to_float(), 0.0, 0.0)
 		assert_true(h_end.x * sx > 0.7, "%s: the body ends outside the door (%s)" % [clip, h_end])
+
+
+## D-148: the driver's hands are on the wheel (both wrists near the 10 / 2 o'clock rim points through the loop), and the
+## waitress's counter_wipe works COUNTER_DROP lower than bartender_wipe (the flat left hand on the counter).
+func test_driver_hands_and_counter_height() -> void:
+	if not _ready_or_fail() or _anim("sit_vehicle_drive") == null or _anim("counter_wipe") == null:
+		fail("sit_vehicle_drive / counter_wipe missing")
+		return
+	var hl: int = _skel.find_bone("hand.L")
+	var hr: int = _skel.find_bone("hand.R")
+	for f: int in [0, 45, 90, 135]:
+		var snap: Array[Vector3] = _snapshot("sit_vehicle_drive", f)
+		assert_true(snap[hl].distance_to(WHEEL_L) < WRIST_TOL, "drive f%d: left wrist %s near the rim %s" % [f, snap[hl], WHEEL_L])
+		assert_true(snap[hr].distance_to(WHEEL_R) < WRIST_TOL, "drive f%d: right wrist %s near the rim %s" % [f, snap[hr],
+			WHEEL_R])
+	var bar: Vector3 = _snapshot("bartender_wipe", 0)[hl]
+	var counter: Vector3 = _snapshot("counter_wipe", 0)[hl]
+	assert_near(bar.y - counter.y, COUNTER_DROP, 0.03, "counter_wipe's flat hand %.3f m vs the bar's %.3f m" % [counter.y, bar.y])

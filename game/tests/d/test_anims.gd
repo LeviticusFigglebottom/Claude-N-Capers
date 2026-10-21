@@ -192,7 +192,7 @@ func test_delivered_p2_clips_are_present() -> void:
 	var names: PackedStringArray = _player.get_animation_list()
 	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size() + POLICE.size() + P5.size() + _d304().size()
 		+ _assault().size() + 22 + preload("res://tests/d/test_surrender_variants.gd").VARIANTS.size() + 15 + 48 + 23
-		+ preload("res://tests/d/test_civ_panic.gd").VARIANTS.size() + 5 + 3, "no extra or misnamed clips: %s" % [names])  # +5 OF-D1, +3 RT-D1
+		+ preload("res://tests/d/test_civ_panic.gd").VARIANTS.size() + 5 + 7, "no extra or misnamed clips: %s" % [names])  # +5 OF-D1, +7 RT-D1
 	for n: String in names:
 		assert_false(n.ends_with("-loop") or n.ends_with("_loop"), "%s: loop suffix stripped" % n)
 

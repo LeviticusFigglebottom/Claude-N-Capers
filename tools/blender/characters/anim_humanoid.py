@@ -291,6 +291,16 @@ CLIPS = {
                        "events": {"foot_out": 14, "step_r": 26, "step_l": 37}, "root_motion": "curve.vehicle_exit_l"},
     "vehicle_exit_r": {"frames": 45, "loop": False, "speed": 0.0, "priority": 10,
                        "events": {"foot_out": 14, "step_l": 26, "step_r": 37}, "root_motion": "curve.vehicle_exit_r"},
+    # RT-D1 diner (D-148): a booth customer eating (_anim_rt BITES / SIP at 30 fps) and the cook at the griddle (FLIPS,
+    # LOOK_UP_C); prop sizes in _anim_rt (booth table top TABLE_Z 0.74 m, griddle top STOVE_Z 0.90 m)
+    "sit_eat": {"frames": 240, "loop": True, "speed": 0.0, "priority": 10,
+                "events": {"bite": 48, "bite_2": 117, "sip": 183}},
+    "cook_stove": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10,
+                   "events": {"flip": 48, "flip_2": 102, "look_up": 129}},
+    # D-148: the escort / crew driver (sit_vehicle with the hands on the wheel) and the diner waitress's counter wipe
+    # (bartender_wipe at the 0.9 m diner counter)
+    "sit_vehicle_drive": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
+    "counter_wipe": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
 }
 # D-116 frame-locked weapon holds on the move (_anim_loco_holds, SOURCE `locomotion_holds`): hold_<kind>_<gait>, the
 # base clip's frames / loop / events
