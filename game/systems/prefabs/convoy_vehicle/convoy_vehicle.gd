@@ -130,7 +130,8 @@ func _route_xform(d: float) -> Transform3D:
 	return Transform3D(Basis(q), _curve_end_xf.origin.lerp(_stop.global_position, t))
 
 
-## The curve's frame at offset `d` as a vehicle transform (forward +Z along the curve, upright).
+## The curve's frame at offset `d` as a vehicle transform: forward +Z along the curve tangent, pitched with it (C: on
+## the ~9 deg east ramp an upright 9 m truck clipped the road by up to 0.7 m), no roll.
 func _curve_xform(d: float) -> Transform3D:
 	var c: Curve3D = _path.curve
 	var p: Vector3 = _path.to_global(c.sample_baked(d, true))
@@ -138,11 +139,11 @@ func _curve_xform(d: float) -> Transform3D:
 	var fwd: Vector3 = ahead - p
 	if d + 0.5 > c.get_baked_length():
 		fwd = p - _path.to_global(c.sample_baked(maxf(d - 0.5, 0.0), true))
-	fwd.y = 0.0
-	if fwd.length() < 0.001:
+	if Vector2(fwd.x, fwd.z).length() < 0.001:
 		return Transform3D(global_basis, p)
 	var z: Vector3 = fwd.normalized()
-	return Transform3D(Basis(Vector3.UP.cross(z).normalized(), Vector3.UP, z), p)
+	var x: Vector3 = Vector3.UP.cross(z).normalized()
+	return Transform3D(Basis(x, z.cross(x).normalized(), z), p)
 
 
 func _net_xform() -> Variant:

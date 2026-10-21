@@ -54,7 +54,7 @@ static func apply(map: Node, id: String, group: String = DEFAULT_GROUP) -> bool:
 		for n: Node in map.find_children("*", "", true, false):
 			if n.has_meta(META_OPEN_NAV) and (n is NavigationRegion3D or n is NavigationLink3D) \
 					and _open_nav_group(n) == group:
-				n.set(&"enabled", id == "")
+				set_nav(n, id == "")
 	return true
 
 
@@ -65,6 +65,22 @@ static func reset(map: Node) -> void:
 		groups[group_of(l)] = true
 	for g: String in groups:
 		apply(map, "", g)
+
+
+## A NavigationRegion3D / Link3D on or off. Off also takes it off the navigation map: Godot 4.7 still merges a disabled
+## region's edges with its neighbours (C, RT convoy nav: the junction-box splits never connected), so a switched-off
+## layout must not be in the map at all. On puts it back on its node's map.
+static func set_nav(n: Node, on: bool) -> void:
+	n.set(&"enabled", on)
+	if not n.is_inside_tree():
+		return
+	var region: NavigationRegion3D = n as NavigationRegion3D
+	if region != null:
+		NavigationServer3D.region_set_map(region.get_rid(), region.get_navigation_map() if on else RID())
+		return
+	var link: NavigationLink3D = n as NavigationLink3D
+	if link != null:
+		NavigationServer3D.link_set_map(link.get_rid(), link.get_navigation_map() if on else RID())
 
 
 static func _open_nav_group(n: Node) -> String:
@@ -78,7 +94,7 @@ static func _switch(layout: Node3D, on: bool) -> void:
 	while not stack.is_empty():
 		var n: Node = stack.pop_back()
 		if n is NavigationRegion3D or n is NavigationLink3D:
-			n.set(&"enabled", on)
+			set_nav(n, on)
 		elif n is TacticalPoint:
 			(n as TacticalPoint).set_enabled(on)
 		elif n is GameplayPrefab:

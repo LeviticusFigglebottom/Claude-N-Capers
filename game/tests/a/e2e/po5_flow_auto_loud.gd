@@ -166,6 +166,8 @@ func step() -> void:
 			await p.hold_position(3.0)
 		return
 	var comp: InteractableComponent = _usable_near(pos, 2.5)
+	if comp == null:
+		comp = _usable_on_prefab_at(pos)
 	if comp != null:
 		if id == UNBLOCK_ID:
 			_stalls[id] = float(_stalls.get(id, 0.0))  # started: keep defending its drill after this (see _pick)
@@ -318,6 +320,20 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			best = c
 			best_d = dd
 	return best
+
+
+## RT G1 pilot: a marker on a large prefab (an armored_truck: the marker is its origin, the lock 3.8 m back at the rear
+## doors) has its interactable beyond _usable_near's 2.5 m. The usable interactable of the prefab standing on `pos`.
+func _usable_on_prefab_at(pos: Vector3) -> InteractableComponent:
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		if c == null or not c.enabled or not rt.is_ancestor_of(c):
+			continue
+		var o: Node3D = c.owner_node() as Node3D
+		if o is GameplayPrefab and o.global_position.distance_to(pos) < 0.2 and c.availability(p.crew) == &"" \
+				and not _is_unreachable(c):
+			return c
+	return null
 
 
 ## The revive interactable of the nearest downed teammate within REVIVE_RANGE_M the pilot can use, else null.
