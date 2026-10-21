@@ -20,6 +20,8 @@ ARGS=(--po5-flow="$FLOW" --po5-out="$OUT" --po5-budget="$BUDGET" --po5-heist="$H
 [[ "$SEED" != "-" ]] && ARGS+=(--po5-seed="$SEED")
 # D-133: CREW_DMG=0.25 runs the loud flow gate with the harness-only crew_damage_taken_mult (named in run.log).
 [[ -n "${CREW_DMG:-}" ]] && ARGS+=(--po5-crew-dmg="$CREW_DMG")
+# HITCH_MS=50 logs every heist frame over 50 ms with FrameProf's top (the GPU box's hitch runs).
+[[ -n "${HITCH_MS:-}" ]] && ARGS+=(--po5-hitch-ms="$HITCH_MS")
 "$GODOT" --headless --path "$ROOT/game" --import >/dev/null 2>&1 || true
 # HEADLESS=1: the same real-menu flow without rendering (no xvfb, no screenshots; po5_flow.shot skips): LEAD D-145
 # pre-checks, where llvmpipe frames under box load blew the wall budgets. Windowed stays the evidence for visuals.

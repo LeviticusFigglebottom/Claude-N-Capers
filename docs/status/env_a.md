@@ -4,6 +4,30 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-2) GPU-17 "CPU hitch regression": no runtime code changed between GPU-15's tree and e9c8744f; headless proof running
+- Runtime diff from ffc264d4 + C 595f57fe to trunk e9c8744f (game/, excluding tests, tools and docs):
+  - B's objective / assault-event marker label clamp (r252): one clampf per label.
+  - D's character_warm.gd: nothing calls it yet.
+  - P's changes are test files only.
+- The two GPU logs follow the same simulation: the TEL crew positions and enemy counts match to 0.3 m.
+- GPU-17 is uniformly slower from t=12 s on, before any loud fight: TEL phys 22.1 / 29.9 / 22.1 ms became 34.5 / 42.3 /
+  35.3; proc 5.3 / 5.4 / 4.7 became 29.6 / 11.2 / 11.0.
+  - FrameProf's per-script totals in GPU-17's HITCH lines add up to only 5-20 ms of 50-95 ms frames.
+  - So the time is outside our scripts: the engine's physics step, or the machine itself (another process, power or
+    thermal state, or a shader cache rebuild after the update).
+- The 21k freed-marker SCRIPT ERRORs (D's run) are fixed in 1d7aef14 (anim_layers / IK).
+  - With the same simulation they would hit both GPU runs alike, so they don't explain a GPU-15 vs GPU-17 gap.
+- Running now (headless OF Cataclysm 1037, 240 s, HITCH_MS=50, the same box, one after another): ffc264d4, trunk
+  e9c8744f, and env/a-core HEAD. Numbers will follow here.
+- Suggestion for the GPU box: re-run GPU-15's tree (ffc264d4 + 595f57fe) once now, on the same machine state, next to
+  r256. If it is also slow, the regression is the machine.
+- New run_po5.sh env: `HITCH_MS=50`, so the GPU box command takes the same flag.
+- Pilot BondSafe stand: _marker_stand() takes the nearest prefab's UsePoint (p._use_stand).
+  - The GPU-17 stand (13.2, -4, 20.1) was the navmesh end short of the wall, because the vault was shut.
+  - With 6fcbb559 the marker only appears once the vault is open. test_of_bond_safe_usable_from_its_use_point checks
+    the UsePoint path and the aim.
+- All green on HEAD: test_x4_of_loud 3/3, test_x4_of_stealth 5/5, test_of_coop_loopback 1/1 (test_x4_of_hard: 5 opt-in
+  skips).
 ### (-1) Your GPU-15 / anim / D-148 messages
 - **guard_vault loops (P step 5): pushed** in 6fd7e59a (with guard_lobby), with tests. P has been told.
 - **Anim error flood (anim_layers.gd:75): fixed** in 1d7aef14. The IK never passes a freed LeftHandIK marker; it fades
