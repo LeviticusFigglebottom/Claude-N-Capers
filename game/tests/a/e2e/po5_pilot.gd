@@ -25,6 +25,9 @@ const THROUGH_PAST_M: float = 0.9
 ## _door_on_line: a closed door within this (m) of the crew's plane is opened before stepping across it.
 const LINE_DOOR_M: float = 1.0
 ## _through_link: how far along the nav path (m) a crossing of the doorway counts as "the route leaves through it".
+## shoots_from_floor: at most this many alive enemies within FLOOR_FIGHT_M (m) for a downed pilot to fight back.
+const FLOOR_FIGHT_MAX: int = 2
+const FLOOR_FIGHT_M: float = 20.0
 const THROUGH_LOOKAHEAD_M: float = 4.0
 ## goto: standing at the end of a nav path that stops this far (m, flat) short of the target = unreachable (OF-X2).
 const UNREACHABLE_M: float = 2.0
@@ -905,9 +908,19 @@ func open_door(door: Door) -> bool:
 ## D-145 (P's GH Tense 4502): fight from the floor only where police can cuff a downed player who is not shooting
 ## (L2.12, from police_cuff_min_difficulty up). Below that, shots from the floor only make the pilot a target (L2.5)
 ## and the bleed-out pool drains in seconds; a player lies still and waits for the revive.
+## D-145 (OF Cataclysm: downed at t~19, in custody 1 s later): even there only against a few (<= FLOOR_FIGHT_MAX alive
+## enemies within FLOOR_FIGHT_M); against a crowd a player lies still, is cuffed (bleed-out paused) and waits for the
+## uncuff, instead of drawing the whole room's fire onto the bleed-out pool.
 func shoots_from_floor() -> bool:
 	var rt: HeistRuntime = HeistRuntime.of(crew)
-	return rt == null or rt.difficulty >= CustodyTweak.data().police_cuff_min_difficulty
+	if rt != null and rt.difficulty < CustodyTweak.data().police_cuff_min_difficulty:
+		return false
+	var near: int = 0
+	for n: Node in crew.get_tree().get_nodes_in_group(G.ENEMY):
+		var npc: NpcBase = n as NpcBase
+		if npc != null and npc.is_alive() and npc.global_position.distance_to(crew.global_position) <= FLOOR_FIGHT_M:
+			near += 1
+	return near <= FLOOR_FIGHT_MAX
 
 
 ## Nearest live enemy within `range_m` the crew can see (an eye ray to its head, chest or hips hits it first:
