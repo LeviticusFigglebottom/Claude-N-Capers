@@ -19,9 +19,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   **r255c: steps 1-4 PASS** (BB clear 16 s, flights 6 s, code done t=202.6, ~50 s faster than r252/253). Step 5 failed on the way out:
   rover_gallery came up SA and dropped out of the count the moment he reached the Executive floor, and the pilot left E3 into him. Now
   same-floor guards within 25 m count for every ghost floor change. **r255d: steps 1-4 PASS again, and the E3 departure held 96 s and went
-  unseen.** Step 5: the vault gate was already OPEN (no VaultGate use in the log; vault_gate only went 1→2 at the alarm), so the harness skipped
-  its gate wait and walked into the vault guard in VC. Asked A whether the vault guard's loop (b)/(c) is meant to leave the locked gate
-  open (stealth players skip the keycard). Harness: the gate wait now runs whether it's open or not. **Ghost now on r256** (3312326b + P).
+  unseen.** Step 5: the pilot arrived (~t=303) inside the vault guard's 4 s pass-through window (A's probe: he opens it at t=299.3, and it auto-closes
+  and stays locked after 4 s). So it was a tailgate, not a bug (A confirmed; since r256 an NPC open doesn't complete [vault_gate]). The harness had skipped its
+  gate wait because is_open was true, and walked into him. Harness: the gate wait now runs whether it's open or not. **Ghost now on r256** (3312326b + P).
   r256a: step 1 PASS. Step 2: guard timings shifted on r256 (smoke cue t=88 vs 66), and rover_hall (Npc_guard3) stood in LD 5 m inside the dock door
   when the pilot lockpicked it (doc: rover_hall loop (b) checks LD). Harness: a smoke window with a guard in LD is skipped for the next one.
   r256b is running.
