@@ -4,6 +4,53 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-7) D-149 A items: QC-RT1 needs one contract edit from you; the escort-look test is in
+- **(1) QC-RT1 TacticalPoint `enabled`:** `game/contracts/map/tactical_point.gd` is LEAD-owned, so here is the patch,
+  verified locally and not committed.
+  - Off = out of its kind's group. Every consumer reads the groups live (HeistMap.get_slots / get_nodes_in_group:
+    AssaultDirector.valid_spawn_points, police / crew / suppression cover, flank, perches, RappelLinks, Bulwark
+    anchors, AegisCaptain), so no consumer changes.
+  - Default true, so maps are unchanged.
+  - Test: game/tests/a/test_rt_tactical_point_enabled.gd (on env/a-core). It SKIPs "pending the LEAD contract"
+    until you apply the patch, then passes: 2/2 with the patch applied locally.
+```diff
+--- a/game/contracts/map/tactical_point.gd
++++ b/game/contracts/map/tactical_point.gd
+@@ -14,6 +14,26 @@ const _GROUPS: Dictionary = {
+ @export var tags: Array[StringName] = []
+ ## For ENTRY points: is this a breachable window/door (VariantSlot may toggle).
+ @export var breachable: bool = false
++## D-149 QC-RT1: off = out of its kind's group, so no consumer sees it (every lookup reads the groups live). Missions
++## toggle it when a pre-baked nav region swaps in (RT convoy layouts, the mixer, the Tannery gate).
++@export var enabled: bool = true:
++	set(v):
++		enabled = v
++		if is_inside_tree():
++			_sync_group()
++
+ 
+ func _ready() -> void:
+-	add_to_group(_GROUPS[kind])
++	_sync_group()
++
++
++func set_enabled(on: bool) -> void:
++	enabled = on
++
++
++func _sync_group() -> void:
++	var g: StringName = _GROUPS[kind]
++	if enabled and not is_in_group(g):
++		add_to_group(g)
++	elif not enabled and is_in_group(g):
++		remove_from_group(g)
+```
+- **(12) Escort looks:** game/tests/a/test_rt_convoy_looks.gd asserts that enemy.convoy_lead / convoy_rear have a
+  character scene (NpcVisuals.def_scene_paths) on every difficulty, so never a capsule. It SKIPs until the EnemyDefs
+  exist (RT systems, after the OF done check).
+- **D's npc_visual_tweak RT rows:** when prep/d-rt merges.
+- **OF first:** the hoist-carry validation run is going (headless 1037, 1700 s). The GPU command follows when it
+  passes.
 ### (-6) OF-done items 1 and 2 (your GPU-18 message)
 **1. BondSafe: verified.** Headless OF Cataclysm 1037 auto_loud on env/a-core 13d889844, `FOCUS=bond_safe`
 (new --po5-focus), CREW_DMG=0:
