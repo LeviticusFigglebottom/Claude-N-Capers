@@ -450,3 +450,10 @@ comparison made under similar load is meaningful; ideally both trees get re-run 
   underpass, sniper_skyway) + contact_sheet.jpg + shots.md + render_log.txt.
 - Framing notes from the contact sheet (for C): `rc_convoy_cash` and `rc_convoy_bullion` are dominated by a large dark block filling the frame centre (presumably the greybox convoy
   vehicle; the cash/bullion isn't readable). `rc_ext_junction` is about half-blocked by a dark wall face on the left. The exteriors under the overpass/deck read very dark overhead. Interiors (diner, carpark booth, site cabins) all read fine.
+## GPU-22: RT diner/junction re-render (env/c-worlds c4ffe072, local branch gpu/c5)
+- Tree: origin/env/c-worlds c4ffe072 (`[RT-C2] Status: GPU-21 diner / junction fixes in; re-render request`). Import exit 0, 46 s. RAM gate 5 GB: 7.8 GB free.
+- review_shots as GPU-21 with `--cameras=rc_diner_dining,rc_diner_function,rc_diner_kitchen,rc_diner_neon,rc_ext_junction --out=<repo>\docs\levels\rolling_thunder\gpu_review_r2`:
+  exit 0, 16 s, no ERRORs or WARNINGs. Output: 5 JPEGs + contact_sheet + shots.md + render_log.txt in `docs/levels/rolling_thunder/gpu_review_r2/`.
+- vs GPU-21: **rc_ext_junction is fixed** (the half-frame dark wall is gone; it now shows the open junction under the overpass with bollards, lights and the diner block on the right).
+  **rc_diner_dining and rc_diner_function now read as a diner** (black/white checker floor, red booths/chairs, red pendant lamps, menu board). rc_diner_kitchen is about the same (tiled, steel prep table).
+  **rc_diner_neon is still about 40% bare brick wall** on the left, with only a small pink sign edge visible near the frame centre. The neon sign itself doesn't read from this camera.
