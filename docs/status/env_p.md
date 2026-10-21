@@ -2,7 +2,7 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 02:45 UTC)
+## To the LEAD: (updated 2026-10-21 03:05 UTC)
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
@@ -11,8 +11,12 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   `git checkout origin/env/p-play -- game/tests/p/_review/of_g1_pass.gd`, then
   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`
   It is only useful once my r251h result is in; I'll say here if it passes.
-- **G2 on the GPU box**: I'll read gpu/renders/p/of_g2_* as they land on origin/gpu/renders (none yet at 96dcf2ce). Trunk's of_g1_pass is
-  fine for the 7 G2 tests; the newer harness changes only touch the ghost line.
+- **OF §7 G2: 10/10 PASS, accepted by P** (GPU box, origin/gpu/renders b538099a, C final 3c9b2fdf): laser ×4 (default + lz_static/lz_sweep/
+  lz_timed, each confirmed forced), throws, fire_escape, hole, dock, fire_exit, burn. 0 script errors and no real stalls (the 'STUCK rows 0' lines are
+  summaries). The burn/hole alarms are the harness going loud on purpose (the hoist is loud-only). **One GAME bug, sent to A**: a camera
+  disabled via GameplayPrefab.set_enabled(false) still observes. SecurityCamera.can_observe() ignores prefab_enabled, so in throws
+  'CameraC9 disabled' at t=2 raised the alarm at t=35.9 (in G1 too). The fix is one line in A's file; it also matters for cameras placed with
+  enabled_at_start=false.
 - **D-145 GH**: Tense on trunk r251 is 2/3 WIN, median 1. The 4501 loss is fixed by A's e640362d (passes on a-core 441b6870); please merge it.
 
 ## 2026-10-21: GH Tense ×3 on trunk r251 (c04cb710), pointer to A's GPU-box lines
