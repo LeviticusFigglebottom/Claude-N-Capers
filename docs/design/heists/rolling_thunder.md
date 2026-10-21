@@ -771,7 +771,7 @@ Sizes are between wall centre lines (m).
 | MG | — (a container prop, no RoomVolume) | 4 × 3 (as drawn; RT-C0 check) | 2.2 inside | — | The steel explosives magazine; padlocked door. Its 2.2 m interior is below every room band, so it is a prop, not a room. The C4 boxes are `item_pickup`s (QC-84) reached from the open door's UsePoint. |
 | FG | exterior (frame, ground) | 24 × 20 | 3.2 (slab soffit) | `site_frame_ground` | Columns, formwork stacks, rebar bundles, a site forklift (cover; replaces the dumper truck, D-149.6). |
 | F1 | exterior (frame slab +3.5) | 24 × 20 | open | `site_frame_slab` | Edge protection, block pallets, starter bars, a mortar mixer. H3. |
-| X1 | exterior (Orchard Ave + junction + Tannery west) | — | — | `exterior_street` | Signals on gantries, lamp posts, parked cars, bins, a newsstand, Skyway piers. |
+| X1 | exterior (Orchard Ave + junction + Tannery west) | — | — | `exterior_street_rt` (RT-C2: `exterior_street` with the convoy vehicles lone-ok) | Signals on gantries, lamp posts, parked cars, bins, a newsstand, Skyway piers. |
 | X2 | exterior (east arm, ramp, underpass, cut) | 20 + 32 + 18 + 20 × 22 | — (underpass soffit 4.6) | `exterior_underpass` | Retaining walls with drainage channels, height bar, underpass fluorescents, graffiti-free (Southfield council keeps it painted), E2. |
 | X3 | exterior (plaza + bus interchange) | 46 × 19 | — | `exterior_plaza` | Bus shelters with benches (`cower_seated` spots), the clock pillar, street planters (replace the trees in grates; cycle racks dropped, D-149.6), a ticket machine. |
 | X4 | exterior (Tanner's Reach yard) | 46 × 45 less buildings | — | `exterior_site` | Hoarding, crane base, skip, cabins' steps, site lighting masts, the mixer. |

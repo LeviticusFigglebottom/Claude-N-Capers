@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_site"
+purpose = &"exterior"
+required_items = Array[StringName]([&"lamp_post", &"cone", &"barrier", &"light_fixture"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.005
+max_density = 0.3
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"lamp_post", &"cone", &"barrier", &"light_fixture", &"skip", &"dumpster", &"formwork", &"pallet", &"gas_cylinders", &"landmark", &"pole", &"ladder", &"vehicle"])
+seed_salt = 4717
+counts = {}
+assets = {}
+ceiling = {}
+notes = "RT X4 Tanner's Reach site yard: sodium masts, roadworks barriers with a hazard beacon, cones, gas cylinders by the cabins. Fixed tables. Waits: prop_rt_tower_crane (the G1 crane boxes), plywood_painted + the hoarding graphic, prop_c4_box."
