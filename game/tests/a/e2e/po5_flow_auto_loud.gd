@@ -22,6 +22,9 @@ const CLEAR_RANGE_M: float = 20.0
 ## Longest fight before picking the bag back up anyway, and the walk leg between threat checks (s).
 const CLEAR_LIMIT_S: float = 40.0
 const CARRY_LEG_S: float = 4.0
+## _lift_bag: a hoist landing this close (m, on the crew's floor) takes a bag the route would carry up a ladder; tries.
+const LIFT_NEAR_M: float = 15.0
+const LIFT_TRIES_MAX: int = 6
 ## Give up carrying one bag to the van after this long (s).
 const CARRY_LIMIT_S: float = 300.0
 
@@ -57,6 +60,10 @@ var p: Po5Pilot = null
 var rt: HeistRuntime = null
 ## --po5-doctor-bag: the pilot carries and uses a doctor bag (see _doctor_bag).
 var doctor_bag: bool = "--po5-doctor-bag" in OS.get_cmdline_user_args()
+## --po5-focus=<objective id> (LEAD OF-done: verify BondSafe): once that objective's marker is up, the pilot takes it
+## before anything else that is up (see _is_focus).
+var focus: StringName = _focus_arg()
+var _lift_tries: int = 0
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
 var _bot_note_t: float = -INF
@@ -213,7 +220,7 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 		# GN-8 (windowed seed 4242): the ride is on its way (escape_wait): wait and defend at the escape too; the
 		# pilot went for the optional basement lockers and was downed and cuffed in Stair SS as the van arrived.
 		if StringName(me["id"]) in [&"escape", &"escape_wait"] \
-				or (StringName(me["id"]) == &"secure" and _loose_bag() != null):
+				or (StringName(me["id"]) == &"secure" and _loose_bag() != null) or _is_focus(me):
 			return me  # probe 8: a dropped bag (put down to clear the way) is carried in before anything optional
 	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
 		if StringName(m0["id"]) in FIRST_OBJECTIVES and not _marker_blocked.has(_marker_key(m0)):
@@ -712,9 +719,79 @@ func _secure_bag() -> void:
 		if p.nearest_enemy(CLEAR_RANGE_M) != null:
 			await _clear_then_pick_up()
 			continue
+		p.quiet = true  # LEAD GPU-18: the 4 s carry legs read as "goto FAILED" lines while the bag moves on
 		await p.goto(stand, 3.0, CARRY_LEG_S)
+		p.quiet = false
+		if p.last_ladder_with_bag != null:
+			await _lift_bag()
+			return
 	if p.crew.is_carrying_bag() and p.crew.crew_state == Enums.CrewState.NORMAL:
 		await p.secure_carried_bag(zone)
+
+
+## OF (headless 1037: 3 min of "RopeLadder up -> FAILED" with a cash bag; ladders refuse a carried bag, S10.1b): like a
+## player, the bag leaves the floor by the hoist. The enabled BagLift with a landing within LIFT_NEAR_M on the crew's
+## floor: its car is called there (that landing's panel, call_lift), the bag dropped into the car, the car sent on
+## (send_lift). The pilot then goes on empty-handed and carries the bag on from the far landing (a loose bag: _pick).
+## True when the car left with the bag.
+func _lift_bag() -> bool:
+	var lift: BagLift = null
+	var li: int = -1
+	for n: Node in rt.find_children("*", "BagLift", true, false):
+		var b: BagLift = n as BagLift
+		for i: int in range(b.landing_count() if b != null and b.is_enabled() else 0):
+			var o: Vector3 = b.landing_transform(i).origin
+			if Po5Pilot.flat_dist(o, p.crew.global_position) <= LIFT_NEAR_M and absf(o.y - p.crew.global_position.y) <= 1.5:
+				lift = b
+				li = i
+	if lift == null or _lift_tries >= LIFT_TRIES_MAX:
+		_note_once(&"_nolift", "a bag to take up a ladder and no hoist landing within %.0f m (or %d tries spent)" % [
+			LIFT_NEAR_M, LIFT_TRIES_MAX])
+		await p.hold_position(3.0)
+		return false
+	_lift_tries += 1
+	if not await _lift_car_to(lift, li):
+		return false
+	var before: int = lift.bags_in_car().size()
+	var center: Vector3 = lift.car_transform().origin
+	var fwd_m: float = LootTweak.get_default().drop_forward_m
+	for deg: int in range(0, 360, 45):  # x4_of_loud._into_hoist: drop from the first free stand round the car
+		var dir: Vector3 = Vector3.FORWARD.rotated(Vector3.UP, deg_to_rad(float(deg)))
+		var at: Vector3 = p.stand_point(center - dir * fwd_m)
+		if Po5Pilot.flat_dist(at, center - dir * fwd_m) > 0.4 or not await p.goto(at, 0.3, 8.0, false, false):
+			continue
+		await p.face(center + Vector3.UP * 0.3, 0.05, 1.5)
+		await p.inp.tap(&"drop_bag")
+		await p.hold_position(0.8)
+		break
+	if lift.bags_in_car().size() <= before:
+		f.note("hoist: the bag missed %s's car (try %d)" % [lift.name, _lift_tries])
+		return false
+	var panel: InteractableComponent = _lift_panel(lift, li)
+	await p.use(panel, 10.0, func() -> bool: return lift.is_moving())
+	f.note("hoist: %s sent from landing %d with %d bag(s) (t=%.0f)" % [lift.name, li, lift.bags_in_car().size(),
+		rt.heist_time_s])
+	return lift.is_moving()
+
+
+## Bring `lift`'s car to landing `i` (its panel there: call_lift) and wait for it. True when it stands there.
+func _lift_car_to(lift: BagLift, i: int) -> bool:
+	await p.hold_position(0.1, func() -> bool: return not lift.is_moving())
+	var t0: float = rt.heist_time_s
+	while lift.is_moving() and rt.heist_time_s - t0 < lift.travel_s + 5.0:
+		await p.hold_position(0.5)
+	if lift.landing == i and not lift.is_moving():
+		return true
+	await p.use(_lift_panel(lift, i), 10.0, func() -> bool: return lift.is_moving())
+	t0 = rt.heist_time_s
+	while (lift.is_moving() or lift.landing != i) and rt.heist_time_s - t0 < lift.travel_s + 5.0:
+		await p.hold_position(0.5)
+	return lift.landing == i and not lift.is_moving()
+
+
+static func _lift_panel(lift: BagLift, i: int) -> InteractableComponent:
+	return lift.interactable if i == 0 else lift.get_node_or_null(NodePath("%s%d" % [BagLift.PANEL_PREFIX, i])) \
+		as InteractableComponent
 
 
 ## Drop the carried bag, fight until no enemy is in sight within CLEAR_RANGE_M (or CLEAR_LIMIT_S), pick it back up.
@@ -779,6 +856,19 @@ func _note_bot_revives() -> void:
 			tgt.slot if tgt != null else -1, c.global_position.distance_to(p.crew.global_position),
 			"-" if comp == null else "%s %.1f/%.1f" % [comp.kind, float(sess["progress"]), float(sess["duration"])]])
 	f.note("bots while down: " + ", ".join(parts))
+
+
+## --po5-focus: `m` is the focused objective's marker, not stalled or blocked. A verification flag: the focus can go
+## before the escape (markers come in objective order; OF lists bond_safe above escape_wait / escape).
+func _is_focus(m: Dictionary) -> bool:
+	return focus != &"" and StringName(m["id"]) == focus and not _stalled(m) and not _is_marker_blocked(m)
+
+
+static func _focus_arg() -> StringName:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--po5-focus="):
+			return StringName(a.trim_prefix("--po5-focus="))
+	return &""
 
 
 ## --po5-doctor-bag (LEAD D-145, DB Tense: 3 downs in a long heist): like a PD2 player on a long loud job, the pilot carries
