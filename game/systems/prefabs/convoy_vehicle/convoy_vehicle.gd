@@ -12,7 +12,9 @@
 class_name ConvoyVehicle
 extends GameplayPrefab
 
-## Server, every peer through `stage` replication: the vehicle reached its stop marker.
+## Server, every peer through `stage` replication: the vehicle started driving (C: the mixer's move opens the
+## Tannery gates) / reached its stop marker.
+signal drive_started(id: int)
 signal vehicle_stopped(id: int)
 
 enum Stage { PARKED, DRIVING, STOPPED }
@@ -74,6 +76,7 @@ func drive(path: Path3D, stop: Node3D) -> void:
 	stage = Stage.DRIVING
 	global_transform = _curve_xform(0.0)
 	set_physics_process(true)
+	drive_started.emit(net_id)
 
 
 ## Server: stand on `stop` at once and stay (pop-in, or the end of a drive).
@@ -155,5 +158,7 @@ func _apply_net_state(d: Dictionary) -> void:
 		return
 	var was: Stage = stage
 	stage = int(d["stage"]) as Stage
+	if stage == Stage.DRIVING and was == Stage.PARKED:
+		drive_started.emit(net_id)
 	if stage == Stage.STOPPED and was != Stage.STOPPED:
 		vehicle_stopped.emit(net_id)

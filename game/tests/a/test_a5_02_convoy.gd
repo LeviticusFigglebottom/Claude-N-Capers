@@ -48,10 +48,13 @@ func test_drives_the_path_brakes_and_stops_on_the_marker_carrying_its_truck() ->
 	await wait_physics_frames(2)
 	var truck: ArmoredTruck = made[0] as ArmoredTruck
 	var stopped: Array[int] = []
+	var started: Array[int] = []
 	v.vehicle_stopped.connect(func(id: int) -> void: stopped.append(id))
+	v.drive_started.connect(func(id: int) -> void: started.append(id))
 	assert_eq(v.seats().size(), 4, "placeholder Seat0..3")
 	v.drive(path, stop)
 	assert_eq(v.stage, ConvoyVehicle.Stage.DRIVING)
+	assert_eq(started, [v.net_id] as Array[int], "drive_started")
 	assert_true(v.global_position.distance_to(Vector3(-30, 0, -20)) < 0.1, "starts at the path start")
 	var top: Array[float] = [0.0]  # lambdas capture locals by value
 	var ok: bool = await wait_until(func() -> bool:
