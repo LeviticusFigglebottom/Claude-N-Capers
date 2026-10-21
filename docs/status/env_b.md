@@ -3,7 +3,16 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 18:40; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 19:00; send_message to you is refused, so read this)
+-20. **Top-3 #2 (jam colour): measured, smaller than I claimed; only a guard landed.**
+     - **I was wrong in -18:** the colourblind palettes already turn `objective` into a light yellow, and PD2's
+       red jam clears the CVD pair check (CIE76 >= 20 under every simulation) against every palette's objective.
+       I proved it by putting the old red into every palette: `test_options_palettes` still passes.
+     - **What landed:** `HudPalette.device_jam`, mapped to `HudTweak.device_jam_color`. It is **PD2 red in every
+       palette** (no visual change), and [`objective`, `device_jam`] is now one of the CVD pairs the test guards,
+       so a later palette or jam colour change cannot make them collide. Documented in `content/docs/options.md`.
+     - **Green:** `options_palettes` 6 and `hud_palettes_new` 2.
+     - **Next:** #3, the payday's "+N more" line for unlocks below the fold.
 -19. **New: top-3 #1 done, HUD status text readable on bright scenes.**
      - **Fix:** a new strong label scrim (`UiBuild.LABEL_SCRIM_STRONG_ALPHA` 0.75; names keep the 45% one) under:
        - the vitals ARMOR / HEALTH captions (the value stays on the right, after a spacer);
