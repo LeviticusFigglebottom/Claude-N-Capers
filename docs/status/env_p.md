@@ -15,6 +15,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   | 6 bags | partial: bags 1-2 VT → cash lift → staged by LD's personnel door unseen (2/6, t=398), back down and the lift recalled (t=424; debug `--test=ghost6`, a SHORTCUT start at CQ) | 176 s / 114 s per bag, ~230 s per lift cycle | ghost6_m_r263/run_excerpt.txt |
   | 7 lift, throw, escape | not reached yet | | |
 
+  Route note for the steps not yet reached (positions, cues, timings, what failed), per the LEAD's fallback:
+  game/tests/p/_review/captures/of_g1_2026-10-20/ghost_route_note_hazardous.md (for C to fold into the design doc, which P doesn't own).
+
   No game/AI bug found in steps 1-6 so far: every failure was harness timing or route choice. Minor content notes for C: CashLift's car count
   box is 2.2 m deep in GL's 3 m room, so a bag thrown in from the door rests against GL's back wall just outside it (the harness throws low
   from 3.2 m back instead); the LK partitions are already fixed (bbe1c600).
