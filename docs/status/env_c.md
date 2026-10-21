@@ -6,6 +6,43 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds f2dab548): please re-run Job C for the burnt
+  set (rc_vault_hole, rc_teller_workroom, out g2/fix/burn_scorch).
+  - Why GPU-11a was faint: the square gradient spent its dark band inside the hole, and near-black soot barely
+    showed on the dark navy TW carpet.
+  - New `_scorch_texture` in of_burn.gd: procedural, deterministic (fixed-seed noise), no asset. Banded by distance
+    past the cut, with a ragged edge:
+    - near-black char (alpha 0.97) to 0.3 m;
+    - soot to 0.6 m;
+    - a pale ash ring to 0.85 m (the contrast on the carpet);
+    - fading out by 1.4 m (was 0.9 m).
+  - New `SootTW`: 6 charred slab chunks and 3 soot flakes on the TW floor round the rim. Presentation only, no
+    colliders; kept off the hoist car, ShaftE's panel and the rope ladder top.
+  - Preview of the texture over a carpet colour: g2/fix/burn_scorch/scorch_texture_preview.png.
+  - Ran: OF regen twice identical (navmesh 4165, unchanged); validate OF final PASS; c ostrander 14, test_of_ 7 and
+    determinism 1 all pass; of_burn_variant builds; gdlint, ownership and banned are clean.
+- 2026-10-21, r254 GPU-10 loud nav errors (env/c-worlds 996084e5). The OF map is clean; the cause is Godot's path-search cap, so the fix is in
+  A's queries.
+  - New test `game/tests/c/test_of_loud_nav_targets.gd`: OF loud, burn state, fully breached. All 122 loud-phase walk
+    targets pass, every one on the navmesh and reachable:
+    - police spawns, turret vans, heli drops, breach approaches inside and outside;
+    - 98 Tactical points (rooftop sniper posts exempt, since snipers hold);
+    - escape / secure zones and their wait markers, ladder ends, lift UsePoints.
+  - Every police spawn reaches the street outside every wall / door breach (P5 via the rappel links).
+  - Cause: Godot 4.7's NavigationPathQueryParameters3D.path_search_max_polygons defaults to 4096, and
+    NavigationAgent3D has the same default. OF's navmesh has 4,165 polygons, the only map over it (GH 1552,
+    ND 2024, GN 2870, DB 2464, SL 2058). So a long loud route, e.g. police from a far street spawn up to the
+    terrace, exhausts the search. Godot then logs "It's not expect to not find the most reachable polygons" and
+    returns a partial path.
+  - Repro: P1 -> CoverMisc7 (terrace) stops at the floor below, 3.6 m short, with the default cap; with
+    path_search_max_polygons 0 (unlimited) it reaches the target.
+  - Stealth shows 0 errors because its routes are short.
+  - Ask for ENV A: query paths with path_search_max_polygons = 0 (or >= 8192). `map_get_path` can't take it, so
+    this means NavigationServer3D.query_path + NavigationPathQueryParameters3D in assault_director.gd:970,
+    crew_ai_brain.gd:1022, civilian_brain.gd:958 and civilian_targets.gd:239, plus
+    NavigationAgent3D.path_search_max_polygons on the NPC agents. Map-side, I could thin OF below 4096 polygons,
+    but that is a fragile workaround (any growth re-breaks it) and I'd rather not.
+  - The 1-2 stalls A finds may also be targets made unreachable by the cap, not by geometry.
 - 2026-10-21, round 253, pushed as env/c-worlds ac0f4ce7: (1) is DONE.
   - On env/c-worlds: the 3 GI .res (213ca05d), the GPU-6 final 34 + burnt shots (78e1f2a1), and trunk r252 merged.
   - (3) The other heists' door jambs were already done in 94d9b79a (see the next item).
