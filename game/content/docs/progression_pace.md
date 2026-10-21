@@ -1,12 +1,54 @@
 # Progression pace (XP) model and options for the PO
 
 LEAD 2026-10-21 (PO question from B's OF payday e2e: one first OF clear takes a new player to level 9 / 21 / 29).
-**Proposal only: no data changed.** Numbers come from `tests/b/tools/progression_pace.gd` (headless), which drives the
+**D-148: option D is applied (section below); the rest of this page is the analysis it came from.** Numbers come from `tests/b/tools/progression_pace.gd` (headless), which drives the
 real `PayoutCalculator`, `HeistFreshness` (D-139), the stealth bank and `XpCurve` with the current data (trunk
 e91fa3c0), then the option variants. Re-run it after any data change:
 `/opt/godot/godot --headless --path game --script res://tests/b/tools/progression_pace.gd`.
 
-## How XP works today
+## D-148 applied (PO chose option D; this is the data now)
+
+- `xp_curve.tres` scale 0.5 -> **1.0** (PD2's curve: 900 -> 1,000,000 per level, **23.28 M** to level 100).
+- `PayoutTweak.base_xp_by_heist` (payout.tres): GH 1,500 / ND 2,000 / DB 2,000 / SL 2,500 / GN 2,500 / OF 3,000;
+  other heists use `base_xp_success` 2,000 (Rolling Thunder / Afterhours get a row when they ship). Failure XP scales
+  from the same base. PD2 difficulty multipliers unchanged.
+- Re-run `tests/b/tools/progression_pace.gd`: it prints the D-148 pace next to the pre-D-148 one.
+
+| First clear (fresh profile) | Routine | Tense | Hazardous | Brutal | Lethal | Cataclysm |
+|---|---|---|---|---|---|---|
+| GH (S, 2 bags) | L2 | L5 | L12 | L17 | L18 | L19 |
+| ND / DB (M, 4 bags) | L4 | L8 | L15 | L20 | L21 | L22 |
+| SL / GN (2 bags, 2,500) | L4 | L8 | L15 | L20 | L21 | L22 |
+| OF (L, 6 bags) | L6 | L11 | L18 | L23 | L24 | L25 |
+| *pre-D-148 OF* | *L9* | *L14* | *L21* | *L26* | *L27* | *L29* |
+
+New-player path (every heist once per difficulty): L17 / 25 / 32 / 39 / 44 / 49 after Routine ... Cataclysm
+(pre-D-148: 21 / 29 / 38 / 46 / 51 / 56). Clears to 100 rotating: Routine 5,719, Tense 2,860, Hazardous 1,144,
+Brutal 572, Lethal 498, Cataclysm 408 (pre-D-148: 3,097 / 1,548 / 619 / 310 / 270 / 221).
+
+### Level-locked unlocks re-checked against the new pace
+
+Realistic path: one rotation each on Routine, Tense, Hazardous, then Brutal (Lethal / Cataclysm are board-gated at
+level 80, `board_tweak.difficulty_min_level`), Cataclysm from level 80. Clears to reach each gate:
+
+| Level | What it gates | Clears, D-148 | Clears, pre-D-148 |
+|---|---|---|---|
+| 10 | early weapons / mods / masks (unlock_level 1-10) | 3 | 2 |
+| 20 | mid weapons, armor (unlock_level 11-20) | 8 | 5 |
+| 30 | heavy armor, late weapons (21-30) | 16 | 13 |
+| 45 | **every item unlock_level** (max 45) | 32 | 24 |
+| 60 | (no gate) | 76 | 47 |
+| 70 | (no gate) | 135 | 79 |
+| 80 | **Lethal + Cataclysm on the board** | **230** | 131 |
+| 100 | max | 484 | 268 |
+
+- Item unlocks (all <= 45) stay inside the first ~32 clears (was ~24): no data change needed.
+- **The level-80 board gate is the one to decide on.** At ~230 Brutal clears it is ~1.75x later than before.
+  Options for the PO: keep 80 (Lethal is end-game), or lower
+  it to **60** (76 clears, about where 80 was reached before D-148: 131) or **70** (135 clears = the old pace to 80).
+  B recommends 70: it keeps the old time-to-Lethal. Not changed (PO call).
+
+## How XP worked before D-148
 
 - **XP does not depend on the heist.** `base = 2000 + 250 x bags` (payout.tres), then x DifficultyDef.xp_mult
   (Routine 1, Tense 2, Hazardous 5, Brutal 10, Lethal 11.5, Cataclysm 14), +10% per surviving teammate (cap +30%),
@@ -26,7 +68,7 @@ e91fa3c0), then the option variants. Re-run it after any data change:
 - PD2 job XP grows with the job (more days / stages, more loot); ours is flat per heist (only bags). PD2's
   first-hour pace is also fast: the low levels are cheap by design.
 
-## Current pace
+## Pre-D-148 pace
 
 First clear from a fresh profile (typical clear: the heist's required bags, stealth where allowed, crew of 4 alive):
 

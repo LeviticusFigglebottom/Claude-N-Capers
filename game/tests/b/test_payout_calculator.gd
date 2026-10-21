@@ -11,8 +11,12 @@ func _diff(payout_mult: float, xp_mult: float, civ_penalty: int) -> DifficultyDe
 	return d
 
 
+## Script defaults (== payout.tres, checked below) with the flat 2000 base: the goldens predate D-148's
+## per-heist base (test_heist_size_base_xp covers that).
 func _tweak() -> PayoutTweak:
-	return PayoutTweak.new()  # script defaults == payout.tres values (checked below)
+	var tw: PayoutTweak = PayoutTweak.new()
+	tw.base_xp_by_heist = {}
+	return tw
 
 
 func _member(slot: int, is_ai: bool, custody: bool = false, civs: int = 0) -> Dictionary:
@@ -272,3 +276,17 @@ func test_stealth_bonus_by_heist() -> void:
 	r["heist_id"] = &"no_such_heist"
 	var out: Dictionary = PayoutCalculator.compute(r, _diff(1.0, 1.0, 0), tw)
 	assert_near(float(out["stealth_bonus_banked"]), tw.stealth_xp_bonus_mult, 0.0001, "no def: the tweak")
+
+
+## D-148 (PO, option D): base success XP by heist size; failure XP scales from the same base; unknown heists use
+## base_xp_success.
+func test_heist_size_base_xp() -> void:
+	var tw: PayoutTweak = PayoutTweak.new()
+	assert_eq(tw.base_xp_for(&"glasshouse"), 1500, "S")
+	assert_eq(tw.base_xp_for(&"night_deposit"), 2000, "M")
+	assert_eq(tw.base_xp_for(&"ostrander_federal"), 3000, "L")
+	assert_eq(tw.base_xp_for(&"not_a_heist"), tw.base_xp_success, "fallback")
+	var win: Dictionary = PayoutCalculator.compute(_result(), _diff(1.0, 1.0, 4000), tw, false, 0)
+	assert_eq(int((win["xp_lines"] as Array)[0]["amount"]), 1500 + 3 * tw.xp_per_loot_bag, "GH base + 3 bags")
+	var lost: Dictionary = PayoutCalculator.compute(_result(false), _diff(1.0, 1.0, 4000), tw, false, 0)
+	assert_eq(int((lost["xp_lines"] as Array)[0]["amount"]), roundi(1500 * tw.base_xp_failure_fraction), "failure")
