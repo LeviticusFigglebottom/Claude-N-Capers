@@ -250,9 +250,18 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
 				and not _stalled(m) and not _is_marker_blocked(m) and not _blocked_on_path(m):
 			return m
+	return _fallback_marker(markers)
+
+
+## _pick's last resort: a marker that is not stalled (hoist5: 9 min "waiting at deposit_boxes", the gold untouched), else
+## `secure` (bags still to secure: _fetch_bag finds a loose one or a bag_loot source, the opened gold cage), else the first.
+func _fallback_marker(markers: Array[Dictionary]) -> Dictionary:
 	for m1: Dictionary in markers:
-		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
+		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]) and not _stalled(m1):
 			return m1
+	for ms: Dictionary in markers:
+		if StringName(ms["id"]) == &"secure":
+			return ms
 	return markers[0]
 
 
@@ -762,6 +771,10 @@ func _lift_bag() -> bool:
 	var center: Vector3 = lift.car_transform().origin
 	var fwd_m: float = LootTweak.get_default().drop_forward_m
 	for deg: int in range(0, 360, 45):  # x4_of_loud._into_hoist: drop from the first free stand round the car
+		if not p.crew.is_carrying_bag() and not await _pick_up_missed(center):
+			break  # hoist5: 3 missed tosses fed a bot each (140 s at the rope ladder); pick it up, try the next spot
+		if lift.bags_in_car().size() > before:
+			break
 		var dir: Vector3 = Vector3.FORWARD.rotated(Vector3.UP, deg_to_rad(float(deg)))
 		var at: Vector3 = p.stand_point(center - dir * fwd_m)
 		if Po5Pilot.flat_dist(at, center - dir * fwd_m) > 0.4 or not await p.goto(at, 0.3, 8.0, false, false):
@@ -769,7 +782,8 @@ func _lift_bag() -> bool:
 		await p.face(center, 0.05, 1.5)  # G is a throw that follows the camera pitch: aim at the car floor (short toss)
 		await p.inp.tap(&"drop_bag")
 		await p.hold_position(0.8)
-		break
+		if lift.bags_in_car().size() > before:
+			break
 	if lift.bags_in_car().size() <= before:
 		f.note("hoist: the bag missed %s's car (try %d)" % [lift.name, _lift_tries])
 		return false
@@ -780,6 +794,21 @@ func _lift_bag() -> bool:
 	if lift.is_moving():
 		_lift_tries = 0  # the cap counts failed tries in a row, not trips
 	return lift.is_moving()
+
+
+## A tossed bag that missed the car, lying loose within 3 m of `center`: pick it straight back up (before a bot
+## fetches it). True when carrying again.
+func _pick_up_missed(center: Vector3) -> bool:
+	var lm: LootManager = rt.service(G.SVC_LOOT) as LootManager
+	if lm == null:
+		return false
+	for bag: LootBag in lm.bags():
+		if bag.secured or bag.is_carried() or bag.in_flight or bag.interactable == null \
+				or bag.global_position.distance_to(center) > 3.0:
+			continue
+		await p.use(bag.interactable, 6.0, func() -> bool: return p.crew.is_carrying_bag())
+		return p.crew.is_carrying_bag()
+	return false
 
 
 ## Bring `lift`'s car to landing `i` (its panel there: call_lift) and wait for it. True when it stands there. Never
