@@ -4,6 +4,34 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-4) Headless check of GPU-17: no code regression between GPU-15's tree and trunk e9c8744f (07:40 UTC)
+- Setup: OF Cataclysm 1037 auto_loud, 240 s, HITCH_MS=50, headless on this box, one run after another.
+  - Trees: ffc264d4 (GPU-15's A side), trunk e9c8744f (GPU-17's tree) ×2, and env/a-core HEAD 89a831f1c (from the
+    main checkout and from a clean worktree), plus single-file reverts on HEAD.
+
+| tree | TEL phys avg | TEL proc avg | heist frames in 240 s | wall |
+|---|---|---|---|---|
+| ffc264d4 | 56.3 ms | 15.2 ms | n/a (old summary only prints at heist end) | 259 s |
+| e9c8744f | 55.0 / 56.8 ms | 15.0 / 13.1 ms | n/a | 259 / 247 s |
+| HEAD 89a831f1c | 33.5 / 31.8 / 31.0 ms | 11.7 / 11.6 / 13.3 ms | 18,681 / 20,864 / 20,376 | 247-255 s |
+| HEAD, old IK (anim_layers @ffc264d4) | 31.8 ms | 11.4 ms | 19,577 | 246 s |
+| HEAD, old OF mission only | 53.0 / 59.8 / 56.0 ms | 12.0-15.1 ms | 18,123 / 15,909 | 246-247 s |
+
+- **ffc264d4 = e9c8744f** within noise. The round-255 merges (B's label clamp, D's uncalled CharacterWarm, P's tests)
+  cost nothing measurable. **The GPU-15 -> GPU-17 gap is not in the code.** GPU-17b, your control re-run, should show
+  the same.
+- **My r256 vault-marker change is the one code effect, in the good direction.** Reverting only
+  ostrander_federal_mission.gd brings TEL phys back to ~55 ms.
+  - The old mission marked [bond_safe] and the 9 vault-wall boxes from the start: ~10 more live markers.
+  - Headless frame rate: ~70 fps with those markers, ~80 fps without, about 1.8 ms per frame. This is the
+    HUD/marker path, not navigation: TIME_NAVIGATION_PROCESS stays at 0.0-0.1 ms throughout.
+  - The pilot's own path queries are small too (FrameProf po5.nav_path about 1.4 ms in the hitch frames).
+- **Caveat on the metric: TEL `phys` is not per-step cost.** 31-56 ms against 12-14 ms frames means it covers more
+  than one step's work. Compare trees by frame rate (heist frames / 240 s) and wall time, not by TEL phys.
+- **Not the freed-marker flood.** HEAD with the old IK code is just as fast, and none of the headless runs printed
+  the set_target error (0 lines).
+- **Ask for GPU-17b / GPU-18:** compare the `HITCHES n of m heist frames` line (m / 240 = fps) next to TEL. When the
+  vault opens, r256 marks the in-vault loot again, so expect a slightly lower frame rate after the burn.
 ### (-3) Relayed from ENV B (they can't reach you): DB Tense with the 1-Longshot cap (B 8e88e851)
 - Trunk e9c8744f still reads longshot 2: B's cap missed r255, and so did my f01d11db (Longshot timing).
 - trunk r255 + cap (env/b-content 417b4a75), no Longshot timing, no doctor bag: **1/3**.
