@@ -18,7 +18,7 @@
 ## points, patrol graphs, assault markers, the navmesh (door_nav_clearance, _nav_thick). No lights but the sun, the
 ## sky and the dressing's fixtures.
 ## G2 (RT-C2 batch 1, reuse-first): rt_dress.gd (kit rooms, map-built art, street furniture) and rt_finish.gd (library
-## finishes on every shell surface), both before the bake.
+## finishes on every shell surface), both before the bake; rt_skyline.gd (the city round the site, visual only).
 extends "res://world/heists/rolling_thunder/greybox/rt_gameplay.gd"
 
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
@@ -94,6 +94,7 @@ func _build() -> void:
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
 	preload("res://world/heists/rolling_thunder/greybox/rt_finish.gd").new(self).call(&"build")  # RT-C2 finishes (G2)
+	preload("res://world/heists/rolling_thunder/greybox/rt_skyline.gd").new(self).call(&"build")  # RT-C2 skyline (G2)
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
