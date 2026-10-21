@@ -36,8 +36,16 @@ Newest entry first, keep the last 10.
   - Merged locally with env/b-content, 10/11 pass. The 11th is B's placeholder `test_staged_heist_lines_wait_for_their_mission`
     (asserts at least 30 RT lines unsaid; now 0). B is asked to flip it and add RT to HEISTS.
 - **Not ready yet (keep RT hidden):** G1 has no `armored_truck` prefabs, only boxes, so [trucks] has nothing to open.
-  I've asked C to place truck prefabs per layout for G1, with movers in RT-C2. Rare events other than
-  convoy_early / marshal_early / bonds_courier are stage 2.
+  I've asked C to place truck prefabs per layout for G1, with movers in RT-C2.
+- **4563a3879 + 1b7ee472c, stage 2:**
+  - Rare events: convoy_early / marshal_early from their effect values, informant_tip reveals, crane_sniper opens S3
+    (closed otherwise), Ashby S4 closed below Hazardous, an armored_escort Wrecker in the rear escort, and
+    rush_hour / the `civilians` scalar thin the street to 6 / 9 / 12.
+  - gold_rush only needs C's data as a force_active Array.
+  - Convoy units carry `convoy_lead` / `convoy_tN` / `convoy_rear` spawn tags, so D's RT look rows apply to the
+    Vaultline crews. The escorts switch to `enemy.convoy_lead` / `convoy_rear` once those EnemyDefs exist.
+  - test_rt_a6_mission: 4 tests.
+- **Waiting on others:** the staff_diner / staff_booth tag rows wait for D's look ids (RT-D2).
 ### (-21) GPU-20c follow-ups done; RT A5-01 / A5-02 / A5-03 in (20:30 UTC)
 **1. AI crew killed civilians: fixed, 6fa54bd59.**
 - Bots never targeted civilians (the scan only takes HOSTILE_ROLES). The kills were rounds through civilians on the
