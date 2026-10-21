@@ -257,6 +257,7 @@ var _vc_away_since: float = -1.0
 ## Step 6: other basement guards' last sampled positions (closing on the gate).
 var _vc_last: Dictionary = {}
 var _vg_vel: Vector3 = Vector3.ZERO
+var _vg_last_len: float = INF
 
 
 func _ready() -> void:
@@ -1052,38 +1053,6 @@ func _bag_into_car(lift: BagLift, stand: Vector3) -> bool:
 		note("car throw %d missed: bag at %s" % [attempt, Po5Pilot._v(bag.global_position) if is_instance_valid(bag)
 			else "-"])
 		await shot("car_miss_%d" % attempt)
-		if bag == null or not is_instance_valid(bag) or not await pilot.use(_comp(bag), 20.0,
-				func() -> bool: return pilot.crew.is_carrying_bag()):
-			return false
-	return false
-
-
-## Step 6, OF's CashLift: a low throw from outside the car (ghost6_e/f: every throw from the door hit GL's back wall and
-## came to rest at z 0.4, on the edge of the 2.2 m car's count box; the GL room is 3 m deep). Looking steeply down the
-## throw leaves at throw_min_elev_deg and lands ~1.9 m past the release, so stand `back_m` from the car's centre.
-func _bag_into_car_low(lift: BagLift) -> bool:
-	var before: int = lift.bags_in_car().size()
-	var car: Vector3 = lift.car_transform().origin
-	var out: Vector3 = _of(GHOST_CQ_AT) - car
-	out.y = 0.0
-	out = out.normalized()
-	# The landing's lift gate (CashLiftDoorB at the CQ side): open it first (liftthrow_a: closed, the bag stopped on it).
-	var gate: Door = rt.find_child("CashLiftDoorB", true, false) as Door
-	if gate != null and not gate.is_open and not await pilot.use(_comp(gate), 20.0, func() -> bool: return gate.is_open):
-		note("GHOST CashLiftDoorB did not open")
-		return false
-	for back_m: float in [3.2, 2.8, 3.6]:
-		if not await _go(pilot.stand_point(car + out * back_m), 0.2, 30.0):
-			return false
-		await pilot.face(pilot.crew.global_position - out * 1.0 + Vector3(0, -1.0, 0), 0.02, 1.0)
-		var bag: LootBag = pilot.crew.carried_bag as LootBag
-		await pilot.inp.tap(&"drop_bag")
-		await wait_s(1.5)
-		if lift.bags_in_car().size() > before:
-			note("bag in the car of %s (%d) thrown from %.1f m" % [lift.name, lift.bags_in_car().size(), back_m])
-			return true
-		note("low car throw from %.1f m missed: bag at %s" % [back_m, Po5Pilot._v(bag.global_position)
-			if is_instance_valid(bag) else "-"])
 		if bag == null or not is_instance_valid(bag) or not await pilot.use(_comp(bag), 20.0,
 				func() -> bool: return pilot.crew.is_carrying_bag()):
 			return false
@@ -1914,7 +1883,12 @@ func _vc_window(max_age: float) -> bool:
 		and _nav_len(vp + _vg_vel * trip_s, gate_at) >= 12.0
 	# Out with a bag: only "far" counts, not a fresh absence (ghost6_t: an absence 0 s old was a short turn at RC's front;
 	# he came back east down BB within 10 s and met the gate -> CQ dash head on, t=1004).
-	if trip_s > 10.0 and not far:
+	var vg_len: float = _nav_len(vp, gate_at) if vp != Vector3.INF else INF
+	var vg_closing: bool = vg_len < _vg_last_len - 0.05
+	_vg_last_len = vg_len
+	# ...and not on his way back (ghost6_t/u: far at t=989, walking back out of RC, at the gate 15 s later): standing or
+	# walking deeper.
+	if trip_s > 10.0 and (not far or vg_closing):
 		return false
 	if not far and (_vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age):
 		return false
@@ -3001,21 +2975,24 @@ func _test_liftprobe() -> bool:
 	return true
 
 
-## Debug (windowed): the step 6 car throw alone. Masked in CQ (teleport), a cash bag spawned at the feet, then
-## _bag_into_car_low; repeated for a second bag (the car holds 2).
-func _test_liftthrow() -> bool:
+## Debug (windowed): C's cash-lift fix (r272, test_of_cash_lift_throw): the plain throw from the landing stand, as
+## G1 / GH use (_bag_into_car), two bags (liftdoor_272 PASS; it replaced step 6's low-throw workaround).
+func _test_liftdoor() -> bool:
 	if not await _launch(OF_HEIST, _of_seed(), _ghost_diff as Enums.Difficulty, _ghost_opts(), false):
 		return false
 	rt.isolate_npc(null)
 	if not await _mask():
 		return false
 	var lift: BagLift = _x("cash_lift") as BagLift
+	var low: int = _lift_nearest_landing(lift, _of(GHOST_CQ_AT))
+	var cq_stand: Vector3 = pilot.stand_point(lift.landing_transform(low).origin + lift.landing_transform(low).basis.z
+		* -1.2)
 	for k: int in 2:
 		rt.teleport_crew(pilot.crew.slot, Transform3D(Basis.IDENTITY, pilot.stand_point(_of(GHOST_CQ_AT)) + Vector3(0, 0.05, 0)))
-		note("SHORTCUT liftthrow: NPCs out, teleported into CQ")
+		note("SHORTCUT liftdoor: NPCs out, teleported into CQ")
 		await wait_s(1.0)
-		if await _get_bag(LOOT_MEDIUM) == null or not await _bag_into_car_low(lift):
-			return await _fail("car throw %d" % k)
+		if await _get_bag(LOOT_MEDIUM) == null or not await _bag_into_car(lift, cq_stand):
+			return await _fail("door throw %d" % k)
 	return lift.bags_in_car().size() == 2
 
 
@@ -3375,7 +3352,7 @@ func _g6_bags() -> bool:
 					OF_LASER_LEAD_M):
 				return false
 			await _gate_peek()
-			if not await _bag_into_car_low(lift):
+			if not await _bag_into_car(lift, cq_stand):
 				return false
 			note("GHOST bag trip VT -> car %.1f s" % (rt.heist_time_s - t0))
 		if not await _lift_to(lift, high, cq_stand):

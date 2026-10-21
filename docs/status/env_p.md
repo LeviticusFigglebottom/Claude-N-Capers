@@ -12,6 +12,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   20-40 s). Six bags means six such windows in a row. If you want the line harness-provable on Hazardous: lengthen the vault guard's
   loop (b) RC dwell (as you offered C/A for rover_basement), or stage the bags in VT and run fewer crossings. Route note for the GPU
   box's human check: ghost_route_note_hazardous.md. A full run needs ~2.5 h wall, so none fits before 02:00.
+  r272 (76b3ae401): C's cash-lift fix confirmed by real input (`--test=liftdoor`, liftdoor_272: 2/2 plain door throws land in the car);
+  step 6 uses the plain throw again and the low-throw workaround is gone. Last attempt running on r272: out-trips also need the vault
+  guard not closing on the gate.
 - **OF ghost on Hazardous, seed 1002, trunk r263 (67260f0b): step table**:
 
   | step | pass run | heist time | evidence (game/tests/p/_review/captures/of_g1_2026-10-20/) |
