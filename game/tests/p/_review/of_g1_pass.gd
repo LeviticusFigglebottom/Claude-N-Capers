@@ -1030,11 +1030,20 @@ func _bag_into_car(lift: BagLift, stand: Vector3) -> bool:
 		if not await _go(stand, 0.2, 60.0):
 			return false
 		var car: Vector3 = lift.car_transform().origin
-		await pilot.face(Vector3(car.x, car.y + 0.6, car.z), 0.02, 1.5)
-		pilot.inp.press(&"move_forward")
-		await wait_s(0.4)
-		pilot.inp.release(&"move_forward")
-		await pilot.face(Vector3(car.x, car.y + 0.4, car.z), 0.02, 1.0)
+		if attempt == 0:
+			await pilot.face(Vector3(car.x, car.y + 0.6, car.z), 0.02, 1.5)
+			pilot.inp.press(&"move_forward")
+			await wait_s(0.4)
+			pilot.inp.release(&"move_forward")
+			await pilot.face(Vector3(car.x, car.y + 0.4, car.z), 0.02, 1.0)
+		else:
+			# Second try: walk in (the car is walkable) and drop it at the feet, looking down (ghost6_e: OF's CashLift,
+			# both throws from the CQ door landed 5 cm past the car's far wall, at z 0.4).
+			var mid: Vector3 = stand.lerp(car, 0.6)
+			await _go(Vector3(mid.x, stand.y, mid.z), 0.25, 10.0)
+			var ahead: Vector3 = (car - pilot.crew.global_position)
+			ahead.y = 0.0
+			await pilot.face(pilot.crew.global_position + ahead.normalized() * 0.4 + Vector3(0, -0.5, 0), 0.02, 1.0)
 		var bag: LootBag = pilot.crew.carried_bag as LootBag
 		await pilot.inp.tap(&"drop_bag")
 		await wait_s(1.5)
