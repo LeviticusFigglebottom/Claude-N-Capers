@@ -866,8 +866,11 @@ one ECM (2 charges), 2 cable ties, **no kills, no pagers**:
    dumpsters (behind C6). **Second cue (D-150 Hazardous ghost, P's ghost_haz data):** `rover_hall` walks his three
    loops in turn from BCMid (guard_tweak `hub_loops`: (a) TW/hall, (b) LD dock check → MO, (c) stair B → fire exit),
    so his (b) dock check lands in most smoke windows. Go only once he has **left LD for MO** on (b): his MO leg and the
-   whole of (c) keep him at BC's east end (x > 40), away from the LD → BC west → SA route. If he is heading for LD,
-   or in it, let that window go. **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
+   whole of (c) keep him at BC's east end, away from the LD → BC west → SA route. Read the phase by **where he is**
+   (east of x 38 on the BC line), not by the time since his last LD visit: he spawns into (b) (LD at t≈11) and passes
+   within 8 m of DockCorridorDoor at the hub between loops, so wait outside beside the dock door until he is east. If
+   he is heading for LD, or in it, let that window go. (P haz_n, seed 1002: the t=162 window, step 2 done at t=208; no
+   patrol change needed.) **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
    → BC west end (C4 is off in `cam_a`) → SA down. About 16 s.
 3. Basement, BB west (C13 at the east end does not reach x < 28). Wait in LK. When the manager
    (alone on SB, D-136 §3b.5) takes his WC break, shout him down and **tie him** (tie 1), take the keycard (1 s)
