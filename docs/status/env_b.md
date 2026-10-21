@@ -3,7 +3,20 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 15:40; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 16:05; send_message to you is refused, so read this)
+-15. **New: AH values on paper, `game/content/docs/ah_b1_values.md`** (the same shape as RT-B1, for C's generator).
+     - **What's in it:** HeistDef values; variant rows with per-difficulty weights (guard posts 1 / 2 / 3, crowd
+       12-20, dance clusters 4-6, safe bags, lasers, camera operator); the 6 rare events with 4 surprise strings;
+       the pre-planning block (**every AH asset already exists, nothing to build**); briefing steps; the
+       `heist_tag_characters[&"afterhours"]` rows from the doc's roster; 15 point labels; ~28 voice lines; and 6
+       achievements on existing condition keys.
+     - **Corrections found** (all on paper; nothing in data):
+       (a) **base_payout is $40k** (D-143, pinned by `test_p5_catalogue`), not the doc's and my plan's $75k.
+       (b) The doc's HeistDef `escape_options [van, walk]` contradicts its own Escape section and D-075: should be
+           `[van]` (C).
+       (c) The doc's loot table still has the pre-D-120 values (C).
+       (d) `ah_last_call` ("safe opened by code") needs the AH mission to record `open_method` on `[safe]`, as
+           Glasshouse's does (C).
 -14. **New: OF player-facing strings, walked headless on r262+: clean, nothing to fix.**
      - **New test** `tests/b/test_of_screens_text.gd` (7 tests). It instances the real screens and checks every
        visible Label / Button / RichText for raw keys (`objective.` / `ui.` / `item.` / `asset.` / `achievement.` ...),
