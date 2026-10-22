@@ -21,6 +21,9 @@ REVIEW_CELLS = {
     "melee_blade": ["melee_blade_idle:0", "melee_blade_swing:5", "melee_blade_swing:9", "melee_blade_swing:12",
                     "melee_blade_charge:0", "melee_blade_charge_swing:7", "melee_blade_sprint:4", "shotgun_bash:7",
                     "akimbo_bash:6"],
+    "melee_heavy": ["melee_heavy_idle:0", "melee_heavy_swing:7", "melee_heavy_swing:13", "melee_heavy_swing:17",
+                    "melee_heavy_charge_start:30", "melee_heavy_charge_swing:9", "melee_heavy_charge_swing:14",
+                    "melee_heavy_sprint:4", "melee_heavy_draw:10"],
     "throwable": ["throwable_draw:6", "throwable_draw:9", "throwable_idle:0", "throwable_throw:6", "throwable_throw:11",
                   "throwable_throw:14", "throwable_throw_low:6", "throwable_throw_low:12", "throwable_sprint:4"],
     "deploy_bag": ["deploy_bag_draw:8", "deploy_bag_idle:0", "deploy_bag_place:11", "deploy_bag_place:33",
@@ -60,6 +63,9 @@ def build(name: str) -> dict:
         add([_box("McHandle", (-0.012, -0.015, -0.085), (0.012, 0.015, 0.035), m["tan"], 0.004),
              _box("McBlade", (-0.0015, -0.030, 0.035), (0.0015, 0.010, 0.440), m["steel"]),
              _box("McTip", (-0.0015, -0.020, 0.440), (0.0015, 0.004, 0.470), m["steel"])])
+    elif name == "melee_heavy":          # stand-in two-handed sledge: handle -0.33..+0.55, head at +0.55 (v1.38)
+        add([_cyl("HvHandle", (0, 0, -0.330), (0, 0, 0.520), 0.017, m["tan"]),
+             _box("HvHead", (-0.040, -0.110, 0.520), (0.040, 0.110, 0.600), m["steel"], 0.006)])
     elif name == "throwable":
         add([_cyl("GrBody", (0, 0, -0.045), (0, 0, 0.030), 0.029, m["olive"], 24),
              _cyl("GrFuse", (0, 0, 0.030), (0, 0, 0.055), 0.010, m["steel"], 12),
