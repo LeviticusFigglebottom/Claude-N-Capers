@@ -33,6 +33,8 @@ const SERVICE: StringName = &"shout"
 var _held: Dictionary[int, bool] = {}
 ## slot -> seconds until the next shout is allowed
 var _cooldown: Dictionary[int, float] = {}
+## B1 ability.inspire (Aced): slot -> seconds until the shout can revive again
+var _inspire_cd: Dictionary[int, float] = {}
 var _runtime: HeistRuntime = null
 
 
@@ -56,6 +58,7 @@ func tick(crew: CrewController, intent: CrewIntent, delta: float) -> void:
 	var slot: int = crew.slot
 	var cd: float = maxf(_cooldown.get(slot, 0.0) - delta, 0.0)
 	_cooldown[slot] = cd
+	_inspire_cd[slot] = maxf(_inspire_cd.get(slot, 0.0) - delta, 0.0)
 	var pressed: bool = intent != null and intent.shout
 	var rising: bool = pressed and not _held.get(slot, false)
 	_held[slot] = pressed
@@ -65,9 +68,14 @@ func tick(crew: CrewController, intent: CrewIntent, delta: float) -> void:
 	shout(crew)
 
 
-## Server: resolve one shout from `crew`. Returns the NPCs that reacted.
+## Server: resolve one shout from `crew`. Returns the NPCs that reacted (the teammate, for Inspire).
 func shout(crew: CrewController) -> Array[Node]:
 	var affected: Array[Node] = []
+	var mate: CrewController = inspire(crew)  # B1: a shout at a teammate is Inspire, not an intimidation
+	if mate != null:
+		affected.append(mate)
+		shouted.emit(crew.slot, affected)
+		return affected
 	for npc: NpcBase in targets_for(crew):
 		var brain: Node = npc.get_node_or_null(^"Brain")
 		if brain != null and brain.has_method(&"on_shouted") and bool(brain.call(&"on_shouted", crew)):
@@ -86,6 +94,71 @@ func shout(crew: CrewController) -> Array[Node]:
 		if t != null and rt != null and rt.stealth != null and rt.stealth.mark(t, crew.slot):
 			marked.emit(crew.slot, t)
 	return affected
+
+
+## B1 `ability.inspire` (PD2 Inspire, Rally Cry): a shout at the teammate nearest the aim line (mark cone, line of
+## sight). Basic: a standing teammate within the shout range gets movement / reload x buff_move_mult / buff_reload_mult
+## for buff_duration s (CrewBuffs source "inspire", refreshed by another shout). Aced (`range` > 0): a DOWNED teammate
+## within `range` m is revived at once, then not again for `cooldown` s from this shouter. Returns the teammate it
+## reached (null: the shout goes on to civilians, guards, police and marks).
+func inspire(crew: CrewController) -> CrewController:
+	var p: Dictionary = Modifiers.params(crew.slot, &"ability.inspire")
+	if p.is_empty():
+		return null
+	var mate: CrewController = ally_target_for(crew, maxf(Tweak.stealth().shout_range_m, float(p.get("range", 0.0))))
+	if mate == null or mate.health == null:
+		return null
+	var ok: bool = _inspire_revive(crew, mate, p) if mate.crew_state == Enums.CrewState.DOWNED \
+		else _inspire_buff(crew, mate, p)
+	return mate if ok else null
+
+
+## Aced: revive the DOWNED `mate` within `range` m, off cooldown.
+func _inspire_revive(crew: CrewController, mate: CrewController, p: Dictionary) -> bool:
+	var revive_m: float = float(p.get("range", 0.0))
+	if revive_m <= 0.0 or mate.global_position.distance_to(crew.global_position) > revive_m \
+			or _inspire_cd.get(crew.slot, 0.0) > 0.0:
+		return false
+	mate.health.revive(crew.slot)
+	_inspire_cd[crew.slot] = float(p.get("cooldown", 0.0))
+	return true
+
+
+## Basic: the standing `mate` within the shout range gets the move / reload buff.
+func _inspire_buff(crew: CrewController, mate: CrewController, p: Dictionary) -> bool:
+	var dur: float = float(p.get("buff_duration", 0.0))
+	var rt: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
+	var buffs: CrewBuffs = CrewBuffs.of(rt)
+	if buffs == null or mate.crew_state != Enums.CrewState.NORMAL or dur <= 0.0 \
+			or mate.global_position.distance_to(crew.global_position) > Tweak.stealth().shout_range_m:
+		return false
+	buffs.grant(mate.slot, &"inspire", {
+		&"movement.speed_mult": float(p.get("buff_move_mult", 1.0)),
+		&"weapon.reload_speed_mult": float(p.get("buff_reload_mult", 1.0))}, dur)
+	return true
+
+
+## The teammate (any other crew member) nearest `crew`'s aim line within the mark cone and `max_m`, in sight.
+func ally_target_for(crew: CrewController, max_m: float) -> CrewController:
+	var rt: HeistRuntime = _runtime if _runtime != null else HeistRuntime.of(crew)
+	if rt == null:
+		return null
+	var eye: Vector3 = crew.eye_position()
+	var aim: Vector3 = crew.aim_direction()
+	var half: float = deg_to_rad(Tweak.stealth().mark_cone_half_deg)
+	var best: CrewController = null
+	var best_ang: float = INF
+	for c: CrewController in rt.crew_members():
+		if c == crew or c.crew_state == Enums.CrewState.CUSTODY:
+			continue
+		var point: Vector3 = c.global_position + Vector3(0.0, 0.4 if c.crew_state == Enums.CrewState.DOWNED else 1.2, 0.0)
+		var to: Vector3 = point - eye
+		var ang: float = aim.angle_to(to)
+		if to.length() > max_m or ang > half or ang >= best_ang or not _clear_to(crew, eye, point, c):
+			continue
+		best = c
+		best_ang = ang
+	return best
 
 
 ## S2.9: the markable target a shout from `crew` would mark now (null when none).

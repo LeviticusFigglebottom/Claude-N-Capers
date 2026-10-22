@@ -4,6 +4,22 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-32) A4-04 B1 skill keys; RT ambush hand-over; Reyes at the wheel; harness hardening (2026-10-22)
+- **A4-04 B1 (5e7fd691), 9 keys hooked and tested:**
+  - Keys: Inspire, Swan Song, Berserker, Overkill, Bulletstorm, Bullseye, Kickstarter, Messiah ×2.
+  - New services: CrewBuffs (timed Modifiers sources plus tags, replicated via SVC_BUFFS) and SkillTriggers.
+  - Tests: test_skills_b1 8/8.
+  - Pending: the LEAD's ratchet edit and B's blocked_on_keys removal go in the same round. Next: B2.
+- **RT Hazardous rt_clean from the ambush spot (2734500b):** 0/3 at full damage, 0/3 at CREW_DMG 0.5.
+  - At half damage, 2 of 3 seeds survive the escort. The bot leaving cover is the limit; P's real-input run judges.
+  - Po5EscortLog (30bace84) is now a permanent tool: all units CALM at the stop, alerts at t+0.6 to t+8.1.
+- **Reyes (603270a8):** visible in the Mixer, plays sit_vehicle_drive; Seat0 drivers of visible vehicles steer.
+- **Harness:**
+  - 655a39a1: DIRECT resolves the heist id from the display name.
+  - 4eac6054: fail fast on an unknown heist or difficulty.
+  - dd3a4477: WAIT_CONVOY waits for the stop itself.
+- **Regression sweep on trunk 78a57794:** 5/5 PASS (GH, DB, GN, OF loud, SL stealth), 0 script errors.
+
 ### (-31) Round 280: mixer test fixed for C's map (2026-10-22)
 - **Round 280 red, now fixed:** a/test_rt_a6 test_phase2_mixer_drives_to_its_stop.
   - Cause: the test added a duplicate Mixer and MixerStop next to C's, and Godot auto-renamed both.

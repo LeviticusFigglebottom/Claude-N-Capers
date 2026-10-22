@@ -122,13 +122,15 @@ func _strike() -> void:
 			best = t
 			best_d = d
 	if best == null:
+		if _kick_device(eye, fwd, range_m, tw):  # B1 Kickstarter: the swing hit a jammed drill / saw
+			return
 		PerkHooks.on_melee_miss(_crew)  # perk.infiltrator: a miss resets the melee chain
 		return
 	var base: float = def.damage if def != null else tw.bash_damage
 	if def != null and charge > 0.0:
 		base = lerpf(def.damage, maxf(def.charged_damage, def.damage), charge)
 	var amount: float = base * Modifiers.mult(_crew.slot, &"weapon.damage_mult", DAMAGE_QUALIFIER) * _bloodthirst_mult() \
-		* PerkHooks.melee_damage_mult(_crew)  # perk.infiltrator chain
+		* PerkHooks.melee_damage_mult(_crew) * SkillTriggers.berserk_mult(_crew, false)  # perk.infiltrator; B1 Berserker
 	var center: Vector3 = (best as Node3D).global_position + Vector3(0.0, 1.0, 0.0) if best is Node3D else eye
 	var info: Dictionary = Damage.info(amount, Enums.DamageType.MELEE, Enums.HitZone.BODY,
 		def.id if def != null else &"melee.bash", center, fwd, _crew.net_id)
@@ -137,6 +139,31 @@ func _strike() -> void:
 	_bloodthirst_kills = 0
 	hit_landed.emit(best)
 	_knock(best, def, tw)
+
+
+## B1 `interaction.device_melee_restart`: a swing with no enemy in reach strikes the nearest JAMMED device (DrillPoint /
+## Safe runner) within the melee range and cone (DeviceRunner.kick rolls the restart). True: it struck one.
+func _kick_device(eye: Vector3, fwd: Vector3, range_m: float, tw: CombatTweak) -> bool:
+	if not Modifiers.flag(_crew.slot, &"interaction.device_melee_restart"):
+		return false
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	if rt == null or rt.map == null:
+		return false
+	var half: float = deg_to_rad(tw.melee_cone_deg * 0.5)
+	var devices: Array[Node] = rt.map.find_children("*", "DrillPoint", true, false)
+	devices.append_array(rt.map.find_children("*", "Safe", true, false))
+	for n: Node in devices:
+		var runner: DeviceRunner = n.get(&"runner") as DeviceRunner if &"runner" in n else null
+		var at: Node3D = n.get(&"device_node") as Node3D if &"device_node" in n else null
+		if runner == null or runner.state != DeviceRunner.State.JAMMED:
+			continue
+		var p: Vector3 = at.global_position if at != null else (n as Node3D).global_position
+		var to: Vector3 = p - eye
+		if to.length() > range_m + 0.5 or fwd.angle_to(to) > half:
+			continue
+		runner.kick(_crew.slot)
+		return true
+	return false
 
 
 func _knock(target: Object, def: MeleeDef, tw: CombatTweak) -> void:
