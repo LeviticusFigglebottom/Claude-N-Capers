@@ -4,7 +4,7 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
 `SafehouseMap extends HeistMap`, data only: no HeistDef, never on the Board).
 
 * Scene: `game/world/hub/safehouse/safehouse_g1.tscn` (**staged**: hub_map's `safehouse.tscn` path makes B's
-  SafehouseHost enter the 3D hub, which fails 22 of B's 2D-hub tests; it moves to that path once B pins them),
+  SafehouseHost enter the 3D hub, which fails 31 of B's 2D-hub tests; it moves to that path once B pins them),
   generated (never hand-edit) by
   `game/world/hub/safehouse/greybox/build_safehouse.gd` from `safehouse_layout.gd` (the G0 tables).
   Determinism: `tools/levelcheck/sh_regen_twice.sh`.

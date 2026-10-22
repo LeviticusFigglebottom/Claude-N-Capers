@@ -16,7 +16,7 @@ Newest entry first, keep the last 10.
     walkthrough covers 7 starts (incl. ReturnRange) x 9 UsePoints, 63/63 ok.
   - **G1 deviations** (room purposes, UsePoint distances): docs/levels/safehouse/README.md.
   - **Staged at safehouse_g1.tscn**, off hub_map's safehouse.tscn: at that path B's SafehouseHost enters the 3D hub
-    (hub_walk is on by default), and 22 of B's 2D-hub tests fail. It moves to the contract path once B pins those
+    (hub_walk is on by default), and 31 of B's 2D-hub tests fail. It moves to the contract path once B pins those
     tests to the menu hub.
 - 2026-10-22, **Trunk r282 merged. The mixer cab is fixed per D (r280), and plan cameras are perf-exempt.**
   - **Mixer vehicle_kind is now "mixer"** (it was "truck"). A's _seat hides occupants of armoured kinds (truck / van),
