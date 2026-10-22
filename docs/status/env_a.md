@@ -4,6 +4,27 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-33) A4-04: 45 of 57 unhooked skill keys hooked (B1-B6); seated units animate (2026-10-22)
+- **Cherry-pick order:** 5e7fd691 (B1), 06962d04 (B2), c8661419 (exit anim), a48b71e7 (B3), 05477b73 (B4), 48608af4
+  (B5 Hot Floor + B6).
+- **Tests:**
+  - test_skills_b1 8, b2 6, b3 5, b4 11, b56 5.
+  - The touched suites are green.
+  - The P4 gate is 9/9 with the LEAD's ratchet edit (45 keys out of UNHOOKED; movement.speed_mult and weapon.spread_mult out
+    of UNTESTED).
+- **Fixed in B4:** a B2 crit no longer adds ×3 on top of NpcBase's D-027 crit (the head multiplier on any zone).
+- **Left (12):**
+  - 5 ADS / sprint keys in P's files (spec sent via the LEAD).
+  - 6 sentry keys: no crew sentry deployable exists; the LEAD decides whether A builds one.
+  - pocket_ecm (held).
+- **Dismount (c8661419):** a seated unit's AnimationPlayer runs while its body is paused, so the exit clip now plays.
+- **Values marked ◇ for the LEAD to tune:**
+  - skill_stagger_s and armor_broken_stagger_s, both 0.5.
+  - Stockholm: 3 s delay, 15 m range.
+  - Mark by aim: 0.5 s.
+  - Captive Audience shout range: ×1.5.
+  - Playing Possum sight range: 60 m.
+
 ### (-32) A4-04 B1 skill keys; RT ambush hand-over; Reyes at the wheel; harness hardening (2026-10-22)
 - **A4-04 B1 (5e7fd691), 9 keys hooked and tested:**
   - Keys: Inspire, Swan Song, Berserker, Overkill, Bulletstorm, Bullseye, Kickstarter, Messiah ×2.
