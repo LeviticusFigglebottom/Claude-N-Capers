@@ -10,8 +10,6 @@ const UNHOOKED: Dictionary = {
 	&"ability.convert_owner_buff": "A",
 	&"ability.hostage_regen": "A",
 	&"ability.stockholm": "A",
-	&"defense.flashbang_duration_mult": "A",
-	&"defense.outnumbered": "A",
 	&"deploy.sentry_accuracy_mult": "A",
 	&"deploy.sentry_cost_mult": "A",
 	&"deploy.sentry_health_mult": "A",
@@ -29,17 +27,6 @@ const UNHOOKED: Dictionary = {
 	&"stealth.noise_intimidates_civilians": "A",
 	&"stealth.pocket_ecm": "A",
 	&"weapon.ads_speed_mult": "A",
-	&"weapon.body_expertise": "A",
-	&"weapon.falloff_range_mult": "A",
-	&"weapon.graze": "A",
-	&"weapon.headshot_refund": "A",
-	&"weapon.hip_fire_rate_mult": "A",
-	&"weapon.hip_spread_mult": "A",
-	&"weapon.hit_stack_buff": "A",
-	&"weapon.kill_reload_buff": "A",
-	&"weapon.moving_spread_mult": "A",
-	&"weapon.stagger_chance_add": "A",
-	&"weapon.still_spread_mult": "A",
 }
 
 ## Read by runtime code (hook file in the comment) but no behaviour test.
@@ -68,6 +55,5 @@ const UNTESTED: Dictionary = {
 	&"weapon.saw_shield_pierce": "A",  # systems/combat/special_weapons.gd
 	&"weapon.saw_wear_mult": "A",  # systems/combat/special_weapons.gd
 	&"weapon.shield_knockback": "A",  # systems/combat/crew_melee.gd
-	&"weapon.spread_mult": "A",  # systems/combat/crew_weapons.gd
 	&"weapon.swap_speed_mult": "A",  # systems/combat/crew_weapons.gd, ...
 }
