@@ -12,16 +12,11 @@ const UNHOOKED: Dictionary = {
 	&"ability.revive_target_buff": "A",
 	&"ability.revive_target_health_mult": "A",
 	&"ability.stockholm": "A",
-	&"defense.armor_break_speed_buff": "A",
-	&"defense.armor_broken_stagger": "A",
 	&"defense.bleedout_pause_unseen": "A",
-	&"defense.dodge_per_concealment": "A",
 	&"defense.flashbang_duration_mult": "A",
 	&"defense.outnumbered": "A",
 	&"defense.post_revive_buff": "A",
 	&"defense.reviving_damage_taken_mult": "A",
-	&"defense.sprint_dodge_add": "A",
-	&"defense.target_priority_mult": "A",
 	&"deploy.fak_auto_revive": "A",
 	&"deploy.medical_user_buff": "A",
 	&"deploy.sentry_accuracy_mult": "A",
@@ -42,8 +37,6 @@ const UNHOOKED: Dictionary = {
 	&"stealth.pocket_ecm": "A",
 	&"weapon.ads_speed_mult": "A",
 	&"weapon.body_expertise": "A",
-	&"weapon.crit_chance_add": "A",
-	&"weapon.crit_per_concealment": "A",
 	&"weapon.falloff_range_mult": "A",
 	&"weapon.graze": "A",
 	&"weapon.headshot_refund": "A",
@@ -54,7 +47,6 @@ const UNHOOKED: Dictionary = {
 	&"weapon.moving_spread_mult": "A",
 	&"weapon.stagger_chance_add": "A",
 	&"weapon.still_spread_mult": "A",
-	&"weapon.unseen_strike": "A",
 }
 
 ## Read by runtime code (hook file in the comment) but no behaviour test.
