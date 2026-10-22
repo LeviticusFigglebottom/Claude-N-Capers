@@ -5,7 +5,7 @@
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy --fixed-fps 60 \
 ##     --resolution 640x360 \
 ##     --path game res://world/characters/_tools/render_rt_cast_review.tscn \
-##     -- --out=/abs/dir [--seed=1] [--difficulty=0] [--no-convoy] [--only=<spawn tag>]
+##     -- --out=/abs/dir [--seed=1] [--difficulty=0] [--no-convoy] [--only=<spawn tag>] [--crash] [--skip-cast]
 ## Owner: ENV D.
 extends Node3D
 
@@ -20,6 +20,9 @@ var _difficulty: int = Enums.Difficulty.ROUTINE
 var _convoy: bool = true
 ## --only=<spawn tag>: shoot only the NPCs with that tag (e.g. driver_mixer), no convoy phase
 var _only: StringName = &""
+## --crash: the signals are not rigged, so the convoy runs into the crash stop (Reyes rams it); --skip-cast: convoy only
+var _crash: bool = false
+var _skip_cast: bool = false
 var _cam: Camera3D = null
 var _label: Label = null
 var _log: PackedStringArray = []
@@ -36,6 +39,10 @@ func _ready() -> void:
 			_difficulty = int(a.trim_prefix("--difficulty="))
 		elif a == "--no-convoy":
 			_convoy = false
+		elif a == "--crash":
+			_crash = true
+		elif a == "--skip-cast":
+			_skip_cast = true
 		elif a.begins_with("--only="):
 			_only = StringName(a.trim_prefix("--only="))
 	if _out == "":
@@ -68,7 +75,7 @@ func _run() -> void:
 	await _ticks(60)
 	_say("seed %d difficulty %d" % [_seed, _difficulty])
 	var i: int = 0
-	for n: Node in rt.npcs():
+	for n: Node in ([] as Array[Node]) if _skip_cast else rt.npcs():
 		var npc: NpcBase = n as NpcBase
 		if npc == null or not npc.visible:
 			continue
@@ -86,7 +93,7 @@ func _run() -> void:
 ## dismount of the first visible seated unit over its vehicle_exit clip.
 func _convoy_phase(rt: HeistRuntime) -> void:
 	var m: Node = rt.mission
-	m.set(&"signals_rigged", true)
+	m.set(&"signals_rigged", not _crash)
 	m.call(&"_convoy_arrives")
 	var waited: int = 0
 	while String(m.get(&"convoy_state")) == "stopped" and (m.get(&"_trucks") as Array).is_empty() and waited < 60 * 120:
@@ -94,6 +101,7 @@ func _convoy_phase(rt: HeistRuntime) -> void:
 		waited += 60
 	await _ticks(60)
 	_say("convoy layout %s after %.0f s, units %d" % [m.get(&"layout_id"), waited / 60.0, (m.get(&"_units") as Array).size()])
+	await _mixer_shot(m)
 	var seated: Array = (m.get(&"_seated") as Array).duplicate()
 	var j: int = 0
 	for u: Variant in m.get(&"_units") as Array:
@@ -125,6 +133,21 @@ func _convoy_phase(rt: HeistRuntime) -> void:
 		_label.text = "dismount t=%.1f s  %s  clip %s" % [k * 0.4, NpcVisuals.character_id(first), _clip(first)]
 		await _shot("dismount_%d" % k, eye, first.global_position + Vector3.UP * 0.9)
 		await _ticks(24)
+
+
+## The Mixer (C's ram truck, Reyes at the wheel) where it stands after the stop: a three-quarter view of its cab side.
+func _mixer_shot(m: Node) -> void:
+	await _ticks(240)  # clean: the mixer moves at stop + 3 s; crash: it has already rammed
+	var mixer: Node3D = m.call(&"_mixer") as Node3D if m.has_method(&"_mixer") else null
+	if mixer == null:
+		_say("no Mixer on this map")
+		return
+	var b: Basis = mixer.global_basis.orthonormalized()
+	var at: Vector3 = mixer.global_position + b.z * 3.0 + Vector3.UP * 1.8
+	var eye: Vector3 = at + (b.x * 6.0 + b.z * 4.0) + Vector3.UP * 0.6
+	_label.text = "mixer (%s)  %s" % ["crash" if _crash else "clean", m.get(&"layout_id")]
+	_say("mixer at (%.2f, %.2f, %.2f)" % [mixer.global_position.x, mixer.global_position.y, mixer.global_position.z])
+	await _shot("mixer_%s" % ("crash" if _crash else "clean"), eye, at)
 
 
 func _npc_shot(name: String, npc: NpcBase, dist: float = EYE_DIST) -> void:
