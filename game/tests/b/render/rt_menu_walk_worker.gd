@@ -237,12 +237,21 @@ func _open(ps: PreplanningScreen, pid: StringName) -> bool:
 
 func _report_drops() -> void:
 	var drops: Array[String] = []
+	var at_drop: bool = false
+	var drop_pos: Vector2 = (_flow.preplanning_screen.board.blueprint.point(&"pp_drop_underpass").get("pos",
+			Vector2.INF) as Vector2)
 	for n: Node in get_tree().root.find_children("*", "ItemPickup", true, false):
 		var ip: ItemPickup = n as ItemPickup
-		drops.append("%s x%d at %s" % [ip.item_id, ip.count, (ip.global_position * Vector3(1, 0, 1)).snapped(Vector3.ONE)])
+		var p: Vector3 = ip.global_position
+		drops.append("%s x%d at (%.0f, %.0f)" % [ip.item_id, ip.count, p.x, p.z])
+		if ip.item_id == &"item.c4" and Vector2(p.x, p.z).distance_to(drop_pos) < 3.0:
+			at_drop = true
 	print("RTWALK item pickups: %s" % ", ".join(drops))
-	if _mode == "success" and not drops.any(func(t: String) -> bool: return t.contains("(68, 0, -9)") or t.contains("(68, -0, -9)")):
-		print("RTWALK note: no C4 box at pp_drop_underpass (68, -9) by exact metre; check the list above")
+	if _mode == "success":
+		if at_drop:
+			print("RTWALK c4 drop: the bought C4 box is at pp_drop_underpass %s" % drop_pos)
+		else:
+			_issue("c4", "no C4 box within 3 m of pp_drop_underpass %s" % drop_pos)
 
 
 func _payday() -> void:
