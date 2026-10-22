@@ -1306,7 +1306,7 @@ func _hazard_run(clean: bool) -> bool:
 	await wait_s(2.0)
 	pilot = Po5Pilot.new(self, c)
 	pilot.quiet = true
-	pilot.combat = true
+	pilot.combat = not clean  # clean: no shooting through the setup (a downed site guard's pager blows it); on at the stop
 	await pilot.calibrate()
 	for s: int in 4:
 		var cc: Node = rt.crew_controller(s)
@@ -1345,6 +1345,7 @@ func _hazard_run(clean: bool) -> bool:
 		pilot.inp.press(&"crouch")
 		await wait_until(func() -> bool: return m._stop_done, 400.0)
 		_crew_hidden(false)
+		pilot.combat = true
 		_peaks.clear()
 		_watch_detection.call_deferred()  # DETECT lines: who sees the pilot at the hand-over, and when
 		note("clean_haz: crew hiding off at the stop (t=%.1f, clean_stop %s)" % [rt.heist_time_s, m.clean_stop])
