@@ -17,6 +17,7 @@ const L: GDScript = preload("res://world/hub/safehouse/greybox/safehouse_layout.
 ## Loaded at run time (both reach autoloads, which a --script entry point cannot compile against).
 const MAP_SCRIPT: String = "res://world/hub/safehouse_map.gd"
 const MUSIC_DIRECTOR: String = "res://world/audio/music_director.gd"
+const CUE_EMITTER: String = "res://world/audio/cue_emitter.gd"
 ## Staged off hub_map's `res://world/hub/safehouse/safehouse.tscn` until ENV B's 2D-hub tests pin the menu hub
 ## (SafehouseHost enters any scene at that path, so B's 2D-hub flows would turn 3D); then this becomes that path.
 const SCENE_PATH: String = "res://world/hub/safehouse/safehouse_g1.tscn"
@@ -272,7 +273,8 @@ func build_review_cameras(cams: Node3D) -> void:
 
 
 ## hub_map.md: Audio/Jukebox, the cabinet's MusicDirector (no heist facts; SafehouseMap.set_jukebox_track plays it).
-## The stems play positionally at the cabinet's Speaker (C4-03).
+## The stems play positionally at the cabinet's Speaker (C4-03). C4-03 also: the interior bed and the five point
+## emitters (L.AUDIO_EMITTERS, CueEmitters SafehouseMap starts).
 func build_audio(audio: Node3D) -> void:
 	var j: Node = (load(MUSIC_DIRECTOR) as GDScript).new() as Node
 	j.name = "Jukebox"
@@ -282,6 +284,16 @@ func build_audio(audio: Node3D) -> void:
 	j.set(&"unit_size", L.JUKEBOX_UNIT_SIZE)
 	j.set(&"max_distance", L.JUKEBOX_MAX_DISTANCE)
 	add(audio, j)
+	var emitter: Script = load(CUE_EMITTER)
+	for e: Array in L.AUDIO_EMITTERS:
+		var em: Node3D = Node3D.new()
+		em.set_script(emitter)
+		em.name = String(e[0])
+		em.position = v3(e[1])
+		em.set(&"cue_id", e[2])
+		em.set(&"autoplay", false)   # SafehouseMap.start_ambience(): registered cues only
+		em.set(&"volume_offset_db", float(e[3]))
+		add(audio, em)
 
 
 ## Walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40, cell 0.1 / 0.1) from the

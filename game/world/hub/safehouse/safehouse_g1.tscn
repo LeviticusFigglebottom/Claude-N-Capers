@@ -41,6 +41,7 @@
 [ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="39_sh"]
 [ext_resource type="Material" path="res://world/materials/grey_counter.tres" id="40_sh"]
 [ext_resource type="Script" path="res://world/audio/music_director.gd" id="41_sh"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="42_sh"]
 
 [sub_resource type="BoxShape3D" id="sh_1"]
 size = Vector3(28.400002, 0.3, 18.400002)
@@ -4247,6 +4248,36 @@ script = ExtResource("41_sh")
 track_id = &""
 listen_to_event_bus = false
 positional_parent = NodePath("../../Stations/jukebox/Speaker")
+
+[node name="BedInterior" type="Node3D" parent="Audio" unique_id=100599]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.5, 9)
+script = ExtResource("42_sh")
+cue_id = &"cue.amb_safehouse_interior"
+
+[node name="FridgeHum" type="Node3D" parent="Audio" unique_id=100600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.9, 12.5)
+script = ExtResource("42_sh")
+cue_id = &"cue.amb_fridge_hum"
+
+[node name="WallClock" type="Node3D" parent="Audio" unique_id=100601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.2, 8.15)
+script = ExtResource("42_sh")
+cue_id = &"cue.amb_wall_clock"
+
+[node name="BallastBuzz" type="Node3D" parent="Audio" unique_id=100602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3.4, 3.5)
+script = ExtResource("42_sh")
+cue_id = &"cue.amb_ballast_buzz"
+
+[node name="Drip" type="Node3D" parent="Audio" unique_id=100603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.25, 0.9, 17.5)
+script = ExtResource("42_sh")
+cue_id = &"cue.amb_drip"
+
+[node name="RangeExtractor" type="Node3D" parent="Audio" unique_id=100604]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.75, 2.6, 17.6)
+script = ExtResource("42_sh")
+cue_id = &"cue.amb_range_extractor"
 
 [editable path="Lighting/Fixtures/TablePendantW"]
 [editable path="Lighting/Fixtures/TablePendantE"]

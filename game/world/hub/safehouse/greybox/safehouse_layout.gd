@@ -275,6 +275,16 @@ const MAP_LIGHTS: Array = [
 	["LiveFireGlow", [20.75, 2.2, 17.62], Color(1.0, 0.1, 0.06), 0.8, 2.5, "Geometry/Building/Fills/LiveFireLamp"],
 	["JukeboxGlow", [1.0, 1.45, 10.25], AMBER, 0.7, 3.5, "Stations/jukebox"],
 ]
+## Audio/ (C4-03, safehouse.md §Audio): [node name, position, cue id, volume offset dB]: the interior bed (2D, 40 m:
+## the whole building) and the five point emitters (3D, 6-10 m). SafehouseMap starts those whose cue is registered.
+const AUDIO_EMITTERS: Array = [
+	["BedInterior", [14.0, 2.5, 9.0], &"cue.amb_safehouse_interior", 0.0],
+	["FridgeHum", [0.6, 0.9, 12.5], &"cue.amb_fridge_hum", 0.0],
+	["WallClock", [4.0, 2.2, 8.15], &"cue.amb_wall_clock", 0.0],
+	["BallastBuzz", [25.0, 3.4, 3.5], &"cue.amb_ballast_buzz", 0.0],
+	["Drip", [9.25, 0.9, 17.5], &"cue.amb_drip", 0.0],
+	["RangeExtractor", [20.75, 2.6, 17.6], &"cue.amb_range_extractor", 0.0],
+]
 ## One VoxelGI over the building (D-046 bake path: bake_safehouse_gi.gd), interior (the rooflights see only the night).
 const GI_VOLUME: Array = ["VoxelGI", "safehouse_voxelgi.res", Vector3(-0.3, -0.3, -0.3), Vector3(28.3, 6.1, 18.3)]
 ## Rooms without a reflection probe (matte closets).

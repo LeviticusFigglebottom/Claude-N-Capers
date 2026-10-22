@@ -107,3 +107,22 @@ func test_jukebox_cabinet() -> void:
 	assert_eq(j.track_id, &"rolling_thunder", "a picked track plays")
 	_map.set_jukebox_track(&"no_such_track")
 	assert_eq(j.track_id, SafehouseMap.DEFAULT_TRACK, "an unknown pick falls back to the default")
+
+
+## C4-03: the interior bed and the five point emitters; only registered cues play (no placeholder beeps while a
+## cue row is pending).
+func test_ambience_emitters() -> void:
+	var want: Array[StringName] = [&"cue.amb_safehouse_interior", &"cue.amb_fridge_hum", &"cue.amb_wall_clock",
+		&"cue.amb_ballast_buzz", &"cue.amb_drip", &"cue.amb_range_extractor"]
+	var reg: AudioCueRegistry = AudioCueLib.registry()
+	var seen: Array[StringName] = []
+	for c: Node in _map.get_node(^"Audio").get_children():
+		var em: CueEmitter = c as CueEmitter
+		if em == null:
+			continue
+		seen.append(em.cue_id)
+		assert_eq(em.is_playing(), reg.get_cue(em.cue_id) != null, "%s plays iff registered" % em.cue_id)
+		em.stop()
+	for id: StringName in want:
+		assert_true(seen.has(id), "emitter for %s" % id)
+

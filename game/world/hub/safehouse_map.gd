@@ -27,6 +27,21 @@ func _ready() -> void:
 	for st: Node in stations():
 		if st.has_signal(&"station_requested"):
 			st.connect(&"station_requested", _relay)
+	start_ambience()
+
+
+## C4-03: starts the Audio/ bed and point emitters whose cue is registered (the rest stay silent rather than playing
+## CueEmitter's placeholder beep). Returns how many started.
+func start_ambience() -> int:
+	var reg: AudioCueRegistry = AudioCueLib.registry()
+	var n: int = 0
+	for c: Node in get_node(^"Audio").get_children() if has_node(^"Audio") else []:
+		var em: CueEmitter = c as CueEmitter
+		if em == null or em.is_playing() or reg == null or reg.get_cue(em.cue_id) == null:
+			continue
+		em.play()
+		n += 1
+	return n
 
 
 ## Station nodes: children of Stations/ (each a HubStationPrefab with a UsePoint).
