@@ -1228,8 +1228,8 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 	var door: Door = _door_near(MAGAZINE_DOOR_AT, 1.5)
 	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
 	if door != null and not door.is_open and lock != null:
-		await pilot.use(_comp(lock), 40.0, func() -> bool: return door.is_open or not door.locked
-			or _comp(lock) == null or _comp(lock).kind != &"place_saw")
+		await pilot.use(_comp(lock), 40.0, func() -> bool: return (door.is_open or not door.locked
+			or _comp(lock) == null or _comp(lock).kind != &"place_saw"))
 		# Loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut before the door.
 		Engine.time_scale = DEVICE_SCALE
 		await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
