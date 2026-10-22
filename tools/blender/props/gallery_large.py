@@ -25,9 +25,14 @@ VARIANTS = {
                                 "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
     # OF-C2 (LEAD GPU-22 / ENV P ghost note: a bag thrown from a landing door rested against GL's back wall, outside
     # the 2.2 m count box): the car fills the shaft (B's is the tighter, inner faces z 0.24 / x 12.81; >= 3.5 cm
-    # clear), so the count box (car_size_m = the car) reaches where thrown bags stop. RT's goods lift keeps the w240.
+    # clear), so the count box (car_size_m = the car) reaches where thrown bags stop.
     "prop_cash_lift_car_w255": {"fn": "lift_car", "w": 2.55, "ln": 2.55, "hgt": 2.6, "open": 1, "tread": (11, 11),
                                 "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
+    # RT goods lift (ENV P's real-input pass r278: a 2nd bag thrown in rested against the shaft's back wall, outside
+    # the w240's 2.2 m count box): the car fills LF's shaft (inner faces x 19.15..21.9, z -49.9..-47.1 round the lift
+    # at (20.5, -48.5): >= 5 cm clear), the count box = the car.
+    "prop_cash_lift_car_w260_l270": {"fn": "lift_car", "w": 2.6, "ln": 2.7, "hgt": 2.6, "open": 1, "tread": (11, 11),
+                                     "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
 }
 
 

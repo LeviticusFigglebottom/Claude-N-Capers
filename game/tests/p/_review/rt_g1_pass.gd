@@ -23,6 +23,7 @@
 ##              each truck's rear UsePoint reachable in that layout; the mixer / Tannery gate row.
 ##   breach     north clean, trucks_3, stores_both: T1 by the placed saw (jams fixed), T2 by the tool store's thermite
 ##              bag, T3 by C4 from the magazine (padlock + a box of 4), a T1 cargo bag on foot to E1.
+##   c4         north clean, trucks_3, stores_c4: T3 by C4 alone (magazine padlock sawn once loud), its cargo -> E1.
 ##   east_e1 / east_e2  east clean: a HEAVY bag T1 -> E1, T3 -> E2 (trucks_3).
 ##   setup      from each spawn (plaza, car park, underpass), REAL detection: man-gate, rig hack; times vs the ETA and
 ##              every observer's peak D-128 fill.
@@ -124,6 +125,9 @@ const RAIL_LANE_IN: Vector3 = Vector3(55.0, 0.0, -35.0)
 const FIRE_DOOR_IN: Vector3 = Vector3(50.8, 0.0, -35.0)
 
 const DEVICE_SCALE: float = 3.0
+const UNSEEN_GUARD_M: float = 30.0
+const UNSEEN_CIV_M: float = 15.0
+const UNSEEN_HOLD_S: float = 2.0
 const SIGNAL_RIG_AT: Vector3 = Vector3(-16.25, 0.75, -13.45)
 const MAGAZINE_DOOR_AT: Vector3 = Vector3(-23.0, 0.0, -49.0)
 const MAGAZINE_BOXES_AT: Vector3 = Vector3(-23.0, 0.0, -51.0)
@@ -474,6 +478,8 @@ func _site_in() -> bool:
 	var gate: Door = _door_near(Vector3(-14.0, 0.0, -16.0), 2.5)
 	var lock: Node3D = _nearest("Padlock", Vector3(-14.0, 1.05, -16.0), 2.0)
 	if gate != null and not gate.is_open and lock != null:
+		if not pilot.crew.stealth_hidden:
+			await _wait_unseen("man-gate")
 		await _mask()  # interactions need the mask (InteractableComponent: casing_allowed only); mask at the gate
 		var used: bool = await pilot.use(_comp(lock), 40.0, func() -> bool: return gate.is_open or not gate.locked)
 		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "gate open %s" % gate.is_open,
@@ -833,6 +839,20 @@ func _rt_breach() -> bool:
 	return ok
 
 
+## T3 by C4 alone (north clean, trucks_3, stores_c4), then a bag of its cargo on foot to E1.
+func _rt_c4() -> bool:
+	if not await _truck_launch(&"route_north", {&"site_stores": [&"stores_c4"], &"truck_count": [&"trucks_3"]}):
+		return false
+	if not await _stop(true):
+		return false
+	_clear_npcs()
+	var trucks: Array[ArmoredTruck] = _trucks()
+	if trucks.size() < 3:
+		return await _fail("%d trucks" % trucks.size())
+	var ok: bool = await _c4_truck(trucks[2])
+	return await _carry_to_escape("T3 cargo -> E1", trucks[2], E1_AT, LOOT_HEAVY, true) and ok
+
+
 ## East, clean: a HEAVY bag from T1 to E1, then (a second launch) from T3 to E2.
 func _rt_east_e1() -> bool:
 	if not await _truck_launch(&"route_east", {&"escape": [&"esc_van_carpark"]}):
@@ -974,6 +994,35 @@ func _ambush_test(clean: bool, route: StringName) -> bool:
 	return ok
 
 
+## Real detection (the setup rows): like a human, hold unmasked on the sidewalk until no guard with a line of sight is
+## within UNSEEN_GUARD_M or closing (two samples 0.5 s apart), and no civilian with a line of sight within
+## UNSEEN_CIV_M, for UNSEEN_HOLD_S running. One ROW with the wait.
+func _wait_unseen(label: String, max_s: float = 240.0) -> float:
+	var t0: float = rt.heist_time_s
+	var clear_s: float = 0.0
+	var last: Dictionary = {}
+	while rt.heist_time_s - t0 < max_s and clear_s < UNSEEN_HOLD_S:
+		var why: String = ""
+		for n: Node in rt.npcs():
+			var npc: NpcBase = n as NpcBase
+			var d: float = npc.global_position.distance_to(pilot.crew.global_position)
+			var seen: bool = pilot.has_los(npc.head_position(), npc)
+			if npc.role == &"civilian":
+				if seen and d < UNSEEN_CIV_M:
+					why = "civilian %.0f m" % d
+			elif d < UNSEEN_GUARD_M and (seen or d < float(last.get(npc, INF)) - 0.2):
+				why = "%s %.0f m%s" % [npc.role, d, "" if seen else " closing"]
+			last[npc] = d
+			if why != "":
+				break
+		clear_s = clear_s + 0.5 if why == "" else 0.0
+		await wait_s(0.5)
+	var waited: float = rt.heist_time_s - t0
+	_row("%s: wait unseen before masking" % label, "PASS" if clear_s >= UNSEEN_HOLD_S else "FAIL", "%.0f s" % waited,
+		"-" if clear_s >= UNSEEN_HOLD_S else "C patrol (no window)")
+	return waited
+
+
 func _hack_rig() -> bool:
 	var rig: Node3D = _nearest("HackTerminal", SIGNAL_RIG_AT, 2.0)
 	if rig == null:
@@ -1097,11 +1146,12 @@ func _thermite_truck(t: ArmoredTruck) -> bool:
 		or not pilot.crew.is_carrying_bag()))
 	_row("%s thermite carried and placed" % _truck_name(t), "PASS" if placed else "FAIL", "%.0f s carry from the tool store, placed %s" % [
 		rt.heist_time_s - t1, placed], "-" if placed else "A burn_point / C placement")
+	var t2: float = rt.heist_time_s
 	Engine.time_scale = DEVICE_SCALE
 	await wait_until(func() -> bool: return t.opened, 120.0 / DEVICE_SCALE + 20.0)
 	Engine.time_scale = 1.0
 	_row("%s by thermite" % _truck_name(t), "PASS" if t.opened else "FAIL", "opened %s %.0f s after placing" % [
-		t.opened, rt.heist_time_s - t1], "-" if t.opened else "A burn_point")
+		t.opened, rt.heist_time_s - t2], "-" if t.opened else "A burn_point")
 	await shot("thermite_open")
 	return t.opened
 
@@ -1178,9 +1228,19 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 	var door: Door = _door_near(MAGAZINE_DOOR_AT, 1.5)
 	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
 	if door != null and not door.is_open and lock != null:
-		await pilot.use(_comp(lock), 40.0, func() -> bool: return door.is_open or not door.locked)
+		await pilot.use(_comp(lock), 40.0, func() -> bool: return door.is_open or not door.locked
+			or _comp(lock) == null or _comp(lock).kind != &"place_saw")
+		# Loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut before the door.
+		Engine.time_scale = DEVICE_SCALE
+		await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
+		Engine.time_scale = 1.0
 		if not door.is_open:
 			await pilot.use(_comp(door), 20.0, func() -> bool: return door.is_open)
+	_row("magazine door open (padlock %s)" % ("sawn" if rt.went_loud else "picked"), "PASS" if door != null
+		and door.is_open else "FAIL", "door %s" % ("open" if door != null and door.is_open else "closed"),
+		"-" if door != null and door.is_open else "A padlock / C magazine")
+	if door == null or not door.is_open:
+		return false
 	var have: int = pilot.crew.item_count(&"item.c4")
 	for _k: int in 2:
 		if have >= C4_NEEDED:
