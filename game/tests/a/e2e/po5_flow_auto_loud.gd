@@ -199,7 +199,8 @@ func step() -> void:
 			_stalls[id] = float(_stalls.get(id, 0.0))  # started: keep defending its drill after this (see _pick)
 		p.watch_point = Vector3.INF
 		await p.use(comp, 30.0, func() -> bool: return not comp.enabled or comp.availability(p.crew) != &"")
-		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"":
+		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"" \
+				and not await _open_lock_near(comp.global_position, true):
 			_mark_if_unreached(comp)  # still usable and still far: the walk failed (GN Slot_orchard_calloway)
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
@@ -243,6 +244,17 @@ func _open_gate_toward(stand: Vector3) -> bool:
 		if door == null:
 			return false
 		end = door.global_position
+	return await _work_lock(_lock_near(end, door, false), "where the path to %s ends" % Po5Pilot._v(stand))
+
+
+## pad1002c: a target behind a shut padlocked door whose use stand snapped outside its wall (the RT magazine's C4
+## boxes): the use failed on the wall. That door's padlock (within GATE_LOCK_M of the target) is worked. True when one was.
+func _open_lock_near(pos: Vector3, door_only: bool) -> bool:
+	return await _work_lock(_lock_near(pos, null, door_only), "the target at %s" % Po5Pilot._v(pos))
+
+
+## The nearest workable padlock within GATE_LOCK_M of `pos` (of `door` when given; on a shut door when `door_only`).
+func _lock_near(pos: Vector3, door: Door, door_only: bool) -> InteractableComponent:
 	var best: InteractableComponent = null
 	var best_d: float = GATE_LOCK_M
 	for n: Node in rt.map.find_children("*", "Padlock", true, false):
@@ -252,14 +264,21 @@ func _open_gate_toward(stand: Vector3) -> bool:
 			continue
 		if door != null and not door.is_ancestor_of(lock):
 			continue
-		var d: float = lock.global_position.distance_to(end)
+		var host: Door = lock.get_parent() as Door
+		if door_only and (host == null or host.is_open):
+			continue
+		var d: float = lock.global_position.distance_to(pos)
 		if d < best_d:
 			best_d = d
 			best = lock.interactable
+	return best
+
+
+## Work padlock `best` (null: false): use it, then stay with a placed saw / drill (defend, fix jams) until it is off.
+func _work_lock(best: InteractableComponent, why: String) -> bool:
 	if best == null:
 		return false
-	f.note("gate: %s %.1f m from where the path to %s ends: opening it" % [best.owner_node().get_path(), best_d,
-		Po5Pilot._v(stand)])
+	f.note("gate: %s near %s: opening it" % [best.owner_node().get_path(), why])
 	p.watch_point = Vector3.INF
 	var lock: Padlock = best.owner_node() as Padlock
 	var t0: float = rt.heist_time_s
