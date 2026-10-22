@@ -1,0 +1,60 @@
+t=3.0 cop_run_gun on Npc_guard (security_officer_i) clip run_bl layer aim_pistol_run at (11.00581, 0.0, 11.8861)
+cop_run_gun f0 run_bl | aim_pistol_run @0.40 | 3.5 m/s
+cop_run_gun f1 run_bl | hold_pistol_run @0.54 | 3.5 m/s
+cop_run_gun f2 run_r | hold_pistol_run @0.58 | 3.5 m/s
+cop_run_gun f3 run | hold_pistol_run @0.00 | 3.5 m/s
+cop_run_gun f4 run | hold_pistol_run @0.12 | 3.5 m/s
+cop_run_gun f5 run | hold_pistol_run @0.23 | 3.5 m/s
+cop_run_gun f6 run | aim_pistol_run @0.35 | 3.5 m/s
+cop_run_gun f7 run_reverse_l | aim_pistol_run @0.10 | 3.5 m/s
+cop_run_gun f8 run_reverse_l | aim_pistol_run @0.23 | 3.5 m/s
+cop_run_gun f9 run_reverse_l | aim_pistol_run @0.37 | 3.5 m/s
+cop_run_gun f10 aim_pistol | aim_pistol_run @0.50 | 0.0 m/s
+cop_run_gun f11 fire_pistol | aim_pistol_run @0.62 | 0.0 m/s
+t=6 lead to (3.0, 0.2, 2.4)
+diag t=10 Crew0 no AnimDriver
+diag t=10 Crew1 ai true clip run_b layer hold_rifle_run active true speed 3.5 state 0
+diag t=10 Crew2 ai true clip run_bl layer hold_rifle_run active true speed 3.5 state 0
+t=11.3 crew_strafe on Crew2 (Crew2) clip walk_fr layer aim_rifle_walk at (3.288879, 0.001, 5.111401)
+crew_strafe f0 walk_fr | aim_rifle_walk @0.26 | 2.0 m/s
+crew_strafe f1 run_fr | aim_rifle_run @0.08 | 3.5 m/s
+crew_strafe f2 run_fr | aim_rifle_run @0.20 | 3.5 m/s
+crew_strafe f3 walk_stop | aim_rifle @0.00 | 0.2 m/s
+crew_strafe f4 strafe_l | aim_rifle_walk @0.00 | 1.0 m/s
+crew_strafe f5 walk_fl | aim_rifle_walk @0.05 | 0.8 m/s
+crew_strafe f6 aim_rifle | aim_rifle_walk @0.02 | 0.1 m/s
+crew_strafe f7 walk_fr | aim_rifle_walk @0.22 | 0.5 m/s
+crew_strafe f8 walk_fr | aim_rifle_walk @0.29 | 1.0 m/s
+crew_strafe f9 aim_rifle | aim_rifle_walk @0.36 | 0.2 m/s
+crew_strafe f10 walk_bl | aim_rifle_walk @0.54 | 0.6 m/s
+crew_strafe f11 aim_rifle | aim_rifle_walk @0.53 | 0.1 m/s
+t=12 lead to (3.0, 0.2, 14.4)
+t=12.2 crew_sprint on Crew1 (Crew1) clip sprint layer hold_rifle_sprint at (2.870984, 0.001, 5.016781)
+crew_sprint f0 sprint | hold_rifle_sprint @0.00 | 2.7 m/s
+crew_sprint f1 sprint | hold_rifle_sprint @0.08 | 5.8 m/s
+crew_sprint f2 sprint | hold_rifle_sprint @0.19 | 5.4 m/s
+crew_sprint f3 sprint | hold_rifle_sprint @0.29 | 3.0 m/s
+crew_sprint f4 strafe_l | hold_rifle @0.13 | 0.4 m/s
+crew_sprint f5 strafe_l | hold_rifle @0.25 | 1.7 m/s
+crew_sprint f6 idle_alert_rifle | hold_rifle @0.36 | 0.0 m/s
+crew_sprint f7 walk | hold_rifle_walk @0.01 | 1.5 m/s
+crew_sprint f8 strafe_l | hold_rifle @0.13 | 1.8 m/s
+crew_sprint f9 run_l | hold_rifle_run @0.14 | 2.8 m/s
+crew_sprint f10 strafe_l | aim_rifle_walk @0.00 | 1.1 m/s
+crew_sprint f11 run_fl | aim_rifle_run @0.01 | 3.2 m/s
+diag t=20 Crew0 no AnimDriver
+diag t=20 Crew1 ai true clip aim_rifle layer aim_rifle_walk active false speed 0.0 state 0
+diag t=20 Crew2 ai true clip aim_rifle layer aim_rifle_walk active false speed 0.0 state 0
+cop_stagger on Npc_police4 (patrol_officer_duty) clip stagger_pistol layer aim_pistol_run at (15.25676, -0.149016, 18.74307)
+cop_stagger f0 stagger_pistol | aim_pistol_run @0.66 | 0.0 m/s
+cop_stagger f1 stagger_pistol | aim_pistol_run @0.09 | 0.0 m/s
+cop_stagger f2 stagger_pistol | aim_pistol_run @0.21 | 0.0 m/s
+cop_stagger f3 stagger_pistol | aim_pistol_run @0.32 | 0.0 m/s
+cop_stagger f4 stagger_pistol | aim_pistol_run @0.44 | 0.0 m/s
+cop_stagger f5 stagger_pistol | aim_pistol_run @0.56 | 0.0 m/s
+cop_stagger f6 stagger_pistol | aim_pistol_run @0.67 | 0.0 m/s
+cop_stagger f7 stagger_pistol | aim_pistol_run @0.09 | 0.0 m/s
+cop_stagger f8 stagger_pistol | aim_pistol_run @0.21 | 0.0 m/s
+cop_stagger f9 stagger_pistol | aim_pistol_run @0.32 | 0.0 m/s
+cop_stagger f10 stagger_pistol | aim_pistol_run @0.44 | 0.0 m/s
+cop_stagger f11 cover_peek_l_pistol | aim_pistol_run @0.56 | 0.0 m/s
