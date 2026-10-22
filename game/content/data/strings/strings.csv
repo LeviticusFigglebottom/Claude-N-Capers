@@ -402,6 +402,8 @@ enemy.longshot,Longshot
 enemy.corpsman,Corpsman
 enemy.commander_brandt,Commander Brandt
 enemy.aegis,Aegis Trooper
+enemy.convoy_lead,Convoy Escort
+enemy.convoy_rear,Convoy Escort
 voice.vo.mercer.heist_start_casing_1,"Alright, you're in. Keep the masks in your pockets and look like you belong."
 voice.vo.mercer.heist_start_casing_2,"Take your time. Count the cameras, count the guards, and try to look bored."
 voice.vo.mercer.crew_masked_1,Mask's on. No more pretending you belong here.
