@@ -969,11 +969,19 @@ func _hack_rig() -> bool:
 		return false
 	var m: RollingThunderMission = _mission()
 	var t0: float = rt.heist_time_s
-	var ok: bool = await pilot.use(_comp(rig), 60.0, func() -> bool: return m != null and m.signals_rigged)
-	if ok:
-		await wait_until(func() -> bool: return m.signals_rigged, 30.0)
-	_row("SignalRig hack (15 s)", "PASS" if m.signals_rigged else "FAIL", "%.1f s from F, signals_rigged %s" % [
-		rt.heist_time_s - t0, m.signals_rigged], "-" if m.signals_rigged else "A hack / C placement")
+	var comp: InteractableComponent = _comp(rig)
+	var ht: HackTerminal = rig as HackTerminal
+	var restarts: int = 0
+	await pilot.use(comp, 60.0, func() -> bool: return m.signals_rigged or (ht != null and ht.state != HackTerminal.State.IDLE))
+	# Interruptions (HackTerminal: kind restart_hack, no auto-restart) need F again, as a player would.
+	while not m.signals_rigged and rt.heist_time_s - t0 < 120.0:
+		if comp.kind == &"restart_hack":
+			restarts += 1
+			await pilot.use(comp, 30.0, func() -> bool: return comp.kind != &"restart_hack")
+		await wait_s(0.5)
+	_row("SignalRig hack (15 s)", "PASS" if m.signals_rigged else "FAIL", "%.1f s from F, %d restart(s), signals_rigged %s%s" % [
+		rt.heist_time_s - t0, restarts, m.signals_rigged, (", paused %s" % ht.pause_reasons()) if ht != null
+		and ht.is_paused() else ""], "-" if m.signals_rigged else "A hack / C placement")
 	return m.signals_rigged
 
 
