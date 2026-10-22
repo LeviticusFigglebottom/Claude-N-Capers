@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"safehouse_hall"
+purpose = &"workshop"
+required_items = Array[StringName]([&"plan_chest", &"file_cabinet", &"shelving", &"fire_extinguisher", &"picture", &"bin"])
+optional_items = {
+&"box": 0.6,
+&"coat_rail": 0.4,
+&"crate": 0.6,
+&"plant": 0.3
+}
+clutter_groups = {}
+min_density = 0.05
+max_density = 0.4
+min_props = 9
+lone_ok_kinds = Array[StringName]([&"plan_chest", &"file_cabinet", &"shelving", &"fire_extinguisher", &"picture", &"plant"])
+seed_salt = 4802
+counts = {
+&"picture": Vector2i(2, 2),
+&"plan_chest": Vector2i(2, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"picture": PackedStringArray("prop_notice_frame"),
+&"shelving": PackedStringArray("prop_shelving_archive")
+}
+ceiling = {}
+notes = "Safehouse H1 print hall (14 x 12 m): old type cases along the walls (plan chests stand in), a filing cabinet, shelving, the pinned fire plans by the openings (notice frames). The Board, the planning table, the Old Press and the crew phone are stations; the hall's middle stays open."

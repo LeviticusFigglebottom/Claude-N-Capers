@@ -51,15 +51,16 @@ const WALLS: Array = [
 	["StripBkRv", "z", 19.0, 13.6, 17.8, INT_T, 0.0, 3.4, "wall", []],
 ]
 
+## The closed leaves stand this far off the slab (a threshold gap): a box touching the floor plane cuts the surface
+## pass's floor faces across the whole slab, and an eye ray along that seam slipped through (bounds, C4-03).
+const DOOR_GAP: float = 0.005
 ## Closed exterior leaves and frosted panes in the holes above: [name, min, max, class]. The exterior doors are
 ## closed, non-interactive and locked (G0 Circulation); every vertical window is frosted wired glass (not clear:
 ## nothing outside is modelled).
 const FILLS: Array = [
-	["RollerDoor", [2.0, 0.0, -0.05], [5.5, 3.6, 0.05], "door"],
-	["FrontDoor", [6.25, 0.0, -0.03], [7.25, DOOR_H, 0.03], "door"],
-	["FireExit", [25.5, 0.0, 17.97], [26.5, DOOR_H, 18.03], "door"],
-	# The range door's red LIVE FIRE lamp over station 7 (2.3 m; on the wall face, so part of the shell).
-	["LiveFireLamp", [20.6, 2.25, 17.72], [20.9, 2.4, 17.8], "prop"],
+	["RollerDoor", [2.0, DOOR_GAP, -0.05], [5.5, 3.6, 0.05], "door"],
+	["FrontDoor", [6.25, DOOR_GAP, -0.03], [7.25, DOOR_H, 0.03], "door"],
+	["FireExit", [25.5, DOOR_GAP, 17.97], [26.5, DOOR_H, 18.03], "door"],
 	["ClerestoryW", [9.0, 3.2, -0.01], [11.0, 4.4, 0.01], "glass_frosted"],
 	["ClerestoryE", [19.0, 3.2, -0.01], [21.0, 4.4, 0.01], "glass_frosted"],
 	["WorkshopWindow", [24.0, 1.1, -0.01], [26.0, 2.2, 0.01], "glass_frosted"],
@@ -104,22 +105,23 @@ const CEILINGS: Array = [
 ]
 const CEIL_T: float = 0.05
 
-## RoomVolumes: [id, purpose, dressing kit ("" until the G2 kits exist), [x0, y0, z0, x1, y1, z1]] (centre lines,
-## floor to clear ceiling). Purposes are the levelcheck table's: G0 `loading_bay` -> loading, `workshop_hall` ->
-## workshop, MK `workshop` at 3.0 m -> office (the workshop band starts at 3.5), `bunk_room` -> bedroom,
-## `range_vestibule` -> corridor.
+## RoomVolumes: [id, purpose, dressing kit (C4-03: tools/blender/props/_kits_safehouse.py + the shared corridor and
+## restroom kits), [x0, y0, z0, x1, y1, z1]] (centre lines, floor to clear ceiling). Purposes are the levelcheck
+## table's: G0 `loading_bay` -> loading, `workshop_hall` -> workshop, MK `workshop` at 3.0 m -> office (the workshop
+## band starts at 3.5), `bunk_room` -> bedroom, `range_vestibule` -> corridor. The G0's kit names are the kits
+## (safehouse_lounge: break_room's lounge variant; safehouse_plant: electrical_closet + storage_archive).
 const ROOMS: Array = [
-	["LB", "loading", "", [0.0, 0.0, 0.0, 8.0, 4.5, 8.0]],
-	["H1", "workshop", "", [8.0, 0.0, 0.0, 22.0, 5.0, 12.0]],
-	["LG", "break_room", "break_room", [0.0, 0.0, 8.0, 8.0, 3.0, 18.0]],
-	["WS", "workshop", "", [22.0, 0.0, 0.0, 28.0, 3.5, 7.0]],
-	["MK", "office", "", [22.0, 0.0, 7.0, 28.0, 3.0, 12.0]],
+	["LB", "loading", "loading_bay", [0.0, 0.0, 0.0, 8.0, 4.5, 8.0]],
+	["H1", "workshop", "safehouse_hall", [8.0, 0.0, 0.0, 22.0, 5.0, 12.0]],
+	["LG", "break_room", "safehouse_lounge", [0.0, 0.0, 8.0, 8.0, 3.0, 18.0]],
+	["WS", "workshop", "armory_workshop", [22.0, 0.0, 0.0, 28.0, 3.5, 7.0]],
+	["MK", "office", "mask_room", [22.0, 0.0, 7.0, 28.0, 3.0, 12.0]],
 	["CO", "corridor", "corridor_service", [8.0, 0.0, 12.0, 22.5, 2.8, 13.5]],
 	["WC", "restroom", "restroom_single", [8.0, 0.0, 13.5, 10.5, 2.7, 18.0]],
-	["ST", "electrical", "electrical_closet", [10.5, 0.0, 13.5, 14.0, 2.8, 18.0]],
-	["BK", "bedroom", "", [14.0, 0.0, 13.5, 19.0, 2.8, 18.0]],
-	["RV", "corridor", "", [19.0, 0.0, 13.5, 22.5, 2.8, 18.0]],
-	["KS", "storage", "", [22.5, 0.0, 12.0, 28.0, 3.0, 18.0]],
+	["ST", "electrical", "safehouse_plant", [10.5, 0.0, 13.5, 14.0, 2.8, 18.0]],
+	["BK", "bedroom", "bunk_room", [14.0, 0.0, 13.5, 19.0, 2.8, 18.0]],
+	["RV", "corridor", "range_vestibule", [19.0, 0.0, 13.5, 22.5, 2.8, 18.0]],
+	["KS", "storage", "kit_store", [22.5, 0.0, 12.0, 28.0, 3.0, 18.0]],
 ]
 
 ## Stations (hub_map.md: the 9 ids; A's hub_station prefab, named by id): [id, root (floor, under the station's
@@ -272,9 +274,32 @@ const FIXTURES: Array = [
 ## fixture node path (meta fixture)]. The range door's LIVE FIRE lamp and the jukebox's amber glow (G0: a small
 ## OmniLight with the cabinet as its fixture).
 const MAP_LIGHTS: Array = [
-	["LiveFireGlow", [20.75, 2.2, 17.62], Color(1.0, 0.1, 0.06), 0.8, 2.5, "Geometry/Building/Fills/LiveFireLamp"],
+	["LiveFireGlow", [20.75, 2.2, 17.62], Color(1.0, 0.1, 0.06), 0.8, 2.5, "Props/LiveFireLamp"],
 	["JukeboxGlow", [1.0, 1.45, 10.25], AMBER, 0.7, 3.5, "Stations/jukebox"],
 ]
+## Map-built wall fixtures under Props/ (pivot on the wall face, -Z into the room): [name, pivot, yaw, size]. The range
+## door's red LIVE FIRE lamp over station 7 (2.3 m).
+const WALL_FIXTURES: Array = [
+	["LiveFireLamp", [20.75, 2.325, 17.8], 0.0, [0.3, 0.15, 0.08]],
+]
+## Dressing keep-outs (C4-03, sh_dress.gd): the circulation lanes per room, [x0, z0, x1, z1] (floor to ceiling): the
+## spawn-to-O1 walk, the hall's middle and its five openings' throats, the lounge's O2 - D6 lane and the jukebox's
+## front, each door-to-station lane, the corridor's middle, the vestibule's range axis, the kit store's D11 - fire exit
+## edges. The stations' bodies and UsePoints are kept out on their own.
+const DRESS_KEEP_OUT: Dictionary = {
+	"LB": [[5.0, 3.2, 7.9, 7.8], [1.8, 0.2, 5.7, 0.8]],
+	"H1": [[9.3, 1.3, 20.7, 10.7], [8.1, 3.8, 10.0, 7.2], [8.1, 8.8, 10.0, 11.7], [20.0, 2.4, 21.9, 4.6],
+		[20.0, 8.8, 21.9, 10.2], [19.6, 10.5, 21.9, 11.9]],
+	"LG": [[5.5, 8.8, 7.9, 13.5], [0.2, 9.4, 2.2, 11.1]],
+	"WS": [[22.1, 2.4, 26.8, 4.6]],
+	"MK": [[22.1, 8.7, 27.0, 10.3]],
+	"CO": [[8.1, 12.4, 22.4, 13.1]],
+	"WC": [[8.6, 13.6, 9.9, 14.6]],
+	"ST": [[11.6, 13.6, 12.9, 14.6]],
+	"BK": [[15.6, 13.6, 17.4, 14.8]],
+	"RV": [[20.0, 13.6, 21.5, 17.8]],
+	"KS": [[22.6, 12.1, 24.5, 13.6], [25.2, 16.6, 26.8, 17.8]],
+}
 ## Audio/ (C4-03, safehouse.md §Audio): [node name, position, cue id, volume offset dB]: the interior bed (2D, 40 m:
 ## the whole building) and the five point emitters (3D, 6-10 m). SafehouseMap starts those whose cue is registered.
 const AUDIO_EMITTERS: Array = [

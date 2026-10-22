@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"armory_workshop"
+purpose = &"workshop"
+required_items = Array[StringName]([&"lockers", &"shelving", &"crate", &"box"])
+optional_items = {
+&"bin": 1,
+&"fire_extinguisher": 1,
+&"stool": 1,
+&"tool_wall": 0.6
+}
+clutter_groups = {}
+min_density = 0.1
+max_density = 0.8
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"lockers", &"shelving", &"crate", &"fire_extinguisher"])
+seed_salt = 4804
+counts = {
+&"lockers": Vector2i(2, 2)
+}
+assets = {
+&"shelving": PackedStringArray("prop_shelving_parts"),
+&"stool": PackedStringArray("prop_stool_shop")
+}
+ceiling = {}
+notes = "Safehouse WS workshop (6 x 7 m): two locked gun cabinets on the north wall (lockers stand in), parts shelving on wall z 7, ammo crates, a stool where it fits. The armory bench and its pegboard are the station (its approach is kept clear)."

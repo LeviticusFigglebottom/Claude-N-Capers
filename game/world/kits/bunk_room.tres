@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"bunk_room"
+purpose = &"bedroom"
+required_items = Array[StringName]([&"bed", &"lockers", &"side_table", &"bag"])
+optional_items = {
+&"box": 0.5,
+&"rug": 0.6,
+&"table_lamp": 1
+}
+clutter_groups = {}
+min_density = 0.2
+max_density = 1
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"bed", &"lockers"])
+seed_salt = 4806
+counts = {
+&"bag": Vector2i(2, 4),
+&"bed": Vector2i(2, 2),
+&"lockers": Vector2i(2, 2)
+}
+assets = {
+&"bag": PackedStringArray("prop_bag_floor"),
+&"bed": PackedStringArray("prop_bed_queen"),
+&"rug": PackedStringArray("prop_rug_rect")
+}
+ceiling = {}
+notes = "Safehouse BK bunk room (5 x 4.5 m): two beds (the G0's bunk beds wait for their asset), four personal lockers (two banks), duffels, a bedside table and lamp."

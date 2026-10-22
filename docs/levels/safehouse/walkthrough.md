@@ -63,7 +63,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ReturnHeist` | `Stations/profile/UsePoint` | use_point | 11.0 | 12.2 | 1.10 | ok |
 | `Spawns/ReturnRange` | `Stations/board/UsePoint` | use_point | 16.1 | 16.3 | 1.02 | ok |
 | `Spawns/ReturnRange` | `Stations/planning/UsePoint` | use_point | 10.4 | 11.3 | 1.09 | ok |
-| `Spawns/ReturnRange` | `Stations/armory/UsePoint` | use_point | 14.1 | 17.0 | 1.21 | ok |
+| `Spawns/ReturnRange` | `Stations/armory/UsePoint` | use_point | 14.1 | 17.7 | 1.26 | ok |
 | `Spawns/ReturnRange` | `Stations/masks/UsePoint` | use_point | 9.0 | 11.7 | 1.30 | ok |
 | `Spawns/ReturnRange` | `Stations/jukebox/UsePoint` | use_point | 20.2 | 22.8 | 1.13 | ok |
 | `Spawns/ReturnRange` | `Stations/notoriety/UsePoint` | use_point | 12.2 | 14.3 | 1.17 | ok |

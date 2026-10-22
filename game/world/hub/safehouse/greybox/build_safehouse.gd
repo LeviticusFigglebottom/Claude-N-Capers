@@ -24,6 +24,10 @@ const SCENE_PATH: String = "res://world/hub/safehouse/safehouse_g1.tscn"
 const DNC: GDScript = preload("res://world/heists/shared/door_nav_clearance.gd")
 ## C4-03 lighting lane: environment, fixtures, VoxelGI, probes, occluders.
 const SH_LIGHTING: GDScript = preload("res://world/hub/safehouse/greybox/sh_lighting.gd")
+## C4-03 surface pass: library finishes on the shell, the stations' and props' stand-ins.
+const SH_FINISH: GDScript = preload("res://world/hub/safehouse/greybox/sh_finish.gd")
+## C4-03 dressing: the kit rooms (KitPlacer).
+const SH_DRESS: GDScript = preload("res://world/hub/safehouse/greybox/sh_dress.gd")
 ## The station art is the greybox body under Visual (as RT's truck saw points: no placeholder).
 const EMPTY_VISUAL: String = "res://world/heists/glasshouse/art/gh_empty.tscn"
 const STATION_CLASS: String = "HubStationPrefab"
@@ -81,6 +85,8 @@ func _build() -> void:
 	lighting.call(&"environment", n("Lighting"))
 	print("safehouse lighting: " + String(lighting.call(&"build")))
 	errors.append_array(lighting.get(&"errors"))
+	SH_DRESS.new().call(&"run", self)   # after the fixtures (their floor footprints are keep-outs)
+	SH_FINISH.new(self).call(&"build")
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -249,6 +255,14 @@ func build_props(props: Node3D) -> void:
 		b.set_meta(&"prop", true)
 		b.set_meta(&"kind", String(p[4]))
 		obstruct(Transform3D.IDENTITY, AABB(mn, mx - mn))
+	for w: Array in L.WALL_FIXTURES:
+		var pivot: Node3D = add(props, node3d(String(w[0]), v3(w[1]))) as Node3D
+		pivot.basis = yaw_basis(float(w[2]))
+		pivot.set_meta(&"mount", "wall")
+		pivot.set_meta(&"kind", "light_fixture")
+		pivot.set_meta(&"fixture", true)
+		var sz: Vector3 = v3(w[3])
+		box(pivot, "Body", Vector3(-sz.x, -sz.y, -2.0 * sz.z) * 0.5, Vector3(sz.x, sz.y, 0.0) * 0.5, "prop")
 
 
 func build_review_cameras(cams: Node3D) -> void:
@@ -339,6 +353,19 @@ func node3d(nm: String, pos: Vector3 = Vector3.ZERO) -> Node3D:
 	c.name = nm
 	c.position = pos
 	return c
+
+
+## A node's transform relative to map_root (parents may be turned stations; rt_builder_base.gd).
+func global_xform(c: Node3D) -> Transform3D:
+	if c == map_root:
+		return Transform3D.IDENTITY
+	var xf: Transform3D = c.transform
+	var p: Node = c.get_parent()
+	while p != null and p != map_root:
+		if p is Node3D:
+			xf = (p as Node3D).transform * xf
+		p = p.get_parent()
+	return xf
 
 
 func n(path: String) -> Node3D:
