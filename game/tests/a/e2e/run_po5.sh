@@ -28,6 +28,8 @@ ARGS=(--po5-flow="$FLOW" --po5-out="$OUT" --po5-budget="$BUDGET" --po5-heist="$H
 [[ "${DIRECT:-}" == "1" ]] && ARGS+=(--po5-direct)
 # RT_STUB_TRUCKS=1: RT G1 armored_trucks on the placeholder convoy boxes (po5_flow._stub_rt_trucks), until C's swap.
 [[ "${RT_STUB_TRUCKS:-}" == "1" ]] && ARGS+=(--po5-rt-stub-trucks)
+# RT_STORES=1: rt_clean's prelude also raids RT's site stores (the C4, the thermite) for the loud part.
+[[ "${RT_STORES:-}" == "1" ]] && ARGS+=(--po5-rt-stores)
 # WAIT_CONVOY=1: auto_loud on RT stays unmasked until the convoy has stopped, then goes loud (no early alarm).
 [[ "${WAIT_CONVOY:-}" == "1" ]] && ARGS+=(--po5-wait-convoy)
 # HEIST_CAP=3000: auto_loud's heist-time cap in seconds (default 2400; po5_flow_auto_loud.LOOP_LIMIT_S).

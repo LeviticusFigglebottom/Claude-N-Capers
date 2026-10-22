@@ -125,7 +125,7 @@ extends Resource
 ## more slowly on the low tiers.
 @export var refill_interval_difficulty_mult: PackedFloat32Array = PackedFloat32Array([2.0, 1.5, 1.0, 1.0, 1.0, 1.0])
 ## x assault_special_share[stage]: fewer specials riding with the assault squads on the low tiers.
-@export var special_share_difficulty_mult: PackedFloat32Array = PackedFloat32Array([0.5, 0.75, 1.0, 1.0, 1.0, 1.0])
+@export var special_share_difficulty_mult: PackedFloat32Array = PackedFloat32Array([0.35, 0.6, 1.0, 1.0, 1.0, 1.0])
 
 @export_group("Early armor (D-145 §3, PO-18)")
 ## Below this Enums.Difficulty (HAZARDOUS = PD2 Very Hard) no unit the director spawns has damage-reducing body

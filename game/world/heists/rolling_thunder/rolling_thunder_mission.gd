@@ -66,6 +66,8 @@ const TAG_CIV_STREET: StringName = &"civ_street"
 const TAG_CIV_DINER: StringName = &"civ_diner"
 const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
 const PAUSE_CABINET: StringName = &"cabinet_locked"
+## B (rt_early_alarm_balance.md, LEAD-approved): an early alarm brings the convoy at most this many seconds later.
+const EARLY_PUSH_S: float = 75.0
 ## RT phase 2 (C): the Mixer ConvoyVehicle, each convoy layout's MixerPath / MixerStop, the Tannery gates' tag.
 const MIXER_NAME: String = "Mixer"
 const MIXER_PATH: NodePath = ^"MixerPath"
@@ -394,10 +396,26 @@ func _on_alarm(_reason: StringName) -> void:
 		police_delay_s = 0.0
 		_say_once(VO_ALERTED)
 		_say_once(VO_POLICE)
+		_push_through()
 		return
 	if not _stop_done:
 		return  # the drive-in: _stopped() springs it with [trucks] / [escort] up (B's HUD run: no empty objective line)
 	_spring_ambush()
+
+
+## B's approved early-alarm balance (rt_early_alarm_balance.md item 1; doc "Vaultline pushes through to the depot"):
+## after an early alarm the convoy arrives at min(its ETA, alarm + EARLY_PUSH_S), so wave 1's BUILD is a fight over the
+## trucks, not dead time. The setup's clock lines that would come after the new arrival are dropped.
+func _push_through() -> void:
+	var left: float = timer_left(&"convoy")
+	if left <= EARLY_PUSH_S:
+		return
+	start_timer(&"convoy", EARLY_PUSH_S, _convoy_arrives)
+	update_objective_data(&"convoy", {"seconds": EARLY_PUSH_S})
+	for id: StringName in [&"eta_60", &"eta_30", &"marshal"]:
+		if timer_left(id) > EARLY_PUSH_S:
+			cancel_timer(id)
+	start_timer(&"sighted", maxf(EARLY_PUSH_S - SIGHTED_LEAD_S, 0.1), _sighted)
 
 
 ## The ambush is on: [ambush] done, Mercer's go, the police line, the dismount (the stop's objectives are already up).
