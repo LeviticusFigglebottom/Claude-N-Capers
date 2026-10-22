@@ -1,0 +1,8 @@
+asset: prop_pole_sign_halfway
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "exterior", "kind": "pole_sign", "pin_only": true, "place": "none", "surface": "metal"}, "fn": "pole_sign", "key2": "emit_mint", "line2": "DINER  OPEN 24 HRS", "text": "HALFWAY"}
+seed: 1518079335  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_pole_sign_halfway
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

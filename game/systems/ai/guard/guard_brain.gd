@@ -79,6 +79,8 @@ var _motor: NpcMotor = null
 var _runtime: HeistRuntime = null
 var _started: bool = false
 var _route_index: int = 0
+## D-152: hub-loop extra pause per patrol point (GuardTweak.hub_loops "dwell_add_s"), this difficulty.
+var _dwell_add: Dictionary = {}
 var _walking: bool = false
 var _pause_left: float = 0.0
 var _beat_left: float = 0.0
@@ -259,6 +261,12 @@ func _build_hub_route(graph: PatrolGraph) -> bool:
 	var order: Array[PatrolPoint] = PatrolRouteGenerator.hub_route(graph, hub, loops, GameRng.stream(RNG_STREAM))
 	if order.size() < 2:
 		return false
+	var max_d: int = int(cfg.get("dwell_add_max_difficulty", Enums.Difficulty.size()))
+	if _runtime == null or _runtime.difficulty <= max_d:
+		var add: Dictionary = cfg.get("dwell_add_s", {})
+		for n: Variant in add:
+			if by_name.has(StringName(n)):
+				_dwell_add[by_name[StringName(n)]] = float(add[n])
 	route_loops = true
 	patrol_graph = graph
 	route_points = order
@@ -336,9 +344,10 @@ func _reach_point() -> void:
 	var pp: PatrolPoint = route_points[_route_index]
 	_route_index = (_route_index + 1) % route.size()
 	anim_hint = &"idle"
-	if pp == null or not is_instance_valid(pp) or pp.pause_range.y <= 0.0:
+	var extra: float = float(_dwell_add.get(pp, 0.0)) if pp != null else 0.0
+	if pp == null or not is_instance_valid(pp) or (pp.pause_range.y <= 0.0 and extra <= 0.0):
 		return
-	_pause_left = _roll(pp.pause_range)
+	_pause_left = (_roll(pp.pause_range) if pp.pause_range.y > 0.0 else 0.0) + extra
 	anim_hint = CivilianBrain.seated_or_standing(_npc, pp.pause_anim)  # X-5 / PO6-06: no sitting on thin air
 	if pp.face_marker_forward:
 		_motor.face(-pp.global_basis.z)

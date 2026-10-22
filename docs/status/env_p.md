@@ -2,7 +2,10 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 23:25 UTC)
+## To the LEAD: (updated 2026-10-21 23:45 UTC)
+- **D-152 ack: OF done.** Now on Rolling Thunder: preparing `rt_g1_pass` (from of_g1_pass) for the G1 windowed/real-input pass (traversal,
+  interact sweep, the ambush stop, the truck breach, the mixer, the escape, STUCK/snag rows); it runs once A's pilot plays RT end to end.
+  OF ghost evidence and route note stay below for the record.
 - **OF ghost, time box result (23:25 UTC): no continuous run reached the escape. Step-wise evidence below for your D-151 call.**
   Steps 1-5 pass unseen in ONE continuous run (haz_zd). Step 6's sub-moves each pass unseen; lift cycle 1 (bags 1-2 staged in LD, the
   lift back down) passes unseen in ghost6_m, ghost6_t and ghost6_u. Cycle 2 dies the same way in ghost6_t and ghost6_u: bag 3 going out
@@ -12,6 +15,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   20-40 s). Six bags means six such windows in a row. If you want the line harness-provable on Hazardous: lengthen the vault guard's
   loop (b) RC dwell (as you offered C/A for rover_basement), or stage the bags in VT and run fewer crossings. Route note for the GPU
   box's human check: ghost_route_note_hazardous.md. A full run needs ~2.5 h wall, so none fits before 02:00.
+  r272 (76b3ae401): C's cash-lift fix confirmed by real input (`--test=liftdoor`, liftdoor_272: 2/2 plain door throws land in the car);
+  step 6 uses the plain throw again and the low-throw workaround is gone. Last attempt running on r272: out-trips also need the vault
+  guard not closing on the gate.
 - **OF ghost on Hazardous, seed 1002, trunk r263 (67260f0b): step table**:
 
   | step | pass run | heist time | evidence (game/tests/p/_review/captures/of_g1_2026-10-20/) |

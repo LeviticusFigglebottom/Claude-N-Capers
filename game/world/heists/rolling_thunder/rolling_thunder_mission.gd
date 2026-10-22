@@ -407,7 +407,8 @@ func _spawn_convoy_units() -> void:
 		var seat: bool = clean_stop and not went_loud and body is ConvoyVehicle
 		var look_tag: StringName = StringName("convoy_" + veh.to_lower())  # convoy_lead / convoy_t1.. / convoy_rear
 		for i: int in ids.size():
-			var got: Array[NpcBase] = spawn_units(ids[i], 1, look_tag, seat, body)
+			# D: the Wrecker's helmet clears no car door frame: it rides along but starts beside the car
+			var got: Array[NpcBase] = spawn_units(ids[i], 1, look_tag, seat and ids[i] != WRECKER, body)
 			for u: NpcBase in got:
 				u.set_meta(StealthDirector.META_ALARM_REASON, &"ambush")  # QC-83 (d): their alarm is the ambush
 				_units.append(u)
@@ -479,9 +480,10 @@ func _truck_opened(t: ArmoredTruck) -> void:
 		spawn_loot_at(LOOT_GOLD if bullion else LOOT_CASH, _cargo_spot(t), n)
 
 
+## Where spawned cargo lands: the rear step (the truck's UsePoint), outside the hold's collision box. G1 pilot: bags at
+## the LootAnchor sat inside the body, and the hold blocked the pick-up's line of sight (doc: bagged from the rear step).
 func _cargo_spot(t: ArmoredTruck) -> Node3D:
-	var rear: Node3D = t.visual_node("LootAnchor") as Node3D
-	return rear if rear != null else t
+	return t.use_point if t.use_point != null else t
 
 
 func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void:

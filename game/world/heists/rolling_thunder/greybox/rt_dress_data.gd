@@ -235,6 +235,12 @@ const DIRECT_PROPS: Array = [
 	["SignalSW", "prop_traffic_signal", Vector3(-10.5, 0.0, 7.1), 90.0, {}],
 	# the diner's HALFWAY / OPEN 24 HRS neon on the Tannery face between the floors
 	["DinerNeon", "prop_neon_halfway", Vector3(28.8, 2.95, 13.8), 0.0, {}],
+	# GPU-22 (the LEAD: the wall neon is edge-on from the street): the two-sided HALFWAY pole sign on Tannery's south
+	# sidewalk by the diner's NE corner (west of the trench, x 34), its faces E / W along Tannery (the junction reads
+	# the W face, the east arm's convoy the E face), the cabinet 4.6-6.4 m over the kerb; the pole is the only collider
+	# (rt_dress.gd POLE_OFF)
+	["DinerPoleSign", "prop_pole_sign_halfway", Vector3(32.5, 0.0, 10.0), 90.0, {}],
+	["DinerPoleBin", "prop_bin_street", Vector3(31.4, 0.0, 10.4), 90.0, {}],   # the street furniture at its foot
 	# ST's second rect (x 32-34, z 26-32; the placer dresses a room's largest box): shelving and a box stack on the
 	# east wall, clear of the electrical closet's door (z 26)
 	["STShelf", "prop_shelving_boxes", Vector3(33.56, 0.0, 29.6), 90.0, {}],

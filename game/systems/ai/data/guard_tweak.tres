@@ -13,6 +13,10 @@ route_tag = &"guard"
 nearest_graph_max_m = 25.0
 hub_loops = {
 &"guard_vault": {
+"dwell_add_max_difficulty": 2,
+"dwell_add_s": {
+&"RCNorth": 15.0
+},
 "hub": &"VCPost",
 "loops": [[&"VCLaserW"], [&"RCNorth", &"RCSouth", &"RCEast"], [&"SDDesk", &"CP"]]
 },
