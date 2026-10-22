@@ -270,6 +270,10 @@ func _refresh_button(sid: StringName, b: Button) -> void:
 		var cost: int = s.cost_basic if state != SkillBuild.STATE_BASIC else s.cost_aced
 		line = UiText.t(&"ui.skills.button_cost", {"state": state_text, "cost": cost})
 	b.text = "%s\n%s" % [UiText.t(StringName("%s.name" % sid)), line]
+	# LEAD r280: skills whose effect has no runtime hook yet say so on the tree (content/docs/unhooked_skill_keys.md).
+	var act: StringName = SkillBuild.activity(s) if s != null else &"active"
+	if act != &"active":
+		b.text += "\n%s" % UiText.t(StringName("ui.skills.button_%s" % act))
 	var style: StyleBox = _styles.get(state, null) as StyleBox
 	for slot: StringName in [&"normal", &"hover"]:
 		b.add_theme_stylebox_override(slot, style)
