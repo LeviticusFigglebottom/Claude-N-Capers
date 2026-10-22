@@ -1565,10 +1565,9 @@ We follow that shape:
 3. The starter knife and at least one blunt weapon are level 0. The heavy picks (sledgehammer, fire axe) unlock late, as in PD2.
    Achievement-gated melee waits until achievements grant items, and isn't built now.
 
-## D-156: Melee models move to ENV D (2026-10-22, LEAD; D-151 judgement)
-B's P5 queue (D-155 unlock levels, One Down, Options, skill markers) is long and D has a free lane plus the FP arms rigs the melee sets use.
-1. The 11 new melee models (D-155 roster; B's MeleeDefs) are built by **D** under `tools/blender/weapons/melee/` → `game/assets/weapons/melee/`,
-   following B's `folding_knife.py` conventions (`_common`, sizes from the MeleeDef blurb, PD2-plausible scale).
-   `owners.json`: those two paths move from B to D. folding_knife.py stays B's.
-2. **B** keeps the MeleeDefs and their values. B sets each def's `model` path in the same round D pushes the model.
-3. D shows a turntable sheet, plus FP-view frames on the arms rig, for LEAD review.
+## D-156: Melee models stay with B; D builds the two-handed arms set (2026-10-22, LEAD; D-151 judgement)
+I had planned to move the 11 melee models to D (B's queue is long). B had already built them before the handover reached it, so ownership is unchanged:
+1. **B** keeps the melee models (`tools/blender/weapons/**`) and the MeleeDefs.
+2. **D** builds a new two-handed FP arms set `melee_heavy` (PD2: the sledgehammer and fire axe are two-handed). The right hand sits at the grip pivot (the item origin, as in every melee set) and the left hand on the same handle 0.28 m further down (item −Z).
+   Clips and events have the melee_blunt/blade shape, charge_time_s 1.0; characters v1.38 row when it lands.
+   B switches `sledgehammer` / `fire_axe` to `anim_set = &"melee_heavy"` in the same round, and makes the models' handles fit that two-hand grip.

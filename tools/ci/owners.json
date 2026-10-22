@@ -42,10 +42,6 @@
     "tools/audiogen/ui/**",
     "game/assets/audio/sfx/ui/**",
     "game/world/audio/cues.tres"
-   ],
-   "excludes": [
-    "tools/blender/weapons/melee/**",
-    "game/assets/weapons/melee/**"
    ]
   },
   "c": {
@@ -91,9 +87,7 @@
     "game/tests/d/**",
     "docs/status/env_d.md",
     "tools/blender/style_samples/officer.py",
-    "tools/blender/style_samples/head.py",
-    "tools/blender/weapons/melee/**",
-    "game/assets/weapons/melee/**"
+    "tools/blender/style_samples/head.py"
    ]
   }
  },
