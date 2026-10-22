@@ -199,6 +199,14 @@ static var _curves: Dictionary = {}
 ## On-screen test: a sphere of this radius (m) around the body at anim_lod_center_y_m against the camera frustum.
 @export var anim_lod_radius_m: float = 1.2
 @export var anim_lod_center_y_m: float = 0.9
+## D (motion strips): an 8-way locomotion sector is kept until the velocity angle is this far (deg) past its centre
+## (45 deg sectors: 7.5 deg past the boundary), and a new sector is held at least this long (s).
+@export var locomotion_sector_hysteresis_deg: float = 30.0
+@export var locomotion_sector_min_hold_s: float = 0.3
+## D (test_loco_phase, measured on the clips): the backward 8-way clips (walk_back / _bl / _br, run_b / _bl / _br) put
+## their feet down this much of a cycle later than the forward ones; the phase carry adds it going back, subtracts it
+## coming out.
+@export var locomotion_back_phase_offset: float = 0.10
 ## Never LOD an NPC within this distance (m) of a crew member's aim ray (the player / a teammate aiming at it).
 @export var anim_lod_aim_radius_m: float = 2.0
 

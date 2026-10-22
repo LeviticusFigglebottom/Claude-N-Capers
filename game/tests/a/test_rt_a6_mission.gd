@@ -361,3 +361,53 @@ func test_phase2_mixer_drives_to_its_stop() -> void:
 	await wait_physics_frames(3)
 	assert_true(mixer.global_position.distance_to(stop.global_position) < 0.1, "the mixer on its MixerStop")
 	assert_true(gate.is_open, "the Tannery gate swung open")
+
+
+## RT-A6 "every VO line said": the e2e batch (auto_loud 1004 / 4102, rt_clean 1005) said 25 of the 34 RT lines; the
+## other nine hang on what the pilot never does or never rolls (the intro before its logger, the site stores' C4 /
+## thermite, the heli escape, the S2 / S3 Longshots). Each one's trigger here.
+func test_the_nine_lines_the_e2e_does_not_reach() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var said: Array[StringName] = []
+	var on_vo: Callable = func(_s: StringName, id: StringName, _c: Dictionary) -> void: said.append(id)
+	EventBus.voice_line_requested.connect(on_vo)
+	var m: RollingThunderMission = null
+	for s: int in range(4101, 4131):  # a seed with the heli escape
+		m = await _launch(s, [&"crane_sniper"], Enums.Difficulty.BRUTAL)
+		if m._heli():
+			break
+		after_each()
+		await wait_frames(1)
+		said.clear()
+		m = null
+	if m == null:
+		EventBus.voice_line_requested.disconnect(on_vo)
+		skip("no esc_heli_roof roll in 30 seeds")
+		return
+	for id: StringName in [RollingThunderMission.VO_INTRO, RollingThunderMission.VO_REYES_READY]:
+		assert_has(said, id, "%s at the start" % id)
+	EventBus.item_picked_up.emit(RollingThunderMission.ITEM_C4, 0)
+	var lm: LootManager = _rt.get_node(^"LootManager") as LootManager
+	var bag: LootBag = lm.spawn_bag(RollingThunderMission.LOOT_THERMITE, Transform3D(Basis(), Vector3(0, 1, 0)))
+	EventBus.loot_picked.emit(bag.net_id, 0)
+	m._convoy_arrives()
+	await _stopped(m)
+	var truck: ArmoredTruck = m._trucks[0]
+	EventBus.device_started.emit(truck.net_id, &"c4", 5.0)
+	EventBus.device_started.emit(truck.net_id, &"thermite", 30.0)
+	m._call_escape()
+	for tag: StringName in [&"s2", &"s3"]:  # a Longshot takes the free perch nearest the crew: only `tag` is open
+		for t: StringName in [&"s1", &"s2", &"s3", &"s4"]:
+			m.set_sniper_perches_open(t, t == tag)
+		var ls: Array[NpcBase] = SpecialSpawner.spawn_special(_rt, &"enemy.longshot")
+		assert_false(ls.is_empty(), "a Longshot on %s" % tag)
+		if not ls.is_empty():
+			m._on_special_spawned(ls[0].net_id, &"longshot")
+	await wait_physics_frames(2)
+	EventBus.voice_line_requested.disconnect(on_vo)
+	for id: StringName in [RollingThunderMission.VO_C4_FOUND, RollingThunderMission.VO_THERMITE_FOUND,
+			RollingThunderMission.VO_C4_ARMED, RollingThunderMission.VO_THERMITE_BURN, RollingThunderMission.VO_HELI_ETA,
+			RollingThunderMission.VO_SNIPER_RAIL, RollingThunderMission.VO_SNIPER_CRANE]:
+		assert_has(said, id, "%s said by its trigger" % id)

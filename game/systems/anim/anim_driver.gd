@@ -75,6 +75,7 @@ const HINT_CLIPS: Dictionary = {
 	# RT-D1 (Rolling Thunder, clips announced by ENV D): seated in a car / cab, eating in a diner booth, the diner cook.
 	&"sit_vehicle": &"sit_vehicle", &"vehicle": &"sit_vehicle", &"sit_eat": &"sit_eat", &"eat": &"sit_eat",
 	&"cook_stove": &"cook_stove", &"cook": &"cook_stove",
+	&"counter_wipe": &"counter_wipe",  # the RT diner waitress at the counter (D)
 }
 ## Clips that win over locomotion (the body holds a pose).
 ## One-shot poses that must stay held when they end (P coverage: a surrendered cop froze with a stopped player):
@@ -211,7 +212,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	# (not desk_type: it is a seated clip; not teller_count: it holds the cash stack)
 	&"counter_customer": &"idle", &"check_desk_write": &"idle",
 	# RT-D1: seated loops sit on the chair loop, the cook stands.
-	&"sit_vehicle": &"sit_chair", &"sit_eat": &"sit_chair", &"cook_stove": &"idle",
+	&"sit_vehicle": &"sit_chair", &"sit_eat": &"sit_chair", &"cook_stove": &"idle", &"counter_wipe": &"idle",
 }
 ## PO6-17: an NPC meta (StringName clip) that wins over every NPC state / brain hint while set (host). The
 ## assault-event runner sets it for scripted moments: rope descent, landing, heli door, van exit, breach charge.
@@ -281,6 +282,9 @@ var weapon_offhand: Node3D = null
 var bag_visual: Node3D = null
 ## v1.21 crew-state one-shot (downed_fire / downed_reload / downed_getup / downed_arrested / crew_cuffed_enter /
 ## crew_cuffed_free): wins over the crew state's own clip while it lasts; `_state_oneshot_t` = seconds since it began.
+## _locomotion_clip's current 8-way sector (-1 = none yet) and how long it has been held (s).
+var _sector: int = -1
+var _sector_age: float = 0.0
 var _state_oneshot: StringName = &""
 var _state_oneshot_left: float = 0.0
 var _state_oneshot_t: float = 0.0
@@ -492,6 +496,7 @@ func tick(delta: float) -> void:
 	loop_resume.step(delta)
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
+	_sector_age += delta
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
 	net_oneshot_left = maxf(net_oneshot_left - delta, 0.0)
 	_update_start_stop(tw)
@@ -600,6 +605,8 @@ func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool
 	var full: String = _resolve(p_clip)
 	if full == "":
 		return
+	if String(_oneshot).begins_with("stagger_") and _oneshot_left > 0.0 and not String(p_clip).begins_with("stagger_"):
+		return  # D (motion strips): the stagger plays out; a shot / turn / flinch inside it would hand over to the cover loop
 	if duration < 0.0:
 		duration = player.get_animation(full).length / maxf(speed, 0.01)
 	_oneshot = p_clip
@@ -835,6 +842,16 @@ func _locomotion_clip(speed: float, tw: AnimTweak) -> StringName:
 		# characters.md v1.10 8-way: 45 deg sectors clockwise from forward (diagonals fall back to the 4-way set).
 		var a: float = rad_to_deg(atan2(side, dir.dot(fwd)))
 		var i: int = posmod(roundi(a / 45.0), 8)
+		# D (motion strips, PO "inorganic"): into a NEIGHBOURING sector, keep the current one until the angle is past
+		# its centre by the hysteresis, and hold a new one at least the min hold (the 8-way clip changed nearly every
+		# tick). A real turn (two sectors or more) switches at once.
+		var neighbour: bool = _sector >= 0 and absi(posmod(i - _sector + 4, 8) - 4) == 1
+		if neighbour and (_sector_age < tw.locomotion_sector_min_hold_s
+				or absf(wrapf(a - float(_sector) * 45.0, -180.0, 180.0)) <= tw.locomotion_sector_hysteresis_deg):
+			i = _sector
+		if i != _sector:
+			_sector = i
+			_sector_age = 0.0
 		var clips: Array[StringName] = WALK_8 if slow else RUN_8
 		out = clips[i]
 		if i == 0:  # straight ahead: walk / run by the usual split
@@ -1079,10 +1096,13 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			blend = tw.hit_zone_blend_out_s
 		var chained: bool = HOLD_END.get(clip, &"") == want or CivPanic.chained(clip, want)
 		loop_resume.leaving(clip, want)
+		var carry: float = _gait_phase(clip, want)
 		player.play(full, blend)
 		last_blend_s = blend
 		if restart:
 			player.seek(_oneshot_start, true)
+		elif carry >= 0.0:  # D: same gait family, shared foot contacts: the new direction keeps the stride's phase
+			player.seek(carry * player.get_animation(full).length, true)
 		elif not chained and not loop_resume.resume(want, full):  # D-115: a loop cut by a one-shot resumes its phase
 			_seek_loop_offset(want, full)
 		clip = want
@@ -1093,6 +1113,33 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 		player.seek(crew_action.time, true)  # v1.23: the action's time and rate are CrewActionAnim's (the hold drives it)
 		speed = crew_action.speed
 	player.speed_scale = speed
+
+
+## D (motion strips): the normalised time of `from` to carry into `to` (shifted by the back group's phase offset
+## between a forward and a backward clip) when both are loops of one 8-way gait family
+## (walk / walk_* / walk_back at 30 f, run / run_* at 21 f; strafe_l / _r (18 f), the starts / stops and walk_text
+## stay out), else -1.
+func _gait_phase(from: StringName, to: StringName) -> float:
+	var fam: String = _gait_family(from)
+	if fam == "" or fam != _gait_family(to) or player == null or not player.is_playing():
+		return -1.0
+	var a: Animation = player.get_animation(player.current_animation)
+	if a == null or a.length <= 0.0:
+		return -1.0
+	var u: float = player.current_animation_position / a.length
+	# D (test_loco_phase): the backward clips' feet run back_phase_offset of a cycle after the forward ones.
+	var shift: float = (1.0 if _gait_back(to) else 0.0) - (1.0 if _gait_back(from) else 0.0)
+	return fposmod(u + shift * AnimTweak.data().locomotion_back_phase_offset, 1.0)
+
+
+static func _gait_back(c: StringName) -> bool:
+	return c in [&"walk_back", &"walk_bl", &"walk_br", &"run_b", &"run_bl", &"run_br"]
+
+
+static func _gait_family(c: StringName) -> String:
+	if not (WALK_8.has(c) or RUN_8.has(c)) or String(c).begins_with("strafe_"):
+		return ""
+	return "walk" if WALK_8.has(c) else "run"
 
 
 ## v1.18: a variant-group loop (OFFSET_LOOP_GROUPS) starts at this body's random offset so a room of surrendered

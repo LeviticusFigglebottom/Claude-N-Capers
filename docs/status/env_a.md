@@ -4,6 +4,21 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-29) RT VO coverage, D's cast fixes, phase-2 mixer ready, round 276 merged (2026-10-22)
+- **VO:**
+  - Batch: auto_loud 1004 / 4102 and rt_clean 1005, 3/3 PASS. 25 of the 34 RT lines were said e2e.
+  - The other 9 are covered by test_the_nine_lines_the_e2e_does_not_reach, so all 34 are said.
+- **d32d344e (D's cast review):**
+  - staff_waitress / staff_cook look rows; civ_diner = p5_cast's 14.
+  - counter_wipe activity + clip.
+  - spawn_units takes the least-used seat (two escorts shared Seat0).
+- **f62766cc:** phase-2 mixer. With C's `Mixer` ConvoyVehicle and the layout's `MixerStop` (`MixerPath` optional), the
+  tannery_gate doors open and the mixer drives. G1's layout swap stays the fallback until C's map lands.
+- **982828a4:** round 276 merged, then --import; RT / cast / anim tests green.
+- **Waiting:**
+  - QC-85 cue defs in cues.tres (B).
+  - C's Mixer map.
+  - bonds_courier cab safe (truck art).
 ### (-28) RT e2e: crash 3/3, clean 3/3, all 3 escapes; D/LEAD items; QC-85 cues; round 275 merged (2026-10-22)
 - **Crash stop** (auto_loud), success each:
   - 1001: 584 s, E1.

@@ -164,3 +164,18 @@ func test_car_occupant_slides_out_over_the_exit_clip() -> void:
 	if not curve.is_empty():
 		assert_near(out_x, curve[curve.size() - 1], 0.03, "out by exactly the clip's root travel (D: no foot skate)")
 	assert_eq(u.alert_state, Enums.AlertState.COMBAT, "awake: it is loud")
+
+
+## D (RT cast review): the mission spawns a vehicle's units one call each; each call takes a free seat, so two units
+## never share one (they came out of the car overlapping).
+func test_one_unit_per_seat_over_calls() -> void:
+	var car: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(0, 0, -12), func(n: Node) -> void:
+		(n as ConvoyVehicle).vehicle_kind = &"car") as ConvoyVehicle
+	await wait_physics_frames(2)
+	var a: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.patrol_officer", 1, &"", true, car)
+	var b: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.patrol_officer", 1, &"", true, car)
+	assert_true(a.size() == 1 and b.size() == 1, "two units")
+	if a.is_empty() or b.is_empty():
+		return
+	assert_true(a[0].global_position.distance_to(b[0].global_position) > 0.3,
+		"different seats (%s / %s)" % [a[0].global_position, b[0].global_position])

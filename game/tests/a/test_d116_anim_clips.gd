@@ -455,3 +455,76 @@ func test_v126a_npc_hold_layer_on_the_move() -> void:
 	for _i: int in 20:
 		d.tick(0.033)
 	assert_near(d.hold_layer.influence, 0.0, 0.001, "unarmed: no hold layer")
+
+
+func _add_loops(d: AnimDriver, names: Array, frames: int) -> void:
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for c: StringName in names:
+		if not lib.has_animation(c):
+			var a: Animation = Animation.new()
+			a.length = float(frames) / 30.0
+			a.loop_mode = Animation.LOOP_LINEAR
+			lib.add_animation(c, a)
+
+
+static func _vel_at(deg: float, speed: float) -> Vector3:
+	return Vector3(sin(deg_to_rad(deg)), 0.0, -cos(deg_to_rad(deg))) * speed  # the body faces -Z, +X is its right
+
+
+## D (motion strips, PO "inorganic"): the 8-way sector holds through jitter around a boundary (hysteresis, min hold),
+## and a switch inside the walk family carries the stride's phase instead of restarting at 0.
+func test_8way_sector_hysteresis_and_phase_carry() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71691)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"walk_fr", &"walk_fl", &"walk_br", &"walk_bl"], 30)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(45.0, 1.2)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_eq(d.clip, &"walk_fr", "45 deg: walk_fr")
+	for deg: float in [68.0, 30.0, 70.0, 25.0, 66.0]:  # jitter across the 67.5 / 22.5 deg boundaries
+		npc.velocity = _vel_at(deg, 1.2)
+		for _i: int in 5:
+			d.tick(0.033)
+		assert_eq(d.clip, &"walk_fr", "%.0f deg: still walk_fr (within 30 deg of its centre)" % deg)
+	var phase: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	npc.velocity = _vel_at(-45.0, 1.2)
+	d.tick(0.033)
+	assert_eq(d.clip, &"walk_fl", "a real turn to -45 deg: walk_fl")
+	var now: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	assert_near(now, fposmod(phase + 0.033 / 1.0, 1.0), 0.06, "walk_fl picks up walk_fr's phase (not 0)")
+
+
+## D (motion strips): a stagger is not cut short by the shots / turns that follow it (the cover loop took over).
+func test_stagger_plays_out() -> void:
+	var npc: NpcBase = _npc(&"police", true, 71692)
+	var d: AnimDriver = AnimDriver.of(npc)
+	d.play_oneshot(&"stagger_pistol", -1.0, true)
+	d.tick(0.1)
+	d.play_oneshot(&"fire_pistol")
+	d.play_oneshot(&"turn_l")
+	d.tick(0.1)
+	assert_eq(d._oneshot, &"stagger_pistol", "the stagger keeps playing")
+	assert_eq(d.clip, &"stagger_pistol", "and is the clip")
+	for _i: int in 12:
+		d.tick(0.1)
+	d.play_oneshot(&"fire_pistol")
+	assert_eq(d._oneshot, &"fire_pistol", "after it ends, shots play again")
+
+
+## D (test_loco_phase): forward -> backward carries the phase + back_phase_offset (backward -> forward subtracts it).
+func test_8way_phase_carry_back_offset() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71693)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"walk_fr", &"walk_fl", &"walk_br", &"walk_bl"], 30)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(45.0, 1.2)
+	for _i: int in 20:
+		d.tick(0.033)
+	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	npc.velocity = _vel_at(135.0, 1.2)  # a 90 deg turn: walk_br at once
+	d.tick(0.033)
+	assert_eq(d.clip, &"walk_br")
+	var now: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	var want: float = fposmod(u + AnimTweak.data().locomotion_back_phase_offset + 0.033, 1.0)
+	assert_near(now, want, 0.06, "walk_fr -> walk_br: + the back group's offset")
