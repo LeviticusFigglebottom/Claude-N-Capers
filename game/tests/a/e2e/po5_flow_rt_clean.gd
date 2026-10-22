@@ -6,7 +6,7 @@
 ## signal rig hack, every interruption restarted -> back to the heist start -> the convoy to its CLEAN stop. From the
 ## stop the auto_loud pilot (input only, po5_flow_auto_loud.gd) plays the rest: its shots spring the ambush in the
 ## 8 s window, then trucks, bags, the ride. Checks: [signals] done before the stop, no alarm before it, clean_stop,
-## the alarm is the ambush, heist_ended(success).
+## [ambush] sprung after it (any alarm then: the window's end, a shot, a guard seeing the masked crew), heist_ended(success).
 ## run: DIRECT=1 HEADLESS=1 game/tests/a/e2e/run_po5.sh rt_clean <seed> 2400 <out> "Rolling Thunder" Routine
 extends RefCounted
 
@@ -52,7 +52,10 @@ func play(driver: Node) -> int:
 	var rc: int = await loud.call(&"play", driver)
 	EventBus.heist_ended.disconnect(on_end)
 	var reason: StringName = rt.stealth.alarm_reason if rt.stealth != null else &""
-	var ok: bool = rc == 0 and reason == &"ambush" and not ended.is_empty() and bool(ended[0].get("success", false))
+	# Any alarm after the clean stop springs the ambush (the window's end, a convoy unit, or a guard who sees the
+	# masked crew): no alarm before the stop is checked above.
+	var sprung: bool = m.objective_state(&"ambush") == Enums.ObjectiveState.COMPLETED
+	var ok: bool = rc == 0 and sprung and not ended.is_empty() and bool(ended[0].get("success", false))
 	driver.call(&"note", "RESULT rt_clean %s seed %d: clean_stop %s, alarm %s, auto_loud rc %d, ended %s" % [
 		"PASS" if ok else "FAIL", rt.run_seed, m.clean_stop, reason, rc, ended])
 	return 0 if ok else 1

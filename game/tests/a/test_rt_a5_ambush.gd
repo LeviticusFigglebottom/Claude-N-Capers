@@ -153,7 +153,14 @@ func test_car_occupant_slides_out_over_the_exit_clip() -> void:
 		return
 	assert_true(u.global_position.distance_to(seat) < 0.05, "starts at the seat")
 	assert_eq(u.process_mode, Node.PROCESS_MODE_DISABLED, "paused while the clip plays")
-	await wait_seconds(exit_s + 0.2)
-	assert_eq(u.process_mode, Node.PROCESS_MODE_INHERIT, "the brain runs after the clip")
-	assert_true(absf(car.to_local(u.global_position).x) > 1.5, "beside the car (x %.2f)" % car.to_local(u.global_position).x)
+	var curve: PackedFloat32Array = AnimTweak.root_curve(AnimDriver.VEHICLE_EXIT_L if left else AnimDriver.VEHICLE_EXIT_R)
+	assert_false(curve.is_empty(), "D's curve.vehicle_exit_* in SOURCE.txt")
+	await wait_seconds(0.1)  # D: the root holds for frames 0-6 while the unit turns to the door
+	var held: Vector3 = car.to_local(u.global_position) - car.to_local(seat)
+	assert_true(Vector2(held.x, held.z).length() < 0.02, "the root holds at the start of the clip (%.3f m)" % held.x)
+	var handed: bool = await wait_until(func() -> bool: return u.process_mode == Node.PROCESS_MODE_INHERIT, exit_s + 0.5)
+	assert_true(handed, "the brain runs after the clip")
+	var out_x: float = absf(car.to_local(u.global_position).x) - absf(car.to_local(seat).x)
+	if not curve.is_empty():
+		assert_near(out_x, curve[curve.size() - 1], 0.03, "out by exactly the clip's root travel (D: no foot skate)")
 	assert_eq(u.alert_state, Enums.AlertState.COMBAT, "awake: it is loud")

@@ -360,13 +360,34 @@ func dismount_units(units: Array, step_m: float = 1.6) -> int:
 			# brain takes over.
 			npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), seat)  # upright: a seat on a ramp is tilted
 			anim.play_vehicle_exit(left)
+			var curve: PackedFloat32Array = AnimTweak.root_curve(AnimDriver.VEHICLE_EXIT_L if left else AnimDriver.VEHICLE_EXIT_R)
+			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if left else -1.0)
+			var ground_y: float = vehicle.global_position.y
 			var tw: Tween = create_tween()
-			tw.tween_property(npc, ^"global_position", pos, exit_s)
+			tw.tween_method(_exit_step.bind(npc, seat, side, ground_y, curve, pos), 0.0, exit_s, exit_s)
 			tw.tween_callback(_dismounted.bind(npc))
 			continue
 		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # an armoured cab's crew steps out beside it
 		_dismounted(npc)
 	return n
+
+
+## The exit slide at `t` s: D's root curve (curve.vehicle_exit_<side>: the root holds while the unit turns to the door,
+## then moves out on the clip's own travel, so the planted feet never skate), from the seat down to the ground; without
+## a curve, linear to `fallback` (the plain step-out spot).
+func _exit_step(t: float, npc: NpcBase, seat: Vector3, side: Vector3, ground_y: float, curve: PackedFloat32Array,
+		fallback: Vector3) -> void:
+	if not is_instance_valid(npc):
+		return
+	if curve.is_empty():
+		npc.global_position = seat.lerp(fallback, clampf(t / maxf(AnimDriver.of(npc).vehicle_exit_length(true), 0.01),
+			0.0, 1.0))
+		return
+	var total: float = maxf(curve[curve.size() - 1], 0.001)
+	var d: float = AnimTweak.curve_at(curve, t)
+	var p: Vector3 = seat + side * d
+	p.y = lerpf(seat.y, ground_y, d / total)
+	npc.global_position = p
 
 
 ## A unit is out of its vehicle: brain, motor and collision back on; into the fight if the heist is loud.
