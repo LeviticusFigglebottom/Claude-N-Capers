@@ -1,4 +1,4 @@
-# Contract: characters (v1.35)
+# Contract: characters (v1.36)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -409,7 +409,7 @@ faction police unit (EnemyDef `params.visual_variant` frd / sentinel / zero) res
 `<faction>` → base. Only the TAC Light has faction EnemyDefs today; other units fall back to the plain `_duty` look.
 `test_outfits` checks the looks. Additive.
 
-## v1.27: locomotion reversals (D-153 motion strips; SOURCE `loco_reverse`; D f65cb6e7)
+## v1.36: locomotion reversals (D-153 motion strips; SOURCE `loco_reverse`; D f65cb6e7)
 One-shots for a travel reversal of 135° or more with fixed facing (an aiming unit kiting); they replace the crossfade
 between opposite strides, which folds the knees. `_l` = the left foot brakes.
 | clip | loops | frames | u_in (source frame) | u_out (target frame) | push | root total |
