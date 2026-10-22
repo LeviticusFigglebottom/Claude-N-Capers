@@ -432,6 +432,7 @@ func _create_services() -> void:
 	CrewBuffs.of(self)  # B1 skill keys: timed buffs (replicated) and the kill / hit / bag triggers (server)
 	SkillTriggers.of(self)
 	PerfMonitors.attach(self)  # A4-02: caperworks/* custom monitors
+	BotCrew.of(self)  # L6.2: AI teammates' abilities and boosts (server)
 	var custody: CustodySystem = CustodySystem.new()  # A3-04 (L2.9, L2.10)
 	custody.name = "CustodySystem"
 	register_service(CustodySystem.SERVICE, custody)
