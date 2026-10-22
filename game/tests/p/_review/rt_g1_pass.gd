@@ -125,6 +125,9 @@ const RAIL_LANE_IN: Vector3 = Vector3(55.0, 0.0, -35.0)
 const FIRE_DOOR_IN: Vector3 = Vector3(50.8, 0.0, -35.0)
 
 const DEVICE_SCALE: float = 3.0
+const UNSEEN_GUARD_M: float = 30.0
+const UNSEEN_CIV_M: float = 15.0
+const UNSEEN_HOLD_S: float = 2.0
 const SIGNAL_RIG_AT: Vector3 = Vector3(-16.25, 0.75, -13.45)
 const MAGAZINE_DOOR_AT: Vector3 = Vector3(-23.0, 0.0, -49.0)
 const MAGAZINE_BOXES_AT: Vector3 = Vector3(-23.0, 0.0, -51.0)
@@ -475,6 +478,8 @@ func _site_in() -> bool:
 	var gate: Door = _door_near(Vector3(-14.0, 0.0, -16.0), 2.5)
 	var lock: Node3D = _nearest("Padlock", Vector3(-14.0, 1.05, -16.0), 2.0)
 	if gate != null and not gate.is_open and lock != null:
+		if not pilot.crew.stealth_hidden:
+			await _wait_unseen("man-gate")
 		await _mask()  # interactions need the mask (InteractableComponent: casing_allowed only); mask at the gate
 		var used: bool = await pilot.use(_comp(lock), 40.0, func() -> bool: return gate.is_open or not gate.locked)
 		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "gate open %s" % gate.is_open,
@@ -987,6 +992,35 @@ func _ambush_test(clean: bool, route: StringName) -> bool:
 	if ok:
 		_mixer_row()
 	return ok
+
+
+## Real detection (the setup rows): like a human, hold unmasked on the sidewalk until no guard with a line of sight is
+## within UNSEEN_GUARD_M or closing (two samples 0.5 s apart), and no civilian with a line of sight within
+## UNSEEN_CIV_M, for UNSEEN_HOLD_S running. One ROW with the wait.
+func _wait_unseen(label: String, max_s: float = 240.0) -> float:
+	var t0: float = rt.heist_time_s
+	var clear_s: float = 0.0
+	var last: Dictionary = {}
+	while rt.heist_time_s - t0 < max_s and clear_s < UNSEEN_HOLD_S:
+		var why: String = ""
+		for n: Node in rt.npcs():
+			var npc: NpcBase = n as NpcBase
+			var d: float = npc.global_position.distance_to(pilot.crew.global_position)
+			var seen: bool = pilot.has_los(npc.head_position(), npc)
+			if npc.role == &"civilian":
+				if seen and d < UNSEEN_CIV_M:
+					why = "civilian %.0f m" % d
+			elif d < UNSEEN_GUARD_M and (seen or d < float(last.get(npc, INF)) - 0.2):
+				why = "%s %.0f m%s" % [npc.role, d, "" if seen else " closing"]
+			last[npc] = d
+			if why != "":
+				break
+		clear_s = clear_s + 0.5 if why == "" else 0.0
+		await wait_s(0.5)
+	var waited: float = rt.heist_time_s - t0
+	_row("%s: wait unseen before masking" % label, "PASS" if clear_s >= UNSEEN_HOLD_S else "FAIL", "%.0f s" % waited,
+		"-" if clear_s >= UNSEEN_HOLD_S else "C patrol (no window)")
+	return waited
 
 
 func _hack_rig() -> bool:
