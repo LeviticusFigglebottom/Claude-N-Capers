@@ -7,20 +7,12 @@ extends RefCounted
 
 ## No runtime code reads the key (and so no behaviour test can exist).
 const UNHOOKED: Dictionary = {
-	&"ability.convert_owner_buff": "A",
-	&"ability.hostage_regen": "A",
-	&"ability.stockholm": "A",
 	&"deploy.sentry_accuracy_mult": "A",
 	&"deploy.sentry_cost_mult": "A",
 	&"deploy.sentry_health_mult": "A",
 	&"deploy.sentry_modes": "A",
 	&"deploy.sentry_shield": "A",
 	&"deploy.sentry_turn_speed_mult": "A",
-	&"deploy.trip_mine_fire": "A",
-	&"stealth.mark_by_aim": "A",
-	&"stealth.mark_damage_bonus_mult": "A",
-	&"stealth.mark_far_damage_mult": "A",
-	&"stealth.noise_intimidates_civilians": "A",
 	&"stealth.pocket_ecm": "A",
 }
 
