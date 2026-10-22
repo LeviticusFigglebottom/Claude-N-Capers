@@ -221,6 +221,8 @@ func build_stations(holder: Node3D) -> void:
 			box(body, String(b[0]), mn, mx, String(b[3]))
 			if xf.origin.y + mn.y < 0.3:   # floor-standing parts block the walker (wall-hung ones are above the agent's climb)
 				obstruct(xf, AABB(mn, mx - mn))
+		if id == "jukebox":
+			add(st, node3d("Speaker", L.JUKEBOX_SPEAKER))
 		var cam: Marker3D = Marker3D.new()
 		cam.name = "StationCam"
 		var eye: Vector3 = up.position + Vector3(0.0, L.STATION_CAM_H, -L.STATION_CAM_BACK)
@@ -276,12 +278,15 @@ func build_environment(lighting: Node3D) -> void:
 
 
 ## hub_map.md: Audio/Jukebox, the cabinet's MusicDirector (no heist facts; SafehouseMap.set_jukebox_track plays it).
-## The ambience bed, point emitters and the positional cabinet are C4-03.
+## The stems play positionally at the cabinet's Speaker (C4-03).
 func build_audio(audio: Node3D) -> void:
 	var j: Node = (load(MUSIC_DIRECTOR) as GDScript).new() as Node
 	j.name = "Jukebox"
 	j.set(&"listen_to_event_bus", false)
 	j.set(&"track_id", &"")
+	j.set(&"positional_parent", NodePath("../../Stations/jukebox/Speaker"))
+	j.set(&"unit_size", L.JUKEBOX_UNIT_SIZE)
+	j.set(&"max_distance", L.JUKEBOX_MAX_DISTANCE)
 	add(audio, j)
 
 

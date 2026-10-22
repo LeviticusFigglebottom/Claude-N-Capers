@@ -152,6 +152,11 @@ const STATIONS: Array = [
 	["profile", [7.9, 1.4, 15.0], 90.0, 1.1, [0.0, 0.0, -0.1],
 		[["BulletinBoard", [-0.6, -0.4, -0.03], [0.6, 0.5, 0.0], "prop"]]],
 ]
+## The jukebox's speaker (station-local: in the cabinet's top front); MusicDirector.positional_parent plays the stems
+## there (unit size 4 m, max distance 30 m: full in the lounge, present in the hall, faint in the workshop).
+const JUKEBOX_SPEAKER: Vector3 = Vector3(0.0, 1.25, -0.2)
+const JUKEBOX_UNIT_SIZE: float = 4.0
+const JUKEBOX_MAX_DISTANCE: float = 30.0
 ## Wall-hung stations (levelcheck meta mount = wall: the wall carries them, not the floor).
 const WALL_MOUNTED: Array[String] = ["board", "crew", "profile"]
 ## StationCam (hub_map: a Marker3D, -Z the view, `fov` meta): this far behind and above the UsePoint, looking at the

@@ -97,6 +97,9 @@ func test_jukebox_cabinet() -> void:
 		return
 	assert_false(j.listen_to_event_bus, "the cabinet ignores heist facts")
 	assert_true(j.has_method(&"set_ducked"), "set_ducked (hub_map)")
+	var speaker: Node3D = _map.get_node(^"Stations/jukebox/Speaker") as Node3D
+	assert_true(speaker != null and speaker.get_node_or_null(^"Stem0") is AudioStreamPlayer3D,
+		"the cabinet plays positionally at its Speaker (C4-03)")
 	_map.set_jukebox_track(&"")
 	assert_eq(j.track_id, SafehouseMap.DEFAULT_TRACK, "the heist default plays glasshouse")
 	assert_eq(j.current_stem, MusicTrack.STEM_STEALTH, "on the stealth stem")
