@@ -1,12 +1,11 @@
 ## RT-A6 stage 1 (D-151): rolling_thunder_mission on C's G1 map. Objectives and the setup clock; signals rigged ->
 ## clean stop (layout in, convoy units beside the G1 bodies, the 8 s window raises the ambush alarm, units awake);
-## an early alarm -> police at once, crash stop, trucks locked down; a truck opening spawns its cargo; four bags
+## an early alarm -> police at once, crash stop, C's 2-3 real trucks locked down; a truck opening spawns its cargo; four bags
 ## secured call the ride after escape_eta_s. The stop is called directly (no 150-210 s wait).
 extends TestCase
 
 const HEIST: StringName = &"rolling_thunder"
 const VARIANTS: String = "res://world/heists/rolling_thunder/rolling_thunder_variants.tres"
-const TRUCK: PackedScene = preload("res://systems/prefabs/armored_truck/armored_truck.tscn")
 
 var _rt: HeistRuntime = null
 
@@ -93,9 +92,6 @@ func test_early_alarm_crash_stop_and_lockdown() -> void:
 	assert_true(m.alerted, "an alarm before the convoy alerts it")
 	assert_near(m.police_delay_s, 0.0, 0.001, "police at once")
 	var layout_id: String = "%s_crash" % m._route()
-	if _rt.map.find_children("*", "ArmoredTruck", true, false).is_empty():
-		ConvoyLayouts.find(_rt.map, layout_id).add_child(TRUCK.instantiate())  # pre-swap G1: one truck in the layout
-		await wait_physics_frames(1)
 	m._convoy_arrives()
 	await _stopped(m)
 	assert_false(m.clean_stop, "crash stop")
@@ -103,7 +99,7 @@ func test_early_alarm_crash_stop_and_lockdown() -> void:
 	assert_true(bool(m.objectives().filter(func(o: Dictionary) -> bool: return o["id"] == &"signals")[0]["data"].get(
 		"skipped", false)), "as skipped, not done")
 	assert_eq(m.layout_id, layout_id)
-	assert_false(m._trucks.is_empty(), "trucks in play")
+	assert_true(m._trucks.size() >= 2 and m._trucks.size() <= 3, "C's 2-3 real trucks in play (%d)" % m._trucks.size())
 	for t: ArmoredTruck in m._trucks:
 		assert_true(t.locked_down, "%s locked down: deadbolts thrown" % t.name)
 		assert_has(m.find_tagged(RollingThunderMission.TAG_TRUCK_IN_PLAY), t, "[trucks] marks %s" % t.name)
