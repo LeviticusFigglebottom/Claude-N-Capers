@@ -617,9 +617,22 @@ func _spawn_crew() -> void:
 		Log.error(&"heist", "contract violation: no PLAYER SpawnPoints in %s" % heist_id)
 	var loadouts: Dictionary = options.get("loadouts", {})
 	var scene: PackedScene = load(CREW_SCENE) as PackedScene
+	var worn: Array[StringName] = []
+	for slot: int in Net.all_slots():
+		var l: Loadout = crew_loadouts.get(slot, loadouts.get(slot)) as Loadout
+		if l != null and l.heister != &"":
+			worn.append(l.heister)
 	for slot: int in Net.all_slots():
 		var crew: CrewController = scene.instantiate() as CrewController
 		crew.setup(slot, Net.crew[slot], crew_loadouts.get(slot, loadouts.get(slot)) as Loadout)
+		if crew.is_ai and crew.heister == &"":
+			# LEAD r281: a bot launched without a heister (a direct HeistLauncher.launch with bare loadouts; the menus hand
+			# every bot one, MenuFlow.build_launch_options) drew the capsule placeholder: wear the first unworn heister.
+			for h: StringName in Heisters.ids():
+				if not worn.has(h):
+					crew.heister = h
+					worn.append(h)
+					break
 		dynamic_root.add_child(crew)
 		var xf: Transform3D = Transform3D.IDENTITY
 		if not spawns.is_empty():
