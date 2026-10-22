@@ -1563,6 +1563,8 @@ item.mask_pattern.acanthus.name,Acanthus
 item.mask_pattern.facets.name,Facets
 item.mask_pattern.time_lock_dial.name,Time Lock
 item.mask_pattern.stencil.name,Stencil
+item.mask_pattern.road_lines.name,Road Lines
+item.mask_pattern.tread.name,Tread
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.code,Or find the safe code
@@ -2587,6 +2589,8 @@ item.mask_material.container_rust.name,Container Rust
 item.mask_material.velvet_case.name,Jeweller's Velvet
 item.mask_material.night_safe.name,Night Safe
 item.mask_material.gilt_leaf.name,Gilt Leaf
+item.mask_material.armor_plate.name,Armor Plate
+item.mask_material.hi_vis.name,Hi-Vis
 item.mask.ledger_regent.name,Ledger Regent
 item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by crews who have retired the top of the ladder ten times."
 item.mask.last_word.name,The Last Word
@@ -3298,6 +3302,8 @@ item.mask_base.shark.name,Shark
 item.mask_base.pierrot.name,Pierrot
 item.mask_base.welder.name,Welder
 item.mask_base.vault_dial.name,Combination
+item.mask_base.road_cone.name,Pylon
+item.mask_base.ingot.name,Ingot
 item.mask_base.keystone.name,Keystone
 item.mask_base.bust.name,Gallery Bust
 item.mask_base.wicker.name,Wicker
