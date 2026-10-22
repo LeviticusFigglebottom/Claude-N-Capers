@@ -6,6 +6,15 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-22, **Trunk r282 merged. The mixer cab is fixed per D (r280), and plan cameras are perf-exempt.**
+  - **Mixer vehicle_kind is now "mixer"** (it was "truck"). A's _seat hides occupants of armoured kinds (truck / van),
+    so Reyes is now visible at the wheel.
+  - **Every cab gets a `SteeringWheel`** at D's numbers: rim 0.18 m round WheelCentre (0.40 m ahead of Seat0,
+    0.76 m above the cab floor), tilted 30° toward the driver, with a column.
+  - **Mixer glass** is now glass_teal (alpha 0.6); the armoured cabs keep the dark tint.
+  - **Truck-family glbs rebuilt**, each twice and byte-identical.
+  - **lc_check_perf:** orthographic `TopDown*` plan cameras are now reported "plan, exempt" and never flagged (the
+    LEAD, r281); noted in tools/levelcheck/README.md.
 - 2026-10-22, **Magazine STUCK (P r280) fixed; trunk 78a57794 merged; B's 3 def tests are green.**
   - **Cause:** the walls were in the bake (a navmesh-crossing test passed on the old map). The C4 boxes' UsePoints
     stood 0.2 m off MagWallN, inside the bake's 0.3 m erosion, so they were off the navmesh. With MagazineDoor shut,

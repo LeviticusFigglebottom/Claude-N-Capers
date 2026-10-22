@@ -103,8 +103,11 @@ func run(ctx: LcContext) -> void:
 		var by: PackedStringArray = PackedStringArray()
 		for e: Array in r["by_light"]:
 			by.append("%s %d" % e)
-		note("| `%s` | %d | %d | %d | %d | %d | %d | %d | %s |" % [cam.name, main, r["lit"], r["shadow"], cast, total,
-			r["tris"], r["shadow_lights"], ", ".join(by)])
+		var plan: bool = is_plan_camera(cam)
+		note("| `%s`%s | %d | %d | %d | %d | %d | %d | %d | %s |" % [cam.name, " (plan, exempt)" if plan else "", main,
+			r["lit"], r["shadow"], cast, total, r["tris"], r["shadow_lights"], ", ".join(by)])
+		if plan:
+			continue
 		if main > MAX_DRAW_CALLS:
 			flag.call(ctx, cam, null, "%d main-pass draw calls in view > %d" % [main, MAX_DRAW_CALLS])
 		if total > MAX_TOTAL_DRAWS:
@@ -114,6 +117,12 @@ func run(ctx: LcContext) -> void:
 			flag.call(ctx, cam, null, "%d triangles in view > %d" % [r["tris"], MAX_TRIANGLES])
 		if int(r["shadow_lights"]) > MAX_SHADOW_LIGHTS:
 			flag.call(ctx, cam, null, "%d shadow-casting lights in view > %d" % [r["shadow_lights"], MAX_SHADOW_LIGHTS])
+
+
+## The LEAD (r281, RT D-146 pass): orthographic plan cameras (`TopDown*`, the whole map from above, rendered by
+## review_shots with its own flat plan environment) are not player views: reported, never flagged.
+static func is_plan_camera(cam: Node3D) -> bool:
+	return String(cam.name).begins_with("TopDown") and float(camera_params(cam)["ortho"]) > 0.0
 
 
 ## One entry per draw source: { node, aabb (world), surfaces, lit_surfaces (not unshaded), tris, vr_begin, vr_end,
