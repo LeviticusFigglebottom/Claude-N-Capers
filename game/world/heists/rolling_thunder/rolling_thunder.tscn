@@ -25531,7 +25531,7 @@ weight = 0.4
 metadata/room = "X4"
 
 [node name="C4Box1" type="Node3D" parent="Variants/Group_site_stores/Slot_stores_c4" unique_id=103883 instance=ExtResource("312_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, -0.5)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.5, 0, -0.5)
 script = ExtResource("313_rt")
 count = 4
 visual_scene = ExtResource("314_rt")
@@ -25539,7 +25539,7 @@ objective_tag = &"charges"
 metadata/kind = "item_pickup"
 
 [node name="C4Box2" type="Node3D" parent="Variants/Group_site_stores/Slot_stores_c4" unique_id=103884 instance=ExtResource("312_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, -0.5)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.5, 0, -0.5)
 script = ExtResource("313_rt")
 count = 4
 visual_scene = ExtResource("314_rt")
@@ -25579,7 +25579,7 @@ weight = 0.3
 metadata/room = "X4"
 
 [node name="C4Box1" type="Node3D" parent="Variants/Group_site_stores/Slot_stores_both" unique_id=103888 instance=ExtResource("312_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 0, -15)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 0, -15)
 script = ExtResource("313_rt")
 count = 4
 visual_scene = ExtResource("314_rt")
@@ -25587,7 +25587,7 @@ objective_tag = &"charges"
 metadata/kind = "item_pickup"
 
 [node name="C4Box2" type="Node3D" parent="Variants/Group_site_stores/Slot_stores_both" unique_id=103889 instance=ExtResource("312_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 0, -15)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 12.5, 0, -15)
 script = ExtResource("313_rt")
 count = 4
 visual_scene = ExtResource("314_rt")

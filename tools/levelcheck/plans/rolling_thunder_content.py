@@ -104,10 +104,13 @@ def Pf(
     return ["prefab", kind, name, [r3(v) for v in pos], float(yaw), props or {}, use, metas or {}, vis]
 
 
-# A5-03: the magazine's two C4 boxes (item_pickup, 4 x item.c4 each; tag charges: picking one completes [charges])
+# A5-03: the magazine's two C4 boxes (item_pickup, 4 x item.c4 each; tag charges: picking one completes [charges]),
+# against the north wall facing the door (yaw 180: the UsePoint 0.7 m south of the box, inside the room's navmesh; at
+# yaw 0 it stood 0.2 m off the north wall, off the eroded navmesh, and a bot outside the shut door pathed to the
+# nearest point beyond that wall: P's r280 STUCK at (-23.5, 0, -52.5))
 def _c4_boxes() -> list:
     return [
-        Pf("item_pickup", "C4Box%d" % (i + 1), si(x, 0.0, 5.0), 0.0,
+        Pf("item_pickup", "C4Box%d" % (i + 1), si(x, 0.0, 5.0), 180.0,
            {"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, None, {}, "prop_c4_box")
         for i, x in enumerate((36.5, 37.5))
     ]
