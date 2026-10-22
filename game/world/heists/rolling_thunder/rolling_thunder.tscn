@@ -25782,7 +25782,6 @@ metadata/room = "CP-G"
 [node name="SecureCarPark" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_carpark" unique_id=103929 instance=ExtResource("318_rt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.2000008)
 script = ExtResource("319_rt")
-zone_size_m = Vector3(2.6, 2.5, 2.2)
 visual_scene = ExtResource("320_rt")
 objective_tag = &"secure"
 metadata/kind = "vehicle"
@@ -25812,7 +25811,6 @@ metadata/room = "X2"
 [node name="SecureUnderpass" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_underpass" unique_id=103933 instance=ExtResource("318_rt")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -3.199997, 0, 0)
 script = ExtResource("319_rt")
-zone_size_m = Vector3(2.6, 2.5, 2.2)
 visual_scene = ExtResource("320_rt")
 objective_tag = &"secure"
 metadata/kind = "vehicle"

@@ -94,11 +94,12 @@ func is_stopped() -> bool:
 	return stage == Stage.STOPPED
 
 
-## QC-83: the seat markers (`Seat0..n` in the visual), in order.
-func seats() -> Array[Marker3D]:
-	var out: Array[Marker3D] = []
+## QC-83: the seat nodes (`Seat0..n` in the visual), in order. D (RT convoy fit): a glb exports them as plain Node3D
+## empties, so any Node3D counts (the placeholder's Marker3Ds too).
+func seats() -> Array[Node3D]:
+	var out: Array[Node3D] = []
 	for i: int in MAX_SEATS:
-		var m: Marker3D = visual_node("Seat%d" % i) as Marker3D
+		var m: Node3D = visual_node("Seat%d" % i) as Node3D
 		if m == null:
 			break
 		out.append(m)

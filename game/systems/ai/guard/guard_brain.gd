@@ -78,7 +78,11 @@ var _npc: NpcBase = null
 var _motor: NpcMotor = null
 var _runtime: HeistRuntime = null
 var _started: bool = false
+## extend_route graphs given before _start (they join the route it builds).
+var _extra_graphs: Array[PatrolGraph] = []
 var _route_index: int = 0
+## D-152: hub-loop extra pause per patrol point (GuardTweak.hub_loops "dwell_add_s"), this difficulty.
+var _dwell_add: Dictionary = {}
 var _walking: bool = false
 var _pause_left: float = 0.0
 var _beat_left: float = 0.0
@@ -139,6 +143,30 @@ func notice_suspicious(position: Vector3) -> void:
 	_begin_curious(position)
 
 
+## RT `marshal_early` (doc Rare events: "walks two checks instead of one"): `graph`'s points (in their authored order)
+## join the end of the route, so the loop walks the first check, then this one. A guard holding a post starts patrolling
+## it. Server.
+func extend_route(graph: PatrolGraph) -> void:
+	if graph == null:
+		return
+	if not _started:
+		_extra_graphs.append(graph)  # joins once _start builds the route
+		return
+	_append_graph(graph)
+
+
+func _append_graph(graph: PatrolGraph) -> void:
+	var pts: Array[PatrolPoint] = graph.points()
+	if pts.is_empty():
+		return
+	route_loops = true
+	if patrol_graph == null:
+		patrol_graph = graph
+	for p: PatrolPoint in pts:
+		route_points.append(p)
+		route.append(p.global_position)
+
+
 ## QC-57 (GN Vaultline couriers): a scripted walk. The guard drops his patrol route, walks to `pos` at patrol speed and
 ## holds it as his post (CALM; after a "?" or an investigation he walks back to it). `forward` (flat) is the facing
 ## there; zero keeps the walking direction. Server.
@@ -188,6 +216,8 @@ func _start() -> void:
 		_post_pos = _npc.global_position
 		_post_fwd = _npc.look_forward()
 		_build_route()
+		for g: PatrolGraph in _extra_graphs:
+			_append_graph(g)
 		_stagger_patrol_start()
 	_look_left = _roll(tweak.post_look_interval_s)
 	_started = true
@@ -259,6 +289,12 @@ func _build_hub_route(graph: PatrolGraph) -> bool:
 	var order: Array[PatrolPoint] = PatrolRouteGenerator.hub_route(graph, hub, loops, GameRng.stream(RNG_STREAM))
 	if order.size() < 2:
 		return false
+	var max_d: int = int(cfg.get("dwell_add_max_difficulty", Enums.Difficulty.size()))
+	if _runtime == null or _runtime.difficulty <= max_d:
+		var add: Dictionary = cfg.get("dwell_add_s", {})
+		for n: Variant in add:
+			if by_name.has(StringName(n)):
+				_dwell_add[by_name[StringName(n)]] = float(add[n])
 	route_loops = true
 	patrol_graph = graph
 	route_points = order
@@ -336,9 +372,10 @@ func _reach_point() -> void:
 	var pp: PatrolPoint = route_points[_route_index]
 	_route_index = (_route_index + 1) % route.size()
 	anim_hint = &"idle"
-	if pp == null or not is_instance_valid(pp) or pp.pause_range.y <= 0.0:
+	var extra: float = float(_dwell_add.get(pp, 0.0)) if pp != null else 0.0
+	if pp == null or not is_instance_valid(pp) or (pp.pause_range.y <= 0.0 and extra <= 0.0):
 		return
-	_pause_left = _roll(pp.pause_range)
+	_pause_left = (_roll(pp.pause_range) if pp.pause_range.y > 0.0 else 0.0) + extra
 	anim_hint = CivilianBrain.seated_or_standing(_npc, pp.pause_anim)  # X-5 / PO6-06: no sitting on thin air
 	if pp.face_marker_forward:
 		_motor.face(-pp.global_basis.z)

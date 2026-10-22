@@ -23,6 +23,8 @@ extends Resource
 ## Hub-loop patrols (OF-A6, LEAD 2026-10-20): spawn tag -> {"hub": point name (optional; default the graph point
 ## nearest the post), "loops": Array of Array[point name] (empty = one loop per pause point reachable from the hub)}.
 ## A guard whose spawn carries one of these tags walks the loops from the hub in turn instead of one random S5.1 walk.
+## Optional (D-152, OF playability margin): "dwell_add_s" {point name: seconds} added to that point's pause, on
+## difficulties up to "dwell_add_max_difficulty" (default every difficulty).
 @export var hub_loops: Dictionary = {}
 ## PO-10 ◇: guards sharing a patrol graph start staggered, not in lockstep: the k-th guard to start on a
 ## graph waits k x patrol_stagger_s plus a random [0, patrol_stagger_jitter_s] (GameRng &"patrol_stagger")

@@ -11,6 +11,7 @@
 extends TestCase
 
 const MAP_PATH: String = "res://world/heists/ostrander_federal/ostrander_federal.tscn"
+const GUARD_TWEAK: String = "res://systems/ai/data/guard_tweak.tres"
 
 var _root: Node = null
 
@@ -84,7 +85,7 @@ func test_of_rover_loops() -> void:
 	_root = (load(MAP_PATH) as PackedScene).instantiate()
 	add_child(_root)
 	await wait_frames(1)
-	var cfg: Dictionary = (load("res://systems/ai/data/guard_tweak.tres") as GuardTweak).hub_loops
+	var cfg: Dictionary = (load(GUARD_TWEAK) as GuardTweak).hub_loops
 	var cases: Dictionary = {
 		&"guard_rover_dock": ["Patrols/Lane", ["LaneWest", "LaneCorner", "TanneryBay"], []],
 		&"guard_rover_basement": ["Patrols/BankBasement", ["RCEast", "SDDesk", "SS", "CP", "PL"], ["VC"]],
@@ -128,3 +129,40 @@ func test_of_rover_loops() -> void:
 				seq.append(names.find(stop))
 			for i: int in range(1, seq.size()):
 				assert_true(seq[i - 1] < seq[i], "gallery loop (c) goes SA up -> XC -> XL -> SB down (%s)" % [names])
+
+
+## D-152 (OF playability margin, P's data: the vault guard's RC absences of 30-40 s every ~200 s vs the 20-25 s a bag
+## crossing needs): on Routine / Tense / Hazardous loop (b) dwells 15 s longer in the RC (at RCNorth); not above.
+func test_d152_vault_guard_rc_dwell() -> void:
+	if not ResourceLoader.exists(MAP_PATH):
+		skip("no ostrander_federal map")
+		return
+	var cfg: Dictionary = (load(GUARD_TWEAK) as GuardTweak).hub_loops[&"guard_vault"]
+	assert_eq(int(cfg.get("dwell_add_max_difficulty", -1)), Enums.Difficulty.HAZARDOUS, "Routine..Hazardous only")
+	assert_near(float((cfg.get("dwell_add_s", {}) as Dictionary).get(&"RCNorth", 0.0)), 15.0, 0.001, "+15 s at RCNorth")
+	for diff: int in [Enums.Difficulty.HAZARDOUS, Enums.Difficulty.BRUTAL]:
+		var rt: HeistRuntime = await HeistLauncher.launch(&"ostrander_federal", 1002, diff, self,
+			{"crew_ai": false, "ai_teammates": 0})
+		await wait_physics_frames(3)
+		var brain: GuardBrain = null
+		for n: Node in rt.npcs(&"guard"):
+			if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(&"guard_vault"):
+				brain = n.get_node_or_null(^"Brain") as GuardBrain
+		assert_true(brain != null, "the vault guard (difficulty %d)" % diff)
+		if brain != null:
+			var rc: PatrolPoint = null
+			for p: PatrolPoint in brain.route_points:
+				if p.name == &"RCNorth":
+					rc = p
+			assert_true(rc != null, "RCNorth on its route")
+			if rc != null:
+				brain._route_index = brain.route_points.find(rc)
+				brain._pause_left = 0.0  # the start stagger may still be running
+				brain._reach_point()
+				var base_max: float = rc.pause_range.y
+				if diff <= Enums.Difficulty.HAZARDOUS:
+					assert_true(brain._pause_left >= 15.0, "dwell +15 s at RCNorth (%.1f s)" % brain._pause_left)
+				else:
+					assert_true(brain._pause_left <= base_max + 0.001, "no extra dwell above Hazardous (%.1f s)" % brain._pause_left)
+		rt.teardown()
+		await wait_frames(2)

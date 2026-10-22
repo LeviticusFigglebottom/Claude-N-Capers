@@ -20,6 +20,8 @@ const META_SEATED_IN: StringName = &"seated_in"
 const ARMOURED_VEHICLES: Array[StringName] = [&"truck", &"van"]
 ## spawn_units beside a plain vehicle body (no seats): this far from its centre line (m).
 const UNIT_SIDE_M: float = 1.9
+## The seated pose (RT-D1 clip, AnimDriver hint) a unit holds in its vehicle.
+const SEATED_HINT: StringName = &"sit_vehicle"
 ## QC-60 / §3b.9: spawn_loot(respawn = true) bags are checked this often (s) for having fallen off the map.
 const LOOT_WATCH_TIMER: StringName = &"_loot_respawn_watch"
 const LOOT_WATCH_S: float = 1.0
@@ -338,16 +340,27 @@ func dismount_units(units: Array, step_m: float = 1.6) -> int:
 			continue
 		var vehicle: Node3D = Ids.lookup(int(npc.get_meta(META_SEATED_IN))) as Node3D
 		npc.remove_meta(META_SEATED_IN)
+		var was_visible: bool = npc.visible
+		var left: bool = true
 		var pos: Vector3 = npc.global_position
 		if vehicle != null:
 			var local: Vector3 = vehicle.to_local(pos)
-			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if local.x >= 0.0 else -1.0)
+			left = local.x >= 0.0  # facing +Z, local +x is the character's left (D: vehicle_exit_l)
+			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if left else -1.0)
 			pos = Vector3(pos.x, vehicle.global_position.y, pos.z) + side * (absf(local.x) + step_m)
 		var fwd: Vector3 = -npc.global_basis.z
 		var yaw: float = atan2(-fwd.x, -fwd.z) if Vector2(fwd.x, fwd.z).length() > 0.01 else 0.0
 		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # upright: a seat on a ramp (RT east) is tilted
 		npc.visible = true
+		var brain: Node = npc.get_node_or_null(^"Brain")
+		if brain != null and &"anim_hint" in brain and brain.get(&"anim_hint") == SEATED_HINT:
+			brain.set(&"anim_hint", &"")
 		npc.process_mode = Node.PROCESS_MODE_INHERIT
+		var anim: AnimDriver = AnimDriver.of(npc)
+		if anim != null:
+			anim.process_mode = Node.PROCESS_MODE_INHERIT
+			if was_visible:
+				anim.play_vehicle_exit(left)  # a car door (D); an armoured cab's crew just steps out beside it
 		if _runtime.went_loud and npc.alive:
 			npc.set_alert_state(Enums.AlertState.COMBAT)
 		n += 1
@@ -360,18 +373,28 @@ func has_enemy(enemy_id: StringName) -> bool:
 	return dir != null and dir.enemy_def_for(enemy_id) != null
 
 
+## A unit on its seat (D's RT convoy fit): facing the vehicle's front (+Z; the NPC faces its -Z), in the sit_vehicle
+## pose, paused (no brain, motor or collision) with only its AnimDriver still running so the pose holds; hidden in an
+## armoured cab.
 func _seat(npc: NpcBase, vehicle: Node3D) -> void:
 	npc.set_meta(META_SEATED_IN, NetIds.of(vehicle))
-	npc.process_mode = Node.PROCESS_MODE_DISABLED  # no brain, motor or collision until it gets out
+	npc.global_transform = Transform3D(vehicle.global_basis.orthonormalized() * Basis(Vector3.UP, PI), npc.global_position)
 	var kind: StringName = StringName(vehicle.get(&"vehicle_kind")) if &"vehicle_kind" in vehicle else &"car"
 	npc.visible = not ARMOURED_VEHICLES.has(kind)
+	var brain: Node = npc.get_node_or_null(^"Brain")
+	if brain != null and &"anim_hint" in brain:
+		brain.set(&"anim_hint", SEATED_HINT)
+	npc.process_mode = Node.PROCESS_MODE_DISABLED  # no brain, motor or collision until it gets out
+	var anim: AnimDriver = AnimDriver.of(npc)
+	if anim != null and npc.visible:
+		anim.process_mode = Node.PROCESS_MODE_ALWAYS  # holds sit_vehicle while the body is paused
 
 
 func _unit_points(spawn_tag: StringName, vehicle: Node3D) -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	var cv: ConvoyVehicle = vehicle as ConvoyVehicle
 	if cv != null:
-		for m: Marker3D in cv.seats():
+		for m: Node3D in cv.seats():
 			out.append(m)
 		if not out.is_empty():
 			return out

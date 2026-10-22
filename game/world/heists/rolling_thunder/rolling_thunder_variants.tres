@@ -89,11 +89,13 @@ rare_events = Array[Dictionary]([{
 }, {
 "chance": 0.04,
 "effects": {
-"cargo_t3": &"t3_bullion",
-"force_active": {
+"force_active": [{
 "group": &"truck_count",
 "slot": &"trucks_3"
-}
+}, {
+"group": &"cargo_t3",
+"slot": &"t3_bullion"
+}]
 },
 "good": true,
 "id": &"gold_rush"
