@@ -104,7 +104,8 @@ func _raid_stores(flow: X4StealthFlow, rt: HeistRuntime, m: RollingThunderMissio
 	var mag: Padlock = rt.map.get_node_or_null(^"Gameplay/Doors/MagazineDoor/Padlock") as Padlock
 	for n: Node in m.find_tagged(&"charges"):
 		var box: GameplayPrefab = n as GameplayPrefab
-		if box == null or not box.is_visible_in_tree() or box.interactable == null or not box.interactable.enabled:
+		if box == null or box is Padlock or box is Door or not box.is_visible_in_tree() or box.interactable == null \
+				or not box.interactable.enabled:  # [charges] also tags the magazine's padlock / door
 			continue
 		if mag != null and not await _pick(flow, mag, "the magazine padlock"):
 			return false
