@@ -143,6 +143,10 @@ const BLOWN_COVER: Vector3 = Vector3(0.0, 0.0, -37.6)
 const BLOWN_FIGHT_S: float = 150.0
 const BLOWN_MAX_S: float = 900.0
 const BLOWN_PEEK_M: float = 45.0
+const LULL_S: float = 2.0
+const HAZ_PRIMARY: StringName = &"weapon.corsair_ar"
+const HAZ_ARMOR: StringName = &"armor.heavy_vest"
+const HAZ_DEPLOYABLE: StringName = &"deployable.doctor_bag"
 
 var _rows: PackedStringArray = PackedStringArray()
 var _straight_on: bool = false
@@ -1297,7 +1301,8 @@ func _hazard_run(clean: bool) -> bool:
 		rt.teardown()
 		rt = null
 		await wait_s(0.5)
-	var opts: Dictionary = {"preplan": {"force_variants": f}, "skip_casing": true, "ai_teammates": 3, "crew_ai": true}
+	var opts: Dictionary = {"preplan": {"force_variants": f}, "skip_casing": true, "ai_teammates": 3, "crew_ai": true,
+		"loadouts": {0: _hazard_loadout()}}
 	rt = await HeistLauncher.launch(RT_HEIST, _seed if _seed >= 0 else RT_SEED, Enums.Difficulty.HAZARDOUS, self, opts)
 	if rt == null:
 		return await _fail("launch")
@@ -1365,6 +1370,8 @@ func _hazard_run(clean: bool) -> bool:
 	var opened: bool = false
 	var t_open: float = -1.0
 	if not trucks.is_empty() and not _in_custody():
+		var lull: float = await _wait_lull(120.0)
+		note("%s: left cover for T1 after a %.0f s wait for a lull (t=%.1f)" % [tag, lull, rt.heist_time_s])
 		var t: ArmoredTruck = trucks[0]
 		var sp: Node = t.get_node_or_null("SawPoint")
 		var comp: InteractableComponent = _comp(sp) if sp != null else _comp(t)
@@ -1380,7 +1387,7 @@ func _hazard_run(clean: bool) -> bool:
 			await _hold_cover(func() -> bool: return t.opened or comp.kind == &"fix_drill", 6.0)
 		opened = t.opened
 		t_open = rt.heist_time_s
-	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f"
+	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f; kit corsair_ar + kestrel_p9 + heavy_vest + doctor bag, no skills"
 	_row("%s: a truck opened (T1 saw, Hazardous, AI crew)" % tag, "PASS" if opened else "FAIL", open_fmt % [
 		opened, t_open, _downs_text(), _hp_min], "-" if opened else "balance (D-154)")
 	_danger_rows(tag)
@@ -1409,6 +1416,31 @@ func _hold_cover(done: Callable, max_s: float) -> void:
 	pilot.inp.release(&"crouch")
 
 
+## A competent Hazardous loud kit (the player default is a pistol and a suit): the bots' rifle, the pistol, a heavy
+## vest, a doctor bag. No skills / perk deck (stated in the rows).
+func _hazard_loadout() -> Loadout:
+	var lo: Loadout = Loadout.new()
+	lo.primary = HAZ_PRIMARY
+	lo.secondary = CombatTweak.data().default_secondary
+	lo.armor = HAZ_ARMOR
+	lo.deployable = HAZ_DEPLOYABLE
+	return CrewWeapons.build_loadout(lo)
+
+
+## Leave cover only in a lull: no visible enemy within BLOWN_PEEK_M for LULL_S running (fighting meanwhile).
+func _wait_lull(max_s: float) -> float:
+	var t0: float = rt.heist_time_s
+	var quiet: float = 0.0
+	while quiet < LULL_S and rt.heist_time_s - t0 < max_s and not _in_custody():
+		if pilot.nearest_enemy(BLOWN_PEEK_M) != null:
+			quiet = 0.0
+			await _hold_cover(func() -> bool: return pilot.nearest_enemy(BLOWN_PEEK_M) == null, 3.0)
+		else:
+			quiet += 0.5
+			await wait_s(0.5)
+	return rt.heist_time_s - t0
+
+
 func _crew_hidden(on: bool) -> void:
 	for s: int in 4:
 		var cc: CrewController = rt.crew_controller(s) as CrewController
@@ -1428,7 +1460,7 @@ func _on_blown_hit(victim: int, attacker: int, info: Dictionary) -> void:
 		return
 	var who: String = _observer_name(attacker).rstrip("0123456789_")
 	var apos: Vector3 = Vector3.INF
-	for n: Node in rt.find_children("*", "NpcBase", true, false):
+	for n: Node in rt.npcs():
 		if NetIds.of(n) == attacker:
 			apos = (n as Node3D).global_position
 	var key: String = "%s|slot %d" % [who, int(_crew_ids[victim])]
