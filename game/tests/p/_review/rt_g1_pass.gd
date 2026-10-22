@@ -1345,6 +1345,8 @@ func _hazard_run(clean: bool) -> bool:
 		pilot.inp.press(&"crouch")
 		await wait_until(func() -> bool: return m._stop_done, 400.0)
 		_crew_hidden(false)
+		_peaks.clear()
+		_watch_detection.call_deferred()  # DETECT lines: who sees the pilot at the hand-over, and when
 		note("clean_haz: crew hiding off at the stop (t=%.1f, clean_stop %s)" % [rt.heist_time_s, m.clean_stop])
 	await _hold_cover(func() -> bool: return m._stop_done, 400.0)
 	var t_stop: float = rt.heist_time_s
@@ -1381,6 +1383,8 @@ func _hazard_run(clean: bool) -> bool:
 	_row("%s: a truck opened (T1 saw, Hazardous, AI crew)" % tag, "PASS" if opened else "FAIL", open_fmt % [
 		opened, t_open, _downs_text(), _hp_min], "-" if opened else "balance (D-154)")
 	_danger_rows(tag)
+	if clean:
+		_peaks_table()
 	await shot("%s_end" % tag)
 	return opened
 
