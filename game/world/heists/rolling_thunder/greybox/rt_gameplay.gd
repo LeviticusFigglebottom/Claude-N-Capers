@@ -33,6 +33,8 @@ const TRUCK_USE_BACK: float = 0.5
 ## (hinge +X) and of a vehicle queued close behind (the movers wait 0.55 m apart): the truck's saw / C4 spot
 ## TRUCK_USE_BACK behind the doors, the bullion thermite's THERMITE_USE_BACK.
 const TRUCK_USE_X: float = -1.8
+## An empty visual for a device spot whose host art already shows it (the SawPoint on the truck's lock plate).
+const EMPTY_VISUAL: String = "res://world/heists/glasshouse/art/gh_empty.tscn"
 const THERMITE_USE_BACK: float = 1.1
 ## Where the movers' `<Veh>Path` Path3Ds go: "Movers" (beside the movers) or "Paths" (`Convoy/Paths`); the mission's
 ## _drive_path finds them in either (A 88873eb2), so the vehicles drive in to their stops (D-149.8); any other name
@@ -480,6 +482,7 @@ func _convoy_truck(veh: Node3D, kind: String) -> void:
 	var lock: Vector3 = Vector3(TRUCK_LOCK_X, 0.0, rear)
 	(t.get_node("UsePoint") as Node3D).transform = _facing(Vector3(TRUCK_USE_X, 0.0, rear - TRUCK_USE_BACK), lock)
 	(t.get_node("Interactable") as Node3D).position = Vector3(TRUCK_LOCK_X, 1.7, rear - 0.1)
+	_truck_saw_point(t, kind, lock)
 	if kind != "bullion":
 		return
 	var bps: PackedScene = _prefab_scene("burn_point")
@@ -498,6 +501,33 @@ func _convoy_truck(veh: Node3D, kind: String) -> void:
 	map_root.set_editable_instance(b, true)
 	(b.get_node("UsePoint") as Node3D).transform = Transform3D(Basis.IDENTITY, -b.position) * _facing(
 		Vector3(TRUCK_USE_X, 0.0, rear - THERMITE_USE_BACK), lock)
+
+
+## The truck's saw spot (B's RT HUD run: with no SAW drill_point the truck's own runner anchors at its pivot, inside
+## the cargo box, and the HUD timer hides behind its collision): a SAW drill_point child (Safe._own_device_point; not
+## stowed as loot) at the art's `DrillPoint` on the rear door's lock (TRUCK_LOCK_X, 1.7 m, 0.1 m out of the door
+## face, -Z into the lock), target the truck, the truck's own saw time; its UsePoint is the truck's rear-step spot.
+func _truck_saw_point(t: Node3D, kind: String, lock: Vector3) -> void:
+	var dps: PackedScene = _prefab_scene("drill_point")
+	if dps == null:
+		return
+	var rear: float = lock.z
+	var d: Node3D = dps.instantiate() as Node3D
+	d.name = "SawPoint"
+	d.set(&"visual_scene", load(EMPTY_VISUAL))   # the truck's own lock plate is the art (as ND's ATM saws: nd_empty)
+	d.transform = Transform3D(yaw_basis(180.0), Vector3(TRUCK_LOCK_X, 1.7, rear - 0.1))
+	set_prop(d, "device", "enum:SAW")
+	# the bullion truck's own time (CONVOY_TRUCK_PROPS), else the prefab's default (armored_truck.tscn: the cash van)
+	set_prop(d, "duration_s", float((CONVOY_TRUCK_PROPS.get(kind, {}) as Dictionary).get("saw_duration_s",
+		t.get(&"saw_duration_s"))))
+	set_prop(d, "target", NodePath(".."))
+	set_prop(d, "loud_only", true)
+	d.set_meta(&"kind", "drill_point")
+	t.add_child(d)
+	d.owner = map_root
+	map_root.set_editable_instance(d, true)
+	(d.get_node("UsePoint") as Node3D).transform = d.transform.affine_inverse() * _facing(
+		Vector3(TRUCK_USE_X, 0.0, rear - TRUCK_USE_BACK), lock)
 
 
 ## A vehicle's nav footprint at `xf` (its pivot: bottom-centre, cab +Z): [corners, elevation, height, carve false],

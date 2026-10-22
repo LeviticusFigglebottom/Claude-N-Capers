@@ -329,13 +329,14 @@ cue.amb_vault	Ambience	True	24.0	2	-16.69	-18.1	-1.24	275
 cue.amb_city_afternoon	Ambience	True	40.0	2	-15.72	-18.02	-1.63	2143
 cue.alarm_bell_ostrander_federal	World	True	2.0	1	-18.01	-17.9	-9.59	1060
 cue.amb_skyway_street	Ambience	True	48.0	2	-16.63	-17.98	-2.6	652
-cue.amb_underpass	Ambience	True	96.0	2	-14.22	-18.0	-1.07	489
+cue.amb_underpass	Ambience	True	40.0	2	-17.68	-17.98	-1.25	412
 cue.amb_diner	Ambience	True	32.0	2	-17.05	-18.0	-1.31	5371
 cue.amb_site	Ambience	True	40.0	2	-17.51	-18.02	-0.94	1459
 cue.convoy_approach	World	False	8.0	1	-18.01	-19.79	-3.01	430
 cue.convoy_brake	World	False	2.5	1	-18.21	-17.19	-4.67	6233
 cue.mixer_ram	World	False	3.0	1	-18.06	-18.15	-3.54	5525
 cue.signal_click	World	False	0.497	1	-21.34	-20.4	-1.21	2239
+cue.freight_train_pass	World	False	17.0	1	-18.06	-20.43	-1.08	452
 cue.truck_doors_open	World	False	2.8	1	-18.07	-18.03	-0.97	1521
 mus_glasshouse_stealth	Music	True	54.857	2	-15.44	-16.04	-3.9	2609
 mus_glasshouse_control	Music	True	27.429	2	-15.07	-16.13	-1.26	5040

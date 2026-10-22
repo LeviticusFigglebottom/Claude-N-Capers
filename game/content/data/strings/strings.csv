@@ -2777,6 +2777,7 @@ ui.preplan.point.ostrander_federal.pp_dock_door,Insider: dock personnel door
 ui.preplan.point.ostrander_federal.pp_vault_ops,Insider: vault-ops keycard
 ui.preplan.point.ostrander_federal.pp_fire_escape,Insider: Corvino fire-escape ladder
 music.ostrander_federal.name,Clearing House
+music.rolling_thunder.name,Red Signal
 heist.rolling_thunder.name,Rolling Thunder
 heist.rolling_thunder.subtitle,Armored Convoy
 heist.rolling_thunder.brief,"A Vaultline convoy through the Southfield junction, two or three armored trucks deep. Hollis brings the roadblock; you bring the saws."
@@ -3596,6 +3597,11 @@ voice.vo.accountant.briefing_ostrander_federal_2,"Lionel Ashgrove, the day manag
 voice.vo.accountant.briefing_ostrander_federal_3,"Bring me the consolidation: cash, gold or bonds. Do it quietly, and Monday's Vaultline run leaves with a vault full of nothing."
 voice.vo.mercer.briefing_ostrander_federal_1,"It's a working bank on a Friday afternoon. Walk in as customers, masks in your pockets, and read the place before anyone moves."
 voice.vo.mercer.briefing_ostrander_federal_2,"If it goes loud, the vault seals and the time lock dies. I'll get you a thermal drill, and you go through the floor instead."
+voice.vo.reyes.briefing_rolling_thunder_1,"Vaultline runs the Southfield branches' takings by road: a car up front, two or three trucks, a car behind. They come through the Orchard and Tannery junction like clockwork."
+voice.vo.reyes.briefing_rolling_thunder_2,"Rig the junction signals and they stop on a red, polite as you like. Leave the signals and I put a cement mixer through the lead car. Either way, it gets loud."
+voice.vo.reyes.briefing_rolling_thunder_3,"The cash vans saw open quick. The bullion truck wants thermite or a lot of patience. Four bags and I'm happy; the rest is yours."
+voice.vo.mercer.briefing_rolling_thunder_1,"You start as commuters at the bus plaza, masks in your pockets. The building site next door keeps C4 and thermite in its stores, if you have time before the convoy."
+voice.vo.mercer.briefing_rolling_thunder_2,"Once they stop, deal with the escort first, then the trucks. The police are a minute or so out, so open the trucks fast and get the bags to the ride."
 voice.vo.accountant.ostrander_federal_contact_intro,Every dirty dollar in this city passes through Ostrander Federal. This weekend it all sits in one room.
 voice.vo.accountant.ostrander_federal_payday,Monday's Vaultline run will collect a remarkably clean vault. Your share has been reconciled.
 voice.vo.mercer.rolling_thunder_intro,"Convoy's on the road. You've got a few minutes to set the table."

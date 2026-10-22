@@ -340,9 +340,11 @@ def _cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str) -
 def _cab_markers(k: Kit, w: float, yf: float) -> None:
     """D's driver / passenger clip numbers (SEAT_REQ): seats on the cab floor, the wheel, the cab doors (closed)."""
     seat_y = yf + 1.0
-    for name, sx in (("Seat0", -1), ("Seat1", 1)):  # driver, passenger (ConvoyVehicle.seats())
+    # driver, passenger (ConvoyVehicle.seats()); the driver at +X (Godot +X: the left when facing +Z), as the escort cars
+    # (the LEAD, round 275: one hand of drive across the convoy)
+    for name, sx in (("Seat0", 1), ("Seat1", -1)):
         k.empty(name, (sx * (w / 2 - 0.6), seat_y, CAB_FLOOR), rotation=(0.0, 0.0, math.pi))  # root on the floor, facing the front
-    k.empty("WheelCentre", (-(w / 2 - 0.6), seat_y - 0.40, CAB_FLOOR + 0.76))
+    k.empty("WheelCentre", (w / 2 - 0.6, seat_y - 0.40, CAB_FLOOR + 0.76))
     for name, sx in (("CabDoorL", -1), ("CabDoorR", 1)):
         piv = k.empty(name, (sx * (w / 2 + 0.014), seat_y - 0.65, CAB_FLOOR + 0.2))
         dm = k.obj(name + "Mesh", parent=piv)
