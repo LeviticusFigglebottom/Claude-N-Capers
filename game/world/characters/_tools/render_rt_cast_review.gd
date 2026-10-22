@@ -211,6 +211,9 @@ func _shot(name: String, eye: Vector3, at: Vector3) -> void:
 	if eye.distance_to(at) < 0.05:
 		eye += Vector3(0.0, 0.5, 1.0)
 	_cam.look_at_from_position(eye, at)
+	for n: Node in get_tree().root.find_children("*", "", true, false):
+		if n is FpViewmodel:
+			(n as Node3D).visible = false  # the player's first-person gun would draw over the review camera
 	RenderingServer.render_loop_enabled = true
 	for _i: int in 2:
 		await get_tree().process_frame
