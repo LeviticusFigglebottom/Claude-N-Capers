@@ -3,7 +3,7 @@
 extends TestCase
 
 const HEIST_TRACKS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
-		&"gallery_night", &"ostrander_federal"]
+		&"gallery_night", &"ostrander_federal", &"rolling_thunder"]
 const UNLOCKS: Dictionary = {
 	&"vault_hymn": &"unlock.music.vault_hymn", &"long_con": &"unlock.music.long_con",
 	&"last_call": &"unlock.music.last_call",
@@ -33,7 +33,10 @@ func test_table_entries() -> void:
 func test_heist_defs_use_table_tracks() -> void:
 	var t: MusicTrackTable = MusicTrackTable.load_default()
 	for h: StringName in HEIST_TRACKS:
-		var d: HeistDef = load("res://world/heists/%s/%s_def.tres" % [h, h]) as HeistDef
+		var path: String = "res://world/heists/%s/%s_def.tres" % [h, h]
+		if not ResourceLoader.exists(path):
+			continue  # rolling_thunder ships a _wip_def until G2
+		var d: HeistDef = load(path) as HeistDef
 		if d != null:
 			assert_true(t.find(d.music_track) != null, "%s music_track %s is in the table" % [h, d.music_track])
 

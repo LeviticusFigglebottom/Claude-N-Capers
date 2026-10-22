@@ -191,6 +191,24 @@ float stencil(vec2 uv, float s, float w) {
 	return band * on * block;
 }
 
+// RT-B1 road lines: edge lines down both sides, a dashed centre line down to the nose, a stop line across the mouth.
+float road_lines(vec2 uv, float s, float w) {
+	float dx = abs(uv.x - 0.5);
+	float side = edge_w(dx - 0.36, w) * (1.0 - edge_w(dx - 0.40, w));
+	float dash = (1.0 - edge_w(dx - 0.02, w)) * (1.0 - edge_w(abs(fract(uv.y * s * 0.5) - 0.5) - 0.25, w * s))
+		* (1.0 - edge_w(uv.y - 0.62, w));
+	float stop = edge_w(uv.y - 0.70, w) * (1.0 - edge_w(uv.y - 0.76, w)) * (1.0 - edge_w(dx - 0.36, w));
+	return max(max(side, dash), stop);
+}
+
+// RT-B1 tread: a tyre-tread band run down the face, V blocks pointing up it (as D's tex_mask_pattern_tread).
+float tread(vec2 uv, float s, float w) {
+	float dx = abs(uv.x - 0.5);
+	float band = 1.0 - edge_w(dx - 0.28, w);
+	float v = fract(uv.y * s + dx * 2.0);
+	return band * (1.0 - edge_w(abs(v - 0.5) - 0.22, w * s));
+}
+
 float pattern_mask(vec2 uv) {
 	float s = pattern_scale;
 	// AA half width in uv units, taken here in uniform control flow (see edge_w).
@@ -235,6 +253,10 @@ float pattern_mask(vec2 uv) {
 		return time_lock_dial(uv, s, aa);
 	} else if (pattern == 19) {
 		return stencil(uv, s, aa);
+	} else if (pattern == 20) {
+		return road_lines(uv, s, aa);
+	} else if (pattern == 21) {
+		return tread(uv, s, aa);
 	}
 	return 0.0;
 }

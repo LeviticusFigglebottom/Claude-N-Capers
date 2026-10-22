@@ -23,7 +23,7 @@ Needs Python 3 with numpy, scipy, Pillow and `ffmpeg` with libvorbis. A full bui
 | `game/assets/audio/sfx/impact/impact_<surface>/sfx_impact_<surface>_<n>.ogg` | bullet/melee impact cues `cue.impact_<surface>` (impact_fx.md, D-105), 4 variations each |
 | `game/assets/audio/music/<track>/mus_<track>_<part>.ogg` | per heist (D-117): stems `stealth control anticipation assault fade`, stingers `win lose`; Shadow Ledger renders `stealth abort` + stingers and aliases the loud stems (see `music_shadow_ledger.py`) |
 | `game/world/audio/cues.tres` | `AudioCueRegistry` generated from the `CUES` table in `cues.py` |
-| `game/world/audio/music/<track>/<track>.tres` | `MusicTrack` (bpm, bar length, stems, gains) for glasshouse, night_deposit, shadow_ledger, dockside_burn, gallery_night |
+| `game/world/audio/music/<track>/<track>.tres` | `MusicTrack` (bpm, bar length, stems, gains) for glasshouse, night_deposit, shadow_ledger, dockside_burn, gallery_night, ostrander_federal, rolling_thunder |
 | `docs/levels/_audio/cue_spectrograms.png`, `music_spectrograms.png`, `cue_metrics.tsv` | listen-check substitutes |
 
 Never hand-edit the generated `.tres`; change `cues.py` / `music_glasshouse.py` and rebuild.
@@ -45,9 +45,10 @@ Never hand-edit the generated `.tres`; change `cues.py` / `music_glasshouse.py` 
 | `cues.py` | one recipe function per cue + the `CUES` registry table (bus, 3D, loop, distance, jitter, cooldown) |
 | `cues_impact.py` | the 13 surface impact recipes (impact_fx.md §1 surface ids) + their `CUES` rows (`subdir="impact"`); build.py appends them to `cues.CUES` |
 | `cues_ambience.py` | D-117 heist ambience beds (`amb_<heist place>`, 2D Ambience loops); build.py appends them to `cues.CUES` |
+| `cues_ostrander.py`, `cues_rolling_thunder.py` | per-heist beds and one-shots (OF-C2; RT-C2: 4 beds + the convoy cues `convoy_approach`, `convoy_brake`, `mixer_ram`, `signal_click`, `truck_doors_open`); build.py appends them to `cues.CUES` |
 | `music_engine.py` | shared music parts (kick/hits/bass/pad/motif/arp/stabs/ticks/triplets), the bus mixdown, extra instruments (brass, strings, spiccato, harpsichord, timpani, clang, fog horn, glass pad, rain, tick) |
 | `music_glasshouse.py` | Glasshouse track (A minor, 140 BPM grid) |
-| `music_night_deposit.py`, `music_shadow_ledger.py`, `music_dockside_burn.py`, `music_gallery_night.py` | D-117 heist tracks (C minor 140, B minor 132 stealth-only, E phrygian 150, G minor 144); summary in `docs/levels/_audio/d117_music.md` |
+| `music_night_deposit.py`, `music_shadow_ledger.py`, `music_dockside_burn.py`, `music_gallery_night.py`, `music_ostrander_federal.py`, `music_rolling_thunder.py` | D-117 heist tracks (C minor 140, B minor 132 stealth-only, E phrygian 150, G minor 144, D minor 148, F minor 148); summary in `docs/levels/_audio/d117_music.md` |
 | `analysis.py` | metrics (duration, LUFS, true peak, spectral centroid) and the spectrogram contact sheet (numpy + Pillow) |
 | `registry.py` | deterministic `.tres` text writers |
 
