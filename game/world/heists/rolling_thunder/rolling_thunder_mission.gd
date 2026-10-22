@@ -66,8 +66,9 @@ const TAG_CIV_STREET: StringName = &"civ_street"
 const TAG_CIV_DINER: StringName = &"civ_diner"
 const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
 const PAUSE_CABINET: StringName = &"cabinet_locked"
-## B (rt_early_alarm_balance.md, LEAD-approved): an early alarm brings the convoy at most this many seconds later.
-const EARLY_PUSH_S: float = 75.0
+## D-154.2 revised (B fd41028a): an early alarm brings the convoy at most this many seconds later (it stops at about
+## +35 s, inside wave 1's quiet ANTICIPATION, not on SUSTAIN as +75 did).
+const EARLY_PUSH_S: float = 25.0
 ## RT phase 2 (C): the Mixer ConvoyVehicle, each convoy layout's MixerPath / MixerStop, the Tannery gates' tag.
 const MIXER_NAME: String = "Mixer"
 const MIXER_PATH: NodePath = ^"MixerPath"
