@@ -75,6 +75,7 @@ const HINT_CLIPS: Dictionary = {
 	# RT-D1 (Rolling Thunder, clips announced by ENV D): seated in a car / cab, eating in a diner booth, the diner cook.
 	&"sit_vehicle": &"sit_vehicle", &"vehicle": &"sit_vehicle", &"sit_eat": &"sit_eat", &"eat": &"sit_eat",
 	&"cook_stove": &"cook_stove", &"cook": &"cook_stove",
+	&"counter_wipe": &"counter_wipe",  # the RT diner waitress at the counter (D)
 }
 ## Clips that win over locomotion (the body holds a pose).
 ## One-shot poses that must stay held when they end (P coverage: a surrendered cop froze with a stopped player):
@@ -211,7 +212,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	# (not desk_type: it is a seated clip; not teller_count: it holds the cash stack)
 	&"counter_customer": &"idle", &"check_desk_write": &"idle",
 	# RT-D1: seated loops sit on the chair loop, the cook stands.
-	&"sit_vehicle": &"sit_chair", &"sit_eat": &"sit_chair", &"cook_stove": &"idle",
+	&"sit_vehicle": &"sit_chair", &"sit_eat": &"sit_chair", &"cook_stove": &"idle", &"counter_wipe": &"idle",
 }
 ## PO6-17: an NPC meta (StringName clip) that wins over every NPC state / brain hint while set (host). The
 ## assault-event runner sets it for scripted moments: rope descent, landing, heli door, van exit, breach charge.

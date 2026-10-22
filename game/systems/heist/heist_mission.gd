@@ -82,6 +82,8 @@ var _bags_secured: int = 0
 var _loot_value: int = 0
 ## QC-60: spawn_loot(respawn = true) bags: bag instance id -> [LootBag, marker Node3D].
 var _respawn_bags: Dictionary[int, Array] = {}
+## spawn_units: units placed per seat / point (instance id), so later calls take the free ones.
+var _point_uses: Dictionary[int, int] = {}
 
 
 # --- Virtual hooks -----------------------------------------------------------------
@@ -313,9 +315,16 @@ func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated
 		Log.error(&"mission", "spawn_units: no seat / SpawnPoint for '%s'" % spawn_tag)
 		return out
 	for i: int in count:
-		var p: Node3D = points[i % points.size()]
+		# D (RT cast): the least-used seat / point first, over every call (the mission spawns a vehicle's units one
+		# call each), so two units never share a seat; a point used again steps 0.8 m aside per use.
+		var p: Node3D = points[0]
+		for q: Node3D in points:
+			if int(_point_uses.get(q.get_instance_id(), 0)) < int(_point_uses.get(p.get_instance_id(), 0)):
+				p = q
+		var uses: int = int(_point_uses.get(p.get_instance_id(), 0))
+		_point_uses[p.get_instance_id()] = uses + 1
 		var xf: Transform3D = p.global_transform
-		xf.origin += xf.basis.x * (0.8 * float(i / points.size()))
+		xf.origin += xf.basis.x * (0.8 * float(uses))
 		var extra: Dictionary = {AssaultDirector.MISSION_UNIT: true}
 		if not p is SpawnPoint and spawn_tag != &"":
 			extra["tags"] = [spawn_tag]
@@ -438,8 +447,13 @@ func _unit_points(spawn_tag: StringName, vehicle: Node3D) -> Array[Node3D]:
 		if not out.is_empty():
 			return out
 	if vehicle != null:
-		for i: int in 4:  # beside a plain body: left / right, front / back
-			var m: Marker3D = Marker3D.new()
+		for i: int in 4:  # beside a plain body: left / right, front / back (made once, reused by later calls)
+			var m: Marker3D = vehicle.get_node_or_null(NodePath("UnitPoint%d" % i)) as Marker3D
+			if m != null:
+				out.append(m)
+				continue
+			m = Marker3D.new()
+			m.name = "UnitPoint%d" % i
 			vehicle.add_child(m)
 			var side: float = UNIT_SIDE_M * (1.0 if i % 2 == 0 else -1.0)
 			m.position = Vector3(side, 0.05, 1.0 if i < 2 else -1.0)
