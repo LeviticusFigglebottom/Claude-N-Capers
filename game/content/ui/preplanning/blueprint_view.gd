@@ -18,6 +18,8 @@ const ZONE_FONT: int = 16
 const MARKER_GAP: float = 4.0
 ## Length of the scale bar in meters (_draw_scale_bar, _furniture_rects).
 const SCALE_BAR_M: float = 10.0
+## _zone_labels: the cost of a beside-name crossing the map's outer frame (below a hard clash, 1e6).
+const FRAME_STRADDLE_COST: float = 1e5
 ## Pixels between a narrow zone and its name placed beside it (_zone_labels).
 const BESIDE_GAP: float = 6.0
 
@@ -314,6 +316,10 @@ func _zone_labels() -> Array[Array]:
 	hard.append_array(marker_rects)
 	var edges: Array[Rect2] = _shape_edge_rects()
 	var view: Rect2 = Rect2(Vector2.ZERO, size)
+	# RT-B1 720p / 4K pass: a name beside a zone on the map's edge straddled the outer frame line ("SITE WELFARE CABIN",
+	# "FRAME, GROUND LEVEL"); a spot half in, half out of the drawn bounds costs far more than any other edge.
+	var sc: float = float(_transform()["scale"])
+	var frame: Rect2 = Rect2(world_to_view(board.blueprint.bounds.position), board.blueprint.bounds.size * sc)
 	for text: String in narrow:
 		if shown.has(text):
 			continue
@@ -323,6 +329,19 @@ func _zone_labels() -> Array[Array]:
 		var spots: Array[Vector2] = [
 			Vector2(z.end.x + gap, z.get_center().y - ts2.y * 0.5), Vector2(z.position.x - gap - ts2.x, z.get_center().y - ts2.y * 0.5),
 			Vector2(z.get_center().x - ts2.x * 0.5, z.position.y - gap - ts2.y), Vector2(z.get_center().x - ts2.x * 0.5, z.end.y + gap)]
+		# Each spot that crosses the frame is also tried shifted wholly inside it, and pushed just outside the nearest
+		# frame edge into the margin (a name on the map's edge otherwise straddles the line).
+		for k: int in range(spots.size()):
+			var r0: Rect2 = Rect2(spots[k], ts2)
+			if not frame.intersects(r0) or frame.encloses(r0):
+				continue
+			var lim: Vector2 = (frame.end - ts2).max(frame.position)
+			spots.append(spots[k].clamp(frame.position, lim))
+			var outs: Array[Vector2] = [Vector2(frame.position.x - ts2.x - 1.0, spots[k].y),
+					Vector2(frame.end.x + 1.0, spots[k].y), Vector2(spots[k].x, frame.position.y - ts2.y - 1.0),
+					Vector2(spots[k].x, frame.end.y + 1.0)]
+			outs.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.distance_to(spots[k]) < b.distance_to(spots[k]))
+			spots.append(outs[0])
 		var best: Rect2 = Rect2()
 		var best_cost: float = INF
 		for sp: Vector2 in spots:
@@ -333,6 +352,8 @@ func _zone_labels() -> Array[Array]:
 			for p2: Rect2 in placed + hard:
 				if p2.intersects(rr):
 					cost += 1e6
+			if frame.intersects(rr) and not frame.encloses(rr):
+				cost += FRAME_STRADDLE_COST
 			for e: Rect2 in edges:
 				if e.intersects(rr):
 					cost += 1.0 + e.intersection(rr).get_area() * 0.05
