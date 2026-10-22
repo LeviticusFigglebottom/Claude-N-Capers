@@ -21,8 +21,8 @@
 ##   Truck phase (A's RT mission + C's trucks, trunk r275+):
 ##   ambush_clean / ambush_crash  north: rig hacked + no alarm -> clean stop and the +8 s ambush; 3 shots -> crash stop;
 ##              each truck's rear UsePoint reachable in that layout; the mixer / Tannery gate row.
-##   breach     north clean: T1 by the placed saw (jams fixed), T2 by the tool store's thermite bag, the C4 source row,
-##              a T1 cargo bag on foot to E1.
+##   breach     north clean, trucks_3, stores_both: T1 by the placed saw (jams fixed), T2 by the tool store's thermite
+##              bag, T3 by C4 from the magazine (padlock + a box of 4), a T1 cargo bag on foot to E1.
 ##   east_e1 / east_e2  east clean: a HEAVY bag T1 -> E1, T3 -> E2 (trucks_3).
 ##   setup      from each spawn (plaza, car park, underpass), REAL detection: man-gate, rig hack; times vs the ETA and
 ##              every observer's peak D-128 fill.
@@ -123,6 +123,9 @@ const FIRE_DOOR_IN: Vector3 = Vector3(50.8, 0.0, -35.0)
 
 const DEVICE_SCALE: float = 3.0
 const SIGNAL_RIG_AT: Vector3 = Vector3(-16.25, 0.75, -13.45)
+const MAGAZINE_DOOR_AT: Vector3 = Vector3(-23.0, 0.0, -49.0)
+const MAGAZINE_BOXES_AT: Vector3 = Vector3(-23.0, 0.0, -51.0)
+const C4_NEEDED: int = 4
 const TOOL_STORE_DOOR_AT: Vector3 = Vector3(-48.0, 0.0, -17.0)
 const THERMITE_BAG_AT: Vector3 = Vector3(-47.5, 0.0, -20.5)
 ## Where the crew waits for the convoy (north: the Orchard west sidewalk by the site; east: the forecourt).
@@ -459,6 +462,7 @@ func _site_in() -> bool:
 	var gate: Door = _door_near(Vector3(-14.0, 0.0, -16.0), 2.5)
 	var lock: Node3D = _nearest("Padlock", Vector3(-14.0, 1.05, -16.0), 2.0)
 	if gate != null and not gate.is_open and lock != null:
+		await _mask()  # interactions need the mask (InteractableComponent: casing_allowed only); mask at the gate
 		var used: bool = await pilot.use(_comp(lock), 40.0, func() -> bool: return gate.is_open or not gate.locked)
 		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "gate open %s" % gate.is_open,
 			"-" if used else "A padlock / C placement")
@@ -795,9 +799,9 @@ func _rt_ambush_crash() -> bool:
 	return await _ambush_test(false, &"route_north")
 
 
-## T1 (cash) by the placed saw, T2 (bullion) by the thermite bag from the tool store, C4 checked; north, clean stop.
+## T1 (cash) by the placed saw, T2 (bullion) by the thermite bag from the tool store, T3 by C4; north, clean stop.
 func _rt_breach() -> bool:
-	if not await _truck_launch(&"route_north", {&"site_stores": [&"stores_thermite"]}):
+	if not await _truck_launch(&"route_north", {&"site_stores": [&"stores_both"], &"truck_count": [&"trucks_3"]}):
 		return false
 	if not await _stop(true):
 		return false
@@ -807,7 +811,10 @@ func _rt_breach() -> bool:
 		return await _fail("%d trucks" % trucks.size())
 	var ok: bool = await _saw_truck(trucks[0])
 	ok = await _thermite_truck(trucks[1]) and ok
-	_c4_row(trucks)
+	if trucks.size() >= 3 and _nearest("ItemPickup", MAGAZINE_BOXES_AT, 3.0) != null:
+		ok = await _c4_truck(trucks[2]) and ok
+	else:
+		_c4_row(trucks)
 	_mixer_row()
 	# The cargo: a T1 bag on foot to E1.
 	ok = await _carry_to_escape("T1 cargo -> E1", trucks[0], E1_AT, LOOT_MEDIUM, true) and ok
@@ -1138,3 +1145,41 @@ func _carry_to_escape(item: String, t: ArmoredTruck, esc: Vector3, loot: StringN
 		"-" if sec and n == 0 else ("C map" if n > 0 else "A secure zone"))
 	await shot("carry_%s" % ("e1" if esc == E1_AT else "e2"))
 	return sec
+
+
+## The magazine's padlock (pick), a C4 box (F: 4 x item.c4), out of the site, F on `t`'s lock (place_c4), the fuse.
+func _c4_truck(t: ArmoredTruck) -> bool:
+	var t0: float = rt.heist_time_s
+	if not await _site_in():
+		return false
+	var door: Door = _door_near(MAGAZINE_DOOR_AT, 1.5)
+	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
+	if door != null and not door.is_open and lock != null:
+		await pilot.use(_comp(lock), 40.0, func() -> bool: return door.is_open or not door.locked)
+		if not door.is_open:
+			await pilot.use(_comp(door), 20.0, func() -> bool: return door.is_open)
+	var have: int = pilot.crew.item_count(&"item.c4")
+	for _k: int in 2:
+		if have >= C4_NEEDED:
+			break
+		var box: Node3D = _nearest("ItemPickup", MAGAZINE_BOXES_AT, 3.0)
+		if box == null:
+			break
+		await pilot.use(_comp(box), 30.0, func() -> bool: return pilot.crew.item_count(&"item.c4") > have)
+		have = pilot.crew.item_count(&"item.c4")
+	_row("C4 from the magazine (padlock pick + box)", "PASS" if have >= C4_NEEDED else "FAIL", "door open %s, %d x item.c4, %.0f s" % [
+		door != null and door.is_open, have, rt.heist_time_s - t0], "-" if have >= C4_NEEDED else "C magazine / A item_pickup")
+	if have < C4_NEEDED:
+		return false
+	if not await _go(MAN_GATE_IN, 0.5, 120.0) or not await _go(MAN_GATE_OUT, 0.5, 60.0):
+		return false
+	var comp: InteractableComponent = _comp(t)
+	var t1: float = rt.heist_time_s
+	var placed: bool = comp != null and await pilot.use(comp, 60.0,
+		func() -> bool: return t.opened or pilot.crew.item_count(&"item.c4") < have)
+	await wait_until(func() -> bool: return t.opened, 30.0)
+	_row("%s by C4 (%d charges)" % [_truck_name(t), C4_NEEDED], "PASS" if t.opened else "FAIL",
+		"placed %s (kind %s), opened %s %.0f s after F" % [placed, comp.kind if comp != null else "-", t.opened,
+		rt.heist_time_s - t1], "-" if t.opened else "A truck / safe c4")
+	await shot("c4_open")
+	return t.opened
