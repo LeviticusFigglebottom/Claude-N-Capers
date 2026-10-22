@@ -35,7 +35,8 @@ const SEAT_TARGETS: Array[String] = ["desk", "table", "counter_service", "counte
 const POLE_KINDS: Array[String] = ["street_lamp", "lamp_post"]
 ## Kinds whose collider and nav obstruction is a pole off the pivot: kind -> [pole centre x (local), radius, height]
 ## (prop_traffic_signal: its pivot is the footprint centre, the pole at rolling_thunder.py SIGNAL_POLE).
-const POLE_OFF: Dictionary = {"traffic_signal": [-1.4, 0.14, 4.0]}
+## (prop_pole_sign_halfway: the pole at the pivot, under the 4.6 m sign cabinet.)
+const POLE_OFF: Dictionary = {"traffic_signal": [-1.4, 0.14, 4.0], "pole_sign": [0.0, 0.11, 4.6]}
 ## Landmark kinds that cast no shadow (flat or low on the rail bank / the roof deck; D-146 shadow draws).
 const NO_SHADOW_KINDS: Array[String] = ["rail_track", "marking", "signage"]
 const ART_SCALE_MIN: float = 0.55

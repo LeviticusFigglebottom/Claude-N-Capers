@@ -253,6 +253,16 @@ VARIANTS = {
         "cat": {"kind": "menu_board", "mount": "wall", "place": "wall_mount", "group": "sales", "surface": "wood",
                 "pin_only": True},
     },
+    # GPU-22 (the LEAD: rc_diner_neon showed a sliver of pink; the wall neon is edge-on from the street): a two-sided
+    # pole sign at the diner's NE corner, readable along Tannery and from the junction, the convoy stop's landmark
+    # (D-147 §3c "a new prop with a reason": no street pole sign in the catalog).
+    "prop_pole_sign_halfway": {
+        "fn": "pole_sign",
+        "text": "HALFWAY",
+        "line2": "DINER  OPEN 24 HRS",
+        "key2": "emit_mint",
+        "cat": {"kind": "pole_sign", "place": "none", "group": "exterior", "surface": "metal", "pin_only": True},
+    },
     "prop_neon_eat": {
         "fn": "neon_sign",
         "text": "EAT",
@@ -1105,6 +1115,36 @@ def _neon_sign(k: Kit, p: dict) -> None:
         x = -rw + 0.06 + i * (2 * rw - 0.12) / 6
         rc.rod((x, 0.08, 0.0), (x, 0.1, 0.0), 0.006, "steel", segs=6)
     o.build()
+
+
+POLE_SIGN_H = 6.4      # the cabinet top (m); the cabinet is 1.8 m tall, its underside 4.6 m (over a 3.6 m truck)
+POLE_SIGN_D = 0.36     # cabinet depth (Y)
+
+
+def _pole_sign(k: Kit, p: dict) -> None:
+    """A street pole sign (two-sided): a round pole on a base plate, a dark cabinet on it, ``text`` and ``line2`` in
+    neon on both faces, each read from its own side (the -Y face is drawn in a frame turned 180 deg about Z). Pivot at
+    the pole's foot; the faces are +Y / -Y (Godot -Z / +Z), so a yaw of 90 reads along a street running along X."""
+    top, bot = POLE_SIGN_H, POLE_SIGN_H - 1.8
+    width = 0.0
+    faces = [k.obj("Body"), k.obj("Back", parent=k.empty("BackFrame", rotation=(0.0, 0.0, math.pi)))]
+    for o in faces:
+        tube = o.part(bevel=0.0)
+        w1 = lettering(tube, p["text"], 0.62, 0.0, POLE_SIGN_D / 2, bot + 0.85, p.get("key", "emit_neon_magenta"),
+                       stroke=0.03, depth=0.0, round_tube=True, spacing=0.18, res=3, tube_segs=8)
+        w2 = 0.0
+        if p.get("line2"):
+            w2 = lettering(tube, p["line2"], 0.26, 0.0, POLE_SIGN_D / 2, bot + 0.25, p.get("key2", "emit_mint"),
+                           stroke=0.02, depth=0.0, round_tube=True, spacing=0.2, res=2, tube_segs=6)
+        width = max(width, w1, w2)
+    hw = width / 2 + 0.2
+    b = faces[0].part(bevel=0.006)
+    b.cyl(0.11, bot + 0.1, (0.0, 0.0, (bot + 0.1) / 2), "metal_dark", segs=14)
+    b.cyl(0.24, 0.03, (0.0, 0.0, 0.015), "metal_dark", segs=14)
+    b.bx((-hw, -POLE_SIGN_D / 2, bot), (hw, POLE_SIGN_D / 2, top), "metal_dark")
+    b.bx((-hw - 0.04, -POLE_SIGN_D / 2 - 0.02, top - 0.06), (hw + 0.04, POLE_SIGN_D / 2 + 0.02, top), "metal_yellow")
+    for o in faces:
+        o.build()
 
 
 def _heli_pad(k: Kit, p: dict) -> None:

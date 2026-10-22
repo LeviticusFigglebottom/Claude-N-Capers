@@ -1,0 +1,8 @@
+[OFP 275.1s t=4.8] SHORTCUT liftdoor: NPCs out, teleported into CQ
+[OFP 276.1s t=5.8] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (10.5, -3.5, 4.0)
+[OFP 281.2s t=11.0] bag in the car of CashLift (1)
+[OFP 281.2s t=11.0] SHORTCUT liftdoor: NPCs out, teleported into CQ
+[OFP 282.2s t=12.0] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (11.5, -3.5, 3.0)
+[OFP 287.7s t=17.5] bag in the car of CashLift (2)
+[OFP] RESULT PASS liftdoor
+[OFP] RESULT PASS (liftdoor PASS)
