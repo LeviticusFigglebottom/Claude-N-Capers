@@ -303,7 +303,7 @@ func _nearest_slot(pos: Vector3) -> int:
 		if c.crew_state == Enums.CrewState.CUSTODY or c.crew_state == Enums.CrewState.DOWNED:
 			continue
 		standing.append(c.slot)
-		if pos != Vector3.INF:
+		if pos != Vector3.INF and c.is_inside_tree():  # a device jams while the map is freed (B's RT HUD run teardown)
 			var d: float = c.global_position.distance_squared_to(pos)
 			if d < best_d:
 				best_d = d
