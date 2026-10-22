@@ -459,6 +459,7 @@ func _site_in() -> bool:
 	var gate: Door = _door_near(Vector3(-14.0, 0.0, -16.0), 2.5)
 	var lock: Node3D = _nearest("Padlock", Vector3(-14.0, 1.05, -16.0), 2.0)
 	if gate != null and not gate.is_open and lock != null:
+		await _mask()  # interactions need the mask (InteractableComponent: casing_allowed only); mask at the gate
 		var used: bool = await pilot.use(_comp(lock), 40.0, func() -> bool: return gate.is_open or not gate.locked)
 		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "gate open %s" % gate.is_open,
 			"-" if used else "A padlock / C placement")
