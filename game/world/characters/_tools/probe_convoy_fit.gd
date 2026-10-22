@@ -46,7 +46,8 @@ func _run() -> void:
 	for _i: int in 3:
 		await physics_frame
 	var space: PhysicsDirectSpaceState3D = _map.get_world_3d().direct_space_state
-	print("PROBE vehicle seat | root(local) | faces | roof top | head gap (plain/Wrecker) | ahead@0.45/0.90 | behind@0.6 | side in/out | exit shoulder gap (plain/Wrecker)")
+	print("PROBE vehicle seat | root(local) | faces | roof top | head gap (plain/Wrecker) | ahead@0.45/0.90 | "
+		+ "behind@0.6 | side in/out | exit shoulder gap (plain/Wrecker)")
 	for v: Node3D in probe:
 		var inv: Transform3D = v.global_transform.affine_inverse()
 		for s: Node in v.find_children("Seat*", "Node3D", true, false):
