@@ -11,6 +11,6 @@ condition = {"event": &"heist_completed", "heist": &"rolling_thunder", "loot_min
 unlock = &""
 order = 781
 category = &"rolling_thunder"
-rewards = Array[StringName]([])
+rewards = Array[StringName]([&"mask_base.ingot"])
 unlocks = Array[StringName]([])
 requires_facts = Array[StringName]([])

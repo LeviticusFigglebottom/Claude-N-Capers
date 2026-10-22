@@ -2,7 +2,26 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 23:45 UTC)
+## To the LEAD: (updated 2026-10-22 18:40 UTC, D-153 handover; reports to session_01XAPqmFJ32zHKLK9Sezymym)
+- **RT-P1 harness: `game/tests/p/_review/rt_g1_pass.gd/.tscn`** (extends of_g1_pass; real input only). One ROW per item
+  (PASS / STUCK / FAIL + owner) and rows.md per run. Traversal: stairs, ramps, lift, site, throws, underpass, kerbs,
+  escapes, fences (`--test=all`). Truck phase: ambush_clean, ambush_crash, breach, east_e1, east_e2, setup
+  (`--test=trucks`). Evidence: game/tests/p/_review/captures/rt_g1_2026-10-22/<test>/ (run.log, rows.md, PNGs).
+- **Done on r273 greybox (seed 4101, Routine, windowed):**
+  - stairs PASS: A and B ground -> Deck 2 -> roof -> ground, 0 STUCK; stair A to the roof with a MEDIUM bag.
+  - ramps PASS: R1 + R2 up/down by straight W at 3.48 m/s, with a HEAVY bag at 1.75 m/s, no snag.
+    **One STUCK (C bake):** with the HEAVY bag, Deck 2 south -> R1 top pinned 2x on `Strip2GuardW2`'s south end at
+    (42.8, 3.5, -19.7): the nav corner (42.5, -26) hugs the guard closer than the crew's 0.35 m radius.
+  - site PASS: man-gate padlock (lockpick), through it, FrameLadder up/down, a bag refused on it (S10.1b), the
+    scaffold stair up/down with a MEDIUM bag.
+  - lift: car floors flush at all 3 landings (+0.001 m). **Finding (C content):** GoodsLift `car_size_m` is 2.2 m
+    deep in a 3 m car room, so a 2nd bag thrown in rests against the back wall at z -49.6, visibly in the car but
+    not counted or carried (OF's CashLift had the same). Walk-in rerun pending (harness now opens LiftDoorG).
+- **Truck-phase facts from code (r275), to confirm by run:** the mixer does nothing (`_mixer_move` swaps
+  `mixer_gone` / `tannery_open` layouts that don't exist; SiteTanneryGateW/E stay BARRED); no C4 pickups on the map
+  (C4Box1/2 are TODO(A5-03) markers), so C4 needs a pre-plan item.c4 drop.
+
+## (2026-10-21 23:45 UTC)
 - **D-152 ack: OF done.** Now on Rolling Thunder: preparing `rt_g1_pass` (from of_g1_pass) for the G1 windowed/real-input pass (traversal,
   interact sweep, the ambush stop, the truck breach, the mixer, the escape, STUCK/snag rows); it runs once A's pilot plays RT end to end.
   OF ghost evidence and route note stay below for the record.

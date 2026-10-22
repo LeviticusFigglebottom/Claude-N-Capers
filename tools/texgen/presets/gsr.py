@@ -285,6 +285,18 @@ PRESET = {
             "pivot": 0.45,
             "saturation": 1.02,
         },
+        # Rolling Thunder (rolling_thunder.md §Audio/lighting, RT-C2): 16:50, the low autumn sun down Tannery: warm amber
+        # highlights, teal-green shadows under the Skyway, a gently lifted floor (the dust haze), soft contrast.
+        "rolling_thunder": {
+            "slope": (1.03, 1.0, 0.955),
+            "offset": (0.004, 0.012, 0.012),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (-0.01, 0.006, 0.006),
+            "highlight_tint": (0.03, 0.014, -0.022),
+            "contrast": 0.96,
+            "pivot": 0.45,
+            "saturation": 1.03,
+        },
     },
     # Godot Environment resources (godot.py).
     "environments": {

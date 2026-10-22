@@ -44,6 +44,7 @@ func _ready() -> void:
 			"wait": _wait = float(v)
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/motion_strips"
+	RenderingServer.render_loop_enabled = false  # frames only for the strips (llvmpipe)
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -188,7 +189,10 @@ func _strip(c: String, body: Node3D) -> void:
 		_label.text = "%s %d  %s\n%s" % [c, k, _look(body), info]
 		_say("%s f%d %s" % [c, k, info])
 		_cam.look_at_from_position(eye, at)
+		RenderingServer.render_loop_enabled = true
+		await get_tree().process_frame
 		await RenderingServer.frame_post_draw
+		RenderingServer.render_loop_enabled = false
 		var img: Image = get_viewport().get_texture().get_image()
 		img.convert(Image.FORMAT_RGB8)
 		var w: int = img.get_height() * TILE.x / TILE.y
