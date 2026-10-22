@@ -1585,3 +1585,5 @@ The game has no crew sentry, and PD2's Technician isn't PD2 without one. So it's
 2. **B**: `deployables/sentry.tres` (DeployableDef kind "sentry"), loadout/armory entry, strings, the values (PD2-shaped), and the Technician markers.
 3. **D**: the model and its deploy/fold animation, once A's prefab nodes are fixed. A placeholder box until then.
 4. pd2_fidelity P5's deployables launch target becomes 8 (7 + sentry). pocket_ecm stays parked.
+5. (Amendment, LEAD) The sentry model is **D's**, at `tools/blender/equipment/sentry.py` → `game/assets/equipment/sentry/`
+   (owners.json: those paths go to D, excluded from C). The other deployable models stay in C's `tools/blender/props/equipment.py`.
