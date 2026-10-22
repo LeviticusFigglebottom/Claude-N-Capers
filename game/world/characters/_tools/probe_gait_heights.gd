@@ -5,7 +5,7 @@
 extends SceneTree
 
 const GLB: String = "res://assets/characters/char_anim_humanoid/char_anim_humanoid.glb"
-const CLIPS: Array[String] = ["idle_alert", "walk", "walk_fl", "walk_back", "run", "run_fl", "run_fr", "run_l", "run_r",
+const CLIPS: Array[String] = ["idle_alert", "crouch_walk", "walk", "walk_fl", "walk_back", "run", "run_fl", "run_fr", "run_l", "run_r",
 	"run_bl", "run_br", "run_b", "sprint", "aim_pistol_run", "aim_rifle_run", "hold_pistol_run", "hold_rifle_run"]
 const N: int = 24
 

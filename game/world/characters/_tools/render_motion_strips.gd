@@ -197,7 +197,7 @@ func _strip(c: String, body: Node3D) -> void:
 		var at: Vector3 = body.global_position + Vector3.UP * 1.0
 		var eye: Vector3 = _eye(body, at, fwd)
 		var info: String = "%s | %s @%.2f | %.1f m/s" % [ad.clip, ad.hold_layer.clip if ad.hold_layer != null else &"-",
-			ad.hold_layer.time if ad.hold_layer != null else 0.0, ad.horizontal_speed()]
+			ad.hold_layer.time if ad.hold_layer != null else 0.0, ad.horizontal_speed()] + _pose_stats(body)
 		_label.text = "%s %d  %s\n%s" % [c, k, _look(body), info]
 		_say("%s f%d %s" % [c, k, info])
 		_cam.look_at_from_position(eye, at)
@@ -269,6 +269,26 @@ func _crew_diag(t: float) -> void:
 		_say("diag t=%.0f %s ai %s clip %s layer %s active %s speed %.1f state %s" % [t, m.name, m.is_ai, ad.clip,
 			ad.hold_layer.clip if ad.hold_layer != null else &"-", ad.hold_layer.active if ad.hold_layer != null else false,
 			ad.horizontal_speed(), m.crew_state])
+
+
+## " | hips 0.88 m knee 61": the live skeleton's hips joint height above the body root (m) and the larger knee flexion
+## (deg), as probe_gait_heights measures the clips.
+func _pose_stats(body: Node3D) -> String:
+	var found: Array[Node] = body.find_children("*", "Skeleton3D", true, false)
+	if found.is_empty():
+		return ""
+	var sk: Skeleton3D = found[0] as Skeleton3D
+	var hips: int = sk.find_bone("hips")
+	if hips < 0:
+		return ""
+	var y: float = (sk.global_transform * sk.get_bone_global_pose(hips)).origin.y - body.global_position.y
+	var kn: float = 0.0
+	for s: String in ["L", "R"]:
+		var th: Vector3 = sk.get_bone_global_pose(sk.find_bone("thigh." + s)).origin
+		var sh: Vector3 = sk.get_bone_global_pose(sk.find_bone("shin." + s)).origin
+		var ft: Vector3 = sk.get_bone_global_pose(sk.find_bone("foot." + s)).origin
+		kn = maxf(kn, 180.0 - rad_to_deg((th - sh).angle_to(ft - sh)))
+	return " | hips %.3f m knee %.0f" % [y, kn]
 
 
 func _look(b: Node3D) -> String:
