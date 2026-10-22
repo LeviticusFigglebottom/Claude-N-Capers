@@ -3,7 +3,33 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21 update; newest at top)
+## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-26) Handover: trunk merged, convoy EnemyDefs, RT audit gaps, G1 pilot's secure-zone bug (2026-10-22)
+- **edca000e:** trunk d1ecb0b6 merged.
+- **99cc0b98:** the crash-stop test asserts C's 2-3 real trucks.
+- **C's asks were already met** (88873eb23 / 5dfef0e19): ConvoyLayouts does `region_set_map`, so rt_convoy_nav.gd can go.
+- **f43cc6be: `enemy.convoy_lead` / `convoy_rear`** (D-153 amended: A writes, B reviews).
+  - Routine/Tense use patrol health/damage; Hazardous+ use TAC Light.
+  - npc_rifle on every difficulty (EnemyDef has no per-difficulty weapon).
+  - The look is patrol_officer until D's ids arrive.
+  - The mission swaps only the patrol / TAC Light escorts; the rear TAC Heavy and the Wrecker stay. test_rt_convoy_looks passes.
+- **Audit gaps** (31766e43, 27a9f07f, 95e862f3):
+  - lift_dead: the goods lift is unpowered (`BagLift.powered`), and the LiftBreaker hack restores it.
+  - marshal_early: two checks (`GuardBrain.extend_route`).
+  - rush_hour: diner customers 3 -> 5.
+  - gold_rush pins trucks_3 and t3_bullion.
+  - RT assault event rows on C's markers.
+- **6b58399f, G1 pilot bug:** the E1/E2 SecureZone (2.6x2.5x2.2) sat inside the van's collision, so only a bag on the
+  roof secured. It is now 4x3x8. **C:** mirror it in `tools/levelcheck/plans/rolling_thunder_content.py`.
+- **G1 pilot run 1** (seed 1001, Routine):
+  - Crash stop, escort down, both trucks sawn (t=390 / 520), bags picked.
+  - 0 secured: the zone bug above. Re-running on 6b58399f.
+- **Open:**
+  - **Clean-stop e2e:** auto_loud masks at t≈7, so every run is a crash stop. A clean stop needs a stealth prelude:
+    the man-gate, the SignalRig hack, then mask at the stop.
+  - **bonds_courier cab safe:** waits on the truck art.
+  - B's vo_coverage.md is stale for RT (all 34 lines are said).
+### (2026-10-21 entries)
 ### (-25) D-152 items done; RT pilot on C's real convoy gets the trucks open (01:10 UTC)
 - **(1) OF vault guard margin, 0cc1558d7:**
   - `hub_loops` gets an optional `dwell_add_s` {point: s} plus `dwell_add_max_difficulty`.
