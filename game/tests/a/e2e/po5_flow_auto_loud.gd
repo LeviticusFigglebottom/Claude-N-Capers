@@ -128,7 +128,8 @@ func play(flow: Node) -> int:
 			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
 	if wait_convoy:
 		await _wait_for_the_convoy()
-	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
+	if not p.crew.masked:  # stores1001: masked, G throws the carried bag (rt_clean hands over masked with the thermite)
+		await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
 	p.stuck_give_up = STUCK_GIVE_UP
 	# GN probe 6: the pilot walked past three downed teammates on its way to the vault drill (t=275-288), then went
