@@ -79,6 +79,12 @@ func test_unsaid_b_reserve_allowlist() -> void:
 	var allow: Array[StringName] = UNSAID_B_RESERVE.duplicate()
 	if _generic_abort_retired():
 		allow.append(VoCoverage.GENERIC_ABORT)  # SL-6: no STEALTH_ONLY heist plays the generic abort any more
+	if HeistRegistry.ids().has(&"rolling_thunder"):
+		# RT-B1 (r276 un-hide prep): once RT's def is registered, Reyes's generic done / new lines are reached by its
+		# mission (RT is Reyes's second heist), so they leave the reserve with no edit when the def lands.
+		for id: StringName in UNSAID_B_RESERVE:
+			if String(id).begins_with("vo.reyes.radio_objective_"):
+				allow.erase(id)
 	_check_allowlist("R", allow)
 
 

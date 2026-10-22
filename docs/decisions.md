@@ -1532,3 +1532,23 @@ Ruling (A's open question, status env_a -23; AMENDED same day after A's ownershi
 `enemy.convoy_rear` EnemyDefs live in A's path (game/systems/ai/data/enemies), so ENV A writes them with the design doc's
 stats (Routine/Tense patrol-officer, Hazardous+ TAC); ENV D supplies their look ids (D-149.12); ENV B reviews the values
 for the balance tool.
+
+## D-154: Bulwark (shield) share follows PD2's shape; RT early alarm brings the convoy (2026-10-22, LEAD; D-151 judgement)
+From ENV B's review (game/content/docs/rt_early_alarm_balance.md, env/b-content 1dd63c4c + addendum 280bdbf8):
+1. **Shields, all heists (the director's general tables).** Today about 15 % of police are Bulwarks on Routine and on
+   Hazardous (low tiers: Bulwark and Longshot are the only weighted specials; Hazardous funnels capped specials into
+   Bulwark). Target, PD2 shape: about 5-8 % on Routine/Tense, 10-12 % on Hazardous+.
+   - ENV A: `special_bulwark.weights` 0.6/0.8/1/1.2/1.4/1.6 → 0.25/0.4/0.8/1.0/1.2/1.4; `special_share_difficulty_mult`
+     0.5/0.75/1… → 0.35/0.6/1….
+   - ENV B: Bulwark `special_limits` 2/3/4/4/4/4 → 1/2/3/4/4/4.
+   - Verify (targeted, D-088): A re-runs the RT seeds it measured, then one loud seed each on GH / ND / DB (all heists
+     share the tables) and reports the per-difficulty share.
+2. **RT early alarm:** the convoy arrives at min(convoy_eta_s, alarm + 25 s) (REVISED from +75 s, which landed the stop on wave 1's SUSTAIN; +25 s stops it inside ANTICIPATION, B fd41028a), so wave 1 fights over the trucks
+   (police_delay_s stays 0, D-075). A re-measures 5 seeds each on Hazardous and Lethal (targets: Hazardous reaches the trucks
+   opening on ≥ 3/5, Lethal 1-2/5, Cataclysm ≤ 1/5). B's first-assault Stinger cap for Lethal+ is held until then.
+   - Result at +25 s (A ce09f134): the stop lands at ~+33 s with only 2-3 police, but Hazardous is still 0/5; the crash
+     stop dismounts all 11 convoy units at once onto a 4-bot crew in the open. Ruling: **staggered crash dismount** (A):
+     escorts out first, the Vaultline crew and the TAC Heavy over the next ~6 s (the clean stop already staggers 4 s).
+     Re-measure Hazardous 5 seeds. If still < 3/5, the call is made on P's real-input run of a blown setup on Hazardous,
+     not on the bot: a human crew using cover is the target audience; the bot's convoy tactics stay a parked item.
+3. **Payday cards:** achievement-reward parts never drop (PD2; B 804c97f0).

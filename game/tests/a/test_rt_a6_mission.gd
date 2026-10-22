@@ -411,3 +411,20 @@ func test_the_nine_lines_the_e2e_does_not_reach() -> void:
 			RollingThunderMission.VO_C4_ARMED, RollingThunderMission.VO_THERMITE_BURN, RollingThunderMission.VO_HELI_ETA,
 			RollingThunderMission.VO_SNIPER_RAIL, RollingThunderMission.VO_SNIPER_CRANE]:
 		assert_has(said, id, "%s said by its trigger" % id)
+
+
+## B's early-alarm balance (item 1): an early alarm brings the convoy at min(ETA, alarm + 75 s); a later alarm (ETA
+## already under 75 s) leaves it.
+func test_early_alarm_pushes_the_convoy_through() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	assert_true(m.timer_left(&"convoy") > RollingThunderMission.EARLY_PUSH_S, "ETA is over 75 s at the start")
+	_rt.stealth.raise_alarm(&"test")
+	await wait_physics_frames(3)
+	assert_near(m.timer_left(&"convoy"), RollingThunderMission.EARLY_PUSH_S, 0.5, "the convoy pushes through: 75 s")
+	for id: StringName in [&"eta_60", &"eta_30", &"marshal"]:
+		assert_true(m.timer_left(id) <= RollingThunderMission.EARLY_PUSH_S, "%s does not come after the arrival" % id)
+	assert_true(m.timer_left(&"sighted") > 0.0, "sighted re-timed before the arrival")
+	assert_near(m.police_delay_s, 0.0, 0.001, "police at once (D-075) unchanged")

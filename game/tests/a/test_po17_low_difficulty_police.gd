@@ -70,7 +70,7 @@ func test_director_low_tier_multipliers() -> void:
 	var tw: DirectorTweak = load(DIRECTOR_TWEAK) as DirectorTweak
 	var want: Dictionary = {
 		"force_pool_difficulty_mult": [0.6, 0.8], "refill_interval_difficulty_mult": [2.0, 1.5],
-		"special_share_difficulty_mult": [0.5, 0.75],
+		"special_share_difficulty_mult": [0.35, 0.6],  # D-154 (was 0.5 / 0.75)
 	}
 	for prop: String in want:
 		var arr: PackedFloat32Array = tw.get(prop) as PackedFloat32Array
