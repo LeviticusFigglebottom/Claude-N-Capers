@@ -5,6 +5,8 @@ extends TestCase
 
 const SLOT: int = 5
 const T1: StringName = &"skill.field_medic.triage"
+## A skill whose every key still waits for a hook (SkillTreeDef.blocked_on_keys).
+const BLOCKED: StringName = &"skill.breacher.hot_floor"
 const T2: StringName = &"skill.field_medic.bedside_manner"
 const T2B: StringName = &"skill.field_medic.numbing_agent"
 const T3: StringName = &"skill.field_medic.field_kit"
@@ -184,11 +186,17 @@ func test_skill_sets_are_independent() -> void:
 
 func test_blocked_note_and_team_tag() -> void:
 	var s: SkillTreeScreen = await _make(100)
-	s.select_skill(T1)  # LEAD r280: Triage's keys wait for ENV A's hooks (unhooked_skill_keys.md batch 3)
-	assert_true(s.detail_basic_note.visible and s.detail_aced_note.visible, "Triage's parts say they are not active yet")
-	assert_eq(SkillBuild.activity(ContentDB.by_id(ContentDB.SKILLS, T1) as SkillDef), &"inactive")
-	assert_true((s.skill_buttons[T1] as Button).text.ends_with(UiText.t(&"ui.skills.button_inactive")),
+	# Hot Floor's keys wait for ENV A's hooks (unhooked_skill_keys.md batch 5); Triage's landed (batch 3, LEAD r285).
+	s.show_tree(&"wrench")
+	s.select_skill(BLOCKED)
+	assert_true(s.detail_basic_note.visible and s.detail_aced_note.visible, "Hot Floor's parts say they are not active yet")
+	assert_eq(SkillBuild.activity(ContentDB.by_id(ContentDB.SKILLS, BLOCKED) as SkillDef), &"inactive")
+	assert_true((s.skill_buttons[BLOCKED] as Button).text.ends_with(UiText.t(&"ui.skills.button_inactive")),
 			"the tree button says so too")
+	s.show_tree(&"ringleader")
+	s.select_skill(T1)
+	assert_eq(SkillBuild.activity(ContentDB.by_id(ContentDB.SKILLS, T1) as SkillDef), &"active", "Triage is hooked now")
+	assert_false(s.detail_basic_note.visible, "Triage shows no waiting note")
 	s.show_tree(&"shade")
 	s.select_skill(&"skill.slipstream.deep_pockets")
 	assert_false(s.detail_basic_note.visible, "Deep Pockets is fully active")

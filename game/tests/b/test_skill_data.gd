@@ -24,6 +24,23 @@ const SIGNATURE: Array[String] = [
 	"Lead Rain", "Pack Mule", "Momentum", "Grazing Fire", "Hot Streak",
 ]
 const PARTS: Array[String] = ["basic", "aced"]
+## Keys A has hooked (A4-04 batches B1-B4, env/a-core 05477b73) that the LEAD-owned ratchet still lists in UNHOOKED until the
+## round merge shrinks it; their markers are dropped already. Remove a key here once the ratchet drops it.
+const AWAITING_RATCHET: Array[String] = [
+	"ability.inspire", "defense.swan_song", "defense.berserk",
+	"weapon.kill_damage_buff", "deploy.ammo_bag_bulletstorm", "defense.bullseye",
+	"interaction.device_melee_restart", "defense.self_revive_charges", "defense.self_revive_refill_on_doctor_bag",
+	"weapon.crit_chance_add", "weapon.crit_per_concealment", "weapon.unseen_strike",
+	"defense.dodge_per_concealment", "defense.sprint_dodge_add", "defense.armor_break_speed_buff",
+	"defense.armor_broken_stagger", "defense.target_priority_mult", "ability.revive_target_buff",
+	"ability.revive_target_health_mult", "defense.reviving_damage_taken_mult", "defense.post_revive_buff",
+	"deploy.fak_auto_revive", "deploy.medical_user_buff", "defense.bleedout_pause_unseen",
+	"weapon.hip_spread_mult", "weapon.still_spread_mult", "weapon.moving_spread_mult",
+	"weapon.hip_fire_rate_mult", "weapon.falloff_range_mult", "weapon.kill_reload_buff",
+	"weapon.hit_stack_buff", "weapon.headshot_refund", "weapon.graze",
+	"weapon.body_expertise", "weapon.stagger_chance_add", "defense.outnumbered",
+	"defense.flashbang_duration_mult",
+]
 
 var _tree: SkillTreeDef
 var _skills: Array[SkillDef] = []
@@ -323,6 +340,8 @@ func test_blocked_parts_track_the_unhooked_keys() -> void:
 			var keys: Array[StringName] = []
 			for k: Variant in (s.grants_basic if part == "basic" else s.grants_aced):
 				for u: Variant in unhooked:
+					if AWAITING_RATCHET.has(String(u)):
+						continue
 					if (String(k) == String(u) or String(k).begins_with(String(u) + ".")) and not keys.has(StringName(u)):
 						keys.append(StringName(u))
 			if not keys.is_empty():
