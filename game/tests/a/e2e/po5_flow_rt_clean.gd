@@ -26,6 +26,9 @@ func play(driver: Node) -> int:
 	if not await flow.attach(rt, rt.run_seed):
 		return _fail(driver, flow, "attach to the menu-launched runtime")
 	var start: Transform3D = (rt.crew_controller(0) as Node3D).global_transform
+	var vo: Callable = func(speaker: StringName, line_id: StringName, _c: Dictionary) -> void:
+		driver.call(&"note", "EVENT vo %s %s t=%.0f" % [speaker, line_id, rt.heist_time_s])  # auto_loud logs its own
+	EventBus.voice_line_requested.connect(vo)
 	flow.hide_from_observers()
 	if not await flow.mask_up():
 		return _fail(driver, flow, "mask up")
@@ -40,6 +43,7 @@ func play(driver: Node) -> int:
 	flow.check(flow.alarms.is_empty(), "no alarm before the stop (%s)" % [flow.alarms])
 	flow.crew.stealth_hidden = false
 	flow.note("clean stop %s at %.1f s heist: observers on, the loud pilot takes over" % [m.layout_id, rt.heist_time_s])
+	EventBus.voice_line_requested.disconnect(vo)
 	var failures: Array[String] = flow.failures.duplicate()
 	flow.detach()
 	if not failures.is_empty():
