@@ -1,0 +1,13 @@
+asset: mask_base_road_cone
+script: tools/blender/masks/base_road_cone.py
+params: {"brow": 0.0, "chamfer": 0.0016, "cheek": 0.0, "coverage": "full", "edge_res": 0.006, "eye_height": 0.02, "eye_shape": "round", "eye_spacing": 0.068, "eye_tilt_deg": 0.0, "eye_width": 0.03, "face_half_width": 0.09, "fit_clearance": 0.004, "jaw": 0.0, "mouth": "none", "nose": 0.0, "res": 0.0095, "res_back": 0.016, "thickness": 0.005, "wrap_radius": 0.09}
+seed: 4224342294  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_road_cone
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+fit: crew face envelope (_crew_face_envelope.json), clearance 4.0 mm, max lift 62.6 mm
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 4628
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.1000 m, z -0.1268..0.1080 m

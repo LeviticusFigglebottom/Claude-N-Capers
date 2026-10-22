@@ -39,6 +39,9 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_mask_velvet_case": ("#77737A", 0.92, 0.0, "velvet"),     # display-case velvet, neutral mid grain
     "char_mask_night_safe": ("#4A4B50", 0.50, 0.0, "crinkle"),     # black crinkle safe paint, satin
     "char_mask_gilt_leaf": ("#C9A34A", 0.30, 1.0, "gilt"),         # worn gold leaf over red bole
+    # RT-D2 achievement mask materials (Rolling Thunder)
+    "char_mask_armor_plate": ("#8C8E91", 0.45, 1.0, "tread"),      # diamond-tread truck floor steel
+    "char_mask_hi_vis": ("#D9733A", 0.40, 0.0, "hivis"),          # retroreflective safety sheeting
     # crew (heist suits)
     "char_suit_dark": ("#2A2C31", 0.78, 0.0, "cloth"),
     "char_suit_navy": ("#232B3B", 0.78, 0.0, "cloth"),
