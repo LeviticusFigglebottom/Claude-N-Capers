@@ -3,7 +3,7 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-22 19:00)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-22 23:00)
 ### RT un-hide checklist (LEAD r276 #2). Goal: lifting RT onto the Board is ONE flag flip
 The flag: `game/content/data/ui/heist_list.tres` -> `rolling_thunder` -> delete `"hidden": true`. HeistCatalog.is_ready
 gates the menus on that flag, the map and the mission script, and only the menus read HeistRegistry.ids().
@@ -21,6 +21,16 @@ gates the menus on that flag, the map and the mission script, and only the menus
 | 10 | Music track name `music.rolling_thunder.name` ("Red Signal") | B (string) / C (track) | string done; track on env/c-worlds (held) |
 | 11 | Cues + ambience beds in `cues.tres` | C (73ec9b55, LEAD waiver) / B (train) | accepted (LEAD ruling a); B adds `cue.freight_train_pass` when C's stream exists |
 | 12 | Achievements screen / payday hide a hidden heist's set (`Achievements.shown()`) | B | done; flips with the flag |
+-35. **P5 melee roster (LEAD r280 queue (2), data + picker): 12 melees.** 11 new MeleeDefs: knives combat_dagger,
+     prison_shank; blunt telescopic_baton, aluminium_bat, claw_hammer, lead_pipe, crowbar, sledgehammer; blades machete,
+     fire_axe, meat_cleaver.
+     - Trade-offs: blunt has the highest knockdown, knives keep concealment 30, heavy picks cost concealment (sledge 20).
+     - Every def has `anim_set` and charge 1.0 s (D's charge_start clips). Each id names its set's MELEE_MATCH fragment.
+     - No models yet (`model` null: the FP set plays empty-handed). Models come next via tools/blender/weapons.
+     - Loadout: a melee card (name, damage / charged, knockdown, reach, concealment, blurb) shows while the melee picker
+       previews.
+     - Melee is not gated by ownership (no `owned_melees`; `price` is set but unused). LEAD: gate it, or keep it free?
+     - Test: `test_melee_roster` 4. Capture: `tests/b/render/melee_capture.gd`.
 -34. **MERGE ORDER: env/d-art 081ce136 (D's RT mask parts) BEFORE or WITH env/b-content's RT mask commits.** B's
      `materials.tres` loads D's two new library materials, so on B alone the mask catalog does not load.
      - On B alone: test_masks / test_mask_batch / test_achievements_b702 fail.
