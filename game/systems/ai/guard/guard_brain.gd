@@ -78,6 +78,8 @@ var _npc: NpcBase = null
 var _motor: NpcMotor = null
 var _runtime: HeistRuntime = null
 var _started: bool = false
+## extend_route graphs given before _start (they join the route it builds).
+var _extra_graphs: Array[PatrolGraph] = []
 var _route_index: int = 0
 ## D-152: hub-loop extra pause per patrol point (GuardTweak.hub_loops "dwell_add_s"), this difficulty.
 var _dwell_add: Dictionary = {}
@@ -141,6 +143,30 @@ func notice_suspicious(position: Vector3) -> void:
 	_begin_curious(position)
 
 
+## RT `marshal_early` (doc Rare events: "walks two checks instead of one"): `graph`'s points (in their authored order)
+## join the end of the route, so the loop walks the first check, then this one. A guard holding a post starts patrolling
+## it. Server.
+func extend_route(graph: PatrolGraph) -> void:
+	if graph == null:
+		return
+	if not _started:
+		_extra_graphs.append(graph)  # joins once _start builds the route
+		return
+	_append_graph(graph)
+
+
+func _append_graph(graph: PatrolGraph) -> void:
+	var pts: Array[PatrolPoint] = graph.points()
+	if pts.is_empty():
+		return
+	route_loops = true
+	if patrol_graph == null:
+		patrol_graph = graph
+	for p: PatrolPoint in pts:
+		route_points.append(p)
+		route.append(p.global_position)
+
+
 ## QC-57 (GN Vaultline couriers): a scripted walk. The guard drops his patrol route, walks to `pos` at patrol speed and
 ## holds it as his post (CALM; after a "?" or an investigation he walks back to it). `forward` (flat) is the facing
 ## there; zero keeps the walking direction. Server.
@@ -190,6 +216,8 @@ func _start() -> void:
 		_post_pos = _npc.global_position
 		_post_fwd = _npc.look_forward()
 		_build_route()
+		for g: PatrolGraph in _extra_graphs:
+			_append_graph(g)
 		_stagger_patrol_start()
 	_look_left = _roll(tweak.post_look_interval_s)
 	_started = true

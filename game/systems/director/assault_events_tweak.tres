@@ -107,6 +107,31 @@ heists = {
 "weight": 1.5
 }]
 },
+&"rolling_thunder": {
+"_note": "RT-A6 (RT-C0 / next_heist_rolling_thunder.md): the turret van on Tannery W (TurretVan_1 / _2), the heli over the junction span (HeliOrbit_1, HeliDrop_1..3), breaches on the car park stair A / fire door and the diner front (Breach_1..3). Size M (D-149.3): one turret van.",
+"events": [{
+"cooldown_s": 150.0,
+"kind": &"turret_van",
+"max_per_heist": 1,
+"min_wave": 1,
+"params": {},
+"weight": 1.0
+}, {
+"cooldown_s": 90.0,
+"kind": &"heli",
+"max_per_heist": 2,
+"min_wave": 1,
+"params": {},
+"weight": 1.2
+}, {
+"cooldown_s": 45.0,
+"kind": &"breach",
+"max_per_heist": 3,
+"min_wave": 1,
+"params": {},
+"weight": 1.5
+}]
+},
 &"ostrander_federal": {
 "events": [{
 "cooldown_s": 150.0,

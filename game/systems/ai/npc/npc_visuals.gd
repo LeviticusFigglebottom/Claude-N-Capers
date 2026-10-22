@@ -46,9 +46,7 @@ static func resolve(npc: NpcBase) -> PackedScene:
 		return by_tag
 	var def: EnemyDef = npc.enemy_def
 	if def != null and String(def.id).begins_with("enemy."):
-		var cid: String = String(def.id).substr(6)
-		if tw != null and tw.enemy_characters.has(def.id):
-			cid = String(tw.enemy_characters[def.id])
+		var cid: String = def_character_id(def, tw)
 		var rt: HeistRuntime = HeistRuntime.of(npc)
 		for variant: String in variants(def, rt.difficulty if rt != null else -1):
 			var ps: PackedScene = _load(scene_path(cid, variant))
@@ -78,16 +76,23 @@ static func variants(def: EnemyDef, difficulty: int = -1) -> PackedStringArray:
 	return out
 
 
+## The character an EnemyDef wears: its params `character` (a faction file naming its own, e.g. the RT convoy escorts'
+## Hazardous+ SUV crews: tac_light, D-149.12), else NpcVisualTweak.enemy_characters, else the id after "enemy.".
+static func def_character_id(def: EnemyDef, tw: NpcVisualTweak) -> String:
+	if def.params.has("character"):
+		return String(def.params["character"])
+	if tw != null and tw.enemy_characters.has(def.id):
+		return String(tw.enemy_characters[def.id])
+	return String(def.id).substr(6)
+
+
 ## Character scene paths an NPC with EnemyDef `def` may wear on `difficulty` (variant first), existing ones only.
 ## For warm-up.
 static func def_scene_paths(def: EnemyDef, difficulty: int = -1) -> PackedStringArray:
 	var out: PackedStringArray = PackedStringArray()
 	if def == null or not String(def.id).begins_with("enemy."):
 		return out
-	var cid: String = String(def.id).substr(6)
-	var tw: NpcVisualTweak = tweak()
-	if tw != null and tw.enemy_characters.has(def.id):
-		cid = String(tw.enemy_characters[def.id])
+	var cid: String = def_character_id(def, tweak())
 	for variant: String in variants(def, difficulty):
 		var path: String = scene_path(cid, variant)
 		if not out.has(path) and ResourceLoader.exists(path):

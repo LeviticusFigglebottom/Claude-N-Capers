@@ -6,6 +6,8 @@
 script = ExtResource("1")
 enemy_characters = {
 &"enemy.aegis": &"bulwark_aegis",
+&"enemy.convoy_lead": &"patrol_officer",
+&"enemy.convoy_rear": &"patrol_officer",
 &"enemy.wrecker_b": &"wrecker",
 &"enemy.wrecker_g": &"wrecker",
 &"enemy.wrecker_m": &"wrecker",
