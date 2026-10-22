@@ -528,3 +528,21 @@ func test_8way_phase_carry_back_offset() -> void:
 	var now: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
 	var want: float = fposmod(u + AnimTweak.data().locomotion_back_phase_offset + 0.033, 1.0)
 	assert_near(now, want, 0.06, "walk_fr -> walk_br: + the back group's offset")
+
+
+## D (motion strips): a 180 deg reversal (run <-> run_b) crossfades in locomotion_reversal_blend_s, not the full blend.
+func test_8way_reversal_short_crossfade() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71694)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"run_b", &"run_fr"], 21)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(0.0, 3.5)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_eq(d.clip, &"run")
+	npc.velocity = _vel_at(180.0, 3.5)
+	d.tick(0.033)
+	assert_eq(d.clip, &"run_b", "reversed")
+	assert_near(d.last_blend_s, AnimTweak.data().locomotion_reversal_blend_s, 0.0001, "a short crossfade")
+	assert_true(AnimDriver._reversal(&"run_bl", &"run_r") and not AnimDriver._reversal(&"run", &"run_r"),
+		"135 deg is a reversal, 90 deg is not")

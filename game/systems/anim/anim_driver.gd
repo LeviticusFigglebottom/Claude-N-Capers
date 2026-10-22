@@ -1094,6 +1094,8 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			blend = tw.hit_zone_blend_in_s if HIT_ZONE_CLIPS.has(want) else tw.oneshot_blend_s
 		elif HIT_ZONE_CLIPS.has(clip):
 			blend = tw.hit_zone_blend_out_s
+		elif _reversal(clip, want):
+			blend = tw.locomotion_reversal_blend_s  # D: opposite strides averaged fold the legs into a squat
 		var chained: bool = HOLD_END.get(clip, &"") == want or CivPanic.chained(clip, want)
 		loop_resume.leaving(clip, want)
 		var carry: float = _gait_phase(clip, want)
@@ -1130,6 +1132,18 @@ func _gait_phase(from: StringName, to: StringName) -> float:
 	# D (test_loco_phase): the backward clips' feet run back_phase_offset of a cycle after the forward ones.
 	var shift: float = (1.0 if _gait_back(to) else 0.0) - (1.0 if _gait_back(from) else 0.0)
 	return fposmod(u + shift * AnimTweak.data().locomotion_back_phase_offset, 1.0)
+
+
+## D (motion strips): two 8-way locomotion clips 135 deg or more apart (run <-> run_b, run_bl <-> run_r ...).
+static func _reversal(from: StringName, to: StringName) -> bool:
+	var a: int = _sector_of(from)
+	var b: int = _sector_of(to)
+	return a >= 0 and b >= 0 and absi(posmod(a - b + 4, 8) - 4) >= 3
+
+
+static func _sector_of(c: StringName) -> int:
+	var i: int = WALK_8.find(c)
+	return i if i >= 0 else RUN_8.find(c)
 
 
 static func _gait_back(c: StringName) -> bool:

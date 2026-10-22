@@ -207,6 +207,9 @@ static var _curves: Dictionary = {}
 ## their feet down this much of a cycle later than the forward ones; the phase carry adds it going back, subtracts it
 ## coming out.
 @export var locomotion_back_phase_offset: float = 0.10
+## D (motion strips): the crossfade (s) between two 8-way clips 135 deg or more apart; a full blend averages the
+## opposite strides into a knees-bent squat.
+@export var locomotion_reversal_blend_s: float = 0.05
 ## Never LOD an NPC within this distance (m) of a crew member's aim ray (the player / a teammate aiming at it).
 @export var anim_lod_aim_radius_m: float = 2.0
 
