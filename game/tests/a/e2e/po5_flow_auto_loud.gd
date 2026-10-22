@@ -115,12 +115,15 @@ func play(flow: Node) -> int:
 	EventBus.interaction_started.connect(func(nid: int, slot: int, _k: StringName) -> void:
 		_note_bot_interaction(nid, slot, &"started"))
 	EventBus.objective_updated.connect(func(id: StringName, st: int, _d: Dictionary) -> void:
-		f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
+		if is_instance_valid(rt):
+			f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
 	EventBus.loot_secured.connect(func(_b: int, l: StringName, v: int) -> void:
-		f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
+		if is_instance_valid(rt):
+			f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
 	# RT-A6 "every VO line said": the lines a run plays, for the coverage over seeds (grep "EVENT vo ").
 	EventBus.voice_line_requested.connect(func(speaker: StringName, line_id: StringName, _c: Dictionary) -> void:
-		f.note("EVENT vo %s %s t=%.0f" % [speaker, line_id, rt.heist_time_s]))
+		if is_instance_valid(rt):  # the payday / hub plays lines after the runtime is freed
+			f.note("EVENT vo %s %s t=%.0f" % [speaker, line_id, rt.heist_time_s]))
 	if doctor_bag:
 		var ds: DeployableSystem = rt.service(DeployableSystem.SERVICE) as DeployableSystem
 		if ds != null:

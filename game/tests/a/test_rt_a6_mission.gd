@@ -438,3 +438,36 @@ func test_early_alarm_pushes_the_convoy_through() -> void:
 		assert_true(m.timer_left(id) <= RollingThunderMission.EARLY_PUSH_S, "%s does not come after the arrival" % id)
 	assert_true(m.timer_left(&"sighted") > 0.0, "sighted re-timed before the arrival")
 	assert_near(m.police_delay_s, 0.0, 0.001, "police at once (D-075) unchanged")
+
+
+## D-154 amended (lever (a)): a crash stop seats the convoy units, then the escorts get out at once and the Vaultline
+## crews / TAC Heavy over the next CRASH_DISMOUNT_S (seeded), not all eleven at once.
+func test_crash_stop_staggers_the_dismount() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	_rt.stealth.raise_alarm(&"test")  # early alarm: crash stop
+	await wait_physics_frames(3)
+	m._convoy_arrives()
+	await _stopped(m)
+	await wait_physics_frames(2)
+	var out_escorts: int = 0
+	var seated_crew: int = 0
+	for u: NpcBase in m._units:
+		var tags: Array = u.spawn_info.get("tags", []) as Array
+		var seated: bool = u.has_meta(HeistMission.META_SEATED_IN)
+		if (tags.has(&"convoy_lead") or tags.has(&"convoy_rear")) and u.enemy_def.id != &"enemy.tac_heavy":
+			out_escorts += 0 if seated else 1
+		elif not seated:
+			pass
+		else:
+			seated_crew += 1
+	assert_true(out_escorts >= 2, "the escorts are out at once (%d)" % out_escorts)
+	assert_true(seated_crew >= 2, "the crews are still inside (%d)" % seated_crew)
+	Engine.time_scale = 4.0
+	var all_out: bool = await wait_until(func() -> bool:
+		return m._units.all(func(u: NpcBase) -> bool: return not is_instance_valid(u) or not u.has_meta(HeistMission.META_SEATED_IN)),
+		RollingThunderMission.CRASH_DISMOUNT_S + 3.0)
+	Engine.time_scale = 1.0
+	assert_true(all_out, "everyone is out within CRASH_DISMOUNT_S")

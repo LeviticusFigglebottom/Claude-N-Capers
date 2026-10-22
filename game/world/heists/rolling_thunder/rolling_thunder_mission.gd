@@ -67,6 +67,8 @@ const PAUSE_CABINET: StringName = &"cabinet_locked"
 ## D-154.2 revised (B fd41028a): an early alarm brings the convoy at most this many seconds later (it stops at about
 ## +35 s, inside wave 1's quiet ANTICIPATION, not on SUSTAIN as +75 did).
 const EARLY_PUSH_S: float = 25.0
+## D-154 amended: the crash stop's crews / TAC Heavy get out over this many seconds after the escorts.
+const CRASH_DISMOUNT_S: float = 6.0
 ## RT phase 2 (C): the Mixer ConvoyVehicle, each convoy layout's MixerPath / MixerStop, the Tannery gates' tag.
 const MIXER_NAME: String = "Mixer"
 const MIXER_PATH: NodePath = ^"MixerPath"
@@ -592,7 +594,8 @@ func _spawn_convoy_units() -> void:
 			for id: StringName in ids:
 				own.append(ESCORT_DEFS[veh] if ESCORT_SWAPPED.has(id) else id)
 			ids = own
-		var seat: bool = clean_stop and not went_loud and body is ConvoyVehicle
+		# D-154 amended (LEAD): a crash stop seats them too, so the dismount can be staggered (_dismount_crash)
+		var seat: bool = body is ConvoyVehicle
 		var look_tag: StringName = StringName("convoy_" + veh.to_lower())  # convoy_lead / convoy_t1.. / convoy_rear
 		for i: int in ids.size():
 			# D: the Wrecker's helmet clears no car door frame: it rides along but starts beside the car
@@ -608,7 +611,30 @@ func _spawn_convoy_units() -> void:
 
 
 func _dismount_all() -> void:
+	if not clean_stop:
+		_dismount_crash()
+		return
 	dismount_units(_seated)
+	_seated.clear()
+
+
+## D-154 amended (LEAD, lever (a)): on the crash stop the escort officers get out at once, the Vaultline crews and the
+## rear TAC Heavy over the next CRASH_DISMOUNT_S (seeded per unit), so the crew does not meet all eleven at once.
+func _dismount_crash() -> void:
+	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
+	var first: Array[NpcBase] = []
+	for u: NpcBase in _seated:
+		if not is_instance_valid(u):
+			continue
+		var tags: Array = u.spawn_info.get("tags", []) as Array
+		var def_id: StringName = u.enemy_def.id if u.enemy_def != null else &""
+		if (tags.has(&"convoy_lead") or tags.has(&"convoy_rear")) and def_id != &"enemy.tac_heavy":
+			first.append(u)
+			continue
+		var unit: NpcBase = u
+		start_timer(StringName("dismount_%d" % u.get_instance_id()), rng.randf_range(1.0, CRASH_DISMOUNT_S),
+			func() -> void: dismount_units([unit]))
+	dismount_units(first)
 	_seated.clear()
 
 
