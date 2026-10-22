@@ -1,4 +1,4 @@
-# Contract: characters (v1.36)
+# Contract: characters (v1.37)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -425,7 +425,20 @@ between opposite strides, which folds the knees. `_l` = the left foot brakes.
 * Frame 0 IS the source loop at u_in (the brake foot's touch-down); the last frame IS the target loop at u_out.
 * Events: `foot_plant` (0), `push` (the root speed crosses 0), `done` (last frame).
 * In place with root motion `curve.<clip>` (metres along the character's forward, + = forward / Godot −Z, one value per
-  frame). The brake foot stays world-still until it lifts; the hips never drop more than 10 mm below the loops' lowest.
+  frame). The brake foot stays world-still until it lifts; the hips never drop more than 16 mm below the loops' lowest (v1.37: was 10 mm; the loops' lowest hips rose ~3 cm with the upright run, and SOURCE `loco_reverse` states each clip's value).
 ENV A wiring: on a ≥135° reversal, wait for the source loop's next brake-foot touch-down (u 0 → `_r`; run 11/21 or walk
 15/30 → `_l`), play the clip with no crossfade, move the root by its curve, then switch to the target loop seeked to
 u_out with no crossfade. Under 135° the 8-way switch with phase carry stays (fallback: the 0.05 s reversal crossfade).
+
+## v1.37: upright combat run (D-153 motion strips, PO "crouchy police"; D 07dae504)
+* The shared run family (`run`, `run_fl/fr/l/r/bl/br/b`, and the `run_start` / `run_stop` /
+  `hold_*_run` / `aim_*_run` / `run_reverse*` clips built from it) is a jog-height combat run.
+  Hips (mean, above the root): 0.887 m forward and diagonal-forward, 0.865–0.868 m lateral and
+  backward (were 0.795–0.859 m; idle 0.912). Knees are a jog's: ≤ 65° max flex including the
+  swing heel-kick. Slight forward lean (7°) on the forward runs; upright trunk backward.
+* Unchanged: names, speed (3.5 m/s), frames (21), loop, touch-down phases (R at 0, L at 0.5),
+  the forward/back phase groups. The back group runs 0.07–0.08 of a cycle later (A's 0.10 ± 0.04
+  holds). Sprint and walks are unchanged. The reversal u_in/u_out are unchanged.
+* Known: run_l/r sit 2.2 cm under run (target 2 cm); accepted, since closing it would push run's knee past 62°.
+* A crouched close-quarters advance, if the design wants one, is a separate clip.
+* Evidence: `game/assets/characters/_review/d_motion/run_upright_before.png` / `run_upright_after.png` (LEAD reviewed).

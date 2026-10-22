@@ -55,5 +55,30 @@ func _run() -> void:
 			if f != entry:
 				view.call(&"set_floor", f)
 				await _shot("floor%d" % f, 8)
+	await _payday_shot()
 	print("BLUEPRINT DONE %s" % _heist)
 	get_tree().quit(0)
+
+
+## r280 screens pass: the heist's payday (the real PaydayScreen, nothing applied to the profile): a clear with three
+## bags of the heist's first loot, its contract pay and the default crew of the sample result.
+func _payday_shot() -> void:
+	var def: HeistDef = HeistRegistry.get_def(_heist)
+	if def == null:
+		return
+	var r: Dictionary = HeistCatalog.sample_result()
+	var loot: Array = []
+	var lid: StringName = def.loot[0] if not def.loot.is_empty() else &"loot.cash_bricks"
+	for i: int in range(3):
+		loot.append({"loot_id": lid, "value": int(LootManager.loot_info(lid).get("value", 0))})
+	r.merge({"heist_id": _heist, "success": true, "contract_pay": def.base_payout, "loot": loot,
+			"difficulty": Enums.Difficulty.HAZARDOUS}, true)
+	for n: Node in get_tree().root.get_children():
+		if n is MenuFlow:
+			(n as MenuFlow).visible = false
+	var pd: PaydayScreen = (load("res://content/ui/results/payday.tscn") as PackedScene).instantiate() as PaydayScreen
+	pd.apply_to_profile = false
+	get_tree().root.add_child(pd)
+	pd.show_result(r)
+	await get_tree().create_timer(4.0).timeout
+	await _shot("payday", 10)

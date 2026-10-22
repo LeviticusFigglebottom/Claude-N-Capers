@@ -109,8 +109,8 @@ func test_all_six_difficulties_exist_with_exact_multipliers() -> void:
 	var brutal: DifficultyDef = ContentDB.difficulty(Enums.Difficulty.BRUTAL)
 	assert_eq(brutal.special_limits[&"enemy.bulwark"], 4, "Overkill shield cap")
 	assert_eq(brutal.special_limits[&"enemy.stinger"], 2, "Overkill taser cap")
-	# D-154 (LEAD r278, B's RT balance review): fewer shields on the low tiers, Routine..Cataclysm.
-	var bulwarks: Array[int] = [1, 2, 3, 4, 4, 4]
+	# D-154 (LEAD r278, amended r280 after A measured Hazardous at 5 %): fewer shields on Routine / Tense only.
+	var bulwarks: Array[int] = [1, 2, 4, 4, 4, 4]
 	for d: int in range(bulwarks.size()):
 		assert_eq(int(ContentDB.difficulty(d).special_limits[&"enemy.bulwark"]), bulwarks[d], "D-154 Bulwark cap @%d" % d)
 
