@@ -223,3 +223,13 @@ func test_lift_dead_and_the_breaker() -> void:
 	EventBus.device_finished.emit((breaker as GameplayPrefab).net_id)
 	await wait_physics_frames(1)
 	assert_true(lift.powered, "the breaker restores the lift")
+
+
+## doc Rare events gold_rush: "forces trucks_3 + t3_bullion" (both pins, force_active as an Array).
+func test_gold_rush_pins_a_bullion_third_truck() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch(4101, [&"gold_rush"])
+	assert_has(m.variant(&"truck_count") as Array, &"trucks_3", "gold_rush: three trucks")
+	assert_has(m.variant(&"cargo_t3") as Array, &"t3_bullion", "gold_rush: T3 is bullion")
