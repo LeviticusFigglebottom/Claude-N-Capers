@@ -39,9 +39,12 @@ TABLE_SEATS = [(19.88, 18.0, -90.0), (19.88, 22.0, -90.0), (21.12, 18.0, 90.0), 
 # 23.15: 0.25 m off the counter's front)
 DINER_BOOTH_Z = [17.0, 19.45, 24.6]
 DINER_STOOL_Z = [17.9, 18.55, 19.2, 19.85, 20.5, 21.15, 21.8]
-# cower_stand marks (tag cower; a wall 0.21 m behind the root, ~0.7 m clear in front): [name, pos, facing yaw]
-COWER_DINER = [["CowerFrontW", [20.5, 0.0, 14.41], 180.0], ["CowerFrontE", [22.5, 0.0, 14.41], 180.0],
-               ["CowerCounterN", [23.39, 0.0, 17.0], 90.0], ["CowerCounterS", [23.39, 0.0, 22.6], 90.0]]
+# cower marks (tag cower): [name, pos, facing yaw, activity]. cower_stand wants a wall 0.21 m behind the root (~0.7 m
+# clear in front); the two front marks sit under the front window (sill 0.8 m), so they crouch (`cower`, no wall
+# needed, the back below the sill; D's diner fit, env_d.md 2026-10-21).
+COWER_DINER = [["CowerFrontW", [20.5, 0.0, 14.41], 180.0, "cower"], ["CowerFrontE", [22.5, 0.0, 14.41], 180.0, "cower"],
+               ["CowerCounterN", [23.39, 0.0, 17.0], 90.0, "cower_stand"],
+               ["CowerCounterS", [23.39, 0.0, 22.6], 90.0, "cower_stand"]]
 COWER_SHELTERS = [["CowerShelter%d" % i, [x, 0.0, 12.24], 0.0] for i, x in enumerate([-38.0, -30.0, -22.0])]
 # D-149.7 (QC-RT7): the street civilians leave by `civilians_leave(&"civ_flee")` at the alarm through the four closures
 # (PatrolPoints tagged civ_flee + exit, just past each closure on its sidewalk), and a panicking pedestrian phones from
@@ -751,7 +754,7 @@ def graphs() -> Dict[str, list]:
         "DinerCower": [
             "diner_cower",
             1,
-            {nm: [pos, [0.0, 0.0], "cower_stand", ["cower"], yaw] for nm, pos, yaw in COWER_DINER},
+            {nm: [pos, [0.0, 0.0], act, ["cower"], yaw] for nm, pos, yaw, act in COWER_DINER},
             [["CowerFrontW", "CowerFrontE"], ["CowerFrontE", "CowerCounterN"], ["CowerCounterN", "CowerCounterS"],
              ["CowerCounterS", "CowerFrontW"]],
         ],

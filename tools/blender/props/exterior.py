@@ -33,9 +33,9 @@ VARIANTS = {
     "veh_car_sedan_navy": {"fn": "car", "paint": "car_navy", "cat": {"kind": "car", "place": "row", "standoff": 5.2, "group": "exterior"}},
     "veh_car_sedan_silver": {"fn": "car", "paint": "car_silver", "cat": {"kind": "car", "place": "row", "standoff": 5.2, "group": "exterior"}},
     # RT-C2: the convoy's escort car (A5-02 convoy_vehicle visual): the sedan as `Body` (no collision: the mover fits
-    # its own), a roof light bar, `Seat0..3` (front left / right, rear left / right) at the cushion. Front = +Y
-    # (Godot -Z): the map turns the mover's `Visual` 180 deg so the bonnet leads (+Z); the seats are authored turned
-    # back so they end up square with the mover.
+    # its own), a roof light bar, `Seat0..3` (front left / right, rear left / right) on the footwell floor (y 0.18,
+    # sit_vehicle's root; D's convoy fit), rows 1.2 m apart. Front = +Y (Godot -Z): the map turns the mover's `Visual`
+    # 180 deg so the bonnet leads (+Z); the seats face the art's front, so they face +Z in the mover.
     "veh_escort_car": {"fn": "car", "paint": "car_navy", "escort": True, "cat": {"prefab": "convoy_vehicle", "kind": "convoy_vehicle"}},
     "prop_hvac_condenser": {"fn": "hvac", "cat": {"kind": "hvac", "place": "wall", "group": "exterior"}},
     "prop_barrier_jersey": {"fn": "jersey", "cat": {"kind": "barrier", "place": "row", "standoff": 4.5, "group": "exterior"}},
@@ -185,8 +185,8 @@ def _car(k: Kit, p: dict) -> None:
             trim.bx((l0, -0.18, 1.52), (l1, 0.03, 1.58), mat)
     o.build()
     if escort:
-        for i, (sx, sy) in enumerate(((-1, 0.25), (1, 0.25), (-1, -0.75), (1, -0.75))):
-            k.empty("Seat%d" % i, (sx * 0.4, sy, 0.45), rotation=(0.0, 0.0, math.pi))
+        for i, (sx, sy) in enumerate(((-1, 0.25), (1, 0.25), (-1, -0.95), (1, -0.95))):
+            k.empty("Seat%d" % i, (sx * 0.4, sy, 0.18))
         return
     k.collision([((-w / 2, -hl, 0.0), (w / 2, hl, 0.96)), ((-w / 2 + 0.1, -hl + 0.9, 0.96), (w / 2 - 0.1, hl - 1.2, 1.44))])
 

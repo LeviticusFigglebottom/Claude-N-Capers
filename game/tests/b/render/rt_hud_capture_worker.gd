@@ -89,6 +89,7 @@ func _run() -> void:
 			d.get("label", "?"), d.get("time_text", "?")])])
 	if saws > 0 and hud.device_timers.drawn.is_empty():
 		_issue("timers", "standing at a truck with a running saw, the HUD draws no timer")
+		_why_no_timer(hud, trucks[0] as Node3D)
 	_state("saws")
 	await _shot("05_truck_saws")
 	var dir: AssaultDirector = rt.service(G.SVC_DIRECTOR) as AssaultDirector
@@ -120,6 +121,33 @@ func _run() -> void:
 				_issue("payday", "%s is not unlocked after the scripted clear" % id)
 		await _shot("08_payday")
 	_done()
+
+
+## Why each timer row is not drawn: distance, behind the camera, or the occlusion ray's first hit (DeviceTimers' rules).
+func _why_no_timer(hud: Hud, truck: Node3D) -> void:
+	var cam: Camera3D = get_viewport().get_camera_3d()
+	if cam == null:
+		print("RTHUD why: no camera")
+		return
+	print("RTHUD why: truck %s at %s, camera %s" % [truck.name, truck.global_position, cam.global_position])
+	var tw: HudTweak = hud.device_timers.tweak
+	for r: Dictionary in hud.device_timers.rows():
+		var wp: Variant = r.get("world_pos", null)
+		if not wp is Vector3:
+			print("RTHUD why: row %s has no world_pos" % r.get("net_id", -1))
+			continue
+		var to: Vector3 = wp as Vector3
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(cam.global_position, to,
+				tw.device_occlusion_mask)
+		var hit: Dictionary = cam.get_world_3d().direct_space_state.intersect_ray(q)
+		var hit_text: String = "none"
+		if not hit.is_empty():
+			var col: Object = hit.get("collider")
+			hit_text = "%s at %.2f m from the device" % [(col as Node).get_path() if col is Node else col,
+					(hit["position"] as Vector3).distance_to(to)]
+		print("RTHUD why: row %s at %s dist %.1f (max %.1f) behind %s ray hit %s (slack %.2f)" % [r.get("net_id", -1), to,
+				cam.global_position.distance_to(to), tw.device_panel_max_m, cam.is_position_behind(to), hit_text,
+				tw.device_occlusion_slack_m])
 
 
 ## Harness only (A's po5_flow._stub_rt_trucks): an armored_truck on each G1 convoy placeholder box (cash / bullion).
@@ -183,6 +211,10 @@ func _state(tag: String) -> void:
 		if (l as Label).is_visible_in_tree() and (l as Label).text.strip_edges() != "":
 			texts.append((l as Label).text.replace("\n", " / "))
 	print("RTHUD %s objective: %s" % [tag, " | ".join(texts)])
+	var steps: PackedStringArray = PackedStringArray()
+	for o: Dictionary in hud.objectives.prop(&"objectives", []) as Array:
+		steps.append("%s=%s" % [o.get("id", &""), Enums.ObjectiveState.find_key(int(o.get("state", -1)))])
+	print("RTHUD %s model: %s (flashing %s)" % [tag, ", ".join(steps), hud.objectives.flashing])
 	var raw: RegEx = RegEx.create_from_string("\\b(objective|ui|vo|heist|item|loot)\\.[a-z_]")
 	for c: Node in hud.find_children("*", "Label", true, false):
 		var t: String = (c as Label).text

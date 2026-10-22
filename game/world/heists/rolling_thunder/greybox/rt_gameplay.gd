@@ -34,9 +34,9 @@ const TRUCK_USE_BACK: float = 0.5
 ## TRUCK_USE_BACK behind the doors, the bullion thermite's THERMITE_USE_BACK.
 const TRUCK_USE_X: float = -1.8
 const THERMITE_USE_BACK: float = 1.1
-## Where the movers' `<Veh>Path` Path3Ds go: "Movers" (beside the movers) wires A's drive-in (the mission's
-## _drive_path finds them); any other name keeps the paths but the mission pops the vehicles in (park). "Paths" until
-## ENV A's test_rt_a6_mission waits for the drive-in (its stop tests assert the layout 2 frames after the arrival).
+## Where the movers' `<Veh>Path` Path3Ds go: "Movers" (beside the movers) or "Paths" (`Convoy/Paths`); the mission's
+## _drive_path finds them in either (A 88873eb2), so the vehicles drive in to their stops (D-149.8); any other name
+## keeps the paths but the mission pops the vehicles in (park).
 const CONVOY_PATH_PARENT: String = "Paths"
 
 ## RT-C2 convoy nav (D-149.1), read by build_greybox's bake: per route slot {route, layouts [{node, id, obs (the
