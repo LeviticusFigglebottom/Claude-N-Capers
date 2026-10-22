@@ -4,6 +4,15 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-31) Round 280: mixer test fixed for C's map (2026-10-22)
+- **Round 280 red, now fixed:** a/test_rt_a6 test_phase2_mixer_drives_to_its_stop.
+  - Cause: the test added a duplicate Mixer and MixerStop next to C's, and Godot auto-renamed both.
+  - Fix (ee4525ff, test only): the test now uses C's own nodes, waits for the MixerPath drive, and adds stand-ins only
+    when the map has none.
+  - The runtime lookup already matched C's path, `<Slot_route_X>/Convoy/Movers/Mixer` and `<layout>/MixerStop`.
+  - Results: 14/14 on a-core, and 14/14 on a scratch merge with c-worlds 41bb3e96.
+- **Next:** the D-154 amended shield re-measure (running), then the mixer e2e on 280.
+
 ### (-30) RT P5 gate met; D's motion fixes; the padlock pilot; round 277 merged (2026-10-22)
 - **P5 loud-bot gate (LEAD: MET):**
   - Routine 6/6: 1001 583 s / 1002 810 / 1003 778 / 4101 750 / 1004 731 / 4102 791. 4-6 bags; downs 0-3 total per
