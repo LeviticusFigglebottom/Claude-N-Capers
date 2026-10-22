@@ -7,12 +7,6 @@ extends RefCounted
 
 ## No runtime code reads the key (and so no behaviour test can exist).
 const UNHOOKED: Dictionary = {
-	&"deploy.sentry_accuracy_mult": "A",
-	&"deploy.sentry_cost_mult": "A",
-	&"deploy.sentry_health_mult": "A",
-	&"deploy.sentry_modes": "A",
-	&"deploy.sentry_shield": "A",
-	&"deploy.sentry_turn_speed_mult": "A",
 	&"stealth.pocket_ecm": "A",
 }
 
