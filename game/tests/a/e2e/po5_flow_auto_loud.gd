@@ -163,15 +163,21 @@ func play(flow: Node) -> int:
 	return await f.payday_to_hub()
 
 
-## --po5-wait-convoy: unmasked, in place, until [convoy] is done or the crash's alarm is up (ETA 150-210 s; at most 300).
+## --po5-wait-convoy: unmasked, in place, until the convoy has stopped (RT _stop_done) or the crash's alarm is up
+## (ETA 150-210 s; at most 300).
 func _wait_for_the_convoy() -> void:
 	f.note("harness: waiting unmasked for the convoy (--po5-wait-convoy)")
 	var t0: float = rt.heist_time_s
 	# The crash itself is the alarm (the mixer's impact raises the ambush): mask the moment it is loud, too.
-	while rt.mission != null and rt.mission.objective_state(&"convoy") != Enums.ObjectiveState.COMPLETED \
+	# [convoy] completes on the convoy's arrival, a few seconds BEFORE the stop resolves: masking then let a guard
+	# radio the alarm first (RT Hazardous WAIT_CONVOY 1001-1003, all guard_radio). Wait for the stop itself.
+	var m: RollingThunderMission = rt.mission as RollingThunderMission
+	while rt.mission != null and not (m._stop_done if m != null else
+			rt.mission.objective_state(&"convoy") == Enums.ObjectiveState.COMPLETED) \
 			and not rt.went_loud and rt.heist_time_s - t0 < 300.0:
 		await f.wait_s(1.0)
-	f.note("the convoy is in (or the crash raised the alarm) at %.0f s: going loud" % rt.heist_time_s)
+	f.note("the convoy stopped (%s) or the crash raised the alarm at %.0f s: going loud" % [
+		m.layout_id if m != null else "", rt.heist_time_s])
 
 
 ## One decision: the first marked active objective (HUD order).
