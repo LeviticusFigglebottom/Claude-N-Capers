@@ -241,6 +241,10 @@ const DIRECT_PROPS: Array = [
 	# (rt_dress.gd POLE_OFF)
 	["DinerPoleSign", "prop_pole_sign_halfway", Vector3(32.5, 0.0, 10.0), 90.0, {}],
 	["DinerPoleBin", "prop_bin_street", Vector3(31.4, 0.0, 10.4), 90.0, {}],   # the street furniture at its foot
+	# the car-park entrance (x 22-26 in the south facade; doc: a barrier arm, the 2.4 m height bar is the G1
+	# EntranceHeightBar lintel): the barrier open (arm raised, so on the open forecourt: the Deck 2 parapet is over the
+	# opening) on the lane's west edge
+	["CarParkBarrier", "prop_car_park_barrier", Vector3(22.35, 0.0, -12.4), 0.0, {}],
 	# ST's second rect (x 32-34, z 26-32; the placer dresses a room's largest box): shelving and a box stack on the
 	# east wall, clear of the electrical closet's door (z 26)
 	["STShelf", "prop_shelving_boxes", Vector3(33.56, 0.0, 29.6), 90.0, {}],

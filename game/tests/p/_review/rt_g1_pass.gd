@@ -18,7 +18,16 @@
 ##   escapes    E1 / E2 / E3 reached on foot from the plaza spawn; E3 <-> both head houses step-free (§7.14).
 ##   fences     the hoarding (2.4 m, nothing standable within 0.5 m: a ray probe of both faces + real jump tries) and the
 ##              rail palisades / lane fence (1.8 m, unclimbable: jump tries from the rail lane) (§7.6 / §7.9).
-##   all        every test above in turn (a fresh launch each); continues past failures, one summary at the end.
+##   Truck phase (A's RT mission + C's trucks, trunk r275+):
+##   ambush_clean / ambush_crash  north: rig hacked + no alarm -> clean stop and the +8 s ambush; 3 shots -> crash stop;
+##              each truck's rear UsePoint reachable in that layout; the mixer / Tannery gate row.
+##   breach     north clean: T1 by the placed saw (jams fixed), T2 by the tool store's thermite bag, the C4 source row,
+##              a T1 cargo bag on foot to E1.
+##   east_e1 / east_e2  east clean: a HEAVY bag T1 -> E1, T3 -> E2 (trucks_3).
+##   setup      from each spawn (plaza, car park, underpass), REAL detection: man-gate, rig hack; times vs the ETA and
+##              every observer's peak D-128 fill.
+##   trucks     the six truck-phase tests in turn.
+##   all        the nine traversal tests (stairs .. fences) in turn (a fresh launch each); continues past failures, one summary at the end.
 ## Command (windowed only, D-086; start it only when `pgrep -xc godot` <= 1):
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 --audio-driver Dummy \
 ##     res://tests/p/_review/rt_g1_pass.tscn -- --test=stairs|ramps|lift|site|throws|underpass|kerbs|escapes|fences|all \
@@ -112,6 +121,14 @@ const JUMP_TRIES: Array = [
 const RAIL_LANE_IN: Vector3 = Vector3(55.0, 0.0, -35.0)
 const FIRE_DOOR_IN: Vector3 = Vector3(50.8, 0.0, -35.0)
 
+const DEVICE_SCALE: float = 3.0
+const SIGNAL_RIG_AT: Vector3 = Vector3(-16.25, 0.75, -13.45)
+const TOOL_STORE_DOOR_AT: Vector3 = Vector3(-48.0, 0.0, -17.0)
+const THERMITE_BAG_AT: Vector3 = Vector3(-47.5, 0.0, -20.5)
+## Where the crew waits for the convoy (north: the Orchard west sidewalk by the site; east: the forecourt).
+const WAIT_NORTH: Vector3 = Vector3(-12.0, 0.0, -24.0)
+const WAIT_EAST: Vector3 = Vector3(20.0, 0.0, -12.5)
+
 var _rows: PackedStringArray = PackedStringArray()
 var _straight_on: bool = false
 
@@ -129,6 +146,8 @@ func _run() -> void:
 	var tests: Array[String] = []
 	if _test == "all":
 		tests.assign(["stairs", "ramps", "lift", "site", "throws", "underpass", "kerbs", "escapes", "fences"])
+	elif _test == "trucks":
+		tests.assign(["ambush_clean", "ambush_crash", "breach", "east_e1", "east_e2", "setup"])
 	else:
 		tests.append(_test)
 	var ok: bool = true
@@ -345,6 +364,10 @@ func _rt_lift() -> bool:
 			ok = false
 			continue
 		await wait_s(lift.door_travel() + 0.3)
+		var ld: Door = _door_near(Vector3(LIFT_AT.x, y, -47.0), 1.0)
+		if ld != null and not ld.is_open:
+			await pilot.use(_comp(ld), 20.0, func() -> bool: return ld.is_open)
+			await _go(stand, 0.3, 20.0)
 		ok = await _straight("lift landing %d: walk into the car" % i, Vector3(LIFT_AT.x, y, LIFT_IN_Z), 10.0) and ok
 		_row("lift landing %d: car floor" % i, "NOTE", "crew y %.3f vs landing %.3f (%+.3f m)" % [
 			pilot.crew.global_position.y, y, pilot.crew.global_position.y - y], "-")
@@ -755,3 +778,363 @@ func _jump_try(label: String, stand: Vector3, dir: Vector3) -> bool:
 	if over:
 		await shot("jump_over")
 	return not over
+
+
+# --- Truck phase (RT-P1 part 2: needs A's RT mission + C's trucks, trunk r275+) ---------------------------------------
+# Stated shortcuts on top of the above: NPCs are KEPT up to the stop (the convoy, its escort, the ambush) with the crew
+# stealth_hidden (timing / geometry, not stealth; the setup test alone runs with real detection). Once the stop is
+# logged, NPCs are despawned (HeistRuntime.isolate_npc) every second so the breach rows test interaction and geometry,
+# not combat. Device waits (saw, burn, convoy ETA) run at Engine.time_scale DEVICE_SCALE; walks run at 1.0.
+
+## Plaza -> the man-gate -> the SignalRig hack -> wait for the stop: clean (rigged, no alarm) or crash (3 shots at once).
+func _rt_ambush_clean() -> bool:
+	return await _ambush_test(true, &"route_north")
+
+
+func _rt_ambush_crash() -> bool:
+	return await _ambush_test(false, &"route_north")
+
+
+## T1 (cash) by the placed saw, T2 (bullion) by the thermite bag from the tool store, C4 checked; north, clean stop.
+func _rt_breach() -> bool:
+	if not await _truck_launch(&"route_north", {&"site_stores": [&"stores_thermite"]}):
+		return false
+	if not await _stop(true):
+		return false
+	_clear_npcs()
+	var trucks: Array[ArmoredTruck] = _trucks()
+	if trucks.size() < 2:
+		return await _fail("%d trucks" % trucks.size())
+	var ok: bool = await _saw_truck(trucks[0])
+	ok = await _thermite_truck(trucks[1]) and ok
+	_c4_row(trucks)
+	_mixer_row()
+	# The cargo: a T1 bag on foot to E1.
+	ok = await _carry_to_escape("T1 cargo -> E1", trucks[0], E1_AT, LOOT_MEDIUM, true) and ok
+	return ok
+
+
+## East, clean: a HEAVY bag from T1 to E1, then (a second launch) from T3 to E2.
+func _rt_east_e1() -> bool:
+	if not await _truck_launch(&"route_east", {&"escape": [&"esc_van_carpark"]}):
+		return false
+	if not await _stop(true):
+		return false
+	_clear_npcs()
+	var trucks: Array[ArmoredTruck] = _trucks()
+	if trucks.is_empty():
+		return await _fail("no trucks")
+	return await _carry_to_escape("T1 -> E1 with a HEAVY bag (east, clean)", trucks[0], E1_AT, LOOT_HEAVY, false)
+
+
+func _rt_east_e2() -> bool:
+	if not await _truck_launch(&"route_east", {&"escape": [&"esc_van_underpass"], &"truck_count": [&"trucks_3"]}):
+		return false
+	if not await _stop(true):
+		return false
+	_clear_npcs()
+	var trucks: Array[ArmoredTruck] = _trucks()
+	if trucks.size() < 3:
+		_row("T3 present (trucks_3 forced)", "FAIL", "%d trucks" % trucks.size(), "A mission / C convoy")
+		return false
+	return await _carry_to_escape("T3 -> E2 with a HEAVY bag (east, clean)", trucks[2], E2_AT, LOOT_HEAVY, false)
+
+
+## Setup timing from each spawn: walk (unmasked, REAL detection, NPCs in) to the man-gate, pick it, hack the rig; logs
+## the heist time of each step against the convoy ETA and every observer's peak D-128 fill.
+func _rt_setup() -> bool:
+	var ok: bool = true
+	for sp: StringName in [&"", RT_SPAWN_CARPARK, RT_SPAWN_UNDERPASS]:
+		var label: String = "plaza" if sp == &"" else String(sp).trim_prefix("preplan_spawn_")
+		_peaks.clear()
+		var f: Dictionary = RT_FORCE.duplicate(true)
+		f[&"controller"] = [&"ctrl_open"]
+		var pre: Dictionary = {"force_variants": f}
+		if sp != &"":
+			pre["spawn_tag"] = sp
+		if not await _launch(RT_HEIST, _seed if _seed >= 0 else RT_SEED, Enums.Difficulty.ROUTINE,
+				{"preplan": pre, "skip_casing": true}, false):
+			return false
+		var m: RollingThunderMission = rt.mission as RollingThunderMission
+		var eta: float = m._eta_s if m != null else -1.0
+		var t_gate: float = -1.0
+		var t_rig: float = -1.0
+		if await _site_in():
+			t_gate = rt.heist_time_s
+			if await _hack_rig():
+				t_rig = rt.heist_time_s
+		_peaks_table()
+		var worst: float = 0.0
+		for id: int in _peaks:
+			worst = maxf(worst, float(_peaks[id]["max"]))
+		var good: bool = t_rig > 0.0 and t_rig < eta and _alarm == &""
+		var fmt: String = "gate t=%.1f, rig hacked t=%.1f, ETA %.0f s (%.0f s spare), alarm '%s', %d observers, peak %.2f"
+		_row("setup from %s spawn" % label, "PASS" if good else "FAIL", fmt % [
+			t_gate, t_rig, eta, eta - t_rig, _alarm, _peaks.size(), worst], "-" if good else "C map / A mission")
+		ok = ok and good
+	return ok
+
+
+# --- truck helpers ----------------------------------------------------------------------------------------------------
+
+func _track_rover_hall() -> void:
+	pass  # OF only
+
+
+func _truck_launch(route: StringName, force: Dictionary) -> bool:
+	var f: Dictionary = RT_FORCE.duplicate(true)
+	f[&"convoy_route"] = [route]
+	f[&"controller"] = [&"ctrl_open"]
+	for k: Variant in force:
+		f[k] = force[k]
+	if not await _launch(RT_HEIST, _seed if _seed >= 0 else RT_SEED, Enums.Difficulty.ROUTINE,
+			{"preplan": {"force_variants": f}, "skip_casing": true}, false):
+		return false
+	pilot.crew.stealth_hidden = true
+	note("SHORTCUT truck phase: NPCs in, crew stealth_hidden until the stop")
+	return true
+
+
+func _mission() -> RollingThunderMission:
+	return rt.mission as RollingThunderMission
+
+
+## Clean: man-gate, rig hack, wait by the route, mask once stopped. Crash: mask and 3 shots at once, wait.
+func _stop(clean: bool) -> bool:
+	var m: RollingThunderMission = _mission()
+	if m == null:
+		return await _fail("no RollingThunderMission")
+	var wait_at: Vector3 = WAIT_NORTH if m._route() == "north" else WAIT_EAST
+	if clean:
+		if not await _site_in() or not await _hack_rig():
+			return await _fail("signals")
+		if not await _go(MAN_GATE_OUT, 0.5, 60.0) or not await _go(wait_at, 0.8, 240.0):
+			return await _fail("wait spot")
+	else:
+		await _mask()
+		await pilot.face(pilot.crew.eye_position() + Vector3(0.0, 4.0, -6.0), 0.05, 1.5)
+		for _k: int in 3:
+			await pilot.inp.tap(&"fire")
+			await wait_s(0.3)
+		note("crash: 3 shots fired, alarm '%s', mission alerted %s" % [_alarm, m.alerted])
+		await _go(wait_at, 0.8, 240.0)
+	var t_wait: float = rt.heist_time_s
+	Engine.time_scale = DEVICE_SCALE
+	var stopped: bool = await wait_until(func() -> bool: return m._stop_done, 400.0 / DEVICE_SCALE + 60.0)
+	Engine.time_scale = 1.0
+	_row("%s stop (%s)" % ["clean" if clean else "crash", m._route()], "PASS" if stopped and m.clean_stop == clean
+		else "FAIL", "stopped %s at t=%.1f (ETA %.0f, waited %.0f s), layout '%s', clean_stop %s, signals_rigged %s, alerted %s, alarm '%s'" % [
+		stopped, rt.heist_time_s, m._eta_s, rt.heist_time_s - t_wait, m.layout_id, m.clean_stop, m.signals_rigged,
+		m.alerted, _alarm], "-" if stopped and m.clean_stop == clean else "A mission")
+	await shot("stop_%s" % ("clean" if clean else "crash"))
+	if not stopped:
+		return false
+	if clean:
+		await _mask()
+		var sprung: bool = await wait_until(func() -> bool: return rt.went_loud, 20.0)
+		_row("clean stop: the ambush springs (window +8 s)", "PASS" if sprung else "FAIL", "loud %s at t=%.1f" % [
+			rt.went_loud, rt.heist_time_s], "-" if sprung else "A mission")
+	# Every truck's lock reachable on foot (rear step, >= 1.0 m clear behind, §7.8).
+	for t: ArmoredTruck in _trucks():
+		var use: Vector3 = pilot.stand_point(_truck_use(t))
+		var path: PackedVector3Array = pilot.nav_path(use)
+		var reach: bool = not path.is_empty() and pilot.flat_dist(path[path.size() - 1], _truck_use(t)) < 0.6
+		_row("%s rear UsePoint reachable (%s)" % [_truck_name(t), m.layout_id], "PASS" if reach else "FAIL",
+			"use %s, nav end %s" % [Po5Pilot._v(_truck_use(t)), Po5Pilot._v(path[path.size() - 1]) if not path.is_empty()
+			else "-"], "-" if reach else "C convoy layout / A nav")
+	return true
+
+
+func _ambush_test(clean: bool, route: StringName) -> bool:
+	if not await _truck_launch(route, {}):
+		return false
+	var ok: bool = await _stop(clean)
+	_clear_npcs()
+	if ok:
+		_mixer_row()
+	return ok
+
+
+func _hack_rig() -> bool:
+	var rig: Node3D = _nearest("HackTerminal", SIGNAL_RIG_AT, 2.0)
+	if rig == null:
+		_row("SignalRig", "FAIL", "no HackTerminal near %s" % Po5Pilot._v(SIGNAL_RIG_AT), "C map")
+		return false
+	var m: RollingThunderMission = _mission()
+	var t0: float = rt.heist_time_s
+	var ok: bool = await pilot.use(_comp(rig), 60.0, func() -> bool: return m != null and m.signals_rigged)
+	if ok:
+		await wait_until(func() -> bool: return m.signals_rigged, 30.0)
+	_row("SignalRig hack (15 s)", "PASS" if m.signals_rigged else "FAIL", "%.1f s from F, signals_rigged %s" % [
+		rt.heist_time_s - t0, m.signals_rigged], "-" if m.signals_rigged else "A hack / C placement")
+	return m.signals_rigged
+
+
+func _clear_npcs() -> void:
+	rt.isolate_npc(null)
+	pilot.crew.stealth_hidden = true
+	note("SHORTCUT NPCs despawned after the stop (breach rows test interaction, not combat)")
+	_quiet_loud.call_deferred()
+
+
+func _quiet_loud() -> void:
+	var my_rt: HeistRuntime = rt
+	while is_inside_tree() and rt == my_rt and is_instance_valid(rt):
+		if not rt.npcs().is_empty():
+			rt.isolate_npc(null)
+		await wait_s(1.0)
+
+
+func _trucks() -> Array[ArmoredTruck]:
+	var out: Array[ArmoredTruck] = []
+	var m: RollingThunderMission = _mission()
+	if m != null and not m._trucks.is_empty():
+		out.assign(m._trucks)
+	else:
+		for n: Node in get_tree().get_nodes_in_group(ArmoredTruck.GROUP):
+			if (n as Node3D).is_visible_in_tree():
+				out.append(n as ArmoredTruck)
+	out.sort_custom(func(a: ArmoredTruck, b: ArmoredTruck) -> bool: return _truck_name(a) < _truck_name(b))
+	return out
+
+
+static func _truck_name(t: ArmoredTruck) -> String:
+	return String(t.get_parent().name) if t.get_parent() != null else String(t.name)
+
+
+## The rear UsePoint (truck local (-1.8, 0, rear - 0.5), rt_gameplay._convoy_truck) or the interactable's own.
+func _truck_use(t: ArmoredTruck) -> Vector3:
+	var c: InteractableComponent = _comp(t)
+	if c != null and c.has_method(&"use_point_position"):
+		return c.call(&"use_point_position")
+	var up: Node3D = t.get_node_or_null("UsePoint") as Node3D
+	return up.global_position if up != null else t.global_position
+
+
+## The placed saw on `t`: F on the truck's lock (place_saw), then wait out the run, fixing jams (fix_drill).
+func _saw_truck(t: ArmoredTruck) -> bool:
+	var comp: InteractableComponent = _comp(t)
+	if comp == null:
+		_row("%s saw" % _truck_name(t), "FAIL", "no interactable", "A truck")
+		return false
+	var t0: float = rt.heist_time_s
+	var placed: bool = await pilot.use(comp, 60.0, func() -> bool: return (t.opened or comp.kind != &"place_saw"
+		and comp.kind != &"place_c4"))
+	note("saw: placed %s, kind now %s" % [placed, comp.kind])
+	await shot("saw_placed")
+	var jams: int = 0
+	var t_end: float = rt.heist_time_s + 400.0
+	Engine.time_scale = DEVICE_SCALE
+	while not t.opened and rt.heist_time_s < t_end:
+		if comp.kind == &"fix_drill":
+			Engine.time_scale = 1.0
+			jams += 1
+			await pilot.use(comp, 30.0, func() -> bool: return comp.kind != &"fix_drill")
+			Engine.time_scale = DEVICE_SCALE
+		await wait_s(0.5)
+	Engine.time_scale = 1.0
+	_row("%s (%s) by the placed saw" % [_truck_name(t), "locked down" if t.locked_down else "no lockdown"],
+		"PASS" if t.opened else "FAIL", "placed %s, opened %s after %.0f s heist time, %d jam(s) fixed" % [placed,
+		t.opened, rt.heist_time_s - t0, jams], "-" if t.opened else "A truck / C rear step")
+	await shot("saw_open")
+	return t.opened
+
+
+## Lockpick the tool store, carry the thermite bag to `t`'s BurnPoint (sibling `Thermite`), F, wait out the burn.
+func _thermite_truck(t: ArmoredTruck) -> bool:
+	var bp: Node3D = t.get_parent().get_node_or_null("Thermite") as Node3D
+	if bp == null:
+		_row("%s thermite" % _truck_name(t), "FAIL", "no Thermite BurnPoint beside the truck", "C convoy")
+		return false
+	var t0: float = rt.heist_time_s
+	if not await _site_in():
+		return false
+	var door: Door = _door_near(TOOL_STORE_DOOR_AT, 1.5)
+	if door != null and not door.is_open:
+		await pilot.use(_comp(door), 60.0, func() -> bool: return door.is_open)
+	var ls: Node3D = _nearest("LootSpawn", THERMITE_BAG_AT, 2.0)
+	var got: bool = ls != null and await pilot.use(_comp(ls), 40.0, func() -> bool: return pilot.crew.is_carrying_bag())
+	_row("thermite bag from the tool store (lockpick)", "PASS" if got else "FAIL", "door open %s, %.0f s" % [
+		door != null and door.is_open, rt.heist_time_s - t0], "-" if got else "C map / A loot")
+	if not got:
+		return false
+	var t1: float = rt.heist_time_s
+	if not await _go(MAN_GATE_IN, 0.5, 120.0) or not await _go(MAN_GATE_OUT, 0.5, 60.0):
+		_row("thermite bag out of the site", "FAIL", "at %s" % Po5Pilot._v(pilot.crew.global_position), "C map")
+		return false
+	var bcomp: InteractableComponent = _comp(bp)
+	var placed: bool = bcomp != null and await pilot.use(bcomp, 90.0, func() -> bool: return (bcomp.kind != &"place_thermite"
+		or not pilot.crew.is_carrying_bag()))
+	_row("%s thermite carried and placed" % _truck_name(t), "PASS" if placed else "FAIL", "%.0f s carry from the tool store, placed %s" % [
+		rt.heist_time_s - t1, placed], "-" if placed else "A burn_point / C placement")
+	Engine.time_scale = DEVICE_SCALE
+	await wait_until(func() -> bool: return t.opened, 120.0 / DEVICE_SCALE + 20.0)
+	Engine.time_scale = 1.0
+	_row("%s by thermite" % _truck_name(t), "PASS" if t.opened else "FAIL", "opened %s %.0f s after placing" % [
+		t.opened, rt.heist_time_s - t1], "-" if t.opened else "A burn_point")
+	await shot("thermite_open")
+	return t.opened
+
+
+func _c4_row(trucks: Array[ArmoredTruck]) -> void:
+	var boxes: int = 0
+	for n: Node in rt.find_children("C4Box*", "", true, false):
+		if n is Node3D and (n as Node3D).is_visible_in_tree() and _comp(n) != null:
+			boxes += 1
+	# LEAD r276: C's item_pickup C4 boxes (d6c8b99a) are held from trunk until r277.
+	_row("C4 source on the map (magazine C4 boxes, stores_c4)", "PASS" if boxes > 0 else "BLOCKED: C r277",
+		"%d C4 boxes with an interactable; trucks offer c4 once 4 x item.c4 are carried (%d trucks)" % [boxes,
+		trucks.size()], "-" if boxes > 0 else "A5-03 (A) / C markers")
+
+
+func _mixer_row() -> void:
+	var gates: PackedStringArray = PackedStringArray()
+	for nm: String in ["SiteTanneryGateW", "SiteTanneryGateE"]:
+		var d: Door = rt.find_child(nm, true, false) as Door
+		gates.append("%s %s" % [nm, "missing" if d == null else ("open" if d.is_open else ("locked" if d.locked
+			else "closed"))])
+	var mixer: Node3D = rt.find_child("MixerTruck", true, false) as Node3D
+	var passable: bool = gates.size() > 0 and ", ".join(gates).contains("open")
+	# LEAD r276: mixer phase 2 (C's Mixer / MixerStop / gates) is held from trunk until r277.
+	_row("the mixer leaves / the Tannery gate passable (§7.6, QC-RT1)", "PASS" if passable else "BLOCKED: C r277",
+		"%s; MixerTruck at %s; layout '%s'" % [", ".join(gates), Po5Pilot._v(mixer.global_position) if mixer != null
+		else "-", _mission().layout_id], "-" if passable else "A mission (_mixer_move layouts) / C map")
+
+
+## Carry a bag of `loot` from `t`'s rear step to the escape at `esc`: real cargo when the truck is open, else
+## (SHORTCUT) LootManager.spawn_bag at the step. Drop it in the secure zone (G at the zone edge).
+func _carry_to_escape(item: String, t: ArmoredTruck, esc: Vector3, loot: StringName, cargo: bool) -> bool:
+	var use: Vector3 = pilot.stand_point(_truck_use(t))
+	if not await _go(use, 0.5, 240.0):
+		_row(item, "FAIL", "truck rear not reached", _owner_for(use))
+		return false
+	var lb: LootBag = _bag_near(use, 3.0) if cargo else null
+	if lb != null:
+		await pilot.use(_comp(lb), 20.0, func() -> bool: return pilot.crew.is_carrying_bag())
+	if not pilot.crew.is_carrying_bag() and await _get_bag(loot) == null:
+		_row(item, "FAIL", "no bag", "-")
+		return false
+	var zone: SecureZone = _secure_zone_near(esc)
+	if zone == null or zone.global_position.distance_to(esc) > 10.0:
+		_row(item, "FAIL", "no secure zone near %s" % Po5Pilot._v(esc), "A escape / C map")
+		return false
+	var t0: float = rt.heist_time_s
+	var s0: int = pilot.stuck_spots.size()
+	var path_m: float = 0.0
+	var p: PackedVector3Array = pilot.nav_path(zone.global_position)
+	for k: int in range(1, p.size()):
+		path_m += p[k - 1].distance_to(p[k])
+	var ok: bool = await _go(pilot.stand_point(zone.global_position), 1.5, 400.0)
+	var id: int = (pilot.crew.carried_bag as LootBag).net_id if pilot.crew.is_carrying_bag() else -1
+	if ok:
+		await pilot.face(zone.global_position + Vector3.UP * 0.5, 0.05, 1.5)
+		await pilot.inp.tap(&"drop_bag")
+		await wait_until(func() -> bool: return _secured_ids.has(id), 3.0)
+	var sec: bool = _secured_ids.has(id)
+	var n: int = pilot.stuck_spots.size() - s0
+	_row(item, "PASS" if sec and n == 0 else ("STUCK" if sec else "FAIL"), ("%.0f s heist time over a %.0f m path, secured %s, " +
+		"%d STUCK row(s), weight %s") % [
+		rt.heist_time_s - t0, path_m, sec, n, "HEAVY" if loot == LOOT_HEAVY else "MEDIUM"],
+		"-" if sec and n == 0 else ("C map" if n > 0 else "A secure zone"))
+	await shot("carry_%s" % ("e1" if esc == E1_AT else "e2"))
+	return sec

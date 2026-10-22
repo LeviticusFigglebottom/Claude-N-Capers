@@ -288,3 +288,76 @@ func test_locked_cabinet_gates_the_rig() -> void:
 	lock.open_lock(false, &"lockpick")
 	await wait_physics_frames(1)
 	assert_false(rig.is_paused(), "the padlock off: the rig can be worked")
+
+
+## QC-85 (audio_cues v1.9): the mission's RT one-shots: approach at the sighting, the signal heads click when the rig
+## is done, a brake per stopped mover, the mixer's ram, the trucks' doors; the freight train, held during a Phantom
+## charge.
+func test_qc85_rt_cues() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	var cues: Array[StringName] = []
+	var on_cue: Callable = func(id: StringName, _p: Vector3, _n: int) -> void: cues.append(id)
+	EventBus.audio_cue_requested.connect(on_cue)
+	m._sighted()
+	assert_has(cues, RollingThunderMission.CUE_APPROACH, "the convoy sighted: approach")
+	var rig: HackTerminal = null
+	for n: Node in m.find_tagged(RollingThunderMission.TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+	EventBus.device_finished.emit(rig.net_id)
+	await wait_physics_frames(1)
+	assert_eq(cues.count(RollingThunderMission.CUE_SIGNAL_CLICK), 4, "every signal head clicks (%s)" % [cues])
+	m._convoy_arrives()
+	await _stopped(m)
+	var rammed: bool = await wait_until(func() -> bool: return cues.has(RollingThunderMission.CUE_MIXER_RAM),
+		RollingThunderMission.MIXER_MOVE_S + 1.0)
+	assert_true(rammed, "the mixer rams (clean: stop + %.0f s)" % RollingThunderMission.MIXER_MOVE_S)
+	if m._movers_left == 0 and not cues.has(RollingThunderMission.CUE_BRAKE):
+		assert_true(false, "a drive-in stop brakes each mover (%s)" % [cues])
+	for t: ArmoredTruck in m._trucks:
+		t.open_by_device()
+	await wait_physics_frames(2)
+	assert_eq(cues.count(ArmoredTruck.CUE_DOORS_OPEN), m._trucks.size(), "each truck's doors")
+	cues.clear()
+	m._train()
+	assert_has(cues, RollingThunderMission.CUE_TRAIN, "the freight train passes")
+	var ph: Array[NpcBase] = SpecialSpawner.spawn_special(_rt, &"enemy.phantom", Transform3D(Basis(), Vector3(30, 0, 0)))
+	await wait_physics_frames(2)
+	if not ph.is_empty():
+		(ph[0].get_node(^"Brain") as PhantomBrain).goggles_glowing = true
+		cues.clear()
+		m._train()
+		assert_false(cues.has(RollingThunderMission.CUE_TRAIN), "held back while a Phantom charge is live")
+		assert_true(m.timer_left(&"freight_train") <= RollingThunderMission.TRAIN_HOLD_S + 0.01, "re-checked soon")
+	EventBus.audio_cue_requested.disconnect(on_cue)
+
+
+## RT phase 2 (LEAD-approved C proposal): with C's `Mixer` ConvoyVehicle and the layout's MixerStop, _mixer_move opens
+## the tannery_gate doors and drives (here: parks, no MixerPath) the mixer onto its stop; without them (G1) the old
+## layout swap stays.
+func test_phase2_mixer_drives_to_its_stop() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	m._convoy_arrives()
+	await _stopped(m)
+	var layout: Node3D = ConvoyLayouts.find(_rt.map, m.layout_id)
+	var stop: Marker3D = Marker3D.new()
+	stop.name = "MixerStop"
+	layout.add_child(stop)
+	stop.global_position = layout.global_position + Vector3(4.0, 0.0, 4.0)
+	var mixer: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(-30, 0, -16), func(n: Node) -> void:
+		n.name = "Mixer") as ConvoyVehicle
+	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
+		(n as Door).objective_tag = RollingThunderMission.TAG_TANNERY_GATE
+		(n as Door).lock = Door.Lock.LOCKPICK) as Door
+	await wait_physics_frames(3)
+	assert_true(m._mixer() == mixer, "C's Mixer found")
+	m._mixer_move()
+	await wait_physics_frames(3)
+	assert_true(mixer.global_position.distance_to(stop.global_position) < 0.1, "the mixer on its MixerStop")
+	assert_true(gate.is_open, "the Tannery gate swung open")

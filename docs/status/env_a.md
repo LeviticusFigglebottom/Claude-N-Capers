@@ -4,6 +4,28 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-28) RT e2e: crash 3/3, clean 3/3, all 3 escapes; D/LEAD items; QC-85 cues; round 275 merged (2026-10-22)
+- **Crash stop** (auto_loud), success each:
+  - 1001: 584 s, E1.
+  - 1002: 811 s, E3.
+  - 1003: 779 s, E3.
+  - 4101: 751 s, E2 underpass.
+- **Clean stop** (po5_flow_rt_clean), success each:
+  - 1001: east_clean, 534 s, E1.
+  - 1002: north_clean, 704 s, E3.
+  - 1003: north_clean, 682 s, E3.
+  - Each: signals rigged unseen at about t=31, no alarm before the stop, a guard's radio springs the ambush after it.
+- **D / LEAD:**
+  - Car exit follows `curve.vehicle_exit_<side>` from SOURCE.txt (`AnimTweak.root_curve`); D's 1.05 m curve is now
+    in with round 275.
+  - v1.26(a): alert armed moving NPCs hold `hold_<kind>_<gait>`.
+  - CivilianBrain knows cook_stove / idle (test_anim_driver was 29/30 on trunk 274).
+- **QC-85 (bf48786d):**
+  - approach / brake / mixer_ram / signal_click / truck_doors_open.
+  - freight_train_pass every 90-150 s, held while a Phantom charge is live.
+  - **The cue defs aren't in cues.tres yet (B's file).**
+- **c9ad2542:** round 275 merged, then --import; the affected tests are green.
+- **Running:** a VO-coverage batch (auto_loud and rt_clean now log `EVENT vo`).
 ### (-27) RT G1 PLAYS END TO END; B's defs in; round 274 merged; clean-stop flow (2026-10-22)
 - **RT G1 end to end:** auto_loud seed 1001, Routine, headless: **RESULT PASS**.
   - Crash stop at t=180, escort down at t=200, truck 1 open at t=390.
