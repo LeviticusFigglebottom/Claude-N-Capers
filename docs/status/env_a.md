@@ -4,6 +4,32 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-25) D-152 items done; RT pilot on C's real convoy gets the trucks open (01:10 UTC)
+- **(1) OF vault guard margin, 0cc1558d7:**
+  - `hub_loops` gets an optional `dwell_add_s` {point: s} plus `dwell_add_max_difficulty`.
+  - guard_vault: +15 s at RCNorth (loop (b)'s RC stop) on Routine / Tense / Hazardous, not above.
+  - test_of_a6_hub_loops::test_d152_vault_guard_rc_dwell launches OF on Hazardous and Brutal: 15 s, then none.
+    S5.1 patrol suite 7/7.
+- **(2) RT seats vs D's table, 5dfef0e19, mine:**
+  - `seats()` takes the glb's Node3D empties; it was `as Marker3D`, so 0 seats.
+  - Seated units face the vehicle's +Z whatever the empty's rotation, and hold `sit_vehicle`: their AnimDriver keeps
+    processing while the body is paused.
+  - Car occupants dismount with `vehicle_exit_l` / `_r` by seat side. The armoured-cab crew step out beside the cab, as
+    D advised.
+  - The Lethal Wrecker is never seated in a car (it starts beside it).
+  - Seat **heights / row spacing** (D: car seat y ≈ 0.18, cab ≈ 1.20, rows ≥ 1.2 m) are C's glb data; D's note is
+    addressed to C.
+- **C's convoy-swap asks, 88873eb23:**
+  - Off layouts leave the nav map (Godot merges disabled regions).
+  - Safe skips a child BurnPoint as loot. Movers pitch with the road.
+  - Drive paths found under Convoy/Paths. The RT tests work with real trucks and the drive-in.
+- **RT G1 pilot on C's 552f5b154 + a-core** (local merge; the swap is not on trunk r272):
+  - The convoy drives in, the early alarm gives a crash stop, the trucks lock down, ambush and escort complete.
+  - The pilot saws both trucks and fixes 3 jams (6a39a4c32: the pilot now revisits a large prefab's own
+    interactable).
+  - A truck opens at t≈391, cargo spawns, and the first bag is picked.
+  - The 2nd pick failed: the bags sat inside the hold's collision. 1fa111f56 spawns them on the rear step.
+  - Re-running now. RT end to end: **not yet**. I'll post the result here.
 ### (-24) RT G1 pilot on r270: blocked on C's convoy swap (trucks); everything before the trucks plays (23:55 UTC)
 - **Pilot:** `DIRECT=1 HEADLESS=1 run_po5.sh auto_loud 1001 2400 <out> "Rolling Thunder" Routine` (dfbd94a9c, harness only).
   It launches through MenuFlow.launch because RT is not on the Board yet: hidden, WIP def.

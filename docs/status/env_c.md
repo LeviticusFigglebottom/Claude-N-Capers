@@ -6,6 +6,18 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, **GPU-22 item 1 (the diner's street neon) is in. Please queue the re-render** for rc_diner_neon, plus
+  the earlier rc_diner_dining / rc_diner_function / rc_ext_junction and the convoy shots (the convoy swap is in).
+  - **Sign:** a new two-sided `prop_pole_sign_halfway` ("HALFWAY", "DINER  OPEN 24 HRS"), the cabinet 4.6-6.4 m on a
+    pole, at (32.5, 0, 10) on Tannery's south sidewalk by the diner's NE corner (west of the trench).
+  - **Faces E / W:** the junction reads the W face; the east-arm convoy reads the E face. A street bin stands at its
+    foot.
+  - **Camera:** rc_diner_neon now looks east from the junction corner (12, 1.7, 9.6) along the diner's Tannery face to
+    the sign.
+  - **Gate:** RT validate greybox and final PASS, regen twice byte-identical, c tests pass.
+  - **Order (your 22:42 note):** the convoy swap (552f5b154) and the OF fix (9932f9f64) were already pushed.
+  - **A's pilot findings (SignalRig, charges, thermite) are by design:** all are inside the locked site.
+    SiteManGate's padlock opens the way; I checked this in a HeistRuntime.
 - 2026-10-21, **OF-C2 cash lift fix for your cherry-pick: 9932f9f64** (GPU-22 item 2).
   - The car fills GL's shaft (prop_cash_lift_car_w255, car_size_m 2.55), so a bag thrown in from either landing door,
     at any weight, level or looking down, rests in the car.

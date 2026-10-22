@@ -1517,3 +1517,18 @@ All six D-115 gates are met (docs/process/heist_completion.md).
   (A: guard_tweak hub_loops; C: the doc).
 - Open follow-ups, none blocking: a human-input windowed ghost when the PO or a session has time.
 - **Rolling Thunder is the active heist (D-148 / D-151).**
+
+## D-153: LEAD handover back to session_01XAPqm; fresh env team (2026-10-22, LEAD; product owner)
+The PO resumed the original LEAD (session_01XAPqmFJ32zHKLK9Sezymym) as the core orchestrator. The 10-20 team (LEAD
+session_014E3p2… and its envs) is in another account and unreachable from here; it stopped after round 273
+(d1ecb0b6, 2026-10-21 23:47). This LEAD:
+* keeps trunk = `claude/dreamy-hamilton-pc7vck` and every rule in force (D-086, D-088 targeted checks, D-115, D-144 one new
+  heist at a time, D-151 the LEAD makes judgement calls, the 10-20 standing directive: no env idles);
+* spawned five new env sessions from each env branch's origin tip (ids on the board). Each resumes from the top of its
+  `docs/status/env_*.md`; the obsolete local round-229 merge on `claude/epic-fermi-k5fa09` is superseded by D-129's gate;
+* gates round 274 = the env commits pushed after round 273 (A 0eb9537a, C bfdf43e7, P 5e01c275).
+Rolling Thunder stays the active heist (D-148 / D-151 / D-152).
+Ruling (A's open question, status env_a -23; AMENDED same day after A's ownership note): the `enemy.convoy_lead` /
+`enemy.convoy_rear` EnemyDefs live in A's path (game/systems/ai/data/enemies), so ENV A writes them with the design doc's
+stats (Routine/Tense patrol-officer, Hazardous+ TAC); ENV D supplies their look ids (D-149.12); ENV B reviews the values
+for the balance tool.
