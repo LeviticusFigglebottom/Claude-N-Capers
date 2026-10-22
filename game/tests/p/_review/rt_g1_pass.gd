@@ -848,6 +848,8 @@ func _rt_breach() -> bool:
 func _rt_c4() -> bool:
 	if not await _truck_launch(&"route_north", {&"site_stores": [&"stores_c4"], &"truck_count": [&"trucks_3"]}):
 		return false
+	# "charges" is a setup step: pick the magazine padlock and take the C4 before the convoy (crew hidden, quiet).
+	await _c4_fetch()
 	if not await _stop(true):
 		return false
 	_clear_npcs()
@@ -1227,12 +1229,25 @@ func _carry_to_escape(item: String, t: ArmoredTruck, esc: Vector3, loot: StringN
 
 ## The magazine's padlock (pick), a C4 box (F: 4 x item.c4), out of the site, F on `t`'s lock (place_c4), the fuse.
 func _c4_truck(t: ArmoredTruck) -> bool:
+	var have: int = pilot.crew.item_count(&"item.c4")
+	if have < C4_NEEDED:
+		have = await _c4_fetch()
+	if have < C4_NEEDED:
+		return false
+	if not await _go(MAN_GATE_IN, 0.5, 120.0) or not await _go(MAN_GATE_OUT, 0.5, 60.0):
+		return false
+	return await _c4_place(t, have)
+
+
+## The magazine (padlock: picked in stealth, sawn once loud) and its C4 boxes until C4_NEEDED x item.c4 are carried.
+func _c4_fetch() -> int:
 	var t0: float = rt.heist_time_s
 	if not await _site_in():
-		return false
+		return 0
 	var door: Door = _door_near(MAGAZINE_DOOR_AT, 1.5)
 	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
 	if door != null and not door.is_open and lock != null:
+		_diag_hold.call_deferred(_comp(lock), 10.0)  # availability / aim / block reason (r284 c4: loud place_saw failed at once)
 		await pilot.use(_comp(lock), 40.0, func() -> bool: return (door.is_open or not door.locked
 			or _comp(lock) == null or _comp(lock).kind != &"place_saw"))
 		# Loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut before the door.
@@ -1257,10 +1272,11 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 		have = pilot.crew.item_count(&"item.c4")
 	_row("C4 from the magazine (padlock pick + box)", "PASS" if have >= C4_NEEDED else "FAIL", "door open %s, %d x item.c4, %.0f s" % [
 		door != null and door.is_open, have, rt.heist_time_s - t0], "-" if have >= C4_NEEDED else "C magazine / A item_pickup")
-	if have < C4_NEEDED:
-		return false
-	if not await _go(MAN_GATE_IN, 0.5, 120.0) or not await _go(MAN_GATE_OUT, 0.5, 60.0):
-		return false
+	return have
+
+
+## F on `t`'s lock with `have` x item.c4 carried (place_c4), then the fuse.
+func _c4_place(t: ArmoredTruck, have: int) -> bool:
 	var comp: InteractableComponent = _comp(t)
 	var t1: float = rt.heist_time_s
 	var placed: bool = comp != null and await pilot.use(comp, 60.0,
