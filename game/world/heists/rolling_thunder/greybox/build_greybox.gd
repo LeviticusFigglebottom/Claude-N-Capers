@@ -15,8 +15,8 @@
 ## PUBLIC / RESTRICTED / OUT_OF_BOUNDS zones, player / police spawns, police entries (breach_only on buildings), doors
 ## (route doors 1.0 m: the service kit), the contract nodes, review cameras, VariantSlots for the 12 slot groups (the
 ## 6 scalars and 8 rare events are table rows), the convoy (RT-C2: A5-02 movers + paths, the 4 layouts), holdouts,
-## perches S1-S4, preplan points, patrol graphs, assault markers, the navmesh (door_nav_clearance, _nav_thick). No lights but the sun, the
-## sky and the dressing's fixtures.
+## perches S1-S4, preplan points, patrol graphs, assault markers, the navmesh (door_nav_clearance, _nav_thick). Lighting: rt_gi.gd (the
+## final environment + LUT, the sun, the fixtures' daylight state, VoxelGI, probes, occluders, the render policy).
 ## G2 (RT-C2 batch 1, reuse-first): rt_dress.gd (kit rooms, map-built art, street furniture) and rt_finish.gd (library
 ## finishes on every shell surface), both before the bake; rt_skyline.gd (the city round the site, visual only).
 extends "res://world/heists/rolling_thunder/greybox/rt_gameplay.gd"
@@ -25,6 +25,7 @@ const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
 const AE: GDScript = preload("res://world/heists/rolling_thunder/greybox/rt_assault.gd")
 const NS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")
 const DNC: GDScript = preload("res://world/heists/shared/door_nav_clearance.gd")
+const RT_GI: GDScript = preload("res://world/heists/rolling_thunder/greybox/rt_gi.gd")
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the F1 edge protection, the scaffold mesh,
 ## the palisades and rail-lane fences).
 const THIN_GROUPS: Array[String] = ["Frame", "Scaffold", "Rail", "RailLane"]
@@ -97,6 +98,7 @@ func _build() -> void:
 	_build_environment(n("Lighting"))
 	preload("res://world/heists/rolling_thunder/greybox/rt_finish.gd").new(self).call(&"build")  # RT-C2 finishes (G2)
 	preload("res://world/heists/rolling_thunder/greybox/rt_skyline.gd").new(self).call(&"build")  # RT-C2 skyline (G2)
+	RT_GI.new(self).call(&"build")  # RT-C2 lighting lane: fixtures, VoxelGI, probes, occluders, render policy
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -150,42 +152,9 @@ func _fail(msg: String) -> void:
 	quit(1)
 
 
-## G1 daylight: the sky and a low afternoon sun from the WSW (doc: 245 deg / 9 deg, straight down Tannery from the west;
-## the G2 look pass sets the final colour, haze and LUT). No other lights at G1.
+## The final 16:50 environment + LUT and the low WSW sun (RT-C2 lighting lane: rt_gi.gd environment()).
 func _build_environment(lighting: Node3D) -> void:
-	var we: WorldEnvironment = WorldEnvironment.new()
-	we.set_script(load("res://world/lighting/heist_world_environment.gd"))  # brightness option (B5-01)
-	we.name = "WorldEnvironment"
-	var env: Environment = Environment.new()
-	env.resource_name = "env_rolling_thunder_g1"
-	var sky_mat: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
-	sky_mat.sky_top_color = Color(0.32, 0.46, 0.66)
-	sky_mat.sky_horizon_color = Color(0.78, 0.7, 0.58)
-	sky_mat.ground_bottom_color = Color(0.2, 0.18, 0.16)
-	sky_mat.ground_horizon_color = Color(0.7, 0.63, 0.53)
-	var sky: Sky = Sky.new()
-	sky.sky_material = sky_mat
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.8
-	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
-	env.tonemap_mode = Environment.TONE_MAPPER_AGX
-	we.environment = env
-	add(lighting, we)
-	var sun: DirectionalLight3D = DirectionalLight3D.new()
-	sun.name = "Sun"
-	# from azimuth 245 deg (WSW), 9 deg up: the light travels toward the ENE and slightly down
-	var az: float = deg_to_rad(245.0)
-	var alt: float = deg_to_rad(9.0)
-	var to_sun: Vector3 = Vector3(sin(az) * cos(alt), sin(alt), -cos(az) * cos(alt))
-	sun.basis = Basis.looking_at(-to_sun, Vector3.UP)
-	sun.position = Vector3(0.0, 60.0, 0.0)
-	sun.light_color = Color(1.0, 0.86, 0.68)
-	sun.light_energy = 1.4
-	sun.shadow_enabled = true
-	sun.layers = 1 | VIEWMODEL_LIT_LAYER   # D-095: every map light also lights the viewmodel
-	add(lighting, sun)
+	RT_GI.new(self).call(&"environment", lighting)
 
 
 ## Walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40, cell 0.1 / 0.1) from the Geometry
