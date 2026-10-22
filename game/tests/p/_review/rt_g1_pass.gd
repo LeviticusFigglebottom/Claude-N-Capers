@@ -1081,7 +1081,8 @@ func _c4_row(trucks: Array[ArmoredTruck]) -> void:
 	for n: Node in rt.find_children("C4Box*", "", true, false):
 		if n is Node3D and (n as Node3D).is_visible_in_tree() and _comp(n) != null:
 			boxes += 1
-	_row("C4 source on the map (magazine C4 boxes, stores_c4)", "PASS" if boxes > 0 else "FAIL",
+	# LEAD r276: C's item_pickup C4 boxes (d6c8b99a) are held from trunk until r277.
+	_row("C4 source on the map (magazine C4 boxes, stores_c4)", "PASS" if boxes > 0 else "BLOCKED: C r277",
 		"%d C4 boxes with an interactable; trucks offer c4 once 4 x item.c4 are carried (%d trucks)" % [boxes,
 		trucks.size()], "-" if boxes > 0 else "A5-03 (A) / C markers")
 
@@ -1094,7 +1095,8 @@ func _mixer_row() -> void:
 			else "closed"))])
 	var mixer: Node3D = rt.find_child("MixerTruck", true, false) as Node3D
 	var passable: bool = gates.size() > 0 and ", ".join(gates).contains("open")
-	_row("the mixer leaves / the Tannery gate passable (§7.6, QC-RT1)", "PASS" if passable else "FAIL",
+	# LEAD r276: mixer phase 2 (C's Mixer / MixerStop / gates) is held from trunk until r277.
+	_row("the mixer leaves / the Tannery gate passable (§7.6, QC-RT1)", "PASS" if passable else "BLOCKED: C r277",
 		"%s; MixerTruck at %s; layout '%s'" % [", ".join(gates), Po5Pilot._v(mixer.global_position) if mixer != null
 		else "-", _mission().layout_id], "-" if passable else "A mission (_mixer_move layouts) / C map")
 
