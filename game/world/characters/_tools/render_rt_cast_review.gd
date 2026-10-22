@@ -126,13 +126,20 @@ func _npc_shot(name: String, npc: NpcBase, dist: float = EYE_DIST) -> void:
 	fwd.y = 0.0
 	fwd = fwd.normalized() if fwd.length() > 0.01 else Vector3.FORWARD
 	var at: Vector3 = npc.global_position + Vector3.UP * 0.9
-	var eye: Vector3 = npc.global_position + fwd * dist + Vector3(fwd.z, 0.0, -fwd.x) * 0.8 + Vector3.UP * EYE_H
-	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(at, eye)
-	q.exclude = [npc.get_rid()] if npc is CollisionObject3D else []
-	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(q)
-	if not hit.is_empty():
-		var d: float = maxf(at.distance_to(hit["position"]) - 0.15, 0.9)
-		eye = at + (eye - at).normalized() * d
+	# the front three-quarter first, then the other 7 directions: the one with the most clear room (a wall or a parked
+	# truck right behind the camera would cramp the frame)
+	var base: Vector3 = fwd * dist + Vector3(fwd.z, 0.0, -fwd.x) * 0.8 + Vector3.UP * (EYE_H - 0.9)
+	var eye: Vector3 = at + base
+	var best: float = -1.0
+	for k: int in 8:
+		var cand: Vector3 = at + base.rotated(Vector3.UP, k * PI / 4.0)
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(at, cand)
+		q.exclude = [npc.get_rid()] if npc is CollisionObject3D else []
+		var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(q)
+		var d: float = at.distance_to(cand) if hit.is_empty() else maxf(at.distance_to(hit["position"]) - 0.15, 0.9)
+		if d > best + 0.3:
+			best = d
+			eye = at + (cand - at).normalized() * d
 	var tags: Variant = npc.spawn_info.get("tags", [])
 	_label.text = "%s  %s\n%s  %s" % [name, NpcVisuals.character_id(npc), _clip(npc), str(tags)]
 	_say("%s %s role %s tags %s activity %s look %s clip %s at (%.2f, %.2f, %.2f) facing %.0f" % [name, npc.name,
