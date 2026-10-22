@@ -344,11 +344,15 @@ func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated
 func dismount_units(units: Array, step_m: float = 1.6) -> int:
 	var n: int = 0
 	for u: Variant in units:
+		if not is_instance_valid(u):  # P: freed in its seat (a harness, or killed and cleaned up) before the dismount
+			continue
 		var npc: NpcBase = u as NpcBase
-		if npc == null or not is_instance_valid(npc) or not npc.has_meta(META_SEATED_IN):
+		if npc == null or not npc.has_meta(META_SEATED_IN):
 			continue
 		var vehicle: Node3D = Ids.lookup(int(npc.get_meta(META_SEATED_IN))) as Node3D
 		npc.remove_meta(META_SEATED_IN)
+		if not npc.alive:
+			continue  # killed in the car (C4, an explosion): the body stays where it died
 		var was_visible: bool = npc.visible
 		var left: bool = true
 		var seat: Vector3 = npc.global_position

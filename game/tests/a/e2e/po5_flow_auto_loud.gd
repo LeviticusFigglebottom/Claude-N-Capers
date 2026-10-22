@@ -38,6 +38,8 @@ const UNREACH_RECHECK_S: float = 10.0
 const TRUCK_BURN_M: float = 6.0
 ## _open_gate_toward: a padlock this close (m) to where a short navmesh path ends is the gate in the way.
 const GATE_LOCK_M: float = 10.0
+## _open_gate_toward: longest stay at a gate whose device runs (a saw through a padlock with jams) (heist s).
+const GATE_WAIT_S: float = 150.0
 ## Give up carrying one bag to the van after this long (s).
 const CARRY_LIMIT_S: float = 300.0
 
@@ -113,12 +115,15 @@ func play(flow: Node) -> int:
 	EventBus.interaction_started.connect(func(nid: int, slot: int, _k: StringName) -> void:
 		_note_bot_interaction(nid, slot, &"started"))
 	EventBus.objective_updated.connect(func(id: StringName, st: int, _d: Dictionary) -> void:
-		f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
+		if is_instance_valid(rt):
+			f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
 	EventBus.loot_secured.connect(func(_b: int, l: StringName, v: int) -> void:
-		f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
+		if is_instance_valid(rt):
+			f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
 	# RT-A6 "every VO line said": the lines a run plays, for the coverage over seeds (grep "EVENT vo ").
 	EventBus.voice_line_requested.connect(func(speaker: StringName, line_id: StringName, _c: Dictionary) -> void:
-		f.note("EVENT vo %s %s t=%.0f" % [speaker, line_id, rt.heist_time_s]))
+		if is_instance_valid(rt):  # the payday / hub plays lines after the runtime is freed
+			f.note("EVENT vo %s %s t=%.0f" % [speaker, line_id, rt.heist_time_s]))
 	if doctor_bag:
 		var ds: DeployableSystem = rt.service(DeployableSystem.SERVICE) as DeployableSystem
 		if ds != null:
@@ -126,7 +131,8 @@ func play(flow: Node) -> int:
 			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
 	if wait_convoy:
 		await _wait_for_the_convoy()
-	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
+	if not p.crew.masked:  # stores1001: masked, G throws the carried bag (rt_clean hands over masked with the thermite)
+		await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
 	p.stuck_give_up = STUCK_GIVE_UP
 	# GN probe 6: the pilot walked past three downed teammates on its way to the vault drill (t=275-288), then went
@@ -197,7 +203,8 @@ func step() -> void:
 			_stalls[id] = float(_stalls.get(id, 0.0))  # started: keep defending its drill after this (see _pick)
 		p.watch_point = Vector3.INF
 		await p.use(comp, 30.0, func() -> bool: return not comp.enabled or comp.availability(p.crew) != &"")
-		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"":
+		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"" \
+				and not await _open_lock_near(comp.global_position, true):
 			_mark_if_unreached(comp)  # still usable and still far: the walk failed (GN Slot_orchard_calloway)
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
@@ -225,14 +232,33 @@ func _walk_to_marker(m: Dictionary, id: StringName, pos: Vector3) -> bool:
 
 
 ## RT-A6 (LEAD: the pilot opens padlocks, so auto_loud raids RT's site stores): the navmesh path to `stand` ends short
-## (a padlocked gate: its door is off the crew's nav while locked). The nearest padlock within GATE_LOCK_M of where the
-## path ends that the pilot can work now (lockpick / saw / C4, Padlock picks the method) is used; the gate opens with
-## it. True when it worked one (the next step retries the marker).
+## (a padlocked gate: its door is off the crew's nav while locked), or runs through a shut locked door with a padlock
+## (the magazine). The nearest padlock within GATE_LOCK_M of where the path ends (or that door's own padlock) that the
+## pilot can work now (lockpick / saw / C4, Padlock picks the method) is used; the gate opens with it. True when it
+## worked one (the next step retries the marker).
 func _open_gate_toward(stand: Vector3) -> bool:
 	var path: PackedVector3Array = p.nav_path(stand)
-	if path.is_empty() or path[path.size() - 1].distance_to(stand) <= 1.5:
+	if path.is_empty():
 		return false
 	var end: Vector3 = path[path.size() - 1]
+	var door: Door = null
+	if end.distance_to(stand) <= 1.5:
+		# pad1002b: the path runs through a shut, padlocked door (the RT magazine: the walk stuck on its wall)
+		door = _locked_on_path(stand)
+		if door == null:
+			return false
+		end = door.global_position
+	return await _work_lock(_lock_near(end, door, false), "where the path to %s ends" % Po5Pilot._v(stand))
+
+
+## pad1002c: a target behind a shut padlocked door whose use stand snapped outside its wall (the RT magazine's C4
+## boxes): the use failed on the wall. That door's padlock (within GATE_LOCK_M of the target) is worked. True when one was.
+func _open_lock_near(pos: Vector3, door_only: bool) -> bool:
+	return await _work_lock(_lock_near(pos, null, door_only), "the target at %s" % Po5Pilot._v(pos))
+
+
+## The nearest workable padlock within GATE_LOCK_M of `pos` (of `door` when given; on a shut door when `door_only`).
+func _lock_near(pos: Vector3, door: Door, door_only: bool) -> InteractableComponent:
 	var best: InteractableComponent = null
 	var best_d: float = GATE_LOCK_M
 	for n: Node in rt.map.find_children("*", "Padlock", true, false):
@@ -240,18 +266,38 @@ func _open_gate_toward(stand: Vector3) -> bool:
 		if lock.opened or lock.interactable == null or not lock.interactable.enabled \
 				or lock.interactable.availability(p.crew) != &"" or _is_unreachable(lock.interactable):
 			continue
-		var d: float = lock.global_position.distance_to(end)
+		if door != null and not door.is_ancestor_of(lock):
+			continue
+		var host: Door = lock.get_parent() as Door
+		if door_only and (host == null or host.is_open):
+			continue
+		var d: float = lock.global_position.distance_to(pos)
 		if d < best_d:
 			best_d = d
 			best = lock.interactable
+	return best
+
+
+## Work padlock `best` (null: false): use it, then stay with a placed saw / drill (defend, fix jams) until it is off.
+func _work_lock(best: InteractableComponent, why: String) -> bool:
 	if best == null:
 		return false
-	f.note("gate: %s %.1f m from where the path to %s ends: opening it" % [best.owner_node().get_path(), best_d,
-		Po5Pilot._v(stand)])
+	f.note("gate: %s near %s: opening it" % [best.owner_node().get_path(), why])
 	p.watch_point = Vector3.INF
-	await p.use(best, 45.0, func() -> bool: return not best.enabled or (best.owner_node() as Padlock).opened)
-	if is_instance_valid(best) and best.enabled and not (best.owner_node() as Padlock).opened:
-		_mark_if_unreached(best)
+	var lock: Padlock = best.owner_node() as Padlock
+	var t0: float = rt.heist_time_s
+	# A placed saw / drill runs on: stay at the gate, defend it, fix its jams (pad1002: the saw jammed, the pilot had
+	# walked off) until the lock is off.
+	while is_instance_valid(lock) and not lock.opened and rt.heist_time_s - t0 < GATE_WAIT_S and not _ended:
+		if best.enabled and best.availability(p.crew) == &"":
+			await p.use(best, 45.0, func() -> bool: return lock.opened or best.availability(p.crew) != &"")
+			if is_instance_valid(lock) and not lock.opened and best.availability(p.crew) == &"":
+				_mark_if_unreached(best)  # nothing placed: the walk or the hold failed
+				break
+		else:
+			await p.hold_position(3.0, func() -> bool: return lock.opened or _ended)
+	if is_instance_valid(lock) and lock.opened:
+		f.note("gate: %s open at %.0f s" % [lock.get_path(), rt.heist_time_s])
 	return true
 
 

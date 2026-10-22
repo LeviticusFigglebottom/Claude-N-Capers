@@ -35,7 +35,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | B4-06 | The Board + contract broker (contacts, rotating contracts, pro jobs) | C1 |
 | B4-07 | Safehouse hub UI layer (screens the 3D hub will host) + GSR accent UI theme pass | C9, D-035 |
 | B4-09 | Loot `loot.cash_bricks` (MEDIUM, PD2 money-bag value shape) + strings for Night Deposit objectives (from the G0 `[tag]`s) | QC-13 |
-| B4-10 | Shadow Ledger data: loot `loot.ledger_laptop` (LIGHT), `loot.ledger_drives` (MEDIUM), `loot.ledger_books` (MEDIUM), `loot.painting` (MEDIUM, PD2 painting shape); preplan library assets `asset.intel_laptop`, `asset.gondola_left_hung`, `asset.riser_panel`; objective strings from the G0 `[tag]`s | QC-15/16 |
+| B4-10 | Shadow Ledger data: loot `loot.ledger_laptop` (LIGHT), `loot.ledger_drives` (MEDIUM), `loot.ledger_books` (MEDIUM), `loot.painting` (LIGHT, PD2 painting shape; was MEDIUM); preplan library assets `asset.intel_laptop`, `asset.gondola_left_hung`, `asset.riser_panel`; objective strings from the G0 `[tag]`s | QC-15/16 |
 | B4-08 | D-038 follow-ups: strings for QA-14, `ui.blocked.*` rename, drop `stealth.ecm_feedback` grants, PreplanResult per preplanning.md (+ `resolve_ids`, points read from the map) | — |
 | B4-11 | Co-op lobby UI on the Net API: host/join (IP + loopback), 4 crew slots incl. AI fill, ready states, loadout/mask summary per slot, plan vote + Board contract over `Net.lobby_send`; host's contract is the lobby's job (QB-BRD2) | P3 gate test_coop_loopback, net.md |
 | B4-12 | Armory batch 2 toward 36 weapons: 10 weapons across AR, SMG, LMG, sniper, second shotgun, akimbo pistol pair, revolver, with mods + model scripts (ENV D FP sets follow) | P4 armory |

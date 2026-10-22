@@ -219,6 +219,32 @@ func refresh() -> void:
 	vote_label.text = _vote_text()
 	blueprint_view.refresh(plan, selected_point)
 	crew_button.set_pressed_no_signal(selected_point == &"")
+	_wire_exits()
+
+
+## RT walk (r276): on a floor whose markers all sit low (RT's underpass) the markers, the asset list and the bottom
+## row formed a closed arrow-key loop with no way back up to the tabs. The asset list's first row and the
+## northernmost marker always lead Up to the active tab (the crew tab, else the floor shown).
+func _wire_exits() -> void:
+	var tab: Control = crew_button
+	if selected_point != &"" and blueprint_view.floor_index < floor_buttons.size():
+		tab = floor_buttons[blueprint_view.floor_index]
+	if not asset_buttons.is_empty():
+		asset_buttons[0].set_focus_neighbor(SIDE_TOP, asset_buttons[0].get_path_to(tab))
+	# RT walk: a floor switch rebuilds the markers, so Left from the list pointed at a freed marker (an invalid
+	# neighbour path: Left did nothing). Re-aim it at the anchor that exists now (the marker, else the crew tab).
+	var anchor: Control = _anchor_control()
+	for b: Button in asset_buttons:
+		b.set_focus_neighbor(SIDE_LEFT, b.get_path_to(anchor))
+	var top: Control = null
+	var top_z: float = INF
+	for pid: StringName in blueprint_view.marker_ids():
+		var z: float = (board.blueprint.point(pid).get("pos", Vector2.ZERO) as Vector2).y
+		if z < top_z:
+			top_z = z
+			top = blueprint_view.markers[pid] as Control
+	if top != null:
+		top.set_focus_neighbor(SIDE_TOP, top.get_path_to(tab))
 
 
 func _enter_tree() -> void:

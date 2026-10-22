@@ -43,8 +43,6 @@ const POLL_S: float = 1.0
 const MOVERS_PATH: String = "Convoy/Movers"
 const STOP_SUFFIX: String = "Stop"
 const VEHICLES: Array[String] = ["Lead", "T1", "T2", "T3", "Rear"]
-const LAYOUT_MIXER_GONE: String = "mixer_gone"
-const LAYOUT_TANNERY_OPEN: String = "tannery_open"
 ## Runtime marker tags: the trucks in play / an opened truck (C's fixed Trucks / Cargo markers sit on one route only).
 const TAG_TRUCK_IN_PLAY: StringName = &"rt_truck"
 const TAG_TRUCK_OPEN: StringName = &"rt_cargo"
@@ -66,11 +64,19 @@ const TAG_CIV_STREET: StringName = &"civ_street"
 const TAG_CIV_DINER: StringName = &"civ_diner"
 const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
 const PAUSE_CABINET: StringName = &"cabinet_locked"
+## D-154.2 revised (B fd41028a): an early alarm brings the convoy at most this many seconds later (it stops at about
+## +35 s, inside wave 1's quiet ANTICIPATION, not on SUSTAIN as +75 did).
+const EARLY_PUSH_S: float = 25.0
+## D-154 amended: the crash stop's crews / TAC Heavy get out over this many seconds after the escorts.
+const CRASH_DISMOUNT_S: float = 6.0
 ## RT phase 2 (C): the Mixer ConvoyVehicle, each convoy layout's MixerPath / MixerStop, the Tannery gates' tag.
 const MIXER_NAME: String = "Mixer"
 const MIXER_PATH: NodePath = ^"MixerPath"
 const MIXER_STOP: NodePath = ^"MixerStop"
-const TAG_TANNERY_GATE: StringName = &"tannery_gate"
+## C: the gate Door(s) the mixer's move opens carry this meta `opens_with`; the mixer's own COVER carries this tag.
+const OPENS_WITH_MIXER: StringName = &"mixer_move"
+const TAG_MIXER_COVER: StringName = &"mixer"
+const TAG_REYES: StringName = &"driver_mixer"
 ## QC-85 (audio_cues v1.9): C's RT one-shots.
 const CUE_APPROACH: StringName = &"cue.convoy_approach"
 const CUE_BRAKE: StringName = &"cue.convoy_brake"
@@ -204,6 +210,7 @@ func _on_mission_start() -> void:
 	say(VO_INTRO)
 	say(VO_REYES_READY, {}, SPEAKER_REYES)
 	_schedule_train()
+	_seat_reyes()
 
 
 ## Rare events and difficulty rows at the start (doc Rare events / Convoy units per difficulty): the street's
@@ -271,11 +278,26 @@ func phantom_charge_live() -> bool:
 	return false
 
 
-## C's phase-2 `Mixer` ConvoyVehicle (anywhere in the map), null on the G1 map.
+## C's phase-2 `Mixer`: the rolled route's `<slot>/Convoy/Movers/Mixer` ConvoyVehicle, null on a map without one.
 func _mixer() -> ConvoyVehicle:
-	for n: Node in _runtime.map.find_children(MIXER_NAME, "ConvoyVehicle", true, false):
-		return n as ConvoyVehicle
-	return null
+	var slot: Node = _route_slot()
+	return slot.get_node_or_null(NodePath(MOVERS_PATH + "/" + MIXER_NAME)) as ConvoyVehicle if slot != null else null
+
+
+## C (phase 2): Reyes (the driver_mixer civilian) sits at the Mixer's wheel (Seat0) from the start.
+func _seat_reyes() -> void:
+	var mixer: ConvoyVehicle = _mixer()
+	if mixer == null:
+		return
+	var seats: Array[Node3D] = mixer.seats()
+	if seats.is_empty():
+		return
+	for n: Node in _runtime.npcs(&"civilian"):
+		var npc: NpcBase = n as NpcBase
+		if _has_spawn_tag(npc, [TAG_REYES]):
+			npc.global_transform = seats[0].global_transform
+			_seat(npc, mixer)
+			return
 
 
 func _power_lift(on: bool) -> void:
@@ -394,10 +416,26 @@ func _on_alarm(_reason: StringName) -> void:
 		police_delay_s = 0.0
 		_say_once(VO_ALERTED)
 		_say_once(VO_POLICE)
+		_push_through()
 		return
 	if not _stop_done:
 		return  # the drive-in: _stopped() springs it with [trucks] / [escort] up (B's HUD run: no empty objective line)
 	_spring_ambush()
+
+
+## B's approved early-alarm balance (rt_early_alarm_balance.md item 1; doc "Vaultline pushes through to the depot"):
+## after an early alarm the convoy arrives at min(its ETA, alarm + EARLY_PUSH_S), so wave 1's BUILD is a fight over the
+## trucks, not dead time. The setup's clock lines that would come after the new arrival are dropped.
+func _push_through() -> void:
+	var left: float = timer_left(&"convoy")
+	if left <= EARLY_PUSH_S:
+		return
+	start_timer(&"convoy", EARLY_PUSH_S, _convoy_arrives)
+	update_objective_data(&"convoy", {"seconds": EARLY_PUSH_S})
+	for id: StringName in [&"eta_60", &"eta_30", &"marshal"]:
+		if timer_left(id) > EARLY_PUSH_S:
+			cancel_timer(id)
+	start_timer(&"sighted", maxf(EARLY_PUSH_S - SIGHTED_LEAD_S, 0.1), _sighted)
 
 
 ## The ambush is on: [ambush] done, Mercer's go, the police line, the dismount (the stop's objectives are already up).
@@ -513,22 +551,23 @@ func _mixer_move() -> void:
 	var mixer: ConvoyVehicle = _mixer()
 	var stop: Node3D = layout.get_node_or_null(MIXER_STOP) as Node3D if layout != null else null
 	if mixer != null and stop != null:
-		# RT phase 2 (LEAD-approved C proposal): the Tannery gates swing open and the Mixer drives the layout's
-		# MixerPath onto its MixerStop (the layout's nav is baked with it there).
-		for n: Node in find_tagged(TAG_TANNERY_GATE):
+		# RT phase 2 (C f2c05253): the gate(s) with meta opens_with = "mixer_move" swing open and the Mixer (Reyes at
+		# the wheel) drives the layout's MixerPath onto its MixerStop (the layout's nav is baked with it there); the
+		# cover it gave at its start goes with it.
+		for n: Node in _runtime.map.find_children("*", "Door", true, false):
 			var d: Door = n as Door
-			if d != null:
+			if StringName(d.get_meta(&"opens_with", &"")) == OPENS_WITH_MIXER:
 				d.unlock()
 				d.set_open(true, false, true)
+		for n: Node in _runtime.map.find_children("*", "TacticalPoint", true, false):
+			var tp: TacticalPoint = n as TacticalPoint
+			if tp.kind == TacticalPoint.Kind.COVER and tp.tags.has(TAG_MIXER_COVER):
+				tp.set_enabled(false)
 		var path: Path3D = layout.get_node_or_null(MIXER_PATH) as Path3D
 		if path != null:
 			mixer.drive(path, stop)
 		else:
 			mixer.park(stop)
-	else:
-		for pair: Array in [[LAYOUT_MIXER_GONE, "mixer"], [LAYOUT_TANNERY_OPEN, "tannery"]]:
-			if ConvoyLayouts.find(_runtime.map, String(pair[0])) != null:  # G1's layout swap until C's phase 2 map
-				set_layout(String(pair[0]), String(pair[1]))
 	var lead: Node3D = _vehicle("Lead", ConvoyLayouts.find(_runtime.map, layout_id))
 	if lead != null:
 		_cue(CUE_MIXER_RAM, lead.global_position, 0)  # the mixer hits the lead escort (crash) / boxes it in (clean)
@@ -555,7 +594,8 @@ func _spawn_convoy_units() -> void:
 			for id: StringName in ids:
 				own.append(ESCORT_DEFS[veh] if ESCORT_SWAPPED.has(id) else id)
 			ids = own
-		var seat: bool = clean_stop and not went_loud and body is ConvoyVehicle
+		# D-154 amended (LEAD): a crash stop seats them too, so the dismount can be staggered (_dismount_crash)
+		var seat: bool = body is ConvoyVehicle
 		var look_tag: StringName = StringName("convoy_" + veh.to_lower())  # convoy_lead / convoy_t1.. / convoy_rear
 		for i: int in ids.size():
 			# D: the Wrecker's helmet clears no car door frame: it rides along but starts beside the car
@@ -571,7 +611,31 @@ func _spawn_convoy_units() -> void:
 
 
 func _dismount_all() -> void:
+	if not clean_stop:
+		_dismount_crash()
+		return
 	dismount_units(_seated)
+	_seated.clear()
+
+
+## D-154 amended (LEAD, lever (a)): on the crash stop the escort officers get out at once, the Vaultline crews and the
+## rear TAC Heavy over the next CRASH_DISMOUNT_S (seeded per unit), so the crew does not meet all eleven at once.
+func _dismount_crash() -> void:
+	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
+	var first: Array[NpcBase] = []
+	for v: Variant in _seated:
+		if not is_instance_valid(v):
+			continue
+		var u: NpcBase = v as NpcBase
+		var tags: Array = u.spawn_info.get("tags", []) as Array
+		var def_id: StringName = u.enemy_def.id if u.enemy_def != null else &""
+		if (tags.has(&"convoy_lead") or tags.has(&"convoy_rear")) and def_id != &"enemy.tac_heavy":
+			first.append(u)
+			continue
+		var unit: NpcBase = u
+		start_timer(StringName("dismount_%d" % u.get_instance_id()), rng.randf_range(1.0, CRASH_DISMOUNT_S),
+			func() -> void: dismount_units([unit]))
+	dismount_units(first)
 	_seated.clear()
 
 
@@ -694,7 +758,7 @@ func _movers() -> Array[ConvoyVehicle]:
 	var holder: Node = slot.get_node_or_null(MOVERS_PATH) if slot != null else null
 	if holder != null:
 		for c: Node in holder.get_children():
-			if c is ConvoyVehicle:
+			if c is ConvoyVehicle and String(c.name) != MIXER_NAME:  # the Mixer moves at _mixer_move, not at the stop
 				out.append(c as ConvoyVehicle)
 	return out
 

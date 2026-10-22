@@ -8,6 +8,11 @@ const HEISTS: Array[StringName] = [&"gallery_night", &"glasshouse", &"night_depo
 	&"dockside_burn"]
 const MIN_INSIDE: float = 0.7
 const INSIDE_KINDS: Array[StringName] = [&"room", &"building"]
+## The only crossings left: every other spot (beside, shifted inside, pushed outside) overlaps another name or a
+## marker, which reads worse than touching the line. Shrink-only.
+const FRAME_CROSSING_ALLOWED: Array[String] = [
+	"rolling_thunder/2/755x487/GOODS LIFT", "dockside_burn/2/540x520/COUNT ROOM",
+]
 
 var _strings: Dictionary = {}
 ## RT-B1: staged heists (RT) join the walk through the test-only fixture until they are offered.
@@ -204,3 +209,29 @@ func test_entry_floor_is_the_default_spawn() -> void:
 		assert_eq(bp.entry_floor(), int(want[heist]), "%s entry floor" % heist)
 	var empty: PreplanBlueprint = PreplanBlueprint.new()
 	assert_eq(empty.entry_floor(), 0, "no spawn point: floor 0")
+
+
+## RT-B1 720p / 4K pass: a name placed beside a narrow zone on the map's edge straddled the outer frame line (RT's
+## "SITE WELFARE CABIN"). Names sit wholly inside or wholly outside the drawn bounds, every heist, floor and size.
+func test_zone_names_do_not_straddle_the_frame() -> void:
+	var checked: int = 0
+	for sz: Vector2 in [Vector2(1130, 730), Vector2(755, 487), Vector2(540, 520)]:
+		for id: StringName in _heists():
+			var view: BlueprintView = BlueprintView.new()
+			view.size = sz
+			add_child(view)
+			view.setup(PreplanBoard.build(id, Enums.Difficulty.ROUTINE))
+			var s: float = float(view._transform()["scale"])
+			var bp: PreplanBlueprint = view.board.blueprint
+			var frame: Rect2 = Rect2(view.world_to_view(bp.bounds.position), bp.bounds.size * s)
+			for fl: int in range(bp.floor_count()):
+				view.set_floor(fl)
+				for z: Array in view._zone_labels():
+					var r: Rect2 = z[2] as Rect2
+					var key: String = "%s/%d/%dx%d/%s" % [id, fl, sz.x, sz.y, z[0]]
+					if frame.intersects(r) and not frame.encloses(r) and not FRAME_CROSSING_ALLOWED.has(key):
+						fail("%s: crosses the frame" % key)
+					checked += 1
+			view.queue_free()
+			await wait_frames(1)
+	assert_true(checked > 100, "names checked: %d" % checked)

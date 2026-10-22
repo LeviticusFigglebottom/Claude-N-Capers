@@ -20,6 +20,9 @@ const RELOAD_CLIPS: Dictionary = {
 static var _cached: AnimTweak = null
 ## clip -> root_m curve, parsed from CHAR_SOURCE once (root_curve).
 static var _curves: Dictionary = {}
+## reversals(): the parsed table (or a test's override).
+static var reversals_override: Dictionary = {}
+static var _reversals: Dictionary = {}
 
 @export_group("Clip facts (characters.md v1.3 / v1.4)")
 ## Root speed of each locomotion clip at 1.78 m (m/s). speed_scale = v / (clip speed x motion_scale).
@@ -207,6 +210,12 @@ static var _curves: Dictionary = {}
 ## their feet down this much of a cycle later than the forward ones; the phase carry adds it going back, subtracts it
 ## coming out.
 @export var locomotion_back_phase_offset: float = 0.10
+## D (motion strips): the crossfade (s) between two 8-way clips 135 deg or more apart; a full blend averages the
+## opposite strides into a knees-bent squat.
+@export var locomotion_reversal_blend_s: float = 0.05
+## D (motion strips): back into the same 8-way gait family within this (s) of leaving it (a bot's stop-start), the
+## new loop continues the old stride's phase (advanced by the time away) instead of restarting at 0.
+@export var locomotion_resume_window_s: float = 0.3
 ## Never LOD an NPC within this distance (m) of a crew member's aim ray (the player / a teammate aiming at it).
 @export var anim_lod_aim_radius_m: float = 2.0
 
@@ -234,6 +243,39 @@ static func root_curve(clip_id: StringName) -> PackedFloat32Array:
 				vals.append(tok.to_float())
 			_curves[StringName(line.substr(6, at - 6))] = vals
 	return _curves.get(clip_id, PackedFloat32Array())
+
+
+## characters v1.27 (D's `loco_reverse` SOURCE line): "<source>><target>" -> [{clip, u_in, u_out, frames}] (one per brake
+## foot), parsed once; empty when the rig's SOURCE has no reversals. Tests may fill `reversals_override`.
+
+
+static func reversals() -> Dictionary:
+	if not reversals_override.is_empty():
+		return reversals_override
+	if _reversals.is_empty():
+		_reversals = parse_reversals(FileAccess.get_file_as_string(CHAR_SOURCE) if FileAccess.file_exists(CHAR_SOURCE) else "")
+		_reversals[&""] = []  # parsed marker
+	return _reversals
+
+
+## The `loco_reverse:` line of SOURCE text -> the reversals() table.
+static func parse_reversals(text: String) -> Dictionary:
+	var out: Dictionary = {}
+	var rx: RegEx = RegEx.create_from_string(
+		"([a-z_]+): ([a-z_]+)->([a-z_]+) brake=[LR] frames=(\\d+) u_in=([0-9.]+).* u_out=([0-9.]+)")
+	for raw: String in text.split("\n"):
+		if not raw.begins_with("loco_reverse:"):
+			continue
+		for entry: String in raw.split(" | "):
+			var m: RegExMatch = rx.search(entry)
+			if m == null:
+				continue
+			var key: StringName = StringName("%s>%s" % [m.get_string(2), m.get_string(3)])
+			var list: Array = out.get(key, [])
+			list.append({"clip": StringName(m.get_string(1)), "frames": m.get_string(4).to_int(),
+				"u_in": m.get_string(5).to_float(), "u_out": m.get_string(6).to_float()})
+			out[key] = list
+	return out
 
 
 ## Metres along `curve` (root_curve) at `t` seconds: the frame values lerped, held at the last one.

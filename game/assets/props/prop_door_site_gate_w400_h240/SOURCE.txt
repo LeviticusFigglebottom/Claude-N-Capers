@@ -1,0 +1,8 @@
+asset: prop_door_site_gate_w400_h240
+script: tools/blender/props/doors.py
+params: {"cat": {"kind": "industrial_door", "prefab": "door", "surface": "metal"}, "fn": "site_gate", "h": 2.4, "jamb": 0.1, "w": 4.0, "wall_t": 0.2}
+seed: 1107909803  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_door_site_gate_w400_h240
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

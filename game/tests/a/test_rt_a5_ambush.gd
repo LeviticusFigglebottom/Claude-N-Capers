@@ -179,3 +179,25 @@ func test_one_unit_per_seat_over_calls() -> void:
 		return
 	assert_true(a[0].global_position.distance_to(b[0].global_position) > 0.3,
 		"different seats (%s / %s)" % [a[0].global_position, b[0].global_position])
+
+
+## P: a seated unit killed in its car (C4 / an explosion) or freed before the dismount: no "cast a freed object"; the
+## dead one stays, the living get out.
+func test_dismount_skips_dead_and_freed_seated_units() -> void:
+	_rt.stealth.raise_alarm(&"test")
+	await wait_physics_frames(3)
+	var truck: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(0, 0, -12), func(n: Node) -> void:
+		(n as ConvoyVehicle).vehicle_kind = &"truck") as ConvoyVehicle
+	await wait_physics_frames(2)
+	var units: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.security_officer", 3, &"", true, truck)
+	assert_eq(units.size(), 3, "three seated units")
+	if units.size() < 3:
+		return
+	var dead: NpcBase = units[0]
+	dead.die({}, 0)
+	units[1].free()
+	var living: NpcBase = units[2]
+	var out: int = _rt.mission.dismount_units(units)
+	assert_eq(out, 1, "only the living one got out")
+	assert_false(dead.alive, "the killed one stays dead in its seat")
+	assert_false(living.has_meta(HeistMission.META_SEATED_IN), "the living one is out")

@@ -1,4 +1,4 @@
-# Contract: characters (v1.35)
+# Contract: characters (v1.36)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -408,3 +408,24 @@ in characters.json as `variant_of: tac_light`, `variant: <faction>_duty`; scene
 faction police unit (EnemyDef `params.visual_variant` frd / sentinel / zero) resolves `<faction>_duty` → `duty` →
 `<faction>` → base. Only the TAC Light has faction EnemyDefs today; other units fall back to the plain `_duty` look.
 `test_outfits` checks the looks. Additive.
+
+## v1.36: locomotion reversals (D-153 motion strips; SOURCE `loco_reverse`; D f65cb6e7)
+One-shots for a travel reversal of 135° or more with fixed facing (an aiming unit kiting); they replace the crossfade
+between opposite strides, which folds the knees. `_l` = the left foot brakes.
+| clip | loops | frames | u_in (source frame) | u_out (target frame) | push | root total |
+|---|---|---|---|---|---|---|
+| `run_reverse_l` | run → run_b | 18 | 0.5238 (11) | 0.2381 (5) | 6 | −0.642 m |
+| `run_reverse_r` | run → run_b | 18 | 0 (0) | 0.7619 (16) | 6 | −0.671 m |
+| `run_reverse_back_l` | run_b → run | 18 | 0.5238 (11) | 0.2381 (5) | 6 | +0.642 m |
+| `run_reverse_back_r` | run_b → run | 18 | 0 (0) | 0.7619 (16) | 6 | +0.671 m |
+| `walk_reverse_l` | walk → walk_back | 24 | 0.5 (15) | 0.2333 (7) | 11 | −0.132 m |
+| `walk_reverse_r` | walk → walk_back | 24 | 0 (0) | 0.7333 (22) | 11 | −0.132 m |
+| `walk_reverse_back_l` | walk_back → walk | 24 | 0.5 (15) | 0.2333 (7) | 11 | +0.309 m |
+| `walk_reverse_back_r` | walk_back → walk | 24 | 0 (0) | 0.7333 (22) | 11 | +0.309 m |
+* Frame 0 IS the source loop at u_in (the brake foot's touch-down); the last frame IS the target loop at u_out.
+* Events: `foot_plant` (0), `push` (the root speed crosses 0), `done` (last frame).
+* In place with root motion `curve.<clip>` (metres along the character's forward, + = forward / Godot −Z, one value per
+  frame). The brake foot stays world-still until it lifts; the hips never drop more than 10 mm below the loops' lowest.
+ENV A wiring: on a ≥135° reversal, wait for the source loop's next brake-foot touch-down (u 0 → `_r`; run 11/21 or walk
+15/30 → `_l`), play the clip with no crossfade, move the root by its curve, then switch to the target loop seeked to
+u_out with no crossfade. Under 135° the 8-way switch with phase carry stays (fallback: the 0.05 s reversal crossfade).

@@ -74,6 +74,10 @@ VARIANTS = {
     # thermite plate (BurnPoint shows it while burning); the plate itself rides on the truck's `Door`
     "prop_thermite_lock": {"fn": "thermite_lock", "cat": {"prefab": "burn_point", "kind": "burn_point"}},
     "veh_mixer_truck": {"fn": "truck", "style": "mixer", "ln": 8.0, "w": 2.5, "h": 3.5, "cat": dict(_VEH)},
+    # phase 2 (D-149.8, the LEAD's ruling): Reyes's mixer as A5-02's convoy_vehicle visual (the mover fits its collision
+    # to `Body`; Seat0 driver +X / Seat1 on the cab floor, facing +Z, from _cab_markers)
+    "veh_mixer_truck_mover": {"fn": "truck", "style": "mixer", "ln": 8.0, "w": 2.5, "h": 3.5,
+                              "cat": {"prefab": "convoy_vehicle", "kind": "convoy_vehicle"}},
     "veh_lorry": {"fn": "truck", "style": "lorry", "ln": 14.0, "w": 2.0, "h": 3.9, "cat": dict(_VEH)},
     "veh_lorry_tm": {"fn": "truck", "style": "tm", "ln": 9.0, "w": 2.5, "h": 3.4, "cat": dict(_VEH)},
     # the diner's cookline (D: the top at 0.90 m, its front edge 0.30 m ahead of the cook); griddle / fryer / range

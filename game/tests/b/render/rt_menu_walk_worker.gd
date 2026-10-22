@@ -5,6 +5,7 @@ extends Node
 
 const RT: StringName = &"rolling_thunder"
 const MAX_STEPS: int = 80
+const SIDE_KEYS: Dictionary = {SIDE_LEFT: KEY_LEFT, SIDE_TOP: KEY_UP, SIDE_RIGHT: KEY_RIGHT, SIDE_BOTTOM: KEY_DOWN}
 ## Every RT pre-planning asset (the WIP def's preplanning block) -> where it is bought: &"" = the crew tab, else a point.
 const ASSETS: Array[Array] = [
 	[&"asset.intel_route", &""], [&"asset.intel_cameras", &""], [&"asset.intel_guard_posts", &""],
@@ -67,21 +68,43 @@ func _nav_to(target: Control, label: String) -> bool:
 	if target == null or not target.is_visible_in_tree():
 		_issue("nav", "%s is not on screen" % label)
 		return false
-	var keys: Array[Key] = [KEY_DOWN, KEY_RIGHT, KEY_UP, KEY_LEFT]
-	var d: int = 0
-	var seen: Dictionary = {}
+	# The shortest arrow-key path over the game's own focus graph (Control.find_valid_focus_neighbor), then those keys
+	# are sent as real input; a step that lands elsewhere is re-planned. No path = the target is unreachable.
 	for _i: int in range(MAX_STEPS):
-		if _focus() == target:
+		var at: Control = _focus()
+		if at == target:
 			return true
-		seen[_focus()] = true
-		await _key(keys[d])
-		if seen.has(_focus()):
-			d = (d + 1) % keys.size()
-	_issue("nav", "%s not reachable by arrow keys (focus on %s)" % [label, _focus()])
+		if at == null:
+			await _key(KEY_DOWN)  # nothing focused yet: the first key gives focus
+			continue
+		var side: int = _first_step(at, target)
+		if side < 0:
+			_issue("nav", "%s not reachable by arrow keys from %s" % [label, at.name])
+			return false
+		await _key(SIDE_KEYS[side])
+	_issue("nav", "%s not reached in %d keys (focus on %s)" % [label, MAX_STEPS, _focus()])
 	return false
 
 
+## The first arrow (a Side) on a shortest focus path from `from` to `to`, or -1.
+func _first_step(from: Control, to: Control) -> int:
+	var first: Dictionary = {from: -1}
+	var queue: Array[Control] = [from]
+	while not queue.is_empty():
+		var c: Control = queue.pop_front()
+		for side: int in SIDE_KEYS:
+			var nb: Control = c.find_valid_focus_neighbor(side as Side)
+			if nb == null or first.has(nb):
+				continue
+			first[nb] = side if c == from else first[c]
+			if nb == to:
+				return int(first[nb])
+			queue.append(nb)
+	return -1
+
+
 func _press(target: Control, label: String) -> bool:
+	print("RTWALK step %s (t=%.0f s)" % [label, Time.get_ticks_msec() / 1000.0])
 	if not await _nav_to(target, label):
 		return false
 	await _key(KEY_ENTER)
@@ -215,12 +238,21 @@ func _open(ps: PreplanningScreen, pid: StringName) -> bool:
 
 func _report_drops() -> void:
 	var drops: Array[String] = []
+	var at_drop: bool = false
+	var drop_pos: Vector2 = (_flow.preplanning_screen.board.blueprint.point(&"pp_drop_underpass").get("pos",
+			Vector2.INF) as Vector2)
 	for n: Node in get_tree().root.find_children("*", "ItemPickup", true, false):
 		var ip: ItemPickup = n as ItemPickup
-		drops.append("%s x%d at %s" % [ip.item_id, ip.count, (ip.global_position * Vector3(1, 0, 1)).snapped(Vector3.ONE)])
+		var p: Vector3 = ip.global_position
+		drops.append("%s x%d at (%.0f, %.0f)" % [ip.item_id, ip.count, p.x, p.z])
+		if ip.item_id == &"item.c4" and Vector2(p.x, p.z).distance_to(drop_pos) < 3.0:
+			at_drop = true
 	print("RTWALK item pickups: %s" % ", ".join(drops))
-	if _mode == "success" and not drops.any(func(t: String) -> bool: return t.contains("(68, 0, -9)") or t.contains("(68, -0, -9)")):
-		print("RTWALK note: no C4 box at pp_drop_underpass (68, -9) by exact metre; check the list above")
+	if _mode == "success":
+		if at_drop:
+			print("RTWALK c4 drop: the bought C4 box is at pp_drop_underpass %s" % drop_pos)
+		else:
+			_issue("c4", "no C4 box within 3 m of pp_drop_underpass %s" % drop_pos)
 
 
 func _payday() -> void:

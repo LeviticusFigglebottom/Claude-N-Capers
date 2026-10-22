@@ -66,7 +66,7 @@ const EXTERIOR: Array = [
 	["Site/Rail/", "", "concrete"],
 	["Site/RailLane/", "", "metal"],
 	["Site/Skyway/Pier", "", "concrete"],
-	["Site/Skyway/Deck", "", "skyway_green"],
+	["Site/Skyway/Deck", "", "concrete"],   # the doc: expressway concrete; the green is the girders' (props)
 	["Site/Skyway/", "", "concrete"],
 	["Site/Hoarding/ManGatePanel", "mesh", "glass"],
 	["Site/Hoarding/", "", "hoarding"],
@@ -106,7 +106,6 @@ const OVERRIDES: Array = [
 	["Geometry/", "concrete"],
 	["Props/MapBuilt/Cookline", "steel_brushed"],
 	["Props/MapBuilt/Formwork", "wood"],
-	["Props/MapBuilt/MixerTruck", "orange"],
 	["Props/MapBuilt/", "metal"],
 	["Variants/", "metal"],
 ]

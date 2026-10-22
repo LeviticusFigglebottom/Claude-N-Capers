@@ -200,3 +200,21 @@ func test_grant_each_type_and_save() -> void:
 	assert_eq(loaded.xp, 5000)
 	assert_has(loaded.owned_mods, mod_id)
 	assert_has(loaded.owned_mask_parts, part_id)
+
+
+func test_achievement_rewards_never_drop() -> void:
+	# LEAD r278: an achievement's reward parts (rewards / unlocks, e.g. OF's mask_base.vault_dial, RT's
+	# mask_pattern.road_lines) are earned only, as in PD2; the pool keeps every other unowned part.
+	var earned: Dictionary = Achievements.all_reward_ids()
+	var parts: int = 0
+	for id: Variant in earned:
+		if MaskCatalog.has_part(StringName(id)):
+			parts += 1
+	assert_true(parts >= 44, "achievement reward parts counted: %d" % parts)
+	var pool: Array[StringName] = PaydayCards.pool(PaydayCards.MASK_PART, PlayerProfile.new_default())
+	assert_true(pool.size() > 0, "other parts still drop")
+	for id: StringName in pool:
+		assert_false(earned.has(id), "%s is an achievement reward: it never drops" % id)
+	for s: int in range(200):
+		for card: Dictionary in PaydayCards.roll(s, 0, Enums.Difficulty.CATACLYSM, PlayerProfile.new_default())["cards"] as Array:
+			assert_false(earned.has(StringName(card["item_id"])), "seed %d dropped reward %s" % [s, card["item_id"]])

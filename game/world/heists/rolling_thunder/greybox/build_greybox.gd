@@ -26,6 +26,11 @@ const AE: GDScript = preload("res://world/heists/rolling_thunder/greybox/rt_assa
 const NS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")
 const DNC: GDScript = preload("res://world/heists/shared/door_nav_clearance.gd")
 const RT_GI: GDScript = preload("res://world/heists/rolling_thunder/greybox/rt_gi.gd")
+## P's RT G1 real-input pass (r278): a HEAVY bag carrier pinned twice on Strip2GuardW2's south end; the bake erodes
+## by the 0.3 m agent radius, the crew capsule is 0.35 m. The deck-2 strip guards' obstruction is grown by this much,
+## so the navmesh keeps 0.4 m off them and round their ends.
+const GUARD_PAD_PREFIX: String = "Strip2Guard"
+const GUARD_NAV_PAD: float = 0.1
 const AUDIO_BUILDER: String = "res://world/audio/map_audio_builder.gd"
 ## [node name, position, cue id, volume offset dB] (origin: the junction; +z south).
 const AUDIO_BEDS: Array = [
@@ -52,8 +57,6 @@ const AUDIO_BEDS: Array = [
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the F1 edge protection, the scaffold mesh,
 ## the palisades and rail-lane fences).
 const THIN_GROUPS: Array[String] = ["Frame", "Scaffold", "Rail", "RailLane"]
-## RT-C2: the convoy nav guard (Gameplay/ConvoyNav).
-const CONVOY_NAV_GUARD: String = "res://world/heists/rolling_thunder/rt_convoy_nav.gd"
 
 
 func _initialize() -> void:
@@ -229,6 +232,17 @@ func _bake(nav: NavigationRegion3D) -> int:
 		for k: Vector3 in [Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(1, 0, 1), Vector3(0, 0, 1)]:
 			corners.append(bb.position + bb.size * k)
 		base.add_projected_obstruction(corners, bb.position.y, bb.size.y, false)
+	for h: Array in L.HULLS:   # P's RT G1 real-input pass: the strip guards kept the crew capsule's distance
+		if String(h[1]).begins_with(GUARD_PAD_PREFIX):
+			var gb: AABB = AABB(v3(h[2][0]), Vector3.ZERO)
+			for q: Array in h[2]:
+				gb = gb.expand(v3(q))
+			gb = AABB(gb.position - Vector3(GUARD_NAV_PAD, 0.0, GUARD_NAV_PAD),
+				gb.size + Vector3(GUARD_NAV_PAD, 0.0, GUARD_NAV_PAD) * 2.0)
+			var gc: PackedVector3Array = PackedVector3Array()
+			for k: Vector3 in [Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(1, 0, 1), Vector3(0, 0, 1)]:
+				gc.append(gb.position + gb.size * k)
+			base.add_projected_obstruction(gc, gb.position.y, gb.size.y, false)
 	print("door throats: %d doors" % DNC.add(base, map_root, nm))
 	holder.queue_free()
 	var t_parse: int = Time.get_ticks_msec() - t0
@@ -238,9 +252,6 @@ func _bake(nav: NavigationRegion3D) -> int:
 	await process_frame
 	nav.navigation_mesh = nm
 	nav.set_meta(&"convoy_open_nav", "convoy")
-	var guard: Node3D = node3d("ConvoyNav")   # keeps the disabled convoy regions off the nav map (rt_convoy_nav.gd)
-	guard.set_script(load(CONVOY_NAV_GUARD))
-	add(n("Gameplay"), guard)
 	var t2: int = Time.get_ticks_msec()
 	var counts: PackedStringArray = _bake_convoy(base)
 	print("navmesh bake: parse %d ms, main %d ms (%d polygons), convoy layouts %d ms: %s" % [t_parse, t_main,

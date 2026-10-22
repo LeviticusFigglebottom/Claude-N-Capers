@@ -268,7 +268,9 @@ func test_stealth_bonus_by_heist() -> void:
 		var def: HeistDef = HeistRegistry.get_def(id)
 		var want: float = maxf(def.stealth_bonus_mult, 1.0)
 		assert_near(PayoutCalculator.stealth_bonus_for(id, tw), want, 0.0001, String(id))
-		if def.mode == Enums.HeistMode.LOUD_ONLY:
+		# RT's "Loud (ambush start)": stealth setup, but every run ends loud, so no stealth bonus either.
+		if def.mode == Enums.HeistMode.LOUD_ONLY \
+				or HeistCatalog.mode_key(id, def.mode) == &"ui.heist_select.modes_loud_ambush":
 			assert_near(want, 1.0, 0.0001, "%s: loud-only, no stealth bonus" % id)
 		else:
 			assert_true(want >= 1.05 and want <= 1.25, "%s: S11.1 range 5-25 %% (%.2f)" % [id, want])
