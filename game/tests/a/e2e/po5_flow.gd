@@ -338,6 +338,8 @@ func payday_to_hub() -> int:
 		var clicked: bool = false
 		for label: String in ["Continue", "Skip", "Next", "Collect", "Done", "Back to Safehouse", "Safehouse", "OK"]:
 			var b: Button = find_button(label)
+			if b != null and _button_label(b).contains(" · "):
+				b = null  # the main menu's Quick Play "CONTINUE · <heist> · <difficulty>" starts a new heist (r278)
 			if b != null:
 				await click_control(b)
 				clicked = true

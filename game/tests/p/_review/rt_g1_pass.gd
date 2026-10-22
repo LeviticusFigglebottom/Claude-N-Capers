@@ -27,6 +27,8 @@
 ##   setup      from each spawn (plaza, car park, underpass), REAL detection: man-gate, rig hack; times vs the ETA and
 ##              every observer's peak D-128 fill.
 ##   trucks     the six truck-phase tests in turn.
+##   blown      Hazardous blown setup, REAL play: 3 AI teammates, mask + 3 shots at the plaza, the crash stop fought
+##              from Pier-40's cover, T1 sawn and defended; rows: truck opened, downs, where the hits come from.
 ##   all        the nine traversal tests (stairs .. fences) in turn (a fresh launch each); continues past failures, one summary at the end.
 ## Command (windowed only, D-086; start it only when `pgrep -xc godot` <= 1):
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 --audio-driver Dummy \
@@ -132,8 +134,18 @@ const THERMITE_BAG_AT: Vector3 = Vector3(-47.5, 0.0, -20.5)
 const WAIT_NORTH: Vector3 = Vector3(-12.0, 0.0, -24.0)
 const WAIT_EAST: Vector3 = Vector3(20.0, 0.0, -12.5)
 
+const BLOWN_COVER: Vector3 = Vector3(0.0, 0.0, -37.6)
+const BLOWN_FIGHT_S: float = 150.0
+const BLOWN_MAX_S: float = 900.0
+const BLOWN_PEEK_M: float = 45.0
+
 var _rows: PackedStringArray = PackedStringArray()
 var _straight_on: bool = false
+var _hits: Dictionary = {}
+var _downs: Dictionary = {}
+var _crew_ids: Dictionary = {}
+var _hp_min: float = INF
+var _obj_states: Dictionary = {}
 
 
 func note(msg: String) -> void:
@@ -969,11 +981,19 @@ func _hack_rig() -> bool:
 		return false
 	var m: RollingThunderMission = _mission()
 	var t0: float = rt.heist_time_s
-	var ok: bool = await pilot.use(_comp(rig), 60.0, func() -> bool: return m != null and m.signals_rigged)
-	if ok:
-		await wait_until(func() -> bool: return m.signals_rigged, 30.0)
-	_row("SignalRig hack (15 s)", "PASS" if m.signals_rigged else "FAIL", "%.1f s from F, signals_rigged %s" % [
-		rt.heist_time_s - t0, m.signals_rigged], "-" if m.signals_rigged else "A hack / C placement")
+	var comp: InteractableComponent = _comp(rig)
+	var ht: HackTerminal = rig as HackTerminal
+	var restarts: int = 0
+	await pilot.use(comp, 60.0, func() -> bool: return m.signals_rigged or (ht != null and ht.state != HackTerminal.State.IDLE))
+	# Interruptions (HackTerminal: kind restart_hack, no auto-restart) need F again, as a player would.
+	while not m.signals_rigged and rt.heist_time_s - t0 < 120.0:
+		if comp.kind == &"restart_hack":
+			restarts += 1
+			await pilot.use(comp, 30.0, func() -> bool: return comp.kind != &"restart_hack")
+		await wait_s(0.5)
+	_row("SignalRig hack (15 s)", "PASS" if m.signals_rigged else "FAIL", "%.1f s from F, %d restart(s), signals_rigged %s%s" % [
+		rt.heist_time_s - t0, restarts, m.signals_rigged, (", paused %s" % ht.pause_reasons()) if ht != null
+		and ht.is_paused() else ""], "-" if m.signals_rigged else "A hack / C placement")
 	return m.signals_rigged
 
 
@@ -1020,13 +1040,16 @@ func _truck_use(t: ArmoredTruck) -> Vector3:
 
 ## The placed saw on `t`: F on the truck's lock (place_saw), then wait out the run, fixing jams (fix_drill).
 func _saw_truck(t: ArmoredTruck) -> bool:
-	var comp: InteractableComponent = _comp(t)
+	# r278: the saw goes on the rear doors' SawPoint (a SAW drill_point child); before that, the truck's own lock.
+	var sp: Node = t.get_node_or_null("SawPoint")
+	var comp: InteractableComponent = _comp(sp) if sp != null else _comp(t)
 	if comp == null:
 		_row("%s saw" % _truck_name(t), "FAIL", "no interactable", "A truck")
 		return false
+	var k0: StringName = comp.kind
+	note("saw: on %s, kind %s" % ["SawPoint" if sp != null else "the truck lock", k0])
 	var t0: float = rt.heist_time_s
-	var placed: bool = await pilot.use(comp, 60.0, func() -> bool: return (t.opened or comp.kind != &"place_saw"
-		and comp.kind != &"place_c4"))
+	var placed: bool = await pilot.use(comp, 60.0, func() -> bool: return t.opened or comp.kind != k0)
 	note("saw: placed %s, kind now %s" % [placed, comp.kind])
 	await shot("saw_placed")
 	var jams: int = 0
@@ -1183,3 +1206,168 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 		rt.heist_time_s - t1], "-" if t.opened else "A truck / safe c4")
 	await shot("c4_open")
 	return t.opened
+
+
+# --- Blown setup on Hazardous (LEAD 2026-10-22, the D-154 early-alarm balance) ----------------------------------------
+# REAL play, no shortcuts after the launch: Hazardous, 3 AI teammates (crew_ai), NPCs in, real detection (no
+# stealth_hidden), skip_casing. The pilot masks at the plaza and fires 3 shots (the early alarm), waits out the crash
+# stop crouched behind Pier-40's south face peeking to shoot (Po5Pilot.engage on the nearest visible enemy), then once
+# the escort is down (or BLOWN_FIGHT_S after the stop) saws T1 at its SawPoint (holds clear threats first, Po5Pilot
+# combat) and defends it crouched at its rear step until it opens, custody, or BLOWN_MAX_S.
+
+
+func _rt_blown() -> bool:
+	var f: Dictionary = RT_FORCE.duplicate(true)
+	f[&"convoy_route"] = [&"route_north"]
+	if rt != null and is_instance_valid(rt):
+		rt.teardown()
+		rt = null
+		await wait_s(0.5)
+	var opts: Dictionary = {"preplan": {"force_variants": f}, "skip_casing": true, "ai_teammates": 3, "crew_ai": true}
+	rt = await HeistLauncher.launch(RT_HEIST, _seed if _seed >= 0 else RT_SEED, Enums.Difficulty.HAZARDOUS, self, opts)
+	if rt == null:
+		return await _fail("launch")
+	note("launched rolling_thunder HAZARDOUS seed %d variants %s" % [_seed if _seed >= 0 else RT_SEED, rt.variants])
+	var c: CrewController = rt.crew_controller(Net.local_slot()) as CrewController
+	await wait_s(2.0)
+	pilot = Po5Pilot.new(self, c)
+	pilot.quiet = true
+	pilot.combat = true
+	await pilot.calibrate()
+	for s: int in 4:
+		var cc: Node = rt.crew_controller(s)
+		if cc != null:
+			_crew_ids[NetIds.of(cc)] = s
+	EventBus.damage_applied.connect(_on_blown_hit)
+	EventBus.objective_updated.connect(func(id: StringName, st: int, _d: Dictionary) -> void: _obj_states[id] = st)
+	EventBus.crew_downed.connect(func(slot: int, used: int) -> void:
+		_downs[slot] = int(_downs.get(slot, 0)) + 1
+		note("DOWN slot %d (downs used %d) at %s" % [slot, used, Po5Pilot._v(pilot.crew.global_position)]))
+	EventBus.crew_custody.connect(func(slot: int) -> void:
+		_downs["custody_%d" % slot] = true
+		note("CUSTODY slot %d" % slot))
+	_watch_hp.call_deferred()
+	await shot("blown_spawn")
+	var m: RollingThunderMission = _mission()
+	# The early alarm: mask in the plaza and fire 3 shots.
+	await _mask()
+	await pilot.face(pilot.crew.eye_position() + Vector3(0.0, 4.0, -6.0), 0.05, 1.5)
+	for _k: int in 3:
+		await pilot.inp.tap(&"fire")
+		await wait_s(0.3)
+	await wait_until(func() -> bool: return _alarm != &"" or m.alerted, 20.0)
+	_row("blown: early alarm", "PASS" if m.alerted else "FAIL", "alarm '%s' at t=%.1f, mission alerted %s" % [_alarm,
+		rt.heist_time_s, m.alerted], "-" if m.alerted else "A stealth / mission")
+	# Cover by Pier-40 and fight the stop from there.
+	await _go(BLOWN_COVER, 0.6, 180.0)
+	await _hold_cover(func() -> bool: return m._stop_done, 400.0)
+	var t_stop: float = rt.heist_time_s
+	_row("blown: crash stop", "PASS" if m._stop_done else "FAIL", "layout '%s' at t=%.1f (ETA %.0f)" % [m.layout_id,
+		t_stop, m._eta_s], "-" if m._stop_done else "A mission")
+	await shot("blown_stop")
+	await _hold_cover(func() -> bool: return _objective_done(&"escort") or rt.heist_time_s - t_stop > BLOWN_FIGHT_S,
+		BLOWN_FIGHT_S + 10.0)
+	var esc_fmt: String = "escort done %s at t=%.1f (%.0f s after the stop), %s"
+	_row("blown: escort down from cover", "PASS" if _objective_done(&"escort") else "NOTE", esc_fmt % [
+		_objective_done(&"escort"), rt.heist_time_s, rt.heist_time_s - t_stop, _downs_text()], "-")
+	# T1 by the saw, defended at the rear step.
+	var trucks: Array[ArmoredTruck] = _trucks()
+	var opened: bool = false
+	var t_open: float = -1.0
+	if not trucks.is_empty() and not _in_custody():
+		var t: ArmoredTruck = trucks[0]
+		var sp: Node = t.get_node_or_null("SawPoint")
+		var comp: InteractableComponent = _comp(sp) if sp != null else _comp(t)
+		var k0: StringName = comp.kind
+		var placed: bool = await pilot.use(comp, 120.0, func() -> bool: return t.opened or comp.kind != k0)
+		note("blown: saw placed %s at t=%.1f" % [placed, rt.heist_time_s])
+		var t_end: float = rt.heist_time_s + BLOWN_MAX_S
+		while not t.opened and rt.heist_time_s < t_end and not _in_custody():
+			if comp.kind == &"fix_drill" and pilot.crew.crew_state == Enums.CrewState.NORMAL:
+				await pilot.use(comp, 60.0, func() -> bool: return comp.kind != &"fix_drill")
+			elif comp.kind == k0 and not t.opened and pilot.crew.crew_state == Enums.CrewState.NORMAL:
+				await pilot.use(comp, 60.0, func() -> bool: return t.opened or comp.kind != k0)  # the saw was never placed
+			await _hold_cover(func() -> bool: return t.opened or comp.kind == &"fix_drill", 6.0)
+		opened = t.opened
+		t_open = rt.heist_time_s
+	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f"
+	_row("blown: a truck opened (T1 saw, Hazardous, AI crew)", "PASS" if opened else "FAIL", open_fmt % [
+		opened, t_open, _downs_text(), _hp_min], "-" if opened else "balance (D-154)")
+	_danger_rows()
+	await shot("blown_end")
+	return opened
+
+
+## Crouched in cover; every 0.5 s peek (stand) at the nearest visible enemy within BLOWN_PEEK_M and engage 1.5 s.
+func _hold_cover(done: Callable, max_s: float) -> void:
+	var t0: float = rt.heist_time_s
+	while not done.call() and rt.heist_time_s - t0 < max_s and not _in_custody():
+		if pilot.crew.crew_state != Enums.CrewState.NORMAL:
+			await wait_s(0.5)
+			continue
+		var foe: NpcBase = pilot.nearest_enemy(BLOWN_PEEK_M)
+		if foe != null:
+			pilot.inp.release(&"crouch")
+			await pilot.engage(foe, 1.5)
+		else:
+			pilot.inp.press(&"crouch")
+			await wait_s(0.5)
+		if pilot.crew.carried_bag == null and _reload_due():
+			await pilot.inp.tap(&"reload")
+	pilot.inp.release(&"crouch")
+
+
+func _reload_due() -> bool:
+	var w: Variant = pilot.crew.get(&"weapon")
+	if w is Object and (w as Object).get(&"mag") != null:
+		return int((w as Object).get(&"mag")) <= 3
+	return false
+
+
+func _on_blown_hit(victim: int, attacker: int, info: Dictionary) -> void:
+	if not _crew_ids.has(victim):
+		return
+	var who: String = _observer_name(attacker).rstrip("0123456789_")
+	var apos: Vector3 = Vector3.INF
+	for n: Node in rt.find_children("*", "NpcBase", true, false):
+		if NetIds.of(n) == attacker:
+			apos = (n as Node3D).global_position
+	var key: String = "%s|slot %d" % [who, int(_crew_ids[victim])]
+	var row: Dictionary = _hits.get(key, {"n": 0, "dmg": 0.0, "dist": 0.0, "at": PackedStringArray()})
+	row["n"] = int(row["n"]) + 1
+	row["dmg"] = float(row["dmg"]) + float(info.get("amount", info.get("damage", 0.0)))
+	if apos != Vector3.INF and pilot != null:
+		row["dist"] = float(row["dist"]) + apos.distance_to(pilot.crew.global_position)
+		if (row["at"] as PackedStringArray).size() < 4:
+			(row["at"] as PackedStringArray).append(Po5Pilot._v(apos))
+	_hits[key] = row
+
+
+func _watch_hp() -> void:
+	var my_rt: HeistRuntime = rt
+	while is_inside_tree() and rt == my_rt and is_instance_valid(rt) and pilot != null:
+		var h: CrewHealth = pilot.crew.health
+		if h != null and h.get(&"health") != null:
+			_hp_min = minf(_hp_min, float(h.get(&"health")))
+		await wait_s(0.5)
+
+
+func _danger_rows() -> void:
+	var keys: Array = _hits.keys()
+	keys.sort_custom(func(a: String, b: String) -> bool: return float(_hits[a]["dmg"]) > float(_hits[b]["dmg"]))
+	for k: String in keys.slice(0, 10):
+		var r: Dictionary = _hits[k]
+		_row("blown: danger %s" % k, "NOTE", "%d hits, %.0f damage, mean range %.0f m, from %s" % [int(r["n"]),
+			float(r["dmg"]), float(r["dist"]) / maxf(float(r["n"]), 1.0), ", ".join(r["at"] as PackedStringArray)], "-")
+
+
+func _downs_text() -> String:
+	return "downs %s" % str(_downs) if not _downs.is_empty() else "no downs"
+
+
+func _in_custody() -> bool:
+	return _downs.has("custody_%d" % pilot.crew.slot)
+
+
+func _objective_done(id: StringName) -> bool:
+	return int(_obj_states.get(id, -1)) == Enums.ObjectiveState.COMPLETED
