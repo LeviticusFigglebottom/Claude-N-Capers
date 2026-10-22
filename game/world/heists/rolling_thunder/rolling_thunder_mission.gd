@@ -63,6 +63,11 @@ const PERCH_ASHBY: StringName = &"ashby"
 const WRECKER: StringName = &"enemy.wrecker"
 ## Street pedestrians (`civilians` scalar 6 / 9 / 12; rush_hour 12).
 const TAG_CIV_STREET: StringName = &"civ_street"
+const TAG_CIV_DINER: StringName = &"civ_diner"
+const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
+## Diner customers (doc Cast: 2-5 in the booths): 3, rush_hour adds its extra_diner_customers (+2).
+const DINER_CUSTOMERS: int = 3
+const RNG_STREAM: StringName = &"rt_mission"
 
 ## Convoy units per vehicle (doc "Convoy units per difficulty"): escorts by difficulty (Routine/Tense patrol cars,
 ## Hazardous+ SUVs), two Vaultline crew per truck.
@@ -188,9 +193,19 @@ func _apply_rare_setup() -> void:
 	if _rare(RARE_INFORMANT):
 		for g: Variant in _fx(RARE_INFORMANT, &"reveal", []) as Array:
 			reveal_variant_group(StringName(g))
+	var diner: int = DINER_CUSTOMERS + (int(_fx(RARE_RUSH_HOUR, &"extra_diner_customers", 2)) if _rare(RARE_RUSH_HOUR) else 0)
+	thin_civilians(TAG_CIV_DINER, diner)
+	if _slot_active(&"goods_lift", &"lift_dead"):
+		_power_lift(false)
 	set_sniper_perches_open(PERCH_CRANE, _rare(RARE_CRANE))
 	if _runtime != null and _runtime.difficulty < Enums.Difficulty.HAZARDOUS:
 		set_sniper_perches_open(PERCH_ASHBY, false)
+
+
+func _power_lift(on: bool) -> void:
+	for n: Node in get_tree().get_nodes_in_group(&"goods_lift"):
+		if n is BagLift and _runtime.is_ancestor_of(n):
+			(n as BagLift).set_powered(on)
 
 
 func _add(id: StringName, state: Enums.ObjectiveState, tags: Array, data: Dictionary = {}) -> void:
@@ -218,8 +233,26 @@ func _spawn_marshal() -> void:
 	var m: Array[Node] = spawn_guards(1, TAG_MARSHAL_SPAWN)
 	if m.is_empty():
 		return
+	if _rare(RARE_MARSHAL_EARLY):
+		_second_check(m[0] as NpcBase)
 	activate(&"marshal")
 	_say_once(VO_MARSHAL)
+
+
+## marshal_early: the marshal walks a second check after his own (another `marshal_walk` graph, by the mission stream).
+func _second_check(npc: NpcBase) -> void:
+	var brain: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain if npc != null else null
+	if brain == null:
+		return
+	var others: Array[PatrolGraph] = []
+	for n: Node in _runtime.map.find_children("*", "PatrolGraph", true, false):
+		var g: PatrolGraph = n as PatrolGraph
+		if String(g.graph_id).begins_with("marshal_") and not _slot_active(&"marshal_walk", g.graph_id):
+			others.append(g)
+	if others.is_empty():
+		return
+	others.sort_custom(func(a: PatrolGraph, b: PatrolGraph) -> bool: return String(a.graph_id) < String(b.graph_id))
+	brain.extend_route(others[GameRng.stream(RNG_STREAM).randi_range(0, others.size() - 1)])
 
 
 func _sighted() -> void:
@@ -229,6 +262,8 @@ func _sighted() -> void:
 ## [signals]: the junction rig's hack finished (doc: without it the stop is a crash).
 func _on_device_finished(device_net_id: int) -> void:
 	var dev: Node = Ids.lookup(device_net_id)
+	if dev != null and _tagged(dev, TAG_LIFT_BREAKER):
+		_power_lift(true)  # doc Variants goods_lift: the plant-room breaker restores a dead lift
 	if dev != null and _tagged(dev, TAG_SIGNALS) and dev is HackTerminal and not signals_rigged:
 		signals_rigged = true
 		_complete_once(&"signals")

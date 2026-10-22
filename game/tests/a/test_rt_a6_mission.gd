@@ -159,3 +159,67 @@ func test_rare_events_at_the_setup() -> void:
 	var ashby_open: bool = SpecialSpawner.open_perches(_rt).any(func(tp: TacticalPoint) -> bool:
 		return tp.tags.has(RollingThunderMission.PERCH_ASHBY))
 	assert_false(ashby_open, "Routine: S4 closed")
+	var diner: int = 0
+	for n: Node in _rt.npcs(&"civilian"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_CIV_DINER):
+			diner += 1
+	assert_eq(diner, RollingThunderMission.DINER_CUSTOMERS + 2, "rush_hour: +2 diner customers")
+	# marshal_early: he walks his own check, then a second one
+	m._spawn_marshal()
+	await wait_physics_frames(2)
+	var marshal: NpcBase = null
+	for n: Node in _rt.npcs(&"guard"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_MARSHAL_SPAWN):
+			marshal = n as NpcBase
+	assert_true(marshal != null, "the marshal is out")
+	if marshal == null:
+		return
+	var graphs: Dictionary = {}
+	for p: PatrolPoint in (marshal.get_node(^"Brain") as GuardBrain).route_points:
+		graphs[(p.get_parent() as PatrolGraph).graph_id] = true
+	assert_eq(graphs.size(), 2, "marshal_early: two checks (%s)" % [graphs.keys()])
+
+
+func test_no_rare_marshal_walks_one_check_and_diner_has_three() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch(4101, [&"informant_tip"])
+	var diner: int = 0
+	for n: Node in _rt.npcs(&"civilian"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_CIV_DINER):
+			diner += 1
+	assert_eq(diner, RollingThunderMission.DINER_CUSTOMERS, "diner customers without rush_hour")
+	m._spawn_marshal()
+	await wait_physics_frames(2)
+	for n: Node in _rt.npcs(&"guard"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_MARSHAL_SPAWN):
+			var graphs: Dictionary = {}
+			for p: PatrolPoint in (n.get_node(^"Brain") as GuardBrain).route_points:
+				graphs[(p.get_parent() as PatrolGraph).graph_id] = true
+			assert_eq(graphs.size(), 1, "one check (%s)" % [graphs.keys()])
+
+
+## doc Variants goods_lift: lift_dead = an unpowered lift from the start; the plant-room breaker's hack restores it.
+func test_lift_dead_and_the_breaker() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	var lifts: Array[Node] = _rt.get_tree().get_nodes_in_group(&"goods_lift")
+	assert_false(lifts.is_empty(), "the goods lift")
+	var lift: BagLift = lifts[0] as BagLift
+	var dead: bool = m._slot_active(&"goods_lift", &"lift_dead")
+	assert_eq(lift.powered, not dead, "powered unless lift_dead (dead=%s)" % dead)
+	m._power_lift(false)
+	assert_eq(lift._availability(null, 0), InteractableComponent.BLOCK_DISABLED, "a dead lift's panels are blocked")
+	var breaker: Node = null
+	for n: Node in m.find_tagged(RollingThunderMission.TAG_LIFT_BREAKER):
+		if n is HackTerminal:
+			breaker = n
+	assert_true(breaker != null, "the plant-room breaker")
+	if breaker == null:
+		return
+	EventBus.device_finished.emit((breaker as GameplayPrefab).net_id)
+	await wait_physics_frames(1)
+	assert_true(lift.powered, "the breaker restores the lift")

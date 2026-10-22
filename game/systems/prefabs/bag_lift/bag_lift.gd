@@ -67,6 +67,9 @@ const PANEL_PREFIX: String = "LandingPanel"
 @export var casing_allowed: bool = false
 @export var noise: StringName = &"silent"
 
+## RT goods_lift `lift_dead` (doc Variants): an unpowered lift stays in place and visible, but no panel works until
+## the mission restores power (the plant-room breaker). Server sets it with set_powered(); mirrored to clients.
+var powered: bool = true
 ## Landing the car stands at (or left from while moving).
 var landing: int = 0
 ## Landing the car is travelling to, -1 while it stands.
@@ -321,7 +324,15 @@ func _spawn_landing_panels() -> void:
 	_refresh_panels()
 
 
+## Server: power the lift on or off (RT `lift_dead` / its breaker). A trip under way finishes.
+func set_powered(on: bool) -> void:
+	if Net.is_authority():
+		powered = on
+
+
 func _availability(_crew: Node, _i: int) -> StringName:
+	if not powered:
+		return InteractableComponent.BLOCK_DISABLED
 	if landing_count() < 2 or is_moving():
 		return InteractableComponent.BLOCK_STATE
 	if bags_in_car().size() > capacity:
