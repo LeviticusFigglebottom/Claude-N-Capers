@@ -17,16 +17,11 @@ const UNHOOKED: Dictionary = {
 	&"deploy.sentry_shield": "A",
 	&"deploy.sentry_turn_speed_mult": "A",
 	&"deploy.trip_mine_fire": "A",
-	&"movement.ads_speed_penalty_mult": "A",
-	&"movement.reload_while_sprinting": "A",
-	&"movement.shoot_while_sprinting": "A",
-	&"movement.sprint_any_direction": "A",
 	&"stealth.mark_by_aim": "A",
 	&"stealth.mark_damage_bonus_mult": "A",
 	&"stealth.mark_far_damage_mult": "A",
 	&"stealth.noise_intimidates_civilians": "A",
 	&"stealth.pocket_ecm": "A",
-	&"weapon.ads_speed_mult": "A",
 }
 
 ## Read by runtime code (hook file in the comment) but no behaviour test.
