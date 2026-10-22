@@ -23,3 +23,18 @@ func test_convoy_escorts_never_resolve_to_a_capsule() -> void:
 		checked += 1
 	if checked == 0:
 		skip("pending the RT convoy EnemyDefs (%s): D-149.12" % ", ".join(CONVOY))
+
+
+## D's look ids: the patrol car (base def, Routine/Tense) wears patrol_officer; the Hazardous+ faction SUV crews
+## (B's frd / sentinel / zero files) wear tac_light in their faction's reskin.
+func test_convoy_looks_by_faction() -> void:
+	for id: String in CONVOY:
+		var base: EnemyDef = load("%s%s.tres" % [ENEMIES, id]) as EnemyDef
+		assert_eq(NpcVisuals.def_character_id(base, NpcVisuals.tweak()), "patrol_officer", "%s base: the patrol car" % id)
+		for f: String in ["frd", "sentinel", "zero"]:
+			var def: EnemyDef = load("%s%s/%s.tres" % [ENEMIES, f, id]) as EnemyDef
+			assert_true(def != null and def.id == StringName("enemy." + id), "%s/%s.tres" % [f, id])
+			var paths: PackedStringArray = NpcVisuals.def_scene_paths(def, Enums.Difficulty.HAZARDOUS)
+			assert_false(paths.is_empty(), "%s %s has a character" % [f, id])
+			if not paths.is_empty():
+				assert_true(paths[0].contains("tac_light_%s" % f), "%s %s wears the %s TAC Light (%s)" % [f, id, f, paths[0]])

@@ -5,20 +5,20 @@
 [resource]
 script = ExtResource("1")
 id = &"enemy.convoy_lead"
-display_name = "Convoy Escort (lead car)"
+display_name = "Convoy Escort"
 is_special = false
 health = PackedFloat32Array(40, 40, 150, 200, 300, 400)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
 damage = PackedFloat32Array(7, 8.5, 22.5, 30, 45, 60)
-move_speed = 3.8
-weapon = &"weapon.npc_rifle"
+move_speed = 3.5
+weapon = &"weapon.npc_pistol"
 detection_preset = &"police"
 params = {
-"_note": "RT escort, lead car (D-149.12, D-153 amended: A writes, B reviews in its balance tool). Doc defaults (rolling_thunder.md, convoy table): Routine/Tense patrol-officer health/damage, Hazardous+ TAC Light. One weapon for all difficulties (EnemyDef has no per-difficulty weapon): the escort car's carbine. The rear car's TAC Heavy and the armored_escort Wrecker keep their own defs (the mission). Look: npc_visual_tweak enemy_characters until D's look ids.",
+"_note": "RT-B1 (D-149.12): Rolling Thunder lead escort car. Base def = faction.tac (Routine/Tense): the patrol car, Patrol Officer stats and pistol; Hazardous+ load the faction files (frd / sentinel / zero: the SUV, TAC Light stats and rifle). Values above Tense here only apply if DirectorTweak.faction_by_difficulty changes (TAC Light) (◇). Look: NpcVisualTweak.enemy_characters (D's id) + the D-145.3 duty variant.",
 "aim_delay_s": 0.7,
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,
-"fire_interval_s": 0.7,
+"fire_interval_s": 0.8,
 "frontal_armor": 1.0,
 "frontal_armor_arc_deg": 0.0,
 "plate_health": [],
