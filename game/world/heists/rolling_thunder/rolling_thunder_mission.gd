@@ -66,6 +66,19 @@ const TAG_CIV_STREET: StringName = &"civ_street"
 const TAG_CIV_DINER: StringName = &"civ_diner"
 const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
 const PAUSE_CABINET: StringName = &"cabinet_locked"
+## QC-85 (audio_cues v1.9): C's RT one-shots.
+const CUE_APPROACH: StringName = &"cue.convoy_approach"
+const CUE_BRAKE: StringName = &"cue.convoy_brake"
+const CUE_MIXER_RAM: StringName = &"cue.mixer_ram"
+const CUE_SIGNAL_CLICK: StringName = &"cue.signal_click"
+const CUE_TRAIN: StringName = &"cue.freight_train_pass"
+## The junction's signal heads (C's dress props, metadata kind).
+const SIGNAL_KIND: StringName = &"traffic_signal"
+## doc Ambience: a freight train over the underpass rail bridge every 90-150 s (tracks x 70 / 80, rail level +1.2, the
+## underpass road at z 0). Held back while a Phantom charge is live (re-checked every TRAIN_HOLD_S).
+const TRAIN_POS: Vector3 = Vector3(75.0, 1.2, 0.0)
+const TRAIN_GAP_S: Vector2 = Vector2(90.0, 150.0)
+const TRAIN_HOLD_S: float = 2.0
 ## Diner customers (doc Cast: 2-5 in the booths): 3, rush_hour adds its extra_diner_customers (+2).
 const DINER_CUSTOMERS: int = 3
 const RNG_STREAM: StringName = &"rt_mission"
@@ -185,6 +198,7 @@ func _on_mission_start() -> void:
 	on_event(&"special_spawned", _on_special_spawned)
 	say(VO_INTRO)
 	say(VO_REYES_READY, {}, SPEAKER_REYES)
+	_schedule_train()
 
 
 ## Rare events and difficulty rows at the start (doc Rare events / Convoy units per difficulty): the street's
@@ -221,6 +235,35 @@ func _lock_cabinet() -> void:
 		return
 	rig.pause(PAUSE_CABINET)
 	lock.lock_opened.connect(func(_how: StringName) -> void: rig.resume(PAUSE_CABINET), CONNECT_ONE_SHOT)
+
+
+## Server: a cue for every peer (audio_cues: EventBus.audio_cue_requested, relayed).
+func _cue(cue_id: StringName, pos: Vector3, net_id: int) -> void:
+	if not Net.is_authority():
+		return
+	EventBus.audio_cue_requested.emit(cue_id, pos, net_id)
+	Net.replicate_event(&"audio_cue_requested", [cue_id, pos, net_id])
+
+
+func _schedule_train() -> void:
+	start_timer(&"freight_train", GameRng.stream(RNG_STREAM).randf_range(TRAIN_GAP_S.x, TRAIN_GAP_S.y), _train)
+
+
+## The freight train passes, unless a Phantom charge is live (doc: the train never overlaps cue.phantom_charge).
+func _train() -> void:
+	if phantom_charge_live():
+		start_timer(&"freight_train", TRAIN_HOLD_S, _train)
+		return
+	_cue(CUE_TRAIN, TRAIN_POS, 0)
+	_schedule_train()
+
+
+func phantom_charge_live() -> bool:
+	for n: Node in _runtime.npcs():  # a director spawn may carry any role: the brain says it is a Phantom
+		var b: PhantomBrain = n.get_node_or_null(^"Brain") as PhantomBrain
+		if b != null and b.goggles_glowing:
+			return true
+	return false
 
 
 func _power_lift(on: bool) -> void:
@@ -278,6 +321,9 @@ func _second_check(npc: NpcBase) -> void:
 
 func _sighted() -> void:
 	_say_once(VO_SIGHTED)
+	var lead: Node3D = _vehicle("Lead", null)
+	if lead != null:
+		_cue(CUE_APPROACH, lead.global_position, NetIds.of(lead))
 
 
 ## [signals]: the junction rig's hack finished (doc: without it the stop is a crash).
@@ -288,6 +334,9 @@ func _on_device_finished(device_net_id: int) -> void:
 	if dev != null and _tagged(dev, TAG_SIGNALS) and dev is HackTerminal and not signals_rigged:
 		signals_rigged = true
 		_complete_once(&"signals")
+		for n: Node in _runtime.map.find_children("Signal*", "Node3D", true, false):
+			if StringName(n.get_meta(&"kind", &"")) == SIGNAL_KIND:
+				_cue(CUE_SIGNAL_CLICK, (n as Node3D).global_position + Vector3(0.0, 3.0, 0.0), 0)
 		_say_once(VO_SIGNALS_DONE)
 
 
@@ -372,7 +421,9 @@ func _convoy_arrives() -> void:
 		return
 	for leg: Array in legs:
 		var v: ConvoyVehicle = leg[0]
-		v.vehicle_stopped.connect(func(_id: int) -> void: _mover_stopped(), CONNECT_ONE_SHOT)
+		v.vehicle_stopped.connect(func(id: int) -> void:
+			_cue(CUE_BRAKE, v.global_position, id)
+			_mover_stopped(), CONNECT_ONE_SHOT)
 		var path: Path3D = _drive_path(v)
 		if path != null:
 			v.drive(path, leg[1] as Node3D)
@@ -449,6 +500,9 @@ func _mixer_move() -> void:
 	for pair: Array in [[LAYOUT_MIXER_GONE, "mixer"], [LAYOUT_TANNERY_OPEN, "tannery"]]:
 		if ConvoyLayouts.find(_runtime.map, String(pair[0])) != null:  # RT-C2 adds them; G1 has neither
 			set_layout(String(pair[0]), String(pair[1]))
+	var lead: Node3D = _vehicle("Lead", ConvoyLayouts.find(_runtime.map, layout_id))
+	if lead != null:
+		_cue(CUE_MIXER_RAM, lead.global_position, 0)  # the mixer hits the lead escort (crash) / boxes it in (clean)
 	_say_once(VO_REYES_BOXED, {}, SPEAKER_REYES)
 
 
