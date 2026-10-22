@@ -49,7 +49,10 @@ func _ready() -> void:
 			"seed": _seed = int(v)
 			"difficulty": _difficulty = int(v)
 			"wait": _wait = float(v)
-			"cases": _cases = Array(v.split(","), TYPE_STRING, &"", null)
+			"cases":
+				_cases.clear()
+				for c: String in v.split(","):
+					_cases.append(c)
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/motion_strips"
 	RenderingServer.render_loop_enabled = false  # frames only for the strips (llvmpipe)
