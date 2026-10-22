@@ -4,6 +4,21 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-35) A4-01 audit, A4-02 perf scene, L6.2 bot crew, cancel_reload, police port arms (2026-10-22)
+- **A4-01 fidelity audit (5aca6ade, 984b124c):** docs/status/env_a_fidelity.md.
+  - 103 A rows at phase ≤ P5: 101 covered, S8.7 held, L6.2 a gap (now built, below).
+  - The S10.5 test was added.
+  - A3-01..A3-13 were all delivered; their 28 test files are green.
+- **A4-02 (26509c96):**
+  - PerfMonitors (caperworks/* custom monitors).
+  - test_a4_02_dockside_perf: Dockside at the enemy cap, 4 crew. Measured: frame p95 11.8 ms, 4.9 ms per physics tick
+    saturated, transforms 25.8 KB/s, full state 6.3 KB. The CI budgets are about 2× those.
+  - A 220 ms first metal impact appears only without the VFX prewarm (headless only).
+- **L6.2 (c6e78cb0):** BotCrew, the bot abilities (inspire, quick, pied_piper, resilient) and boosts (ammo,
+  health, stamina, revive, carry). Pending: the LEAD's Loadout fields and B's defs, pickers and strings.
+- **02dffce7:** CrewWeapons.cancel_reload for P.
+- **e3b29523:** police run at port arms (hold_rifle_port_run, characters v1.39).
+
 ### (-34) D-157 crew sentry; 51 skill keys on A's side; AI crew capsules fixed (2026-10-22)
 - **f12e25ba, crew sentry (SentryGun under a DeployablePrefab of kind "sentry"):**
   - Deploy costs 40% ◇ of the owner's ammo; pickup refunds the unused share and restocks.
