@@ -1097,11 +1097,12 @@ func _thermite_truck(t: ArmoredTruck) -> bool:
 		or not pilot.crew.is_carrying_bag()))
 	_row("%s thermite carried and placed" % _truck_name(t), "PASS" if placed else "FAIL", "%.0f s carry from the tool store, placed %s" % [
 		rt.heist_time_s - t1, placed], "-" if placed else "A burn_point / C placement")
+	var t2: float = rt.heist_time_s
 	Engine.time_scale = DEVICE_SCALE
 	await wait_until(func() -> bool: return t.opened, 120.0 / DEVICE_SCALE + 20.0)
 	Engine.time_scale = 1.0
 	_row("%s by thermite" % _truck_name(t), "PASS" if t.opened else "FAIL", "opened %s %.0f s after placing" % [
-		t.opened, rt.heist_time_s - t1], "-" if t.opened else "A burn_point")
+		t.opened, rt.heist_time_s - t2], "-" if t.opened else "A burn_point")
 	await shot("thermite_open")
 	return t.opened
 
