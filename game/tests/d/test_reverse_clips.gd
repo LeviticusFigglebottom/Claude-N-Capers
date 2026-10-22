@@ -1,4 +1,4 @@
-## characters v1.27 locomotion reversals (tools/blender/characters/_anim_reverse.py, SOURCE `loco_reverse`): an aiming
+## characters v1.36 locomotion reversals (tools/blender/characters/_anim_reverse.py, SOURCE `loco_reverse`): an aiming
 ## unit that kites flips run <-> run_b / walk <-> walk_back through a plant and push instead of a crossfade between
 ## opposite strides (which folds the knees, D-153 motion strips). Every clip is a one-shot whose frame 0 IS the source loop
 ## at u_in and last frame IS the target loop at u_out; the brake foot stays put while planted with the root moved along

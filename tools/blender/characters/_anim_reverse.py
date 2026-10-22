@@ -1,4 +1,4 @@
-"""Locomotion reversal one-shots (characters v1.27, D-153 motion strips) for the ``humanoid`` library. Private helper of
+"""Locomotion reversal one-shots (characters v1.36, D-153 motion strips) for the ``humanoid`` library. Private helper of
 ``anim_humanoid.py`` (pure numpy; wired like ``_anim_rt``).
 
 An aiming unit that kites keeps its facing and flips its travel (run <-> run_b, walk <-> walk_back). A crossfade between
@@ -427,7 +427,7 @@ def source_notes(sk: Skeleton, table: dict, clips_: dict, baked_by_name: dict, k
                     f"events=foot_plant@0,push@{table[name]['events']['push']},done@{r.N} other_lands@{r.land:.1f} brake_lifts@{r.lift:.1f} "
                     f"root_total_m={curve[-1]:+.3f} max_hip_drop_mm={drop:.1f}")
     out["loco_reverse"] = (
-        "characters v1.27 locomotion reversals (fixed facing; replace the crossfade between opposite strides, which folds "
+        "characters v1.36 locomotion reversals (fixed facing; replace the crossfade between opposite strides, which folds "
         "the knees): run_reverse_l/_r run->run_b, run_reverse_back_l/_r run_b->run, walk_reverse_l/_r walk->walk_back, "
         "walk_reverse_back_l/_r walk_back->walk; _l = the left foot brakes. Frame 0 IS the source loop at u_in (the brake "
         "foot's touch-down: R at 0, L at frames/2 rounded up) and the last frame IS the target loop at u_out, so: start "

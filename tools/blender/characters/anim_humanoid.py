@@ -308,7 +308,7 @@ CLIPS = {
     "idle_alert_b": {"frames": 150, "loop": True, "speed": 0.0, "priority": 2, "events": {"watch": 57}},
     "idle_alert_c": {"frames": 174, "loop": True, "speed": 0.0, "priority": 2, "events": {"radio": 44}},
 }
-# characters v1.27 locomotion reversals (_anim_reverse, SOURCE `loco_reverse`): fixed facing, run <-> run_b and walk <->
+# characters v1.36 locomotion reversals (_anim_reverse, SOURCE `loco_reverse`): fixed facing, run <-> run_b and walk <->
 # walk_back through a plant and push (_l = the left foot brakes); frame 0 IS the source loop at u_in, the last frame IS
 # the target loop at u_out, root motion `curve.<clip>` (forward-signed)
 CLIPS.update(rev.ROWS)
