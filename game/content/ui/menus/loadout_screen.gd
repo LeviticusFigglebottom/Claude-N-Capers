@@ -78,6 +78,11 @@ var stats_mode_button: Button
 var boosted_legend: Label
 var detection_risk: int = 0
 var concealment_total: int = 0
+## P5 melee roster: the focused melee's numbers and blurb, shown while the melee picker previews (PD2's melee card).
+var melee_info: VBoxContainer
+var melee_info_title: Label
+var melee_info_stats: Label
+var melee_info_desc: Label
 var launch_button: Button
 var back_button: Button
 var skills_button: Button
@@ -233,6 +238,18 @@ func _build_stats_panel() -> PanelContainer:
 	v.add_child(detection_risk_label)
 	concealment_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(concealment_label)
+	melee_info = UiBuild.vbox(UiTokens.S1)
+	melee_info.visible = false
+	melee_info.add_child(HSeparator.new())
+	melee_info_title = UiBuild.caption(&"")
+	melee_info.add_child(melee_info_title)
+	melee_info_stats = UiBuild.label()
+	melee_info_stats.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # wrap, never widen the panel under the picker
+	melee_info.add_child(melee_info_stats)
+	melee_info_desc = UiBuild.label(&"", UiBuild.DIM)
+	melee_info_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	melee_info.add_child(melee_info_desc)
+	v.add_child(melee_info)
 	return UiBuild.panel(v)
 
 
@@ -281,6 +298,24 @@ func _on_previewed(index: int, o: ItemSlot) -> void:
 	else:
 		_preview = {"slot": o, "index": index}
 	refresh()
+
+
+## P5: the melee card shows the melee the picker has focused (hidden for every other slot)
+func _refresh_melee_info() -> void:
+	var d: MeleeDef = null
+	if not _preview.is_empty() and _preview["slot"] == melee_option:
+		d = ContentDB.melee(_pick_id(melee_option, true))
+	if melee_info == null:
+		return
+	melee_info.visible = d != null
+	if d == null:
+		return
+	melee_info_title.text = UiText.t(&"ui.loadout.melee_card", {"name": UiText.t(UiText.item_key(d.id))})
+	melee_info_stats.text = UiText.t(&"ui.loadout.melee_stats", {"damage": _fmt(d.damage),
+			"charged": _fmt(d.charged_damage), "knockdown": roundi(d.knockdown * 100.0),
+			"reach": "%.1f" % d.range_m, "concealment": d.concealment})
+	var desc: StringName = StringName(String(UiText.item_key(d.id)).trim_suffix(".name") + ".desc")
+	melee_info_desc.text = UiText.t(desc) if UiText.has(desc) else ""
 
 
 ## Builds the current Loadout input from the widgets (unresolved; resolve with LoadoutResolver).
@@ -383,6 +418,7 @@ func refresh() -> void:
 		detection_risk_label.text = UiText.t(&"ui.common.percent", {"value": pv.detection_risk})
 		concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": pv.concealment_total})
 		_refresh_progression_summary(pl)  # LEAD r229: the stat panel names the previewed weapon, not the equipped one
+	_refresh_melee_info()
 	if stock == null or modded == null:
 		for k: Variant in _stat_value_labels:
 			(_stat_value_labels[k] as Label).text = "-"

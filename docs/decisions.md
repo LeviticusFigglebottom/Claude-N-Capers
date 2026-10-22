@@ -1555,3 +1555,12 @@ From ENV B's review (game/content/docs/rt_early_alarm_balance.md, env/b-content 
      Re-measure Hazardous 5 seeds. If still < 3/5, the call is made on P's real-input run of a blown setup on Hazardous,
      not on the bot: a human crew using cover is the target audience; the bot's convoy tactics stay a parked item.
 3. **Payday cards:** achievement-reward parts never drop (PD2; B 804c97f0).
+
+## D-155: Melee unlocks by level, never sold for cash (2026-10-22, LEAD; D-151 judgement)
+PD2 never sells melee weapons: each one unlocks at a player level (or an achievement / DLC) and is then free to equip.
+We follow that shape:
+1. No `owned_melees`, no Workshop buy, no save-version bump. MeleeDef's unused cash price is removed (or pinned to 0 and ignored).
+2. Each MeleeDef carries an `unlock_level` (B owns the values). The loadout picker shows locked melees greyed out with "Unlocks at level N", and they can't be equipped.
+   Unlocking is derived from the player's level, so nothing new is saved.
+3. The starter knife and at least one blunt weapon are level 0. The heavy picks (sledgehammer, fire axe) unlock late, as in PD2.
+   Achievement-gated melee waits until achievements grant items, and isn't built now.

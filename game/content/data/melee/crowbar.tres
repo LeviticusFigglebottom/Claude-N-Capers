@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MeleeDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/melee_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"melee.crowbar"
+display_name = "Crowbar"
+damage = 50.0
+charged_damage = 170.0
+charge_time_s = 1.0
+range_m = 2.0
+knockdown = 0.6
+concealment = 28
+silent = true
+price = 45000
+anim_set = &"melee_blunt"
