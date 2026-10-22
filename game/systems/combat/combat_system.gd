@@ -122,6 +122,10 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	var info: Dictionary = Damage.info(amount, Enums.DamageType.BULLET,
 		int(hit.get("zone", Enums.HitZone.BODY)), weapon_id, pos, (pos - origin).normalized(), shooter.net_id)
 	info["headshot_bonus"] = w.headshot_bonus(ws)
+	var crit: float = SkillTriggers.roll_crit(shooter)  # B2: crit chance (skills, Unseen Strike)
+	if crit > 1.0:
+		info["amount"] = float(info["amount"]) * crit
+		info["crit"] = true
 	info["pierced_armor"] = roll_armor_pierce(float(prof["armor_pierce"]))
 	info["shield_pierce"] = bool(prof["shield_pierce"])
 	info["blocked"] = false

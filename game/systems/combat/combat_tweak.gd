@@ -99,6 +99,11 @@ static var _cached: CombatTweak = null
 @export var melee_cone_deg: float = 50.0
 ## A knockdown (MeleeDef.knockdown chance x weapon.melee_knockdown_mult) stuns the NPC this long ◇.
 @export var melee_knockdown_s: float = 1.2
+## B2 crits (weapon.crit_chance_add / crit_per_concealment / unseen_strike): a crit multiplies the hit's damage ◇
+## (B: PD2 triple damage; the target's head multiplier still applies on a headshot).
+@export var crit_damage_mult: float = 3.0
+## B2 defense.armor_broken_stagger: a hit while the holder's armor is broken stuns a non-special enemy this long ◇.
+@export var armor_broken_stagger_s: float = 0.5
 ## Gun bash (no melee item equipped): PD2 weapon butt ◇.
 @export var bash_damage: float = 30.0
 @export var bash_range_m: float = 1.5

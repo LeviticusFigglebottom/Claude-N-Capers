@@ -12,6 +12,18 @@
 ##     full loadout taken) s, at most max_duration.
 ##   defense.berserk {threshold, max_damage_mult, ranged_max_damage_mult} (PD2 Berserker, Red Mist): berserk_mult()
 ##     below `threshold` health, linear up to the max at zero health (CrewMelee: melee; CrewWeapons: ranged).
+## Batch 2 (crits and dodge):
+##   crit_chance(): weapon.crit_chance_add [ADD] + weapon.crit_per_concealment {per_step, points_per_step, threshold_dr,
+##     max} (PD2 Low Blow, Cheap Shot: per_step per points_per_step detection-risk points under threshold_dr, at most
+##     max); roll_crit() on GameRng "crit" (CombatSystem bullets, CrewMelee) multiplies by CombatTweak.crit_damage_mult.
+##   weapon.unseen_strike {idle_s, crit_add, duration} (PD2 Unseen Strike, Ambusher): idle_s without damage taken
+##     gives +crit_add crit for as long as it lasts, and `duration` s after the next hit (CrewBuffs "unseen_strike").
+##   dodge_add(): defense.dodge_per_concealment (PD2 Sneaky Bastard, Slippery; same shape as Low Blow) +
+##     defense.sprint_dodge_add while sprinting (Duck and Cover, Light Step Aced) (CrewHealth.dodge_chance).
+##   defense.armor_break_speed_buff {move_mult, duration, team} (PD2 Second Wind, Bolt): armor breaking (CrewHealth)
+##     gives move x move_mult for `duration` s, to the whole crew with `team` (CrewBuffs "second_wind").
+##   defense.armor_broken_stagger {persist_s} (Cornered ◇): while the holder's armor is broken (and persist_s after
+##     it returns) its hits stun a non-special enemy for CombatTweak.armor_broken_stagger_s.
 class_name SkillTriggers
 extends Node
 
@@ -19,11 +31,15 @@ const SERVICE: StringName = &"skill_triggers"
 const NODE_NAME: String = "SkillTriggers"
 const BUFF_OVERKILL: StringName = &"overkill"
 const BUFF_BULLETSTORM: StringName = &"bulletstorm"
+const BUFF_UNSEEN: StringName = &"unseen_strike"
+const BUFF_SECOND_WIND: StringName = &"second_wind"
 
 ## slot -> self-revive charges used this heist (Messiah)
 var revives_used: Dictionary[int, int] = {}
 ## slot -> seconds until Bullseye may restore armor again
 var _bullseye_cd: Dictionary[int, float] = {}
+## slot -> seconds the holder's hits still stagger after its armor came back (Cornered Aced)
+var _stagger_left: Dictionary[int, float] = {}
 var _runtime: HeistRuntime = null
 
 
@@ -48,6 +64,38 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	for slot: int in _bullseye_cd:
 		_bullseye_cd[slot] = maxf(_bullseye_cd[slot] - delta, 0.0)
+	if not Net.is_authority() or _runtime == null:
+		return
+	for crew: CrewController in _runtime.crew_members():
+		_tick_unseen_strike(crew)
+		_tick_stagger_window(crew, delta)
+
+
+## Unseen Strike: refreshed every tick while the holder has gone idle_s without damage.
+func _tick_unseen_strike(crew: CrewController) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"weapon.unseen_strike")
+	if p.is_empty() or crew.health == null or crew.health.since_damage_s < float(p.get("idle_s", 0.0)):
+		return
+	CrewBuffs.of(_runtime).grant(crew.slot, BUFF_UNSEEN, {&"weapon.crit_chance_add": float(p.get("crit_add", 0.0))},
+		float(p.get("duration", 0.0)))
+
+
+## Cornered: the stagger window is open while the armor is broken and persist_s after it returns.
+func _tick_stagger_window(crew: CrewController, delta: float) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"defense.armor_broken_stagger")
+	if p.is_empty() or crew.health == null:
+		_stagger_left.erase(crew.slot)
+		return
+	if crew.health.armor <= 0.0:
+		_stagger_left[crew.slot] = float(p.get("persist_s", 0.0)) + 0.001
+	else:
+		_stagger_left[crew.slot] = maxf(_stagger_left.get(crew.slot, 0.0) - delta, 0.0)
+
+
+## Cornered: `crew`'s hits stagger now.
+func staggers(crew: CrewController) -> bool:
+	return crew != null and _stagger_left.get(crew.slot, 0.0) > 0.0 \
+		and not Modifiers.params(crew.slot, &"defense.armor_broken_stagger").is_empty()
 
 
 func _crew(net_id: int) -> CrewController:
@@ -67,9 +115,13 @@ func _on_damage_applied(victim_net_id: int, attacker_net_id: int, info: Dictiona
 	var crew: CrewController = _crew(attacker_net_id)
 	if crew == null or not Net.is_authority() or float(info.get("amount", 0.0)) <= 0.0:
 		return
-	if int(info.get("zone", Enums.HitZone.BODY)) != Enums.HitZone.HEAD or not Ids.lookup(victim_net_id) is NpcBase:
+	var npc: NpcBase = Ids.lookup(victim_net_id) as NpcBase
+	if npc == null:
 		return
-	_bullseye(crew)
+	if staggers(crew) and npc.alive and not (npc.enemy_def != null and npc.enemy_def.is_special):
+		npc.stun(CombatTweak.data().armor_broken_stagger_s)  # B2 Cornered
+	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD:
+		_bullseye(crew)
 
 
 ## Overkill: the kill weapon's class against each granted entry's trigger_class.
@@ -134,6 +186,65 @@ func on_ammo_bag(user: CrewController, owner_slot: int, share: float) -> void:
 		return
 	var dur: float = minf(float(p.get("base_duration", 0.0)) + cap * share, cap)
 	CrewBuffs.of(_runtime).grant(user.slot, BUFF_BULLETSTORM, {}, dur, [CrewBuffs.TAG_FREE_AMMO])
+
+
+## CrewHealth: `crew`'s armor just broke (Second Wind).
+func armor_broken(crew: CrewController) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"defense.armor_break_speed_buff")
+	var dur: float = float(p.get("duration", 0.0))
+	if dur <= 0.0:
+		return
+	var slots: Array[int] = [crew.slot]
+	if bool(p.get("team", false)) and _runtime != null:
+		slots.clear()
+		for c: CrewController in _runtime.crew_members():
+			slots.append(c.slot)
+	for s: int in slots:
+		CrewBuffs.of(_runtime).grant(s, BUFF_SECOND_WIND, {&"movement.speed_mult": float(p.get("move_mult", 1.0))}, dur)
+
+
+## CrewHealth hook (null-safe): `crew`'s armor broke.
+static func armor_broke(crew: CrewController) -> void:
+	var t: SkillTriggers = of(HeistRuntime.of(crew)) if crew != null else null
+	if t != null:
+		t.armor_broken(crew)
+
+
+## A {per_step, points_per_step, threshold_dr, max} grant for `crew`'s detection risk: per_step per points_per_step
+## points under threshold_dr, at most max (Low Blow, Sneaky Bastard).
+static func per_concealment(crew: CrewController, key: StringName) -> float:
+	var p: Dictionary = Modifiers.params(crew.slot, key) if crew != null else {}
+	var pps: float = float(p.get("points_per_step", 0.0))
+	if p.is_empty() or pps <= 0.0 or crew.loadout == null:
+		return 0.0
+	var under: float = maxf(float(p.get("threshold_dr", 0.0)) - float(crew.loadout.detection_risk), 0.0)
+	return minf(floorf(under / pps) * float(p.get("per_step", 0.0)), float(p.get("max", 0.0)))
+
+
+## B2: `crew`'s crit chance 0..1.
+static func crit_chance(crew: CrewController) -> float:
+	if crew == null:
+		return 0.0
+	return clampf(Modifiers.add(crew.slot, &"weapon.crit_chance_add")
+		+ per_concealment(crew, &"weapon.crit_per_concealment"), 0.0, 1.0)
+
+
+## B2: roll a crit for `crew`'s hit (server; GameRng "crit"). The damage multiplier when it crits, else 1.
+static func roll_crit(crew: CrewController) -> float:
+	var c: float = crit_chance(crew)
+	if c <= 0.0 or GameRng.stream(&"crit").randf() >= c:
+		return 1.0
+	return CombatTweak.data().crit_damage_mult
+
+
+## B2: dodge `crew` adds from its concealment (Sneaky Bastard) and from sprinting (Duck and Cover).
+static func dodge_add(crew: CrewController) -> float:
+	if crew == null:
+		return 0.0
+	var d: float = per_concealment(crew, &"defense.dodge_per_concealment")
+	if crew.sprinting:
+		d += Modifiers.add(crew.slot, &"defense.sprint_dodge_add")
+	return d
 
 
 ## Berserker: the damage multiplier for `crew` now (melee, or ranged with `ranged`), 1.0 above the threshold.
