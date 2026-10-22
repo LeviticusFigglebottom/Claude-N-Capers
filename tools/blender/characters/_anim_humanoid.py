@@ -2140,7 +2140,7 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])
         ev = dict(row.get("events", {}))
-        if name in loco.NAMES or name in loco.AIM_NAMES:
+        if name in loco.NAMES or name in loco.AIM_NAMES or name in loco.PORT_NAMES:
             continue
         if name in extra:
             out[name] = extra[name]
@@ -2178,7 +2178,7 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
             out[name].floor = int(N * 0.62)
         if name.startswith("death_") or name in ("surrender", "cower", "interact_low", "throw_bag", "melee"):
             out[name].no_sink = True
-    if any(n in table for n in loco.NAMES + loco.AIM_NAMES):
+    if any(n in table for n in loco.NAMES + loco.AIM_NAMES + loco.PORT_NAMES):
         # the layers take their base clips' frames: build any base a subset table (review renders) leaves out
         from anim_humanoid import CLIPS as FULL  # noqa: PLC0415
 

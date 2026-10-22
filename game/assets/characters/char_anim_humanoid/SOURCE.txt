@@ -51,160 +51,161 @@ check.119: hold_pistol_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2d
 check.12: bartender_pour: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=10.1deg contact_slide=0.000mm/f
 check.120: hold_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
 check.121: hold_rifle_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.122: hold_rifle_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
-check.123: hold_rifle_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
-check.124: hold_rifle_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
-check.125: hold_rifle_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
-check.126: hold_rifle_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
-check.127: hold_rifle_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
-check.128: hold_rifle_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
-check.129: hold_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=4.2deg
+check.122: hold_rifle_port_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.123: hold_rifle_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.124: hold_rifle_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.125: hold_rifle_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
+check.126: hold_rifle_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
+check.127: hold_rifle_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
+check.128: hold_rifle_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
+check.129: hold_rifle_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
 check.13: bartender_wipe: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=4.1deg contact_slide=0.000mm/f
-check.130: hold_smg_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.131: hold_smg_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
-check.132: hold_smg_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
-check.133: hold_smg_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
-check.134: hold_smg_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
-check.135: hold_smg_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
-check.136: hold_smg_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
-check.137: hold_smg_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
-check.138: hold_sniper: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
-check.139: hold_sniper_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
+check.130: hold_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=4.2deg
+check.131: hold_smg_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
+check.132: hold_smg_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.133: hold_smg_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.134: hold_smg_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
+check.135: hold_smg_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
+check.136: hold_smg_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
+check.137: hold_smg_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
+check.138: hold_smg_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
+check.139: hold_sniper: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
 check.14: bouncer_idle: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=8.7deg contact_slide=0.000mm/f
-check.140: hold_sniper_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
-check.141: hold_sniper_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
-check.142: hold_sniper_run_stop: 20f 0.67s speed=0.0 reach_err=5.0mm step=25.3deg
-check.143: hold_sniper_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
-check.144: hold_sniper_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
-check.145: hold_sniper_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
-check.146: hold_sniper_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
-check.147: idle: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.9deg
-check.148: idle_alert: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=5.6deg
-check.149: idle_alert_akimbo: 106f 3.53s loop speed=0.0 reach_err=0.0mm step=5.0deg
+check.140: hold_sniper_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
+check.141: hold_sniper_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.142: hold_sniper_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.143: hold_sniper_run_stop: 20f 0.67s speed=0.0 reach_err=5.0mm step=25.3deg
+check.144: hold_sniper_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
+check.145: hold_sniper_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
+check.146: hold_sniper_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
+check.147: hold_sniper_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
+check.148: idle: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.9deg
+check.149: idle_alert: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=5.6deg
 check.15: breach_place: 45f 1.50s speed=0.0 reach_err=0.0mm step=22.3deg lowest_skin=-0.0mm
-check.150: idle_alert_b: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=9.1deg start_err=0.39mm
-check.151: idle_alert_c: 174f 5.80s loop speed=0.0 reach_err=0.0mm step=9.1deg start_err=0.39mm
-check.152: idle_alert_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=4.5deg
-check.153: idle_alert_pistol: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=5.0deg
-check.154: idle_alert_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
-check.155: idle_alert_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=4.2deg
-check.156: idle_alert_sniper: 104f 3.47s loop speed=0.0 reach_err=0.0mm step=3.9deg
-check.157: idle_thug: 105f 3.50s loop speed=0.0 reach_err=0.0mm step=1.8deg
-check.158: interact_high: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.159: interact_high_armed: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.150: idle_alert_akimbo: 106f 3.53s loop speed=0.0 reach_err=0.0mm step=5.0deg
+check.151: idle_alert_b: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=9.1deg start_err=0.39mm
+check.152: idle_alert_c: 174f 5.80s loop speed=0.0 reach_err=0.0mm step=9.1deg start_err=0.39mm
+check.153: idle_alert_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=4.5deg
+check.154: idle_alert_pistol: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=5.0deg
+check.155: idle_alert_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
+check.156: idle_alert_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=4.2deg
+check.157: idle_alert_sniper: 104f 3.47s loop speed=0.0 reach_err=0.0mm step=3.9deg
+check.158: idle_thug: 105f 3.50s loop speed=0.0 reach_err=0.0mm step=1.8deg
+check.159: interact_high: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
 check.16: breach_standback: 30f 1.00s speed=0.0 reach_err=0.0mm step=38.0deg lowest_skin=-5.5mm start_err=0.00mm
-check.160: interact_low: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.161: interact_low_armed: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.162: interact_mid: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.163: interact_mid_armed: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.164: investigate_look: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
-check.165: kick_charge: 15f 0.50s speed=0.0 reach_err=0.0mm step=16.2deg
-check.166: kick_hit: 21f 0.70s speed=0.0 reach_err=0.0mm step=44.2deg
-check.167: kneel_cuffed: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.8deg
-check.168: kneel_cuffed_b: 104f 3.47s loop speed=0.0 reach_err=0.0mm step=3.2deg start_err=0.00mm max_diff_vs_kneel_cuffed=36.0deg
-check.169: kneel_cuffed_c: 118f 3.93s loop speed=0.0 reach_err=0.0mm step=2.7deg start_err=0.00mm max_diff_vs_kneel_cuffed=35.7deg
+check.160: interact_high_armed: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.161: interact_low: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.162: interact_low_armed: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.163: interact_mid: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.164: interact_mid_armed: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.165: investigate_look: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
+check.166: kick_charge: 15f 0.50s speed=0.0 reach_err=0.0mm step=16.2deg
+check.167: kick_hit: 21f 0.70s speed=0.0 reach_err=0.0mm step=44.2deg
+check.168: kneel_cuffed: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.8deg
+check.169: kneel_cuffed_b: 104f 3.47s loop speed=0.0 reach_err=0.0mm step=3.2deg start_err=0.00mm max_diff_vs_kneel_cuffed=36.0deg
 check.17: browse: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.9deg
-check.170: lean_wall: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.4deg
-check.171: lie_down: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.2deg
-check.172: mask_on: 30f 1.00s speed=0.0 reach_err=0.0mm step=34.8deg
-check.173: melee: 21f 0.70s speed=0.0 reach_err=0.0mm step=57.0deg
-check.174: mop: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.4deg
-check.175: mug_carry_walk: 34f 1.13s loop speed=1.3 reach_err=0.0mm step=16.2deg slide=0.026mm/f
-check.176: mug_idle: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=7.6deg
-check.177: pager_answer: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.178: panic_start: 24f 0.80s speed=0.0 reach_err=0.0mm step=51.4deg start_err=0.00mm end_err=0.00mm
-check.179: phone_call: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=8.5deg
+check.170: kneel_cuffed_c: 118f 3.93s loop speed=0.0 reach_err=0.0mm step=2.7deg start_err=0.00mm max_diff_vs_kneel_cuffed=35.7deg
+check.171: lean_wall: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.4deg
+check.172: lie_down: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.2deg
+check.173: mask_on: 30f 1.00s speed=0.0 reach_err=0.0mm step=34.8deg
+check.174: melee: 21f 0.70s speed=0.0 reach_err=0.0mm step=57.0deg
+check.175: mop: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.4deg
+check.176: mug_carry_walk: 34f 1.13s loop speed=1.3 reach_err=0.0mm step=16.2deg slide=0.026mm/f
+check.177: mug_idle: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=7.6deg
+check.178: pager_answer: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.6deg
+check.179: panic_start: 24f 0.80s speed=0.0 reach_err=0.0mm step=51.4deg start_err=0.00mm end_err=0.00mm
 check.18: carry_bag_walk: 22f 0.73s loop speed=2.4 reach_err=0.0mm step=14.9deg slide=0.034mm/f
-check.180: phone_seated: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=8.9deg
-check.181: queue_idle: 150f 5.00s loop speed=0.0 reach_err=1.1mm step=13.2deg root_drift=0.00mm
-check.182: queue_idle_b: 126f 4.20s loop speed=0.0 reach_err=0.0mm step=12.1deg root_drift=0.00mm
-check.183: queue_idle_c: 138f 4.60s loop speed=0.0 reach_err=0.0mm step=13.1deg root_drift=0.00mm
-check.184: radio_call: 60f 2.00s speed=0.0 reach_err=0.0mm step=16.7deg
-check.185: rappel: 30f 1.00s loop speed=2.5 reach_err=0.0mm step=12.6deg
-check.186: rappel_descend: 20f 0.67s loop speed=2.5 reach_err=0.0mm step=4.8deg lowest_skin=299.7mm rope_err=0.0mm sternum_gap=10.1cm feet_above_root=0.39m
-check.187: rappel_hang: 40f 1.33s loop speed=0.0 reach_err=0.0mm step=1.5deg lowest_skin=300.0mm rope_err=0.0mm sternum_gap=10.0cm feet_above_root=0.37m
-check.188: rappel_land: 30f 1.00s speed=0.0 reach_err=0.0mm step=29.3deg lowest_skin=-1.2mm start_err=0.00mm end_err=0.00mm
-check.189: reload_akimbo: 60f 2.00s speed=0.0 reach_err=0.0mm step=19.0deg
+check.180: phone_call: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=8.5deg
+check.181: phone_seated: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=8.9deg
+check.182: queue_idle: 150f 5.00s loop speed=0.0 reach_err=1.1mm step=13.2deg root_drift=0.00mm
+check.183: queue_idle_b: 126f 4.20s loop speed=0.0 reach_err=0.0mm step=12.1deg root_drift=0.00mm
+check.184: queue_idle_c: 138f 4.60s loop speed=0.0 reach_err=0.0mm step=13.1deg root_drift=0.00mm
+check.185: radio_call: 60f 2.00s speed=0.0 reach_err=0.0mm step=16.7deg
+check.186: rappel: 30f 1.00s loop speed=2.5 reach_err=0.0mm step=12.6deg
+check.187: rappel_descend: 20f 0.67s loop speed=2.5 reach_err=0.0mm step=4.8deg lowest_skin=299.7mm rope_err=0.0mm sternum_gap=10.1cm feet_above_root=0.39m
+check.188: rappel_hang: 40f 1.33s loop speed=0.0 reach_err=0.0mm step=1.5deg lowest_skin=300.0mm rope_err=0.0mm sternum_gap=10.0cm feet_above_root=0.37m
+check.189: rappel_land: 30f 1.00s speed=0.0 reach_err=0.0mm step=29.3deg lowest_skin=-1.2mm start_err=0.00mm end_err=0.00mm
 check.19: check_desk_write: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=3.6deg root_drift=0.00mm hand_gap=-0.0mm through=0.0mm forearm_gap=7.0mm front=0.224m socket_L=+0.0..+0.0cm socket_R=+4.9..+4.9cm
-check.190: reload_lmg: 120f 4.00s speed=0.0 reach_err=0.0mm step=36.2deg
-check.191: reload_pistol: 45f 1.50s speed=0.0 reach_err=0.0mm step=40.0deg
-check.192: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
-check.193: reload_shotgun: 84f 2.80s speed=0.0 reach_err=0.0mm step=64.0deg
-check.194: reload_smg: 54f 1.80s speed=0.0 reach_err=0.0mm step=49.7deg
-check.195: reload_sniper: 78f 2.60s speed=0.0 reach_err=0.0mm step=42.0deg
-check.196: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=12.8deg slide=0.038mm/f
-check.197: run_b: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.2deg slide=0.000mm/f
-check.198: run_bl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.199: run_br: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=19.9deg slide=0.000mm/f
+check.190: reload_akimbo: 60f 2.00s speed=0.0 reach_err=0.0mm step=19.0deg
+check.191: reload_lmg: 120f 4.00s speed=0.0 reach_err=0.0mm step=36.2deg
+check.192: reload_pistol: 45f 1.50s speed=0.0 reach_err=0.0mm step=40.0deg
+check.193: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
+check.194: reload_shotgun: 84f 2.80s speed=0.0 reach_err=0.0mm step=64.0deg
+check.195: reload_smg: 54f 1.80s speed=0.0 reach_err=0.0mm step=49.7deg
+check.196: reload_sniper: 78f 2.60s speed=0.0 reach_err=0.0mm step=42.0deg
+check.197: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=12.8deg slide=0.038mm/f
+check.198: run_b: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.2deg slide=0.000mm/f
+check.199: run_bl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=19.4deg slide=0.000mm/f
 check.20: climb_ladder: 36f 1.20s loop speed=0.5 reach_err=0.0mm step=17.7deg
-check.200: run_fl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.1deg slide=0.000mm/f
-check.201: run_fr: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=18.1deg slide=0.000mm/f
-check.202: run_l: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.1deg slide=0.000mm/f
-check.203: run_r: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.4deg slide=0.000mm/f
-check.204: run_reverse_back_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.3deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
-check.205: run_reverse_back_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=20.6deg slide=0.03mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
-check.206: run_reverse_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=23.2deg slide=0.01mm/f hip_drop=15.9mm in_err=0.00mm out_err=0.00mm
-check.207: run_reverse_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=28.0deg slide=0.02mm/f hip_drop=12.9mm in_err=0.00mm out_err=0.00mm
-check.208: run_start: 18f 0.60s speed=3.5 reach_err=0.0mm step=13.7deg slide=0.025mm/f idle0_err=0.00mm handoff_err=0.00mm
-check.209: run_stop: 20f 0.67s speed=3.5 reach_err=0.0mm step=25.3deg slide=0.038mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.200: run_br: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=19.9deg slide=0.000mm/f
+check.201: run_fl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.1deg slide=0.000mm/f
+check.202: run_fr: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=18.1deg slide=0.000mm/f
+check.203: run_l: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.1deg slide=0.000mm/f
+check.204: run_r: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.4deg slide=0.000mm/f
+check.205: run_reverse_back_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.3deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
+check.206: run_reverse_back_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=20.6deg slide=0.03mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
+check.207: run_reverse_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=23.2deg slide=0.01mm/f hip_drop=15.9mm in_err=0.00mm out_err=0.00mm
+check.208: run_reverse_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=28.0deg slide=0.02mm/f hip_drop=12.9mm in_err=0.00mm out_err=0.00mm
+check.209: run_start: 18f 0.60s speed=3.5 reach_err=0.0mm step=13.7deg slide=0.025mm/f idle0_err=0.00mm handoff_err=0.00mm
 check.21: cook_stove: 180f 6.00s loop speed=0.0 reach_err=5.1mm step=20.7deg lowest_skin=-0.0mm root_drift=0.00mm
-check.210: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
-check.211: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
-check.212: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
-check.213: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=20.5deg
-check.214: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
-check.215: sit_chair_armed: 140f 4.67s loop speed=0.0 reach_err=0.0mm step=0.7deg
-check.216: sit_chair_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=24.2deg
-check.217: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
-check.218: sit_eat: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=13.0deg lowest_skin=0.0mm root_drift=0.00mm
-check.219: sit_vehicle: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=3.2deg lowest_skin=19.4mm root_drift=0.00mm hips_z=0.430m
+check.210: run_stop: 20f 0.67s speed=3.5 reach_err=0.0mm step=25.3deg slide=0.038mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.211: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
+check.212: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
+check.213: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
+check.214: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=20.5deg
+check.215: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
+check.216: sit_chair_armed: 140f 4.67s loop speed=0.0 reach_err=0.0mm step=0.7deg
+check.217: sit_chair_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=24.2deg
+check.218: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
+check.219: sit_eat: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=13.0deg lowest_skin=0.0mm root_drift=0.00mm
 check.22: counter_customer: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=8.0deg root_drift=0.00mm hand_gap=0.0mm through=0.0mm forearm_gap=-0.0mm front=0.234m socket_L=-0.1..-0.1cm socket_R=+0.0..+0.0cm
-check.220: sit_vehicle_drive: 180f 6.00s loop speed=0.0 reach_err=5.5mm step=2.6deg lowest_skin=19.4mm root_drift=0.00mm
-check.221: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.9deg
-check.222: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
-check.223: stagger_pistol: 36f 1.20s speed=0.0 reach_err=0.0mm step=48.4deg
-check.224: stagger_rifle: 36f 1.20s speed=0.0 reach_err=0.0mm step=37.4deg
-check.225: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
-check.226: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
-check.227: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=34.3deg
-check.228: surrender_b: 54f 1.80s speed=0.0 reach_err=0.0mm step=32.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=125.8deg
-check.229: surrender_c: 42f 1.40s speed=0.0 reach_err=0.0mm step=38.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=97.7deg
+check.220: sit_vehicle: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=3.2deg lowest_skin=19.4mm root_drift=0.00mm hips_z=0.430m
+check.221: sit_vehicle_drive: 180f 6.00s loop speed=0.0 reach_err=5.5mm step=2.6deg lowest_skin=19.4mm root_drift=0.00mm
+check.222: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.9deg
+check.223: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
+check.224: stagger_pistol: 36f 1.20s speed=0.0 reach_err=0.0mm step=48.4deg
+check.225: stagger_rifle: 36f 1.20s speed=0.0 reach_err=0.0mm step=37.4deg
+check.226: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
+check.227: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
+check.228: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=34.3deg
+check.229: surrender_b: 54f 1.80s speed=0.0 reach_err=0.0mm step=32.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=125.8deg
 check.23: counter_wipe: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=4.6deg lowest_skin=-0.0mm root_drift=0.00mm
-check.230: surrender_idle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.7deg start_err=0.00mm
-check.231: surrender_idle_b: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=1.9deg start_err=0.00mm max_diff_vs_surrender_idle=23.1deg
-check.232: surrender_idle_c: 84f 2.80s loop speed=0.0 reach_err=0.0mm step=6.1deg start_err=0.00mm max_diff_vs_surrender_idle=46.7deg
-check.233: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
-check.234: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
-check.235: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
-check.236: throw_bag_armed: 30f 1.00s speed=0.0 reach_err=0.0mm step=28.7deg
-check.237: throw_grenade: 24f 0.80s speed=0.0 reach_err=0.0mm step=77.3deg
-check.238: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
-check.239: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.230: surrender_c: 42f 1.40s speed=0.0 reach_err=0.0mm step=38.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=97.7deg
+check.231: surrender_idle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.7deg start_err=0.00mm
+check.232: surrender_idle_b: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=1.9deg start_err=0.00mm max_diff_vs_surrender_idle=23.1deg
+check.233: surrender_idle_c: 84f 2.80s loop speed=0.0 reach_err=0.0mm step=6.1deg start_err=0.00mm max_diff_vs_surrender_idle=46.7deg
+check.234: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
+check.235: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
+check.236: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
+check.237: throw_bag_armed: 30f 1.00s speed=0.0 reach_err=0.0mm step=28.7deg
+check.238: throw_grenade: 24f 0.80s speed=0.0 reach_err=0.0mm step=77.3deg
+check.239: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
 check.24: cover_low_pistol: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=9.7deg
-check.240: turn_l_45: 12f 0.40s speed=0.0 reach_err=0.0mm step=18.5deg
-check.241: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.242: turn_r_45: 12f 0.40s speed=0.0 reach_err=0.0mm step=18.5deg
-check.243: van_exit: 36f 1.20s speed=0.0 reach_err=0.0mm step=20.3deg lowest_skin=-0.0mm end_err=0.00mm
-check.244: vehicle_exit_l: 45f 1.50s speed=0.0 reach_err=0.0mm step=45.2deg lowest_skin=-0.0mm start_err=0.00mm end_err=0.00mm
-check.245: vehicle_exit_r: 45f 1.50s speed=0.0 reach_err=0.0mm step=41.7deg lowest_skin=-0.0mm start_err=0.00mm end_err=0.00mm
-check.246: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
-check.247: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
-check.248: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
-check.249: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.240: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.241: turn_l_45: 12f 0.40s speed=0.0 reach_err=0.0mm step=18.5deg
+check.242: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.243: turn_r_45: 12f 0.40s speed=0.0 reach_err=0.0mm step=18.5deg
+check.244: van_exit: 36f 1.20s speed=0.0 reach_err=0.0mm step=20.3deg lowest_skin=-0.0mm end_err=0.00mm
+check.245: vehicle_exit_l: 45f 1.50s speed=0.0 reach_err=0.0mm step=45.2deg lowest_skin=-0.0mm start_err=0.00mm end_err=0.00mm
+check.246: vehicle_exit_r: 45f 1.50s speed=0.0 reach_err=0.0mm step=41.7deg lowest_skin=-0.0mm start_err=0.00mm end_err=0.00mm
+check.247: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.248: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
+check.249: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
 check.25: cover_low_rifle: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=12.7deg
-check.250: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
-check.251: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.252: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.253: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.254: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.255: walk_reverse_back_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=15.4deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
-check.256: walk_reverse_back_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=15.4deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
-check.257: walk_reverse_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=16.8deg slide=0.04mm/f hip_drop=2.1mm in_err=0.00mm out_err=0.00mm
-check.258: walk_reverse_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=16.8deg slide=0.04mm/f hip_drop=2.1mm in_err=0.00mm out_err=0.00mm
-check.259: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
+check.250: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.251: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.252: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.253: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.254: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.255: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.256: walk_reverse_back_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=15.4deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
+check.257: walk_reverse_back_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=15.4deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
+check.258: walk_reverse_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=16.8deg slide=0.04mm/f hip_drop=2.1mm in_err=0.00mm out_err=0.00mm
+check.259: walk_reverse_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=16.8deg slide=0.04mm/f hip_drop=2.1mm in_err=0.00mm out_err=0.00mm
 check.26: cover_peek_l_pistol: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=11.7deg
-check.260: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
-check.261: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
+check.260: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
+check.261: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.262: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
 check.27: cover_peek_l_rifle: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=7.5deg
 check.28: cover_peek_r_pistol: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=10.6deg
 check.29: cover_peek_r_rifle: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=6.0deg
@@ -404,6 +405,7 @@ clip.hold_pistol_walk_start: 18f loop=False speed_mps=0.0 events=step_r@15
 clip.hold_pistol_walk_stop: 18f loop=False speed_mps=0.0 events=step_l@14
 clip.hold_rifle: 96f loop=True speed_mps=0.0
 clip.hold_rifle_crouch: 27f loop=True speed_mps=0.0
+clip.hold_rifle_port_run: 21f loop=True speed_mps=0.0
 clip.hold_rifle_run: 21f loop=True speed_mps=0.0
 clip.hold_rifle_run_start: 18f loop=False speed_mps=0.0 events=step_r@14
 clip.hold_rifle_run_stop: 20f loop=False speed_mps=0.0 events=step_l@6,step_r@17
@@ -544,7 +546,7 @@ clip.walk_reverse_r: 24f loop=False speed_mps=0.0 events=done@24,foot_plant@0,pu
 clip.walk_start: 18f loop=False speed_mps=1.6 events=step_r@15 handoff_frame=3
 clip.walk_stop: 18f loop=False speed_mps=1.6 events=step_l@14 handoff_frame=0
 clip.walk_text: 36f loop=True speed_mps=1.2
-clips: 262
+clips: 263
 contact.check_desk_write:  plane=1.000 HandL=+0.0005@0-150 HandR=+0.0492@0-150 (Hand<side>=the HandL/HandR Socket origin height above the plane in m, median over the contact frames @first-last; the palm skin lies on the plane within 0.0 mm there)
 contact.counter_customer:  plane=1.050 HandL=-0.0010@0-180 HandR=+0.0005@0-90,135-180 (Hand<side>=the HandL/HandR Socket origin height above the plane in m, median over the contact frames @first-last; the palm skin lies on the plane within 0.0 mm there)
 counter_customer_placement: counter_customer: a teller window. The root on the floor 0.30 m from the counter's customer face (the mark at Godot z = +0.30 from the face, facing it, -Z), the transaction ledge top 1.05 m high and >= 0.45 m deep (prop_counter_teller: top 1.05 m, its marble edge = the face: mark origin 0.70 m from the segment centre). Forearms on the ledge, the palms flat on it: HandL at Godot (-0.13, 1.05, -0.55), HandR rest (0.11, 1.05, -0.56); the slip is pushed to (0.07, 1.05, -0.70) at slip_push@48 (the teller window / slot there: keep the ledge clear to 0.82 m ahead of the root, e.g. a glass screen's slot); nod@146. Below the ledge the body stays behind Godot z = -0.23; nothing goes through the counter (deepest skin 0.0 mm). A paper slip prop is optional (under HandR, on the ledge)
@@ -584,11 +586,12 @@ hit_zone_checks: hit_head: start_err=0.00mm end_err=0.00mm drift_L=0.0mm drift_R
 hit_zones: D-116 non-lethal flinch by hit zone (pick from the damage info `zone` + the hit `position` in the body's root space): HEAD -> hit_head; BODY -> hit_chest; LIMB above the hips joint (y > 0.95 m x motion_scale) -> hit_shoulder_l if the hit is on the body's left (root-space x < 0) else hit_shoulder_r; LIMB below it -> hit_leg_l / hit_leg_r by the same side test. The directional hit_react set stays the fallback when no zone is known. Each starts and ends exactly on idle_alert frame 0, root fixed, both feet planted except the hit foot's in-place catch step in hit_leg_* (back 7 cm and home again); `impact` = the peak. Blend: absolute poses, not rest-relative deltas (do not feed them raw to AnimationNodeAdd2). Standing / idle_alert / unarmed: OneShot full body, weight 1.0, fade in 0.03 s, out 0.12 s. Over aim_* / fire / locomotion: OneShot filtered to hips, spine, chest, neck, head (+ clavicle/upper_arm/forearm/hand of the hit side for hit_shoulder_* when the gun hand is not that side), weight 0.7 (hit_head 0.9); never the legs while moving (hit_leg_* then = its trunk only). For a true layer, bake an additive copy at load (per track: rest * inverse(frame 0) * key) and Add2 it at 1.0.
 idle_alert_variants: D polish #2: idle_alert, idle_alert_b, idle_alert_c (loops 90 / 150 / 174 f, speed 0, in place). b = a wristwatch check and a slow weight shift; c = a thumb on the shoulder radio, then a look round. Frame 0 of each IS idle_alert frame 0 and the variant layer is zero at the seam, so anything that chains into or out of idle_alert chains into a variant unchanged. ENV A: VARIANT_GROUPS idle_alert: [idle_alert, idle_alert_b, idle_alert_c] (the per-body index, as for cower / queue_idle).
 idle_thug_weapon: idle_thug: the long gun at HandR/Socket (the weapon grip convention), held low across the body: muzzle 30 deg below the horizontal, turned 38 deg to the left; the left hand loosely under the front of the receiver (0.19 m behind LeftHandIK), not on LeftHandIK
+loco_port: D-153 TAC ruling: hold_rifle_port_run is hold_rifle_run's port-arms variant (the rifle diagonally across the chest, the sprint carry's frame, over the run gait with the plain run's upright trunk; same frames / loop / events as run, frame-locked like hold_rifle_run). For police NPC rifles (TAC Light / Heavy and their faction looks) while running and NOT aiming, instead of hold_rifle_run; crew keep hold_rifle_run.
 loco_reverse: characters v1.36 locomotion reversals (fixed facing; replace the crossfade between opposite strides, which folds the knees): run_reverse_l/_r run->run_b, run_reverse_back_l/_r run_b->run, walk_reverse_l/_r walk->walk_back, walk_reverse_back_l/_r walk_back->walk; _l = the left foot brakes. Frame 0 IS the source loop at u_in (the brake foot's touch-down: R at 0, L at frames/2 rounded up) and the last frame IS the target loop at u_out, so: start the clip when the source loop reaches u_in (pick _r or _l by whichever brake foot comes next: R at u 0, L at u 0.5 + 0.5/frames), play it without a crossfade, then switch to the target loop seeked to u_out (no crossfade). The root follows curve.<clip>: metres along the character's forward (+ = forward, Godot -Z), one value per frame from 0; its speed equals the source loop's at frame 0, crosses 0 at `push` and equals the target loop's from the other foot's landing on (planted feet stay world-still at that motion). Use it for a travel reversal of 135 deg or more; under that, keep the 8-way switch. Events: foot_plant (frame 0), push (the root speed crosses 0), done (the last frame). Hips: never lower than max_hip_drop_mm below the loops' lowest hip height. run_reverse_l: run->run_b brake=L frames=18 u_in=0.5238 (run frame 11) u_out=0.2381 (run_b frame 5) events=foot_plant@0,push@6,done@18 other_lands@13.0 brake_lifts@8.4 root_total_m=-0.642 max_hip_drop_mm=15.9 | run_reverse_r: run->run_b brake=R frames=18 u_in=0.0000 (run frame 0) u_out=0.7619 (run_b frame 16) events=foot_plant@0,push@6,done@18 other_lands@12.5 brake_lifts@7.9 root_total_m=-0.671 max_hip_drop_mm=12.9 | run_reverse_back_l: run_b->run brake=L frames=18 u_in=0.5238 (run_b frame 11) u_out=0.2381 (run frame 5) events=foot_plant@0,push@6,done@18 other_lands@13.0 brake_lifts@8.4 root_total_m=+0.642 max_hip_drop_mm=0.0 | run_reverse_back_r: run_b->run brake=R frames=18 u_in=0.0000 (run_b frame 0) u_out=0.7619 (run frame 16) events=foot_plant@0,push@6,done@18 other_lands@12.5 brake_lifts@7.9 root_total_m=+0.671 max_hip_drop_mm=0.0 | walk_reverse_l: walk->walk_back brake=L frames=24 u_in=0.5000 (walk frame 15) u_out=0.2333 (walk_back frame 7) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.6 root_total_m=-0.132 max_hip_drop_mm=2.1 | walk_reverse_r: walk->walk_back brake=R frames=24 u_in=0.0000 (walk frame 0) u_out=0.7333 (walk_back frame 22) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.6 root_total_m=-0.132 max_hip_drop_mm=2.1 | walk_reverse_back_l: walk_back->walk brake=L frames=24 u_in=0.5000 (walk_back frame 15) u_out=0.2333 (walk frame 7) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0 | walk_reverse_back_r: walk_back->walk brake=R frames=24 u_in=0.0000 (walk_back frame 0) u_out=0.7333 (walk frame 22) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0
 locomotion_blend: crew 8-way blend set (D3-04): two BlendSpace2D (or two 3x3 grids of AnimationNodeBlend2/3), one per gait, blend position = the local move direction (x = right, y = forward, unit length) and ONE speed_scale per gait = v / (clip speed x motion_scale): walk (1.6 m/s, 30 f) at (0,1) walk, (0.71,0.71) walk_fr, (1,0) walk_r, (0.71,-0.71) walk_br, (0,-1) walk_b, (-0.71,-0.71) walk_bl, (-1,0) walk_l, (-0.71,0.71) walk_fl; run (3.5 m/s, 21 f) the same with run_*. Every clip of a gait has the same length, speed and stance share and the right foot down at normalised time 0, the left at 0.5 (`foot_down` in the clip rows), so blend them on one shared normalised time (BlendSpace2D sync = true, or seek every clip to the same time): the planted foot is the same foot in every direction. Walk <-> run: crossfade at the walk_run split (or a Blend2 on speed with both spaces advancing on the same normalised time: walk 1 s and run 0.7 s cycles; R down at 0 in both). strafe_l / strafe_r (1.2 m/s, 18 f shuffle) and walk_back (1.3 m/s) stay for the single-clip picker; the 8-way set replaces them inside the blend spaces.
 locomotion_holds: D-116 organic crew locomotion: hold_<kind>_<gait> (kind = the weapon_holds kinds; gait = walk, run, sprint, crouch, walk_start, walk_stop, run_start, run_stop) is the upper-body layer (the weapon_holds bone filter) over the base clip walk / run / sprint / crouch_walk / walk_start / walk_stop / run_start / run_stop, with the same frames, loop flag and events as its base, and FRAME-LOCKED to it: each frame carries the base clip's own trunk at that frame (counter-twist, bob, start / stop lean) and the weapon riding the chest a couple of frames late, with a spring on starts / stops. Play it instead of hold_<kind> while the locomotion clip is: walk, walk_* and walk_back (30 f, the right foot down at 0) -> _walk; run and run_* -> _run; sprint -> _sprint (the PD2 sprint carry: long guns across the chest, the pistol tucked at the chest); crouch_walk -> _crouch; walk_start / walk_stop / run_start / run_stop -> the same-named layer. Set the layer time to the locomotion clip's playback position every tick (never a random offset). strafe_l / strafe_r (18 f) keep hold_<kind>
 locomotion_transitions: walk_start / run_start: idle frame 0 -> the cycle; the clip's last frame IS walk frame 3 / run frame 4 (`handoff`), so switch to the cycle at that frame (no crossfade needed). walk_stop / run_stop: the clip's frame 0 IS walk / run frame 0 (`handoff`: the right heel strike) and the last frame IS idle frame 0. In place: A moves the root by `curve.<clip>` (root_m per frame, m at 1.78 m x motion_scale; the speed at both ends equals the cycle speed / 0): planted feet stay world-still at that root motion. Start = accelerate from 0 to the cycle speed by the right foot's first plant (step_r), then the cycle speed; stop = decelerate from the cycle speed to 0 at the last plant (walk: step_l, run: step_r), then settle into idle.
-loops: aim_akimbo,aim_akimbo_crouch,aim_akimbo_run,aim_akimbo_walk,aim_pistol,aim_pistol_crouch,aim_pistol_run,aim_pistol_walk,aim_rifle,aim_rifle_crouch,aim_rifle_run,aim_rifle_walk,bartender_pour,bartender_wipe,bouncer_idle,browse,carry_bag_walk,check_desk_write,climb_ladder,cook_stove,counter_customer,counter_wipe,cover_low_pistol,cover_low_rifle,cover_peek_l_pistol,cover_peek_l_rifle,cover_peek_r_pistol,cover_peek_r_rifle,cower,cower_b,cower_c,cower_seated,cower_stand,crew_cuffed,crouch_idle,crouch_walk,curator_inspect,dance_a,dance_b,dance_c,desk_type,desk_work,downed,downed_crawl,dozer_walk,dozer_walk_heavy,flee,flee_b,flee_c,hands_up,hands_up_b,hands_up_c,heli_door_aim,heli_door_idle,hold_akimbo,hold_akimbo_crouch,hold_akimbo_run,hold_akimbo_sprint,hold_akimbo_walk,hold_lmg,hold_lmg_crouch,hold_lmg_run,hold_lmg_sprint,hold_lmg_walk,hold_pistol,hold_pistol_crouch,hold_pistol_run,hold_pistol_sprint,hold_pistol_walk,hold_rifle,hold_rifle_crouch,hold_rifle_run,hold_rifle_sprint,hold_rifle_walk,hold_smg,hold_smg_crouch,hold_smg_run,hold_smg_sprint,hold_smg_walk,hold_sniper,hold_sniper_crouch,hold_sniper_run,hold_sniper_sprint,hold_sniper_walk,idle,idle_alert,idle_alert_akimbo,idle_alert_b,idle_alert_c,idle_alert_lmg,idle_alert_pistol,idle_alert_rifle,idle_alert_smg,idle_alert_sniper,idle_thug,interact_high,interact_high_armed,interact_low,interact_low_armed,interact_mid,interact_mid_armed,investigate_look,kneel_cuffed,kneel_cuffed_b,kneel_cuffed_c,lean_wall,lie_down,mop,mug_carry_walk,mug_idle,pager_answer,phone_call,phone_seated,queue_idle,queue_idle_b,queue_idle_c,rappel,rappel_descend,rappel_hang,run,run_b,run_bl,run_br,run_fl,run_fr,run_l,run_r,shield_idle,shield_walk,sit_bed_read,sit_chair,sit_chair_armed,sit_chair_read,sit_chair_watch,sit_eat,sit_vehicle,sit_vehicle_drive,smoke,sprint,strafe_l,strafe_r,surrender_idle,surrender_idle_b,surrender_idle_c,tased,teller_count,tied,walk,walk_b,walk_back,walk_bl,walk_br,walk_fl,walk_fr,walk_l,walk_r,walk_text
+loops: aim_akimbo,aim_akimbo_crouch,aim_akimbo_run,aim_akimbo_walk,aim_pistol,aim_pistol_crouch,aim_pistol_run,aim_pistol_walk,aim_rifle,aim_rifle_crouch,aim_rifle_run,aim_rifle_walk,bartender_pour,bartender_wipe,bouncer_idle,browse,carry_bag_walk,check_desk_write,climb_ladder,cook_stove,counter_customer,counter_wipe,cover_low_pistol,cover_low_rifle,cover_peek_l_pistol,cover_peek_l_rifle,cover_peek_r_pistol,cover_peek_r_rifle,cower,cower_b,cower_c,cower_seated,cower_stand,crew_cuffed,crouch_idle,crouch_walk,curator_inspect,dance_a,dance_b,dance_c,desk_type,desk_work,downed,downed_crawl,dozer_walk,dozer_walk_heavy,flee,flee_b,flee_c,hands_up,hands_up_b,hands_up_c,heli_door_aim,heli_door_idle,hold_akimbo,hold_akimbo_crouch,hold_akimbo_run,hold_akimbo_sprint,hold_akimbo_walk,hold_lmg,hold_lmg_crouch,hold_lmg_run,hold_lmg_sprint,hold_lmg_walk,hold_pistol,hold_pistol_crouch,hold_pistol_run,hold_pistol_sprint,hold_pistol_walk,hold_rifle,hold_rifle_crouch,hold_rifle_port_run,hold_rifle_run,hold_rifle_sprint,hold_rifle_walk,hold_smg,hold_smg_crouch,hold_smg_run,hold_smg_sprint,hold_smg_walk,hold_sniper,hold_sniper_crouch,hold_sniper_run,hold_sniper_sprint,hold_sniper_walk,idle,idle_alert,idle_alert_akimbo,idle_alert_b,idle_alert_c,idle_alert_lmg,idle_alert_pistol,idle_alert_rifle,idle_alert_smg,idle_alert_sniper,idle_thug,interact_high,interact_high_armed,interact_low,interact_low_armed,interact_mid,interact_mid_armed,investigate_look,kneel_cuffed,kneel_cuffed_b,kneel_cuffed_c,lean_wall,lie_down,mop,mug_carry_walk,mug_idle,pager_answer,phone_call,phone_seated,queue_idle,queue_idle_b,queue_idle_c,rappel,rappel_descend,rappel_hang,run,run_b,run_bl,run_br,run_fl,run_fr,run_l,run_r,shield_idle,shield_walk,sit_bed_read,sit_chair,sit_chair_armed,sit_chair_read,sit_chair_watch,sit_eat,sit_vehicle,sit_vehicle_drive,smoke,sprint,strafe_l,strafe_r,surrender_idle,surrender_idle_b,surrender_idle_c,tased,teller_count,tied,walk,walk_b,walk_back,walk_bl,walk_br,walk_fl,walk_fr,walk_l,walk_r,walk_text
 loops_marked_by: -loop name suffix (Godot strips it and sets LOOP_LINEAR)
 mop_grip: basis x=(1.0000,0.0000,0.0000) y=(0.0000,1.0000,0.0000) z=(0.0000,0.0000,1.0000) origin=(0.0000,-0.9500,-0.0000) relative to HandR/Socket; string mop: origin at the floor end of the shaft (the head's centre on the floor), +Y = up the shaft (length 1.4 m), the right fist 0.95 m up the shaft (the socket, thumb toward the top), the left fist at 1.25 m (the HandL weapon-grip convention on the same shaft axes)
 mop_sweep: mop: in place, the head sweeps x -0.22..0.42 m, 0.56..0.68 m ahead of the root (two sweeps per loop); keep ~1 m clear ahead
