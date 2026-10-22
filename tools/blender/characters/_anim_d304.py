@@ -54,17 +54,20 @@ WALK_SHAPE = {
     180: dict(drop=0.05, hip=0.0, lane=0.10, strike=-10.0, toeoff=12.0, flat_at=0.20, heel_rise=0.75, toe_up=-4.0, arm=8.0,
               lift=0.06, lean=2.0, along=0.04),
 }
+#: run shapes: an upright combat run (LEAD 2026-10-22, D-153 motion strips: the old drops 0.075-0.12 m, lifts 0.14-0.17 m
+#: and 0.12-0.15 m lanes read crouched, the lateral / back runs worst): hips near a jog's, knees a jog's, narrow lanes the
+#: legs reach without the reach fix lowering the hips
 RUN_SHAPE = {
-    0: dict(drop=0.075, hip=0.0, lane=0.10, strike=8.0, toeoff=-40.0, flat_at=0.12, heel_rise=0.45, toe_up=12.0, arm=34.0,
-            lift=0.17, lean=9.0, along=-0.07),
-    45: dict(drop=0.09, hip=24.0, lane=0.12, strike=6.0, toeoff=-36.0, flat_at=0.12, heel_rise=0.45, toe_up=10.0, arm=26.0,
-             lift=0.16, lean=8.0, along=-0.05),
-    90: dict(drop=0.12, hip=50.0, lane=0.15, strike=2.0, toeoff=-28.0, flat_at=0.14, heel_rise=0.45, toe_up=6.0, arm=16.0,
-             lift=0.14, lean=6.0, along=-0.02),
-    135: dict(drop=0.11, hip=24.0, lane=0.12, strike=-14.0, toeoff=-14.0, flat_at=0.30, heel_rise=0.62, toe_up=-4.0, arm=18.0,
-              lift=0.14, lean=2.0, along=0.03),
-    180: dict(drop=0.08, hip=0.0, lane=0.10, strike=-16.0, toeoff=-16.0, flat_at=0.32, heel_rise=0.62, toe_up=-6.0, arm=20.0,
-              lift=0.14, lean=0.0, along=0.05),
+    0: dict(drop=0.068, hip=0.0, lane=0.10, strike=8.0, toeoff=-26.0, flat_at=0.12, heel_rise=0.45, toe_up=10.0, arm=30.0,
+            lift=0.09, lean=7.0, along=-0.06),
+    45: dict(drop=0.045, hip=24.0, lane=0.105, strike=6.0, toeoff=-27.0, flat_at=0.12, heel_rise=0.45, toe_up=9.0, arm=24.0,
+             lift=0.08, lean=6.0, along=-0.04),
+    90: dict(drop=0.040, hip=50.0, lane=0.11, strike=2.0, toeoff=-21.0, flat_at=0.14, heel_rise=0.45, toe_up=6.0, arm=16.0,
+             lift=0.07, lean=4.0, along=-0.02),
+    135: dict(drop=0.040, hip=24.0, lane=0.105, strike=-12.0, toeoff=-8.0, flat_at=0.30, heel_rise=0.62, toe_up=-4.0,
+              arm=18.0, lift=0.06, lean=1.0, along=0.03),
+    180: dict(drop=0.040, hip=0.0, lane=0.10, strike=-14.0, toeoff=-9.0, flat_at=0.32, heel_rise=0.62, toe_up=-6.0, arm=20.0,
+              lift=0.055, lean=0.0, along=0.05),
 }
 
 
