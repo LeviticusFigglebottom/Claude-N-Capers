@@ -8,7 +8,7 @@
 ##   every truck's rear-step UsePoint (and the bullion thermite's) is on the navmesh and reachable from a police spawn
 ##   and a player spawn; no enabled navmesh polygon has its centre inside a stopped vehicle's footprint; every vehicle
 ##   stands on its stop marker.
-## Disabled convoy regions are off the navigation map (Gameplay/ConvoyNav, rt_convoy_nav.gd). Paths are searched
+## Disabled convoy regions are off the navigation map (ConvoyLayouts.set_nav / reset at load, A 88873eb2). Paths are searched
 ## without Godot's default 4096-polygon cap. Owner: ENV C.
 extends TestCase
 
@@ -72,7 +72,7 @@ func _check_route(route: StringName) -> void:
 		for r2: Node in l.find_children("*", "NavigationRegion3D", true, false):
 			assert_false((r2 as NavigationRegion3D).enabled, "%s/%s off before the stop" % [l.name, r2.name])
 			assert_false(NavigationServer3D.region_get_map((r2 as NavigationRegion3D).get_rid()).is_valid(),
-				"%s/%s off the nav map while disabled (rt_convoy_nav.gd: no duplicate edges)" % [l.name, r2.name])
+				"%s/%s off the nav map while disabled (ConvoyLayouts.set_nav: no duplicate edges)" % [l.name, r2.name])
 		for st: Node in l.get_children():
 			var kind: String = String(st.get_meta(&"vehicle_kind", ""))
 			if kind == "cash" or kind == "bullion":
