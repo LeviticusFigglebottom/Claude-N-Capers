@@ -9,9 +9,11 @@
 ## Owner: ENV C.
 extends Node3D
 
-const EYE: Vector3 = Vector3(-10.0, 24.0, 20.0)
-const AT: Vector3 = Vector3(-12.0, 0.0, -7.0)
-const FOV: float = 70.0
+## Under the Skyway deck (its soffit is at 7.6 m), south of the junction, wide enough for the gate (x -33.5) and the
+## east stop (x 12.5).
+const EYE: Vector3 = Vector3(-16.0, 5.5, 16.0)
+const AT: Vector3 = Vector3(-14.0, 0.0, -6.0)
+const FOV: float = 90.0
 const MAX_S: float = 40.0
 const THUMB: Vector2i = Vector2i(320, 180)
 const COLS: int = 4
@@ -86,6 +88,10 @@ func _stop(rt: HeistRuntime) -> Vector3:
 func _snap(nm: String, rt: HeistRuntime) -> void:
 	var mixer: ConvoyVehicle = rt.mission.call(&"_mixer") as ConvoyVehicle
 	var gate: Door = rt.map.find_child("SiteTanneryGate", true, false) as Door
+	_cam.make_current()   # the crew's camera takes over once the heist goes loud
+	_cam.look_at_from_position(EYE, AT)
+	for n: Node in rt.find_children("*", "CanvasLayer", true, false):   # the crew's viewmodel / HUD overlays
+		(n as CanvasLayer).visible = false
 	var line: String = "%s layout %s mixer %s gate open %s" % [nm, rt.mission.get(&"layout_id"),
 		mixer.global_position.snapped(Vector3.ONE * 0.01) if mixer != null else "-", gate.is_open if gate != null else "-"]
 	_log.append(line)
