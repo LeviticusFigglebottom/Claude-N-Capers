@@ -162,7 +162,7 @@ const DOORS: Array = [
 	["SiteVehicleGateS", "SG", [-14.0, 0.0, -42.3], -90.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8, {}],
 	[
 		"SiteTanneryGate", "SG", [-33.5, 0.0, -11.0], 0.0, "double", "BARRED", "prop_door_site_gate_w400_h240", 4.0,
-		{"opens_with": "mixer_move", "kind": "industrial_door"},
+		{"opens_with": "mixer_move", "tag": "tannery_gate", "kind": "industrial_door"},
 	],
 	[
 		"RailLaneGate", "X5", [60.0, 0.0, -72.0], 0.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,
@@ -317,11 +317,11 @@ const ALWAYS: Dictionary = {
 				"travel_s": 8.0,
 				"capacity": 2,
 				"door_fold": true,
-				"car_size_m": [2.2, 2.4, 2.2],
+				"car_size_m": [2.6, 2.4, 2.7],
 				"objective_tag": "goods_lift",
 				"@landings": [["GoodsLiftLanding2", [0.0, 3.5, 0.0]], ["GoodsLiftLandingR", [0.0, 7.0, 0.0]]],
 			},
-			[20.5, 0.0, -46.4], {"walkable": true, "group": "goods_lift"}, "prop_cash_lift_car_w240",
+			[20.5, 0.0, -46.4], {"walkable": true, "group": "goods_lift"}, "prop_cash_lift_car_w260_l270",
 		],
 	],
 	"Gameplay/Ladders": [
