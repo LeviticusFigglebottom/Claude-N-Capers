@@ -66,6 +66,11 @@ const TAG_CIV_STREET: StringName = &"civ_street"
 const TAG_CIV_DINER: StringName = &"civ_diner"
 const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
 const PAUSE_CABINET: StringName = &"cabinet_locked"
+## RT phase 2 (C): the Mixer ConvoyVehicle, each convoy layout's MixerPath / MixerStop, the Tannery gates' tag.
+const MIXER_NAME: String = "Mixer"
+const MIXER_PATH: NodePath = ^"MixerPath"
+const MIXER_STOP: NodePath = ^"MixerStop"
+const TAG_TANNERY_GATE: StringName = &"tannery_gate"
 ## QC-85 (audio_cues v1.9): C's RT one-shots.
 const CUE_APPROACH: StringName = &"cue.convoy_approach"
 const CUE_BRAKE: StringName = &"cue.convoy_brake"
@@ -264,6 +269,13 @@ func phantom_charge_live() -> bool:
 		if b != null and b.goggles_glowing:
 			return true
 	return false
+
+
+## C's phase-2 `Mixer` ConvoyVehicle (anywhere in the map), null on the G1 map.
+func _mixer() -> ConvoyVehicle:
+	for n: Node in _runtime.map.find_children(MIXER_NAME, "ConvoyVehicle", true, false):
+		return n as ConvoyVehicle
+	return null
 
 
 func _power_lift(on: bool) -> void:
@@ -497,9 +509,26 @@ func _stopped() -> void:
 
 ## The mixer boxes the convoy in (clean: stop + 3 s; crash: the impact): Reyes's line, the Tannery gates open.
 func _mixer_move() -> void:
-	for pair: Array in [[LAYOUT_MIXER_GONE, "mixer"], [LAYOUT_TANNERY_OPEN, "tannery"]]:
-		if ConvoyLayouts.find(_runtime.map, String(pair[0])) != null:  # RT-C2 adds them; G1 has neither
-			set_layout(String(pair[0]), String(pair[1]))
+	var layout: Node3D = ConvoyLayouts.find(_runtime.map, layout_id)
+	var mixer: ConvoyVehicle = _mixer()
+	var stop: Node3D = layout.get_node_or_null(MIXER_STOP) as Node3D if layout != null else null
+	if mixer != null and stop != null:
+		# RT phase 2 (LEAD-approved C proposal): the Tannery gates swing open and the Mixer drives the layout's
+		# MixerPath onto its MixerStop (the layout's nav is baked with it there).
+		for n: Node in find_tagged(TAG_TANNERY_GATE):
+			var d: Door = n as Door
+			if d != null:
+				d.unlock()
+				d.set_open(true, false, true)
+		var path: Path3D = layout.get_node_or_null(MIXER_PATH) as Path3D
+		if path != null:
+			mixer.drive(path, stop)
+		else:
+			mixer.park(stop)
+	else:
+		for pair: Array in [[LAYOUT_MIXER_GONE, "mixer"], [LAYOUT_TANNERY_OPEN, "tannery"]]:
+			if ConvoyLayouts.find(_runtime.map, String(pair[0])) != null:  # G1's layout swap until C's phase 2 map
+				set_layout(String(pair[0]), String(pair[1]))
 	var lead: Node3D = _vehicle("Lead", ConvoyLayouts.find(_runtime.map, layout_id))
 	if lead != null:
 		_cue(CUE_MIXER_RAM, lead.global_position, 0)  # the mixer hits the lead escort (crash) / boxes it in (clean)

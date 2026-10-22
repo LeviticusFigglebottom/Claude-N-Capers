@@ -333,3 +333,31 @@ func test_qc85_rt_cues() -> void:
 		assert_false(cues.has(RollingThunderMission.CUE_TRAIN), "held back while a Phantom charge is live")
 		assert_true(m.timer_left(&"freight_train") <= RollingThunderMission.TRAIN_HOLD_S + 0.01, "re-checked soon")
 	EventBus.audio_cue_requested.disconnect(on_cue)
+
+
+## RT phase 2 (LEAD-approved C proposal): with C's `Mixer` ConvoyVehicle and the layout's MixerStop, _mixer_move opens
+## the tannery_gate doors and drives (here: parks, no MixerPath) the mixer onto its stop; without them (G1) the old
+## layout swap stays.
+func test_phase2_mixer_drives_to_its_stop() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	m._convoy_arrives()
+	await _stopped(m)
+	var layout: Node3D = ConvoyLayouts.find(_rt.map, m.layout_id)
+	var stop: Marker3D = Marker3D.new()
+	stop.name = "MixerStop"
+	layout.add_child(stop)
+	stop.global_position = layout.global_position + Vector3(4.0, 0.0, 4.0)
+	var mixer: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(-30, 0, -16), func(n: Node) -> void:
+		n.name = "Mixer") as ConvoyVehicle
+	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
+		(n as Door).objective_tag = RollingThunderMission.TAG_TANNERY_GATE
+		(n as Door).lock = Door.Lock.LOCKPICK) as Door
+	await wait_physics_frames(3)
+	assert_true(m._mixer() == mixer, "C's Mixer found")
+	m._mixer_move()
+	await wait_physics_frames(3)
+	assert_true(mixer.global_position.distance_to(stop.global_position) < 0.1, "the mixer on its MixerStop")
+	assert_true(gate.is_open, "the Tannery gate swung open")
