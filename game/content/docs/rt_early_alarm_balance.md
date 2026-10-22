@@ -122,3 +122,19 @@ most `control_alive_max` 4 plus first responders). The convoy must stop and dism
 - Target as before: Hazardous ≥ 3/5 reach a truck opening.
 - If A still fails, add C's hold (+30 s after the stop) on top. Do not push earlier: at under 25 s the convoy would
   arrive while the crew is still reacting to the alarm (CONTROL).
+
+## D-154 follow-up (LEAD r280): the Hazardous seed 1003 outlier (20 "Bulwarks" of 77 police)
+- **Half of it is Brandt.** `aegis_captain.gd` spawns his 10 Aegis shields on `enemy.bulwark` (flagged `META_AEGIS`), and
+  A's STATS counted them as Bulwarks. The special cap already skips them (`EnemyRoster`: "Aegis squad members never
+  count").
+- **Ruling (B): Aegis do not count toward the Bulwark share either.** They are PD2's Winters event (a separate,
+  once-per-day captain squad), not the special funnel. A's STATS should report them as their own line
+  (`META_AEGIS`). No data change.
+- **Without them:** seed 1003 is 10/67 = 14.9 %, and the RT Hazardous pool is 18/200 = **9.0 %**. That is at the bottom
+  of the 10-12 % target, as D-154's amendment (Hazardous cap back to 4) intends.
+- **Respawn cooldown / per-wave total: no change.**
+  - 10 funnel Bulwarks over about 250 s of assault is 2.4 / min with 4 alive at most. PD2 refills shields with the
+    squads that carry them; there is no shield cooldown in PD2 (the cap is the limit).
+  - One seed at 14.9 % is inside run-to-run spread for a cap-4 special.
+  - Revisit only if a pick-logged re-run shows a seed above 15 % with the Aegis excluded. Then the knob is a per-wave
+    total of 6 (Hazardous) rather than a cooldown, which would also slow the other specials' refills.
