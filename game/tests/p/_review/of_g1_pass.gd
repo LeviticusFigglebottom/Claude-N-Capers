@@ -153,6 +153,8 @@ const GHOST_SA_MID: Vector3 = Vector3(14.5, -2.0, 2.0)
 const GHOST_CQ_HIDE: Vector3 = Vector3(12.5, -4.0, 3.5)
 ## lkprobe (r263): a VT floor point beside VaultCash (24, 20.5) seen from no VC eye point: step 6's wait with a bag.
 const GHOST_VT_HIDE: Vector3 = Vector3(24.5, -4.0, 20.5)
+## Just inside VaultGate (17, -4, 9) on the VC side: blind from BB except right at the gate (step 6's peek).
+const GHOST_GATE_INNER: Vector3 = Vector3(17.0, -4.0, 10.3)
 const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
 ## Runtime lookups (_x): prefab class + objective_tag (ENV C's G1 tags, wip/c-of-g1 f49df211) near a design-doc point;
 ## the tag wins when present, else the nearest node of the class within `max` m. --resolve prints this table's
@@ -1887,7 +1889,7 @@ func _down_to_bb() -> bool:
 
 ## Step 6's VC crossing window: the vault guard on loop (b) or (c) (two samples) since at most `max_age` s (his absences
 ## run ~30-40 s), or >= 25 m by path from the gate; and no other basement guard in VC, within 12 m of the gate, in BB
-## within 20 m, or walking in BB toward it within 32 m (the gate -> CQ leg is BB).
+## within 25 m, or walking in BB toward it within 32 m (the gate -> CQ leg is BB).
 func _vc_window(max_age: float) -> bool:
 	# Doc §6: a window is the vault guard on loop (b) (RC: west / south) or (c) (east, SD: x > 36); ghost6_g saw (c) at
 	# t=280 / 490 / 670 unused. A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was
@@ -1910,9 +1912,58 @@ func _vc_window(max_age: float) -> bool:
 	var trip_s: float = 8.0 if max_age > 12.0 else 12.0
 	var far: bool = vp != Vector3.INF and absf(vp.y - OF_FFL[0]) < 1.5 and _nav_len(vp, gate_at) >= 25.0 \
 		and _nav_len(vp + _vg_vel * trip_s, gate_at) >= 12.0
+	# Out with a bag: only "far" counts, not a fresh absence (ghost6_t: an absence 0 s old was a short turn at RC's front;
+	# he came back east down BB within 10 s and met the gate -> CQ dash head on, t=1004).
+	if trip_s > 10.0 and not far:
+		return false
 	if not far and (_vc_away_n < 2 or rt.heist_time_s - _vc_away_since > max_age):
 		return false
+	# Out with a bag, rover_basement away too (RC, east of x 36, off the floor: step 5's rule). Every out-trip death
+	# (ghost6_m/n/o/p/q/r/s) was a BB guard near the gate during the dash, mostly him; the in-trips never failed.
+	if trip_s > 10.0 and not _rover_basement_away():
+		return false
 	return _vc_others(trip_s) == ""
+
+
+## Step 6, out with a bag: stop just inside the vault gate (VC side, blind from BB but next to the gate) and step into
+## BB only when no basement guard (the vault guard included) is in BB within 25 m of the gate or within 8 m anywhere,
+## while the vault guard is away (ghost6_o: rover_basement stepped into BB 8 m off during the trip, t=576, past what the
+## window's prediction could see).
+func _gate_peek() -> void:
+	var gate: Vector3 = _of(Vector3(17.0, OF_FFL[0], 9.0))
+	await _go(pilot.stand_point(_of(GHOST_GATE_INNER)), 0.4, 20.0)
+	# Hold while the vault guard is still >= 18 m from the gate by path (he always comes back through BB to it: ghost6_q
+	# held 20 s and went out with him back, t=204); a fixed 6 s went out beside rover_basement walking past (ghost6_r,
+	# t=585). Up to 30 s.
+	var t: float = 0.0
+	while t < 30.0:
+		var vg_far: bool = true
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g != null and g.is_alive() and _has_tag(g, "guard_vault") and absf(g.global_position.y - OF_FFL[0]) < 1.5:
+				vg_far = _nav_len(g.global_position, gate) >= 18.0
+		if not vg_far:
+			note("GHOST gate peek: the vault guard is coming back (< 18 m), out now")
+			return
+		var who: String = ""
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			# The vault guard too (ghost6_p: back from RC down BB during a 17 s hold, 6 m off the gate when it cleared).
+			if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
+				continue
+			var p: Vector3 = g.global_position
+			var d: float = pilot.flat_dist(p, gate)
+			if d < 8.0 or (p.z > 6.5 and p.z < 9.6 and d < 25.0):
+				who = "%s %s" % [g.name, Po5Pilot._v(p)]
+		if who == "":
+			if t > 0.0:
+				note("GHOST gate peek: BB clear after %.1f s" % t)
+			return
+		if t == 0.0:
+			note("GHOST gate peek: %s in BB, holding inside the gate" % who)
+		await wait_s(0.5)
+		t += 0.5
+	note("GHOST gate peek: BB NOT clear after 30 s (going anyway)")
 
 
 ## Navmesh path length (m) from `a` to `b` on the crew's map (INF when there is no path).
@@ -1936,7 +1987,7 @@ func _vc_others(trip_s: float = 0.0) -> String:
 			continue
 		# Also where he will be at the end of the trip (ghost6_n: Npc_guard7 walking in from BB's east end).
 		var ahead: Vector3 = g.global_position + Vector3(g.velocity.x, 0.0, g.velocity.z) * trip_s
-		if trip_s > 0.0 and who == "" and ahead.z > 6.5 and ahead.z < 9.6 and pilot.flat_dist(ahead, gate_at) < 20.0:
+		if trip_s > 0.0 and who == "" and ahead.z > 6.5 and ahead.z < 9.6 and pilot.flat_dist(ahead, gate_at) < 25.0:
 			who = "%s %s in %.0f s" % [g.name, Po5Pilot._v(ahead), trip_s]
 		var p: Vector3 = g.global_position
 		var id: int = g.get_instance_id()
@@ -1946,11 +1997,11 @@ func _vc_others(trip_s: float = 0.0) -> String:
 		# BB is one sight line, but VC is walled off from it: the exposed leg is the gate -> CQ dash. A BB walker
 		# heading for the gate within 32 m holds it (ghost6_d: 19 m east, walking west, 1.0 in 1.5 s, t=576); one
 		# walking away or standing far off does not (ghost6_i: rover_basement's BB sweep held every window).
-		# ...but anyone in BB within 20 m does, standing or not (ghost6_m: rover_basement standing 14 m east facing west
-		# filled 1.0 on the CQ -> gate leg, t=572).
+		# ...but anyone in BB within 25 m does, standing or not (ghost6_m: rover_basement standing 14 m east facing west
+		# filled 1.0 on the CQ -> gate leg, t=572); 25 m = the gate peek's, so a started trip is rarely held there.
 		var in_bb: bool = p.z > 6.5 and p.z < 9.6
 		if who == "" and ((p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or d < 12.0
-				or (in_bb and (d < 20.0 or (d < 32.0 and closing)))):
+				or (in_bb and (d < 25.0 or (d < 32.0 and closing)))):
 			who = "%s %s%s" % [g.name, Po5Pilot._v(p), " closing" if closing else ""]
 	return who
 
@@ -3323,6 +3374,7 @@ func _g6_bags() -> bool:
 			if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false,
 					OF_LASER_LEAD_M):
 				return false
+			await _gate_peek()
 			if not await _bag_into_car_low(lift):
 				return false
 			note("GHOST bag trip VT -> car %.1f s" % (rt.heist_time_s - t0))

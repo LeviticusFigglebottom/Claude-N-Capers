@@ -1503,3 +1503,17 @@ and asks the PO only for taste or scope calls the PO has asked to keep.
    - B's screen-text walk: all clean.
 
    No further broad runs. Future changes get targeted tests only (D-088).
+
+## D-152: Ostrander Federal is DONE (2026-10-21 23:40, LEAD; D-151 judgement)
+All six D-115 gates are met (docs/process/heist_completion.md).
+- The windowed loud gate was met by GPU-20c: a full Cataclysm win on the PO's GPU.
+- The ghost gate is accepted on step-wise evidence, under the D-151 time-box fallback:
+  - P's Hazardous line, seed 1002, passes steps 1-5 unseen in one continuous run (haz_zd: vault open at t=1484).
+  - Every step-6 sub-move passes unseen (lift cycle 1 in ghost6_m / t / u).
+  - Steps 6-7 are covered by P's route note, ghost_route_note_hazardous.md, which C folds into the design doc.
+  - No game or AI bug was found. The limit is harness margin: the vault guard is away 30-40 s every ~200 s, and a bag
+    crossing needs 20-25 s.
+- Playability margin, not a gate: on Routine, Tense and Hazardous, the vault guard's loop (b) RC dwell gets +15 s
+  (A: guard_tweak hub_loops; C: the doc).
+- Open follow-ups, none blocking: a human-input windowed ghost when the PO or a session has time.
+- **Rolling Thunder is the active heist (D-148 / D-151).**

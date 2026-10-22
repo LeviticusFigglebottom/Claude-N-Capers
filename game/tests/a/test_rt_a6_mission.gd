@@ -61,7 +61,7 @@ func test_clean_stop_window_then_ambush() -> void:
 	var m: RollingThunderMission = await _launch()
 	m.signals_rigged = true
 	m._convoy_arrives()
-	await wait_physics_frames(2)
+	await _stopped(m)
 	assert_true(m.clean_stop, "rigged signals: clean stop")
 	assert_true(m.layout_id.ends_with("_clean"), "clean layout %s" % m.layout_id)
 	assert_eq(_rt.convoy_layout, m.layout_id, "the layout swapped in")
@@ -93,24 +93,41 @@ func test_early_alarm_crash_stop_and_lockdown() -> void:
 	assert_true(m.alerted, "an alarm before the convoy alerts it")
 	assert_near(m.police_delay_s, 0.0, 0.001, "police at once")
 	var layout_id: String = "%s_crash" % m._route()
-	var truck: ArmoredTruck = TRUCK.instantiate() as ArmoredTruck
-	ConvoyLayouts.find(_rt.map, layout_id).add_child(truck)  # G1 has no prefab trucks yet: one in the crash layout
-	await wait_physics_frames(1)
+	if _rt.map.find_children("*", "ArmoredTruck", true, false).is_empty():
+		ConvoyLayouts.find(_rt.map, layout_id).add_child(TRUCK.instantiate())  # pre-swap G1: one truck in the layout
+		await wait_physics_frames(1)
 	m._convoy_arrives()
-	await wait_physics_frames(2)
+	await _stopped(m)
 	assert_false(m.clean_stop, "crash stop")
+	assert_eq(m.objective_state(&"signals"), Enums.ObjectiveState.COMPLETED, "unrigged [signals] closed at the stop")
+	assert_true(bool(m.objectives().filter(func(o: Dictionary) -> bool: return o["id"] == &"signals")[0]["data"].get(
+		"skipped", false)), "as skipped, not done")
 	assert_eq(m.layout_id, layout_id)
-	assert_true(m._trucks.has(truck), "the layout's truck is in play")
-	assert_true(truck.locked_down, "locked down: deadbolts thrown")
-	await _open_and_secure(m, truck)
+	assert_false(m._trucks.is_empty(), "trucks in play")
+	for t: ArmoredTruck in m._trucks:
+		assert_true(t.locked_down, "%s locked down: deadbolts thrown" % t.name)
+		assert_has(m.find_tagged(RollingThunderMission.TAG_TRUCK_IN_PLAY), t, "[trucks] marks %s" % t.name)
+	assert_eq(m.objective_state(&"ambush"), Enums.ObjectiveState.COMPLETED, "an early alarm: the crash is the ambush")
+	await _open_and_secure(m)
 
 
-func _open_and_secure(m: RollingThunderMission, truck: ArmoredTruck) -> void:
-	truck.open_by_device()
+## The stop is done: the layout swapped in (pop-in at once; with C's movers after the drive-in).
+func _stopped(m: RollingThunderMission) -> void:
+	Engine.time_scale = 4.0
+	var ok: bool = await wait_until(func() -> bool: return _rt.convoy_layout == m.layout_id and m.layout_id != "", 30.0)
+	Engine.time_scale = 1.0
+	assert_true(ok, "the convoy stopped in %s" % m.layout_id)
+
+
+func _open_and_secure(m: RollingThunderMission) -> void:
+	for t: ArmoredTruck in m._trucks:
+		t.open_by_device()
 	await wait_seconds(RollingThunderMission.POLL_S + 0.3)
 	var bags: Array[Node] = _rt.dynamic_root.find_children("*", "LootBag", true, false)
-	assert_true(bags.size() >= 4, "cargo spawned at the opened truck (%d bags)" % bags.size())
+	assert_true(bags.size() >= 4, "cargo at the opened trucks (%d bags)" % bags.size())
 	assert_eq(m.objective_state(&"trucks"), Enums.ObjectiveState.COMPLETED, "every truck opened")
+	for t: ArmoredTruck in m._trucks:
+		assert_eq(t.objective_tag, RollingThunderMission.TAG_TRUCK_OPEN, "an opened %s is a [cargo] mark" % t.name)
 	for i: int in RollingThunderMission.REQUIRED_BAGS:
 		EventBus.loot_secured.emit(0, RollingThunderMission.LOOT_CASH, 1000)
 	await wait_physics_frames(1)

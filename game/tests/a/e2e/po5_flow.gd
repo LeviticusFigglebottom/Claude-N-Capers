@@ -30,6 +30,8 @@ var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
 ## --po5-direct: launch through MenuFlow.launch, not the Board (a staged heist).
 var _direct: bool = false
+## --po5-rt-stub-trucks: see _stub_rt_trucks.
+var _stub_trucks: bool = false
 ## _telemetry passes (a CENSUS line every 6th).
 var _tel_n: int = 0
 ## --po5-hitch-ms: log every heist frame (rendered or not) longer than this (ms; 0 = off), with the NPCs spawned in it.
@@ -72,6 +74,8 @@ func _run() -> void:
 			_render_hitch_ms = a.substr(15).to_float()
 		elif a == "--po5-direct":  # LEAD (RT G1 pilot): a staged heist, launched through MenuFlow.launch, no Board
 			_direct = true
+		elif a == "--po5-rt-stub-trucks":  # RT G1 before C's convoy swap: armored_trucks on the placeholder boxes
+			_stub_trucks = true
 	if _budget_s > 0.0:
 		_watchdog.call_deferred()
 	if not await enter_heist():
@@ -145,6 +149,34 @@ func _launch_direct() -> bool:
 	return true
 
 
+## --po5-rt-stub-trucks (harness only, named in the evidence): until C's RT convoy swap lands, an armored_truck on each
+## G1 placeholder truck box of every convoy layout (rear doors toward the box's `<Veh>RearDoor` marker; bullion 180 / 90),
+## then the layouts re-applied so only the stopped layout's trucks are in play.
+func _stub_rt_trucks() -> void:
+	var scene: PackedScene = load("res://systems/prefabs/armored_truck/armored_truck.tscn") as PackedScene
+	var n: int = 0
+	for layout: Node3D in ConvoyLayouts.layouts(rt.map):
+		for body: Node in layout.get_children():
+			var kind: String = String(body.get_meta(&"kind", ""))
+			if not body is StaticBody3D or not kind in ["convoy_cash", "convoy_bullion"]:
+				continue
+			var rear: Node3D = layout.get_node_or_null(NodePath(String(body.name) + "RearDoor")) as Node3D
+			var t: ArmoredTruck = scene.instantiate() as ArmoredTruck
+			t.name = String(body.name) + "Truck"
+			if kind == "convoy_bullion":
+				t.saw_duration_s = 180.0
+				t.hand_saw_duration_s = 90.0
+				t.set_meta(&"truck_kind", "bullion")
+			layout.add_child(t)
+			var at: Vector3 = (body as Node3D).global_position
+			var to_rear: Vector3 = (rear.global_position - at) if rear != null else -(body as Node3D).global_basis.z
+			to_rear.y = 0.0
+			t.global_transform = Transform3D(Basis.looking_at(to_rear.normalized(), Vector3.UP), at)  # -Z = rear doors
+			n += 1
+	rt.set_layout(String(rt.layouts.get(ConvoyLayouts.DEFAULT_GROUP, "")))
+	note("DEV OPTION rt-stub-trucks: %d armored_trucks on the G1 placeholder boxes (until C's convoy swap)" % n)
+
+
 func enter_heist() -> bool:
 	_open_difficulty()
 	var t0: int = Time.get_ticks_msec()
@@ -188,6 +220,8 @@ func enter_heist() -> bool:
 		note("DEV OPTION crew_damage_taken_mult=%.2f (D-133 harness-only; assault events on)" % float(
 			rt.options["crew_damage_taken_mult"]))
 	await shot("heist_start")
+	if _stub_trucks:
+		_stub_rt_trucks()
 	pilot = Po5Pilot.new(self, crew)
 	await capture_like_player()
 	await pilot.calibrate()
