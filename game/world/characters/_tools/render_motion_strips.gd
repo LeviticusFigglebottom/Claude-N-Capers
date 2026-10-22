@@ -10,7 +10,7 @@
 ## Writes <out>/<case>.png (strip, 2 rows) and <out>/motion_log.txt.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_motion_strips.tscn -- --out=/abs/dir \
-##     [--heist=glasshouse] [--seed=7] [--difficulty=2] [--wait=300]
+##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300]
 ## Owner: ENV D.
 extends Node3D
 
@@ -19,17 +19,20 @@ const STRIP_N: int = 12
 const STEP_S: float = 0.1
 const TILE: Vector2i = Vector2i(320, 270)
 const CAM_DIST: float = 3.6
+const LEAD_M: float = 12.0
 
 var _out: String = ""
 var _heist: String = "glasshouse"
 var _seed: int = 7
-var _difficulty: int = Enums.Difficulty.HAZARDOUS
+var _difficulty: int = Enums.Difficulty.ROUTINE
 var _wait: float = 300.0
 var _cam: Camera3D = null
 var _label: Label = null
 var _log: PackedStringArray = []
 var _done: Dictionary = {}
 var _rt: HeistRuntime = null
+var _home: Vector3 = Vector3.INF
+var _legs: int = 0
 
 
 func _ready() -> void:
@@ -98,6 +101,8 @@ func _run() -> void:
 				break
 		if int(t * 10.0) % 100 == 0:
 			_crew_diag(t)
+		if int(t * 10.0) % 60 == 0 and (not _done.has("crew_sprint") or not _done.has("crew_strafe")):
+			_lead_off(t)
 		if not _done.has("cop_stagger") and t > 20.0 and stagger_tried < 5 and int(t * 10.0) % 50 == 0:
 			stagger_tried += 1
 			await _stagger()
@@ -223,6 +228,23 @@ func _eye(body: Node3D, at: Vector3, fwd: Vector3) -> Vector3:
 			best = room
 			eye = at + dir * maxf(room, 1.2) + Vector3.UP * 0.35
 	return eye
+
+
+## The bots follow the player body: move it (slot 0, first person, no third-person driver) to a nav point
+## LEAD_M away, alternating directions, so they run / sprint after it with their weapons out.
+func _lead_off(t: float) -> void:
+	var crew: Array[CrewController] = _rt.crew_members()
+	if crew.is_empty():
+		return
+	var lead: CrewController = crew[0]
+	if _home == Vector3.INF:
+		_home = lead.global_position
+	var dir: Vector3 = Vector3.FORWARD.rotated(Vector3.UP, _legs * 2.4)
+	_legs += 1
+	var want: Vector3 = _home + dir * LEAD_M if _legs % 2 == 1 else _home
+	var p: Vector3 = NavigationServer3D.map_get_closest_point(get_world_3d().navigation_map, want)
+	lead.global_position = p + Vector3.UP * 0.05
+	_say("t=%.0f lead to %s" % [t, p])
 
 
 ## Every crew body's clip / layer / speed (why a crew case is not seen).
