@@ -1,5 +1,5 @@
 """Mask surface material kinds (D-ACH): stone, bronze, canvas, rust, velvet,
-crinkle, gilt. Used by ``make_materials.py``.
+crinkle, gilt; RT-D2: tread, hivis. Used by ``make_materials.py``.
 
 Grain for the achievement-reward ``MaskMaterialDef``s (``content/docs/masks.md``): the mask shader
 (``content/masks/mask_surface.gdshader``) keeps only the albedo *luminance* (divided by
@@ -18,7 +18,7 @@ from texgen import noise as nz
 from texgen import ops
 from texgen.materials.base import Ctx, Maps
 
-MASK_KINDS = ("stone", "bronze", "canvas", "rust", "velvet", "crinkle", "gilt")
+MASK_KINDS = ("stone", "bronze", "canvas", "rust", "velvet", "crinkle", "gilt", "tread", "hivis")
 
 
 def _wrap(d: np.ndarray) -> np.ndarray:
@@ -286,5 +286,81 @@ def gilt(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
                 ao_radii_m=(1 * px, 4 * px), ao_depth_m=1.0 * px, ao_strength=0.5)
 
 
+def tread(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+    """Diamond-tread steel floor plate (the RT trucks' floors): raised lens-shaped lugs on a square grid,
+    alternate cells turned 90 degrees (the herringbone tread), the lug tops worn bright and smooth, the
+    flat between them mill-scaled and grimy with fine scratches. 6 x 6 lug cells per tile (~2 cm pitch; even, so the alternation tiles)."""
+    u, v, px = ctx.u, ctx.v, ctx.pixel_m
+    n = 6
+    ix, iy, fx, fy = ops.tile_grid(u, v, n, n)
+    cx, cy = fx - 0.5, fy - 0.5
+    flip = np.mod(ix + iy, 2) == 1
+    a = np.where(flip, cx - cy, cx + cy) / np.sqrt(2.0)        # along the lug
+    b = np.where(flip, cx + cy, cy - cx) / np.sqrt(2.0)        # across it
+    ln, wd = 0.44, 0.115                                       # lug half length / half width (cells)
+    taper = np.clip(1.0 - (a / ln) ** 2, 0.02, 1.0) ** 0.5     # lens: pointed ends
+    d = (np.abs(a) / ln) ** 2 + (np.abs(b) / (wd * taper)) ** 2
+    lug = 1.0 - ops.smoothstep(0.70, 1.0, d)
+    crown = 1.0 - ops.smoothstep(0.0, 0.75, d)
+    scale_n = nz.fbm(u, v, 6, ctx.s("scale"), octaves=5, gain=0.55)
+    scratch = ops.smoothstep(0.6, 0.95, nz.value(u, v, (2, 90), ctx.s("scr")) * 0.6
+                             + 0.4 * nz.value(u, v, (3, 140), ctx.s("scr2")))
+    grime = ops.smoothstep(0.2, 0.8, ops.remap01(ops.blur(-lug, 3.0)) + 0.3 * nz.fbm(u, v, 8, ctx.s("g"), octaves=3))
+    wear = lug * ops.smoothstep(0.3, 0.9, crown + 0.3 * nz.fbm(u, v, 12, ctx.s("wear"), octaves=2))
+    lum = 0.22 * scale_n - 0.30 * grime * (1.0 - lug) + 0.35 * wear + 0.10 * scratch * (1.0 - lug)
+    alb = ops.vary(base, lum, 1.0)
+    h = px * (4.0 * lug + 0.8 * crown * lug + 0.25 * scale_n - 0.3 * scratch)
+    rough = np.clip(r + 0.10 * scale_n + 0.15 * grime * (1.0 - lug) - 0.22 * wear - 0.06 * scratch, 0.0, 1.0)
+    return Maps(alb, rough, np.full(ctx.shape, met), h, normal_strength=1.0,
+                ao_radii_m=(2 * px, 6 * px), ao_depth_m=2.0 * px, ao_strength=0.7)
+
+
+def _hex_cells(u: np.ndarray, v: np.ndarray, nx: int, ny: int) -> tuple[np.ndarray, np.ndarray]:
+    """Tileable honeycomb (``nx`` cells across, ``ny`` rows, ``ny`` even, odd rows offset half a cell):
+    (f1, f2 - f1) in cell units."""
+    f1 = np.full(u.shape, 9.0)
+    f2 = np.full(u.shape, 9.0)
+    j0 = np.floor(v * ny)
+    for dj in (-1, 0, 1):
+        j = j0 + dj
+        off = 0.5 * np.mod(j, 2)
+        i0 = np.floor(u * nx - off)
+        for di in (-1, 0, 1):
+            cxp = (i0 + di + 0.5 + off) / nx
+            cyp = (j + 0.5) / ny
+            dx = _wrap(u - cxp) * nx
+            dy = _wrap(v - cyp) * nx                    # cell-width units (rows ~ sqrt(3)/2 apart)
+            dd = np.sqrt(dx * dx + dy * dy)
+            f2 = np.where(dd < f1, f1, np.minimum(f2, dd))
+            f1 = np.minimum(f1, dd)
+    return f1, f2 - f1
+
+
+def hivis(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+    """Micro-prismatic retroreflective sheeting (safety orange): the honeycomb of sealed cells (thin
+    raised seal lines, ~1.5 cm cells), inside each cell a fine triangular prism array that sparkles in
+    luminance, a smooth satin top film with faint scuffs. The colour comes from the pair; neutral
+    grain."""
+    u, v, px = ctx.u, ctx.v, ctx.pixel_m
+    _f1, edge = _hex_cells(u, v, 8, 10)
+    seal = 1.0 - ops.smoothstep(0.03, 0.09, edge)
+    # prism array: three line families at 60 degrees, 48 per tile; each triangle facet its own tone
+    k = 48.0
+    fam = [u * k, (0.5 * u + 0.866 * v) * k, (-0.5 * u + 0.866 * v) * k]
+    tri = np.floor(fam[0]) * 7.0 + np.floor(fam[1]) * 13.0 + np.floor(fam[2]) * 29.0
+    facet = np.mod(np.sin(tri * 12.9898 + ctx.s("prism") % 997) * 43758.5453, 1.0)
+    ridge = sum(1.0 - ops.smoothstep(0.0, 0.08, 0.5 - np.abs(np.mod(f, 1.0) - 0.5)) for f in fam) / 3.0
+    scuff = ops.smoothstep(0.6, 0.9, nz.value(u, v, (3, 50), ctx.s("scuff"))) \
+        * ops.smoothstep(0.5, 0.8, ops.remap01(nz.fbm(u, v, 3, ctx.s("sp"), octaves=3)))
+    tone = nz.fbm(u, v, 3, ctx.s("tone"), octaves=3)
+    lum = 0.22 * (facet - 0.5) * (1.0 - seal) - 0.25 * seal + 0.08 * tone - 0.12 * scuff
+    alb = ops.vary(base, lum, 1.0)
+    h = px * (1.6 * seal + 0.35 * ridge * (1.0 - seal) - 0.2 * scuff)
+    rough = np.clip(r + 0.10 * seal + 0.12 * scuff + 0.04 * tone - 0.05 * facet, 0.0, 1.0)
+    return Maps(alb, rough, np.full(ctx.shape, met), h, normal_strength=0.8,
+                ao_radii_m=(1 * px, 3 * px), ao_depth_m=1.0 * px, ao_strength=0.4)
+
+
 GENERATORS = {"stone": stone, "bronze": bronze, "canvas": canvas, "rust": rust,
-              "velvet": velvet, "crinkle": crinkle, "gilt": gilt}
+              "velvet": velvet, "crinkle": crinkle, "gilt": gilt,
+              "tread": tread, "hivis": hivis}
