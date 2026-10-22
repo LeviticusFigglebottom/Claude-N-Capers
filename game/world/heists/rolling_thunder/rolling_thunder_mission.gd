@@ -72,6 +72,7 @@ const ESCORT_REAR_HIGH: Array[StringName] = [&"enemy.tac_light", &"enemy.tac_lig
 const VAULTLINE_CREW: Array[StringName] = [&"enemy.security_officer", &"enemy.security_officer"]
 ## D-149.12: the escorts' own EnemyDefs (looks by difficulty) once B / D land them; the rows above until then.
 const ESCORT_DEFS: Dictionary = {"Lead": &"enemy.convoy_lead", "Rear": &"enemy.convoy_rear"}
+const ESCORT_SWAPPED: Array[StringName] = [&"enemy.patrol_officer", &"enemy.tac_light"]
 
 const SPEAKER_REYES: StringName = &"reyes"
 const VO_INTRO: StringName = &"vo.mercer.rolling_thunder_intro"
@@ -400,9 +401,10 @@ func _spawn_convoy_units() -> void:
 			if _rare(RARE_ARMORED_ESCORT):
 				ids.append(WRECKER)  # Lethal+: a Wrecker rides in the rear escort
 		if ESCORT_DEFS.has(veh) and has_enemy(ESCORT_DEFS[veh]):
+			# D-149.12: the escort officers wear the car's EnemyDef; the TAC Heavy and the Wrecker keep theirs
 			var own: Array[StringName] = []
-			own.resize(ids.size())
-			own.fill(ESCORT_DEFS[veh])
+			for id: StringName in ids:
+				own.append(ESCORT_DEFS[veh] if ESCORT_SWAPPED.has(id) else id)
 			ids = own
 		var seat: bool = clean_stop and not went_loud and body is ConvoyVehicle
 		var look_tag: StringName = StringName("convoy_" + veh.to_lower())  # convoy_lead / convoy_t1.. / convoy_rear

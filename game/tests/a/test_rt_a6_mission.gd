@@ -73,6 +73,12 @@ func test_clean_stop_window_then_ambush() -> void:
 			tags[StringName(t)] = true
 	for t: StringName in [&"convoy_lead", &"convoy_t1", &"convoy_t2", &"convoy_rear"]:
 		assert_true(tags.has(t), "a unit carries the look tag %s (D's npc_visual_tweak RT rows)" % t)
+	var defs: Dictionary = {}
+	for u: NpcBase in m._units:
+		defs[u.enemy_def.id if u.enemy_def != null else &""] = true
+	for d: StringName in [&"enemy.convoy_lead", &"enemy.convoy_rear", &"enemy.security_officer"]:
+		assert_true(defs.has(d), "an escort / crew unit is %s (D-149.12; has %s)" % [d, defs.keys()])
+	assert_false(defs.has(&"enemy.patrol_officer"), "the escort officers wear the convoy defs, not patrol_officer")
 	Engine.time_scale = 4.0
 	var loud: bool = await wait_until(func() -> bool: return _rt.went_loud, RollingThunderMission.WINDOW_S + 2.0)
 	assert_true(loud, "the window ended in the alarm")
