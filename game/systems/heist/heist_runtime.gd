@@ -429,6 +429,8 @@ func _create_services() -> void:
 	stats = CrewStatsService.new()  # D-071: per-crew counters (HeistResult rows, ui_hud v1.7 crew_stats)
 	stats.name = "CrewStatsService"
 	register_service(CrewStatsService.SERVICE, stats)
+	CrewBuffs.of(self)  # B1 skill keys: timed buffs (replicated) and the kill / hit / bag triggers (server)
+	SkillTriggers.of(self)
 	var custody: CustodySystem = CustodySystem.new()  # A3-04 (L2.9, L2.10)
 	custody.name = "CustodySystem"
 	register_service(CustodySystem.SERVICE, custody)

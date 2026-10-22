@@ -63,6 +63,8 @@ var regen_delay_left: float = 0.0
 var since_damage_s: float = 0.0
 ## PO6-17b: seconds of breach / flash blindness left (replicated; the HUD whites out while > 0).
 var flashed_left: float = 0.0
+## B1 defense.swan_song (PD2 Swan Song): seconds left standing at zero health before the down.
+var swan_left: float = 0.0
 ## Downs left before the next zero-health hit means custody (HUD).
 var downs_left: int:
 	get:
@@ -176,7 +178,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		out["amount"] = 0.0
 		return out
 	var st: int = _crew.crew_state
-	if st == Enums.CrewState.CUSTODY:
+	if st == Enums.CrewState.CUSTODY or st == Enums.CrewState.SWAN_SONG:  # B1: Swan Song takes no damage
 		out["amount"] = 0.0
 		return out
 	var tw: CrewTweak = Tweak.crew()
@@ -242,7 +244,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if health <= 0.0:
 		out["killed"] = true
 	_publish(out, attacker_net_id)
-	if health <= 0.0:
+	if health <= 0.0 and not _swan_song():
 		go_down()
 	return out
 
@@ -278,6 +280,44 @@ func _gate_invuln(tw: CrewTweak) -> float:
 
 
 # --- State changes (server) ------------------------------------------------------------------------
+
+## B1 `defense.swan_song` {duration, speed_penalty, infinite_ammo} (PD2 Swan Song, Last Stand): zero health from
+## NORMAL keeps the member up for `duration` s in SWAN_SONG (no damage taken, move x (1 - speed_penalty), and with
+## infinite_ammo no rounds used: CrewBuffs "swan_song"), then the down. Every down gets its own. False: no Swan Song.
+func _swan_song() -> bool:
+	var p: Dictionary = Modifiers.params(_slot(), &"defense.swan_song")
+	var dur: float = float(p.get("duration", 0.0))
+	if dur <= 0.0 or _crew.crew_state != Enums.CrewState.NORMAL:  # PD2: the last down too (custody after)
+		return false
+	health = 0.0
+	swan_left = dur
+	invuln_left = 0.0
+	_crew.set_crew_state(Enums.CrewState.SWAN_SONG)
+	var tags: Array = [CrewBuffs.TAG_FREE_AMMO] if bool(p.get("infinite_ammo", false)) else []
+	var buffs: CrewBuffs = CrewBuffs.of(HeistRuntime.of(_crew))
+	if buffs != null:
+		buffs.grant(_slot(), &"swan_song",
+			{&"movement.speed_mult": clampf(1.0 - float(p.get("speed_penalty", 0.0)), 0.05, 1.0)}, dur, tags)
+	Log.info(&"combat", "slot %d swan song (%.1f s)" % [_slot(), dur])
+	return true
+
+
+## True while in SWAN_SONG (no regen, no perk tick); its end is the down it held off.
+func _tick_swan_song(delta: float) -> bool:
+	if _crew.crew_state != Enums.CrewState.SWAN_SONG:
+		swan_left = 0.0
+		return false
+	swan_left -= delta
+	if swan_left > 0.0:
+		return true
+	swan_left = 0.0
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	var buffs: CrewBuffs = rt.service(CrewBuffs.SERVICE) as CrewBuffs if rt != null else null
+	if buffs != null:
+		buffs.end(_slot(), &"swan_song")
+	go_down()
+	return true
+
 
 ## Zero health: DOWNED (L2.5) or, with no downs left, CUSTODY (L2.6).
 func go_down() -> void:
@@ -502,7 +542,7 @@ func server_tick(delta: float) -> void:
 	_refresh_max()
 	if flashed_left > 0.0:
 		flashed_left = maxf(flashed_left - delta, 0.0)
-	if _tick_down_states(delta):
+	if _tick_swan_song(delta) or _tick_down_states(delta):
 		return
 	_tick_health_regen(delta)  # L2.1
 	if invuln_left > 0.0:

@@ -159,6 +159,7 @@ func _on_completed(crew: Node) -> void:
 	match kind:
 		&"doctor_bag":
 			c.health.heal(c.health.max_health * heal_frac, resets_downs)  # L2.11
+			SkillTriggers.doctor_bag_used(self, c)  # B1 Messiah Aced
 			_consume_use()
 		&"fak":
 			c.health.heal(heal_amount, false)  # L2.11: no down reset
@@ -279,5 +280,6 @@ func _give_ammo(c: CrewController) -> void:
 		var add: int = int(round(float(maxi(mx - have, 0)) * scale))
 		w.set_ammo(ws, w.mag(ws), mini(w.reserve(ws) + add, mx - w.mag(ws)))  # shared pool (400 %)
 	ammo_left = maxf(ammo_left - take, 0.0)
+	SkillTriggers.ammo_bag_used(self, c, owner_slot, take)  # B1 Bulletstorm (the bag owner's skill)
 	if ammo_left <= AMMO_EPSILON:
 		_spent()

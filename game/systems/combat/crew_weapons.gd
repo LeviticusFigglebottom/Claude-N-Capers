@@ -311,7 +311,7 @@ func damage_at(ws: int, distance: float) -> float:
 	var rm: float = maxf(float(s.ammo.get("range_mult", 1.0)), 0.01)  # D-118: ammo range scales the falloff
 	var per_pellet: float = float(maxi(s.stats.pellets, 1)) / float(maxi(s.pellets, 1))  # D-118: per-shot total kept
 	return s.stats.damage * per_pellet * CombatSystem.falloff_mult(s.stats, distance / rm) \
-		* Modifiers.mult(slot, &"weapon.damage_mult", s.qualifier) * ai
+		* Modifiers.mult(slot, &"weapon.damage_mult", s.qualifier) * ai * SkillTriggers.berserk_mult(_crew, true)  # B1
 
 
 ## info.headshot_bonus (damage.md QB-26): WeaponStats.headshot_mult (bonus, default 1.0) x the
@@ -486,7 +486,8 @@ func _fire_shot(s: WeaponState, intent: CrewIntent) -> void:
 	if Net.is_authority():
 		CombatSystem.validate_and_apply(claim, _crew)
 	else:
-		s.mag -= 1
+		if not CrewBuffs.free_ammo(_crew):  # B1: Swan Song Aced / Bulletstorm (mirrored CrewBuffs tag)
+			s.mag -= 1
 		shots_fired += 1
 		last_shot_age = 0.0
 		ammo_changed.emit(equipped_slot)
@@ -836,7 +837,8 @@ func server_commit_shot(claim: Dictionary) -> void:
 		var draw: float = SpecialWeapons.draw_time(s.special)
 		var cap: float = 1.0 if draw <= 0.0 else (_server_clock - _last_server_shot_clock) / (draw * CombatTweak.data().claim_rof_tolerance)
 		claim["charge"] = clampf(float(claim.get("charge", 1.0)), 0.0, minf(cap, 1.0))
-	s.mag -= 1
+	if not CrewBuffs.free_ammo(_crew):  # B1: Swan Song Aced / Bulletstorm
+		s.mag -= 1
 	_last_server_seq = int(claim.get("seq", 0))
 	_last_server_shot_clock = _server_clock
 	last_shot_age = 0.0
