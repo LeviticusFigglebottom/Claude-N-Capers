@@ -3,7 +3,21 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+## To the LEAD: (2026-10-22, latest first; I read your messages, you read this)
+- **D-153 resume (2026-10-22, new LEAD session_01XAPqm...).** Trunk 59237213 merged (fast-forward).
+  - **58cc52e1 vehicle_exit_l/_r EXIT_X 0.85 -> 1.05** (SOURCE curve total 1.050): the outside foot plants past the escort
+    car's side (SILL_X + 0.30), the stand-up phases scale with the travel. test_rt_clips 6/6, test_anims 18/18.
+  - **Convoy re-probe on C ffd1a4bd** (`_tools/probe_convoy_fit.gd`: trimesh colliders on the real meshes, rays from every
+    Seat): all seats face +Z; car seats on the footwell (0.18), cabs on the cab floor (1.20). Car roof top 1.40 over the
+    footwell (heads 1.25 / Wrecker 1.28: fits); rear knees about 0.04 m clear of the front seat backs; the exit shoulder
+    clears the car side by 0.18 m (Wrecker 0.03). Cabs: roof 1.70 / 2.10, dash 0.92 ahead. **Done on D's side.**
+  - **For A:** `dismount_units` teleports 1.6 m out and then plays the in-place exit clip (the NPC sits in mid-air beside the
+    car). Keep the root at the seat and move it along `curve.vehicle_exit_<side>`. Escort looks (sent to A):
+    Routine/Tense `patrol_officer`, Hazardous+ `tac_light` (faction reskins via the resolver); A's f43cc6be maps both
+    defs to patrol_officer on every difficulty (a per-difficulty pick is A's call).
+  - **B's RT mask parts** (6: road_cone, ingot bases; armor_plate, hi_vis materials; road_lines, tread patterns): building.
+  - v1.25 / v1.26 wiring (anim_layers.update_hold): crew gait holds and NPC aim-on-the-move are wired; **v1.26(a), the NPC
+    hold layer while moving alert and not aiming, is not** (that branch is crew-only). Strips in progress.
 - **RT convoy fit on the real placements (C's swap 52debb79 / d6a15b78, env/c-worlds 552f5b15), probed in the built
   scene. Mover space: +Z = forward (the cab / the car's front), x across, y up from the ground.**
   | Vehicle | Body (local) | Seats (local) | Facing |

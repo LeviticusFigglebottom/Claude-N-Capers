@@ -46,8 +46,11 @@ VEH_HIP_Z = 0.43
 #: the door sill line (the vehicle's side), m beside the seat centre, and its top above the footwell floor
 SILL_X = 0.42
 SILL_Z = 0.22
-#: vehicle_exit_*: the root's sideways travel out of the door (from the seat centre to the standing spot)
-EXIT_X = 0.85
+#: vehicle_exit_*: the root's sideways travel out of the door (from the seat centre to the standing spot): 1.05 so the
+#: shoulder clears the RT escort car's side (seat x 0.40, body side 1.02; RT convoy fit, D-153 queue)
+EXIT_X = 1.05
+#: the outside foot's plant beyond the sill line (m): past the escort car's body side (0.62 beside the seat centre)
+FOOT_OUT = 0.30
 #: the door frame point the door-side hand takes (x out from the seat centre, y ahead of the seat centre, height)
 FRAME_GRIP = (0.44, 0.12, 1.02)
 #: sit_eat: the booth table top and its near edge ahead of the root (the seat is sit_chair's, H.SEAT_H); the plate
@@ -220,6 +223,7 @@ def vehicle_exit(sk: Skeleton, solver: Solver, N: int, side: str, ev: dict) -> K
     import _anim_d304 as d304  # noqa: PLC0415
 
     k = sk.scale
+    g = EXIT_X / 0.85                          # the stand-up phases scale with the travel (authored for 0.85)
     s = 1.0 if side == "L" else -1.0           # + = out to the left (Blender -x), the body turns left (+yaw)
     door, inner = ("L", "R") if side == "L" else ("R", "L")
     dx = -s                                    # x sign of "toward the door"
@@ -273,15 +277,15 @@ def vehicle_exit(sk: Skeleton, solver: Solver, N: int, side: str, ev: dict) -> K
     # 3 the door-side foot plants outside (foot_out)
     out = Pose()
     body(out, dx * 0.12, -0.04, VEH_HIP_Z + 0.02, s * 48.0, 10.0, 0.9)
-    _foot(sk, out, door, dx * (SILL_X + 0.24), 0.30, yaw=s * 42.0)
+    _foot(sk, out, door, dx * (SILL_X + FOOT_OUT), 0.30, yaw=s * 42.0)
     _foot(sk, out, inner, dx * 0.10, 0.44, lift=0.0, yaw=s * 30.0)
     H.look(out, yaw=s * 8.0, pitch=14.0)
     frame_hand(out)
     push_hand(out, -dx * 0.02, -0.08)
     # 4 push up off the seat and the frame, ducking the roof, the weight onto the outside foot; the inner foot lifts
     rise = Pose()
-    body(rise, dx * 0.40, 0.06, 0.66, s * 44.0, 32.0, 0.35)
-    _foot(sk, rise, door, dx * (SILL_X + 0.24), 0.30, yaw=s * 42.0)
+    body(rise, dx * 0.40 * g, 0.06, 0.66, s * 44.0, 32.0, 0.35)
+    _foot(sk, rise, door, dx * (SILL_X + FOOT_OUT), 0.30, yaw=s * 42.0)
     _foot(sk, rise, inner, dx * 0.30, 0.34, lift=SILL_Z + 0.10, yaw=s * 36.0, pitch=-12.0)
     H.look(rise, yaw=s * 6.0, pitch=4.0)
     # the door-side hand lets go of the frame and swings forward for balance
@@ -290,8 +294,8 @@ def vehicle_exit(sk: Skeleton, solver: Solver, N: int, side: str, ev: dict) -> K
     push_hand(rise, dx * 0.10, -0.02)
     # 5 the inner foot lands on its final place (step_<inner>), the body comes up and starts to turn front
     land = Pose()
-    body(land, dx * 0.62, 0.02, ez - 0.10, s * 24.0, 16.0, 0.0)
-    _foot(sk, land, door, dx * (SILL_X + 0.24), 0.30, yaw=s * 42.0)
+    body(land, dx * 0.62 * g, 0.02, ez - 0.10, s * 24.0, 16.0, 0.0)
+    _foot(sk, land, door, dx * (SILL_X + FOOT_OUT), 0.30, yaw=s * 42.0)
     end_leg(land, inner)
     H.look(land, yaw=-s * 10.0, pitch=4.0)
     for sfx, sx in A.SIDES:
@@ -299,10 +303,10 @@ def vehicle_exit(sk: Skeleton, solver: Solver, N: int, side: str, ev: dict) -> K
         land.hands[sfx] = hand_shape("loose_fist", 0.8)
     # 6 the door-side foot lifts and steps clear
     lift = Pose()
-    body(lift, dx * 0.76, 0.0, ez - 0.05, s * 10.0, 8.0, 0.0)
+    body(lift, dx * 0.76 * g, 0.0, ez - 0.05, s * 10.0, 8.0, 0.0)
     end_leg(lift, inner)
     gd = end.legs[door]
-    lift.legs[door] = LegIK(ankle=A.lerp(gd.ankle, v3(dx * (SILL_X + 0.24) * k, 0.30 * k, gd.ankle[2]), 0.45)
+    lift.legs[door] = LegIK(ankle=A.lerp(gd.ankle, v3(dx * (SILL_X + FOOT_OUT) * k, 0.30 * k, gd.ankle[2]), 0.45)
                             + v3(0.0, 0.0, 0.10 * k), foot=A.foot_rot(s * 16.0, -8.0) @ gd.foot, toe=0.0,
                             pole=gd.pole.copy())
     H.look(lift, yaw=-s * 4.0, pitch=2.0)
