@@ -113,17 +113,19 @@ def rifle_support(sk: Skeleton, pose: Pose, wf, pole=None, at=None, cup: bool = 
     pose.hands["L"] = hand_shape("grip", 0.85)
 
 
-def aim_body(sk: Skeleton, pose: Pose, rifle: bool) -> None:
+def aim_body(sk: Skeleton, pose: Pose, rifle: bool, lean_k: float = 1.0) -> None:
+    """The weapon class's aiming trunk; ``lean_k`` scales its forward lean (spine / chest lean) only, for the run layers
+    (v1.37: the class lean stacked on the run's own lean read as a crouch; 0.4 keeps them within the 7 deg)."""
     k = sk.scale
     if rifle:
         pose.hip = v3(-0.01 * k, -0.02 * k, -0.035 * k)
         stand(sk, pose, spread=0.04, stagger_l=0.10, stagger_r=-0.10, yaw_l=8, yaw_r=28)
-        spine(pose, lean=4, twist=-12, chest_lean=5, chest_twist=-10, chest_side=-2, neck=(4, 0, 6),
+        spine(pose, lean=4 * lean_k, twist=-12, chest_lean=5 * lean_k, chest_twist=-10, chest_side=-2, neck=(4, 0, 6),
               head=(8, 8, 8), hips=(2, 0, -6))
     else:
         pose.hip = v3(0.0, -0.01 * k, -0.03 * k)
         stand(sk, pose, spread=0.035, stagger_l=0.06, stagger_r=-0.05, yaw_l=8, yaw_r=14)
-        spine(pose, lean=6, twist=-3, chest_lean=6, neck=(2, 0, 2), head=(-4, 2, 1), hips=(1, 0, -3))
+        spine(pose, lean=6 * lean_k, twist=-3, chest_lean=6 * lean_k, neck=(2, 0, 2), head=(-4, 2, 1), hips=(1, 0, -3))
 
 
 def hold_pistol(sk: Skeleton, pose: Pose, wf, one_hand: bool = False) -> None:

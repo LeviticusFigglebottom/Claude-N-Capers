@@ -22,7 +22,7 @@ check.02: aim_akimbo_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
 check.03: aim_akimbo_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.04: aim_pistol: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
 check.05: aim_pistol_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.06: aim_pistol_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.06: aim_pistol_run: 21f 0.70s loop speed=0.0 reach_err=12.6mm step=12.8deg
 check.07: aim_pistol_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.08: aim_rifle: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.1deg
 check.09: aim_rifle_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
@@ -33,7 +33,7 @@ check.102: hold_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=4.5deg
 check.103: hold_lmg_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
 check.104: hold_lmg_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
 check.105: hold_lmg_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
-check.106: hold_lmg_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
+check.106: hold_lmg_run_stop: 20f 0.67s speed=0.0 reach_err=18.7mm step=26.0deg
 check.107: hold_lmg_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.108: hold_lmg_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.109: hold_lmg_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
@@ -73,7 +73,7 @@ check.139: hold_sniper_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.
 check.14: bouncer_idle: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=8.7deg contact_slide=0.000mm/f
 check.140: hold_sniper_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
 check.141: hold_sniper_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
-check.142: hold_sniper_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
+check.142: hold_sniper_run_stop: 20f 0.67s speed=0.0 reach_err=5.0mm step=25.3deg
 check.143: hold_sniper_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.144: hold_sniper_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.145: hold_sniper_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg

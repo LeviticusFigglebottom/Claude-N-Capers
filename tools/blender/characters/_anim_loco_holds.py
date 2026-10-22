@@ -41,6 +41,8 @@ AIM_NAMES = tuple(f"aim_{fam}_{g}" for fam in AIM_FAMILIES for g in AIM_GAITS)
 AIM_FOLLOW = {"walk": (0.12, 0.25, 0.3), "run": (0.18, 0.35, 0.4), "crouch": (0.12, 0.2, 0.3)}
 AIM_SPRING = 0.35
 #: frames the weapon trails the chest, per gait family
+#: v1.37 (D-153, the TAC "crouched" aim-run): the weapon class's forward lean over the run family, x this
+RUN_CLASS_LEAN = 0.4
 LAG = {"walk": 2, "run": 2, "sprint": 1, "crouch": 2}
 #: share of the chest's turn the weapon follows (yaw, pitch, roll); the rest is taken up by the arms
 FOLLOW = {"walk": (0.45, 0.6, 0.5), "run": (0.45, 0.6, 0.5), "sprint": (0.9, 1.0, 0.9), "crouch": (0.45, 0.35, 0.5)}
@@ -153,17 +155,17 @@ def _clear(pose: Pose, sfx: str) -> None:
         pose.D.pop(f"{b}.{sfx}", None)
 
 
-def _trunk_set(sk: Skeleton, kind: str) -> Pose:
+def _trunk_set(sk: Skeleton, kind: str, lean_k: float = 1.0) -> Pose:
     """The weapon class's own trunk (rifle blade / pistol lean) as world-axes deltas to compose onto the gait's."""
     p = Pose()
-    holds.H.aim_body(sk, p, kind not in ("pistol", "akimbo"))
+    holds.H.aim_body(sk, p, kind not in ("pistol", "akimbo"), lean_k)
     return p
 
 
-def _aim_trunk(sk: Skeleton, fam: str) -> Pose:
+def _aim_trunk(sk: Skeleton, fam: str, lean_k: float = 1.0) -> Pose:
     """The standing aim's trunk (and stance) of an aim family: aim_rifle / aim_pistol / aim_akimbo's."""
     p = Pose()
-    holds.H.aim_body(sk, p, fam == "rifle")
+    holds.H.aim_body(sk, p, fam == "rifle", lean_k)
     if fam == "akimbo":                                    # _anim_crew3p.akimbo_pose's trunk
         A.spine(p, lean=6, twist=0, chest_lean=6, neck=(2, 0, 0), head=(-4, 0, 0), hips=(1, 0, 0))
     return p
@@ -229,7 +231,9 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, a
         A.fix_hips_for_reach(solver, poses[:N] if loop else poses, loop)
         if loop:
             poses[N] = poses[0].copy()
-    trunk = _aim_trunk(sk, aim) if aim else (None if sprint else _trunk_set(sk, kind))
+    # v1.37: over the run the class's forward lean is scaled down (RUN_CLASS_LEAN) so the layer stays a jog, not a hunch
+    lk = RUN_CLASS_LEAN if fam == "run" else 1.0
+    trunk = _aim_trunk(sk, aim, lk) if aim else (None if sprint else _trunk_set(sk, kind, lk))
     if trunk is not None:
         for p in poses:
             for b in ("spine", "chest", "neck", "head"):
@@ -238,9 +242,9 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, a
     # the reference chest: the class's standing trunk (the frames above are authored for it) or an upright stand
     ref = Pose()
     if aim:
-        ref = _aim_trunk(sk, aim)
+        ref = _aim_trunk(sk, aim, lk)
     elif trunk is not None:
-        holds.H.aim_body(sk, ref, kind not in ("pistol", "akimbo"))
+        holds.H.aim_body(sk, ref, kind not in ("pistol", "akimbo"), lk)
     else:
         holds.H.stand(sk, ref)
     S0 = solver.solve(ref)

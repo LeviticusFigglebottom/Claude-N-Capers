@@ -5,8 +5,9 @@
 extends SceneTree
 
 const GLB: String = "res://assets/characters/char_anim_humanoid/char_anim_humanoid.glb"
-const CLIPS: Array[String] = ["idle_alert", "crouch_walk", "walk", "walk_fl", "walk_back", "run", "run_fl", "run_fr", "run_l", "run_r",
-	"run_bl", "run_br", "run_b", "sprint", "aim_pistol_run", "aim_rifle_run", "hold_pistol_run", "hold_rifle_run"]
+const CLIPS: Array[String] = ["idle_alert", "crouch_walk", "walk", "walk_fl", "walk_back", "run", "run_fl", "run_fr",
+	"run_l", "run_r", "run_bl", "run_br", "run_b", "sprint", "aim_pistol_run", "aim_rifle_run", "hold_pistol_run",
+	"hold_rifle_run", "idle_alert_rifle", "aim_rifle"]
 const N: int = 24
 
 
@@ -29,6 +30,8 @@ func _run() -> void:
 		var lo: float = INF
 		var sum: float = 0.0
 		var knee: float = 0.0
+		var lean: float = 0.0
+		var neck: int = skel.find_bone("neck")
 		for i: int in N:
 			player.seek(a.length * float(i) / float(N), true)
 			await process_frame
@@ -42,6 +45,10 @@ func _run() -> void:
 				var ft: Vector3 = skel.get_bone_global_pose(skel.find_bone("foot." + s)).origin
 				kn = maxf(kn, 180.0 - rad_to_deg((th - sh).angle_to(ft - sh)))
 			knee += kn
+			var hp: Vector3 = skel.get_bone_global_pose(hips).origin
+			var nk: Vector3 = skel.get_bone_global_pose(neck).origin
+			lean += rad_to_deg((nk - hp).angle_to(Vector3.UP))
 		player.stop()
-		print("PROBE %-16s hips min %.3f mean %.3f  max-knee-flex mean %.0f deg" % [c, lo, sum / N, knee / N])
+		print("PROBE %-16s hips min %.3f mean %.3f  max-knee-flex mean %.0f deg  trunk lean mean %.0f deg" % [c, lo, sum / N,
+			knee / N, lean / N])
 	quit(0)
