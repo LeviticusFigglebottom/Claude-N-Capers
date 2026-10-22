@@ -46,10 +46,15 @@ _subresources={
 "use_external/fallback_path": "res://world/props/materials/pr_emit_cool.tres",
 "use_external/path": "res://world/props/materials/pr_emit_cool.tres"
 },
-"M_pr_glass_teal": {
+"M_pr_fabric_charcoal": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_glass_teal.tres",
-"use_external/path": "res://world/props/materials/pr_glass_teal.tres"
+"use_external/fallback_path": "res://world/props/materials/pr_fabric_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_fabric_charcoal.tres"
+},
+"M_pr_glass_cab": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_glass_cab.tres",
+"use_external/path": "res://world/props/materials/pr_glass_cab.tres"
 },
 "M_pr_metal_dark": {
 "use_external/enabled": true,

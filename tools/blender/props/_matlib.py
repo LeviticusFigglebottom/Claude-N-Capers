@@ -234,6 +234,8 @@ GLASS: dict[str, dict] = {
     "glass_frosted": {"source": "glass_frosted", "color": "#FFFFFF", "alpha": 1.0},
     "glass_tinted": {"source": "glass_clear", "color": "#3A4044", "alpha": 0.9},
     "glass_teal": {"source": "glass_clear", "color": "#5D8C8F", "alpha": 0.6},
+    # RT mixer cab (D / the LEAD, r284: Reyes must read through the windscreen and door glass): a light teal, mostly clear
+    "glass_cab": {"source": "glass_clear", "color": "#C4DCDA", "alpha": 0.3},
 }
 
 # Prop ids (Godot) are prefixed so they can never collide with a library id.
