@@ -335,14 +335,30 @@ func test_qc85_rt_cues() -> void:
 	EventBus.audio_cue_requested.disconnect(on_cue)
 
 
-## RT phase 2 (LEAD-approved C proposal): with C's `Mixer` ConvoyVehicle and the layout's MixerStop, _mixer_move opens
-## the tannery_gate doors and drives (here: parks, no MixerPath) the mixer onto its stop; without them (G1) the old
-## layout swap stays.
+## RT phase 2 (C f2c05253): `<slot>/Convoy/Movers/Mixer` stays out of the stop's drive-in; at _mixer_move the Door(s)
+## with meta opens_with = "mixer_move" swing open, the "mixer" COVER goes off and the Mixer drives (here: parks, no
+## MixerPath) onto the layout's MixerStop.
 func test_phase2_mixer_drives_to_its_stop() -> void:
 	if not _available():
 		skip("rolling_thunder map not on this branch")
 		return
 	var m: RollingThunderMission = await _launch()
+	var movers: Node = m._route_slot().get_node(NodePath(RollingThunderMission.MOVERS_PATH))
+	var mixer: ConvoyVehicle = (load("res://systems/prefabs/convoy_vehicle/convoy_vehicle.tscn") as PackedScene) \
+		.instantiate() as ConvoyVehicle
+	mixer.name = "Mixer"
+	movers.add_child(mixer)
+	mixer.global_position = Vector3(-30, 0, -16)
+	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
+		n.set_meta(&"opens_with", "mixer_move")
+		(n as Door).lock = Door.Lock.LOCKPICK) as Door
+	var cover: TacticalPoint = TacticalPoint.new()
+	cover.kind = TacticalPoint.Kind.COVER
+	cover.tags = [&"mixer"] as Array[StringName]
+	_rt.map.add_child(cover)
+	await wait_physics_frames(3)
+	assert_true(m._mixer() == mixer, "C's Mixer under the route's Convoy/Movers")
+	assert_false(m._movers().has(mixer), "the Mixer is no stop leg")
 	m._convoy_arrives()
 	await _stopped(m)
 	var layout: Node3D = ConvoyLayouts.find(_rt.map, m.layout_id)
@@ -350,17 +366,11 @@ func test_phase2_mixer_drives_to_its_stop() -> void:
 	stop.name = "MixerStop"
 	layout.add_child(stop)
 	stop.global_position = layout.global_position + Vector3(4.0, 0.0, 4.0)
-	var mixer: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(-30, 0, -16), func(n: Node) -> void:
-		n.name = "Mixer") as ConvoyVehicle
-	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
-		(n as Door).objective_tag = RollingThunderMission.TAG_TANNERY_GATE
-		(n as Door).lock = Door.Lock.LOCKPICK) as Door
-	await wait_physics_frames(3)
-	assert_true(m._mixer() == mixer, "C's Mixer found")
 	m._mixer_move()
 	await wait_physics_frames(3)
 	assert_true(mixer.global_position.distance_to(stop.global_position) < 0.1, "the mixer on its MixerStop")
-	assert_true(gate.is_open, "the Tannery gate swung open")
+	assert_true(gate.is_open, "the opens_with gate swung open")
+	assert_false(cover.enabled, "the mixer's cover goes with it")
 
 
 ## RT-A6 "every VO line said": the e2e batch (auto_loud 1004 / 4102, rt_clean 1005) said 25 of the 34 RT lines; the

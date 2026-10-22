@@ -43,8 +43,6 @@ const POLL_S: float = 1.0
 const MOVERS_PATH: String = "Convoy/Movers"
 const STOP_SUFFIX: String = "Stop"
 const VEHICLES: Array[String] = ["Lead", "T1", "T2", "T3", "Rear"]
-const LAYOUT_MIXER_GONE: String = "mixer_gone"
-const LAYOUT_TANNERY_OPEN: String = "tannery_open"
 ## Runtime marker tags: the trucks in play / an opened truck (C's fixed Trucks / Cargo markers sit on one route only).
 const TAG_TRUCK_IN_PLAY: StringName = &"rt_truck"
 const TAG_TRUCK_OPEN: StringName = &"rt_cargo"
@@ -73,7 +71,10 @@ const EARLY_PUSH_S: float = 25.0
 const MIXER_NAME: String = "Mixer"
 const MIXER_PATH: NodePath = ^"MixerPath"
 const MIXER_STOP: NodePath = ^"MixerStop"
-const TAG_TANNERY_GATE: StringName = &"tannery_gate"
+## C: the gate Door(s) the mixer's move opens carry this meta `opens_with`; the mixer's own COVER carries this tag.
+const OPENS_WITH_MIXER: StringName = &"mixer_move"
+const TAG_MIXER_COVER: StringName = &"mixer"
+const TAG_REYES: StringName = &"driver_mixer"
 ## QC-85 (audio_cues v1.9): C's RT one-shots.
 const CUE_APPROACH: StringName = &"cue.convoy_approach"
 const CUE_BRAKE: StringName = &"cue.convoy_brake"
@@ -207,6 +208,7 @@ func _on_mission_start() -> void:
 	say(VO_INTRO)
 	say(VO_REYES_READY, {}, SPEAKER_REYES)
 	_schedule_train()
+	_seat_reyes()
 
 
 ## Rare events and difficulty rows at the start (doc Rare events / Convoy units per difficulty): the street's
@@ -274,11 +276,26 @@ func phantom_charge_live() -> bool:
 	return false
 
 
-## C's phase-2 `Mixer` ConvoyVehicle (anywhere in the map), null on the G1 map.
+## C's phase-2 `Mixer`: the rolled route's `<slot>/Convoy/Movers/Mixer` ConvoyVehicle, null on a map without one.
 func _mixer() -> ConvoyVehicle:
-	for n: Node in _runtime.map.find_children(MIXER_NAME, "ConvoyVehicle", true, false):
-		return n as ConvoyVehicle
-	return null
+	var slot: Node = _route_slot()
+	return slot.get_node_or_null(NodePath(MOVERS_PATH + "/" + MIXER_NAME)) as ConvoyVehicle if slot != null else null
+
+
+## C (phase 2): Reyes (the driver_mixer civilian) sits at the Mixer's wheel (Seat0) from the start.
+func _seat_reyes() -> void:
+	var mixer: ConvoyVehicle = _mixer()
+	if mixer == null:
+		return
+	var seats: Array[Node3D] = mixer.seats()
+	if seats.is_empty():
+		return
+	for n: Node in _runtime.npcs(&"civilian"):
+		var npc: NpcBase = n as NpcBase
+		if _has_spawn_tag(npc, [TAG_REYES]):
+			npc.global_transform = seats[0].global_transform
+			_seat(npc, mixer)
+			return
 
 
 func _power_lift(on: bool) -> void:
@@ -532,22 +549,23 @@ func _mixer_move() -> void:
 	var mixer: ConvoyVehicle = _mixer()
 	var stop: Node3D = layout.get_node_or_null(MIXER_STOP) as Node3D if layout != null else null
 	if mixer != null and stop != null:
-		# RT phase 2 (LEAD-approved C proposal): the Tannery gates swing open and the Mixer drives the layout's
-		# MixerPath onto its MixerStop (the layout's nav is baked with it there).
-		for n: Node in find_tagged(TAG_TANNERY_GATE):
+		# RT phase 2 (C f2c05253): the gate(s) with meta opens_with = "mixer_move" swing open and the Mixer (Reyes at
+		# the wheel) drives the layout's MixerPath onto its MixerStop (the layout's nav is baked with it there); the
+		# cover it gave at its start goes with it.
+		for n: Node in _runtime.map.find_children("*", "Door", true, false):
 			var d: Door = n as Door
-			if d != null:
+			if StringName(d.get_meta(&"opens_with", &"")) == OPENS_WITH_MIXER:
 				d.unlock()
 				d.set_open(true, false, true)
+		for n: Node in _runtime.map.find_children("*", "TacticalPoint", true, false):
+			var tp: TacticalPoint = n as TacticalPoint
+			if tp.kind == TacticalPoint.Kind.COVER and tp.tags.has(TAG_MIXER_COVER):
+				tp.set_enabled(false)
 		var path: Path3D = layout.get_node_or_null(MIXER_PATH) as Path3D
 		if path != null:
 			mixer.drive(path, stop)
 		else:
 			mixer.park(stop)
-	else:
-		for pair: Array in [[LAYOUT_MIXER_GONE, "mixer"], [LAYOUT_TANNERY_OPEN, "tannery"]]:
-			if ConvoyLayouts.find(_runtime.map, String(pair[0])) != null:  # G1's layout swap until C's phase 2 map
-				set_layout(String(pair[0]), String(pair[1]))
 	var lead: Node3D = _vehicle("Lead", ConvoyLayouts.find(_runtime.map, layout_id))
 	if lead != null:
 		_cue(CUE_MIXER_RAM, lead.global_position, 0)  # the mixer hits the lead escort (crash) / boxes it in (clean)
@@ -713,7 +731,7 @@ func _movers() -> Array[ConvoyVehicle]:
 	var holder: Node = slot.get_node_or_null(MOVERS_PATH) if slot != null else null
 	if holder != null:
 		for c: Node in holder.get_children():
-			if c is ConvoyVehicle:
+			if c is ConvoyVehicle and String(c.name) != MIXER_NAME:  # the Mixer moves at _mixer_move, not at the stop
 				out.append(c as ConvoyVehicle)
 	return out
 
