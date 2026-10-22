@@ -19023,6 +19023,10 @@
   "mount": "",
   "nodes": [
    "Body",
+   "LiveryL",
+   "LiveryLMesh",
+   "LiveryR",
+   "LiveryRMesh",
    "Seat0",
    "Seat1",
    "Seat2",

@@ -104,6 +104,15 @@ def Pf(
     return ["prefab", kind, name, [r3(v) for v in pos], float(yaw), props or {}, use, metas or {}, vis]
 
 
+# A5-03: the magazine's two C4 boxes (item_pickup, 4 x item.c4 each; tag charges: picking one completes [charges])
+def _c4_boxes() -> list:
+    return [
+        Pf("item_pickup", "C4Box%d" % (i + 1), si(x, 0.0, 5.0), 0.0,
+           {"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, None, {}, "prop_c4_box")
+        for i, x in enumerate((36.5, 37.5))
+    ]
+
+
 def S(
     name: str, kind: str, pos: list, yaw: float, tags: list, idle: str = "", graph: str = "", seat: str = ""
 ) -> list:
@@ -610,7 +619,7 @@ def always() -> Dict[str, List[list]]:
             ),
             M("AmbushMarker", [0.0, 0.0, 0.0], "ambush", "the stop (clean or crash)"),
             M("MarshalMarker", [-6.0, 0.0, -16.0], "marshal", "the route marshal's scout car stops here (scripted)"),
-            M("ChargesMarker", si(37.0, 0.0, 5.5), "charges", "TODO(A5-03): the magazine's C4 boxes (item_pickup)"),
+            M("ChargesMarker", si(37.0, 0.0, 5.5), "charges", "the magazine's C4 boxes (item_pickup)"),
             M("TrucksMarker", [-6.0, 0.0, -38.0], "trucks", "the trucks (the active ConvoyLayout set)"),
             M("CargoMarker", [-6.0, 0.0, -38.0], "cargo", "the trucks' cargo (loot_spawn behind the rear doors)"),
             M("EscortMarker", [-6.0, 0.0, -18.0], "escort", "the escort / Vaultline crews (bonus)"),
@@ -1065,8 +1074,7 @@ def slot_content() -> Dict[str, List[list]]:
         ],
         "ctrl_open": [M("ControllerAjar", [hack[0], 0.0, hack[2] - 0.6], "", "the cabinet door ajar (no padlock)")],
         "stores_c4": [
-            M("C4Box1", si(36.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"),
-            M("C4Box2", si(37.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)"),
+            *_c4_boxes(),
         ],
         "stores_thermite": [
             Pf(
@@ -1081,8 +1089,7 @@ def slot_content() -> Dict[str, List[list]]:
             )
         ],
         "stores_both": [
-            M("C4Box1", si(36.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"),
-            M("C4Box2", si(37.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)"),
+            *_c4_boxes(),
             Pf(
                 "loot_spawn",
                 "ThermiteBag",

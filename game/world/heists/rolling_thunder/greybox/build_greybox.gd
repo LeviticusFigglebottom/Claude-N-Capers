@@ -26,6 +26,29 @@ const AE: GDScript = preload("res://world/heists/rolling_thunder/greybox/rt_assa
 const NS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")
 const DNC: GDScript = preload("res://world/heists/shared/door_nav_clearance.gd")
 const RT_GI: GDScript = preload("res://world/heists/rolling_thunder/greybox/rt_gi.gd")
+const AUDIO_BUILDER: String = "res://world/audio/map_audio_builder.gd"
+## [node name, position, cue id, volume offset dB] (origin: the junction; +z south).
+const AUDIO_BEDS: Array = [
+	["BedJunction", Vector3(0.0, 2.0, 0.0), &"cue.amb_skyway_street", 0.0],
+	["BedOrchardN", Vector3(0.0, 2.0, -45.0), &"cue.amb_skyway_street", -1.0],
+	["BedOrchardFarN", Vector3(0.0, 2.0, -80.0), &"cue.amb_skyway_street", -3.0],
+	["BedOrchardS", Vector3(0.0, 2.0, 45.0), &"cue.amb_skyway_street", -2.0],
+	["BedPlaza", Vector3(-38.0, 1.5, 20.0), &"cue.amb_skyway_street", -2.0],
+	["BedTanneryW", Vector3(-45.0, 1.5, 0.0), &"cue.amb_skyway_street", -3.0],
+	["BedTanneryE", Vector3(30.0, 1.5, 0.0), &"cue.amb_skyway_street", -3.0],
+	["BedRailLane", Vector3(58.0, 1.5, -50.0), &"cue.amb_skyway_street", -5.0],
+	["BedCarParkGround", Vector3(34.0, 1.5, -32.0), &"cue.amb_skyway_street", -6.0],
+	["BedCarParkDeck2", Vector3(34.0, 5.0, -32.0), &"cue.amb_skyway_street", -5.0],
+	["BedCarParkRoof", Vector3(34.0, 8.5, -32.0), &"cue.amb_skyway_street", -2.0],
+	["BedRamp", Vector3(52.0, -2.0, 0.0), &"cue.amb_underpass", -6.0],
+	["BedUnderpass", Vector3(75.0, -3.5, 0.0), &"cue.amb_underpass", 0.0],
+	["BedEastCut", Vector3(95.0, -3.5, 0.0), &"cue.amb_underpass", -2.0],
+	["BedDiner", Vector3(24.0, 1.5, 23.0), &"cue.amb_diner", 0.0],
+	["BedDinerUpper", Vector3(24.0, 5.0, 23.0), &"cue.amb_diner", -8.0],
+	["BedSite", Vector3(-37.0, 1.5, -34.0), &"cue.amb_site", 0.0],
+	["BedSiteNorth", Vector3(-37.0, 1.5, -52.0), &"cue.amb_site", -3.0],
+	["BedSiteFrameUpper", Vector3(-37.0, 5.0, -34.0), &"cue.amb_site", -3.0],
+]
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the F1 edge protection, the scaffold mesh,
 ## the palisades and rail-lane fences).
 const THIN_GROUPS: Array[String] = ["Frame", "Scaffold", "Rail", "RailLane"]
@@ -99,6 +122,7 @@ func _build() -> void:
 	preload("res://world/heists/rolling_thunder/greybox/rt_finish.gd").new(self).call(&"build")  # RT-C2 finishes (G2)
 	preload("res://world/heists/rolling_thunder/greybox/rt_skyline.gd").new(self).call(&"build")  # RT-C2 skyline (G2)
 	RT_GI.new(self).call(&"build")  # RT-C2 lighting lane: fixtures, VoxelGI, probes, occluders, render policy
+	_build_audio()  # RT-C2 audio lane (D-117)
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -155,6 +179,16 @@ func _fail(msg: String) -> void:
 ## The final 16:50 environment + LUT and the low WSW sun (RT-C2 lighting lane: rt_gi.gd environment()).
 func _build_environment(lighting: Node3D) -> void:
 	RT_GI.new(self).call(&"environment", lighting)
+
+
+## D-117 `Audio` node (as the other heists): the CuePlayer, the rolling_thunder MusicDirector and the ambience beds
+## (map_audio_builder.gd; CueEmitter beds: 40 m max distance, so about 35-45 m apart). The car park has no bed of its
+## own (doc §Audio/lighting): the street bed turned down.
+func _build_audio() -> void:
+	var audio: Node3D = map_root.get_node_or_null("Audio") as Node3D
+	if audio == null:
+		audio = add(map_root, node3d("Audio")) as Node3D
+	load(AUDIO_BUILDER).call(&"build", audio, map_root, &"rolling_thunder", AUDIO_BEDS)
 
 
 ## Walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40, cell 0.1 / 0.1) from the Geometry

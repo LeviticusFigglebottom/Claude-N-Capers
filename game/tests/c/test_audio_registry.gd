@@ -88,9 +88,9 @@ const AMBIENCE_BEDS: Array[StringName] = [
 ]
 ## D-117 §7: every built heist has its own music track. Shadow Ledger is stealth-only.
 const HEIST_MUSIC: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
-		&"gallery_night", &"ostrander_federal"]
-## Heist tracks whose map does not place its Audio node yet (RT-C2: the rolling_thunder generator wires it).
-const HEIST_MUSIC_MAP_PENDING: Array[StringName] = [&"rolling_thunder"]
+		&"gallery_night", &"ostrander_federal", &"rolling_thunder"]
+## Heist tracks whose map does not place its Audio node yet.
+const HEIST_MUSIC_MAP_PENDING: Array[StringName] = []
 ## RT-C2 / audio_cues v1.4 (QC-85): the convoy-ambush one-shots, 3D on the World bus.
 const RT_CUES: Array[StringName] = [&"cue.convoy_approach", &"cue.convoy_brake", &"cue.mixer_ram",
 		&"cue.signal_click", &"cue.truck_doors_open"]
@@ -428,6 +428,7 @@ func test_heist_maps_place_their_audio() -> void:
 		&"gallery_night": [&"cue.amb_gallery_gala", &"cue.amb_art_store", &"cue.amb_uptown_night"],
 		&"ostrander_federal": [&"cue.amb_bank_hall_day", &"cue.amb_bank_boh", &"cue.amb_vault",
 			&"cue.amb_city_afternoon"],
+		&"rolling_thunder": [&"cue.amb_skyway_street", &"cue.amb_underpass", &"cue.amb_diner", &"cue.amb_site"],
 	}
 	for h: StringName in HEIST_MUSIC:
 		var txt: String = FileAccess.get_file_as_string("res://world/heists/%s/%s.tscn" % [h, h])
