@@ -45,7 +45,7 @@ const AMMO_PARAMS: Dictionary = {
 	HE: {"ammo_type": &"he", "pellets": 1, "explosion_radius_m": 2.0, "explosion_damage_mult": 1.0,
 		"penetration": false, "ammo_pickup_mult": 0.7},
 	FLECHETTE: {"ammo_type": &"flechette", "pellets_mult": 1.5, "dot_dps": 4.0, "dot_s": 3.0, "ammo_pickup_mult": 0.9},
-	DRAGON: {"ammo_type": &"dragons_breath", "dot_dps": 8.0, "dot_s": 4.0, "ignite": true, "panic_civilians": true,
+	DRAGON: {"ammo_type": &"dragons_breath", "dot_dps": 8.0, "dot_s": 3.0, "ignite": true, "panic_civilians": true,
 		"range_mult": 0.7, "ammo_pickup_mult": 0.8},
 }
 

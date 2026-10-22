@@ -911,6 +911,8 @@ ui.skills.respec,Reset Skills
 ui.skills.respec_free,Resetting skills is free.
 ui.skills.team,Crew-wide
 ui.skills.blocked,Not active yet
+ui.skills.button_inactive,Not active yet
+ui.skills.button_partial,Partly active
 ui.skills.reason.unknown_skill,Unknown skill.
 ui.skills.reason.already_aced,Already aced.
 ui.skills.reason.tier_locked,Spend {need} points in lower tiers of this subtree first ({have} spent).

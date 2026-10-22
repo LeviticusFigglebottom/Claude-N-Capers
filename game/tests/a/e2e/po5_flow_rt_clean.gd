@@ -51,6 +51,8 @@ func play(driver: Node) -> int:
 	flow.check(m.clean_stop, "a CLEAN stop (layout %s)" % m.layout_id)
 	flow.check(flow.alarms.is_empty(), "no alarm before the stop (%s)" % [flow.alarms])
 	flow.crew.stealth_hidden = false
+	# LEAD D-151: the escort's first 60 s from the clean stop (who is up, alerted, shooting, from where).
+	Po5EscortLog.new().start(driver, rt, func(line: String) -> void: driver.call(&"note", line))
 	flow.note("clean stop %s at %.1f s heist: observers on, the loud pilot takes over" % [m.layout_id, rt.heist_time_s])
 	EventBus.voice_line_requested.disconnect(vo)
 	flow.note("hand-over: carrying %s (%s)" % [flow.crew.is_carrying_bag(),
