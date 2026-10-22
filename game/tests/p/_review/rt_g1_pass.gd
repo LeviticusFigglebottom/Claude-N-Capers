@@ -1028,13 +1028,16 @@ func _truck_use(t: ArmoredTruck) -> Vector3:
 
 ## The placed saw on `t`: F on the truck's lock (place_saw), then wait out the run, fixing jams (fix_drill).
 func _saw_truck(t: ArmoredTruck) -> bool:
-	var comp: InteractableComponent = _comp(t)
+	# r278: the saw goes on the rear doors' SawPoint (a SAW drill_point child); before that, the truck's own lock.
+	var sp: Node = t.get_node_or_null("SawPoint")
+	var comp: InteractableComponent = _comp(sp) if sp != null else _comp(t)
 	if comp == null:
 		_row("%s saw" % _truck_name(t), "FAIL", "no interactable", "A truck")
 		return false
+	var k0: StringName = comp.kind
+	note("saw: on %s, kind %s" % ["SawPoint" if sp != null else "the truck lock", k0])
 	var t0: float = rt.heist_time_s
-	var placed: bool = await pilot.use(comp, 60.0, func() -> bool: return (t.opened or comp.kind != &"place_saw"
-		and comp.kind != &"place_c4"))
+	var placed: bool = await pilot.use(comp, 60.0, func() -> bool: return t.opened or comp.kind != k0)
 	note("saw: placed %s, kind now %s" % [placed, comp.kind])
 	await shot("saw_placed")
 	var jams: int = 0
