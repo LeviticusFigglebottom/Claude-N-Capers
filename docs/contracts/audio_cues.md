@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.8)
+# Contract: audio cues (v1.9)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -101,3 +101,16 @@ Kinds on `EventBus.assault_event_started(kind, net_id, position)` / `assault_eve
 | `cue.assault_heli_leave` | 3D one-shot | heli end | one-shot |
 | `cue.assault_breach_warning` | 3D at `position` | breach start | one-shot |
 | `cue.c4_explode` | 3D one-shot | breach blast: A plays it on detonation (A confirms) | one-shot |
+
+## v1.9 (QC-85, Rolling Thunder; C 73ec9b55 / d6c8b99a)
+One-shots ENV A triggers from `rolling_thunder_mission.gd` (3D at the given vehicle / device position):
+| cue | trigger (A) | type |
+|---|---|---|
+| `cue.convoy_approach` | the convoy is first sighted (enters the junction approach) | 3D one-shot on the lead mover |
+| `cue.convoy_brake` | each convoy stop (clean, crash, mixer stop), per stopped mover | 3D one-shot on the mover |
+| `cue.mixer_ram` | the mixer rams the convoy / gate (layout swap `_mixer_move`) | 3D one-shot at the impact |
+| `cue.signal_click` | the junction signals switch (SignalRig hack finished) | 3D one-shot at each signal head |
+| `cue.truck_doors_open` | an ArmoredTruck's rear doors open (saw / C4 / thermite) | 3D one-shot at the rear doors |
+| `cue.freight_train_pass` | scheduled by A in the underpass (rail lane), held back while a Phantom charge is live | 3D one-shot, long; C builds it and takes the train out of `amb_underpass` |
+Ambience beds (C's Audio node, `MapZone` driven as every heist): `amb_skyway_street`, `amb_underpass`, `amb_diner`,
+`amb_site`. Music: `rolling_thunder` (F minor, 148 grid; 5 stems + win/lose) via MusicDirector as every heist.
