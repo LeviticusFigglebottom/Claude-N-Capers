@@ -132,6 +132,7 @@ func _strike() -> void:
 	var amount: float = base * Modifiers.mult(_crew.slot, &"weapon.damage_mult", DAMAGE_QUALIFIER) * _bloodthirst_mult() \
 		* PerkHooks.melee_damage_mult(_crew) * SkillTriggers.berserk_mult(_crew, false)  # perk.infiltrator; B1 Berserker
 	var center: Vector3 = (best as Node3D).global_position + Vector3(0.0, 1.0, 0.0) if best is Node3D else eye
+	amount *= CombatSystem.mark_damage_mult(best as Node, best_d)  # B6 Price Tag (the marker's skill)
 	var info: Dictionary = Damage.info(amount, Enums.DamageType.MELEE, Enums.HitZone.BODY,
 		def.id if def != null else &"melee.bash", center, fwd, _crew.net_id)
 	info["crit"] = SkillTriggers.roll_crit(_crew)  # B2: the target applies it (D-027 QB-29)

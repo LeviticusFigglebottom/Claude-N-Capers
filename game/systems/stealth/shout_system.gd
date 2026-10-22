@@ -28,6 +28,8 @@ signal shouted(slot: int, affected: Array[Node])
 signal marked(slot: int, target: Node)
 
 const SERVICE: StringName = &"shout"
+## B6 stealth.noise_intimidates_civilians: the civilian shout range x this ◇.
+const NOISE_INTIMIDATE_RANGE_MULT: float = 1.5
 
 ## slot -> intent.shout last tick
 var _held: Dictionary[int, bool] = {}
@@ -268,6 +270,8 @@ func targets_for(crew: CrewController) -> Array[NpcBase]:
 	var tw: StealthTweak = Tweak.stealth()
 	var range_m: float = tw.shout_range_m * Modifiers.mult(crew.slot, &"stealth.civilian_intimidate_range_mult") \
 		* Modifiers.mult(crew.slot, &"ability.shout_range_mult")  # QB-61: every shout target
+	if Modifiers.flag(crew.slot, &"stealth.noise_intimidates_civilians"):
+		range_m *= NOISE_INTIMIDATE_RANGE_MULT  # B6 Captive Audience: a wider intimidation
 	var half_cone: float = deg_to_rad(tw.shout_cone_deg) * 0.5
 	var eye: Vector3 = crew.eye_position()
 	var aim: Vector3 = crew.aim_direction()

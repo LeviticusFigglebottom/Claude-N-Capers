@@ -238,6 +238,10 @@ func trip_detonate() -> void:
 	EventBus.audio_cue_requested.emit(&"cue.trip_mine_explode", pos, by)
 	Net.replicate_event(&"audio_cue_requested", [&"cue.trip_mine_explode", pos, by])
 	Explosion.apply(self, pos, radius, tw.trip_mine_damage, by, &"deployable.trip_mine")
+	var fire: Dictionary = Modifiers.params(owner_slot, &"deploy.trip_mine_fire") if owner_slot >= 0 else {}
+	if not fire.is_empty():  # B5 Hot Floor: the blast leaves a fire pool
+		ThrownItem.spawn_fire_pool(self, global_position, float(fire.get("radius", 0.0)), float(fire.get("duration", 0.0)),
+			by, owner_slot)
 	_spent()
 
 

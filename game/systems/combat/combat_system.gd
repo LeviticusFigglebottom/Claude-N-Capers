@@ -124,6 +124,7 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	info["headshot_bonus"] = w.headshot_bonus(ws)
 	if SkillTriggers.roll_crit(shooter):  # B2: crit chance (skills, Unseen Strike); the target applies it (QB-29)
 		info["crit"] = true
+	info["amount"] = float(info["amount"]) * mark_damage_mult(target as Node, dist)  # B6 Price Tag
 	var be: float = body_expertise_frac(shooter.slot, weapon_id, int(info["zone"]))  # B4b Anatomy: NpcBase applies it
 	if be > 0.0:
 		info["body_expertise"] = be
@@ -153,6 +154,21 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 		if float(res.get("amount", 0.0)) > 0.0:
 			NpcSuppression.add_threat(npc, float(prof["suppression"]) * tw.threat_per_suppression_hit, origin)
 	return res
+
+
+## B6: the crew's damage multiplier on `target` at `dist` m from its marker's skills (StealthDirector marks):
+## stealth.mark_damage_bonus_mult (Price Tag) x stealth.mark_far_damage_mult {min_distance, mult} beyond min_distance
+## (Aced). 1 when unmarked.
+static func mark_damage_mult(target: Node, dist: float) -> float:
+	var rt: HeistRuntime = HeistRuntime.of(target) if target != null else null
+	if rt == null or rt.stealth == null or not rt.stealth.is_marked(target):
+		return 1.0
+	var by: int = int((rt.stealth._marks.get(NetIds.of(target), {}) as Dictionary).get("by_slot", -1))
+	var mult: float = Modifiers.mult(by, &"stealth.mark_damage_bonus_mult")
+	var far: Dictionary = Modifiers.params(by, &"stealth.mark_far_damage_mult")
+	if not far.is_empty() and dist >= float(far.get("min_distance", 0.0)):
+		mult *= float(far.get("mult", 1.0))
+	return mult
 
 
 ## B4b `weapon.body_expertise` {frac, auto_only, classes} (Anatomy): the share of the target's headshot multiplier a
