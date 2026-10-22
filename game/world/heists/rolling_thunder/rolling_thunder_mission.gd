@@ -296,7 +296,7 @@ func _seat_reyes() -> void:
 		var npc: NpcBase = n as NpcBase
 		if _has_spawn_tag(npc, [TAG_REYES]):
 			npc.global_transform = seats[0].global_transform
-			_seat(npc, mixer)
+			_seat(npc, mixer, true, true)  # D r280: seen at the wheel, though the Mixer's kind is "truck"
 			return
 
 
