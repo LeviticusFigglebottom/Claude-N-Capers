@@ -227,20 +227,30 @@ func _walk_to_marker(m: Dictionary, id: StringName, pos: Vector3) -> bool:
 
 
 ## RT-A6 (LEAD: the pilot opens padlocks, so auto_loud raids RT's site stores): the navmesh path to `stand` ends short
-## (a padlocked gate: its door is off the crew's nav while locked). The nearest padlock within GATE_LOCK_M of where the
-## path ends that the pilot can work now (lockpick / saw / C4, Padlock picks the method) is used; the gate opens with
-## it. True when it worked one (the next step retries the marker).
+## (a padlocked gate: its door is off the crew's nav while locked), or runs through a shut locked door with a padlock
+## (the magazine). The nearest padlock within GATE_LOCK_M of where the path ends (or that door's own padlock) that the
+## pilot can work now (lockpick / saw / C4, Padlock picks the method) is used; the gate opens with it. True when it
+## worked one (the next step retries the marker).
 func _open_gate_toward(stand: Vector3) -> bool:
 	var path: PackedVector3Array = p.nav_path(stand)
-	if path.is_empty() or path[path.size() - 1].distance_to(stand) <= 1.5:
+	if path.is_empty():
 		return false
 	var end: Vector3 = path[path.size() - 1]
+	var door: Door = null
+	if end.distance_to(stand) <= 1.5:
+		# pad1002b: the path runs through a shut, padlocked door (the RT magazine: the walk stuck on its wall)
+		door = _locked_on_path(stand)
+		if door == null:
+			return false
+		end = door.global_position
 	var best: InteractableComponent = null
 	var best_d: float = GATE_LOCK_M
 	for n: Node in rt.map.find_children("*", "Padlock", true, false):
 		var lock: Padlock = n as Padlock
 		if lock.opened or lock.interactable == null or not lock.interactable.enabled \
 				or lock.interactable.availability(p.crew) != &"" or _is_unreachable(lock.interactable):
+			continue
+		if door != null and not door.is_ancestor_of(lock):
 			continue
 		var d: float = lock.global_position.distance_to(end)
 		if d < best_d:
