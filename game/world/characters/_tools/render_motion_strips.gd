@@ -10,7 +10,7 @@
 ## Writes <out>/<case>.png (strip, 2 rows) and <out>/motion_log.txt.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_motion_strips.tscn -- --out=/abs/dir \
-##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300] [--cases=crew_strafe,cop_stagger]
+##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300] [--cases=crew_strafe,cop_stagger,cop_look_1..4]
 ## Owner: ENV D.
 extends Node3D
 
@@ -34,6 +34,8 @@ var _rt: HeistRuntime = null
 ## the cases to shoot (--cases=crew_strafe,...; default all)
 var _cases: Array[String] = CASES.duplicate()
 var _home: Vector3 = Vector3.INF
+## looks already stripped by a cop_look_<n> case
+var _looks: Dictionary = {}
 var _legs: int = 0
 
 
@@ -101,6 +103,7 @@ func _run() -> void:
 				_say("t=%.1f %s on %s" % [t, c, _who(body)])
 				await _strip(c, body)
 				_done[c] = true
+				_looks[_look(body)] = true
 				break
 		if int(t * 10.0) % 100 == 0:
 			_crew_diag(t)
@@ -147,6 +150,9 @@ func _find(c: String) -> Node3D:
 			"cop_run_gun":
 				ok = (base.begins_with("run") or base.begins_with("walk")) and lay.begins_with("aim_") \
 					and (lay.ends_with("_run") or lay.ends_with("_walk"))
+			_:
+				# cop_look_<n>: any police unit on a run clip (aiming or not), one strip per distinct look (v1.37 roster)
+				ok = c.begins_with("cop_look_") and base.begins_with("run") and not _looks.has(_look(b))
 		if ok and ad.horizontal_speed() > 0.5:
 			return b
 	return null
