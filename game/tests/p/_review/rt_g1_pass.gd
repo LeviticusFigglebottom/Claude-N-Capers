@@ -23,6 +23,7 @@
 ##              each truck's rear UsePoint reachable in that layout; the mixer / Tannery gate row.
 ##   breach     north clean, trucks_3, stores_both: T1 by the placed saw (jams fixed), T2 by the tool store's thermite
 ##              bag, T3 by C4 from the magazine (padlock + a box of 4), a T1 cargo bag on foot to E1.
+##   c4         north clean, trucks_3, stores_c4: T3 by C4 alone (magazine padlock sawn once loud), its cargo -> E1.
 ##   east_e1 / east_e2  east clean: a HEAVY bag T1 -> E1, T3 -> E2 (trucks_3).
 ##   setup      from each spawn (plaza, car park, underpass), REAL detection: man-gate, rig hack; times vs the ETA and
 ##              every observer's peak D-128 fill.
@@ -833,6 +834,20 @@ func _rt_breach() -> bool:
 	return ok
 
 
+## T3 by C4 alone (north clean, trucks_3, stores_c4), then a bag of its cargo on foot to E1.
+func _rt_c4() -> bool:
+	if not await _truck_launch(&"route_north", {&"site_stores": [&"stores_c4"], &"truck_count": [&"trucks_3"]}):
+		return false
+	if not await _stop(true):
+		return false
+	_clear_npcs()
+	var trucks: Array[ArmoredTruck] = _trucks()
+	if trucks.size() < 3:
+		return await _fail("%d trucks" % trucks.size())
+	var ok: bool = await _c4_truck(trucks[2])
+	return await _carry_to_escape("T3 cargo -> E1", trucks[2], E1_AT, LOOT_HEAVY, true) and ok
+
+
 ## East, clean: a HEAVY bag from T1 to E1, then (a second launch) from T3 to E2.
 func _rt_east_e1() -> bool:
 	if not await _truck_launch(&"route_east", {&"escape": [&"esc_van_carpark"]}):
@@ -1179,9 +1194,19 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 	var door: Door = _door_near(MAGAZINE_DOOR_AT, 1.5)
 	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
 	if door != null and not door.is_open and lock != null:
-		await pilot.use(_comp(lock), 40.0, func() -> bool: return door.is_open or not door.locked)
+		await pilot.use(_comp(lock), 40.0, func() -> bool: return door.is_open or not door.locked
+			or _comp(lock) == null or _comp(lock).kind != &"place_saw")
+		# Loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut before the door.
+		Engine.time_scale = DEVICE_SCALE
+		await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
+		Engine.time_scale = 1.0
 		if not door.is_open:
 			await pilot.use(_comp(door), 20.0, func() -> bool: return door.is_open)
+	_row("magazine door open (padlock %s)" % ("sawn" if rt.went_loud else "picked"), "PASS" if door != null
+		and door.is_open else "FAIL", "door %s" % ("open" if door != null and door.is_open else "closed"),
+		"-" if door != null and door.is_open else "A padlock / C magazine")
+	if door == null or not door.is_open:
+		return false
 	var have: int = pilot.crew.item_count(&"item.c4")
 	for _k: int in 2:
 		if have >= C4_NEEDED:
