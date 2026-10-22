@@ -13,6 +13,12 @@ extends RefCounted
 const AUTO_LOUD: String = "res://tests/a/e2e/po5_flow_auto_loud.gd"
 const MAN_GATE_LOCK: NodePath = ^"Gameplay/Doors/SiteManGate/Padlock"
 const LOCK_PICK_S: float = 30.0
+const ITEM_C4: StringName = &"item.c4"
+## RT_STORES=1 (--po5-rt-stores, LEAD: a C4 breach and a thermite burn e2e): the prelude also raids the site stores
+## (the magazine's C4 through its padlock, the tool store's thermite bag through its lock) and carries the thermite
+## back; the loud pilot then uses the C4 on a truck (the truck takes C4 before the saw) and burns one with the
+## thermite (po5_flow_auto_loud _deliver_tool: the truck's own burn point).
+var raid_stores: bool = "--po5-rt-stores" in OS.get_cmdline_user_args()
 
 
 func play(driver: Node) -> int:
@@ -32,8 +38,8 @@ func play(driver: Node) -> int:
 	flow.hide_from_observers()
 	if not await flow.mask_up():
 		return _fail(driver, flow, "mask up")
-	if not await _rig_the_signals(flow, rt, m):
-		return _fail(driver, flow, "the signals")
+	if not await _rig_the_signals(flow, rt, m) or (raid_stores and not await _raid_stores(flow, rt, m)):
+		return _fail(driver, flow, "the signals / the site stores")
 	rt.teleport_crew(0, start)
 	flow.note("back at the start (%s), waiting for the convoy (ETA %.0f s)" % [start.origin, m.timer_left(&"convoy")])
 	var budget: float = m.timer_left(&"convoy") + 120.0
@@ -90,6 +96,35 @@ func _rig_the_signals(flow: X4StealthFlow, rt: HeistRuntime, m: RollingThunderMi
 		return false
 	var done: bool = await flow.wait_until(func() -> bool: return m.signals_rigged, 3.0)
 	return flow.check(done and flow.objective(&"signals") == Enums.ObjectiveState.COMPLETED, "[signals] done")
+
+
+## The rolled site stores: every C4 box (through the magazine's padlock) and the thermite bag (through the tool store's
+## lock), the bag carried back on the bot's back.
+func _raid_stores(flow: X4StealthFlow, rt: HeistRuntime, m: RollingThunderMission) -> bool:
+	var mag: Padlock = rt.map.get_node_or_null(^"Gameplay/Doors/MagazineDoor/Padlock") as Padlock
+	for n: Node in m.find_tagged(&"charges"):
+		var box: GameplayPrefab = n as GameplayPrefab
+		if box == null or not box.is_visible_in_tree() or box.interactable == null or not box.interactable.enabled:
+			continue
+		if mag != null and not await _pick(flow, mag, "the magazine padlock"):
+			return false
+		var had: int = flow.crew.item_count(ITEM_C4)
+		if not await flow.go_to(box) or not await flow.use(box, func() -> bool: return flow.crew.item_count(ITEM_C4) > had,
+				15.0, "take the C4 from %s" % box.name):
+			return false
+	for n: Node in m.find_tagged(&"thermite"):
+		var bag: LootSpawn = n as LootSpawn
+		if bag == null or not bag.is_visible_in_tree() or bag.remaining <= 0:
+			continue
+		var store: Door = rt.map.get_node_or_null(^"Gameplay/Doors/ToolStoreDoor") as Door
+		if store != null and store.locked:
+			if not await flow.go_to(store) or not await flow.use(store, func() -> bool: return not store.locked,
+					LOCK_PICK_S, "pick the tool store door"):
+				return false
+		if not await flow._bag_from(bag):
+			return false
+	flow.note("stores raided: C4 x%d, thermite %s" % [flow.crew.item_count(ITEM_C4), flow.crew.is_carrying_bag()])
+	return true
 
 
 ## Lockpick `lock` (S2: masked, 8 s) unless it is already off.
