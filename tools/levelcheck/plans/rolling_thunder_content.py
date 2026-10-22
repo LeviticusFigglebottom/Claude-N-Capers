@@ -1332,7 +1332,9 @@ def review_cameras() -> List[list]:
         ["rc_ext_east_arm", "X6", [40.0, 1.7, -12.6], [75.0, -3.0, 0.0]],
         ["rc_ext_plaza", "X3", [-16.0, 1.7, 22.0], [-40.0, 3.0, 28.0]],
         ["rc_ext_tannery_west", "X1", [0.0, 1.7, 2.0], [-70.0, 2.0, 0.0]],
-        ["rc_diner_neon", "X1", [40.0, 1.7, 12.6], [16.0, 3.0, 14.0]],
+        # GPU-22: from Tannery's south sidewalk at the junction corner, east along the diner's Tannery face to the
+        # HALFWAY pole sign's W face (32.5, 4.6-6.4, 10)
+        ["rc_diner_neon", "X1", [12.0, 1.7, 9.6], [32.5, 4.6, 10.6]],
         ["rc_convoy_cash", "X1", [-6.0, 1.7, -34.5], [-6.0, 1.5, -28.0]],
         ["rc_convoy_bullion", "X1", [-6.0, 1.7, -47.0], [-6.0, 1.5, -40.0]],
         ["rc_carpark_ground", "CP-G", [24.0, 1.7, -15.5], [20.0, 1.0, -40.0]],
