@@ -3,7 +3,24 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-22 18:40)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-22 19:00)
+### RT un-hide checklist (LEAD r276 #2). Goal: lifting RT onto the Board is ONE flag flip
+The flag: `game/content/data/ui/heist_list.tres` -> `rolling_thunder` -> delete `"hidden": true`. HeistCatalog.is_ready
+gates the menus on that flag, the map and the mission script, and only the menus read HeistRegistry.ids().
+| # | Item | Owner | State |
+|---|---|---|---|
+| 1 | **Def at the convention path** `world/heists/rolling_thunder/rolling_thunder_def.tres` (today only `rolling_thunder_wip_def.tres`; HeistRegistry lists `<id>_def.tres` only) | C (generator writes `_wip_def` on purpose) / A (path owner) | **OPEN: the one non-flag blocker.** B simulated it (copy, uncommitted) with the flag still on; see the B test sweep line below |
+| 2 | Map + mission script (`requires`) | C / A | done (G1; RT-A6 e2e met) |
+| 3 | Board entry: `city_map.tres` southfield (0.14, 0.86), contact.reyes, default weight 1.0, may roll as pro | B | done |
+| 4 | Contract card / broker text: `heist.rolling_thunder.{name,subtitle,brief,briefing}`, mode label "Loud (ambush start)", accent colour | B | done |
+| 5 | Difficulty gates: Routine..Brutal open, Lethal / Cataclysm at level 70 (D-151, global `board_tweak`) | B | done (no per-heist rule) |
+| 6 | First-clear / base XP 2,500 (D-148 M-size), `payout.tres` | B | done |
+| 7 | Briefing: steps, intel (+ convoy line, surprises), blueprint, **briefing VO** (3 Reyes + 2 Mercer, new this round) | B | done (re-export at G2) |
+| 8 | Pre-planning: 15 assets incl. C4 drop, allow-lists, 13 point labels | B / A (drop spawn) | done; real-input walk below |
+| 9 | Achievements (6) + category, mask-part rewards | B / D | done (merge D 081ce136 with B) |
+| 10 | Music track name `music.rolling_thunder.name` ("Red Signal") | B (string) / C (track) | string done; track on env/c-worlds (held) |
+| 11 | Cues + ambience beds in `cues.tres` | C wrote them in 73ec9b55 (B's file) | ruling asked: accept C's hunk (recommended) |
+| 12 | Achievements screen / payday hide a hidden heist's set (`Achievements.shown()`) | B | done; flips with the flag |
 -34. **MERGE ORDER: env/d-art 081ce136 (D's RT mask parts) BEFORE or WITH env/b-content's RT mask commits.** B's
      `materials.tres` loads D's two new library materials, so on B alone the mask catalog does not load.
      - On B alone: test_masks / test_mask_batch / test_achievements_b702 fail.
