@@ -46,18 +46,22 @@ func play(driver: Node) -> int:
 		driver.call(&"note", "FAIL rt_clean prelude: %s" % [failures])
 		return 1
 	var ended: Array[Dictionary] = []
-	var on_end: Callable = func(r: Dictionary) -> void: ended.append(r)
+	var at_end: Dictionary = {}
+	var on_end: Callable = func(r: Dictionary) -> void:  # the runtime is freed by the payday: read it now
+		ended.append(r)
+		at_end.merge({"sprung": m.objective_state(&"ambush") == Enums.ObjectiveState.COMPLETED,
+			"reason": rt.stealth.alarm_reason if rt.stealth != null else &"", "clean": m.clean_stop})  # captured by ref
 	EventBus.heist_ended.connect(on_end)
+	var seed_v: int = rt.run_seed
 	var loud: RefCounted = (load(AUTO_LOUD) as GDScript).new()
 	var rc: int = await loud.call(&"play", driver)
 	EventBus.heist_ended.disconnect(on_end)
-	var reason: StringName = rt.stealth.alarm_reason if rt.stealth != null else &""
 	# Any alarm after the clean stop springs the ambush (the window's end, a convoy unit, or a guard who sees the
 	# masked crew): no alarm before the stop is checked above.
-	var sprung: bool = m.objective_state(&"ambush") == Enums.ObjectiveState.COMPLETED
-	var ok: bool = rc == 0 and sprung and not ended.is_empty() and bool(ended[0].get("success", false))
-	driver.call(&"note", "RESULT rt_clean %s seed %d: clean_stop %s, alarm %s, auto_loud rc %d, ended %s" % [
-		"PASS" if ok else "FAIL", rt.run_seed, m.clean_stop, reason, rc, ended])
+	var ok: bool = rc == 0 and bool(at_end.get("sprung", false)) and not ended.is_empty() \
+		and bool(ended[0].get("success", false))
+	driver.call(&"note", "RESULT rt_clean %s seed %d: %s, auto_loud rc %d, success %s" % [
+		"PASS" if ok else "FAIL", seed_v, at_end, rc, ended[0].get("success", false) if not ended.is_empty() else false])
 	return 0 if ok else 1
 
 
