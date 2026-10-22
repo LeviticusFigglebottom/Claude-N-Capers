@@ -96,6 +96,8 @@ func _run() -> void:
 				await _strip(c, body)
 				_done[c] = true
 				break
+		if int(t * 10.0) % 100 == 0:
+			_crew_diag(t)
 		if not _done.has("cop_stagger") and t > 20.0 and stagger_tried < 5 and int(t * 10.0) % 50 == 0:
 			stagger_tried += 1
 			await _stagger()
@@ -175,15 +177,8 @@ func _strip(c: String, body: Node3D) -> void:
 		var fwd: Vector3 = -body.global_basis.z
 		fwd.y = 0.0
 		fwd = fwd.normalized() if fwd.length() > 0.01 else Vector3.FORWARD
-		var side: Vector3 = Vector3(-fwd.z, 0.0, fwd.x)
 		var at: Vector3 = body.global_position + Vector3.UP * 1.0
-		var eye: Vector3 = at + (side * 0.85 + fwd * 0.5).normalized() * CAM_DIST + Vector3.UP * 0.35
-		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(at, eye)
-		if body is CollisionObject3D:
-			q.exclude = [(body as CollisionObject3D).get_rid()]
-		var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(q)
-		if not hit.is_empty():
-			eye = at + (eye - at).normalized() * maxf(at.distance_to(hit["position"]) - 0.15, 1.0)
+		var eye: Vector3 = _eye(body, at, fwd)
 		var info: String = "%s | %s @%.2f | %.1f m/s" % [ad.clip, ad.hold_layer.clip if ad.hold_layer != null else &"-",
 			ad.hold_layer.time if ad.hold_layer != null else 0.0, ad.horizontal_speed()]
 		_label.text = "%s %d  %s\n%s" % [c, k, _look(body), info]
@@ -204,6 +199,42 @@ func _strip(c: String, body: Node3D) -> void:
 		tiles[k].resize(TILE.x, TILE.y, Image.INTERPOLATE_LANCZOS)
 		sheet.blit_rect(tiles[k], Rect2i(Vector2i.ZERO, TILE), Vector2i((k % cols) * TILE.x, (k / cols) * TILE.y))
 	sheet.save_png("%s/%s.png" % [_out, c])
+
+
+## The camera spot for `body`: the side three-quarter view first, then 7 more directions round it; the one with the
+## most clear room (rays from the chest and the head), so a wall or counter is never between the camera and the body.
+func _eye(body: Node3D, at: Vector3, fwd: Vector3) -> Vector3:
+	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	var base: Vector3 = (Vector3(-fwd.z, 0.0, fwd.x) * 0.85 + fwd * 0.5).normalized()
+	var best: float = -1.0
+	var eye: Vector3 = at + base * CAM_DIST + Vector3.UP * 0.35
+	for k: int in 8:
+		var dir: Vector3 = base.rotated(Vector3.UP, k * PI / 4.0)
+		var room: float = CAM_DIST
+		for from: Vector3 in [at, at + Vector3.UP * 0.6]:
+			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from,
+				from + dir * CAM_DIST + Vector3.UP * 0.35)
+			if body is CollisionObject3D:
+				q.exclude = [(body as CollisionObject3D).get_rid()]
+			var hit: Dictionary = space.intersect_ray(q)
+			if not hit.is_empty():
+				room = minf(room, from.distance_to(hit["position"]) - 0.2)
+		if room > best + 0.25:
+			best = room
+			eye = at + dir * maxf(room, 1.2) + Vector3.UP * 0.35
+	return eye
+
+
+## Every crew body's clip / layer / speed (why a crew case is not seen).
+func _crew_diag(t: float) -> void:
+	for m: CrewController in _rt.crew_members():
+		var ad: AnimDriver = AnimDriver.of(m)
+		if ad == null:
+			_say("diag t=%.0f %s no AnimDriver" % [t, m.name])
+			continue
+		_say("diag t=%.0f %s ai %s clip %s layer %s active %s speed %.1f state %s" % [t, m.name, m.is_ai, ad.clip,
+			ad.hold_layer.clip if ad.hold_layer != null else &"-", ad.hold_layer.active if ad.hold_layer != null else false,
+			ad.horizontal_speed(), m.crew_state])
 
 
 func _look(b: Node3D) -> String:
