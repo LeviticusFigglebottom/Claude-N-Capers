@@ -344,11 +344,14 @@ func test_phase2_mixer_drives_to_its_stop() -> void:
 		return
 	var m: RollingThunderMission = await _launch()
 	var movers: Node = m._route_slot().get_node(NodePath(RollingThunderMission.MOVERS_PATH))
-	var mixer: ConvoyVehicle = (load("res://systems/prefabs/convoy_vehicle/convoy_vehicle.tscn") as PackedScene) \
-		.instantiate() as ConvoyVehicle
-	mixer.name = "Mixer"
-	movers.add_child(mixer)
-	mixer.global_position = Vector3(-30, 0, -16)
+	# C's map carries the Mixer at <route slot>/Convoy/Movers/Mixer (C 41bb3e96); a map without one gets a stand-in.
+	var mixer: ConvoyVehicle = movers.get_node_or_null(NodePath(RollingThunderMission.MIXER_NAME)) as ConvoyVehicle
+	if mixer == null:
+		mixer = (load("res://systems/prefabs/convoy_vehicle/convoy_vehicle.tscn") as PackedScene).instantiate() \
+			as ConvoyVehicle
+		mixer.name = RollingThunderMission.MIXER_NAME
+		movers.add_child(mixer)
+		mixer.global_position = Vector3(-30, 0, -16)
 	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
 		n.set_meta(&"opens_with", "mixer_move")
 		(n as Door).lock = Door.Lock.LOCKPICK) as Door
@@ -362,13 +365,18 @@ func test_phase2_mixer_drives_to_its_stop() -> void:
 	m._convoy_arrives()
 	await _stopped(m)
 	var layout: Node3D = ConvoyLayouts.find(_rt.map, m.layout_id)
-	var stop: Marker3D = Marker3D.new()
-	stop.name = "MixerStop"
-	layout.add_child(stop)
-	stop.global_position = layout.global_position + Vector3(4.0, 0.0, 4.0)
+	var stop: Node3D = layout.get_node_or_null(RollingThunderMission.MIXER_STOP) as Node3D  # C: <layout>/MixerStop
+	if stop == null:
+		stop = Marker3D.new()
+		stop.name = "MixerStop"
+		layout.add_child(stop)
+		stop.global_position = layout.global_position + Vector3(4.0, 0.0, 4.0)
 	m._mixer_move()
-	await wait_physics_frames(3)
-	assert_true(mixer.global_position.distance_to(stop.global_position) < 0.1, "the mixer on its MixerStop")
+	Engine.time_scale = 4.0  # C's MixerPath: a drive, not a park
+	var there: bool = await wait_until(func() -> bool: return mixer.global_position.distance_to(stop.global_position) < 0.1,
+		30.0)
+	Engine.time_scale = 1.0
+	assert_true(there, "the mixer on its MixerStop")
 	assert_true(gate.is_open, "the opens_with gate swung open")
 	assert_false(cover.enabled, "the mixer's cover goes with it")
 
