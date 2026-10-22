@@ -22,6 +22,8 @@ extends Node
 signal fired(claim: Dictionary)
 signal reload_started(weapon_slot: int, duration: float)
 signal reload_finished(weapon_slot: int)
+## A running reload was cancelled (cancel_reload: P's sprint start, PD2) before it finished.
+signal reload_cancelled(weapon_slot: int)
 signal equipped_changed(weapon_slot: int)
 signal ammo_changed(weapon_slot: int)
 ## D-118: a slot's laser / flashlight was switched (server toggle; clients on the replicated state).
@@ -444,6 +446,19 @@ func start_reload() -> bool:
 	reload_started.emit(equipped_slot, reload_left)
 	if reload_left <= 0.0:
 		_finish_reload()
+	return true
+
+
+## Cancel the running reload of weapon slot `ws` (-1 = the equipped one), as a sprint start does in PD2 (P's
+## CrewController). The rounds stay where they were (the magazine fills only when a reload finishes). It runs in the
+## shared crew simulation, so the server and the owner's prediction cancel on the same tick, as the reload started
+## (intent-driven, no RPC). Returns true when a reload was cancelled.
+func cancel_reload(ws: int = -1) -> bool:
+	if not reloading or (ws >= 0 and ws != equipped_slot):
+		return false
+	reloading = false
+	reload_left = 0.0
+	reload_cancelled.emit(equipped_slot)
 	return true
 
 
