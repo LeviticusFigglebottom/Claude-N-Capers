@@ -240,6 +240,9 @@ static func _state_of(node: Node) -> Dictionary:
 	var comp: Variant = node.get(&"interactable")
 	if comp is InteractableComponent and is_instance_valid(comp):
 		out["ie"] = (comp as InteractableComponent).enabled
+	var sentry: SentryGun = SentryGun.of(node)
+	if sentry != null:
+		out["sentry"] = sentry.net_state()  # D-157: aim, ammo, mode, health, shield
 	return out
 
 
@@ -294,6 +297,9 @@ static func apply_state(node: Node, d: Dictionary) -> void:
 				comp.enabled = bool(d[k])
 		elif key == "runner":
 			_apply_runner(node, d[k] as Array)
+		elif key == "sentry":
+			if SentryGun.of(node) != null:
+				SentryGun.of(node).apply_net_state(d[k] as Dictionary)
 		elif StringName(key) in node:
 			node.set(StringName(key), d[k])
 

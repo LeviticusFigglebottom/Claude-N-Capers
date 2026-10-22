@@ -27,6 +27,7 @@ const KIND_INTERACTION: Dictionary = {
 	&"body_bag_case": [&"take_body_bag", &"ui.prompt.take_body_bag"],
 	&"ecm": [&"ecm_feedback", &"ui.prompt.ecm_feedback"],
 	&"armor_bag": [&"use_armor_bag", &"ui.prompt.use_armor_bag"],
+	&"sentry": [&"use_sentry", &"ui.prompt.interact"],  # D-157: the owner cycles modes / picks it up (SentryGun)
 }
 const AMMO_EPSILON: float = 0.0005
 
@@ -94,6 +95,11 @@ func setup(def: DeployableDef, p_owner_slot: int, uses: int) -> void:
 			resets_downs = bool(def.params.get("resets_downs", true))
 		&"body_bag_case":
 			uses_left = maxi(uses, 1)
+		&"sentry":  # D-157: the turret behaviour (SentryGun.NODE_NAME child)
+			var sg: SentryGun = SentryGun.new()
+			sg.name = SentryGun.NODE_NAME
+			sg.setup(owner_slot, def.params)
+			add_child(sg)
 
 
 func _prefab_ready() -> void:
@@ -179,6 +185,13 @@ func _on_completed(crew: Node) -> void:
 		&"armor_bag":
 			DeployableSystem.wear_armor(c, bag_armor)  # QB-58
 			_consume_use()
+		&"sentry":
+			var sg: SentryGun = SentryGun.of(self)
+			if sg != null and sg.interact(c):  # D-157: picked up: the ammo refunded, the sentry back in the inventory
+				var ds: DeployableSystem = HeistRuntime.get_service(DeployableSystem.SERVICE) as DeployableSystem
+				if ds != null:
+					ds.restock(c.slot, deployable_id)
+				_spent()
 
 
 ## Server: one use gone (B3 Field Kit: the first-aid kit that auto-revived someone).

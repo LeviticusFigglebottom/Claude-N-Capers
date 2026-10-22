@@ -175,7 +175,7 @@ static func mark_damage_mult(target: Node, dist: float) -> float:
 ## BODY hit from `slot`'s `weapon_id` gets (0: none); auto_only = weapons with a full-auto mode.
 static func body_expertise_frac(slot: int, weapon_id: StringName, zone: int) -> float:
 	var p: Dictionary = Modifiers.params(slot, &"weapon.body_expertise")
-	var def: WeaponDef = ContentDB.weapon(weapon_id) if weapon_id != &"" else null
+	var def: WeaponDef = ContentDB.weapon(weapon_id) if not p.is_empty() and ContentDB.has(ContentDB.WEAPONS, weapon_id) else null
 	if p.is_empty() or def == null or zone != Enums.HitZone.BODY \
 			or not (p.get("classes", []) as Array).has(String(Enums.weapon_class_qualifier(def.weapon_class))) \
 			or (bool(p.get("auto_only", false)) and not def.fire_modes.has(&"auto")):
