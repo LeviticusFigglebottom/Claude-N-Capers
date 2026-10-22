@@ -19,7 +19,7 @@ gates the menus on that flag, the map and the mission script, and only the menus
 | 8 | Pre-planning: 15 assets incl. C4 drop, allow-lists, 13 point labels | B / A (drop spawn) | done; real-input walk below |
 | 9 | Achievements (6) + category, mask-part rewards | B / D | done (merge D 081ce136 with B) |
 | 10 | Music track name `music.rolling_thunder.name` ("Red Signal") | B (string) / C (track) | string done; track on env/c-worlds (held) |
-| 11 | Cues + ambience beds in `cues.tres` | C wrote them in 73ec9b55 (B's file) | ruling asked: accept C's hunk (recommended) |
+| 11 | Cues + ambience beds in `cues.tres` | C (73ec9b55, LEAD waiver) / B (train) | accepted (LEAD ruling a); B adds `cue.freight_train_pass` when C's stream exists |
 | 12 | Achievements screen / payday hide a hidden heist's set (`Achievements.shown()`) | B | done; flips with the flag |
 -34. **MERGE ORDER: env/d-art 081ce136 (D's RT mask parts) BEFORE or WITH env/b-content's RT mask commits.** B's
      `materials.tres` loads D's two new library materials, so on B alone the mask catalog does not load.

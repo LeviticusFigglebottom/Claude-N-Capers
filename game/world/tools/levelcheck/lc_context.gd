@@ -60,6 +60,12 @@ func setup(p_map: HeistMap) -> void:
 	# Doors count as open (players can always breach them): the NavLinks of doorways baked closed
 	# (D-073 BARRED / VAULT) carry the reachability and walkthrough paths.
 	set_door_links(true)
+	# D-149.1: a layout's nav authored disabled is off the navigation map, as the runtime's ConvoyLayouts.reset does
+	# (Godot 4.7 still merges a disabled region's edges with the enabled copies)
+	for l: Node3D in layouts():
+		for nav: Node in l.find_children("*", "", true, false):
+			if (nav is NavigationRegion3D or nav is NavigationLink3D) and not bool(nav.get(&"enabled")):
+				ConvoyLayouts.set_nav(nav, false)
 
 
 ## Sets `enabled` on every NavigationLink3D under a Door prefab; returns [[link, previous], ...].
@@ -310,7 +316,7 @@ func set_layout_config(layout: Node3D) -> void:
 				_layout_nav_saved[nav] = bool(nav.get(&"enabled"))
 			var on: bool = bool(_layout_nav_saved[nav]) if layout == null else l == layout
 			if bool(nav.get(&"enabled")) != on:
-				nav.set(&"enabled", on)
+				ConvoyLayouts.set_nav(nav, on)   # also on / off the navigation map (no duplicate edge merges)
 				changed = true
 	if layout == null:
 		_layout_nav_saved.clear()
