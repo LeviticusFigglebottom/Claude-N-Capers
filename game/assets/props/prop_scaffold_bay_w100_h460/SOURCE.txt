@@ -1,0 +1,8 @@
+asset: prop_scaffold_bay_w100_h460
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "exterior", "kind": "scaffold", "place": "none", "surface": "metal"}, "fn": "scaffold", "h": 4.6, "net": true, "w": 1.0}
+seed: 906263379  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_scaffold_bay_w100_h460
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

@@ -1381,10 +1381,139 @@ wobbly and bobs the gun weirdly." Idle capacity, alongside Ostrander (D-144 unaf
 3. **No armor early (A, D):** on Routine and Tense no police unit has damage-reducing body armor (no TAC Heavy, no
    armored vests); armored units start at Hazardous. D: Routine/Tense police looks carry no plate-carrier visual.
 4. **Crew bots (B, A):** (a) health regen: after 6 s without damage a bot regains 2 % max health per second
-   (tunable, `crew_tweak`), a deliberate deviation from PD2 (◇). (b) Per-bot-slot loadout: each of the 3 bot slots
+   (tunable, `CrewAiTweak`, bot-only), a deliberate deviation from PD2 (◇). (b) Per-bot-slot loadout: each of the 3 bot slots
    equips a primary (any weapon the player owns, with its mods), an armor tier (owned armors) and a cosmetic mask/outfit;
    bought through the existing armory economy, saved in the profile, shown in a Crew screen in the hub. Bots use the
    equipped weapon's real stats through the bot accuracy profile and the armor's real values. B: UI, save, economy;
    A: bot runtime.
 5. **Run bob (P):** calmer sprint/run: lower head-bob amplitude, smoother viewmodel bob (no sharp figure-8 snap), a
    steady PD2-like sprint pose (gun lowered and angled, gentle sway). P judges windowed at 60 fps, before/after clip.
+
+## D-146: draw-call budget counts shadow passes (2026-10-20, LEAD)
+D found the OF hall at 12,885 submitted draws (79 % shadow passes) while levelcheck `perf` reported 2,438: the check
+counted main-pass surfaces only. Ruling, amending architecture §10:
+1. **Main pass ≤ 2,500** draws per view (unchanged), and a new **total ≤ 4,000** submitted draws per view *including*
+   shadow passes (sun cascades, spot cones, omni ×6 faces), measured with the peak cast for the heist (Cataclysm).
+   **Shadowed lights ≤ 8 in view** is unchanged.
+2. levelcheck `perf` counts both numbers and is reconciled against D's `heist_cast_perf` on the same view (unit test).
+3. **OF must meet both to reach G2 final.** C measures the five shipped heists with the new check and reports. Overruns
+   there are queued as polish *after* OF is done (D-144), unless one is so far over that it plays badly; then the LEAD
+   pulls it forward.
+4. Levers, in order: a shadow only where it reads; no omni shadows; distance fade / shadow max distance on spots; sun
+   2 splits and a shorter max distance; `cast_shadow` off on small props, skyline and far NPCs; occluders.
+5. **Addendum (2026-10-20, C's perf lane):** occlusion culling turned **on** project-wide
+   (`rendering/occlusion_culling/use_occlusion_culling=true`); it was off, so every map's occluders (OF 286, GN 129,
+   SL 125, …) did nothing. levelcheck cannot credit occlusion, so its numbers stay conservative. The D-146 counter
+   enforces at stage final only for heists flagged `perf_d146` (OF first) and is report-only for the five shipped heists
+   until their D-144 polish slot.
+
+## D-145 addendum (2026-10-20, LEAD; from P's GH Tense acceptance runs and A's fixes)
+Tense losses traced to takedown rules, not tuning. Amends **D-093** and pd2_fidelity **L2.8 / L2.12**:
+1. An expired tase is a counted down (bleed-out, revivable); a broken tase frees the victim. No takedown path goes
+   straight to custody at any difficulty (A d65a3a1d, 10357121).
+2. A Phantom (Cloaker) kick is a counted down with bleed-out, as in PD2; the victim stays kicked flat until revived.
+3. Police cuff downed heisters only from Hazardous up; Routine/Tense custody comes from bleed-out alone (◇).
+4. Stinger re-tase cooldown 12 / 8 / 4 s (Routine / Tense / Hazardous+) and per-victim immunity 10 / 6 / 0 s (◇).
+5. A downed heister who shoots from the floor draws fire and can be shot out of bleed-out (PD2), unchanged.
+6. **Addendum (2026-10-20, real-GPU evidence):** the shipping renderer is Forward+ (D-001, architecture §1). The PO's
+   RX 9070 XT (GPU box, branch `gpu/renders`, GPU-2) measured the OF hall under a Cataclysm loud assault at
+   ~2,000–2,300 total submitted draws in Forward+ (map ~1,300–1,450, cast ~730), well inside 4,000. Therefore D-146 is
+   **judged on Forward+, measured on the GPU box**; levelcheck's Compatibility-based model stays as a conservative
+   early-warning (report-only from now) because Compatibility is the fallback renderer. A heist passes D-146 when its
+   worst views, Cataclysm cast, loud, measure ≤ 2,500 main / ≤ 4,000 total in Forward+ on the GPU box.
+
+## D-147: reuse-first for props and kits (2026-10-21, LEAD; PO question)
+The prop catalog has 520 entries (522 prop scenes). Ostrander used 296 distinct props, of which 245 (83 %) were reused
+and 51 were new bank-specific pieces (teller line, sunburst, vault gear). From the next heist on: **every map uses
+catalog props and kits first.** A new prop needs a one-line reason in the heist doc's art list: no catalog piece fits the
+role, or it is a landmark / hero piece. Generic dressing (furniture, office, kitchen, clutter, lighting, doors, exterior,
+vehicles) is never rebuilt per heist. Variants come from library finishes (materials/colour), not new meshes. C reports
+reused vs new counts in each G1/G2 review.
+
+## D-148: PO picks: next heist Rolling Thunder, XP option D, paper start now (2026-10-21, LEAD; product owner)
+PO: "Proceed with all your recommended options."
+1. **Next heist: Rolling Thunder** (`rolling_thunder`, the Vaultline convoy, D-075/D-141). Afterhours follows it.
+2. **Paper start now** (amends D-144 for paper only): the RT build plan, systems/content/cast audits and prep branches
+   may proceed while Ostrander finishes. Building on the env branches (maps, mission code, data) starts at the OF done
+   check. D's assembled cast waits on `prep/d-rt`.
+3. **XP pacing = option D** (B's progression_pace.md): the curve ×2 (= PD2's ~23 M total to level 100), heist-size base
+   XP (S 1,500 / M 2,000 / L 2,500-3,000), PD2 difficulty multipliers kept. B applies it, re-checks every level-locked
+   unlock (weapons, armor `unlock_level`, Bot Crew armors) against the new pace, and updates pd2_fidelity.
+4. **Hardest-difficulty OF loud vs the AI pilot** (Haz 0/3, Cata 0/2 with real bots): accepted as a harness limit; no
+   tuning for it. Human playtests decide later.
+5. **Reuse-first (D-147)** applies to RT from day one.
+
+## D-149: Rolling Thunder paper rulings (QC-RT1..11, escort looks) (2026-10-21, LEAD)
+Rulings on C's `docs/process/next_heist_rolling_thunder.md` §8 and D's cast note (env/d-art 3411484a). Each item
+takes the recommendation the env gave.
+1. **QC-RT1 convoy nav:** pre-baked nav regions per convoy layout, swapped at the stop. The same applies to the mixer
+   and the Tannery gate. No runtime rebake (heist_map v1.4, D-121). A adds a TacticalPoint `enabled` flag.
+2. **QC-RT2 bullion hatch:** a ground-level thermite point on the truck's rear doors. No truck-roof traversal.
+3. **QC-RT3 size:** M (15-25 min). It sets the e2e budgets and the D-120 checks. Base XP is 2,000 (D-148).
+4. **QC-RT4 P5 gate:** RT has no stealth win. Its gate is a clean-setup run instead of a ghost run: signals rigged,
+   marshal handled, no early alarm.
+5. **QC-RT5 path cap:** A's uncapped NavPath has been on trunk since round 255 (ffc264d4). C's ≤ 3,500-polygon target is
+   an early warning, not a hard G1 rule.
+6. **QC-RT6:** the D-147 substitutions (trees, dumper, bus, jukebox, cycle racks, bunting, wheel stops) are accepted.
+   C updates the design doc.
+7. **QC-RT7:** civilians reuse `civilians_leave` plus sidewalk call points. No new flee-exit system.
+8. **QC-RT8:** the convoy and mixer drive in (≤ 8 movers, then static), and the escape van pops in.
+9. **QC-RT9:** the early-alarm truck lockdown (saws ×1.5) and the 8 s ambush window stay, labelled as original
+   (not PD2-sourced) in pd2_fidelity.
+10. **QC-RT10:** C may write the `--check`-only plan scripts (`tools/levelcheck/plans/rolling_thunder_*.py`) before
+    the OF done check. Paper only: no map.
+11. **QC-RT11:** D-147 and D-148 are already in this file.
+12. **Escort looks (D):** `convoy_lead` and `convoy_rear` are carved out of the "every spawn tag maps to a look" rule.
+    They are EnemyDefs, so NpcVisuals resolves them by difficulty (D-145.3 duty looks, faction reskins, tac_heavy).
+    A adds a test that they never get a capsule.
+
+## D-150: OF ghost acceptance difficulty (2026-10-21, LEAD)
+P's ghost line (seed 1002): steps 1-4 pass on every run, and step 5's gate, lasers and time lock work unseen. At
+Cataclysm (8 guards, D-140), BB has no window with both rover_basement and the vault guard away (r257d: three
+windows in 700 s, each under 4 s). PD2's top-difficulty bank stealth relies on kills within the pager cap rather
+than pure ghosting. Ruling:
+1. **The no-kill ghost acceptance runs on Hazardous** (6 guards). That is the OF ghost gate for the done check.
+2. **On Cataclysm, the stealth acceptance is a stealth win.** Guard kills are allowed within the pager cap (D-140), plus
+   body bagging. Patrols are not lengthened to make a Cataclysm ghost possible. Density is the difficulty lever.
+3. If the Hazardous ghost also finds no BB window, C and A lengthen rover_basement's away leg at that difficulty
+   only.
+
+**D-145 addendum (2026-10-21, LEAD): DB Tense accepted at 2/3.** On r257 + 60d8c6ab (P's capsule fix, the 1-Longshot
+cap, the Longshot timing), headless auto_loud, solo + 3 bots:
+- plain: 2/3, player downs 3 / 3 / 1;
+- with the doctor bag: 2/3, downs 6 / 2 / 2, median 2.
+
+GH Tense was already 3/3. No further Tense data lever (no Bulwark cap change). Seed 1's custody chain (about 640-690 s
+in both cells) is a low-priority look for A, not a blocker.
+
+## D-151: Rolling Thunder build opens now; level-70 gate; the LEAD makes judgement calls (2026-10-21, LEAD; PO delegated)
+PO: "Have the judgement calls be your own." From here the LEAD rules on design and process questions and records them,
+and asks the PO only for taste or scope calls the PO has asked to keep.
+1. **RT build opens now** (amends D-144 / D-148.2). Ostrander has met 5 of 6 done gates (heist_completion.md). The last
+   one, P's Hazardous ghost line, is P's work alone, so it no longer holds the other envs.
+   - env/c-worlds (RT G1 + RT-C2 batch 1) merges to trunk; prep/d-rt merges via env/d-art.
+   - A builds A5-01/02/03 plus C's mission asks; B lands the RT-B1 data; D's cast rows go to A's npc_visual_tweak.
+   - The LEAD adds QC-87c to the shared levelcheck.
+   - OF fixes still take priority in every round.
+2. **Lethal / Cataclysm gate: level 70** (was 80). Under D-148's XP curve, 80 took about 230 clears; 70 takes about 135,
+   the old time-to-Lethal. B changes the data and re-pins the gate test.
+3. **Older heists:** the r266 regression sweep stands as their check after today's systemic AI changes:
+   - loud Routine GH / ND / GN / DB PASS, SL stealth PASS;
+   - D's anim coverage: 0 flags;
+   - B's screen-text walk: all clean.
+
+   No further broad runs. Future changes get targeted tests only (D-088).
+
+## D-152: Ostrander Federal is DONE (2026-10-21 23:40, LEAD; D-151 judgement)
+All six D-115 gates are met (docs/process/heist_completion.md).
+- The windowed loud gate was met by GPU-20c: a full Cataclysm win on the PO's GPU.
+- The ghost gate is accepted on step-wise evidence, under the D-151 time-box fallback:
+  - P's Hazardous line, seed 1002, passes steps 1-5 unseen in one continuous run (haz_zd: vault open at t=1484).
+  - Every step-6 sub-move passes unseen (lift cycle 1 in ghost6_m / t / u).
+  - Steps 6-7 are covered by P's route note, ghost_route_note_hazardous.md, which C folds into the design doc.
+  - No game or AI bug was found. The limit is harness margin: the vault guard is away 30-40 s every ~200 s, and a bag
+    crossing needs 20-25 s.
+- Playability margin, not a gate: on Routine, Tense and Hazardous, the vault guard's loop (b) RC dwell gets +15 s
+  (A: guard_tweak hub_loops; C: the doc).
+- Open follow-ups, none blocking: a human-input windowed ghost when the PO or a session has time.
+- **Rolling Thunder is the active heist (D-148 / D-151).**

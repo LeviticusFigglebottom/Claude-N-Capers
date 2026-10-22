@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_yard_small"
+purpose = &"exterior"
+required_items = Array[StringName]([&"pallet", &"crate", &"tote", &"wall_lamp", &"ashtray"])
+optional_items = {
+&"box": 1,
+&"crate": 1,
+&"hvac": 1,
+&"pallet": 1
+}
+clutter_groups = {}
+min_density = 0.02
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"ashtray", &"crate", &"dumpster", &"hvac", &"pallet", &"tote"])
+seed_salt = 25
+seed_id = &"exterior_alley"
+counts = {}
+assets = {
+&"box": PackedStringArray("prop_box_small", "prop_box_stack"),
+&"crate": PackedStringArray("prop_crate_wood"),
+&"pallet": PackedStringArray("prop_pallet", "prop_pallet_loaded"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {}
+notes = "Rolling Thunder (exterior), from exterior_alley: RT YD diner yard (20 x 8 m): the bins (body_container) and the gates are the map's; the kit adds pallets, crates, the waste-oil tote, the back-door lamp and an ashtray stand."

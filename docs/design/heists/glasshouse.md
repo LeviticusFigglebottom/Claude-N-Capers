@@ -291,12 +291,17 @@ blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays o
   - U2 security room: window N. This is the designed sightline over the back door and the dumpsters (see above).
   - U5 admin: windows S ×2. U6 manager: window S (A). U7 stock: window S, windows E ×2.
   - Stair: the glass landing-well guard.
-- **Opaque:** U3 staff WC, the high frosted window N (layout `FROSTED_WINDOWS`). U6 window S (B) is the PO6-17
+- **Opaque:** U3 staff WC, the high frosted window N (layout `FROSTED_WINDOWS`; visual
+  `prop_window_w100_h120_frosted`, the shared frosted glass). U6 window S (B) is the PO6-17
   breach window, an opaque infill until it is blown.
 - **Not map-built:** the gameplay Window prefabs (shopfront ×3, salon ×2, break-room door-window) are
-  see-through through their GlassBody (ENV A). The 8 display cases are DisplayCase prefabs (ENV A, not
-  tagged yet). Catalog dressing is not tagged: the window display boxes have felt-lined sides and a glass front
-  only, the salon decor vitrine stands against the wall, and the bus shelter is street dressing.
+  see-through through their GlassBody (ENV A). The main entrance double glass door (`MainEntrance`, a glass-style
+  visual) is a glass-leaf Door and reads clear, like the shopfront it sits in: it stays see-through (D-142 call).
+  The 8 display cases are DisplayCase prefabs: since ENV A's D-142 patch their glass band above the cabinet is
+  see-through automatically (cabinet and any cap stay opaque). Catalog dressing is not tagged: the window display
+  boxes have felt-lined sides and a glass front only, the salon decor vitrine stands against the wall, and the bus
+  shelter is street dressing (each has one collider over glass and solid parts; the catalog `see_through` flag is
+  for colliders that cover clear glass alone).
 
 ## Stealth routes
 1. **Front (customer):** case from the street and the sales floor. When the keycard is behind the
@@ -425,6 +430,7 @@ Each variable changes a decision.
   `amb_street_dusk` (traffic, distant city). The alley adds condenser hum.
 - **Music:** `glasshouse` (stealth 60–90 BPM bed with a glassy bell motif; assault 120–150 BPM).
 - **LUT:** `lut_glasshouse`, warm mids and slightly cool shadows.
+- **Render budget (D-146, enforced: map meta `perf_d146`):** main ≤ 2,500 and ≤ 4,000 draws per view including the shadow passes. Shadowed lights: the sun (2 splits over 30 m, was 4 over 120 m) and **1** chandelier-hall downlight (G5). The salon (G6) and workshop (G2) fixtures and the 2 neon fascia signs cast no shadow since D-146. Each re-drew 100 to 740 casters in every street and hall view (the renderer does not occlude lights). Their glow and pools stay. `RenderBudgetPolicy` (as Ostrander): interior dressing outside G5 and doors between two interior rooms cast no shadow, and dressing ranges outside G5 are cut to 24 m. Worst view after the change: `ExtAlleyMouth` at 3,555 (was `ChandelierLandmark` at 12,395).
 
 ## HeistDef (proposed data, `glasshouse_def.tres`)
 `id glasshouse`, display "Golden Hour" (D-117), contact `contact.vance`, mode STEALTH_OR_LOUD, base_payout

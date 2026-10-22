@@ -46,6 +46,8 @@ const COUNT_S: float = 1.2
 const XP_FILL_S: float = 0.9
 ## D-115: achievement entries per line in the payday's "Achievements unlocked" panel.
 const ACHIEVEMENT_COLUMNS: int = 3
+## r252: achievement descriptions in the payday panel show at most this many lines (see _build_achievements).
+const DESC_LINES: int = 2
 ## D-090: at most one count-up tick per this many ms.
 const COUNT_TICK_MS: int = 80
 
@@ -88,6 +90,9 @@ var toast: AchievementToast = null
 var achievements_panel: PanelContainer = null
 ## Achievement id -> its entry in achievements_panel (tests).
 var achievement_rows: Dictionary = {}
+## r266 B top-3 #3: the panel's header; with more unlocks than one line holds it counts them and says how many sit
+## below the fold ("Achievements unlocked: 6 (3 more below)").
+var achievements_header: Label = null
 ## D-115: in-heist fact log (objective outcomes, device kinds, items, loot ids) for the heist achievements.
 var facts: HeistFacts = HeistFacts.new()
 ## Index of the picked card (-1 = not picked yet).
@@ -148,6 +153,7 @@ func build_ui() -> void:
 	backdrop.color = Color(UiAccent.app_bg(), 0.97)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(backdrop)
+	fill_window(backdrop)  # r266: the whole window on an ultrawide, not just the 16:9 column
 	var root: VBoxContainer = UiBuild.vbox(16)
 	UiBuild.screen_margin(self, root)
 	title_label = UiBuild.label(&"ui.results.title", UiBuild.HEADER)
@@ -195,7 +201,7 @@ func show_result(heist_result: Dictionary) -> void:
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
 	freshness_eval = HeistFreshness.evaluate(profile, StringName(result.get("heist_id", &"")))
-	payout = compute_payout(result, profile, Net.local_slot(), is_pro, freshness_eval)
+	payout = compute_payout(result, profile, payout_slot(), is_pro, freshness_eval)
 	xp_before = profile.xp
 	xp_after = xp_before + int(payout.get("xp_total", 0))
 	_applied = false
@@ -455,6 +461,13 @@ func _update_timer_label() -> void:
 ## D-139: the profile's own heist freshness (HeistFreshness.evaluate, before this run is recorded) scales money and
 ## XP; `fresh` = an evaluation to use instead (show_result's freshness_eval, also for the loss panel built after _apply
 ## recorded the run).
+## r266 (GPU-20c, pd2_fidelity S7.3): the local player's crew slot for their own payout. Without a Net session
+## (a dev launch straight into a heist) local_slot() is -1, PayoutCalculator's crew-wide view, which billed the AI
+## crew's civilian kills to the player; the local player is slot 0 then. Cleaner costs are the killer's only.
+static func payout_slot() -> int:
+	return maxi(Net.local_slot(), 0)
+
+
 static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int, pro: bool = false,
 		fresh: Dictionary = {}) -> Dictionary:
 	var ev: Dictionary = fresh if not fresh.is_empty() \
@@ -493,13 +506,14 @@ func _ensure_toast() -> AchievementToast:
 
 ## D-115: "Achievements unlocked" panel, one compact entry per id in `achievements_unlocked`, up to
 ## ACHIEVEMENT_COLUMNS per line: the name (brass) with its reward ("REWARD Oxblood Herald", only when it grants
-## something) on one line, the description under it; one line of entries fits under the columns at 720p. Hidden
-## when the run unlocked none. More than one line can run under the fold, so then (only) the panel takes focus
-## (d-pad up from Continue) and the summary scrolls to it.
+## something; it moves under the name when it does not fit, never ellipsised), the description under it; one line of
+## entries fits under the columns at 720p. Hidden when the run unlocked none. More than one line can run under the
+## fold, so then (only) the panel takes focus (d-pad up from Continue) and the summary scrolls to it.
 func _build_achievements() -> PanelContainer:
 	achievement_rows.clear()
 	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
-	v.add_child(UiBuild.caption(&"ui.results.achievements_header"))
+	achievements_header = UiBuild.caption(&"ui.results.achievements_header")
+	v.add_child(achievements_header)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = clampi(achievements_unlocked.size(), 1, ACHIEVEMENT_COLUMNS)
 	grid.add_theme_constant_override(&"h_separation", UiTokens.S5)
@@ -512,7 +526,12 @@ func _build_achievements() -> PanelContainer:
 		var e: VBoxContainer = UiBuild.vbox(0)
 		e.name = String(id).replace(".", "_")
 		e.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		# r262 lead nit ("Oxblood Her..." ellipsised at 1080p): a flow row, so a reward that does not fit beside the
+		# name moves, whole, to its own line under it; nothing trims.
+		var top: HFlowContainer = HFlowContainer.new()
+		top.add_theme_constant_override(&"h_separation", UiTokens.S3)
+		top.add_theme_constant_override(&"v_separation", 0)
+		top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		e.add_child(top)
 		var n: Label = UiBuild.label()
 		n.text = UiText.t(a.name_key)
@@ -520,19 +539,28 @@ func _build_achievements() -> PanelContainer:
 		top.add_child(n)
 		var reward: String = AchievementsScreen.reward_name(a)
 		if reward != "":
+			var rw: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+			rw.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			top.add_child(rw)
 			var cap: Label = UiBuild.caption(&"ui.achievements.reward_caption")
 			cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-			top.add_child(cap)
+			rw.add_child(cap)
 			var r: Label = UiBuild.label(&"ui.achievements.reward", &"", {"name": reward})
-			r.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-			r.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			r.custom_minimum_size.x = 1.0
-			top.add_child(r)
+			r.name = "Reward"
+			rw.add_child(r)
 		var d: Label = UiBuild.label(a.desc_key, UiBuild.DIM)
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		# r252 GPU loud payday: a 3-line description ran under the fold at 720p; two lines fit, and the reward the tail
+		# names ("Unlocks the ... material") is already on the REWARD line above, so the rest trims to an ellipsis.
+		d.max_lines_visible = DESC_LINES
+		d.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		e.add_child(d)
 		grid.add_child(e)
 		achievement_rows[id] = e
+	var more: int = achievement_rows.size() - ACHIEVEMENT_COLUMNS
+	if more > 0:
+		achievements_header.text = UiText.t(&"ui.results.achievements_header_more",
+				{"count": achievement_rows.size(), "more": more})
 	var p: PanelContainer = UiBuild.panel(v)
 	p.name = "AchievementsUnlocked"
 	p.visible = not achievement_rows.is_empty()
@@ -552,6 +580,25 @@ func _wire_achievements() -> void:
 		var back: NodePath = achievements_panel.get_path_to(continue_button)
 		achievements_panel.focus_neighbor_top = back
 		achievements_panel.focus_neighbor_bottom = back
+
+
+## r246 OF capture: three long descriptions wrap under the fold at 720p and 1080p on one line too, so once
+## the summary is laid out the panel also takes focus whenever the summary scrolls (d-pad up reaches it).
+func _focus_achievements_if_clipped() -> void:
+	if not is_inside_tree():
+		return
+	var panel: PanelContainer = achievements_panel
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if panel != achievements_panel or not is_instance_valid(panel) or not panel.visible:
+		return
+	if panel.focus_mode != Control.FOCUS_NONE:
+		return
+	var bar: VScrollBar = _summary.get_v_scroll_bar()
+	if bar.max_value - bar.page <= 1.0:
+		return
+	UiBuild.focus_panel(panel)
+	_wire_achievements()
 
 
 func _render() -> void:
@@ -592,6 +639,7 @@ func _render() -> void:
 	achievements_panel = _build_achievements()
 	_content.add_child(achievements_panel)
 	_wire_achievements()
+	_focus_achievements_if_clipped()
 	retry_button.visible = offer_retry()
 	_wire_retry()
 	focus_default()
@@ -675,7 +723,7 @@ func _build_loss() -> VBoxContainer:
 	v.add_child(UiBuild.label(&"ui.results.loss_header", UiBuild.SUBHEADER))
 	var as_won: Dictionary = result.duplicate(true)
 	as_won["success"] = true
-	var would: Dictionary = compute_payout(as_won, profile, Net.local_slot(), is_pro,
+	var would: Dictionary = compute_payout(as_won, profile, payout_slot(), is_pro,
 			freshness_eval)
 	var grid: GridContainer = _grid(v)
 	_line(grid, &"lost_total", UiText.t(&"ui.results.lost_total"), UiText.money(int(would.get("total", 0))))

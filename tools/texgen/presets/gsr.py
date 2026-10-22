@@ -72,6 +72,11 @@ PRESET = {
             "tint": "#E6EEEA", "dirt": "#8A877E", "alpha": 0.1, "dirt_alpha": 0.25,
             "rough": (0.03, 0.08), "dirt_rough": 0.5, "wear": 0.0, "grime": 0.5,
         },
+        "glass_frosted": {
+            # D-142: one shared frosted look (the maps' privacy panes; the props' pr_glass_frosted points at it)
+            "tint": "#E4E8E6", "shade": "#C9D0CF", "alpha": (0.78, 0.88), "wipe_clear": 0.06,
+            "rough": (0.55, 0.7), "wear": 0.0, "grime": 0.0,
+        },
         "rubber_black": {
             "base": "#3C3C3C", "rough": (0.84, 0.92), "wear": 0.25, "grime": 0.2, "relief_ref_mm": 0.2,
             "specular": 0.35, "lum_min": 0.02,
@@ -107,6 +112,32 @@ PRESET = {
         "metal_painted": {
             "paint": "#4B5157", "steel": "#B4B7BA", "rough": (0.4, 0.5), "steel_rough": 0.32,
             "chip": 0.5, "wear": 0.5, "grime": 0.35,
+        },
+        # ---- OF-C2: Ostrander Federal G2 surfaces (bank: pristine) ----
+        "limestone_ashlar": {
+            # palette limestone #CBC3B0 (ostrander_federal.md Audio/lighting), neutral enough for the hall and VC
+            "stone": "#C6BEAB", "stone_light": "#D3CCBB", "stone_dark": "#B3AA96", "joint": "#8A8272",
+            "blocks_per_row": 2, "courses": 4, "joint_mm": 5, "chamfer_mm": 6, "bedding": 0.6,
+            "rough": (0.72, 0.84), "joint_rough": 0.92, "wear": 0.08, "grime": 0.15,
+        },
+        "wood_panel_oak": {
+            "base": "#7A5A3F", "late": "#5A412D", "light": "#8E6B4C", "bays": 4, "rows": 2, "stile_mm": 70,
+            "bevel_mm": 35, "rings": 34, "rough": (0.36, 0.46), "pore_rough": 0.56, "wear": 0.08, "grime": 0.12,
+        },
+        "steel_plate_riveted": {
+            # vault paint: a grey ultramarine (secondary #2F3F6B lifted to read under the 4000 K strips)
+            "paint": "#59627A", "seam": "#3E4352", "plates": 2, "seam_mm": 4, "rivet_inset_mm": 40,
+            "rivet_pitch_mm": 100, "rivet_mm": 16, "rough": (0.38, 0.5), "wear": 0.1, "grime": 0.15,
+        },
+        # ---- RT-C2: Rolling Thunder (the site hoarding: weathered exterior paint on ply) ----
+        "plywood_painted": {
+            "paint": "#3E5646", "gap": "#262A27", "sheets": 2, "gap_mm": 3, "rough": (0.72, 0.86),
+            "wear": 0.35, "grime": 0.5,
+        },
+        # RT-C2 GPU-21: the diner's checkerboard vinyl (vinyl_floor's model; 0.25 m squares, cream / charcoal)
+        "vinyl_checker": {
+            "tile_a": "#D9D1BF", "tile_b": "#3A3A3D", "chip_dark": "#6E6A62", "chip_light": "#C9C3B6",
+            "tile_m": 0.25, "rough": (0.3, 0.46), "wear": 0.3, "grime": 0.4,
         },
         # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
         "polymer_black": {
@@ -240,6 +271,19 @@ PRESET = {
             "contrast": 1.06,
             "pivot": 0.44,
             "saturation": 0.88,
+        },
+        # Ostrander Federal (ostrander_federal.md §Audio/lighting, OF-C2): Friday afternoon daylight, the brightest heist:
+        # warm, slightly golden highlights (the SW sun on the limestone and the bronze), neutral-cool shadows, clean
+        # neutral mids, soft contrast and a small lift so no black is crushed.
+        "ostrander_federal": {
+            "slope": (1.015, 1.0, 0.98),
+            "offset": (0.008, 0.008, 0.01),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (-0.004, 0.0, 0.008),
+            "highlight_tint": (0.02, 0.012, -0.014),
+            "contrast": 0.97,
+            "pivot": 0.45,
+            "saturation": 1.02,
         },
     },
     # Godot Environment resources (godot.py).

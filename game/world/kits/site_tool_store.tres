@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"site_tool_store"
+purpose = &"storage"
+required_items = Array[StringName]([&"shelving", &"tool_wall", &"gas_cylinders", &"box", &"light_fixture"])
+optional_items = {
+&"box": 1.5,
+&"crate": 0.8,
+&"pallet": 0.8
+}
+clutter_groups = {
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"corner"]),
+"count": Vector2i(1, 2),
+"items": {&"archive_box": 1, &"bin": 1, &"box": 3},
+"radius": 1
+}
+}
+min_density = 0.3
+max_density = 1.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 43
+seed_id = &"storage_supplies"
+counts = {
+&"shelving": Vector2i(2, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"box": PackedStringArray("prop_box_small", "prop_box_stack"),
+&"crate": PackedStringArray("prop_crate_wood"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet_loaded"),
+&"shelving": PackedStringArray("prop_shelving_parts")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "Rolling Thunder (storage), from storage_supplies: RT C4 site tool store cabin: parts shelving, the tool wall, gas cylinders, boxes."

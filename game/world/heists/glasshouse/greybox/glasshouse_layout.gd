@@ -159,7 +159,8 @@ const DOORS: Array = [
 	["StaffDoor", "prop_door_single_walnut_t20", Vector3(1.5, 0.0, 6.0), 0.0, "NONE", "INWARD", "staff_door", {}],
 	["SalonBackDoor", "prop_door_single_walnut_t20", Vector3(16.5, 0.0, 6.0), 0.0, "LOCKPICK", "INWARD", "", {}],
 	["SalonDoor", "prop_door_single_walnut_t20", Vector3(13.0, 0.0, 10.0), 90.0, "LOCKPICK", "INWARD", "salon_door", {}],
-	["MainEntrance", "prop_door_double_glass_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance", {"public": true}],
+	["MainEntrance", "prop_door_double_glass_t40", Vector3(11.25, 0.0, 12.0), 180.0, "NONE", "DOUBLE", "main_entrance",
+		{"public": true, "leaf_surface": "glass"}],
 	["BreakRoomDoor", "prop_door_single_ivory_t20", Vector3(3.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
 	["SecurityDoor", "prop_door_single_steel_t20", Vector3(8.0, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
 	["WCUpperDoor", "prop_door_single_ivory_t20", Vector3(11.5, UPPER, 4.5), 180.0, "NONE", "INWARD", "", {}],
@@ -430,8 +431,10 @@ const LIGHT_TWEAKS: Dictionary = {
 	"X1": {"wall_lamp": {"spot_range": 9.0, "spot_angle": 75.0, "light_energy": 3.0}},
 }
 
-## Ceiling fixtures (kit-placed) that cast shadows: the fixture nearest to each point (<= 8 per view).
-const SHADOW_FIXTURES: Array = [["G5", Vector3(3.0, 3.6, 9.5)], ["G6", Vector3(15.5, 3.2, 9.0)], ["G2", Vector3(8.0, 3.0, 2.5)]]
+## Ceiling fixtures (kit-placed) that cast shadows: the fixture nearest to each point (<= 8 per view). D-146: only
+## the chandelier hall's (G5) keeps one; the salon (G6) and workshop (G2) fixtures re-drew their casters in every hall
+## and street view (the renderer does not occlude lights) for a shadow that read only in their room.
+const SHADOW_FIXTURES: Array = [["G5", Vector3(3.0, 3.6, 9.5)]]
 
 ## Chandelier display (landmark): the round display case visual on a collision drum; the ring
 ## chandelier above is an anchor (ANCHORS, G5).

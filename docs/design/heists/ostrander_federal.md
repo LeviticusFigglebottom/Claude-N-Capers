@@ -172,7 +172,7 @@ The G0 design stands (D-075). These are the build-plan fixes from `docs/process/
 | Tannery Street, north (z −14) | The parking structure's **exit barrier** and a ticket booth across the street mouth. The **P4** spawn is on the ramp behind it at (55, −45). Vista: Tannery continues north to a T-junction facade. |
 | Tannery Street, east (x 62) | The Belmont Arms facade (no openings below +4.0: the lobby is round the corner, off-map). Its awnings and lit windows are dressing. |
 | Corvino Building (x 0 and west) | A solid party wall. The fire escape (rear, in Ledger Lane) reaches the bank's main roof only (+12.2; `fire_escape` variable). Above +12.2, Corvino's wall continues to its setback at +16.0 (the P5 island, police-only, joined to our roofs by one-way rappel links, QC-68). |
-| Main roof (+12.2) and hall-roof terrace (+8.6) | 1.1 m solid parapets with a **coping sloped ≥ 50°** (D-104 slope rule: 45° is walkable for our 45° player, so Shadow Ledger's 45° coping is not enough; nobody stands on it). Toward Tannery Street the terrace parapet has a 1.1 m guard (a bag throw spot to E2, see Loot path). An `OUT_OF_BOUNDS` curtain sits 0.5 m beyond every parapet (D-040). |
+| Main roof (+12.2) and hall-roof terrace (+8.6) | 1.1 m solid parapets with a **coping sloped ≥ 50°** (D-104 slope rule: 45° is walkable for our 45° player, so Shadow Ledger's 45° coping is not enough; nobody stands on it). Toward Tannery Street the terrace parapet (x 48, z 17–36) has a 1.1 m guard (a bag throw spot to E2, see Loot path): solid to 0.5 m, then a **mono-pitch coping** falling 0.6 m outward from the terrace face's 1.1 m top edge (56°; OF-C1 for OF-P1). The terrace side is a plain vertical face to 1.1 m, as on every parapet (above the 1.08 m jump apex: nobody climbs or walks off it). An `OUT_OF_BOUNDS` curtain sits 0.5 m beyond every parapet (D-040). |
 | Lantern skylight | A raised 0.6 m curb with a **sloped curb top (≥ 50°)** and glazing **sloped ≥ 50°** above it (D-104: no walkable slope < 50° outside the play mesh; a flat 0.6 m curb is jumpable, apex 1.08 m). It cannot be walked on. It is the police rappel ENTRY into the hall, glass, breakable. |
 | Up | Broken cloud, low SW sun. Every visible roof has a parapet and plant. |
 | Far | Financial-district towers on every side at 80–300 m (LOD facades with lit floors). Nothing reachable sees the void. |
@@ -518,7 +518,9 @@ Executive notes:
 - **EA, the executive assistant's office:** the fifth code-PC candidate `k` (`pc_exec`).
 - **XL, the executive lounge:** two pairs of glass doors (`DD`, LOCKPICK from outside) onto the
   **terrace** (+8.6, exterior): planters, benches, the lantern skylight `*` (not walkable), and the
-  heli **cargo net** `H` (E3, SECURE_LOOT). The caged ladder `h` comes down from the main roof.
+  heli **cargo net** `H` (E3, SECURE_LOOT). The caged ladder `h` comes down from the main roof. As built (G1), the
+  net (`SecureTerrace`) is at x 40.5–44.5, z 23.5–28.5, east of the heli's ESCAPE area (x 32.5–38.5, z 24–30, the `H`
+  drawn above): the net drawn at x 33–39 was inside C12's cone (see Sightlines), so it moved east; the ESCAPE stayed.
 
 ### Roof (+12.2; north block)
 ```
@@ -774,7 +776,7 @@ is not a plan**. The hall is cased unmasked and worked around, never subdued. Ci
 | C9 | GA E end (39.6, 18.5, 3.0) | W along the gallery: OF/CF doors, the WL junction | |
 | C10 | VO NE (47.6, 9.4, 2.8) | SW over the VO desk | `pc_vault_ops`, `kc_vault_ops`. |
 | C11 | XC E end (47.6, 8.0, 2.8) | W along XC to x ≈ 28: PR, PN, XW doors | EA (19, 7) and the SA door (14, 7) are out of range. |
-| C12 | terrace, on the north facade (24, 17.2, +3.0 above 8.6) | S over the terrace and the lantern | The XL doors (x 5–11) are 89° off: blind. The heli net (33–39, 24–30) is ≥ 50° off: **outside the cone**. A path hugging the facade then down the east side reaches the net unseen. |
+| C12 | terrace, on the north facade (24, 17.2, +3.0 above 8.6) | S over the terrace and the lantern | The XL doors (x 5–11) are 89° off: blind. The heli net is **outside the cone**: as built it sits at x 40.5–44.5, z 23.5–28.5 (G1, f49df211: moved east of the drawn 33–39 so the E3 bag line, hugging the facade then down the east side, reaches it camera-free; validator `bag_line`). The heli's ESCAPE area stays at x 32.5–38.5, z 24–30. |
 | C13 | BB E end (47.6, 8.0, 2.8) | W along BB to x ≈ 28: SD, SS, CM, PL doors | **The vault gate, CQ, SA and LK (x 0–18) are out of range.** |
 | C14 | SD NW (34.4, 9.4, 2.8) | SE over the box rows | |
 | C15 | CP NW (16.4, 0.4, 2.8) | SE over the counting tables | |
@@ -837,9 +839,11 @@ door".
 
 **Lasers** (VC, across the concourse at x 21): `lz_static` has a discoverable **bypass gap** at the
 south wall, **≥ 1.0 m clear width** (D-104 §7.1; was 0.8 m), passable crouched (QC-24, validator-asserted); a grid
-built as crouch-under has its lowest beam's lower face ≥ 1.215 m; `lz_sweep` is a timing window; `lz_timed` drops
+built as crouch-under has its lowest beam's lower face ≥ 1.215 m; `lz_sweep` is a timing window (OF-C1 for OF-P1:
+**2 vertical beams half a cycle apart, a 7 s sweep** across the 3.3 m width and back; they cross the centre together
+every 3.5 s, so the centre lane is clear **2.6 s** per pass; the 3-beam 8 s sweep left 0.33 s there); `lz_timed` drops
 for 6 s every 20 s. Every window is long enough to cross 4 m with a MEDIUM bag (×0.75: 4 m / 2.63 m/s = 1.5 s;
-`lz_timed`'s 6 s is 4×). The **laser controller** (with the vault-control
+`lz_sweep`'s centre is ≥ 2.0 s, `lz_timed`'s 6 s is 4×). The **laser controller** (with the vault-control
 rack, in SV or CM) switches the grid off: `hack_terminal` 20 s, `[lasers]`. ECM does not affect
 lasers (S9.10).
 
@@ -847,14 +851,26 @@ lasers (S9.10).
 Hazardous up, at least one guard must be avoided. The operator is the most valuable pager (all
 cameras off) and sits off BC, a corridor every route crosses.
 
-**The hardest roll and its ghost line** (the level_standards §4 MUST: no kills). The roll:
+**The hardest roll and its ghost line** (the level_standards §4 MUST: no kills). **D-150 (2026-10-21):** this line was
+written for 6 guards, before D-140's `guard_extra` put 8 on Cataclysm (the two extras walk BB east). There, BB has no
+window with both `rover_basement` and the vault guard away (P r257d). So the no-kill ghost acceptance runs on
+**Hazardous** (6 guards), and Cataclysm's stealth acceptance is a stealth win with pager kills (D-140); patrols are not
+lengthened for a Cataclysm ghost. If Hazardous also lacks the BB window, `rover_basement`'s away leg is lengthened at
+Hazardous only (D-150.3). The roll as first written:
 Cataclysm, `cam_a` (Titan), operator in, 6 guards (lobby, vault, rovers hall, gallery, basement,
 dock), `kc_on_manager` + `mgr_vault`, `code_pc = pc_exec`, `srv_gallery`, `lz_sweep`, `door_none`,
 `fe_up`, `customers` 8, `officers` 3, `time_lock_s` 270, `esc_van_dock`, rare `vip_client`. Solo,
 one ECM (2 charges), 2 cable ties, **no kills, no pagers**:
 1. Plaza spawn. Walk unmasked down Tannery Street into Ledger Lane (PUBLIC). Read `rover_dock`.
 2. When he starts his `smoke` pause at the Tannery corner (facing E, 22 m away), mask behind the
-   dumpsters (behind C6). **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
+   dumpsters (behind C6). **Second cue (D-150 Hazardous ghost, P's ghost_haz data):** `rover_hall` walks his three
+   loops in turn from BCMid (guard_tweak `hub_loops`: (a) TW/hall, (b) LD dock check → MO, (c) stair B → fire exit),
+   so his (b) dock check lands in most smoke windows. Go only once he has **left LD for MO** on (b): his MO leg and the
+   whole of (c) keep him at BC's east end, away from the LD → BC west → SA route. Read the phase by **where he is**
+   (east of x 38 on the BC line), not by the time since his last LD visit: he spawns into (b) (LD at t≈11) and passes
+   within 8 m of DockCorridorDoor at the hub between loops, so wait outside beside the dock door until he is east. If
+   he is heading for LD, or in it, let that window go. (P haz_n, seed 1002: the t=162 window, step 2 done at t=208; no
+   patrol change needed.) **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
    → BC west end (C4 is off in `cam_a`) → SA down. About 16 s.
 3. Basement, BB west (C13 at the east end does not reach x < 28). Wait in LK. When the manager
    (alone on SB, D-136 §3b.5) takes his WC break, shout him down and **tie him** (tie 1), take the keycard (1 s)
@@ -890,7 +906,7 @@ instant. Distances are path lengths on the floor plans (1 char = 1 m; wall centr
 | 6 | cage gate (25, 15.5) → vault door (30, 13) | 6 m | |
 | 6 | vault door → along the VC south side (z 12.4) → laser plane x 21 → gate (17, 9) | 14.5 m | |
 | 6 | gate → BB (17, 8) → (12, 8) → CQ door (12, 7) → by the lift (11.5, 4.5) | 9.5 m | |
-| 6 | **one trip:** 30 m loaded at 2.63 m/s + 30 m back walking at 3.5 m/s + 2 sweep crossings (mean wait ≈ 1 s each at `period_s` 4 s) + pick/drop ≈ 1 s | 60 m | 11.4 + 8.6 + 2 + 1 = **23 s** (19.6 s sprinting back; 25 s with worst sweep waits) |
+| 6 | **one trip:** 30 m loaded at 2.63 m/s + 30 m back walking at 3.5 m/s + 2 sweep crossings (mean wait ≈ 1 s each at the 2-beam 7 s sweep, worst 2.4 s) + pick/drop ≈ 1 s | 60 m | 11.4 + 8.6 + 2 + 1 = **23 s** (19.6 s sprinting back; 26 s with worst sweep waits) |
 | 6 | 6 trips | | **≈ 140 s** to CQ (the old 6 × 25 s = 150 s also covered the lift to LD, assuming sprinting with cash: the loaded carry is now 5.75 / 2.63 = 2.2× slower) |
 | 6 | exposure per trip inside the vault guard's VC view (VT exit 6 m + VC 14.5 m loaded, back unloaded) | 20.5 m ×2 | 7.8 + 5.9 = **13.7 s** — at 10 m he fills in 1 s, so every trip needs him off VC (loops (b)/(c)); a loop (a) return means waiting in VT off the door axis |
 | 7 | one lift cycle: load 2 (2 × 2 s) + send (1 s) + walk CQ → BB → SA up (11 m flights + landings) → BC → LD (30 m, 8.6 s; the car takes 8 s) + unload 2 by the door (4 s) + call (1 s) + walk back (8.6 s) | | **≈ 27 s**; 3 cycles, the last without the walk back: **≈ 72 s** |
@@ -911,7 +927,85 @@ instant. Distances are path lengths on the floor plans (1 char = 1 m; wall centr
    guard's view means ≈ 6 separate (b)/(c) windows; the solo waits in VT off the door axis between them. Still a
    ghost (no kills, no pagers) but ≈ 3–5 min longer than the old estimate; inside Size L's 25–40 min.
 4. Step 5's 270 s RC wait relies on "the end aisle is blind from BB and the centre aisle": marked as a `hide_spot`
-   for levelcheck `hide_los` (OF-C3), not trusted by eye.
+   for levelcheck `hide_los` (OF-C3), not trusted by eye. **Superseded by the proven line below:** the time lock is
+   waited out in CQ's SE corner, not RC (the vault guard's loop (b) walks RC).
+
+#### Ghost line as proven (Hazardous, seed 1002; ENV P r263)
+Source: ENV P's route note, `game/tests/p/_review/captures/of_g1_2026-10-20/ghost_route_note_hazardous.md` (on
+env/p-play 3259691d1), written for this section and the GPU box's windowed human-input check. It uses OF world metres
+(x, y, z), with y the floor (B −4, G 0, M 5, E 8.6). Times are heist seconds on seed 1002 Hazardous, trunk r263. Steps
+1-5 were proven unseen in one continuous run (haz_zd; the same lines in haz_zc / za). Step 6's sub-moves were proven in
+debug runs (`--test=ghost6`, a logged shortcut start at CQ). Step 7 is not reached by the harness yet. Where this
+differs from the steps above, this wins.
+1. Plaza spawn → Tannery Street → Ledger Lane to the dumpsters (t≈33).
+2. **Dock.**
+   - Wait for `rover_dock`'s smoke at the Tannery corner (cues t≈78, 149, 259, 317, 401).
+   - `rover_hall`'s loop (b) LD check comes every ~88 s (t≈11, 96, 185, 269, 361, 449). If he is heading in at the
+     cue, let that check pass inside the same smoke window (≤ 25 s), then mask, ECM #1, and lockpick
+     DockPersonnelDoor (8 s).
+   - If DockCorridorDoor is not clear, wait in the lane beside the dock door at (6, 0, −1.5), not inside LD.
+   - Through BC and SA, then **wait on SA's half landing (14.5, −2, 2.0)** until BB is clear. BB is clear when there
+     is no guard in BB west of x 32, in RC's front (x < 14, z < 14), walking in VC, or within 6 m of SA's door.
+   - The B landing behind SA's door is **not** a wait spot (BB walkers see it at 2 m). Back up to the half landing
+     if a guard is within 10 m of the foot.
+3. **Keycard** (manager on `mgr_vault`).
+   - Wait crouched at **(8.5, −4, 0.5)** behind WCPartitionLK2. It is the one LK floor point hidden from both his walk
+     in (LockerDoor → ManagerLKWC (7.25, −4, 2.2)) and BB.
+   - When he stands at his WC stop (t≈341), shout from there **without stepping out**: the all-round shout reaches him
+     by the short nav path. He goes down blind.
+   - Then step out, tie him (tie 1) and take the card (t≈357).
+   - Stepping out to shout fails: within 1.5 m NPCs see all round and fill 1.0 at once.
+4. **Code.**
+   - LK → SA in a BB window (step 2's rule), crouched at the LK hide (1.5, −4, 4) meanwhile.
+   - The stair waits for G and E are done from the half landing.
+   - `pc_exec` hack 45 s, 1 interruption; done t≈466.
+5. **Vault.**
+   - Down to the half landing (BB rule), then the LK hide.
+   - The gate window needs the vault guard on loop (b) (RC) and `rover_basement` away. This window is rare on
+     Hazardous: haz_zd waited 300 s twice with none (t 599-1199). That is D-150.3's lengthening trigger, if it holds
+     at acceptance.
+   - Gate, cross the sweep (lane x+0.01, 3.35 m/s), code at TL, back across.
+   - **Wait out the time lock (270 s) crouched in CQ's SE corner (12.5, −4, 3.5).** No BB point sees it, and CQ's
+     door is 2 m from the gate. Do not wait in RC (the vault guard's loop (b) walks it), and do not walk BB to LK.
+     Vault open t≈1484.
+6. **The bags.**
+   - **Timing:**
+     - After the time lock the vault guard is back on his VC post (25.6, −4, 10.9), 4 m from VT's door.
+     - Every VC crossing needs him away on loop (b) (RC, west / south) or (c) (east, x > 36, SD), about every 200 s on
+       seed 1002.
+   - **In (CQ → VT):**
+     - Go from CQ's corner when the vault guard's absence is ≤ 15 s old, or he is ≥ 25 m from the gate by path.
+     - No other guard may be in VC, within 12 m of the gate, in BB within 25 m of it, or walking toward it within
+       32 m. Project every guard ~8 s ahead.
+     - CashCageGate (BARRED) opens with the vault code at CashCageKeypad (25.25, −4, 16.6).
+   - **Out with a bag (VT → CQ):**
+     - Wait at **(24.5, −4, 20.5)** beside the cash, hidden from every VC point.
+     - Leave on the same window rule (absence ≤ 10 s or ≥ 25 m by path, projected 12 s), and cross the sweep at
+       2.56 m/s with a MEDIUM bag.
+     - **Stop just inside the gate at (17, −4, 10.3)**: VC side, blind from BB except at the gate. Step out only when
+       no guard is in BB within 25 m of the gate (or within 8 m anywhere) and the vault guard is still ≥ 18 m off. A
+       guard can step out of a side room into BB with no warning; this stop is the only defence.
+   - **Into the cash lift:** open CashLiftDoorB (11.5, −4, 3) and throw the bag in.
+     - P's runs threw from 3.2 m back inside CQ, looking steeply down, because a throw from the door hit GL's back
+       wall and rested outside the car's 2.2 m count box.
+     - **Fixed (OF-C2, LEAD GPU-22):** the car now fills GL's shaft (prop_cash_lift_car_w255, car_size_m 2.55 m), so a
+       throw from either landing door at any weight, level or looking down, rests in the car
+       (test_of_cash_lift_throw.gd).
+     - Two bags per lift cycle. Proven in ghost6_j/k/l/m: 176 s and 114 s per bag on good windows.
+   - **Lift up:**
+     - From CQ / GL, wait crouched in CQ's corner for BB, step to SA and go up to the half landing.
+     - Climb to G **4-40 s after `rover_hall`'s LD check** (ghost6_l/m: up 4 s after his t=373 check).
+     - Stage both bags by LD's personnel door, and **leave LD within ~60 s**, before his next check. ghost6_l failed
+       waiting 67 s for a posted guard 7 m off behind walls; ghost6_m left at once (6 s) and recalled the lift unseen
+       (t=424).
+7. **Lift cycles 2-3, the throw, the walk out** (not reached by the harness yet).
+   - Repeat step 6's cycle for bags 3-6.
+   - The cycle-2 in-crossing is where ghost6_m/n/o/p/q/r died. Each death was a BB guard close to the gate during the
+     gate → CQ dash: `rover_basement` standing 14 m off facing west, or stepping out of a room, or the vault guard
+     coming back down BB. A human should peek BB from inside the gate on every trip.
+   - Then ECM #2 in LD and throw the 6 staged bags from the personnel door into the E1 van's zone (4 m MEDIUM throw,
+     ~15 s of the 20 s jam). Time it when `rover_hall` is on loop (a) or (c), not (b).
+   - Walk out through the dock door and the lane. The escape opens on 6 secured.
 
 ## Loud
 **Phase outline.** Alarm → LOCKDOWN (the vault reseals, a running time lock aborts, QC-64) → CONTROL
@@ -1070,14 +1164,34 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
 - **Throw spots:** GA → the hall floor (5.0 m); the terrace east parapet → the Tannery bay (E2);
   the LD personnel door → the E1 van. **Bag weights (D-102):** cash and drives MEDIUM (×0.75, no sprint, 4 m
   throw), gold and the drill parts HEAVY (×0.5, no sprint, 2 m throw), bonds LIGHT (×1.0, sprint, 4 m). So a HEAVY
-  throw from the terrace parapet must clear the ≥ 50° coping with its 2 m (§7.4), and the E1 zone sits ≤ 3.5 m from
+  throw from the terrace parapet must clear the ≥ 50° coping (§7.4, LEAD-amended: a HEAVY bag clears from ≤ 1.5 m off
+  the face at all three pitches; PD2 heavy bags are short throws, and the throw spot is marked on the floor), and the E1 zone sits ≤ 3.5 m from
   the personnel-door threshold (ghost line flag 2).
+- **Terrace → E2, as built (OF-C1 for OF-P1):** a throw leaves 1.3 m up and 0.7 m ahead of the thrower (LootManager), so
+  over the 1.1 m guard with its outward-falling coping (Site) a **HEAVY** bag clears at −20° / 0° / +25° look pitch
+  from up to 1.4 m / 1.6 m / 1.6 m off the face (the thrower's centre; ENV P's stand is 0.6 m) and lands at x 49.3–52.6
+  (in the E2 zone); a MEDIUM one clears from up to 2.0 m at −20° and beyond 2.3 m at 0° / +25° and lands at
+  x 52.3–55.9 (in the zone or ≤ 1.7 m beside it). Physics-checked on the built map
+  (`game/tests/c/test_of_bag_throws.gd`, real LootBag bodies). From 2 m back a 2 m HEAVY throw comes down at the face
+  itself, so no guard height makes that throw; stand at the parapet. The throw spot is the parapet's south end (z 17–21),
+  over the E2 strip (Secure zones).
+- **The hole, as built (OF-C1 for OF-P1):** G is always a throw (2–4 m, no player drop), and the 1.2 m opening is
+  narrower than any throw, so the hoist rig (it appears with the hoist at the burn) puts **1.5 m guard screens** on the
+  hole's W, E and S edges, flush with the edge (the N edge stays open: the ladder top, `hole_rappel`): a bag thrown
+  across the hole hits the far screen (the first contact keeps 15 % of its speed) and drops into VT. In the vault the
+  rig is a **shaft round the hoist car, open to the south over a 0.6 m sill** (ND's lift-hatch pattern): a bag thrown
+  north at the car from the vault floor stops on the backstop and lies in the car. Load the hoist from the south.
 - **Optional:** the bullion cage (padlock; gold is HEAVY: ×0.5 speed, no sprint, D-102), the bond safe,
   the vault boxes and the SD hall boxes (saw: noise 15 m, next to the vault post), the president's
   safe (Executive, drill/saw), the server drives (SV, 2 bags, MEDIUM), the teller drawers (`small_loot`
   × 6), the CP strapped cash (`small_loot` × 4).
 - **Secure zones:** `SECURE_LOOT` at the active escape only: the E1 van's rear doors (lane), the E2
-  van's rear doors (Tannery bay), or the heli net (terrace). Each exists from the start (PD2).
+  van's rear doors (Tannery bay), or the heli net (terrace). Each exists from the start (PD2). As built: E2's zone is
+  the bay strip **x 48.2–54.2, z 7.3–21.3** (`SecureTannery` at (51.2, 0, 14.3)), from the van's rear doors north under
+  the terrace's SE corner, so the terrace throw lands in it (the van's ESCAPE stays at (51, 6.5)); E3's net
+  (`SecureTerrace` at (42.5, 8.6, 26.0), x 40.5–44.5, z 23.5–28.5) is east of the heli's ESCAPE (35.5, 27), out of C12's
+  view (Sightlines). The doc's (52, 8) and (36, 27) are the escape points; the zones are where the design's throw spot
+  and camera-free line need them.
 - **Bodies:** BODY_HIDE in the lane dumpsters (`body_container`, 2 each), LK lockers (2), J1, J2
   and PL (1 each).
 
@@ -1139,7 +1253,7 @@ clear, inside D-120's 39–81 % band.
   `loot.thermal_drill_part` at the active `drill_delivery` marker after `drill_eta_s` (QC-60), with
   `cue.escape_arrive_heli` or `_van` and a Mercer line. With `asset.thermal_drill_drop` the bags are
   already at the point.
-- **Burn-through:** `device_finished` on the lid's `drill_point` → hide the lid mesh, enable the
+- **Burn-through:** `device_finished` on the lid's `drill_point` → disable the `lid` prefab (see Map hooks), enable the
   hole's ladder, the hoist (`bag_lift`) and its nav links (QC-61), complete `[vault_breach]`.
 - **Code PC:** the active `code_pc` slot holds the `hack_terminal` (`reveals_code_group &"vault"`).
   The other four PCs are props (no interaction; their screens are dark).
@@ -1159,6 +1273,76 @@ clear, inside D-120's 39–81 % band.
   gold cage, required secured, sniper on the Assay Office / the garage / the tower, Brandt, van
   ETA, heli ETA, escape.
 
+### Map hooks the mission binds to (OF-C1 G1 fix for OF-A6; ENV C, 2026-10-17)
+The mission finds these by `objective_tag` / route id; the node paths are for art lanes and tests, not for the mission.
+- **The lid** `Gameplay/Devices/Lid`: a bare `GameplayPrefab` (no interaction) tagged `lid`, at (24, 0, 14.6). It holds
+  the 1.2 × 2.2 m plug over the hole (`Plug`, the 0.8 m slab body, floor surface) and the 2.4 m marble panel
+  (`Visual/LidPanel`), so the mission's `set_enabled(false)` at the burn-through hides both and removes the collision on
+  every peer (replicated "pe"). Meta `burn_lid` stays on the prefab root for the mission's G1 fallback; levelcheck kind
+  `hatch` (it sits in its slab hole like GN's floor hatch). Nothing else is in `Geometry/Building/Lid` any more. Art: the
+  burn's dust / scorched rim belongs outside the lid prefab (it vanishes at the burn): on the slab rim in Geometry, or a
+  separate prefab that A enables at the burn.
+- **Navmesh at the hole (LEAD ruling):** the hole's 1.2 × 2.2 m footprint (x 23.4–24.6, z 13.5–15.7) is a **permanent nav
+  hole**, baked from the start: the plug is not navmesh source geometry, and a projected obstruction carves the footprint
+  (y −0.2 to +2.0, the D-073 baked-doorway pattern). NPCs walk round the lid before the burn as after it; there is no
+  runtime rebake and no toggled region. After the burn the only ways through are A's links: the rope ladder's NavLink,
+  the hoist (bags) and the `hole_rappel` RAPPEL link. The nav edge stands ≈ 0.3 m (agent radius) back from the hole edge;
+  the drill's UsePoint (25.6, 0, 14.6) and the RAPPEL point (24, 0, 13.3) are on it.
+- **Burn prefabs:** the hoist (`hoist`) and the rope ladder (`rope_ladder`, `usable = false`) are placed with
+  `enabled_at_start = false`; the G1 metas `starts_disabled` / `hidden` / `burn_height_m` stay (the mission reads them).
+- **The hole layout (OF-C1 for OF-P1, §7.7):** the hoist car is **1.0 × 0.75 m** (x, z; 2 bags) against the hole's
+  south edge (`Gameplay/Lifts/Hoist` at (24, −3.95, 15.325), car z 14.95–15.7; its UsePoint (25.1, −4, 15.325) east of
+  the shaft); the rope ladder hangs 0.04 m inside the north edge (`RopeLadder` at (24, −4, 13.54), yaw 180), so its
+  Bottom grab point (24, −4, 13.94) stands **1.01 m clear of the car** and its Top (24, 0, 13.14) is on the TW slab north
+  of the hole. **The hoist rig** `Gameplay/Lifts/Hoist/Rig` (map-built static boxes under the hoist, so they appear with
+  it at the burn and are absent before it; world_dynamic, layer 2: crew and bags collide, interaction / vision rays
+  pass, so the car's bags stay pick-up-able over a screen): `ShaftBackstop` (z 14.92–14.97), `ShaftW` / `ShaftE`
+  (x 23.36–23.41 / 24.60–24.65) to 2.4 m above the vault floor, `ShaftSill` (0.6 m, z 15.75–15.8: the open, loading
+  side faces south), and the TW guard screens `HoleGuardW` / `HoleGuardE` / `HoleGuardS` (1.5 m, flush with the hole's
+  W / E / S edges; the N edge open). Each rig box is a permanent nav obstruction too (the hole carve's pattern), so on the
+  TW the nav edge is ≈ 0.35 m back from the W / E / S edges. Art lanes: the car visual must fit 1.0 × 0.75 m inside the
+  shaft (the A placeholder is 1.24 m) and the rig's names stay. Levelcheck treats each rig box as its own prop (meta
+  `lc_subprop`). **The hoist panel** (OF-C1, ENV P burn run 7df78180): the bag_lift's external `Panel`, a 0.04 × 0.12 m
+  riser standing against ShaftE's east face (x 24.65–24.69, floor to 1.2 m, z 15.265–15.385; world_dynamic like the
+  rig), its origin and the Interactable at 1.1 m, square in front of the `UsePoint` (25.1, −4, 15.325, facing west);
+  bag_lift copies riser and panel to the TW landing (+4 m, against HoleGuardE's east face, flush with ShaftE's). Regression: `game/tests/c/test_of_hoist_panel.gd`.
+- **Tags for tools and tests:** `CagedLadder` has `objective_tag = caged_ladder`; `RopeLadder` `rope_ladder`;
+  `FireEscapeDropLadder` `fire_escape`. The escape zones keep the tags the mission binds (`secure` / `escape` /
+  `escape_wait`; one escape slot is resolved per run, so tag + class is unique in a run); `SecureDock` / `EscapeDock`,
+  `SecureTannery` / `EscapeTannery`, `SecureTerrace` / `EscapeTerrace` also carry meta `escape_label` = `E1` / `E2` /
+  `E3`. (New groups would be `G` constants, ENV A's contract.)
+- **The SD attendant (D-136 §3b.5, LEAD):** `Spawns/SDAttendant`, always, `desk_work`, on the Seat of lane B's
+  `ChairSDAttendant` (37, −4, 9.67), facing the desk; the chair is an `npc_seat` (no collider, no nav obstruction).
+  Tags `civ_sd_attendant` (this roster's tag; no ENV D look yet: it wins once D maps it) then `civ_teller` (D's teller
+  looks today, and the staff doors); never `civ_officer`, which the mission binds to `officer_coffee` when unrouted.
+  The 0–1 SD customer is B's `civ_extra` slot `cx_sd` (LateCustomerSD at a viewing booth). Population (D-130 test):
+  civilians 15.4 / 16.4 / 17.4 / 18.4 / 19.4 / 20.7, max 22 on every tier (Cataclysm customers 7.5, civ_extra exactly 3).
+- **Drill:** `LidDrill` (`vault_drill`) has `requires_loot = loot.thermal_drill_part`, `requires_count = 2` as properties
+  (the matching metas stay). **Code PCs:** every `CodePC` (`code_pc`) has `reveals_code_group = vault`.
+- **The time-lock console and the vault-control rack have no `targets`:** only the mission opens the vault door
+  (D-136.1).
+- **The planner** `Gameplay/Markers/CodeHintPlanner`: a `code_note` (`code_hint`, `reveals_variant_group = code_pc`, no
+  `code_group`) on Ashgrove's desk (43.9, 0.75, 23.9), read from the hall side.
+- **Bonds:** the bond safe holds `VaultBonds` (`loot_spawn`, 1 × `loot.bearer_bonds`, tag `bond_safe`). The rare
+  `bond_delivery` spawns at the marker `Gameplay/Markers/BondDelivery` (vault floor, (16.5, −4, 18.0), the open floor E
+  of the bond safe; the doc names no spot).
+- **Civilian routes** (`CivilianRoute`, LOOP, stops are `CivilianRouteStop`s on the navmesh, every stop ≥ 1.0 m from a
+  door centre; `Patrols/Routes/`):
+
+  | route_id | node | binds (bind_tags) | stops (dwell s) | away window |
+  |---|---|---|---|---|
+  | `mgr_floor` | ManagerFloorRoute | `civ_manager_mgr_floor` | BM desk 20–40 → hall 10–20 → TW 10–20 → PC 10–20 | `mgr_away` at the BM desk |
+  | `mgr_gallery` | ManagerGalleryRoute (starts at CF) | `civ_manager_mgr_gallery` | VO 20–40 → CF 30–60 → OF 10–20 → PR 30–60 | `mgr_away` at CF, PR |
+  | `mgr_vault` | ManagerVaultRoute | `civ_manager_mgr_vault` | SD desk 30–60 → CP 10–20 → LK WC 40–70 → BC (via SB) 10–20 | `mgr_away` at the LK WC |
+  | `officer_coffee` | CoffeeOfficerAO1 | `civ_officer_ao1` | AO1 desk 60–120 → BR coffee 30–60 | `officer_away` |
+  | `officer_coffee_of` | CoffeeOfficerOF | `civ_officer_of` | OF desk 60–120 → gallery WC 20–40 | `officer_away` |
+  | `officer_coffee_vo` | CoffeeOfficerVO | `civ_officer_vo` | VO desk 60–120 → gallery WC 25–55 | `officer_away` |
+  | `teller_rotation` | `Variants/Group_side_door/Slot_<door>/TellerRotation` | `civ_teller_rotating` | station 60–120 → BR 8–15 → station → WW 25–50; **`door_fire_propped`:** station → smoke outside the fire exit (50.5, 0, 6) 30–50 | `teller_away` |
+
+  Each officer spawn carries `civ_officer` plus its desk tag (`civ_officer_ao1` / `_of` / `_vo`), so each officer has
+  its own route (a route's stops are fixed, so one shared route would walk every officer to the same desk). The away
+  times with the walk come to ≈ 50–90 s (officers), 40–80 s (teller), 47–67 s (smoke), as Circulation asks.
+
 ## Variable table
 Each variable changes a decision. Rules resolve in this order (heist_map.md §5). Per-difficulty
 weights use A2-08 / A3-10 (QC-18).
@@ -1171,7 +1355,7 @@ weights use A2-08 / A3-10 (QC-18).
 | `officers` (scalar) | 1, 2, 3 | Routine 0.4/0.4/0.2; Brutal+ 0.2/0.4/0.4 | **Whether the code PC has someone at it:** wait for the coffee window or spend a tie. |
 | `server_room` | `srv_gallery` (SV), `srv_basement` (CM) | 0.55, 0.45 | **The code-free alternative and the laser switch:** upstairs (far from the vault, near the PCs) or in the basement (next to the vault, on `rover_basement`'s loop). |
 | `time_lock_s` (scalar) | 150, 210, 270 (D-075: approved) | Routine 0.4/0.4/0.2; Brutal+ 0.1/0.4/0.5 | **How long to hold the basement** against the vault post's loop, so whether to deal with him first. |
-| `guard_post` | `rover_hall`, `rover_gallery`, `rover_basement`, `rover_dock` | 1 each; pick 1 (Routine/Tense), 2 (Hazardous), 3 (Brutal), 4 (Lethal+) via `difficulty_add` | **Which route is walked:** the dock, the back corridor, the gallery/Executive (PCs, roof route), or the time-lock wait. |
+| `guard_post` | `rover_hall`, `rover_gallery`, `rover_basement`, `rover_dock` | 1 each; pick 2 / 3 / 4 / 4 / 4 / 4 rovers by difficulty via `difficulty_add` [1, 2, 3, 3, 3, 3] (D-140 GUARDS lever: 2 fixed posts + rovers + `guard_extra` 0/0/0/0/1/2 = 4 / 5 / 6 / 6 / 7 / 8 guards, pager cap 4; LEAD r246) | **Which route is walked:** the dock, the back corridor, the gallery/Executive (PCs, roof route), or the time-lock wait. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine–Hazardous 0.6/0.4; Brutal+ 0.75/0.25 | **Live cameras or not.** Staffed: deal with him from behind (a pager) or live with cameras. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | **Which entry needs ECM or timing,** and whether the E1 bag line needs an ECM window. |
 | `laser_pattern` (VC grid) | `lz_static`, `lz_sweep`, `lz_timed` | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | **Crouch gap, sweep timing or a wait** at the grid, crossed twice per bag. Raises the value of `[lasers]`. |
@@ -1202,10 +1386,11 @@ weights use A2-08 / A3-10 (QC-18).
   present from the start; the escape opens on 6 secured. Loud: it leaves at the alarm and returns
   `escape_eta_s` after `[secure]`. SECURE_LOOT at the rear doors from the start. Last holdout H3.
 - **Van on Tannery Street (E2):** the loading bay at (52, 8), outside the fire exit. Same rules.
-  Last holdout H5. The terrace throw spot reaches it.
+  Last holdout H5. The terrace throw spot reaches it: its SECURE_LOOT is the bay strip from the van's rear doors north
+  under the terrace's SE corner (x 48.2–54.2, z 7.3–21.3; Loot path).
 - **Heli over the terrace (E3):** escape type `heli`, `arrival_delay_s` 45 (stealth) /
-  `escape_eta_s` (loud, +30 s with `tower_sniper`). SECURE_LOOT is the cargo net from the start;
-  ESCAPE on the net area. Last holdout H4.
+  `escape_eta_s` (loud, +30 s with `tower_sniper`). SECURE_LOOT is the cargo net from the start
+  (x 40.5–44.5, z 23.5–28.5, east of the heli, out of C12's view); ESCAPE on the heli area (35.5, 27). Last holdout H4.
 - **Walk-out:** none (bags in the plaza would be seen).
 - **Rule (D-136 §3b.10):** stealth opens the escape on 6 secured (4 on Routine); loud opens it on `[secure]` +
   `escape_eta_s`, whatever the assault phase.
@@ -1389,9 +1574,9 @@ plaza, the gallery and the vestibule.
 
 | Budget | Target | Notes |
 |---|---|---|
-| Draw calls per view | ≤ 2,500 | The worst views are `rc_hall_from_gallery`, `rc_hall_entrance` and `rc_ext_plaza`. The coffers, teller grilles, queue posts, benches, deposit boxes (44 in SD/VT) and the facade's window bays are **MultiMeshInstance3D** per kit item. |
+| Draw calls per view | main ≤ 2,500; total ≤ 4,000 incl. shadow passes and the peak cast (D-146) | Judged on Forward+ on the GPU box (D-146 addendum 6): loud, Cataclysm, 33 NPCs, 1,539–2,258 total in the hall views (map 858–1,481, cast 628–809). The Compatibility fallback, measured with D's heist_cast_perf: 2,197–3,163 with the cast. levelcheck `perf` is a report-only Compatibility early warning (main + light passes + shadow passes, no occlusion, every variant active, 0 to +10 % over the renderer). See docs/levels/ostrander_federal/g2/perf/perf.md. The worst views are `rc_back_corridor`, `rc_teller_workroom`, `rc_hall_entrance` and `rc_hall_counter`. The coffers, teller grilles, queue posts, benches, deposit boxes (44 in SD/VT) and the facade window bays are **MultiMeshInstance3D** per kit item. Shadow levers (OF-C2, D-146): the sun at 2 splits over 30 m (was 4 over 90 m); `RenderBudgetPolicy` (Lighting): dressing, loot, devices, containers and small variant props inside the rooms cast no shadow outside the hall BH, nor do doors between two interior rooms; dressing ranges outside BH/TW are cut to 24 m; the hall's own dressing moves to render layer 5 (`sun_shadow_skip`, visual_slots v1.6), which the sun's shadow_caster_mask leaves out (the pendant still shadows it). The shell, finishes and exterior doors keep casting (no light leaks). |
 | Triangles per view | ≤ 3M (provisional, QC-10) | The coffered ceiling is a single trim-sheet mesh with 2 LODs. The far towers are LOD facades. |
-| Shadowed lights in any shot | ≤ 8 | The sun (1) + 4 hall pendants + 1 per room elsewhere. The counter lamps, sconces and battens are unshadowed. |
+| Shadowed lights in any shot | ≤ 8 | The sun (1) + **1** hall pendant (LEAD r246: the other 3 pendants use the same bronze fixture, unshadowed), its shadow (6 cube passes: Compatibility has no dual paraboloid) distance-fades at 14 m (+5 m) since D-146, so only the hall views pay for it. The 6 room fixtures (SR, VT, PR, OF, LD, BB) cast no shadow since D-146. Each re-drew 300 to 430 casters in every hall view (behind the hall walls: lights are not occluded) for a shadow that reads only in its room. The counter lamps, sconces, battens and the 2 warm hall pools are unshadowed. |
 | Texture memory | ≤ 1.5 GB | The shared library (limestone, marble, terrazzo, bronze, brass, plaster, carpet, wood veneer) covers ~85%. New: limestone ashlar, the coffer trim sheet, the meridian line inlay. |
 | NPCs alive | stealth: guards ≤ 8 (6 + 2 rare), civilians ≤ 22 (19 + 2 plaza + 1 VIP; ≤ 30 cap); loud: police ≤ `DifficultyDef.max_active_enemies`, civilians ≤ 22 | The civilians cower in place in loud: they are the hostage pool. D-136 §3b.5 adds the SD attendant (+1). |
 | Exterior traffic | ≤ 12 parked cars (MultiMesh), no moving traffic in play (a distant animated ribbon only) | |

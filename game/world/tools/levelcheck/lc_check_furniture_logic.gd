@@ -171,7 +171,21 @@ static func facing_error(xf: Transform3D, to: Vector3) -> float:
 
 
 static func _exclusive(a: LcProp, b: LcProp) -> bool:
-	return a.slot != null and b.slot != null and a.slot != b.slot and a.slot.slot_group == b.slot.slot_group
+	if a.slot != null and b.slot != null and a.slot != b.slot and a.slot.slot_group == b.slot.slot_group:
+		return true
+	# QC-87c: two convoy layouts (meta `convoy_layout`, RT clean / crash) are never shown together
+	var la: Node = _layout_of(a.node)
+	var lb: Node = _layout_of(b.node)
+	return la != null and lb != null and la != lb
+
+
+static func _layout_of(n: Node) -> Node:
+	var cur: Node = n
+	while cur != null:
+		if cur.has_meta(&"convoy_layout"):
+			return cur
+		cur = cur.get_parent()
+	return null
 
 
 func _seat_point(s: LcProp) -> Vector3:

@@ -33,7 +33,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 0 |
+| perf | PASS | 0 | 2 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -64,7 +64,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## orientation: Flush and oriented
 
-- WARN `Props/K12/Monitor_1` @ (33.03, 4.35, 9.12): monitor without a `faces` link (should face its chair/seating)
+- WARN `Props/K12/Monitor_1` @ (32.23, 4.35, 9.12): monitor without a `faces` link (should face its chair/seating)
 - WARN `Props/K12/Monitor_2` @ (32.74, 4.35, 11.40): monitor without a `faces` link (should face its chair/seating)
 
 ## scale: Human scale
@@ -175,12 +175,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 79107 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 79109 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1835 polygons, cell 0.10/0.10 m
+- navmesh: 2058 polygons, cell 0.10/0.10 m
 - 234 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -201,7 +201,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK9` | 20 | 20 | 100% |
 | `Rooms/RoomK10` | 18 | 18 | 100% |
 | `Rooms/RoomK11` | 16 | 16 | 100% |
-| `Rooms/RoomK12` | 26 | 26 | 100% |
+| `Rooms/RoomK12` | 29 | 29 | 100% |
 | `Rooms/RoomK13` | 30 | 30 | 100% |
 | `Rooms/RoomK14` | 15 | 15 | 100% |
 | `Rooms/RoomK15` | 23 | 23 | 100% |
@@ -276,12 +276,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3582 surfaces checked
+- 3585 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 379992 triangles checked
+- 380028 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -395,40 +395,44 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 43 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 299 eye samples, 24219 rays, sky yes, 0 void ray(s)
+- 48 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 288 eye samples, 23328 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
-| camera | draw calls | triangles | shadow lights |
-|---|---|---|---|
-| `TopDownSite` | 1527 | 319682 | 5 |
-| `TopDownTower` | 1540 | 323054 | 5 |
-| `ExtNorthCrown` | 1499 | 314774 | 5 |
-| `ExtWestArden` | 1805 | 384204 | 5 |
-| `ExtTerraceSE` | 2366 | 531008 | 5 |
-| `ReceptionFromLifts` | 274 | 56000 | 3 |
-| `GalleryWalkway` | 1695 | 354000 | 3 |
-| `ArtHallLasers` | 483 | 117354 | 1 |
-| `StudySafe` | 1522 | 346116 | 1 |
-| `ServerCage` | 649 | 150890 | 1 |
-| `SecurityRoom` | 830 | 197846 | 1 |
-| `SouthSpine` | 2296 | 490346 | 4 |
-| `TerraceWest` | 2159 | 448754 | 4 |
-| `RoofPlantBlock` | 2293 | 475886 | 5 |
-| `Helipad` | 1860 | 421678 | 3 |
-| `StairACore` | 1103 | 199550 | 5 |
-| `ServiceLobby` | 1652 | 320212 | 4 |
-| `KesslerOffice` | 162 | 44464 | 1 |
-| `OpenOffice` | 732 | 155516 | 2 |
-| `BreakRoom` | 789 | 210074 | 0 |
-| `LawLibrary` | 344 | 89546 | 1 |
-| `Lounge` | 436 | 87698 | 2 |
-| `GuestSuite` | 365 | 78472 | 2 |
-| `Dining` | 736 | 159106 | 2 |
-| `Boardroom` | 791 | 172306 | 1 |
+- Budgets REPORT-ONLY (D-146 addendum 6: judged on Forward+ on the GPU box; this is the Compatibility early warning) (map meta `perf_d146`).
+- Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
+| camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
+|---|---|---|---|---|---|---|---|---|
+| `TopDownSite` | 1557 | 33 | 610 | 0 | 2200 | 324562 | 5 | LightFixture_5 364, LightFixture_2 76, LightFixture_5 62, LightFixture_5 55, LightFixture_3 53 |
+| `TopDownTower` | 1550 | 33 | 610 | 0 | 2193 | 324174 | 5 | LightFixture_5 364, LightFixture_2 76, LightFixture_5 62, LightFixture_5 55, LightFixture_3 53 |
+| `ExtNorthCrown` | 1543 | 33 | 613 | 0 | 2189 | 322394 | 5 | LightFixture_5 367, LightFixture_2 76, LightFixture_5 62, LightFixture_5 55, LightFixture_3 53 |
+| `ExtWestArden` | 1952 | 33 | 612 | 0 | 2597 | 412228 | 5 | LightFixture_5 366, LightFixture_2 76, LightFixture_5 62, LightFixture_5 55, LightFixture_3 53 |
+| `ExtTerraceSE` | 2602 | 33 | 612 | 0 | 3247 | 569734 | 5 | LightFixture_5 366, LightFixture_2 76, LightFixture_5 62, LightFixture_5 55, LightFixture_3 53 |
+| `ReceptionFromLifts` | 277 | 15 | 103 | 0 | 395 | 56036 | 3 | LightFixture_5 40, LightFixture_2 32, LightFixture_3 31 |
+| `GalleryWalkway` | 1703 | 18 | 143 | 0 | 1864 | 354204 | 3 | LightFixture_2 54, LightFixture_5 54, LightFixture_3 35 |
+| `ArtHallLasers` | 483 | 0 | 54 | 0 | 537 | 117354 | 1 | LightFixture_5 54 |
+| `StudySafe` | 1522 | 0 | 44 | 0 | 1566 | 346116 | 1 | LightFixture_5 44 |
+| `ServerCage` | 648 | 0 | 54 | 0 | 702 | 150870 | 1 | LightFixture_5 54 |
+| `SecurityRoom` | 830 | 0 | 54 | 0 | 884 | 197846 | 1 | LightFixture_5 54 |
+| `SouthSpine` | 2542 | 26 | 403 | 0 | 2971 | 543680 | 4 | LightFixture_5 225, LightFixture_2 72, LightFixture_5 54, LightFixture_3 52 |
+| `TerraceWest` | 2388 | 26 | 339 | 0 | 2753 | 496502 | 4 | LightFixture_5 164, LightFixture_2 69, LightFixture_5 54, LightFixture_3 52 |
+| `RoofPlantBlock` | 2482 | 26 | 206 | 0 | 2714 | 523654 | 4 | LightFixture_2 75, LightFixture_5 54, LightFixture_3 51, LightFixture_5 26 |
+| `Helipad` | 1879 | 7 | 78 | 0 | 1964 | 423178 | 2 | LightFixture_5 55, LightFixture_2 23 |
+| `StairACore` | 1106 | 26 | 426 | 0 | 1558 | 199586 | 4 | LightFixture_5 241, LightFixture_2 75, LightFixture_5 62, LightFixture_3 48 |
+| `ServiceLobby` | 1753 | 26 | 557 | 0 | 2336 | 328362 | 4 | LightFixture_5 366, LightFixture_2 76, LightFixture_5 62, LightFixture_3 53 |
+| `KesslerOffice` | 162 | 0 | 44 | 0 | 206 | 44464 | 1 | LightFixture_5 44 |
+| `OpenOffice` | 732 | 6 | 339 | 0 | 1077 | 155516 | 2 | LightFixture_5 277, LightFixture_5 62 |
+| `BreakRoom` | 804 | 0 | 0 | 0 | 804 | 210986 | 0 |  |
+| `LawLibrary` | 344 | 0 | 117 | 0 | 461 | 89546 | 1 | LightFixture_5 117 |
+| `Lounge` | 436 | 6 | 161 | 0 | 603 | 87698 | 2 | LightFixture_5 101, LightFixture_5 60 |
+| `GuestSuite` | 365 | 6 | 153 | 0 | 524 | 78472 | 2 | LightFixture_5 102, LightFixture_5 51 |
+| `Dining` | 736 | 6 | 307 | 0 | 1049 | 159106 | 2 | LightFixture_5 253, LightFixture_5 54 |
+| `Boardroom` | 791 | 0 | 54 | 0 | 845 | 172306 | 1 | LightFixture_5 54 |
 
+- WARN `ReviewCameras/ExtTerraceSE` @ (42.00, 13.00, 30.00): 2602 main-pass draw calls in view > 2500
+- WARN `ReviewCameras/SouthSpine` @ (0.50, 5.20, 17.25): 2542 main-pass draw calls in view > 2500
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 

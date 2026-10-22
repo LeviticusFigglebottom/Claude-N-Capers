@@ -40,10 +40,14 @@ const STEP_INSET: float = 0.005
 ## A flight's ramp collider runs this far flat onto the floor at its top (no seam with the landing; GN-8 / SL-P1).
 const RAMP_TONGUE: float = 0.3
 const VIEWMODEL_LIT_LAYER: int = 1 << 20
+## Exports a row may set before the prefab has them (ENV A lands the export later; set_prop skips them until then):
+## BagLift.phase_block_key (env/a-core 417425fd).
+const OPTIONAL_PROPS: Array[String] = ["phase_block_key"]
 
 var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()
-## Projected nav obstructions: [corners (PackedVector3Array), elevation, height].
+## Projected nav obstructions: [corners (PackedVector3Array), elevation, height, carve (exact, not grown by the agent
+## radius)].
 var obstructions: Array[Array] = []
 var _mesh_cache: Dictionary = {}
 var _shape_cache: Dictionary = {}
@@ -370,8 +374,8 @@ func n(path: String) -> Node3D:
 	return map_root.get_node(path) as Node3D
 
 
-## Records a projected navmesh obstruction for a box (local AABB under xform).
-func obstruct(xform: Transform3D, aabb: AABB) -> void:
+## Records a projected navmesh obstruction for a box (local AABB under xform); `carve` cuts it exactly (no agent radius).
+func obstruct(xform: Transform3D, aabb: AABB, carve: bool = false) -> void:
 	var pts: PackedVector3Array = PackedVector3Array()
 	var lo: float = INF
 	var hi: float = -INF
@@ -381,7 +385,7 @@ func obstruct(xform: Transform3D, aabb: AABB) -> void:
 		var w: Vector3 = xform * Vector3(aabb.position.x, cy, aabb.position.z)
 		lo = minf(lo, w.y)
 		hi = maxf(hi, w.y)
-	obstructions.append([pts, lo, hi - lo])
+	obstructions.append([pts, lo, hi - lo, carve])
 
 
 ## Gameplay prefab scene by contract id, found by class name (never a path into game/systems).
@@ -437,6 +441,8 @@ func set_prop(inst: Node, prop: String, value: Variant) -> void:
 			cur = inst.get(prop)
 			break
 	if not found:
+		if prop in OPTIONAL_PROPS:   # set once the prefab has the export; silently skipped before that
+			return
 		errors.append("%s has no property `%s`" % [inst.name, prop])
 		return
 	if value is String and String(value).begins_with("enum:"):

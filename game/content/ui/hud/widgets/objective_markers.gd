@@ -43,7 +43,11 @@ var avoid: Rect2 = Rect2():
 ## Canvas rect of the subtitle box while it shows (Hud sets it; empty = none). LEAD r230 (gh_camera_02): the box sat
 ## over an on-screen marker ("8 m"); a marker that would land under it is lifted above the box.
 var subtitle_band: Rect2 = Rect2()
+## GPU-19: the top-centre banner stack (assault banner + boss panel; global rect, Hud sets it): badges under it step
+## below it (below_band).
+var top_band: Rect2 = Rect2()
 var _font: Font
+var _scrim: StyleBoxFlat = UiBuild.label_scrim()
 var _pulse: float = 0.0
 var _last_current: StringName = &""
 ## Perf (lead): marker labels per objective id (cleared on refresh, i.e. when objectives change) and
@@ -129,6 +133,18 @@ static func clamp_to_edge(p: Vector2, behind: bool, area: Rect2) -> Array:
 
 
 ## `p` lifted above `band` (local) when the badge and its distance line would overlap it; otherwise `p`.
+## GPU-19 (3440x1440, OF wave 2): `p` (a badge with its label above it) moved below `band` when it would sit under it.
+static func below_band(p: Vector2, band: Rect2) -> Vector2:
+	if not band.has_area():
+		return p
+	var reach: float = SIZE * 1.6 + UiTokens.FONT_SMALL + 6.0  # badge radius + the label line above it
+	if p.x < band.position.x - SIZE * 1.6 or p.x > band.end.x + SIZE * 1.6:
+		return p
+	if p.y + SIZE * 1.6 < band.position.y or p.y - reach > band.end.y:
+		return p
+	return Vector2(p.x, band.end.y + reach)
+
+
 static func clear_of_band(p: Vector2, band: Rect2) -> Vector2:
 	if not band.has_area():
 		return p
@@ -156,6 +172,7 @@ func _layout(entries: Array) -> void:
 		var local: Vector2 = to_local * cam.unproject_position(world)
 		var placed: Array = clamp_to_edge(local, behind, area)
 		placed[0] = clear_of_band(placed[0] as Vector2, to_local * subtitle_band if subtitle_band.has_area() else Rect2())
+		placed[0] = below_band(placed[0] as Vector2, to_local * top_band if top_band.has_area() else Rect2())
 		var id: StringName = StringName(m.get("id", &""))
 		if not show_all and current != &"" and id != current:
 			continue
@@ -256,13 +273,23 @@ func _glyph(kind: StringName, c: Vector2, u: float, col: Color) -> void:
 			draw_colored_polygon(pts, col)
 
 
+## r252 GPU loud run: a badge clamped to the screen edge drew its centred label half off-screen ("URRET VAN"); the
+## label x stays inside [margin, width - margin] (the badge itself stays where it is).
+static func label_x(center_x: float, w: float, width: float, margin: float = 6.0) -> float:
+	return clampf(center_x - w * 0.5, margin, maxf(margin, width - w - margin))
+
+
 func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 	var w: float = _font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-	var at: Vector2 = center - Vector2(w * 0.5, 0)
+	var at: Vector2 = Vector2(label_x(center.x, w, size.x, UiBuild.LABEL_SCRIM_PAD.x + 2.0), center.y)
 	if avoid.has_area():
 		# Lane 2 audit: over the Tab sheet a label crossed its text (LOOT SECURED); there only the badge shows.
 		var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * avoid
 		if local.intersects(Rect2(at - Vector2(0, fs), Vector2(w, fs + 4))):
 			return
+	# r249 contrast ruling: a rounded scrim behind the label (2.0:1 fill vs the OF stone without it).
+	var asc: float = _font.get_ascent(fs)
+	var pad: Vector2 = UiBuild.LABEL_SCRIM_PAD
+	draw_style_box(_scrim, Rect2(at - Vector2(pad.x, asc + pad.y), Vector2(w, asc + _font.get_descent(fs)) + pad * 2.0))
 	draw_string_outline(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 6, Color(0, 0, 0, 1))
 	draw_string(_font, at, s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, col)

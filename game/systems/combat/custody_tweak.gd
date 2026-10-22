@@ -35,13 +35,17 @@ static var _cached: CustodyTweak = null
 @export var police_cuff_range_m: float = 1.0
 ## Police only walk over to cuff a downed target this close (flat m) ◇.
 @export var police_cuff_approach_m: float = 15.0
-## Seconds until a cuffed crew member frees themselves (PD2: 60 s ◇).
+## Retired (L2.12, LEAD 2026-10-21): police cuffs have no self-free; a cuffed downed heister bleeds out unless a
+## teammate uncuffs them. Kept so saved .tres files still load; nothing reads it.
 @export var police_cuff_self_free_s: float = 60.0
 ## D-108: a downed crew member is cuffable only after this long down without firing (s ◇).
 @export var police_cuff_grace_s: float = 2.0
 ## D-108: the cop's arrest hold at police_cuff_range_m (s ◇); the player firing or the cop being hurt / stunned
 ## interrupts it (restarts from zero).
 @export var police_cuff_time_s: float = 1.5
+## D-145 (P's GH Tense run: cuffed 3 s after the down): police cuff a downed player only from this difficulty
+## (Enums.Difficulty) up. Below it the bleed-out timer alone decides custody, as for bots (D-082) ◇.
+@export var police_cuff_min_difficulty: int = Enums.Difficulty.HAZARDOUS
 
 @export_group("Cop surrender (L5.1)")
 ## false: any crew member's shout can make low-tier cops surrender (PD2 base game); true: only with

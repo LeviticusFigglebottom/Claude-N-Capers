@@ -68,7 +68,7 @@ SLOTS: List[Tuple[str, str, float, str, str, float, float, float, float, str]] =
     ("camera", "cam_b", 1.0, "G", "SR", 18.0, 3.0, 0.0, 0.0, "C2 C4 C5 C9 C10 C12 C15 C16"),
     ("camera", "cam_c", 1.0, "G", "SR", 18.0, 3.0, 0.0, 0.0, "C1 C2 C3 C7 C9 C11 C13 C15"),
     ("laser_pattern", "lz_static", 0.5, "B", "VC", 21.0, 11.0, 0.0, 90.0, "beams 1.30 / 1.90 / 2.50, 1.1 m bypass gap S"),
-    ("laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, 11.0, 0.0, 90.0, "3 vertical beams, 8 s sweep, full width"),
+    ("laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, 11.0, 0.0, 90.0, "2 vertical beams, 7 s sweep, full width"),
     ("laser_pattern", "lz_timed", 0.3, "B", "VC", 21.0, 11.0, 0.0, 90.0, "4 beams, off 6 s of 20 s, full width"),
     ("customers", "cust_4", 0.4, "G", "BH", 24.0, 24.0, 0.0, 0.0, "4 hall customers"),
     ("customers", "cust_6", 0.4, "G", "BH", 24.0, 24.0, 0.0, 0.0, "6 (5 hall + 1 PC client)"),
@@ -79,7 +79,7 @@ SLOTS: List[Tuple[str, str, float, str, str, float, float, float, float, str]] =
     ("fire_escape", "fe_down", 0.45, "G", "X2", 0.6, -2.4, 0.0, 180.0, "Corvino drop ladder lowered (3.0 m)"),
     ("fire_escape", "fe_up", 0.55, "G", "X2", 0.6, -2.4, 0.0, 180.0, "drop ladder up (no roof route)"),
     ("escape", "esc_van_dock", 0.45, "G", "X2", 5.0, -4.32, 0.0, 180.0, "E1 van at the roller door"),
-    ("escape", "esc_van_tannery", 0.3, "G", "X3", 50.4, 14.28, 0.0, 180.0, "E2 van in the Tannery bay"),
+    ("escape", "esc_van_tannery", 0.3, "G", "X3", 51.2, 14.28, 0.0, 180.0, "E2 van in the Tannery bay"),
     ("escape", "esc_heli_terrace", 0.25, "E", "X4", 36.0, 27.0, 0.0, 0.0, "E3 heli over the terrace net"),
     ("drill_delivery", "drop_terrace", 0.5, "E", "X4", 20.0, 33.0, 0.0, 0.0, "heli crate on the terrace"),
     ("drill_delivery", "drop_dock", 0.5, "G", "X2", 14.0, -4.0, 0.0, 0.0, "Mercer's second van at the dock"),
@@ -161,10 +161,10 @@ HOLDOUTS = {"H1": ("G", 24.0, 13.0, "teller line"), "H2": ("B", 24.0, 10.0, "bas
 MIN_CREW_DISTANCE_M = 15.0
 # Escape / secure zones per escape slot: (slot, kind, floor, room, x, z) (the prefab rows are in the content module).
 ESCAPE_ZONES = [("esc_van_dock", "SECURE_LOOT", "G", "X2", 5.0, -4.32), ("esc_van_dock", "ESCAPE", "G", "X2", 10.5, -3.0),
-                ("esc_van_tannery", "SECURE_LOOT", "G", "X3", 50.4, 14.28),
+                ("esc_van_tannery", "SECURE_LOOT", "G", "X3", 51.2, 14.28),
                 ("esc_van_tannery", "ESCAPE", "G", "X3", 51.0, 6.5),
-                ("esc_heli_terrace", "SECURE_LOOT", "E", "X4", 36.0, 27.0),
-                ("esc_heli_terrace", "ESCAPE", "E", "X4", 36.0, 27.0)]
+                ("esc_heli_terrace", "SECURE_LOOT", "E", "X4", 42.5, 26.0),
+                ("esc_heli_terrace", "ESCAPE", "E", "X4", 35.5, 27.0)]
 # Preplan points (doc Pre-planning): (id, category, floor index, plan floor, room, x, z, params).
 PREPLAN = [
     ("pp_spawn_plaza", "spawn", 1, "G", "X1", 24.0, 44.0, {}),
@@ -175,7 +175,7 @@ PREPLAN = [
     ("pp_drop_lockers", "drop_zone", 0, "B", "LK", 5.0, 4.5, {}),
     ("pp_drop_terrace", "drop_zone", 3, "E", "X4", 6.0, 30.0, {}),
     ("pp_escape_dock", "escape", 1, "G", "X2", 5.0, -4.3, {"variant_group": "escape", "variant_slot": "esc_van_dock"}),
-    ("pp_escape_tannery", "escape", 1, "G", "X3", 50.4, 14.3,
+    ("pp_escape_tannery", "escape", 1, "G", "X3", 51.2, 14.3,
      {"variant_group": "escape", "variant_slot": "esc_van_tannery"}),
     ("pp_escape_heli", "escape", 3, "E", "X4", 36.0, 27.0,
      {"variant_group": "escape", "variant_slot": "esc_heli_terrace"}),
@@ -203,7 +203,9 @@ REVIEW_CAMERAS = [
     ("rc_atm", "G", "AV", 7.0, 30.0, 1.7, 1.0, 34.5, 1.2),
     ("rc_teller_workroom", "G", "TW", 9.0, 10.0, 1.7, 30.0, 15.0, 1.0),
     ("rc_client_lounge", "G", "PC", 41.0, 18.3, 1.7, 46.0, 10.0, 1.2),
-    ("rc_manager_office", "G", "BH", 37.5, 23.0, 1.7, 46.0, 23.0, 1.2),
+    # OF-C2 (PO GPU set: it faced the BM door from the hall): in BM's NW corner over the desk front, the manager's
+    # chair and the Tannery Street windows behind it
+    ("rc_manager_office", "G", "BM", 40.6, 19.8, 1.7, 47.6, 24.0, 1.0),
     ("rc_loan_office", "G", "LO", 7.2, 18.3, 1.7, 1.0, 10.0, 1.0),
     ("rc_back_corridor", "G", "BC", 10.7, 8.0, 1.7, 47.0, 8.0, 1.5),
     ("rc_security_room", "G", "SR", 21.5, 6.3, 1.7, 18.0, 0.5, 1.2),
@@ -225,6 +227,9 @@ REVIEW_CAMERAS = [
     ("rc_records", "B", "RC", 12.5, 24.3, 1.7, 1.0, 10.0, 1.2),
     ("rc_roof", "R", "X5", 17.0, 8.5, 1.7, 1.0, 2.0, 1.5),
     ("rc_sniper_assay", "G", "X1", 24.0, 63.0, 15.6, 24.0, 32.0, 2.0),
+    # OF-C2 (GPU-14, LEAD r255): the burn spot close up from TW's floor, ~3.3 m, ~40 deg down, west of the hole (off the
+    # hoist shaft east and the rope ladder north), to judge the scorch; rendered with of_burn_variant.gd's scene
+    ("rc_burn_close", "G", "TW", 21.9, 16.0, 2.1, 24.0, 14.6, 0.0),
 ]
 
 # --- the site ------------------------------------------------------------------------------------
@@ -234,7 +239,9 @@ GRADE = [
     ["Lane", [-16.0, -10.0, 48.2, -0.2], 0.0, "paving"],
     ["Tannery", [48.2, -14.0, 62.0, 38.0], 0.0, "asphalt"],
     ["Apron", [0.0, 36.2, 48.2, 38.0], 0.0, "paving"],
-    ["PlazaW", [-16.0, 36.0, 18.0, 48.0], PLAZA_Y, "paving"],
+    # PlazaW in two: west of the bank, and south of the apron (OF-C2: its bottom no longer runs coplanar under it)
+    ["PlazaW", [-16.0, 36.0, 0.0, 48.0], PLAZA_Y, "paving"],
+    ["PlazaWS", [0.0, 38.0, 18.0, 48.0], PLAZA_Y, "paving"],
     ["PlazaSteps", [18.0, 40.0, 30.0, 48.0], PLAZA_Y, "paving"],
     ["PlazaE", [30.0, 38.0, 48.0, 48.0], PLAZA_Y, "paving"],
     ["TanneryMouth", [48.0, 42.0, 66.0, 48.0], PLAZA_Y, "asphalt"],
@@ -252,6 +259,13 @@ RAMPS = [
 # [name, x, facade z, room]: marker on the room-side face (z 35.8), yaw 0 (-Z north into the hall).
 BREACH_WINDOWS = [["Breach_1", 11.8, 36.0, "BH"], ["Breach_2", 36.2, 36.0, "BH"]]
 BREACH_SIZE = [1.0, 2.1]
+# PO6-17 door breaches (LEAD ruling, design doc "Assault events" Breach_3 / Breach_4): kind "door", no infill scene (the
+# door is the infill: ENV A plays the charge on its leaves and opens it), markers only (no obstruction: the navmesh is
+# unchanged). [name, room-side face pos, yaw (-Z into the room), size, room, door (map path)].
+BREACH_DOORS = [
+    ["Breach_3", [6.0, 8.6, 16.8], 0.0, [1.8, 2.1], "XL", "Gameplay/Doors/TerraceDoorsW"],
+    ["Breach_4", [14.0, 12.2, 6.85], 0.0, [1.0, 2.1], "HH", "Gameplay/Doors/HeadHouseDoor"],
+]
 PLAZA_STEPS = {"x": [18.0, 30.0], "z_top": 38.0, "risers": 5, "riser": 0.15, "tread": 0.3}
 # The apron's plinth faces (0.75 m) where the apron meets the plaza (no ramp): [name, [x0, z0, x1, z1]].
 # Police islands behind the closures (QC-42 / D-064): [spawn, grade [x0, z0, x1, z1], y, link from, link to].

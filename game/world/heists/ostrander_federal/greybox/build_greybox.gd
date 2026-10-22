@@ -18,6 +18,7 @@ extends "res://world/heists/ostrander_federal/greybox/of_gameplay.gd"
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
 const AE: GDScript = preload("res://world/heists/ostrander_federal/greybox/of_assault.gd")
 const NS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")
+const OF_GI: GDScript = preload("res://world/heists/ostrander_federal/greybox/of_gi.gd")
 
 
 func _initialize() -> void:
@@ -80,9 +81,16 @@ func _build() -> void:
 	bind_targets()
 	errors.append_array(AM.build(map_root, AE.TURRET_VANS, AE.HELI_ORBITS, AE.HELI_DROPS, [], _breaches(), obstructions))
 	build_nav_links(nav)
+	load("res://world/heists/ostrander_federal/greybox/of_dress.gd").new().call(&"run", self)  # OF-C2 lane C (G2)
 	for line: String in NS.snap(map_root):
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
+	preload("res://world/heists/ostrander_federal/greybox/of_art_rooms.gd").new(self).call(&"build")  # OF-C2 lane B
+	preload("res://world/heists/ostrander_federal/greybox/of_dress_a.gd").new(self).call(&"build")  # OF-C2 lane A
+	preload("res://world/heists/ostrander_federal/greybox/of_dress_d.gd").new(self).call(&"build")  # OF-C2 vault / ops D
+	preload("res://world/heists/ostrander_federal/greybox/of_finish.gd").new(self).call(&"build")  # OF-C2 surfaces D
+	OF_GI.new(self).call(&"build")  # OF-C2 lighting lane: VoxelGI bands, reflection probes, occluders
+	preload("res://world/heists/ostrander_federal/greybox/of_skyline.gd").new(self).call(&"build")  # OF-C2 skyline lane
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -110,7 +118,10 @@ func _build() -> void:
 static func _breaches() -> Array:
 	var out: Array = []
 	for b: Array in L.ASSAULT_BREACHES:
-		out.append([b[0], b[1], b[2], v3(b[3]), float(b[4]), Vector2(float(b[5][0]), float(b[5][1])), b[6], float(b[7])])
+		var row: Array = [b[0], b[1], b[2], v3(b[3]), float(b[4]), Vector2(float(b[5][0]), float(b[5][1])), b[6], float(b[7])]
+		if b.size() > 8:
+			row.append(b[8])
+		out.append(row)
 	return out
 
 
@@ -135,37 +146,9 @@ func _fail(msg: String) -> void:
 	quit(1)
 
 
-## 15:10, broken cloud, low SW sun (doc Audio/lighting): a procedural sky, the sun (shadowed), a neutral ambient so the
-## greybox interiors read without lights (G1: no interior lights; fixtures come with OF-C2).
+## The final 15:10 environment + LUT and the cloud-shadow sun (OF-C2 lighting lane: of_gi.gd environment()).
 func _build_environment(lighting: Node3D) -> void:
-	var we: WorldEnvironment = WorldEnvironment.new()
-	we.set_script(load("res://world/lighting/heist_world_environment.gd"))
-	we.name = "WorldEnvironment"
-	var env: Environment = Environment.new()
-	env.resource_name = "env_ostrander_federal_greybox"
-	var sky_mat: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
-	sky_mat.sky_top_color = Color(0.42, 0.52, 0.66)
-	sky_mat.sky_horizon_color = Color(0.72, 0.72, 0.7)
-	var sky: Sky = Sky.new()
-	sky.sky_material = sky_mat
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.8, 0.8, 0.78)
-	env.ambient_light_energy = 0.7
-	env.tonemap_mode = Environment.TONE_MAPPER_AGX
-	we.environment = env
-	add(lighting, we)
-	var sun: DirectionalLight3D = DirectionalLight3D.new()
-	sun.name = "Sun"
-	# low in the SW (azimuth ~220 deg, 24 deg high): light travels NE and down
-	sun.basis = Basis.looking_at(Vector3(0.58, -0.41, -0.70).normalized(), Vector3.UP)
-	sun.position = Vector3(24.0, 40.0, 18.0)
-	sun.light_color = Color(1.0, 0.92, 0.8)
-	sun.light_energy = 1.1
-	sun.shadow_enabled = true
-	sun.layers = 1 | VIEWMODEL_LIT_LAYER
-	add(lighting, sun)
+	OF_GI.new(self).call(&"environment", lighting)
 
 
 ## Walkable navmesh (heist_map.md §3: agent radius 0.3, height 1.8, climb 0.3, slope 40, cell 0.1 / 0.1) from the Geometry
@@ -189,7 +172,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	var src: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
 	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
 	for o: Array in obstructions:
-		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
+		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	holder.queue_free()
 	await process_frame

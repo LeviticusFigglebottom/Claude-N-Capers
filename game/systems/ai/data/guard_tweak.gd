@@ -20,6 +20,10 @@ extends Resource
 @export var route_tag: StringName = &"guard"
 ## Without a SpawnPoint.patrol_graph, use the nearest graph whose closest point is within this (m).
 @export var nearest_graph_max_m: float = 25.0
+## Hub-loop patrols (OF-A6, LEAD 2026-10-20): spawn tag -> {"hub": point name (optional; default the graph point
+## nearest the post), "loops": Array of Array[point name] (empty = one loop per pause point reachable from the hub)}.
+## A guard whose spawn carries one of these tags walks the loops from the hub in turn instead of one random S5.1 walk.
+@export var hub_loops: Dictionary = {}
 ## PO-10 ◇: guards sharing a patrol graph start staggered, not in lockstep: the k-th guard to start on a
 ## graph waits k x patrol_stagger_s plus a random [0, patrol_stagger_jitter_s] (GameRng &"patrol_stagger")
 ## before its first leg; the first guard leaves at once.
@@ -48,5 +52,8 @@ extends Resource
 @export var combat_standoff_pref_m: float = 10.0
 ## wants_to_fire is true when the target is visible and within this distance (m).
 @export var combat_fire_range_m: float = 30.0
+## Seconds a guard in combat wants to fire without a shot line (the gunner not engaging: crew seen through a pane bullets
+## cannot pass) before it closes in for one (PD2: guards move to get a shot).
+@export var combat_no_shot_close_s: float = 3.0
 ## Seconds between target re-evaluations.
 @export var combat_retarget_s: float = 0.5

@@ -12,6 +12,8 @@ const CONTAINERS: Array[StringName] = [&"Geometry", &"Props", &"Lighting", &"Gam
 ## Folders whose geometry-carrying content roots are props too (prefabs, fixtures, slot content).
 const CONTENT_FOLDERS: Array[StringName] = [&"Lighting", &"Gameplay", &"Variants"]
 const PROP_METAS: Array[StringName] = [&"kind", &"mount", &"support", &"prop", &"fixture"]
+## A node inside a prop root that the checks treat as a prop of its own (OF-P1: the hoist rig's bodies).
+const SUBPROP_META: StringName = &"lc_subprop"
 ## Kinds whose subtree is part of the building shell for ray classification.
 const SHELL_KINDS: Array[StringName] = [&"door", &"vault_door", &"industrial_door", &"window", &"stairs", &"hatch"]
 ## GN-C2: a lockdown shutter mounted on a wall face over an opening another door fills (door prefab, meta kind
@@ -39,6 +41,9 @@ var proxy_root: Node3D = null
 
 var _prop_by_id: Dictionary = {}
 var _active: Dictionary = {}  # VariantSlot instance id -> bool (empty: everything active)
+## QC-87c: the convoy layout under test (meta `convoy_layout`); null = no layout run, every layout counts as active.
+var _layout: Node3D = null
+var _layout_nav_saved: Dictionary = {}  # nav region / link -> enabled as authored (restored by set_layout_config(null))
 
 
 func setup(p_map: HeistMap) -> void:
@@ -71,9 +76,15 @@ func set_door_links(on: bool) -> Array[Array]:
 	return saved
 
 
-func restore_links(saved: Array[Array]) -> void:
+## Puts the links set_door_links saved back; true when one changed (the caller awaits await_nav_update then).
+func restore_links(saved: Array[Array]) -> bool:
+	var changed: bool = false
 	for s: Array in saved:
-		(s[0] as NavigationLink3D).enabled = bool(s[1])
+		var l: NavigationLink3D = s[0]
+		if l.enabled != bool(s[1]):
+			l.enabled = bool(s[1])
+			changed = true
+	return changed
 
 
 func tree() -> SceneTree:
@@ -149,6 +160,11 @@ func _scan(n: Node, mode: int) -> void:
 			continue
 		if c3 != null and _is_prop_root(c3, cm):
 			_add_prop(c3)
+			# OF-P1: a prefab's map-built parts (meta lc_subprop, e.g. OF's hoist rig under the bag_lift) are props of
+			# their own, so a rig spanning two floors does not merge into the prefab's box.
+			for sub: Node in c3.find_children("*", "Node3D", true, false):
+				if sub.has_meta(SUBPROP_META) and not LcUtil.lc_ignored(sub):
+					_add_prop(sub as Node3D)
 			continue
 		_scan(c, cm)
 
@@ -165,6 +181,16 @@ func _is_prop_root(n: Node3D, mode: int) -> bool:
 	if not content or mode == 1:
 		return content
 	return n is GeometryInstance3D or not n.find_children("*", "GeometryInstance3D", true, false).is_empty()
+
+
+## Whether `c` (a descendant of prop root `root`) is, or lies under, a sub-prop node below `root`.
+static func _in_subprop(c: Node, root: Node) -> bool:
+	var cur: Node = c
+	while cur != null and cur != root:
+		if cur.has_meta(SUBPROP_META):
+			return true
+		cur = cur.get_parent()
+	return false
 
 
 func _add_prop(n: Node3D) -> void:
@@ -184,6 +210,8 @@ func _add_prop(n: Node3D) -> void:
 	nodes.append_array(n.find_children("*", "", true, false))
 	for c: Node in nodes:
 		if LcUtil.lc_ignored(c):   # cable / FX-only meshes (meta lc_ignore): no prop extent, clipping or support
+			continue
+		if c != n and _in_subprop(c, n):   # a sub-prop (meta lc_subprop) is its own prop
 			continue
 		var box: Variant = LcVisual.geometry_local_aabb(c)
 		if box is AABB:
@@ -243,14 +271,53 @@ func _collect_doors() -> void:
 # --- variants ------------------------------------------------------------------------------
 
 func is_active(n: Node) -> bool:
-	if _active.is_empty():
+	if _active.is_empty() and _layout == null:
 		return true
 	var cur: Node = n
 	while cur != null and cur != map:
 		if cur is VariantSlot and not bool(_active.get(cur.get_instance_id(), true)):
 			return false
+		if _layout != null and cur != _layout and cur.has_meta(&"convoy_layout"):
+			return false
 		cur = cur.get_parent()
 	return true
+
+
+# --- convoy layouts (QC-87c, D-149.1) ---------------------------------------------------------
+
+## Nodes with meta `convoy_layout` (RT: one per route x clean / crash stop).
+func layouts() -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	for n: Node in map.find_children("*", "Node3D", true, false):
+		if n.has_meta(&"convoy_layout"):
+			out.append(n as Node3D)
+	out.sort_custom(func(a: Node3D, b: Node3D) -> bool:
+		return String(a.get_meta(&"convoy_layout")) < String(b.get_meta(&"convoy_layout")))
+	return out
+
+
+## Runs the checks as if the convoy stopped in `layout`: the other layouts' nodes count as inactive, and only this
+## layout's pre-baked nav regions / links are enabled. null restores every layout's nav as authored. Waits for nav sync.
+func set_layout_config(layout: Node3D) -> void:
+	_layout = layout
+	cache.clear()
+	var changed: bool = false
+	for l: Node3D in layouts():
+		for nav: Node in l.find_children("*", "", true, false):
+			if not (nav is NavigationRegion3D or nav is NavigationLink3D):
+				continue
+			if not _layout_nav_saved.has(nav):
+				_layout_nav_saved[nav] = bool(nav.get(&"enabled"))
+			var on: bool = bool(_layout_nav_saved[nav]) if layout == null else l == layout
+			if bool(nav.get(&"enabled")) != on:
+				nav.set(&"enabled", on)
+				changed = true
+	if layout == null:
+		_layout_nav_saved.clear()
+	if changed:
+		await await_nav_update(4)
+	else:
+		await await_sync(4)
 
 
 func variant_slots() -> Array[VariantSlot]:
@@ -267,13 +334,24 @@ func set_variant_config(active: Dictionary) -> void:
 	cache.clear()
 	for s: Variant in active.keys():
 		_active[(s as Node).get_instance_id()] = bool(active[s])
+	var changed: bool = false
 	for slot: VariantSlot in variant_slots():
 		var on: bool = bool(_active.get(slot.get_instance_id(), true))
 		for r: Node in slot.find_children("*", "NavigationRegion3D", true, false):
-			(r as NavigationRegion3D).enabled = on
+			if (r as NavigationRegion3D).enabled != on:
+				(r as NavigationRegion3D).enabled = on
+				changed = true
 		for l: Node in slot.find_children("*", "NavigationLink3D", true, false):
-			(l as NavigationLink3D).enabled = on
-	await await_sync(4)
+			if (l as NavigationLink3D).enabled != on:
+				(l as NavigationLink3D).enabled = on
+				changed = true
+	# OF-C2: a fixed 4 frames let the first reachability config query a map that had not yet synced the
+	# links barred_doors restored just before (a flaky 840-fail baseline under load); wait for the map
+	# iteration whenever something changed.
+	if changed:
+		await await_nav_update(4)
+	else:
+		await await_sync(4)
 
 
 # --- rays ----------------------------------------------------------------------------------
@@ -340,8 +418,10 @@ func nav_closest(p: Vector3) -> Vector3:
 
 ## All navigation layers on purpose: reachability is crew reachability, and a masked unburdened player can
 ## climb ladders (layer "ladder", Ladder.NAV_LAYER) and use vents. Bag / police routes use layer 1 only.
+## Through NavPath (no 4096-polygon search cap, like the game's AI): RT / OF navmeshes exceed it, and map_get_path
+## logged ~1,100 "most reachable polygons" errors per RT validate with partial paths.
 func nav_path(a: Vector3, b: Vector3) -> PackedVector3Array:
-	return NavigationServer3D.map_get_path(_nav_map(), a, b, true, 0xFFFFFFFF)
+	return NavPath.query(_nav_map(), a, b, true, 0xFFFFFFFF)
 
 
 ## Centroids of all navmesh polygons of every enabled region in the map (world space).

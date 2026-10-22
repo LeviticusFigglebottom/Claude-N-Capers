@@ -28,6 +28,12 @@ extends Node
 ## S3.2 cuff flow sub-phase while ALARMED.
 enum CuffPhase { NONE, PAUSE, APPROACH, CUFFING }
 
+## FrameProf keys per ticked AlertState.
+const STATE_KEYS: Dictionary = {
+	Enums.AlertState.CALM: &"guard_brain.calm", Enums.AlertState.CURIOUS: &"guard_brain.curious",
+	Enums.AlertState.INVESTIGATING: &"guard_brain.investigating", Enums.AlertState.ALARMED: &"guard_brain.alarmed",
+	Enums.AlertState.COMBAT: &"guard_brain.combat",
+}
 const DEFAULT_TWEAK: String = "res://systems/ai/data/guard_tweak.tres"
 ## Alert states this brain drives; anything else (DOMINATED, TIED, DEAD...) is owned elsewhere.
 const ACTIVE_STATES: Array[int] = [
@@ -86,6 +92,8 @@ var _post_fwd: Vector3 = Vector3.FORWARD
 var _retarget_left: float = 0.0
 var _target_visible: bool = false
 var _closing: bool = false
+## Seconds in combat wanting to fire with the gunner not engaging (no shot line), _tick_combat.
+var _no_shot_s: float = 0.0
 var _cuff_left: float = 0.0
 var _cuff_origin: Vector3 = Vector3.ZERO
 ## QC-57: a scripted post set by walk_to_post (kept by _start, no patrol route).
@@ -199,8 +207,15 @@ func _build_route() -> void:
 		graph = PatrolRouteGenerator.nearest_graph(graphs, _post_pos, tweak.route_tag, tweak.nearest_graph_max_m)
 	if graph == null:
 		return
+	if _build_hub_route(graph):
+		return
+	var tag: StringName = tweak.route_tag
+	# P OF-A6 ghost run: a spawn that names its graph patrols it even when its points carry only a local tag (OF Lane:
+	# `guard_dock`, no `guard`), instead of silently holding the post.
+	if _npc.spawn_info.get("patrol_graph") == graph and PatrolRouteGenerator.tagged_points(graph, tag).is_empty():
+		tag = &""
 	var res: Dictionary = PatrolRouteGenerator.build(graph, _post_pos, GameRng.stream(RNG_STREAM),
-		tweak.route_min_points, tweak.route_max_points, tweak.route_tag, tweak.route_attempts)
+		tweak.route_min_points, tweak.route_max_points, tag, tweak.route_attempts)
 	var pts: Array[PatrolPoint] = res["points"]
 	if pts.size() < 2:
 		if pts.size() == 1:  # A single reachable point: treat it as the post.
@@ -214,6 +229,42 @@ func _build_route() -> void:
 	for p: PatrolPoint in route_points:
 		route.append(p.global_position)
 
+
+## OF-A6 hub loops (GuardTweak.hub_loops by spawn tag): the doc's fixed (a)/(b)/(c) loops from a hub, in an order the
+## patrol stream shuffles once. False (the S5.1 random walk instead) when the spawn has no hub-loop tag or the named
+## points are missing from `graph`.
+func _build_hub_route(graph: PatrolGraph) -> bool:
+	var cfg: Dictionary = {}
+	for t: Variant in _npc.spawn_info.get("tags", []):
+		if tweak.hub_loops.has(StringName(t)):
+			cfg = tweak.hub_loops[StringName(t)]
+			break
+	if cfg.is_empty():
+		return false
+	var by_name: Dictionary = {}
+	for p: PatrolPoint in graph.points():
+		by_name[StringName(p.name)] = p
+	var hub: PatrolPoint = by_name.get(StringName(cfg.get("hub", &"")))
+	if hub == null:
+		hub = PatrolRouteGenerator.nearest_point(PatrolRouteGenerator.tagged_points(graph, &""), _post_pos)
+	var loops: Array = []
+	for names: Variant in cfg.get("loops", []):
+		var stops: Array = []
+		for n: Variant in names:
+			if not by_name.has(StringName(n)):
+				Log.warn(&"ai", "%s hub loops: no point %s in %s; random walk instead" % [_npc.name, n, graph.name])
+				return false
+			stops.append(by_name[StringName(n)])
+		loops.append(stops)
+	var order: Array[PatrolPoint] = PatrolRouteGenerator.hub_route(graph, hub, loops, GameRng.stream(RNG_STREAM))
+	if order.size() < 2:
+		return false
+	route_loops = true
+	patrol_graph = graph
+	route_points = order
+	for p: PatrolPoint in route_points:
+		route.append(p.global_position)
+	return true
 
 ## PO-10: the k-th guard of this heist to start patrolling `patrol_graph` waits k x patrol_stagger_s (+ jitter)
 ## before its first leg, so guards sharing a route are not in lockstep.
@@ -243,7 +294,9 @@ func _physics_step(delta: float) -> void:
 	if _npc.is_stunned():  # A2-03 (S8.6): ECM feedback stun pauses everything (radio call too)
 		wants_to_fire = false
 		return
-	match _npc.alert_state:
+	var fp: int = FrameProf.begin()
+	var st: int = _npc.alert_state
+	match st:
 		Enums.AlertState.CALM:
 			if route.is_empty():
 				_tick_post(delta)
@@ -259,6 +312,7 @@ func _physics_step(delta: float) -> void:
 			_tick_alarmed(delta)
 		Enums.AlertState.COMBAT:
 			_tick_combat(delta)
+	FrameProf.end(STATE_KEYS.get(st, &"guard_brain.other"), fp)  # LEAD (OF loud hitches): per alert state
 
 
 # --- CALM -------------------------------------------------------------------------------
@@ -605,14 +659,18 @@ func _enter_combat() -> void:
 	_closing = false
 	_retarget_left = 0.0
 	anim_hint = &"idle_alert"
+	var fp: int = FrameProf.begin()  # LEAD (OF loud hitches): the alarm's guard_brain frame (148-322 ms over 9 guards)
 	_npc.set_alert_state(Enums.AlertState.COMBAT)
+	FrameProf.end(&"guard_brain.enter_combat", fp)
 
 
 func _tick_combat(delta: float) -> void:
 	_retarget_left -= delta
 	if _retarget_left <= 0.0 or combat_target == null or not is_instance_valid(combat_target):
 		_retarget_left = tweak.combat_retarget_s
+		var fp: int = FrameProf.begin()
 		_pick_target()
+		FrameProf.end(&"guard_brain.pick_target", fp)
 	var target: Node3D = combat_target as Node3D
 	if target == null:
 		_motor.stop()
@@ -621,7 +679,13 @@ func _tick_combat(delta: float) -> void:
 		return
 	var tpos: Vector3 = target.global_position
 	var d: float = _flat(tpos - _npc.global_position).length()
-	if not _target_visible or d > tweak.combat_standoff_max_m:
+	# D's GH Tense coverage: a guard who sees the crew through a pane bullets cannot pass (a glazed door leaf; D-142 vision)
+	# held the standoff aiming for minutes. Like a PD2 guard he moves for a shot: no shot line for
+	# combat_no_shot_close_s -> close in until the gunner engages.
+	var gun: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
+	var shot_line: bool = gun == null or gun.engaging or not wants_to_fire
+	_no_shot_s = 0.0 if shot_line else _no_shot_s + delta
+	if not _target_visible or d > tweak.combat_standoff_max_m or _no_shot_s >= tweak.combat_no_shot_close_s:
 		_closing = true
 	elif d <= tweak.combat_standoff_pref_m:
 		_closing = false

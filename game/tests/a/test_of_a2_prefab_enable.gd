@@ -160,3 +160,28 @@ func test_runtime_rappel_link_opens_the_path() -> void:
 		"the rappel link opens the path down (ends at %s)" % (on[on.size() - 1] if not on.is_empty() else Vector3.INF))
 	assert_eq(RappelLinks.set_enabled(_rt.map, HOLE_TAG, true), 0, "idempotent")
 	assert_eq(RappelLinks.set_enabled(_rt.map, HOLE_TAG, false), 1, "and off again")
+
+
+## P OF-P1 (6208602e): a lift placed disabled and enabled at runtime is aimable again: standing in front of its panel
+## the interaction ray targets it and a hold works (the OF hoist after the burn).
+func test_bag_lift_enabled_at_runtime_is_aimable() -> void:
+	await _launch(ATestMaps.basic(0, 0))
+	var lift: BagLift = _lift(false)
+	await wait_physics_frames(3)
+	var c: CrewController = _masked_crew()
+	lift.set_enabled(true)
+	await wait_physics_frames(3)
+	var panel: InteractableComponent = lift.interactable
+	var at: Vector3 = panel.global_position
+	var n: Vector3 = (c.global_position - at)
+	n.y = 0.0
+	n = n.normalized() if n.length() > 0.01 else Vector3.BACK
+	var stand: Vector3 = Vector3(at.x, LIFT_POS.y, at.z) + n * 1.0
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, stand))
+	await wait_physics_frames(2)
+	_rt.set_bot_intent(0, BotUtil.look_at_intent(c.eye_position(), at))
+	await wait_physics_frames(3)
+	var aimed: InteractableComponent = _rt.interaction.aimed_component(c)
+	assert_true(aimed != null and aimed.owner_node() == lift, "the enabled lift's panel is the aimed target (%s)" % aimed)
+	assert_eq(panel.availability(c), InteractableComponent.BLOCK_NONE, "usable")
+	_rt.clear_bot_intent(0)

@@ -291,8 +291,9 @@ func _build_walls(parent: Node3D) -> void:
 		var mx: Vector3 = Vector3(float(o2[5]), float(o2[7]), fx + 0.02) if String(o2[2]) == "x" \
 			else Vector3(fx + 0.02, float(o2[7]), float(o2[5]))
 		var room: String = String(o2[8]).get_slice(" ", 0)
-		var pane: StaticBody3D = box(glass, "Pane%02d_%s" % [i, room], mn, mx, "glass")
-		if not room in FROSTED_PANE_ROOMS:
+		var frosted: bool = room in FROSTED_PANE_ROOMS
+		var pane: StaticBody3D = box(glass, "Pane%02d_%s" % [i, room], mn, mx, "glass_frosted" if frosted else "glass")
+		if not frosted:
 			pane.add_to_group(&"see_through", true)  # D-142: clear glazing; stealth vision sees through it
 
 
@@ -1021,6 +1022,7 @@ func _bake(nav: NavigationRegion3D) -> int:
 	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
 	for o: Array in obstructions:
 		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), false)
+	preload("res://world/heists/shared/door_nav_clearance.gd").add(src, map_root, nm)  # door throats (ENV P ghost 250)
 	NavigationServer3D.bake_from_source_geometry_data(nm, src)
 	holder.queue_free()
 	await process_frame

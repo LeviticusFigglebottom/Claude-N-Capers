@@ -24,6 +24,10 @@ const KIND_KEYS: Dictionary = {
 	&"hack": &"ui.hud.device.hack", &"time_lock": &"ui.hud.device.time_lock", &"c4": &"ui.hud.device.c4",
 	&"thermite": &"ui.hud.device.thermite",  # D-115: Dockside Burn's burn_point (device_started kind)
 }
+## LEAD r245 (OF HUD pass): a step the mission times without a device (objective data `seconds`: the OF / ND time
+## lock, DB's escape ETA) counts down on the objective line too. Objective id prefix -> name key; else WAIT.
+const WAIT_KEYS: Dictionary = {"time_lock": &"ui.hud.device.time_lock", "escape": &"ui.hud.device.escape"}
+const WAIT_DEFAULT: StringName = &"ui.hud.device.wait"
 ## Device kind -> fix prompt when the row has none (the device's own interactable prompt).
 const FIX_KEYS: Dictionary = {&"hack": &"ui.prompt.restart_hack"}
 const FIX_DEFAULT: StringName = &"ui.prompt.fix_drill"
@@ -41,6 +45,8 @@ const PANEL_H: float = 62.0
 var avoid: Rect2 = Rect2()
 ## r228 windowed check: a panel under this rect (the toast's text, HUD units) steps down below it.
 var yield_rect: Rect2 = Rect2()
+## GPU-19: the top-centre banner stack (global rect, Hud sets it): a panel under it steps below it (step_below).
+var top_band: Rect2 = Rect2()
 var drawn: Array[Dictionary] = []
 ## Rows built from EventBus while the model has no `devices`: net_id -> {kind, duration, progress, state}.
 var tracked: Dictionary = {}
@@ -49,6 +55,8 @@ var _occluded: Dictionary = {}  # net_id -> bool, refreshed every device_occlusi
 var _occlusion_t: float = 0.0
 var _suffix: String = ""
 var _suffix_jammed: bool = false
+## The current step's device-less wait: {"id", "seconds", "elapsed"} (game time; empty = none).
+var _wait: Dictionary = {}
 
 
 func build() -> void:
@@ -79,6 +87,7 @@ func refresh() -> void:
 	var live: bool = not rows().is_empty()
 	if not live:
 		drawn.clear()
+	_update_suffix()
 	set_process(live or _suffix != "")
 	queue_redraw()
 
@@ -178,7 +187,7 @@ func device_for_objective(o: Dictionary) -> Dictionary:
 func objective_line(o: Dictionary) -> String:
 	var r: Dictionary = device_for_objective(o)
 	if r.is_empty():
-		return ""
+		return _wait_line(o)
 	var kind: StringName = StringName(r.get("kind", &"drill"))
 	var tail: String = jam_text(kind) if is_jammed(r) else time_text(float(r.get("time_left_s", 0.0)))
 	if is_paused(r):
@@ -186,7 +195,27 @@ func objective_line(o: Dictionary) -> String:
 	return UiText.t(&"ui.hud.device.objective_suffix", {"device": kind_name(kind), "time": tail})
 
 
+## "TIME LOCK 03:12" for a step whose data has `seconds` and no device serves it, counted from when it became the
+## current step (restarts when the mission changes `seconds`); "" otherwise.
+func _wait_line(o: Dictionary) -> String:
+	var secs: Variant = (o.get("args", {}) as Dictionary).get("seconds")
+	if not (secs is float or secs is int) or float(secs) <= 0.0:
+		_wait = {}
+		return ""
+	var id: String = String(o.get("id", &""))
+	if String(_wait.get("id", "")) != id or not is_equal_approx(float(_wait.get("seconds", -1.0)), float(secs)):
+		_wait = {"id": id, "seconds": float(secs), "elapsed": 0.0}
+	var key: StringName = WAIT_DEFAULT
+	for prefix: String in WAIT_KEYS:
+		if id.begins_with(prefix):
+			key = WAIT_KEYS[prefix]
+	var left: float = float(_wait["seconds"]) - float(_wait["elapsed"])
+	return UiText.t(&"ui.hud.device.objective_suffix", {"device": UiText.t(key), "time": time_text(left)})
+
+
 func _process(delta: float) -> void:
+	if not _wait.is_empty():
+		_wait["elapsed"] = float(_wait["elapsed"]) + delta
 	for id: Variant in tracked:
 		var t: Dictionary = tracked[id]
 		if StringName(t["state"]) == STATE_RUNNING and float(t["duration"]) > 0.0:
@@ -296,6 +325,11 @@ func _draw() -> void:
 			r.position.y = yield_rect.end.y + pad  # "Alarm raised" sat on DRILL JAMMED (r228)
 			d["yielded"] = true
 			c.y = r.end.y
+		var band: Rect2 = get_global_transform_with_canvas().affine_inverse() * top_band if top_band.has_area() else Rect2()
+		if band.has_area() and band.intersects(r):
+			r = step_below(r, band, pad)  # GPU-19: the Brandt panel drew over SAW 00:29
+			d["yielded"] = true
+			c.y = r.end.y
 		draw_rect(r, Color(UiTokens.INK_0, UiTokens.HUD_PANEL_ALPHA + 0.15))
 		draw_rect(r, accent, false, maxf(2.0 * s, 1.0))
 		_text(Vector2(r.position.x + pad, r.position.y + pad + fs), String(d["label"]), fs, UiTokens.PAPER_DIM, false)
@@ -344,3 +378,8 @@ func _world_pos(net_id: int) -> Variant:
 	if n == null or not is_instance_valid(n) or not n.is_inside_tree():
 		return null
 	return n.global_position + Vector3.UP * tweak.device_panel_up_m + n.global_basis.z.normalized() * tweak.device_panel_out_m
+
+
+## GPU-19: `r` moved down to start `gap` below `band` (a panel never sits under the top-centre banner stack).
+static func step_below(r: Rect2, band: Rect2, gap: float) -> Rect2:
+	return Rect2(Vector2(r.position.x, band.end.y + gap), r.size)

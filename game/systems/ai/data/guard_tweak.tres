@@ -11,6 +11,32 @@ route_max_points = 8
 route_attempts = 6
 route_tag = &"guard"
 nearest_graph_max_m = 25.0
+hub_loops = {
+&"guard_vault": {
+"hub": &"VCPost",
+"loops": [[&"VCLaserW"], [&"RCNorth", &"RCSouth", &"RCEast"], [&"SDDesk", &"CP"]]
+},
+&"guard_lobby": {
+"hub": &"HallLobby",
+"loops": [[&"HallVestibule", &"HallWindowsW", &"HallPW"], [&"HallGate", &"TWGate", &"PC"], [&"LO", &"TWWest", &"BCWest", &"SRCoffee", &"BCMid", &"PC"]]
+},
+&"guard_rover_basement": {
+"hub": &"BBMid",
+"loops": [[&"RCEast"], [&"SDDesk", &"SS"], [&"CP", &"PL"]]
+},
+&"guard_rover_gallery": {
+"hub": &"UCMid",
+"loops": [[&"WLSouth", &"GAPost", &"ELSouth"], [&"OF", &"GAPost", &"CF"], [&"StairAE", &"XCPresident", &"XLTerrace", &"StairBE"]]
+},
+&"guard_rover_hall": {
+"hub": &"BCMid",
+"loops": [[&"TWWest", &"HallLobby", &"TWEast"], [&"LDCheck", &"MO"], [&"StairBG", &"BCFireExit"]]
+},
+&"guard_rover_dock": {
+"hub": &"LaneApron",
+"loops": []
+}
+}
 post_look_interval_s = Vector2(5, 10)
 look_around_angle_deg = 60.0
 look_hold_s = 1.2

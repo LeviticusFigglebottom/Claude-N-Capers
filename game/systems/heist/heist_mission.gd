@@ -15,6 +15,11 @@ signal objectives_changed()
 const SPEAKER_MERCER: StringName = &"mercer"
 ## D-115 (DB-3): CartelBrain.woken_by of a cartel gunman spawned by spawn_guards.
 const REINFORCEMENT_WAKE: StringName = &"reinforcement"
+## QC-83: NPC meta of a seated unit (the vehicle's net id) and the vehicle kinds whose occupants are out of sight.
+const META_SEATED_IN: StringName = &"seated_in"
+const ARMOURED_VEHICLES: Array[StringName] = [&"truck", &"van"]
+## spawn_units beside a plain vehicle body (no seats): this far from its centre line (m).
+const UNIT_SIDE_M: float = 1.9
 ## QC-60 / §3b.9: spawn_loot(respawn = true) bags are checked this often (s) for having fallen off the map.
 const LOOT_WATCH_TIMER: StringName = &"_loot_respawn_watch"
 const LOOT_WATCH_S: float = 1.0
@@ -269,6 +274,121 @@ func _spawn_scripted(sp: SpawnPoint, xf: Transform3D) -> NpcBase:
 	return npc
 
 
+## A5-02 (D-149.1): make `id` the active layout of `group` (ConvoyLayouts: its pre-baked nav, cover, bodies and
+## prefabs on, the group's others off; replicated). False for an id not in the group.
+func set_layout(id: String, group: String = ConvoyLayouts.DEFAULT_GROUP) -> bool:
+	return _runtime != null and _runtime.set_layout(id, group)
+
+
+## QC-83 (a) (Rolling Thunder: `&"ambush"`, the crash stop): STEALTH -> LOUD from the mission, through the stealth
+## director like any alarm (alarm_raised [R], _on_alarm, the phase change). No-op once loud.
+func raise_alarm(reason: StringName, source_net_id: int = 0) -> void:
+	if _runtime == null or _runtime.stealth == null or _runtime.went_loud:
+		return
+	_runtime.stealth.raise_alarm(reason, source_net_id)
+
+
+## QC-83 (b) (Rolling Thunder: Vaultline crews and convoy escorts): spawn `count` units of `enemy_id` (the current
+## faction's EnemyDef, AssaultDirector.enemy_def_for) through the director, as mission units: outside the assault
+## force pool, and sharing the police cap (AssaultDirector.META_SHARES_CAP: police-role units count as police anyway).
+## Points: with `vehicle` a ConvoyVehicle its `Seat0..n` markers; any other Node3D `vehicle` (a G1 placeholder body)
+## spots beside it (UNIT_SIDE_M off its sides, alternating, along it); else every SpawnPoint tagged `spawn_tag`. On a
+## seat or beside a body the unit carries `spawn_tag` as its spawn tag (NpcVisuals looks: RT `convoy_t1` crews). Seated
+## (`seated`, with a vehicle; spawn them once it stopped): the unit stays on its seat, paused (no brain, physics or
+## hits) and hidden when the vehicle is armoured (vehicle_kind truck / van), until dismount_units. Returns the units.
+func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated: bool = false,
+		vehicle: Node3D = null) -> Array[NpcBase]:
+	var out: Array[NpcBase] = []
+	var dir: AssaultDirector = _director()
+	if dir == null or count <= 0:
+		return out
+	var def: EnemyDef = dir.enemy_def_for(enemy_id)
+	if def == null:
+		Log.error(&"mission", "spawn_units: no EnemyDef '%s'" % enemy_id)
+		return out
+	var points: Array[Node3D] = _unit_points(spawn_tag, vehicle)
+	if points.is_empty():
+		Log.error(&"mission", "spawn_units: no seat / SpawnPoint for '%s'" % spawn_tag)
+		return out
+	for i: int in count:
+		var p: Node3D = points[i % points.size()]
+		var xf: Transform3D = p.global_transform
+		xf.origin += xf.basis.x * (0.8 * float(i / points.size()))
+		var extra: Dictionary = {AssaultDirector.MISSION_UNIT: true}
+		if not p is SpawnPoint and spawn_tag != &"":
+			extra["tags"] = [spawn_tag]
+		var npc: NpcBase = dir.spawn_enemy(def, xf, p if p is SpawnPoint else null, extra)
+		if npc == null:
+			continue
+		npc.set_meta(AssaultDirector.META_SHARES_CAP, true)
+		if seated and vehicle is ConvoyVehicle:
+			npc.global_transform = p.global_transform
+			_seat(npc, vehicle)
+		out.append(npc)
+	return out
+
+
+## QC-83 (b): seated units out of their vehicle onto the road beside their seat (the seat's side, `step_m` out),
+## awake: COMBAT once loud. Returns how many got out.
+func dismount_units(units: Array, step_m: float = 1.6) -> int:
+	var n: int = 0
+	for u: Variant in units:
+		var npc: NpcBase = u as NpcBase
+		if npc == null or not is_instance_valid(npc) or not npc.has_meta(META_SEATED_IN):
+			continue
+		var vehicle: Node3D = Ids.lookup(int(npc.get_meta(META_SEATED_IN))) as Node3D
+		npc.remove_meta(META_SEATED_IN)
+		var pos: Vector3 = npc.global_position
+		if vehicle != null:
+			var local: Vector3 = vehicle.to_local(pos)
+			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if local.x >= 0.0 else -1.0)
+			pos = Vector3(pos.x, vehicle.global_position.y, pos.z) + side * (absf(local.x) + step_m)
+		var fwd: Vector3 = -npc.global_basis.z
+		var yaw: float = atan2(-fwd.x, -fwd.z) if Vector2(fwd.x, fwd.z).length() > 0.01 else 0.0
+		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # upright: a seat on a ramp (RT east) is tilted
+		npc.visible = true
+		npc.process_mode = Node.PROCESS_MODE_INHERIT
+		if _runtime.went_loud and npc.alive:
+			npc.set_alert_state(Enums.AlertState.COMBAT)
+		n += 1
+	return n
+
+
+## The current faction has an EnemyDef `enemy_id` (spawn_units would spawn it).
+func has_enemy(enemy_id: StringName) -> bool:
+	var dir: AssaultDirector = _director()
+	return dir != null and dir.enemy_def_for(enemy_id) != null
+
+
+func _seat(npc: NpcBase, vehicle: Node3D) -> void:
+	npc.set_meta(META_SEATED_IN, NetIds.of(vehicle))
+	npc.process_mode = Node.PROCESS_MODE_DISABLED  # no brain, motor or collision until it gets out
+	var kind: StringName = StringName(vehicle.get(&"vehicle_kind")) if &"vehicle_kind" in vehicle else &"car"
+	npc.visible = not ARMOURED_VEHICLES.has(kind)
+
+
+func _unit_points(spawn_tag: StringName, vehicle: Node3D) -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	var cv: ConvoyVehicle = vehicle as ConvoyVehicle
+	if cv != null:
+		for m: Marker3D in cv.seats():
+			out.append(m)
+		if not out.is_empty():
+			return out
+	if vehicle != null:
+		for i: int in 4:  # beside a plain body: left / right, front / back
+			var m: Marker3D = Marker3D.new()
+			vehicle.add_child(m)
+			var side: float = UNIT_SIDE_M * (1.0 if i % 2 == 0 else -1.0)
+			m.position = Vector3(side, 0.05, 1.0 if i < 2 else -1.0)
+			out.append(m)
+		return out
+	for n: Node in _runtime.map.find_children("*", "SpawnPoint", true, false):
+		if (n as SpawnPoint).tags.has(spawn_tag):
+			out.append(n as Node3D)
+	return out
+
+
 ## Mercer (or another speaker) line: voice_line_requested [R] (C8).
 func say(line_id: StringName, context: Dictionary = {}, speaker: StringName = SPEAKER_MERCER) -> void:
 	if speaker == SPEAKER_MERCER and String(line_id).ends_with("_intro"):
@@ -339,6 +459,19 @@ func loot_markers(tag: StringName) -> Array[Node3D]:
 		for n: Node in _runtime.map.find_children("*", "Node3D", true, false):
 			if n.has_meta(&"objective_tag") and StringName(n.get_meta(&"objective_tag")) == tag and not out.has(n):
 				out.append(n as Node3D)
+	return out
+
+
+## RT-A6: `count` bags of `loot_id` stacked at `node` (a truck's cargo spot opened at runtime). Returns them.
+func spawn_loot_at(loot_id: StringName, node: Node3D, count: int = 1) -> Array:
+	var out: Array = []
+	var loot: LootManager = _runtime.service(G.SVC_LOOT) as LootManager if _runtime != null else null
+	if loot == null or node == null:
+		return out
+	for i: int in count:
+		var bag: LootBag = _spawn_loot_at(loot, loot_id, node, i)
+		if bag != null:
+			out.append(bag)
 	return out
 
 
@@ -442,6 +575,47 @@ func civilians_leave(exit_tag: StringName = &"exit", only_spawn_tags: Array[Stri
 		if brain.leave_map(best):
 			count += 1
 	return count
+
+
+## D-149.7 (Rolling Thunder: the street empties at the ambush; PD2 civilians run off a loud street): every civilian
+## that can still run (not tied, down or a hostage) runs to the nearest PatrolPoint tagged `exit_tag` and despawns
+## there (CivilianBrain.flee_map). Calm civilians panic first. Works loud or not (the mission calls it at the alarm).
+## `only_spawn_tags` as civilians_leave. Returns how many left.
+func civilians_flee(exit_tag: StringName = &"civ_flee", only_spawn_tags: Array[StringName] = []) -> int:
+	if _runtime == null or _runtime.map == null:
+		return 0
+	var exits: Array[Vector3] = _patrol_points_tagged(exit_tag)
+	if exits.is_empty():
+		Log.error(&"mission", "civilians_flee: no PatrolPoint tagged '%s'" % exit_tag)
+		return 0
+	var count: int = 0
+	for n: Node in _runtime.npcs(&"civilian"):
+		var brain: CivilianBrain = n.get_node_or_null(^"Brain") as CivilianBrain
+		if brain == null or not _has_spawn_tag(n as NpcBase, only_spawn_tags):
+			continue
+		if brain.flee_map(_nearest(exits, (n as Node3D).global_position)):
+			count += 1
+	return count
+
+
+func _patrol_points_tagged(tag: StringName) -> Array[Vector3]:
+	var out: Array[Vector3] = []
+	var stack: Array[Node] = [_runtime.map]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		var pp: PatrolPoint = n as PatrolPoint
+		if pp != null and pp.tags.has(tag):
+			out.append(pp.global_position)
+		stack.append_array(n.get_children())
+	return out
+
+
+static func _nearest(points: Array[Vector3], pos: Vector3) -> Vector3:
+	var best: Vector3 = points[0]
+	for e: Vector3 in points:
+		if pos.distance_squared_to(e) < pos.distance_squared_to(best):
+			best = e
+	return best
 
 
 ## QC-51: every MapZone of kind `from_kind` in this map becomes `to_kind` (replicated; Gallery Night last call:

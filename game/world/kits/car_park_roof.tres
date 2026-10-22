@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"car_park_roof"
+purpose = &"roof"
+required_items = Array[StringName]([&"street_lamp"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.004
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"bag_lift", &"car", &"exit_sign", &"fire_extinguisher", &"light_fixture", &"safe", &"street_lamp"])
+seed_salt = 4711
+seed_id = &"car_park_deck"
+counts = {
+&"street_lamp": Vector2i(4, 6)
+}
+assets = {
+&"exit_sign": PackedStringArray("prop_exit_sign"),
+&"light_fixture": PackedStringArray("prop_led_batten_cold"),
+&"street_lamp": PackedStringArray("prop_street_lamp")
+}
+ceiling = {}
+notes = "Rolling Thunder (roof), from car_park_deck: RT CP-R the open roof deck: street lamps off the parapets (prop_street_lamp as the §3c lamp columns), the map's parked cars; no ceiling. Waits: the heli-pad marking (texgen decal)."

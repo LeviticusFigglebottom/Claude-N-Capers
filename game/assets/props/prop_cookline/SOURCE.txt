@@ -1,0 +1,8 @@
+asset: prop_cookline
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "kitchen", "kind": "cookline", "place": "wall", "surface": "metal", "top": 0.9}, "d": 0.8, "fn": "cookline", "ln": 5.0}
+seed: 569722817  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_cookline
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

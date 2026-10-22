@@ -1,0 +1,8 @@
+asset: veh_armored_truck_cash
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"kind": "armored_truck", "prefab": "armored_truck", "surface": "metal"}, "fn": "truck", "h": 3.2, "ln": 7.5, "part": "hold", "style": "armored", "w": 2.5}
+seed: 3054046180  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset veh_armored_truck_cash
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

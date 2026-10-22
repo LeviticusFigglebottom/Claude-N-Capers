@@ -44,11 +44,12 @@ const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone",
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
 ## D-115 cast roster activities: look (investigate_look), desk (desk_work), curator_inspect, walk_text, smoke.
 ## OF-A6 (OF-D1 clips): counter (counter_customer at a teller window), check_desk (check_desk_write); queue plays
-## queue_idle* (AnimDriver). RT-A1 (Rolling Thunder diner): sit_eat (a booth seat), cook (cook_stove).
+## queue_idle* (AnimDriver). RT-A1 (Rolling Thunder diner): sit_eat (a booth seat), cook (cook_stove). QC-67: OF
+## spawns name the clips themselves (teller_count, queue_idle).
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
 	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
 	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke", &"counter", &"check_desk",
-	&"sit_eat", &"cook"]
+	&"sit_eat", &"cook", &"teller_count", &"queue_idle"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
 const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated", &"sit_eat"]
 ## Within this of its seat (m) a seated civilian counts as still seated.
@@ -60,6 +61,8 @@ const KIND_POINT: StringName = &"point"
 const RETARGET_S: float = 0.5
 ## leave_map: despawn within this of the exit point (m).
 const LEAVE_ARRIVE_M: float = 1.0
+## flee_map: a street exit is an area, and a crowd of runners cannot all stand on its point (m).
+const FLEE_ARRIVE_M: float = 2.5
 ## X-5: within this of its spawn mark (m, horizontal) an idle civilian counts as on its mark (held there).
 const MARK_HOLD_M: float = 0.3
 
@@ -97,6 +100,9 @@ var _wander_profile: Dictionary = {}
 ## PO-5: the wander point / call target given up after a stall (skipped by the next pick).
 var _failed_target: Node = null
 var _leave_target: Vector3 = Vector3.INF
+## Speed and arrival radius of the LEAVE walk (calm leave_map: walk; loud flee_map: run).
+var _leave_speed: float = 0.0
+var _leave_arrive_m: float = LEAVE_ARRIVE_M
 var _seat_pos: Vector3 = Vector3.INF
 ## X-5: the spawn mark (the spawn transform, recorded on the first tick).
 var _mark_pos: Vector3 = Vector3.INF
@@ -954,7 +960,7 @@ func _route_reachable(pos: Vector3) -> bool:
 	if _flat_distance(pos) <= tw.civilian_route_reach_m and absf(pos.y - from.y) <= tw.civilian_wander_floor_dy_m:
 		return true
 	if _targets != null and _targets.has_navigation():
-		var path: PackedVector3Array = NavigationServer3D.map_get_path(_npc.get_world_3d().navigation_map, from, pos, true)
+		var path: PackedVector3Array = NavPath.query(_npc.get_world_3d().navigation_map, from, pos, true)
 		return not path.is_empty() and path[path.size() - 1].distance_to(pos) <= tw.civilian_route_reach_m
 	return absf(pos.y - from.y) <= tw.civilian_wander_floor_dy_m
 
@@ -987,24 +993,54 @@ func leave_map(exit_pos: Vector3) -> bool:
 	mode = Mode.LEAVE
 	anim_hint = &"walk"
 	_leave_target = exit_pos
+	_leave_speed = Tweak.stealth().civilian_walk_speed
+	_leave_arrive_m = LEAVE_ARRIVE_M
 	_reset_walk_stall()
 	if _motor != null:
-		_motor.go_to(exit_pos, Tweak.stealth().civilian_walk_speed)
+		_motor.go_to(exit_pos, _leave_speed)
+	return true
+
+
+## Server (D-149.7, Rolling Thunder's street at the ambush): a loud civilian who is not tied, intimidated down or dead
+## runs to `exit_pos` and despawns there instead of cowering (no flee-exit system: the mission picks the exit).
+## Calm civilians panic first (civilian_fled once). False when it cannot go.
+func flee_map(exit_pos: Vector3) -> bool:
+	if not Net.is_authority() or _npc == null or not _npc.alive:
+		return false
+	if mode in [Mode.DOWN, Mode.TIED, Mode.DEAD] or _npc.is_in_group(G.HOSTAGE):
+		return false
+	if mode == Mode.IDLE or mode == Mode.WANDER:
+		_panic(Vector3.INF)  # PANICKED, civilian_fled; then out instead of the cower point
+	_route_interrupt()
+	call_target = {}
+	call_progress = 0.0
+	_clear_alerted_stimulus()
+	if _targets != null:
+		_targets.release_cower(_npc)
+	_cower_point = null
+	mode = Mode.LEAVE
+	anim_hint = &"run"
+	_leave_target = exit_pos
+	_leave_speed = Tweak.stealth().civilian_run_speed
+	_leave_arrive_m = FLEE_ARRIVE_M
+	_reset_walk_stall()
+	if _motor != null:
+		_motor.go_to(exit_pos, _leave_speed)
 	return true
 
 
 func _tick_leave(delta: float) -> void:
 	if _motor == null or left_map:
 		return
-	var near: bool = _npc.global_position.distance_to(_leave_target) <= LEAVE_ARRIVE_M
+	var near: bool = _npc.global_position.distance_to(_leave_target) <= _leave_arrive_m
 	if _motor.arrived or near:
 		Log.info(&"ai", "%s left the map" % _npc.name)
 		left_map = true
 		_motor.stop()
 		_npc.queue_free()  # leaves the tree at frame end: HeistNetSync replicates the despawn
 		return
-	if _tick_walk_stall(delta, Tweak.stealth().civilian_walk_speed):
-		_motor.go_to(_leave_target, Tweak.stealth().civilian_walk_speed)
+	if _tick_walk_stall(delta, _leave_speed):
+		_motor.go_to(_leave_target, _leave_speed)
 
 
 # --- Helpers -------------------------------------------------------------------------------

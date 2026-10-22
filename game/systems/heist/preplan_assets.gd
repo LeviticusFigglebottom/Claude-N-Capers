@@ -35,6 +35,9 @@ const POINTS_NODE: String = "Preplan"
 const DROP_GROUP: StringName = &"preplan_drop"
 ## D-068: drop kinds `loot.<id>` spawn a loot bag of that id at the point (LootManager.spawn_bag).
 const LOOT_PREFIX: String = "loot."
+## A5-03 (QC-84): a drop of an item kind (`item.c4`, `params.count`) is an item_pickup of that item.
+const ITEM_PREFIX: String = "item."
+const ITEM_PICKUP_SCENE: String = "res://systems/prefabs/item_pickup/item_pickup.tscn"
 
 ## Drop kind -> scene path or Callable(asset_id, drop: Dictionary) -> Node3D. Unregistered kinds:
 ## `deployable.<x>` with a DeployableDef -> a DeployablePrefab (no owner); else
@@ -358,6 +361,8 @@ func _make_drop(d: Dictionary) -> Node3D:
 		node = (src as Callable).call(id, d) as Node3D
 	elif String(src) != "":
 		node = _instantiate(String(src), id)
+	elif String(kind).begins_with(ITEM_PREFIX):
+		node = _instantiate(ITEM_PICKUP_SCENE, id)  # configure_preplan sets the item and count
 	else:
 		node = _deployable_drop(kind)
 		if node == null:

@@ -9,7 +9,9 @@
 ## Federal by day, written to _review/of_d1_cast/): of_tellers, of_officers, of_customers, of_skirts (the
 ## skirt looks in walk / run / cower, front and side: <pool>_clips.png, no lineup), of_guards (Halden a-j +
 ## npc_bank_guard + the bodyguard), of_vip; RT-D1 (written to _review/rt_d1_cast/): rt_vaultline (crew a-f, the route
-## marshal, and the patrol officer and Halden officer he must not read as).
+## marshal, and the patrol officer and Halden officer he must not read as), rt_street_swaps (D-149 swaps); D-145.3: d145_police (written to
+## _review/d145_police/: the armoured police looks next to their Routine/Tense duty looks; d145_specials,
+## d145_factions the same for the specials and the faction TAC Lights).
 ## Writes to res://assets/characters/_review/d130_cast/ (or the pool's OUT_DIRS / of_ directory):
 ##   <pool>_sheet.png           per character: full body front (idle), three-quarter back mid-walk, head close-up
 ##   <pool>_lineup_30m.png      all of them side by side seen from 30 m (natural LOD switching, telephoto framing)
@@ -28,6 +30,10 @@ const OUT_DIRS: Dictionary = {
 	"of_guards": "res://assets/characters/_review/of_d1_cast/",
 	"of_vip": "res://assets/characters/_review/of_d1_cast/",
 	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
+	"rt_street_swaps": "res://assets/characters/_review/rt_d1_cast/",
+	"d145_police": "res://assets/characters/_review/d145_police/",
+	"d145_specials": "res://assets/characters/_review/d145_police/",
+	"d145_factions": "res://assets/characters/_review/d145_police/",
 }
 ## pool -> true: also render the seated/standing pair sheet (first id seated, second standing guard)
 const PAIRS: Dictionary = {"of_vip": true}
@@ -89,11 +95,29 @@ const POOLS: Dictionary = {
 		"char_civilian_customer_a", "char_civilian_customer_b", "char_bank_officer", "char_bank_officer_b",
 		"char_bank_manager",
 	],
+	# D-145.3 (PO-18): Routine/Tense police without body armour (duty) next to the armoured base looks and the FRD agent.
+	"d145_police": [
+		"char_patrol_officer", "char_patrol_officer_duty", "char_tac_light", "char_tac_light_duty", "char_frd_agent",
+	],
+	# D-145.3: the Routine/Tense specials without body armour next to their armoured looks, and the Longshot (chest rig).
+	"d145_specials": [
+		"char_stinger", "char_stinger_duty", "char_bulwark", "char_bulwark_duty", "char_longshot",
+	],
+	# D-145.3: the faction TAC Lights (frd / sentinel / zero EnemyDefs) armoured next to their Routine/Tense duty looks.
+	"d145_factions": [
+		"char_tac_light_frd", "char_tac_light_frd_duty", "char_tac_light_sentinel", "char_tac_light_sentinel_duty",
+		"char_tac_light_zero", "char_tac_light_zero_duty", "char_tac_light_duty",
+	],
 	# RT-D1: the Vaultline crew faces and the route marshal next to the police and Halden uniforms.
 	"rt_vaultline": [
 		"char_armored_car_crew", "char_armored_car_crew_b", "char_armored_car_crew_c", "char_armored_car_crew_d",
 		"char_armored_car_crew_e", "char_armored_car_crew_f", "char_armored_car_marshal", "char_patrol_officer",
 		"char_security_officer",
+	],
+	# D-149: the three finish-only street swaps, each beside the look it reuses the meshes of (a / g, b / h, f / i).
+	"rt_street_swaps": [
+		"char_street_pedestrian", "char_street_pedestrian_g", "char_street_pedestrian_b", "char_street_pedestrian_h",
+		"char_street_pedestrian_f", "char_street_pedestrian_i",
 	],
 }
 const COLS: int = 9
@@ -195,12 +219,13 @@ func _pair() -> void:
 
 func _sheet() -> void:
 	var band_h: int = TILE.y * 2 + HEAD_TILE.y
-	var bands: int = ceili(float(_chars.size()) / COLS)
-	var sheet: Image = Image.create(TILE.x * COLS, band_h * bands, false, Image.FORMAT_RGBA8)
+	var cols: int = mini(COLS, maxi(1, _chars.size()))   # a short pool gets a narrower canvas, no empty columns
+	var bands: int = ceili(float(_chars.size()) / cols)
+	var sheet: Image = Image.create(TILE.x * cols, band_h * bands, false, Image.FORMAT_RGBA8)
 	sheet.fill(Color(0.2, 0.2, 0.2))
 	for c: int in range(_chars.size()):
-		var x: int = TILE.x * (c % COLS)
-		var y0: int = band_h * (c / COLS)
+		var x: int = TILE.x * (c % cols)
+		var y0: int = band_h * (c / cols)
 		var body: Node3D = (load(Spec.scene_path(_chars[c])) as PackedScene).instantiate() as Node3D
 		CrowdLod.force_level(body, false)
 		_vp.add_child(body)

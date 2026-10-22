@@ -98,12 +98,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 409 x 233 columns (0.25 m), 32135 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 409 x 233 columns (0.25 m), 32258 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1412 polygons, cell 0.10/0.10 m
+- navmesh: 1552 polygons, cell 0.10/0.10 m
 - 140 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -224,38 +224,40 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 119 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 259 eye samples, 20979 rays, sky yes, 0 void ray(s)
+- 148 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 281 eye samples, 22761 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
-| camera | draw calls | triangles | shadow lights |
-|---|---|---|---|
-| `TopDownSite` | 1620 | 542212 | 6 |
-| `TopDownBuilding` | 1572 | 539310 | 6 |
-| `ExtHarlowCorner` | 1665 | 569570 | 6 |
-| `ExtShopfront` | 1946 | 580154 | 6 |
-| `ExtAlleyWest` | 1883 | 576734 | 6 |
-| `ExtAlleyMouth` | 1829 | 543608 | 6 |
-| `ExtFireEscape` | 1129 | 346932 | 3 |
-| `ExtPellFireExit` | 1771 | 545594 | 6 |
-| `SalesFloorEntrance` | 1159 | 379526 | 4 |
-| `ChandelierLandmark` | 1453 | 424374 | 6 |
-| `CounterStaffDoor` | 600 | 247070 | 3 |
-| `SalonPrivate` | 1657 | 485944 | 6 |
-| `CorridorG4` | 1490 | 455052 | 6 |
-| `WorkshopSafe` | 242 | 71612 | 2 |
-| `ReceivingBackDoor` | 258 | 79498 | 2 |
-| `StairCore` | 428 | 86562 | 2 |
-| `UpperCorridor` | 1350 | 363238 | 6 |
-| `SecurityOffice` | 652 | 173396 | 3 |
-| `BreakRoom` | 238 | 71242 | 2 |
-| `ManagerOffice` | 748 | 261216 | 5 |
-| `AdminOffice` | 402 | 151120 | 2 |
-| `StockRoom` | 1167 | 400562 | 6 |
-| `GaragePerch` | 1805 | 577554 | 6 |
-| `GarageRamp` | 62 | 34944 | 1 |
+- Budgets ENFORCED (fail) (map meta `perf_d146`).
+- Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
+| camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
+|---|---|---|---|---|---|---|---|---|
+| `TopDownSite` | 1393 | 175 | 1367 | 0 | 2935 | 433452 | 2 | Sun 1247, LightFixture_6 120 |
+| `TopDownBuilding` | 1237 | 175 | 1274 | 0 | 2686 | 389768 | 2 | Sun 1154, LightFixture_6 120 |
+| `ExtHarlowCorner` | 1408 | 175 | 1258 | 0 | 2841 | 461908 | 2 | Sun 1138, LightFixture_6 120 |
+| `ExtShopfront` | 1953 | 188 | 1316 | 0 | 3457 | 580620 | 2 | Sun 1196, LightFixture_6 120 |
+| `ExtAlleyWest` | 1800 | 188 | 1179 | 0 | 3167 | 514106 | 2 | Sun 1059, LightFixture_6 120 |
+| `ExtAlleyMouth` | 1830 | 188 | 1537 | 0 | 3555 | 533534 | 2 | Sun 1417, LightFixture_6 120 |
+| `ExtFireEscape` | 1129 | 188 | 962 | 0 | 2279 | 346932 | 2 | Sun 842, LightFixture_6 120 |
+| `ExtPellFireExit` | 1769 | 188 | 1394 | 0 | 3351 | 538050 | 2 | Sun 1274, LightFixture_6 120 |
+| `SalesFloorEntrance` | 1159 | 188 | 1117 | 0 | 2464 | 379526 | 2 | Sun 997, LightFixture_6 120 |
+| `ChandelierLandmark` | 1453 | 107 | 1563 | 0 | 3123 | 424374 | 2 | Sun 1479, LightFixture_6 84 |
+| `CounterStaffDoor` | 600 | 188 | 820 | 0 | 1608 | 247070 | 2 | Sun 702, LightFixture_6 118 |
+| `SalonPrivate` | 1657 | 188 | 1287 | 0 | 3132 | 485944 | 2 | Sun 1167, LightFixture_6 120 |
+| `CorridorG4` | 1490 | 188 | 1333 | 0 | 3011 | 455052 | 2 | Sun 1213, LightFixture_6 120 |
+| `WorkshopSafe` | 242 | 0 | 379 | 0 | 621 | 71612 | 1 | Sun 379 |
+| `ReceivingBackDoor` | 258 | 0 | 290 | 0 | 548 | 79498 | 1 | Sun 290 |
+| `StairCore` | 428 | 0 | 870 | 0 | 1298 | 86562 | 1 | Sun 870 |
+| `UpperCorridor` | 1350 | 31 | 1355 | 0 | 2736 | 363238 | 2 | Sun 1324, LightFixture_6 31 |
+| `SecurityOffice` | 652 | 58 | 567 | 0 | 1277 | 173396 | 2 | Sun 510, LightFixture_6 57 |
+| `BreakRoom` | 238 | 0 | 265 | 0 | 503 | 71242 | 1 | Sun 265 |
+| `ManagerOffice` | 748 | 176 | 825 | 0 | 1749 | 261216 | 2 | Sun 719, LightFixture_6 106 |
+| `AdminOffice` | 402 | 109 | 458 | 0 | 969 | 151120 | 2 | Sun 407, LightFixture_6 51 |
+| `StockRoom` | 1167 | 188 | 1126 | 0 | 2481 | 400562 | 2 | Sun 1006, LightFixture_6 120 |
+| `GaragePerch` | 1692 | 175 | 1590 | 0 | 3457 | 520134 | 2 | Sun 1470, LightFixture_6 120 |
+| `GarageRamp` | 62 | 0 | 1162 | 0 | 1224 | 34944 | 1 | Sun 1162 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)

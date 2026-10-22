@@ -82,6 +82,7 @@ func build_ui() -> void:
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bg)
+	fill_window(bg)  # r268: the whole window on 21:9, as the payday and options
 	var root: VBoxContainer = UiBuild.vbox(16)
 	UiBuild.screen_margin(self, root, 48)
 	root.add_child(_build_header())

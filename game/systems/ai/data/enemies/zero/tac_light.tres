@@ -9,12 +9,12 @@ display_name = "Zero Division Light"
 is_special = false
 health = PackedFloat32Array(100, 100, 150, 200, 300, 400)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
-damage = PackedFloat32Array(15, 15, 22.5, 30, 45, 60)
+damage = PackedFloat32Array(10, 12.5, 22.5, 30, 45, 60)
 move_speed = 4.0
 weapon = &"weapon.npc_rifle"
 detection_preset = &"police"
 params = {
-"_note": "L1.5 Zero Division reskin of enemy.tac_light (role id kept, groups.md). Stats = TAC Light (◇).",
+"_note": "L1.5 Zero Division reskin of enemy.tac_light (role id kept, groups.md). Stats = TAC Light (◇). PO-17 (D-145 §2): Routine/Tense damage lowered toward PD2 Normal/Hard (◇).",
 "aim_delay_s": 0.6,
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,

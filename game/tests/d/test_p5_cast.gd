@@ -71,6 +71,19 @@ const NEW: Array[String] = [
 	# D-130 Shadow Ledger late_staff (civ_assistant, civ_associate)
 	"char_npc_km_assistant",
 	"char_npc_km_associate",
+	# RT-D1 (prep/d-rt): Rolling Thunder diner staff, car-park attendant, street pedestrians a-f
+	"char_diner_waitress",
+	"char_diner_cook",
+	"char_carpark_attendant",
+	"char_street_pedestrian",
+	"char_street_pedestrian_b",
+	"char_street_pedestrian_c",
+	"char_street_pedestrian_d",
+	"char_street_pedestrian_e",
+	"char_street_pedestrian_f",
+	"char_street_pedestrian_g",
+	"char_street_pedestrian_h",
+	"char_street_pedestrian_i",
 ]
 ## heist -> roles the index must carry (D3-01 brief; D-075 renamed meridian_federal and added
 ## bank_officer).
@@ -142,14 +155,18 @@ const POOLS: Array = [
 	["ostrander_federal", ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery",
 		"guard_rover_basement", "guard_rover_dock", "guard_extra_hall", "guard_extra_basement"], 10, 3],
 	["ostrander_federal", ["bank_teller", "civ_teller"], 5, 2],
-	["ostrander_federal", ["bank_officer", "civ_officer"], 4, 1],
+	["ostrander_federal", ["bank_officer", "civ_officer", "civ_sd_attendant"], 4, 1],
 	["ostrander_federal", ["civ_customer", "civ_plaza", "civ_client"], 12, 4],
 	["glasshouse", ["guard_post_floor", "guard_rover_boh", "guard_rover_upper", "guard_alley_smoker",
 		"security_operator"], 10, 3],
 	["glasshouse", ["civ_customer"], 12, 4],
 	["rolling_thunder", ["convoy_t1", "convoy_t2", "convoy_t3"], 6, 2],
 	["rolling_thunder", ["site_guard", "guard_site_gate", "guard_site_frame", "guard_site_cabins"], 10, 3],
-	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus", "civ_diner"], 12, 4],
+	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus"], 21, 7],
+	["rolling_thunder", ["civ_diner"], 14, 4],
+	["rolling_thunder", ["diner_staff", "staff_diner"], 2, 1],
+	["rolling_thunder", ["carpark_attendant", "staff_booth"], 1, 0],
+	["rolling_thunder", ["ram_driver", "driver_mixer"], 1, 0],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"
@@ -208,7 +225,7 @@ const OF: String = "ostrander_federal"
 ## mgr_vault; the CAMERA_OPERATOR spawn is security_operator).
 const OF_TAGS: Array[String] = ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery",
 	"guard_rover_basement", "guard_rover_dock", "guard_extra_hall", "guard_extra_basement", "security_operator",
-	"civ_teller", "civ_manager_mgr_floor",
+	"civ_teller", "civ_sd_attendant", "civ_manager_mgr_floor",
 	"civ_manager_mgr_gallery", "civ_manager_mgr_vault", "civ_customer", "civ_plaza", "civ_client", "civ_officer", "civ_vip",
 	"guard_vip", "guard_vaultline"]
 const GN_OPERATOR_TAG: String = "guard_operator"

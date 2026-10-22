@@ -172,6 +172,12 @@ const RAILINGS: Array = [
 	["RailQuayE", [11.1, 0.0, 33.9, 40.0, 1.0, 33.96]],
 ]
 
+## D-142: the bandit glass stands on a solid brass deal-tray upstand on the counter top (1.05 -> 1.50 m, as OF's QC-g counter; opaque for
+## stealth vision, LEAD: crouching behind the counter hides from the hall, as in PD2 banks); the glass above is clear.
+const BANDIT_RAIL_Y: float = 1.05
+const BANDIT_RAIL_TOP: float = 1.50
+## levelcheck hide_los line (D-128): crouched behind the counter, hidden from the G9 hall.
+const HIDE_COUNTER: Array = [Vector3(2.5, 0.0, 8.8), Vector3(18.5, 0.0, 8.8)]
 ## Static glazing: [name, axis, fixed, a0, a1, y0, y1]. Glass blocker (collision) + pane + frame.
 ## The ATM vestibule's street glazing is the green-glass jewel (doc landmark 3).
 const GLAZING: Array = [
@@ -182,7 +188,7 @@ const GLAZING: Array = [
 	["G11Front", "z", 21.0, 11.15, 11.85, 0.9, 2.4],
 	["G12FrontA", "z", 21.0, 12.25, 13.35, 0.9, 2.4],
 	["G12FrontB", "z", 21.0, 14.65, 15.8, 0.9, 2.4],
-	["BanditGlass", "x", 10.0, 2.0, 19.0, 1.05, 2.25],
+	["BanditGlass", "x", 10.0, 2.0, 19.0, BANDIT_RAIL_TOP, 2.25],
 	["HallTransom1", "x", 20.0, 1.0, 4.0, 3.4, 4.5],
 	["HallTransom2", "x", 20.0, 4.5, 7.5, 3.4, 4.5],
 	["HallTransom3", "x", 20.0, 13.5, 16.5, 3.4, 4.5],
@@ -458,7 +464,8 @@ const PATROL_POINTS_BANK: Dictionary = {
 	"G8Mid": [Vector3(10.5, 0.0, 9.0), Vector2(3.0, 6.0), "idle", ["guard", "staff", "staff_manager"], null],
 	"G8East": [Vector3(18.0, 0.0, 9.0), Vector2.ZERO, "idle", ["guard"], null],
 	"G9Gate": [Vector3(1.0, 0.0, 11.0), Vector2.ZERO, "idle", ["guard", "staff", "staff_cleaner", "staff_manager"], null],
-	"G9Compass": [Vector3(8.0, 0.0, 13.0), Vector2(4.0, 8.0), "idle", ["guard", "staff", "staff_cleaner"], -90.0],
+	# P round 243: 2 m south of the GuardHall post at (8, 13), so a rover never parks on the hall guard.
+	"G9Compass": [Vector3(8.0, 0.0, 15.0), Vector2(4.0, 8.0), "idle", ["guard", "staff", "staff_cleaner"], -90.0],
 	"G9Windows": [Vector3(6.0, 0.0, 18.6), Vector2(2.0, 4.0), "idle", ["guard", "staff", "staff_cleaner"], 180.0],
 	"G9Vestibule": [Vector3(13.6, 0.0, 17.2), Vector2.ZERO, "idle", ["guard", "staff", "staff_cleaner"], null],
 	"G9Atm": [Vector3(19.8, 0.0, 18.5), Vector2(2.0, 4.0), "check_door", ["guard"], -90.0],

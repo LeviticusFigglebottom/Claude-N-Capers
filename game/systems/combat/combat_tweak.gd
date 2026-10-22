@@ -16,6 +16,9 @@ static var _cached: CombatTweak = null
 @export var default_secondary: StringName = &"weapon.kestrel_p9"
 @export var default_secondary_mods: Array[StringName] = [&"mod.p9_suppressor"]
 @export var default_armor: StringName = &"armor.tailored_suit"
+## LEAD ruling 2026-10-20 (D-145.4, B's bot-gear probe): an AI teammate whose loadout has no primary (the default
+## loadout, or a bot slot with nothing equipped) carries this starter rifle, unmodded; the pistol stays its secondary.
+@export var bot_default_primary: StringName = &"weapon.corsair_ar"
 
 @export_group("Hitscan")
 @export var hitscan_max_range_m: float = 200.0
@@ -78,8 +81,10 @@ static var _cached: CombatTweak = null
 @export var npc_hit_chance_curve: PackedVector2Array = PackedVector2Array([
 	Vector2(0.0, 0.9), Vector2(5.0, 0.8), Vector2(15.0, 0.6), Vector2(30.0, 0.35), Vector2(60.0, 0.1),
 ])
-## Hit-chance multiplier by Enums.Difficulty (◇).
-@export var npc_hit_chance_mult: PackedFloat32Array = PackedFloat32Array([1.0, 1.0, 1.05, 1.1, 1.15, 1.2])
+## Hit-chance multiplier by Enums.Difficulty (◇). PO-17 (D-145 §2): the curve is PD2's good/expert presets' shape
+## (Very Hard / Overkill); PD2 Normal and Hard use the weaker "normal" preset, so Routine x0.65 and Tense x0.8
+## (were 1.0 / 1.0); Hazardous+ unchanged.
+@export var npc_hit_chance_mult: PackedFloat32Array = PackedFloat32Array([0.65, 0.8, 1.05, 1.1, 1.15, 1.2])
 ## Damage per shot when an NPC has no EnemyDef damage table.
 @export var npc_fallback_damage: float = 10.0
 
@@ -206,6 +211,14 @@ static var _cached: CombatTweak = null
 ## Dragon's breath: civilians within this range (x range_mult) and cone (full angle) of the shot panic ◇.
 @export var shotgun_panic_range_m: float = 12.0
 @export var shotgun_panic_cone_deg: float = 40.0
+
+@export_group("Hit grace (D-145, PD2 _chk_dmg_too_soon)")
+## After a crew member takes (or dodges) a bullet hit, further hits of equal or lower damage do nothing for this
+## long (s), by difficulty Routine..Cataclysm (PD2 player 0.45 s on every hit; PD2 caps intake from a crowd this
+## way). 0 = off (D-145: Routine/Tense only for now; the LEAD decides Hazardous+).
+@export var hit_grace_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([0.45, 0.45, 0.0, 0.0, 0.0, 0.0])
+## The same for AI bots (PD2 team AI 0.35 s).
+@export var bot_hit_grace_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([0.35, 0.35, 0.0, 0.0, 0.0, 0.0])
 
 @export_group("Limb hitboxes (D-123)")
 ## Capsule radius of the upper-arm / thigh hitboxes on a rigged NPC (a little over ENV D's ragdoll capsules,

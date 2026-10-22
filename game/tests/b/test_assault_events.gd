@@ -83,3 +83,26 @@ func test_captain_panel_clears_the_events_line() -> void:
 	EventBus.assault_event_ended.emit(&"turret_van", 91)
 	await wait_frames(4)
 	assert_near(_hud.captain.get_global_rect().position.y, base_top, 1.0, "back to its spot without events")
+
+
+## r252 GPU loud run: an edge-clamped event marker drew "URRET VAN" off the left edge; labels stay on screen.
+func test_marker_labels_stay_on_screen() -> void:
+	assert_eq(ObjectiveMarkers.label_x(10.0, 120.0, 1280.0), 6.0, "left edge: label starts at the margin")
+	assert_eq(ObjectiveMarkers.label_x(1275.0, 120.0, 1280.0), 1280.0 - 120.0 - 6.0, "right edge: ends at the margin")
+	assert_eq(ObjectiveMarkers.label_x(640.0, 120.0, 1280.0), 580.0, "mid screen: centred as before")
+	assert_eq(ObjectiveMarkers.label_x(640.0, 2000.0, 1280.0), 6.0, "wider than the screen: starts at the margin")
+
+
+## GPU-19 (3440x1440, OF Cataclysm wave 2): the Brandt boss panel drew over a "SAW 00:29" device timer at top-centre;
+## device timers and objective badges under the banner stack step below it.
+func test_markers_and_timers_step_below_the_banner_stack() -> void:
+	var band: Rect2 = Rect2(Vector2(500, 40), Vector2(400, 160))  # banner + boss panel, ends at y 200
+	var under: Rect2 = Rect2(Vector2(620, 150), Vector2(168, 62))
+	var moved: Rect2 = DeviceTimers.step_below(under, band, 8.0)
+	assert_eq(moved.position, Vector2(620, 208), "timer panel starts below the stack")
+	assert_false(moved.intersects(band), "and no longer overlaps it")
+	var badge: Vector2 = ObjectiveMarkers.below_band(Vector2(700, 120), band)
+	assert_true(badge.y > band.end.y, "badge below the stack (%s)" % badge)
+	assert_eq(ObjectiveMarkers.below_band(Vector2(100, 120), band), Vector2(100, 120), "beside the stack: unchanged")
+	assert_eq(ObjectiveMarkers.below_band(Vector2(700, 400), band), Vector2(700, 400), "well below: unchanged")
+	assert_eq(ObjectiveMarkers.below_band(Vector2(700, 120), Rect2()), Vector2(700, 120), "no stack: unchanged")

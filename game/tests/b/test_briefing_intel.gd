@@ -8,7 +8,7 @@ extends TestCase
 
 const SCENE: String = "res://content/ui/briefing/briefing_screen.tscn"
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
-	&"gallery_night"]
+	&"gallery_night", &"ostrander_federal"]  # OF since round 245 (offered)
 const DIFFICULTIES: Array[int] = [0, 1, 2, 3, 4, 5]
 
 var _strings: Dictionary = {}

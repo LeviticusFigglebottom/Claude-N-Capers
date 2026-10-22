@@ -30,6 +30,8 @@ LIBRARY: dict[str, dict] = {
     "chrome": {"size": 512},
     "brass": {"size": 1024},
     "glass_clear": {"size": 512, "kind": "glass"},
+    # D-142: frosted / privacy glass (opaque for stealth vision; one shared look for every heist).
+    "glass_frosted": {"size": 512, "kind": "glass"},
     "rubber_black": {"size": 512},
     "fabric_upholstery": {"size": 1024},
     "leather_dark": {"size": 1024},
@@ -39,6 +41,14 @@ LIBRARY: dict[str, dict] = {
     "tile_ceramic_white": {"size": 1024},
     "vinyl_floor": {"size": 1024},
     "metal_painted": {"size": 1024},
+    # OF-C2 (Ostrander Federal G2 surfaces): dressed stone, raised panelling, riveted vault lining.
+    "limestone_ashlar": {"size": 1024},
+    "wood_panel_oak": {"size": 1024},
+    "steel_plate_riveted": {"size": 1024},
+    # RT-C2 (Rolling Thunder §3c): the site hoarding's painted plywood.
+    "plywood_painted": {"size": 1024},
+    # RT-C2 GPU-21: the diner's checkerboard vinyl (the vinyl_floor model, cream / charcoal).
+    "vinyl_checker": {"size": 1024},
     # First-person weapon materials (D-026): 1 UV unit = 1 m, 1024 px/m.
     "polymer_black": {"size": 1024, "tile_m": 1.0},
     "polymer_stipple": {"size": 1024, "tile_m": 1.0},

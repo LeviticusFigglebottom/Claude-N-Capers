@@ -205,6 +205,8 @@ static func _state_of(node: Node) -> Dictionary:
 	var npc: NpcBase = node as NpcBase
 	if npc != null:
 		var st: Dictionary = {"alive": npc.alive, "alert": int(npc.alert_state), "hp": npc.health, "stun": npc.stun_left > 0.0}
+		if not npc.visible:
+			st["hid"] = true  # QC-83: a unit seated in an armoured cab
 		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
 		if gb != null:
 			st["dom"] = gb.dominate_window_left > 0.0  # PP-A-1: the S5.8 window, for the client HUD cue
@@ -349,6 +351,8 @@ static func _apply_crew_state(crew: CrewController, d: Dictionary) -> void:
 
 
 static func _apply_npc_state(npc: NpcBase, d: Dictionary) -> void:
+	if not Net.is_authority():
+		npc.visible = not bool(d.get("hid", false))
 	if d.has("hp"):
 		npc.health = float(d["hp"])
 	if d.has("alert") and npc.alive:

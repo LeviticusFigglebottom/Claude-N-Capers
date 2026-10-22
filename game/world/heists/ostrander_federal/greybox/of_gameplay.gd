@@ -4,8 +4,11 @@
 ## Chain: of_builder_base <- of_shell <- of_gameplay <- build_greybox.
 ## Prefabs are ENV A's (found by contract class name); visuals are catalog props (doors: the greybox door kit). Content
 ## rows come from ostrander_federal_layout_content.gd (tools/levelcheck/plans/ostrander_federal_content.py).
-## Pre-placed, disabled (QC-61, OF-A2 not on trunk yet): the hoist (bag_lift) and the rope ladder carry meta
-## `starts_disabled` + `hidden`, the ladder `usable = false`; the lid plug is Geometry/Building/Lid/Lid (meta burn_lid).
+## Pre-placed, disabled (QC-61, OF-A2): the hoist (bag_lift) and the rope ladder (`rope_ladder`) are placed with
+## enabled_at_start = false (+ the G1 metas `starts_disabled` / `hidden` the mission's fallback still reads), the ladder
+## `usable = false`. The lid (OF-A6) is a GameplayPrefab tagged `lid` at Gameplay/Devices/Lid (Plug + Visual/LidPanel):
+## its set_enabled(false) at the burn replicates; the hole's footprint is a permanent navmesh hole (lead ruling, OF-A6).
+## Civilian routes (OF-A4 CivilianRoute + CivilianRouteStop) under Patrols/Routes, the teller's per side_door slot.
 extends "res://world/heists/ostrander_federal/greybox/of_shell.gd"
 
 ## Spawn tags a locked door's `npc_authorized_tags` lists: "@guards" (every Halden post) / "@staff" (staff civilians).
@@ -21,6 +24,16 @@ const BAKE_DEPTH: float = 0.3
 ## (Not loot_spawn: its marker is a navmesh target, within 0.25 m of the bake.)
 const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", "camera_station", "hack_terminal",
 	"bag_lift"]
+## SL-2 laser emitter column art (tools/blender/props/lasers.py) on every VC laser post.
+const LASER_COLUMN: String = "prop_laser_emitter_column"
+## Minimum width of a rig wall in the nav bake (see _nav_thick).
+const RIG_NAV_MIN: float = 0.2
+## Door jamb boxes in the nav bake (see _jamb_clearance): crew capsule radius (crew_member.tscn), its clearance at the
+## jambs, the bake cell, the frame's half depth (the wall's).
+const JAMB_CREW_R: float = 0.35
+const JAMB_CREW_CLEAR: float = 0.05
+const NAV_CELL: float = 0.1
+const JAMB_FRAME_D: float = 0.1
 
 ## [node, property, names] bound once everything is built (targets, operator spawn).
 var _binds: Array[Array] = []
@@ -30,19 +43,23 @@ var _binds: Array[Array] = []
 
 ## Builds one content row under `parent` (formats: ostrander_federal_content.py header).
 func build_item(parent: Node3D, it: Array) -> Node3D:
+	var out: Node3D = null
 	match String(it[0]):
 		"prefab":
-			return place_prefab(parent, it)
+			out = place_prefab(parent, it)
 		"spawn":
-			return _spawn_row(parent, it)
+			out = _spawn_row(parent, it)
 		"box":
-			return _box_row(parent, it)
+			out = _box_row(parent, it)
 		"marker":
-			return marker(parent, String(it[1]), v3(it[2]), float(it[3]), String(it[4]), String(it[5]))
+			out = marker(parent, String(it[1]), v3(it[2]), float(it[3]), String(it[4]), String(it[5]))
 		"tac":
-			return _tac_row(parent, it)
-	errors.append("unknown content row %s" % [it])
-	return null
+			out = _tac_row(parent, it)
+		"route":
+			out = _route_row(parent, it)
+		_:
+			errors.append("unknown content row %s" % [it])
+	return out
 
 
 ## ["prefab", kind, name, pos, yaw, props, use, metas, visual]
@@ -83,12 +100,18 @@ func place_prefab(parent: Node3D, it: Array) -> Node3D:
 		var key2: String = String(k2)
 		if key2 == "@landings":
 			_landings(inst, props[k2])
+		elif key2 == "@rig":
+			_rig(inst, props[k2])
+		elif key2 == "@panel":
+			_lift_panel(inst, props[k2])
 		elif key2 == "@contents":
 			for c: Array in props[k2]:
 				_content(inst, c)
 		elif key2.begins_with("@"):
 			_binds.append([inst, key2.substr(1), props[k2]])
-	if kind in OBSTRUCT_KINDS and not metas.has("mount") and not bool(metas.get("starts_disabled", false)):
+	# (a `walkable` lift car is a navmesh floor: the crew walk in with the bags; its art never blocks the bake)
+	if kind in OBSTRUCT_KINDS and not metas.has("mount") and not bool(metas.get("starts_disabled", false)) \
+			and not bool(metas.get("walkable", false)):
 		_obstruct_catalog(vis, xf)
 	return inst
 
@@ -103,6 +126,76 @@ func _landings(lift: Node3D, rows: Array) -> void:
 		add(lift, m)
 		targets.append(lift.get_path_to(m))
 	lift.set(&"targets", targets)
+
+
+## OF-P1 §7.7: the hoist rig ([name, world min, world max] rows, ostrander_federal_content.HOIST_RIG) as static boxes
+## under `host`/Rig: they come and go with the prefab (disabled = hidden and out of physics). world_dynamic (layer 2):
+## crew and bags collide, interaction and vision rays (world_static) pass. Each box is a permanent nav obstruction (the
+## hole's D-121 pattern: the navmesh never changes at the burn).
+func _rig(host: Node3D, rows: Array) -> void:
+	var rig: Node3D = add(host, node3d("Rig")) as Node3D
+	var inv: Transform3D = global_xform(host).affine_inverse()
+	for r: Array in rows:
+		var mn: Vector3 = v3(r[1])
+		var mx: Vector3 = v3(r[2])
+		var sb: StaticBody3D = box(rig, String(r[0]), inv * mn, inv * mx, "trim")
+		if sb != null:
+			sb.collision_layer = 2
+			sb.set_meta(&"lc_subprop", true)   # levelcheck: each its own prop (not merged into the hoist's box)
+			sb.set_meta(&"kind", "hoist_rig")
+		obstruct(Transform3D.IDENTITY, _nav_thick(AABB(mn, mx - mn)))
+
+
+## A projected obstruction only marks the 0.1 m cells whose centre it covers, so a 5 cm shaft wall can fall between the
+## centres and leave a walkable seam (ENV P burn re-run 2: a path through ShaftE). Widen each thin horizontal axis,
+## centred on the wall, to RIG_NAV_MIN (two cells) for the bake only; the collider keeps its real size.
+static func _nav_thick(box: AABB) -> AABB:
+	var out: AABB = box
+	for ax: int in [0, 2]:
+		if out.size[ax] < RIG_NAV_MIN:
+			var c: float = out.position[ax] + out.size[ax] * 0.5
+			out.position[ax] = c - RIG_NAV_MIN * 0.5
+			out.size[ax] = RIG_NAV_MIN
+	return out
+
+
+## bag_lift external call / send panel ([world min, world max, panel height], ostrander_federal_content.HOIST_PANEL):
+## a `Panel` riser (a floor-standing strip against the shaft wall, its origin at the panel height) under the lift.
+## bag_lift moves its Interactable onto the origin, hides the visual's own panel and copies the riser to every other
+## landing; the Interactable is placed there in the scene too (the saved focus point matches the runtime one). A
+## world_dynamic body like the rig (out of physics with the disabled hoist; levelcheck: its own prop, lc_subprop).
+func _lift_panel(lift: Node3D, row: Array) -> void:
+	var inv: Transform3D = global_xform(lift).affine_inverse()
+	var mn: Vector3 = v3(row[0])
+	var mx: Vector3 = v3(row[1])
+	var at: Vector3 = Vector3((mn.x + mx.x) * 0.5, float(row[2]), (mn.z + mx.z) * 0.5)
+	var size: Vector3 = mx - mn
+	var sb: StaticBody3D = StaticBody3D.new()
+	sb.name = "Panel"
+	sb.collision_layer = 2
+	sb.collision_mask = 0
+	sb.position = inv * at
+	sb.set_meta(&"lc_subprop", true)
+	sb.set_meta(&"kind", "lift_panel")   # (bag_lift's LandingPanelVisual copies carry it)
+	add(lift, sb)
+	var off: Vector3 = (mn + mx) * 0.5 - at
+	var col: CollisionShape3D = CollisionShape3D.new()
+	col.name = "Collision"
+	col.shape = _box_shape(size)
+	col.position = off
+	add(sb, col)
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Mesh"
+	mi.mesh = _box_mesh(size, "trim")
+	mi.position = off
+	add(sb, mi)
+	SurfaceTags.tag(sb, _surface("trim"))
+	var it: Node3D = lift.get_node_or_null("Interactable") as Node3D
+	if it == null:
+		errors.append("%s has no Interactable" % lift.name)
+		return
+	map_root.set_editable_instance(lift, true)
+	it.position = inv * at
 
 
 ## A prefab inside another (a safe's contents): [kind, name, local offset, props].
@@ -168,7 +261,8 @@ func _box_row(parent: Node3D, it: Array) -> StaticBody3D:
 	mi.position = col.position
 	add(body, mi)
 	SurfaceTags.tag(body, _surface(String(it[7])))
-	obstruct(Transform3D(yaw_basis(float(it[4])), base), AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
+	# ENV P r260: a 5 cm partition (LK / PW cubicles, SD booths) rasterises to no cell; widen it in the bake only
+	obstruct(Transform3D(yaw_basis(float(it[4])), base), _nav_thick(AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size)))
 	return body
 
 
@@ -184,6 +278,75 @@ func _tac_row(parent: Node3D, it: Array) -> TacticalPoint:
 	tp.breachable = bool(it[6])
 	add(parent, tp)
 	return tp
+
+
+## ["route", name, route_id, order, bind_tags, start_index, stops]: A's CivilianRoute with CivilianRouteStop children
+## (stop: [name, pos, pause, pause_anim, away_window, facing yaw or null]). Scripts by class name at run time: the route
+## script needs the GameRng autoload, which a --script generator cannot compile against.
+func _route_row(parent: Node3D, it: Array) -> Node3D:
+	var route_scr: Script = class_script("CivilianRoute")
+	var stop_scr: Script = class_script("CivilianRouteStop")
+	if route_scr == null or stop_scr == null:
+		errors.append("CivilianRoute / CivilianRouteStop class not found (%s)" % it[1])
+		return null
+	var r: Node3D = route_scr.new() as Node3D
+	r.name = String(it[1])
+	r.set(&"route_id", StringName(String(it[2])))
+	r.set(&"order", int((route_scr.get_script_constant_map()["Order"] as Dictionary)[String(it[3])]))
+	var tags: Array[StringName] = []
+	for t: Variant in it[4]:
+		tags.append(StringName(String(t)))
+	r.set(&"bind_tags", tags)
+	r.set(&"start_index", int(it[5]))
+	r.transform = global_xform(parent).affine_inverse()
+	add(parent, r)
+	for st: Array in it[6]:
+		var p: PatrolPoint = stop_scr.new() as PatrolPoint
+		p.name = String(st[0])
+		p.position = v3(st[1])
+		p.pause_range = Vector2(float(st[2][0]), float(st[2][1]))
+		p.pause_anim = StringName(String(st[3]))
+		p.set(&"away_window", StringName(String(st[4])))
+		if st[5] != null:
+			p.basis = yaw_basis(float(st[5]))
+			p.face_marker_forward = true
+		add(r, p)
+	return r
+
+
+## A global class's script by class name (null when missing).
+static func class_script(cls: String) -> Script:
+	for c: Dictionary in ProjectSettings.get_global_class_list():
+		if String(c["class"]) == cls:
+			return load(String(c["path"])) as Script
+	return null
+
+
+## The lid (QC-61 / OF-A6): a bare GameplayPrefab (no interaction; found by class name) tagged `lid` holding the hole's
+## plug body and the marble panel, so the mission's set_enabled(false) at the burn hides it and drops its collision on
+## every peer. Meta burn_lid kept for the mission's G1 fallback. The footprint is carved out of the navmesh for good.
+func build_lid(parent: Node3D) -> void:
+	var scr: Script = class_script("GameplayPrefab")
+	if scr == null:
+		errors.append("GameplayPrefab class not found (the lid)")
+		return
+	var o: Vector3 = v3(L.LID["origin"])
+	var lid: Node3D = Node3D.new()
+	lid.set_script(scr)
+	lid.name = "Lid"
+	lid.position = o
+	lid.set(&"objective_tag", &"lid")
+	lid.set_meta(&"kind", "hatch")   # levelcheck: sits in its slab hole like a shell piece (GN-C2 floor hatch)
+	lid.set_meta(&"burn_lid", true)
+	add(parent, lid)
+	var vis: Node3D = add(lid, node3d("Visual")) as Node3D
+	var pl: Array = L.LID["panel"]
+	mesh_box(vis, "LidPanel", v3(pl[0]) - o, v3(pl[1]) - o, String(pl[2]))
+	var pg: Array = L.LID["plug"]
+	box(lid, "Plug", v3(pg[0]) - o, v3(pg[1]) - o, String(pg[2]))
+	var hole: AABB = AABB(v3(pg[0]), v3(pg[1]) - v3(pg[0]))
+	obstruct(Transform3D.IDENTITY, AABB(Vector3(hole.position.x, -0.2, hole.position.z), Vector3(hole.size.x, 2.2,
+		hole.size.z)))
 
 
 ## Resolves the "@" props (node names -> NodePaths) once every node exists.
@@ -231,8 +394,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 	if extra.has("tag"):
 		props["objective_tag"] = String(extra["tag"])
 	var metas: Dictionary = {"kind": String(extra.get("kind_meta", "door")), "swing_side": "back"}
-	if bool(extra.get("push_bar", false)):
-		metas["fire_exit"] = true
+	if bool(extra.get("push_bar", false)) or bool(extra.get("fire_door", false)):
+		metas["fire_exit"] = true   # (fire_door: a two-way cross-corridor smoke door, no push bar)
 	if kind == "service":
 		metas["service"] = true
 	var it: Array = ["prefab", "door", nm, d[2], float(d[3]), props, null, metas, String(d[6])]
@@ -242,9 +405,29 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		var h: float = 4.9 if kind == "roller" else 2.6
 		obstruct(Transform3D(yaw_basis(float(d[3])), v3(d[2])), AABB(Vector3(-w * 0.5, -0.2, -BAKE_DEPTH),
 			Vector3(w, h, BAKE_DEPTH * 2.0)))
+	else:
+		_jamb_clearance(Transform3D(yaw_basis(float(d[3])), v3(d[2])), float(d[7]))
 	if inst != null and String(d[0]) in ["CashCageGate", "GoldCageGate"]:
 		_gate_padlock(inst, String(extra.get("tag", "")))
 	return inst
+
+
+## ENV P ghost run (AssistantDoor): the nav agent is 0.3 m but the crew capsule is 0.35 m, and the wall cut the bake
+## sees is wider than the frame (clear half width = the leaf's half width) and off its centre, so a path on the throat
+## edge put the capsule on a jamb and the pilot stalled there. Bake only: two carved (exact) boxes over the jambs, as
+## deep as the frame plus the capsule, leave a straight throat at the frame centre +- `half`: on the cell grid like the
+## door centres so it rasterizes exactly, a cell narrower for the contour simplification (edge_max_error 1.3 cells)
+## on wide throats, and at least a cell (the 0.9 m singles keep a 0.2 m throat; there the capsule just touches at
+## its edges). Off the throat the wall's own agent-radius margin (0.3 m) is only 5-10 cm narrower, so
+## corridors and landings past the doors keep their width. The collider keeps its real size.
+func _jamb_clearance(xf: Transform3D, width: float) -> void:
+	var w2: float = width * 0.5
+	var half: float = maxf(NAV_CELL, floorf((w2 - JAMB_CREW_R - JAMB_CREW_CLEAR - NAV_CELL) / NAV_CELL + 0.001) * NAV_CELL)
+	var depth: float = ceilf((JAMB_FRAME_D + JAMB_CREW_R) / NAV_CELL - 0.001) * NAV_CELL
+	var reach: float = w2 + JAMB_CREW_R + NAV_CELL - half   # over the jamb into the wall's own margin
+	for side: float in [-1.0, 1.0]:
+		var x0: float = half if side > 0.0 else -half - reach
+		obstruct(xf, AABB(Vector3(x0, -0.2, -depth), Vector3(reach, 2.6, depth * 2.0)), true)
 
 
 ## D-138: the cage gate's padlock / hasp (lockpick 8 s, or a placed saw) on the gate itself; opening it opens the gate.
@@ -285,7 +468,7 @@ func build_variants(variants: Node3D) -> void:
 		vs.transform = Transform3D(yaw_basis(float(row[8])), Vector3(float(row[5]), float(row[6]), float(row[7])))
 		vs.set_meta(&"room", String(row[4]))
 		add(groups[g2], vs)
-		for it: Array in LC.SLOT_ITEMS.get(sid, []):
+		for it: Array in LC.SLOT_ITEMS.get(sid, []) + L.ROUTES.get(sid, []):
 			build_item(vs, it)
 		match g2:
 			"camera":
@@ -311,7 +494,9 @@ func security_camera(parent: Node3D, c: Array) -> Node3D:
 		{"mount": "wall", "kind": "security_camera", "camera_id": String(c[0])}, "prop_security_camera_wall"])
 
 
-## The VC grid at x LASER_X across the concourse (local X along -z, yaw 90) with its emitter / receiver posts.
+## The VC grid at x LASER_X across the concourse (local X along -z, yaw 90) with its emitter / receiver posts. OF-C2:
+## each post's visual is the catalog emitter column (SL-2, its lens face turned to the other post) over the post's
+## 0.12 x 2.7 x 0.15 collider, and the grid's visual the slot's beam set (LASERS `visual`: beams only, no posts).
 func _lasers(vs: VariantSlot, sid: String) -> void:
 	var lz: Dictionary = LC.LASERS[sid]
 	var z0: float = float(lz["z"][0])
@@ -322,7 +507,10 @@ func _lasers(vs: VariantSlot, sid: String) -> void:
 		var p: Array = lz["posts"][i]
 		var post: StaticBody3D = _box_row(vs, ["box", "LaserPost%d" % i, [LC.LASER_X, fy, (float(p[0]) + float(p[1])) * 0.5],
 			[0.12, 2.7, float(p[1]) - float(p[0])], 0.0, "laser_emitter", true, "trim"])
-		if i == 0 and post != null:
+		if post == null:
+			continue
+		_laser_column(post, -90.0 if i == 0 else 90.0)
+		if i == 0:
 			post0 = post   # the grid hangs off its emitter post (as GN's TreasuryLasers)
 	var props: Dictionary = {"pattern": String(lz["pattern"]), "size_m": [z1 - z0, float(lz["h"]), 0.1],
 		"enabled_at_start": true, "objective_tag": "laser_grid"}
@@ -332,7 +520,22 @@ func _lasers(vs: VariantSlot, sid: String) -> void:
 	var metas: Dictionary = (lz["metas"] as Dictionary).duplicate()
 	metas["kind"] = "laser_grid"
 	place_prefab(post0, ["prefab", "laser_grid", "VaultLasers", [LC.LASER_X, fy + float(lz["y"]), (z0 + z1) * 0.5], 90.0,
-		props, null, metas, ""])
+		props, null, metas, String(lz.get("visual", ""))])
+
+
+## Swaps a laser post's box mesh for the catalog emitter column (lens face +X turned by `yaw` toward the grid).
+func _laser_column(post: StaticBody3D, yaw: float) -> void:
+	var box_mesh: Node = post.get_node_or_null(^"Mesh")
+	if box_mesh != null:
+		post.remove_child(box_mesh)
+		box_mesh.free()
+	var ps: PackedScene = catalog_scene(LASER_COLUMN)
+	if ps == null:
+		return
+	var column: Node3D = ps.instantiate() as Node3D
+	column.name = "Column"
+	column.basis = yaw_basis(yaw)
+	add(post, column)
 
 
 # --- Always-present content, NPCs, patrols, tactical ------------------------------------------------
@@ -347,6 +550,10 @@ func build_always() -> void:
 			parent = add(n(path.get_slice("/", 0)), node3d(path.get_slice("/", 1))) as Node3D
 		for it2: Array in LC.ALWAYS[path]:
 			build_item(parent, it2)
+	var routes: Node3D = add(n("Patrols"), node3d("Routes")) as Node3D
+	for r: Array in L.ROUTES["Patrols/Routes"]:
+		build_item(routes, r)
+	build_lid(n("Gameplay/Devices"))
 
 
 func build_graphs(patrols: Node3D) -> void:

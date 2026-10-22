@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_site_rebar_bundle/prop_site_rebar_bundle.glb" id="1_model"]
+
+[node name="PropSiteRebarBundle" type="Node3D"]
+metadata/kind = &"rebar"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

@@ -2,7 +2,8 @@
 ## so police, specials, guards and civilians wear ENV D's characters instead of placeholder capsules.
 ## Order (D-103 §3b.1: the tag beats the EnemyDef): SpawnPoint tag (NpcVisualTweak.heist_tag_characters for this
 ## heist, then tag_characters) -> EnemyDef id (`enemy.<id>` -> character <id>, or NpcVisualTweak.enemy_characters;
-## faction variant from params.visual_variant, characters.md v1.6) -> role (role_characters).
+## faction variant from params.visual_variant, characters.md v1.6, else the D-145.3
+## difficulty variant) -> role (role_characters).
 ## The pick among several ids (D-115 GN polish): the authority deals a tag's looks round-robin in spawn order from a
 ## per-run, per-tag offset (no twins while the tag's live count <= its looks), stores the index in
 ## spawn_info["look"] and replicates it with the spawn descriptor; without a heist it hashes the node name.
@@ -48,9 +49,9 @@ static func resolve(npc: NpcBase) -> PackedScene:
 		var cid: String = String(def.id).substr(6)
 		if tw != null and tw.enemy_characters.has(def.id):
 			cid = String(tw.enemy_characters[def.id])
-		var variant: String = String(def.params.get("visual_variant", ""))
-		for path: String in [scene_path(cid, variant), scene_path(cid)]:
-			var ps: PackedScene = _load(path)
+		var rt: HeistRuntime = HeistRuntime.of(npc)
+		for variant: String in variants(def, rt.difficulty if rt != null else -1):
+			var ps: PackedScene = _load(scene_path(cid, variant))
 			if ps != null:
 				return ps
 	if tw != null and tw.role_characters.has(npc.role):
@@ -58,8 +59,28 @@ static func resolve(npc: NpcBase) -> PackedScene:
 	return null
 
 
-## Character scene paths an NPC with EnemyDef `def` may wear (faction variant first), existing ones only. For warm-up.
-static func def_scene_paths(def: EnemyDef) -> PackedStringArray:
+## Look variants to try, in order, for EnemyDef `def` on `difficulty` (-1 = unknown). With a D-145.3 difficulty
+## variant (NpcVisualTweak.difficulty_variants, "duty" on Routine/Tense) the unarmoured look wins over the armoured
+## faction look (LEAD 2026-10-20): `<faction>_duty` -> `duty` -> `<faction>` -> base (""); else the faction variant
+## (params.visual_variant) -> base.
+static func variants(def: EnemyDef, difficulty: int = -1) -> PackedStringArray:
+	var out: PackedStringArray = PackedStringArray()
+	var faction: String = String(def.params.get("visual_variant", "")) if def != null else ""
+	var tw: NpcVisualTweak = tweak()
+	var duty: String = String(tw.difficulty_variants.get(difficulty, "")) if tw != null and difficulty >= 0 else ""
+	if not faction.is_empty() and not duty.is_empty():
+		out.append("%s_%s" % [faction, duty])
+	if not duty.is_empty():
+		out.append(duty)
+	if not faction.is_empty():
+		out.append(faction)
+	out.append("")
+	return out
+
+
+## Character scene paths an NPC with EnemyDef `def` may wear on `difficulty` (variant first), existing ones only.
+## For warm-up.
+static func def_scene_paths(def: EnemyDef, difficulty: int = -1) -> PackedStringArray:
 	var out: PackedStringArray = PackedStringArray()
 	if def == null or not String(def.id).begins_with("enemy."):
 		return out
@@ -67,8 +88,8 @@ static func def_scene_paths(def: EnemyDef) -> PackedStringArray:
 	var tw: NpcVisualTweak = tweak()
 	if tw != null and tw.enemy_characters.has(def.id):
 		cid = String(tw.enemy_characters[def.id])
-	var variant: String = String(def.params.get("visual_variant", ""))
-	for path: String in [scene_path(cid, variant), scene_path(cid)]:
+	for variant: String in variants(def, difficulty):
+		var path: String = scene_path(cid, variant)
 		if not out.has(path) and ResourceLoader.exists(path):
 			out.append(path)
 	return out

@@ -33,6 +33,33 @@ const FLOAT_OUTLINE_COLOR: Color = Color(0, 0, 0, 1)
 const FLOAT_SHADOW_COLOR: Color = Color(0, 0, 0, 0.55)
 const FLOAT_SHADOW_OFFSET: Vector2i = Vector2i(2, 3)
 const FLOAT_SHADOW_SOFTNESS: int = 6
+## r249 contrast ruling (style.md "fill vs local background >= 3:1"): the small HUD labels that failed it on the OF
+## facade (world-marker labels, teammate names) sit on a subtle rounded scrim (~45% black: white over near-white
+## stone measures ~3.4:1); the objective block stays frameless (PO-4).
+const LABEL_SCRIM_COLOR: Color = Color(0, 0, 0, 0.45)
+const LABEL_SCRIM_RADIUS: int = 4
+const LABEL_SCRIM_PAD: Vector2 = Vector2(6, 2)
+## r266: the status scrim (vitals captions, a teammate's Downed / In custody line): text that must read on a bright
+## scene (white galleries, limestone, dawn) needs more than the 45% name scrim to keep a 3:1 fill.
+const LABEL_SCRIM_STRONG_ALPHA: float = 0.75
+
+
+## The r249 label scrim as a StyleBoxFlat (Label "normal" style, or ObjectiveMarkers.draw_style_box).
+static func label_scrim(alpha: float = LABEL_SCRIM_COLOR.a) -> StyleBoxFlat:
+	var sb: StyleBoxFlat = StyleBoxFlat.new()
+	sb.bg_color = Color(LABEL_SCRIM_COLOR, alpha)
+	sb.set_corner_radius_all(LABEL_SCRIM_RADIUS)
+	sb.content_margin_left = LABEL_SCRIM_PAD.x
+	sb.content_margin_right = LABEL_SCRIM_PAD.x
+	sb.content_margin_top = LABEL_SCRIM_PAD.y
+	sb.content_margin_bottom = LABEL_SCRIM_PAD.y
+	return sb
+
+
+## `l` on the r249 label scrim (its text keeps the float outline / shadow).
+static func scrim_label(l: Label, alpha: float = LABEL_SCRIM_COLOR.a) -> Label:
+	l.add_theme_stylebox_override(&"normal", label_scrim(alpha))
+	return l
 
 
 static func theme() -> Theme:

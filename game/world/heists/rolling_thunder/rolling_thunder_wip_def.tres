@@ -1,0 +1,65 @@
+[gd_resource type="Resource" script_class="HeistDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_def.gd" id="1_rt"]
+
+[resource]
+script = ExtResource("1_rt")
+id = &"rolling_thunder"
+display_name = "Rolling Thunder"
+contact = &"contact.reyes"
+briefing = "heist.rolling_thunder.briefing"
+map_scene = "res://world/heists/rolling_thunder/rolling_thunder.tscn"
+base_payout = 30000
+stealth_bonus_mult = 1.0
+loot = Array[StringName]([&"loot.cash_bricks", &"loot.gold", &"loot.bearer_bonds"])
+objectives = Array[StringName]([&"casing", &"signals", &"charges", &"thermite", &"marshal", &"convoy", &"ambush", &"escort", &"trucks", &"cargo", &"secure", &"escape_wait", &"escape"])
+briefing_objectives = Array[StringName]([&"casing", &"ui.briefing.step.rolling_thunder.setup", &"convoy", &"ui.briefing.step.rolling_thunder.trucks", &"secure", &"escape"])
+preplanning = {
+"assets": {
+&"asset.alternate_entry": {
+"point_categories": [&"spawn"],
+"point_ids": [&"pp_spawn_carpark", &"pp_spawn_underpass"]
+},
+&"asset.ammo_bag_drop": {
+"point_ids": [&"pp_drop_site", &"pp_drop_carpark", &"pp_drop_diner_yard", &"pp_drop_underpass"]
+},
+&"asset.body_bag_case_drop": {
+"point_ids": [&"pp_drop_site", &"pp_drop_diner_yard"]
+},
+&"asset.c4_drop": {
+"point_ids": [&"pp_drop_carpark", &"pp_drop_underpass"]
+},
+&"asset.doctor_bag_drop": {
+"point_ids": [&"pp_drop_site", &"pp_drop_carpark", &"pp_drop_diner_yard", &"pp_drop_underpass"]
+},
+&"asset.escape_position": {
+"force_variants": {},
+"point_categories": [&"escape"]
+},
+&"asset.extra_cable_ties": {},
+&"asset.intel_cameras": {
+"reveals": [&"camera"]
+},
+&"asset.intel_guard_posts": {
+"reveals": [&"guard_post"]
+},
+&"asset.intel_route": {
+"reveals": [&"convoy_route", &"marshal_walk"]
+},
+&"asset.lift_power": {},
+&"asset.signal_insider": {
+"point_ids": [&"pp_signals"]
+},
+&"asset.sniper_position": {
+"point_ids": [&"pp_perch_roof", &"pp_perch_frame"]
+},
+&"asset.spare_body_bags": {},
+&"asset.thermite_drop": {
+"point_ids": [&"pp_drop_site", &"pp_drop_carpark", &"pp_drop_underpass"]
+}
+},
+"disable": [&"asset.intel_keycards", &"asset.intel_laptop"],
+"favors": 5
+}
+escape_options = Array[StringName]([&"van", &"heli"])
+music_track = &"rolling_thunder"

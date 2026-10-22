@@ -58,10 +58,16 @@ static var _cached: SpecialTweak = null
 @export var stinger_windup_s: float = 1.0
 ## cue.stinger_arc re-requested every interval while tasing.
 @export var stinger_arc_interval_s: float = 0.5
-## Long tase: after this the beam ends and the victim stays helpless (TASED) until revived (◇ 6 s).
-@export var stinger_helpless_after_s: float = 6.0
+## Long tase: after this the beam ends and the victim goes down (D-145; PD2 tase_time 10 s on every difficulty).
+@export var stinger_helpless_after_s: float = 10.0
 ## Cooldown between tases (s).
 @export var stinger_tase_cooldown_s: float = 4.0
+## D-145 (P's GH Tense run: tased 3x in ~10 s): per-difficulty cooldown (Enums.Difficulty index) replacing
+## stinger_tase_cooldown_s when set ◇.
+@export var stinger_tase_cooldown_by_difficulty: PackedFloat32Array = PackedFloat32Array()
+## D-145: after a tase on a crew member ends, no Stinger may tase that crew member again for this long (s, per
+## difficulty; 0 = none) ◇: several Stingers cannot chain one player.
+@export var stinger_victim_immune_s_by_difficulty: PackedFloat32Array = PackedFloat32Array()
 ## Involuntary fire while tased: spread multiplier and upward pull (deg).
 @export var stinger_spread_mult: float = 3.0
 @export var stinger_pitch_up_deg: float = 15.0
@@ -77,6 +83,13 @@ static var _cached: SpecialTweak = null
 @export var longshot_aim_lock_s: float = 1.2
 ## Seconds between shots (after the report, a new aim lock starts).
 @export var longshot_fire_interval_s: float = 2.5
+## LEAD D-145 (DB Tense: Longshots at 30 m+ were 31-47 % of the damage), Routine..Cataclysm, overriding the two above
+## where set: the laser aim lock before each shot, and the seconds between shots. PD2 sniper preset (charactertweakdata
+## presets.weapon.sniper): aim_delay {0, 0.1}, use_laser, FALLOFF recoil (s between shots) {2,4} / {3,4} / {3,5} at
+## 7 / 35 / 100 m, accuracy ramping over focus_delay 7 s; _set_normal reportedly triples sniper delays. Tense uses
+## PD2 Hard's mid-range 3.5 s and a 2 s telegraph (>= PD2); Routine gentler; Hazardous+ as before.
+@export var longshot_aim_lock_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([2.5, 2.0, 1.2, 1.2, 1.2, 1.2])
+@export var longshot_fire_interval_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([4.5, 3.5, 2.5, 2.5, 2.5, 2.5])
 ## Max engagement range (S2.7 caps loud targeting at 80-180 m by DR; ◇ 150 m).
 @export var longshot_range_m: float = 150.0
 ## L4.7: damage halved beyond this distance, except on the top difficulty.

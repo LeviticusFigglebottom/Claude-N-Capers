@@ -30,6 +30,9 @@ const BLOCK_CIVILIAN: StringName = &"ui.blocked.civilian"
 @export var consumes_item: bool = false
 @export var stealth_only: bool = false
 @export var loud_only: bool = false
+## The blocked reason shown when stealth_only / loud_only rules it out now (default ui.blocked.phase "Not now"); e.g. the
+## OF hoist's "Available after the floor is breached" (P's OF probe).
+@export var phase_block_key: StringName = &""
 @export var casing_allowed: bool = false
 ## S1.1: a small item/loot pickup; allowed while casing when the crew has stealth.casing_can_pickup_items.
 @export var casing_pickup_item: bool = false
@@ -102,7 +105,7 @@ func _phase_block() -> StringName:
 	var ph: int = int(rt.get(&"phase"))
 	var loud: bool = ph == Enums.HeistPhase.LOUD or bool(rt.get(&"went_loud"))
 	if (stealth_only and loud) or (loud_only and not loud):
-		return BLOCK_PHASE
+		return phase_block_key if phase_block_key != &"" else BLOCK_PHASE
 	return BLOCK_NONE
 
 

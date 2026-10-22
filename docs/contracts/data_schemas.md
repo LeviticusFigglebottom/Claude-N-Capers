@@ -97,3 +97,11 @@ Every reader (B's BriefingIntel, the HUD) uses the same order.
   M 1.15, L 1.25), else `PayoutTweak.stealth_xp_bonus_mult` (1.2; no def / loud-only).
 - **OF-A6 (A c017fd51):** `AssaultEventsTweak.heists.ostrander_federal` rows (turret van ×2, police heli ×2, breach ×4).
   D-136.10: Ostrander `[secure]` counts `loot.cash_bricks`, `loot.gold`, `loot.bearer_bonds` only (6 bags, 4 on Routine).
+- **PO-19 crew bot loadouts (B 29d30a2d), PlayerProfile v10:** `crew_loadouts: Array[Dictionary]`, exactly 3 entries
+  (`ProfileSchema.CREW_SLOTS`), each `{"weapon": StringName, "mods": Array[StringName], "armor": StringName,
+  "mask": StringName, "outfit": StringName}`; `&""` / `[]` = the bot's default. Migration 9 → 10 adds 3 empty entries;
+  a bad entry is emptied, extras dropped, a short list padded (warning); ids are validated at use (unowned / retired /
+  wrong slot → default), never on load. Bots draw on what the player owns (no per-bot purchase). Lobby `MSG_PROFILE`
+  summary gains `"crew"` (host's validated entries). API `CrewLoadouts.for_slot(i, profile = null)` →
+  `{weapon: WeaponDef|null, mods: Array[WeaponModDef], armor: ArmorDef|null, mask, outfit}`; `bot_loadout(i, profile,
+  heister)` → resolved Loadout. A bot's `Loadout.heister` may be a suit key (`suit_charcoal` / `suit_navy`).

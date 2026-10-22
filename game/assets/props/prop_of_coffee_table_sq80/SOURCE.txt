@@ -1,0 +1,8 @@
+asset: prop_of_coffee_table_sq80
+script: tools/blender/props/ostrander_landmarks.py
+params: {"cat": {"group": "ostrander", "kind": "coffee_table", "pin_only": true, "place": "none", "support": true, "top": 0.45}, "fn": "coffee_table"}
+seed: 880912769  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_of_coffee_table_sq80
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

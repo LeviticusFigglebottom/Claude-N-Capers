@@ -10,11 +10,9 @@ const HEISTS: Array[StringName] = [
 	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
 ]
 
-## ENV A: lines only A code can trigger and does not yet (pd2_fidelity C8 barks). Empty since A's D-117 bark
-## director; it stays shrink-only like the others.
-## Every A line is said (the D-117 bark director, env/a-core dd20d1f0, round 226), except OF's captain line (LEAD r244):
-## A hooks vo.mercer.ostrander_federal_captain_arrived to captain_arrived in OF-A6 phase 2. Shrink-only.
-const UNSAID_A: Array[StringName] = [&"vo.mercer.ostrander_federal_captain_arrived"]
+## ENV A: lines only A code can trigger and does not yet (pd2_fidelity C8 barks). Every A line is said (the D-117
+## bark director, env/a-core dd20d1f0, round 226; OF's captain line since OF-A6 phase 2, A f326ad00). Shrink-only.
+const UNSAID_A: Array[StringName] = []
 
 ## B reserve: a contact's generic radio lines that no current heist reaches (each fact has an always-ready heist
 ## line, or no heist with that contact has the fact: Night Deposit, and Dockside Burn's [cartel] since A 4b4fef68,
@@ -29,22 +27,15 @@ const UNSAID_B_RESERVE: Array[StringName] = [
 	# LEAD: reyes radio_objective_failed_1..3 are reached since A 4b4fef68 ([cartel] fails at the police call).
 	# LEAD r244: accountant radio_objective_done_1..3 are reached since OF-A6 (OF's vault_drill completes with vault_breach;
 	# only vault_breach keeps its own line, so the generic done line covers vault_drill).
-	&"vo.accountant.radio_objective_new_1", &"vo.accountant.radio_objective_new_2", &"vo.accountant.radio_objective_new_3",
+	# OF-A6 phase 2 (A f326ad00): accountant radio_objective_new_1..3 are reached (OF reveals objectives the generic
+	# new line covers).
 	&"vo.mercer.radio_objective_failed_1", &"vo.mercer.radio_objective_failed_2", &"vo.mercer.radio_objective_failed_3",
 ]
 
 ## ENV C: radio lines keyed to objectives the mission never adds or completes. Empty since C 762934d5 (GH
-## extra_bags / salon / display_cases, GN lockers / extras); shrink-only like the others.
-## OF-A6 phase 1 (A, wip/a-of-a6 360b4923): the coverage scan sees no HIDDEN -> ACTIVE reveal in OF's mission (it shows
-## its hidden objectives through its own helpers), so its 7 radio _new lines read unsaid; and the optional bond_safe /
-## president_safe / server_drives are never completed yet. Phase 2 says these: shrink-only.
-const UNSAID_C: Array[StringName] = [
-	&"vo.accountant.ostrander_federal_radio_time_lock_new", &"vo.accountant.ostrander_federal_radio_time_lock_wait_new",
-	&"vo.accountant.ostrander_federal_radio_vault_loot_new", &"vo.accountant.ostrander_federal_radio_drill_delivery_new",
-	&"vo.accountant.ostrander_federal_radio_vault_drill_new", &"vo.accountant.ostrander_federal_radio_escape_wait_new",
-	&"vo.accountant.ostrander_federal_radio_escape_new", &"vo.accountant.ostrander_federal_radio_bond_safe",
-	&"vo.accountant.ostrander_federal_radio_president_safe", &"vo.accountant.ostrander_federal_radio_server_drives",
-]
+## extra_bags / salon / display_cases, GN lockers / extras) and OF-A6 phase 2 (A f326ad00: OF's reveals are literal
+## HIDDEN -> ACTIVE, the side safes and server drives complete); shrink-only like the others.
+const UNSAID_C: Array[StringName] = []
 
 var _r: Dictionary = {}
 
@@ -134,6 +125,23 @@ func _generic_abort_retired() -> bool:
 
 func test_unsaid_c_allowlist() -> void:
 	_check_allowlist("C", UNSAID_C)
+
+
+## RT-B1 (D-151): a staged heist's lines (heist_list "hidden", no mission yet) wait for its mission as owner "S".
+## Only staged heists may hold them: once the heist is offered the A / B / C rules apply and every line must be said.
+func test_staged_heist_lines_wait_for_their_mission() -> void:
+	for row: Dictionary in VoCoverage.call(&"unsaid", _r, "S") as Array[Dictionary]:
+		var h: StringName = VoCoverage.call(&"staged_heist_of", StringName(row["id"])) as StringName
+		assert_ne(h, &"", "%s waits only while its heist is staged" % row["id"])
+	assert_eq(VoCoverage.call(&"staged_heist_of", &"vo.mercer.ostrander_federal_intro"), &"", "OF is offered")
+
+
+## RT-B1: Rolling Thunder's 34 drafted lines exist; A's rolling_thunder_mission (env/a-core 9fff6e120) says them all,
+## so on a trunk with both no RT line is unsaid by A / B / C (a staged line still waiting shows as "S").
+func test_rolling_thunder_lines_exist_and_wait_or_are_said() -> void:
+	var c: Dictionary = VoCoverage.call(&"counts", _r, &"rolling_thunder")
+	assert_true(int(c["lines"]) >= 34, "RT lines in the table (%d)" % int(c["lines"]))
+	assert_eq(int(c["A"]) + int(c["B"]) + int(c["C"]), 0, "no RT line is unsaid by A / B / C")
 
 
 func test_heist_mission_lines_are_said() -> void:

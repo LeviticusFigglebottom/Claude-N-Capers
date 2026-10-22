@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"site_frame_slab"
+purpose = &"exterior"
+required_items = Array[StringName]([&"pallet", &"cone"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.008
+max_density = 0.3
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"pallet", &"cone", &"gas_cylinders", &"scaffold"])
+seed_salt = 4716
+counts = {}
+assets = {}
+ceiling = {}
+notes = "RT F1 the frame's first slab: block pallets (the map's G1 boxes, prop_pallet_loaded art) with a second pallet each, cones by the slab edge. Fixed tables. Waits: prop_scaffold (edge protection), prop_site_clutter."

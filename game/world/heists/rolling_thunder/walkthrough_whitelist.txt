@@ -1,0 +1,42 @@
+# Walkthrough detour whitelist for Rolling Thunder (tools/levelcheck/README.md "walkthrough").
+# Format: <spawn name|path|*> <target name|path|*>. Owner: ENV C (RT-C1, G1). Every entry is a > 3x path/straight
+# ratio that follows from the approved plan (docs/design/heists/rolling_thunder.md; the floor plans in
+# tools/levelcheck/plans/rolling_thunder_floors_ascii.py), not from a navigation fault: every target is reachable
+# (validate_level `reachability` PASS) and the path is the shortest legal walk. LEAD review: the doc's whitelist names
+# only R1 + R2 to the roof; these are the same kind of level-change detour (the doc's "Nothing else is expected" was
+# written before the spawn positions were placed).
+#
+# Car-park spawns (Deck 2, stair-A lobby, +3.5): targets one storey down or up beside the spawn (the lift landing doors,
+# the goods lift car, stair A's lobby door below / head house above) are a walk round through the stair-A core (U-stair,
+# 20 risers) while the straight line passes through the deck slab; the E3 pad zones on the roof are the same climb.
+# (PlayerCarPark3 -> LiftDoorG: 2.97x before RT-C2, 3.01x with the convoy nav: the same walk, re-polygonised.)
+PlayerCarPark1 Gameplay/Doors/LiftDoorG/UsePoint
+PlayerCarPark1 Gameplay/Doors/LiftDoorR/UsePoint
+PlayerCarPark1 Gameplay/Doors/StairALobbyDoorG/UsePoint
+PlayerCarPark1 Gameplay/Lifts/GoodsLift
+PlayerCarPark1 Gameplay/Lifts/GoodsLift/UsePoint
+PlayerCarPark1 Variants/Group_escape/Slot_esc_heli_roof/EscapeRoof/Zone
+PlayerCarPark1 Variants/Group_player_perch/Slot_perch_carpark_roof/HeadHouseADoor/UsePoint
+PlayerCarPark2 Gameplay/Doors/LiftDoorG/UsePoint
+PlayerCarPark2 Gameplay/Doors/LiftDoorR/UsePoint
+PlayerCarPark2 Gameplay/Lifts/GoodsLift
+PlayerCarPark2 Gameplay/Lifts/GoodsLift/UsePoint
+PlayerCarPark2 Variants/Group_escape/Slot_esc_heli_roof/EscapeRoof/Zone
+PlayerCarPark3 Gameplay/Doors/LiftDoorG/UsePoint
+PlayerCarPark3 Variants/Group_escape/Slot_esc_heli_roof/EscapeRoof/Zone
+PlayerCarPark4 Variants/Group_escape/Slot_esc_heli_roof/EscapeRoof/Zone
+PlayerCarPark4 Variants/Group_escape/Slot_esc_heli_roof/SecureRoof/Zone
+#
+# Underpass spawns (the trench, -5.0, x 71-76): stair B and its head house (car-park SE corner) and the car park's east
+# fire door are 26-33 m away in a straight line through the retaining wall, the rail bank and the car park's fire wall;
+# the walk is up the 32 m road ramp, along the forecourt, in by the entrance and across the decks (86-100 m). The rail
+# lane is reached only through that fire door by design (RT plan §7.16).
+PlayerUnderpass1 Gameplay/Doors/CarParkFireDoor/UsePoint
+PlayerUnderpass1 Gameplay/Doors/HeadHouseBDoor/UsePoint
+PlayerUnderpass1 Gameplay/Doors/StairBDoor2/UsePoint
+PlayerUnderpass2 Gameplay/Doors/HeadHouseBDoor/UsePoint
+PlayerUnderpass2 Gameplay/Doors/StairBDoor2/UsePoint
+PlayerUnderpass3 Gameplay/Doors/HeadHouseBDoor/UsePoint
+PlayerUnderpass3 Gameplay/Doors/StairBDoor2/UsePoint
+PlayerUnderpass4 Gameplay/Doors/HeadHouseBDoor/UsePoint
+PlayerUnderpass4 Gameplay/Doors/StairBDoor2/UsePoint

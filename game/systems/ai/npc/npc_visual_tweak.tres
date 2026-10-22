@@ -81,6 +81,7 @@ heist_tag_characters = {
 &"civ_manager_mgr_gallery": [&"bank_manager"],
 &"civ_manager_mgr_vault": [&"bank_manager"],
 &"civ_officer": [&"bank_officer", &"bank_officer_b", &"bank_officer_c", &"bank_officer_d"],
+&"civ_sd_attendant": [&"bank_officer", &"bank_officer_b", &"bank_officer_c", &"bank_officer_d"],
 &"civ_plaza": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
 &"civ_teller": [&"npc_bank_teller", &"npc_bank_teller_b", &"npc_bank_teller_c", &"npc_bank_teller_d", &"npc_bank_teller_e"],
 &"civ_vip": [&"bank_vip_client"],
@@ -95,17 +96,20 @@ heist_tag_characters = {
 &"security_operator": [&"npc_bank_guard"]
 },
 &"rolling_thunder": {
-&"civ_bus": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
-&"civ_diner": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
-&"civ_street": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
+&"civ_bus": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b", &"street_pedestrian", &"street_pedestrian_b", &"street_pedestrian_c", &"street_pedestrian_d", &"street_pedestrian_e", &"street_pedestrian_f", &"street_pedestrian_g", &"street_pedestrian_h", &"street_pedestrian_i"],
+&"civ_diner": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b", &"street_pedestrian", &"street_pedestrian_b", &"street_pedestrian_c", &"street_pedestrian_d", &"street_pedestrian_e", &"street_pedestrian_f", &"street_pedestrian_g", &"street_pedestrian_h", &"street_pedestrian_i"],
+&"civ_street": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b", &"street_pedestrian", &"street_pedestrian_b", &"street_pedestrian_c", &"street_pedestrian_d", &"street_pedestrian_e", &"street_pedestrian_f", &"street_pedestrian_g", &"street_pedestrian_h", &"street_pedestrian_i"],
 &"convoy_t1": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
 &"convoy_t2": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
 &"convoy_t3": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
 &"cop_diner": [&"patrol_officer"],
+&"driver_mixer": [&"contact_hollis"],
 &"cop_plaza": [&"patrol_officer"],
 &"guard_site_cabins": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
 &"guard_site_frame": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
 &"guard_site_gate": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"staff_booth": [&"carpark_attendant"],
+&"staff_diner": [&"diner_waitress", &"diner_cook"],
 &"vl_marshal": [&"armored_car_marshal"]
 },
 &"shadow_ledger": {
@@ -148,6 +152,8 @@ heist_tag_pools = {
 &"guard_rover": &"nd_guards"
 },
 &"ostrander_federal": {
+&"civ_officer": &"of_officers",
+&"civ_sd_attendant": &"of_officers",
 &"guard_extra_basement": &"of_guards",
 &"guard_extra_hall": &"of_guards",
 &"civ_client": &"of_customers",

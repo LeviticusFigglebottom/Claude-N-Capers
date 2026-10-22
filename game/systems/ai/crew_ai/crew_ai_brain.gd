@@ -9,11 +9,13 @@
 ##   follows its leader, mirrors the leader's mask and crouch, and stays detectable for the rest of
 ##   the stealth phase (even when later ordered to hold).
 ## - L6.1 loud: unhidden and masked (the alarm masks everyone). Priorities each tick:
-##   1. revive a DOWNED, CLOAKER_DOWNED or TASED crew member (needs_help; humans first, then AI; each is assigned the nearest
+##   1. revive a DOWNED, CLOAKER_DOWNED or TASED crew member, uncuff a CUFFED one (needs_help; humans first, then AI;
+##      each is assigned the nearest
 ##      free AI) — walk to revive_range_m, hold interact with interact_target_net_id for the full
 ##      revive (L2.7, 6 s), and keep at it under fire (re-press after a damage interrupt, S9.1);
 ##   2. fight: nearest visible hostile police/special/guard (guards only when ALARMED/COMBAT; a Stinger
-##      tasing a crew member first, tasing_stinger_score_mult), aim
+##      tasing a crew member first, tasing_stinger_score_mult; the officer holding a crew member in cuffs first,
+##      arrester_score_mult, and that crew member is freed only once he is gone, arrester_guard_m), aim
 ##      at chest/head with an aim error (GameRng &"crew_ai"), pulse the trigger, reload when empty
 ##      (or tactically when no enemy is visible);
 ##   3. follow the nearest alive human (slot 0 fallback) within follow_min_m..follow_max_m, taking a
@@ -46,6 +48,10 @@ const GIVE_WAY_RNG_STREAM: StringName = &"crew_ai_give_way"
 const TWEAK_PATH: String = "res://systems/ai/crew_ai/crew_ai_tweak.tres"
 const WORLD_MASK: int = (1 << 0) | (1 << 1)
 const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard", &"cartel"]
+## _civilian_in_line: the line of fire is checked from this far in front of the eye (m), against a civilian body up to
+## CIV_BODY_TOP_M above its feet.
+const CIV_LINE_FROM_M: float = 0.3
+const CIV_BODY_TOP_M: float = 1.7
 
 @export var tweak: CrewAiTweak
 
@@ -77,6 +83,9 @@ var give_way_left: float = 0.0
 var give_way_side: int = 0
 var give_way_target: Vector3 = Vector3.INF
 
+## Revive approach progress: the closest distance so far and the seconds without getting closer (revive_stall_s).
+var _revive_best_d: float = INF
+var _revive_stall_s: float = 0.0
 var _crew: CrewController = null
 var _rt: HeistRuntime = null
 var _yaw: float = 0.0
@@ -106,6 +115,12 @@ var _aim_head: bool = false
 var _interact_ticks: int = 0
 var _drop_pending: bool = false
 var _secure_look: Vector3 = Vector3.INF
+## _revive_threat: the revive target the clearing time is counted for, and the time spent clearing it (s).
+var _clear_for_net_id: int = 0
+var _clear_spent_s: float = 0.0
+## The heist's BagLifts (found once, _in_lift_car).
+var _lifts: Array[BagLift] = []
+var _lifts_scanned: bool = false
 ## Orders routed by the crew tick handler, applied at the start of the next brain tick so every
 ## brain resolves the receiver on the same state.
 var _pending: Array[Dictionary] = []
@@ -239,10 +254,13 @@ func ordered_revive_target() -> CrewController:
 
 
 ## L2.7/L2.8 (P3 gate): crew members the ReviveInteractable frees: DOWNED, CLOAKER_DOWNED (kicked)
-## and TASED (also freed by killing the Stinger, which AI then prioritises).
+## and TASED (also freed by killing the Stinger, which AI then prioritises). L2.12 / L6.1: CUFFED too (PD2 bots free
+## an arrested player): the same hold on the crew member resolves to its UncuffInteractable (priority 100), a cuffed
+## downed crew member goes back to DOWNED and is then revived. Without it a downed human cuffed by police while the AI
+## were down stayed cuffed until custody even after they were back up (OF loud seed 1, round 245).
 static func needs_help(c: CrewController) -> bool:
 	return c.crew_state == Enums.CrewState.DOWNED or c.crew_state == Enums.CrewState.CLOAKER_DOWNED \
-		or c.crew_state == Enums.CrewState.TASED
+		or c.crew_state == Enums.CrewState.TASED or c.crew_state == Enums.CrewState.CUFFED
 
 
 ## Automatic revive assignment may send this AI to `t` (hold: only within hold_revive_radius_m).
@@ -338,14 +356,30 @@ func _think(delta: float) -> CrewIntent:
 		cover_point = null
 		_give_way_reset()  # PO6-15: never leaves a revive
 		var d: float = _flat_dist(_crew.global_position, revive_target.global_position)
-		if d > tweak.revive_range_m:
+		if d < _revive_best_d - 0.05:
+			_revive_best_d = d  # still closing in
+			_revive_stall_s = 0.0
+		else:
+			_revive_stall_s += delta
+		var stalled: bool = d <= tweak.revive_stall_reach_m and _revive_stall_s >= tweak.revive_stall_s
+		# B's DB Tense: a reviver jostled past revive_range_m walked back and dropped the revive; holding one, it stays
+		# put within revive_stall_reach_m (InteractionSystem still cancels past cancel_move_m).
+		var holding: bool = _revive_held_by(_crew) == revive_target
+		if d > tweak.revive_range_m and not stalled and not (holding and d <= tweak.revive_stall_reach_m):
 			wish = _steer(revive_target.global_position, delta)
 			goal_dist = d
 			_interact_ticks = 0
 		else:
-			look_point = revive_target.global_position + Vector3(0.0, 0.4, 0.0)
-			interacting = _hold_revive(i)
+			var foe: NpcBase = null if holding else _revive_threat(revive_target, delta)
+			if foe != null:
+				target_enemy = foe  # clear it first (_weapon_controls fires; not interacting)
+				_interact_ticks = 0
+			else:
+				look_point = revive_target.global_position + Vector3(0.0, 0.4, 0.0)
+				interacting = _hold_revive(i)
 	elif mobile:
+		_revive_best_d = INF
+		_revive_stall_s = 0.0
 		mode = Mode.FOLLOW
 		var goal: Vector3 = _bag_goal()
 		if mode != Mode.FETCH_BAG and mode != Mode.SECURE_BAG:
@@ -393,10 +427,28 @@ func _think(delta: float) -> CrewIntent:
 	return i
 
 
+## D-145 (DB Tense seed 1, crew wipe at the dock zone): a hostile within revive_clear_m of `c` while this AI still
+## has clearing time left for `c` (revive_clear_s, spent while it returns non-null) and `c` is not in a last stand
+## (bleed-out under revive_clear_min_bleed_s). The bot fights it before kneeling. Else null.
+func _revive_threat(c: CrewController, delta: float) -> NpcBase:
+	if c.net_id != _clear_for_net_id:
+		_clear_for_net_id = c.net_id
+		_clear_spent_s = 0.0
+	if _clear_spent_s >= tweak.revive_clear_s or c.health == null or c.health.bleedout_left < tweak.revive_clear_min_bleed_s:
+		return null
+	for role: StringName in HOSTILE_ROLES:
+		for n: Node in _rt.npcs(role):
+			var npc: NpcBase = n as NpcBase
+			if npc != null and _is_hostile(npc) and npc.global_position.distance_to(c.global_position) <= tweak.revive_clear_m:
+				_clear_spent_s += delta
+				return npc
+	return null
+
+
 ## Hold interact on the assigned downed crew member once settled. Returns true while holding.
 func _hold_revive(i: CrewIntent) -> bool:
 	var hv: float = Vector2(_crew.velocity.x, _crew.velocity.z).length()
-	if hv > tweak.revive_settle_speed:
+	if hv > tweak.revive_settle_speed and _revive_held_by(_crew) == null:  # settle before starting, not once holding
 		_interact_ticks = 0
 		return false
 	var sess: Dictionary = _rt.interaction.session(_crew.slot) if _rt.interaction != null else {}
@@ -418,13 +470,23 @@ func _pick_revive_target() -> CrewController:
 	var free_ai: Array[CrewController] = []
 	for c: CrewController in _rt.crew_members():
 		if needs_help(c):
-			downed.append(c)
+			if not _guarded_by_arrester(c):
+				downed.append(c)
 		elif c.is_ai and c.crew_state == Enums.CrewState.NORMAL:
 			var b: CrewAiBrain = CrewAiBrain.of(c)
 			if b != null and b.is_active():
 				free_ai.append(c)
 	if downed.is_empty() or not free_ai.has(_crew):
 		return null
+	for c: CrewController in free_ai.duplicate():
+		# B's DB Tense: the nearest-AI pick flipped between two bots as they moved, and each flip cancelled the revive
+		# under way (3 of 6 s). A bot already holding a revive keeps its patient.
+		var held: CrewController = _revive_held_by(c)
+		if held != null and downed.has(held) and CrewAiBrain.of(c).ordered_revive_target() == null:  # an order wins
+			if c == _crew:
+				return held
+			free_ai.erase(c)
+			downed.erase(held)
 	for c: CrewController in free_ai.duplicate():
 		var ot: CrewController = CrewAiBrain.of(c).ordered_revive_target()
 		if ot != null and downed.has(ot):
@@ -450,6 +512,15 @@ func _pick_revive_target() -> CrewController:
 			return t
 		free_ai.erase(best)
 	return null
+
+
+## The crew member whose revive `c` is holding now (an InteractionSystem session on a `revive` component), else null.
+func _revive_held_by(c: CrewController) -> CrewController:
+	var sess: Dictionary = _rt.interaction.session(c.slot) if _rt.interaction != null else {}
+	var comp: InteractableComponent = sess.get("comp") as InteractableComponent if not sess.is_empty() else null
+	if comp == null or not is_instance_valid(comp) or comp.kind != &"revive":
+		return null
+	return comp.get_parent() as CrewController
 
 
 ## Movement goal while following (cover near the leader when enemies are visible), or INF.
@@ -816,8 +887,8 @@ func _thrown_bags() -> void:
 				or bag.since_thrown_s > tweak.thrown_bag_pickup_window_s or LootManager.is_tool_loot(bag.loot_id):
 			continue  # OF-X2: tool bags (thermite, drill parts) stay where the human put them
 		var thrower: CrewController = _rt.crew_controller(bag.thrown_by_slot) as CrewController
-		if thrower == null or thrower.is_ai or thrower == _crew:
-			continue
+		if thrower == null or thrower.is_ai or thrower == _crew or _in_lift_car(bag):
+			continue  # OF: a bag put into the hoist car goes up with it (bots took them and stood at the rope ladder)
 		if bag.in_flight:
 			# Only a bag coming at the bot (not one thrown past a bot standing beside the thrower).
 			var to_me: Vector3 = chest - bag.global_position
@@ -837,6 +908,18 @@ func _thrown_bags() -> void:
 		task = &"carry_bag"
 		task_target_net_id = claim.net_id
 		_took_thrown_bag(claim.thrown_by_slot)
+
+
+## True when `bag` lies in a BagLift car (a human loaded the hoist): it rides the lift, no bot fetches it.
+func _in_lift_car(bag: LootBag) -> bool:
+	if not _lifts_scanned:
+		_lifts_scanned = true
+		for n: Node in _rt.find_children("*", "BagLift", true, false):
+			_lifts.append(n as BagLift)
+	for l: BagLift in _lifts:
+		if is_instance_valid(l) and l.bags_in_car().has(bag):
+			return true
+	return false
 
 
 func _took_thrown_bag(thrower_slot: int) -> void:
@@ -1002,7 +1085,7 @@ func _plan(goal: Vector3) -> void:
 	var nav_map: RID = _crew.get_world_3d().navigation_map
 	if nav_map.is_valid() and NavigationServer3D.map_get_iteration_id(nav_map) > 0 \
 			and not NavigationServer3D.map_get_regions(nav_map).is_empty():
-		_path = NavigationServer3D.map_get_path(nav_map, _crew.global_position, goal, true)
+		_path = NavPath.query(nav_map, _crew.global_position, goal, true)
 	if _path.size() < 2:
 		_path = PackedVector3Array([goal])
 	else:
@@ -1081,7 +1164,10 @@ func _tick_scan(delta: float) -> void:
 			var d: float = eye.distance_to(p)
 			# L4.4 / P3 gate: a Stinger tasing a crew member is shot first (killing it breaks the tase).
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
-			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc):
+			if _is_arresting_crew(npc):  # L2.12: the officer camping a cuffed teammate is shot first
+				score *= tweak.arrester_score_mult
+			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc) \
+					or _civilian_in_line(eye, p):
 				continue
 			best = npc
 			best_d = score
@@ -1091,14 +1177,58 @@ func _tick_scan(delta: float) -> void:
 	target_enemy = best
 
 
+## GPU-20c (PD2 bots never shoot civilians; OF Cata 1037: Rook 4 / Dutch 2 civilian kills): an alive civilian
+## (hostages included) stands in the line of fire from `eye` to `aim`, or within civilian_line_past_m behind it.
+func _civilian_in_line(eye: Vector3, aim: Vector3) -> bool:
+	var dir: Vector3 = aim - eye
+	var reach: float = dir.length()
+	if reach < 0.01:
+		return false
+	var start: Vector3 = eye + dir * (CIV_LINE_FROM_M / reach)  # in front of the muzzle, not beside the bot
+	var end: Vector3 = eye + dir * ((reach + tweak.civilian_line_past_m) / reach)
+	for n: Node in _rt.npcs(&"civilian"):
+		var feet: Vector3 = (n as Node3D).global_position
+		# The body as a vertical segment (standing, crouched or cowering: the conservative standing height).
+		var pts: PackedVector3Array = Geometry3D.get_closest_points_between_segments(start, end,
+			feet + Vector3(0.0, 0.2, 0.0), feet + Vector3(0.0, CIV_BODY_TOP_M, 0.0))
+		if pts[0].distance_to(pts[1]) <= tweak.civilian_line_clear_m:
+			return true
+	return false
+
+
+## L2.12: `npc` is the officer holding a crew member in cuffs (CrewCuffs.cuffed_by_net_id).
+func _is_arresting_crew(npc: NpcBase) -> bool:
+	for c: CrewController in _rt.crew_members():
+		if _arrester_of(c) == npc:
+			return true
+	return false
+
+
+## L2.12: the alive officer who cuffed `c` (CUFFED), else null.
+static func _arrester_of(c: CrewController) -> NpcBase:
+	if c.crew_state != Enums.CrewState.CUFFED:
+		return null
+	var cuffs: CrewCuffs = CrewCuffs.of(c)
+	if cuffs == null or cuffs.cuffed_by_net_id == 0:
+		return null
+	var npc: NpcBase = Ids.lookup(cuffs.cuffed_by_net_id) as NpcBase
+	return npc if npc != null and npc.alive else null
+
+
+## L2.12 / L6.1: a CUFFED crew member with its arresting officer still next to it waits until he is dealt with.
+func _guarded_by_arrester(c: CrewController) -> bool:
+	var npc: NpcBase = _arrester_of(c)
+	return npc != null and npc.global_position.distance_to(c.global_position) <= tweak.arrester_guard_m
+
+
 static func _is_tasing_crew(npc: NpcBase) -> bool:
 	var sb: StingerBrain = npc.get_node_or_null("Brain") as StingerBrain
 	return sb != null and sb.tase_victim != null and is_instance_valid(sb.tase_victim)
 
 
 func _is_hostile(npc: NpcBase) -> bool:
-	if not npc.alive or NpcBase.BLIND_STATES.has(npc.alert_state):
-		return false
+	if not npc.alive or NpcBase.BLIND_STATES.has(npc.alert_state) or npc.has_meta(HeistMission.META_SEATED_IN):
+		return false  # QC-83: a unit still seated in its vehicle is not a target until it gets out
 	if npc.role == &"guard" or npc.role == CartelBrain.ROLE:  # QC-36: sleeping cartel posts are left alone
 		return npc.alert_state == Enums.AlertState.COMBAT or npc.alert_state == Enums.AlertState.ALARMED
 	return HOSTILE_ROLES.has(npc.role)
@@ -1168,7 +1298,8 @@ func _weapon_controls(i: CrewIntent, eye: Vector3, delta: float, interacting: bo
 			var to: Vector3 = _aim_point(target_enemy) - eye
 			var view: Vector3 = _view_dir()
 			if w.can_fire() and _since_acquire >= Tweak.crew().ai_reaction_time_s and _shot_left <= 0.0 \
-					and not _fire_latch and view.angle_to(to) <= deg_to_rad(tweak.fire_cone_deg):
+					and not _fire_latch and view.angle_to(to) <= deg_to_rad(tweak.fire_cone_deg) \
+					and not _civilian_in_line(eye, eye + to):
 				fire = true
 				_shot_left = Tweak.crew().ai_shot_interval_s
 		elif mag < int(ceil(float(w.mag_size(ws)) * tweak.tactical_reload_frac)) and w.reserve(ws) > 0:

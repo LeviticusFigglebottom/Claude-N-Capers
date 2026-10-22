@@ -33,7 +33,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 0 |
+| perf | PASS | 0 | 13 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -129,12 +129,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 609011 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 609006 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2269 polygons, cell 0.10/0.10 m
+- navmesh: 2464 polygons, cell 0.10/0.10 m
 - 205 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -155,7 +155,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomC2` | 357 | 357 | 100% |
 | `Rooms/RoomSR` | 143 | 143 | 100% |
 | `Rooms/RoomAN` | 442 | 440 | 100% |
-| `Rooms/RoomM1` | 55 | 55 | 100% |
+| `Rooms/RoomM1` | 57 | 57 | 100% |
 | `Rooms/RoomM2` | 58 | 58 | 100% |
 | `Rooms/RoomM3` | 13 | 13 | 100% |
 | `Rooms/RoomMC` | 105 | 105 | 100% |
@@ -278,42 +278,57 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 382 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 270 eye samples, 21870 rays, sky yes, 0 void ray(s)
+- 422 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 292 eye samples, 23652 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
-| camera | draw calls | triangles | shadow lights |
-|---|---|---|---|
-| `TopDownSite` | 2178 | 353406 | 8 |
-| `TopDownBuilding` | 1629 | 265764 | 5 |
-| `ExtGate` | 2082 | 350200 | 8 |
-| `ExtYardEast` | 223 | 25584 | 1 |
-| `ExtQuay` | 2409 | 420664 | 8 |
-| `ExtLane` | 1794 | 296258 | 7 |
-| `YardWest` | 1618 | 271198 | 7 |
-| `Gatehouse` | 916 | 136604 | 7 |
-| `HallPlatform` | 1033 | 143816 | 6 |
-| `HallFloor` | 1813 | 315340 | 8 |
-| `ChamberA` | 1747 | 305254 | 6 |
-| `ChamberB` | 1214 | 193970 | 7 |
-| `Spine` | 710 | 124238 | 5 |
-| `Anteroom` | 1897 | 329898 | 7 |
-| `Strongroom` | 1322 | 208992 | 8 |
-| `Packing` | 1018 | 173374 | 5 |
-| `Plant` | 999 | 165576 | 2 |
-| `Workshop` | 1168 | 191266 | 5 |
-| `Reception` | 510 | 81604 | 2 |
-| `Dispatch` | 755 | 127666 | 2 |
-| `CountRoom` | 1086 | 188692 | 6 |
-| `BreakRoom` | 561 | 82130 | 2 |
-| `LockerRoom` | 756 | 112378 | 2 |
-| `QuayShed` | 133 | 19136 | 1 |
-| `LandingStage` | 69 | 6082 | 0 |
-| `RoofPerch` | 525 | 86002 | 3 |
-| `SniperCrane` | 1995 | 344674 | 8 |
+- Budgets REPORT-ONLY (D-146 addendum 6: judged on Forward+ on the GPU box; this is the Compatibility early warning) (map meta `perf_d146`).
+- Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
+| camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
+|---|---|---|---|---|---|---|---|---|
+| `TopDownSite` | 2178 | 442 | 4840 | 0 | 7460 | 353406 | 8 | LightFixture_5 1689, LightFixture_5 1046, MastQuayMid 574, LightFixture_2 356, LightFixture_5 354, MastYardGate 311, MastYardE 304, MastFerroW 206 |
+| `TopDownBuilding` | 1635 | 318 | 3852 | 0 | 5805 | 269100 | 5 | LightFixture_5 1636, LightFixture_5 977, MastQuayMid 537, LightFixture_2 356, LightFixture_5 346 |
+| `ExtGate` | 2129 | 443 | 4654 | 0 | 7226 | 362904 | 8 | LightFixture_5 1688, LightFixture_5 1041, MastQuayMid 569, LightFixture_2 356, LightFixture_5 354, MastYardGate 273, MastYardE 256, MastFerroW 117 |
+| `ExtYardEast` | 223 | 3 | 333 | 0 | 559 | 25584 | 3 | LightFixture_5 188, MastYardE 107, MastYardGate 38 |
+| `ExtQuay` | 2436 | 538 | 4658 | 0 | 7632 | 428532 | 8 | LightFixture_5 1624, LightFixture_5 969, MastQuayMid 549, LightFixture_5 354, LightFixture_2 341, MastYardGate 311, MastYardE 304, MastFerroW 206 |
+| `ExtLane` | 1834 | 339 | 3958 | 0 | 6131 | 303278 | 7 | LightFixture_5 1596, LightFixture_5 908, MastQuayMid 568, LightFixture_2 352, LightFixture_5 275, MastYardGate 155, MastFerroW 104 |
+| `YardWest` | 1641 | 354 | 3390 | 0 | 5385 | 275268 | 7 | LightFixture_5 1410, LightFixture_5 738, MastQuayMid 491, LightFixture_2 266, LightFixture_5 212, MastFerroW 150, MastYardGate 123 |
+| `Gatehouse` | 927 | 334 | 2326 | 0 | 3587 | 140092 | 8 | LightFixture_5 566, LightFixture_5 530, MastQuayMid 298, MastYardE 259, LightFixture_2 224, LightFixture_5 195, MastYardGate 162, MastFerroW 92 |
+| `HallPlatform` | 1040 | 348 | 2416 | 0 | 3804 | 145412 | 7 | LightFixture_5 637, LightFixture_5 577, MastQuayMid 312, LightFixture_5 290, LightFixture_2 252, MastYardE 185, MastYardGate 163 |
+| `HallFloor` | 1853 | 320 | 3346 | 0 | 5519 | 324992 | 8 | LightFixture_5 1318, LightFixture_5 641, MastQuayMid 350, LightFixture_5 291, MastYardGate 204, MastFerroW 202, LightFixture_2 181, MastYardE 159 |
+| `ChamberA` | 1827 | 270 | 2979 | 0 | 5076 | 316014 | 8 | LightFixture_5 853, LightFixture_5 522, MastQuayMid 372, LightFixture_5 312, MastYardGate 309, MastYardE 302, MastFerroW 204, LightFixture_2 105 |
+| `ChamberB` | 1240 | 280 | 2762 | 0 | 4282 | 205218 | 8 | LightFixture_5 715, LightFixture_5 454, MastQuayMid 373, MastYardGate 309, MastYardE 302, LightFixture_5 300, MastFerroW 203, LightFixture_2 106 |
+| `Spine` | 725 | 358 | 2033 | 0 | 3116 | 127342 | 5 | MastQuayMid 553, LightFixture_5 543, LightFixture_5 499, LightFixture_2 314, LightFixture_5 124 |
+| `Anteroom` | 1931 | 450 | 3523 | 0 | 5904 | 334882 | 7 | LightFixture_5 1441, LightFixture_5 724, MastQuayMid 491, LightFixture_2 287, LightFixture_5 228, MastFerroW 192, MastYardGate 160 |
+| `Strongroom` | 1342 | 499 | 3081 | 0 | 4922 | 211328 | 8 | LightFixture_5 746, LightFixture_5 685, MastQuayMid 373, LightFixture_2 323, LightFixture_5 322, MastYardE 303, MastYardGate 220, MastFerroW 109 |
+| `Packing` | 1026 | 367 | 2519 | 0 | 3912 | 174810 | 5 | LightFixture_5 731, LightFixture_5 669, MastQuayMid 565, LightFixture_2 348, LightFixture_5 206 |
+| `Plant` | 996 | 46 | 338 | 0 | 1380 | 166368 | 2 | MastFerroW 196, MastYardGate 142 |
+| `Workshop` | 1193 | 428 | 2770 | 0 | 4391 | 196802 | 5 | LightFixture_5 853, LightFixture_5 774, MastQuayMid 565, LightFixture_2 356, LightFixture_5 222 |
+| `Reception` | 510 | 40 | 327 | 0 | 877 | 81604 | 2 | MastFerroW 187, MastYardGate 140 |
+| `Dispatch` | 760 | 56 | 493 | 0 | 1309 | 129250 | 3 | MastFerroW 198, MastYardE 148, MastYardGate 147 |
+| `CountRoom` | 908 | 25 | 1190 | 0 | 2123 | 146690 | 3 | LightFixture_5 886, MastFerroW 166, MastYardGate 138 |
+| `BreakRoom` | 561 | 41 | 328 | 0 | 930 | 82130 | 2 | MastFerroW 188, MastYardGate 140 |
+| `LockerRoom` | 756 | 25 | 308 | 0 | 1089 | 112378 | 2 | MastFerroW 166, MastYardGate 142 |
+| `QuayShed` | 133 | 0 | 125 | 0 | 258 | 19136 | 1 | MastQuayMid 125 |
+| `LandingStage` | 69 | 0 | 63 | 0 | 132 | 6082 | 1 | MastQuayMid 63 |
+| `RoofPerch` | 531 | 132 | 799 | 0 | 1462 | 87522 | 4 | MastYardGate 307, MastYardE 232, MastFerroW 201, LightFixture_5 59 |
+| `SniperCrane` | 2035 | 473 | 4491 | 0 | 6999 | 353526 | 8 | LightFixture_5 1577, LightFixture_5 891, MastQuayMid 547, LightFixture_5 354, MastYardGate 311, MastYardE 303, LightFixture_2 302, MastFerroW 206 |
 
+- WARN `ReviewCameras/Anteroom` @ (47.20, 1.70, 30.60): 5904 draw calls in view (main 1931 + lit 450 + shadow 3523 + cast 0) > 4000
+- WARN `ReviewCameras/ChamberA` @ (25.00, 1.70, 23.20): 5076 draw calls in view (main 1827 + lit 270 + shadow 2979 + cast 0) > 4000
+- WARN `ReviewCameras/ChamberB` @ (41.00, 1.70, 23.20): 4282 draw calls in view (main 1240 + lit 280 + shadow 2762 + cast 0) > 4000
+- WARN `ReviewCameras/ExtGate` @ (34.00, 1.70, -45.00): 7226 draw calls in view (main 2129 + lit 443 + shadow 4654 + cast 0) > 4000
+- WARN `ReviewCameras/ExtLane` @ (-4.00, 1.70, -31.00): 6131 draw calls in view (main 1834 + lit 339 + shadow 3958 + cast 0) > 4000
+- WARN `ReviewCameras/ExtQuay` @ (24.00, -0.10, 53.00): 7632 draw calls in view (main 2436 + lit 538 + shadow 4658 + cast 0) > 4000
+- WARN `ReviewCameras/HallFloor` @ (46.40, 1.70, 7.60): 5519 draw calls in view (main 1853 + lit 320 + shadow 3346 + cast 0) > 4000
+- WARN `ReviewCameras/SniperCrane` @ (76.05, 23.80, -1.30): 6999 draw calls in view (main 2035 + lit 473 + shadow 4491 + cast 0) > 4000
+- WARN `ReviewCameras/Strongroom` @ (19.00, 1.70, 31.20): 4922 draw calls in view (main 1342 + lit 499 + shadow 3081 + cast 0) > 4000
+- WARN `ReviewCameras/TopDownBuilding` @ (24.00, 70.00, 16.00): 5805 draw calls in view (main 1635 + lit 318 + shadow 3852 + cast 0) > 4000
+- WARN `ReviewCameras/TopDownSite` @ (38.00, 140.00, 2.00): 7460 draw calls in view (main 2178 + lit 442 + shadow 4840 + cast 0) > 4000
+- WARN `ReviewCameras/Workshop` @ (10.80, 2.20, 8.80): 4391 draw calls in view (main 1193 + lit 428 + shadow 2770 + cast 0) > 4000
+- WARN `ReviewCameras/YardWest` @ (17.50, 2.20, -32.50): 5385 draw calls in view (main 1641 + lit 354 + shadow 3390 + cast 0) > 4000
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 

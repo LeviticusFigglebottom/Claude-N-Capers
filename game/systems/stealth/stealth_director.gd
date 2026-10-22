@@ -34,6 +34,12 @@ signal camera_countdown_started(camera_net_id: int, seconds: float)
 
 ## Physics layers that block vision: world_static(1), world_dynamic(2), vision_blockers(8).
 const VISION_MASK: int = (1 << 0) | (1 << 1) | (1 << 7)
+## D-142: colliders in this group (glass) do not block vision rays; at most this many panes along one ray.
+const GROUP_SEE_THROUGH: StringName = &"see_through"
+const SEE_THROUGH_MAX: int = 4
+## QC-83 (d) (Rolling Thunder convoy units: their detection is the ambush, not a guard's radio call): an NPC with meta
+## META_ALARM_REASON raises the alarm with that reason whatever raised it (radio call, a kill instead of a pager).
+const META_ALARM_REASON: StringName = &"alarm_reason"
 ## MapZone layer "triggers" (10).
 const TRIGGER_MASK: int = 1 << 9
 ## D-128 fill rate (progress per second) reported for PD2's instant uncover.
@@ -105,11 +111,21 @@ func is_stealth() -> bool:
 func raise_alarm(reason: StringName, source_net_id: int = 0) -> void:
 	if not Net.is_authority() or alarm_raised:
 		return
+	reason = alarm_reason_of(source_net_id, reason)
 	alarm_raised = true
 	alarm_reason = reason
 	Log.info(&"stealth", "ALARM: %s (source %d)" % [reason, source_net_id])
-	EventBus.alarm_raised.emit(reason, source_net_id)
+	if not FrameProf.enabled or not FrameProf.emit_timed(EventBus.alarm_raised, &"alarm", [reason, source_net_id]):
+		EventBus.alarm_raised.emit(reason, source_net_id)
 	Net.replicate_event(&"alarm_raised", [reason, source_net_id])
+
+
+## QC-83 (d): an NPC with this meta raises the alarm with that reason whatever raised it (StealthDirector.alarm_reason_of).
+static func alarm_reason_of(source_net_id: int, fallback: StringName) -> StringName:
+	var src: Node = Ids.lookup(source_net_id) if source_net_id != 0 else null
+	if src != null and src.has_meta(META_ALARM_REASON):
+		return StringName(src.get_meta(META_ALARM_REASON))
+	return fallback
 
 
 ## Meter of `observer` on crew `slot` (0..1, 0 if none). Server.
@@ -272,8 +288,25 @@ func in_zone(pos: Vector3, kind: int) -> bool:
 func has_los(from: Vector3, to: Vector3, exclude: Array[RID] = []) -> bool:
 	var space: PhysicsDirectSpaceState3D = get_viewport().world_3d.direct_space_state
 	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, to, VISION_MASK)
-	q.exclude = exclude
-	return space.intersect_ray(q).is_empty()
+	q.exclude = exclude.duplicate()
+	return vision_clear(space, q)
+
+
+## D-142 (PD2: guards see through glass): a vision ray passes colliders in GROUP_SEE_THROUGH (the Window GlassBody,
+## clear glazing). Casts `q`, excluding each see-through hit and casting again (at most SEE_THROUGH_MAX panes); true when
+## nothing else blocks. Adds to q.exclude. Bullets and movement are unchanged (CombatSystem rays do not use this).
+static func vision_clear(space: PhysicsDirectSpaceState3D, q: PhysicsRayQueryParameters3D) -> bool:
+	for i: int in SEE_THROUGH_MAX + 1:
+		var hit: Dictionary = space.intersect_ray(q)
+		if hit.is_empty():
+			return true
+		var body: Node = hit.get("collider") as Node
+		if body == null or not body.is_in_group(GROUP_SEE_THROUGH):
+			return false
+		var ex: Array[RID] = q.exclude
+		ex.append(hit["rid"])
+		q.exclude = ex
+	return false
 
 
 # --- Tick -----------------------------------------------------------------------------------
@@ -837,7 +870,7 @@ func _ray_clear(from: Vector3, to: Vector3, a: Node, b: Node) -> bool:
 	_ray_q.from = from
 	_ray_q.to = to
 	_ray_q.exclude = _exclude
-	return get_viewport().world_3d.direct_space_state.intersect_ray(_ray_q).is_empty()
+	return vision_clear(get_viewport().world_3d.direct_space_state, _ray_q)
 
 
 # --- Noise (S4.3) -------------------------------------------------------------------------

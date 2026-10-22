@@ -75,7 +75,7 @@ func test_l4_7_def_and_perch_only_spawn() -> void:
 	assert_eq(def.id, &"enemy.longshot")
 	assert_true(def.is_special, "special")
 	assert_eq(def.damage.size(), 6, "damage per difficulty")
-	assert_near(def.damage[Enums.Difficulty.ROUTINE], 100.0, 0.001, "100 on the lowest difficulty")
+	assert_near(def.damage[Enums.Difficulty.ROUTINE], 60.0, 0.001, "60 on the lowest difficulty (PO-17, was 100)")
 	assert_near(def.damage[Enums.Difficulty.CATACLYSM], 240.0, 0.001, "240 on the top difficulty")
 	await _launch(Enums.Difficulty.LETHAL, false)
 	assert_true(SpecialSpawner.spawn_special(_rt, &"longshot").is_empty(), "no SNIPER_PERCH: nothing spawns")
@@ -168,3 +168,22 @@ func test_l4_7_top_difficulty_no_falloff() -> void:
 	var p: NpcBase = _spawn()
 	var b: LongshotBrain = _brain(p)
 	assert_near(b.shot_damage(40.0), 240.0, 0.001, "Cataclysm: no halving beyond 30 m")
+
+
+## LEAD D-145 (DB Tense: Longshots at 30 m+ dealt 31-47 % of the damage): on Tense the laser locks 2 s before each shot and
+## the next shot waits 3.5 s (PD2 Hard sniper: 3-4 s between shots at mid range; the telegraph above PD2's 0-0.1 s aim
+## delay); Hazardous+ keeps 1.2 s / 2.5 s (the Lethal test above).
+func test_d145_tense_longshot_telegraph_and_re_aim() -> void:
+	await _launch(Enums.Difficulty.TENSE)
+	_add_perch(Vector3(-10, 0.05, -5))
+	var p: NpcBase = _spawn()
+	var b: LongshotBrain = _brain(p)
+	assert_true(await wait_until(func() -> bool: return b.laser_active, 3.0), "laser on")
+	var t0: int = Time.get_ticks_msec()
+	assert_true(await wait_until(func() -> bool: return b.shots_fired >= 1, 5.0), "first shot")
+	var lock_s: float = float(Time.get_ticks_msec() - t0) / 1000.0
+	assert_true(lock_s >= 1.9, "Tense: a 2 s laser lock before the shot (%.2f s)" % lock_s)
+	var t1: int = Time.get_ticks_msec()
+	assert_true(await wait_until(func() -> bool: return b.shots_fired >= 2, 9.0), "second shot")
+	var gap_s: float = float(Time.get_ticks_msec() - t1) / 1000.0
+	assert_true(gap_s >= 3.4, "Tense: >= 3.5 s between shots (%.2f s)" % gap_s)

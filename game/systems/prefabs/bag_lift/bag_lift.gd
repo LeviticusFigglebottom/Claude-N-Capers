@@ -24,7 +24,8 @@
 ## ride with it: frozen, without collision and not pick-up-able for `travel_s`, then released in
 ## place when the doors open (a SECURE_LOOT zone in the car at the far landing secures them as usual).
 ## Server-authoritative. Cues: cue.bag_lift_start (doors close, car leaves), cue.bag_lift_arrive.
-## P2 limitation: clients do not see the car move (no replicated car state yet).
+## Clients (OF co-op parity): `landing` / `destination` / `trip_t` arrive through NetEntityCodec's generic props;
+## mirror_car() places the car and its doors from them (advancing trip_t locally between snapshots).
 ## OF-A2 (QC-61): GameplayPrefab `set_enabled` / `enabled_at_start` (a hoist installed mid-heist): disabled =
 ## hidden, CarBody and every panel off, the car does not run; an external panel (`panel_path` outside the
 ## prefab) is hidden with it. Disabling it mid-trip completes the trip at once (no bag stays frozen in the car).
@@ -61,6 +62,8 @@ const PANEL_PREFIX: String = "LandingPanel"
 @export var requires_item: StringName = &""
 @export var stealth_only: bool = false
 @export var loud_only: bool = false
+## Every panel's blocked reason while loud_only / stealth_only rules it out (InteractableComponent.phase_block_key).
+@export var phase_block_key: StringName = &""
 @export var casing_allowed: bool = false
 @export var noise: StringName = &"silent"
 
@@ -88,6 +91,8 @@ var _door_r: Node3D = null
 var _door_l_rest: Vector3 = Vector3.ZERO
 var _door_r_rest: Vector3 = Vector3.ZERO
 var _car_body: AnimatableBody3D = null
+var _shown_car: Transform3D = Transform3D()
+var _shown_moving: bool = false
 var _door_l_scale: Vector3 = Vector3.ONE
 var _door_r_scale: Vector3 = Vector3.ONE
 ## Bag instance id -> landing it entered the shaft at.
@@ -224,6 +229,7 @@ func door_travel() -> float:
 
 func _physics_process(delta: float) -> void:
 	if not Net.is_authority():
+		mirror_car(delta)
 		return
 	if return_fallen_bags and landing_count() >= 2:
 		_check_shaft(delta)
@@ -241,6 +247,22 @@ func _physics_process(delta: float) -> void:
 		bag.rest_time = 0.0
 	if trip_t >= 1.0:
 		_arrive()
+
+
+## Client: show the replicated car state (landing, destination, trip_t). The server's snapshots overwrite trip_t;
+## between them the trip runs on locally.
+func mirror_car(delta: float = 0.0) -> void:
+	if is_moving():
+		trip_t = minf(trip_t + delta / maxf(travel_s, 0.01), 1.0)
+	var xf: Transform3D = car_transform()
+	var moving: bool = is_moving()
+	if xf.is_equal_approx(_shown_car) and moving == _shown_moving:
+		return
+	_place_car(xf)
+	if moving != _shown_moving:
+		_set_doors(not moving)
+	_shown_car = xf
+	_shown_moving = moving
 
 
 func _arrive() -> void:
@@ -289,6 +311,7 @@ func _spawn_landing_panels() -> void:
 		p.requires_item = interactable.requires_item
 		p.stealth_only = interactable.stealth_only
 		p.loud_only = interactable.loud_only
+		p.phase_block_key = interactable.phase_block_key
 		p.casing_allowed = interactable.casing_allowed
 		p.noise = interactable.noise
 		add_child(p)

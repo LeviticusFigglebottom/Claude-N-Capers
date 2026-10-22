@@ -8,6 +8,9 @@
 ## armour) burn_fire_dps every burn_fire_tick_s, and a NavigationObstacle3D keeps NPC / AI avoidance out.
 ## Works with only a visual and the volume: `FireVolume` (Node3D, box `fire_volume_size` centred on it;
 ## the prefab root when absent). Visual nodes (optional): `Fire` (shown while burning / lit).
+## QC-81 (Rolling Thunder bullion truck, D-149.2): `target` (a Safe / ArmoredTruck, Door, ... as DrillPoint.target) is
+## opened when the burn finishes (DrillPoint.open_target); `fire_volume_size` ZERO = no fire volume (no damage, no
+## obstacle, not in the fire_volume group): the thermite only burns through the lock.
 class_name BurnPoint
 extends GameplayPrefab
 
@@ -24,7 +27,10 @@ const FIRE_LIGHT_HEIGHT_M: float = 0.9
 @export var requires_loot: StringName = &"loot.thermite"
 ## -1 = InteractionTweak.burn_duration_s.
 @export var duration_s: float = -1.0
+## ZERO = no fire volume (QC-81).
 @export var fire_volume_size: Vector3 = Vector3(6.0, 3.0, 6.0)
+## QC-81: opened when the burn finishes (empty = none; the mission reacts to device_finished).
+@export var target: NodePath
 @export_group("Interaction")
 ## -1 = InteractionTweak.burn_place_s.
 @export var interaction_time_s: float = -1.0
@@ -93,8 +99,15 @@ func start_burn() -> void:
 	_emit_fact(&"device_started", [net_id, KIND, timer_left])
 
 
-## True when `p` is inside the fire volume (AI avoidance; any stage).
+## QC-81: this burn point lights a fire volume when it finishes.
+func has_fire() -> bool:
+	return fire_volume_size != Vector3.ZERO
+
+
+## True when `p` is inside the fire volume (AI avoidance; any stage). Never without a volume (QC-81).
 func contains(p: Vector3) -> bool:
+	if not has_fire():
+		return false
 	var vol: Node3D = get_node_or_null(^"FireVolume") as Node3D
 	var center: Node3D = vol if vol != null else self
 	var local: Vector3 = center.global_transform.affine_inverse() * p
@@ -131,17 +144,24 @@ func _light() -> void:
 	stage = Stage.LIT
 	timer_left = -1.0
 	progress = 1.0
-	add_to_group(GROUP)
-	_obstacle = NavigationObstacle3D.new()
-	_obstacle.name = "FireObstacle"
-	_obstacle.radius = maxf(fire_volume_size.x, fire_volume_size.z) * 0.5
-	_obstacle.avoidance_enabled = true
-	var vol: Node3D = get_node_or_null(^"FireVolume") as Node3D
-	(vol if vol != null else self).add_child(_obstacle)
+	if has_fire():
+		add_to_group(GROUP)
+		_obstacle = NavigationObstacle3D.new()
+		_obstacle.name = "FireObstacle"
+		_obstacle.radius = maxf(fire_volume_size.x, fire_volume_size.z) * 0.5
+		_obstacle.avoidance_enabled = true
+		var vol: Node3D = get_node_or_null(^"FireVolume") as Node3D
+		(vol if vol != null else self).add_child(_obstacle)
+	else:
+		_show_fire(false)  # QC-81: burnt through, nothing keeps burning
 	_emit_fact(&"device_finished", [net_id])
+	if not target.is_empty():
+		DrillPoint.open_target(get_node_or_null(target), true)
 
 
 func _tick_fire(delta: float) -> void:
+	if not has_fire():
+		return
 	_tick_left -= delta
 	if _tick_left > 0.0:
 		return
@@ -198,6 +218,6 @@ func _net_state() -> Dictionary:
 func _apply_net_state(d: Dictionary) -> void:
 	if d.has("stage"):
 		stage = int(d["stage"]) as Stage
-		_show_fire(stage != Stage.IDLE)
+		_show_fire(stage != Stage.IDLE and (stage != Stage.LIT or has_fire()))
 	progress = float(d.get("progress", progress))
 	timer_left = float(d.get("timer_left", timer_left))

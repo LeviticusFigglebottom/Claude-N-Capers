@@ -200,3 +200,57 @@ func test_bag_falling_into_shaft_returns_to_landing() -> void:
 	assert_true(bag.global_position.z < LIFT_POS.z - 0.8, "in front of the car (z %.2f)" % bag.global_position.z)
 	assert_true(absf(bag.global_position.y) < 0.6, "at landing 0 (y %.2f)" % bag.global_position.y)
 	assert_true(bag.interactable.enabled and not bag.freeze, "pick-up-able again")
+
+
+## P's OF burn run (C's note): the PO-5 pilot stands at landing i's own spot for panel LandingPanel<i>, the lift's
+## UsePoint offset carried from landing 0 to landing i (not landing 0's UsePoint for every panel).
+func test_pilot_stand_per_landing_panel() -> void:
+	var lift: BagLift = await _lift()
+	var up: Marker3D = Marker3D.new()
+	up.name = "UsePoint"
+	lift.add_child(up)
+	up.global_position = LIFT_POS + Vector3(0.0, 0.0, 1.2)
+	await wait_physics_frames(2)
+	var panel1: InteractableComponent = lift.get_node_or_null("%s1" % BagLift.PANEL_PREFIX) as InteractableComponent
+	assert_true(panel1 != null, "landing 1 panel spawned")
+	if panel1 == null:
+		return
+	var at1: Vector3 = Po5Pilot._landing_use_point(lift, panel1, up.global_position)
+	assert_true(at1.distance_to(up.global_position + Vector3(0, TOP_Y, 0)) < 0.01, "panel 1 stand at the top (%s)" % at1)
+	var at0: Vector3 = Po5Pilot._landing_use_point(lift, lift.interactable, up.global_position)
+	assert_true(at0.distance_to(up.global_position) < 0.01, "landing 0's own panel keeps the UsePoint")
+
+
+## P's OF probe: a loud-only lift in stealth says why on every panel (phase_block_key), not the generic "Not now".
+func test_phase_block_key_on_every_panel() -> void:
+	var lift: BagLift = await _lift(2, func(l: BagLift) -> void:
+		l.loud_only = true
+		l.phase_block_key = &"ui.blocked.after_breach")
+	await wait_physics_frames(2)
+	assert_false(_rt.went_loud, "stealth")
+	var panel1: InteractableComponent = lift.get_node_or_null("%s1" % BagLift.PANEL_PREFIX) as InteractableComponent
+	assert_eq(lift.interactable._phase_block(), &"ui.blocked.after_breach", "landing 0's panel")
+	assert_true(panel1 != null and panel1._phase_block() == &"ui.blocked.after_breach", "the runtime landing-1 panel")
+	lift.interactable.phase_block_key = &""
+	assert_eq(lift.interactable._phase_block(), InteractableComponent.BLOCK_PHASE, "no key: the generic reason")
+
+
+## OF co-op parity (coop2: the Hoist car at the host's landing 1, the client's at 0): a client places the car from the
+## replicated landing / destination / trip_t (NetEntityCodec generic props), mid-trip included.
+func test_client_mirrors_the_replicated_car() -> void:
+	var lift: BagLift = _lift()
+	await wait_physics_frames(2)
+	var car: Node3D = lift.visual_node("Car") as Node3D
+	assert_true(car != null, "the lift has a Car")
+	if car == null:
+		return
+	var y0: float = car.global_position.y
+	NetEntityCodec.apply_state(lift, {"landing": 0, "destination": 1, "trip_t": 0.5})
+	lift.mirror_car()
+	assert_near(car.global_position.y, y0 + TOP_Y * 0.5, 0.05, "mid-trip: the car halfway up")
+	lift.mirror_car(lift.travel_s * 0.25)
+	assert_near(car.global_position.y, y0 + TOP_Y * 0.75, 0.05, "the trip runs on between snapshots")
+	NetEntityCodec.apply_state(lift, {"landing": 1, "destination": -1, "trip_t": 0.0})
+	lift.mirror_car()
+	assert_near(car.global_position.y, y0 + TOP_Y, 0.05, "arrived: the car at the top landing")
+	assert_eq(lift.panels[1].kind, &"send_lift", "the top panel sends from where the car stands")

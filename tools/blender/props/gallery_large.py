@@ -19,6 +19,15 @@ TRI_BUDGET = 12000
 VARIANTS = {
     "veh_limo_gala": {"fn": "limo", "cat": {"prefab": "secure_zone", "kind": "limo", "surface": "metal"}},
     "prop_art_lift_car": {"fn": "lift_car", "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
+    # OF-C2 (Ostrander Federal cash lift, B <-> G in the 2.8 m GL shaft): a 2.4 x 2.4 m car (2.2 m inside, the
+    # prefab's car_size_m), the +X side open for the ground-floor landing door.
+    "prop_cash_lift_car_w240": {"fn": "lift_car", "w": 2.4, "ln": 2.4, "hgt": 2.6, "open": 1, "tread": (10, 10),
+                                "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
+    # OF-C2 (LEAD GPU-22 / ENV P ghost note: a bag thrown from a landing door rested against GL's back wall, outside
+    # the 2.2 m count box): the car fills the shaft (B's is the tighter, inner faces z 0.24 / x 12.81; >= 3.5 cm
+    # clear), so the count box (car_size_m = the car) reaches where thrown bags stop. RT's goods lift keeps the w240.
+    "prop_cash_lift_car_w255": {"fn": "lift_car", "w": 2.55, "ln": 2.55, "hgt": 2.6, "open": 1, "tread": (11, 11),
+                                "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
 }
 
 
@@ -138,16 +147,22 @@ def _limo(k: Kit, p: dict) -> None:
 # --------------------------------------------------------------------------------- lift car
 
 def _lift_car(k: Kit, p: dict) -> None:
-    w, ln, hgt = 2.6, 5.6, 2.6
+    """The bag-lift car. Params (defaults = GN's art lift): ``w`` / ``ln`` / ``hgt`` the car (m), ``open`` the side
+    left open for the second landing door (-1 = -X, +1 = +X; the mesh wall and the `Panel` go on the other side),
+    ``tread`` the chequer grid (columns, rows)."""
+    w, ln, hgt = p.get("w", 2.6), p.get("ln", 5.6), p.get("hgt", 2.6)
+    so = p.get("open", -1)          # open side sign
+    sw = -so                        # walled (+ panel) side sign
+    tcols, trows = p.get("tread", (10, 22))
     hw, hl = w / 2, ln / 2
     car = k.obj("Car")
     fl = car.part(bevel=0.003)
     fl.bx((-hw, -hl, 0.0), (hw, hl, 0.012), "metal_grey")
     tread = car.part(bevel=0.0)
-    for i in range(10):
-        for j in range(22):
-            cx = -hw + (i + 0.5) * w / 10
-            cy = -hl + (j + 0.5) * ln / 22
+    for i in range(tcols):
+        for j in range(trows):
+            cx = -hw + (i + 0.5) * w / tcols
+            cy = -hl + (j + 0.5) * ln / trows
             ang = 0.25 if (i + j) % 2 == 0 else -0.25
             dx, dy = 0.07 * math.cos(ang * math.pi), 0.07 * math.sin(ang * math.pi)
             tread.rod((cx - dx, cy - dy, 0.014), (cx + dx, cy + dy, 0.014), 0.004, "metal_grey", segs=4, square=True)
@@ -161,41 +176,45 @@ def _lift_car(k: Kit, p: dict) -> None:
     fr.bx((-hw, hl - 0.04, 2.08), (hw, hl + 0.04, 2.14), "metal_dark")          # gate head rail
     fr.bx((-hw, -0.03, hgt - 0.1), (hw, 0.03, hgt - 0.04), "metal_dark")         # cross bar with the light
     lamp = car.part(bevel=0.0)
-    lamp.bx((-1.0, -0.06, hgt - 0.13), (1.0, 0.06, hgt - 0.1), "steel")
-    lamp.bx((-0.95, -0.04, hgt - 0.134), (0.95, 0.04, hgt - 0.13), "emit_cool")
-    # walls: kick plate + mesh on the back (-Y) and the +X side; a handrail on the -X opening side
+    lx = min(1.0, hw - 0.2)
+    lamp.bx((-lx, -0.06, hgt - 0.13), (lx, 0.06, hgt - 0.1), "steel")
+    lamp.bx((-lx + 0.05, -0.04, hgt - 0.134), (lx - 0.05, 0.04, hgt - 0.13), "emit_cool")
+    # walls: kick plate + mesh on the back (-Y) and the walled side; a handrail on the open side
     mesh = car.part(bevel=0.0)
     kick = car.part(bevel=0.002)
     kick.bx((-hw + 0.04, -hl + 0.005, 0.012), (hw - 0.04, -hl + 0.02, 0.32), "steel")
-    kick.bx((hw - 0.02, -hl + 0.04, 0.012), (hw - 0.005, hl - 0.04, 0.32), "steel")
+    kick.bx(*sorted_x(sw * (hw - 0.02), sw * (hw - 0.005), (-hl + 0.04, 0.012), (hl - 0.04, 0.32)), "steel")
     kick.bx((-hw + 0.04, -hl + 0.005, 1.0), (hw - 0.04, -hl + 0.03, 1.05), "metal_dark")
-    kick.bx((hw - 0.03, -hl + 0.04, 1.0), (hw - 0.005, hl - 0.04, 1.05), "metal_dark")
+    kick.bx(*sorted_x(sw * (hw - 0.03), sw * (hw - 0.005), (-hl + 0.04, 1.0), (hl - 0.04, 1.05)), "metal_dark")
     x = -hw + 0.12
     while x < hw - 0.1:
         mesh.bx((x - 0.003, -hl + 0.01, 0.32), (x + 0.003, -hl + 0.016, hgt - 0.08), "steel_galv")
         x += 0.12
     y = -hl + 0.14
     while y < hl - 0.1:
-        mesh.bx((hw - 0.016, y - 0.003, 0.32), (hw - 0.01, y + 0.003, hgt - 0.08), "steel_galv")
+        mesh.bx(*sorted_x(sw * (hw - 0.016), sw * (hw - 0.01), (y - 0.003, 0.32), (y + 0.003, hgt - 0.08)), "steel_galv")
         y += 0.14
     z = 0.42
     while z < hgt - 0.1:
         mesh.bx((-hw + 0.04, -hl + 0.01, z - 0.003), (hw - 0.04, -hl + 0.016, z + 0.003), "steel_galv")
-        mesh.bx((hw - 0.016, -hl + 0.04, z - 0.003), (hw - 0.01, hl - 0.04, z + 0.003), "steel_galv")
+        mesh.bx(*sorted_x(sw * (hw - 0.016), sw * (hw - 0.01), (-hl + 0.04, z - 0.003), (hl - 0.04, z + 0.003)),
+                "steel_galv")
         z += 0.2
     rail = car.part(bevel=0.0)
-    rail.rod((-hw - 0.02, -hl + 0.2, 0.15), (-hw - 0.02, -hl + 0.2, 1.0), 0.02, "metal_yellow", segs=8)
-    rail.rod((-hw - 0.02, hl - 0.2, 0.15), (-hw - 0.02, hl - 0.2, 1.0), 0.02, "metal_yellow", segs=8)
+    rx = so * (hw + 0.02)
+    rail.rod((rx, -hl + 0.2, 0.15), (rx, -hl + 0.2, 1.0), 0.02, "metal_yellow", segs=8)
+    rail.rod((rx, hl - 0.2, 0.15), (rx, hl - 0.2, 1.0), 0.02, "metal_yellow", segs=8)
     car_obj = car.build()
-    # car operating panel on the +X wall by the gate
+    # car operating panel on the walled side by the gate
     pan = k.obj("Panel", parent=car_obj)
     pp = pan.part(bevel=0.003)
-    pp.bx((hw - 0.06, hl - 0.5, 0.95), (hw - 0.016, hl - 0.25, 1.5), "steel")
+    pp.bx(*sorted_x(sw * (hw - 0.06), sw * (hw - 0.016), (hl - 0.5, 0.95), (hl - 0.25, 1.5)), "steel")
     btn = pan.part(bevel=0.0)
+    bx = sw * (hw - 0.063)
     for i in range(3):
-        btn.cyl(0.02, 0.006, (hw - 0.063, hl - 0.375, 1.1 + i * 0.1), "emit_neutral" if i else "emit_led_green",
+        btn.cyl(0.02, 0.006, (bx, hl - 0.375, 1.1 + i * 0.1), "emit_neutral" if i else "emit_led_green",
                 axis="X", segs=10)
-    btn.cyl(0.03, 0.006, (hw - 0.063, hl - 0.375, 1.4), "emit_led_red", axis="X", segs=12)
+    btn.cyl(0.03, 0.006, (bx, hl - 0.375, 1.4), "emit_led_red", axis="X", segs=12)
     pan.build()
     # folding scissor gates, each centred on its half of the front
     gh = 2.04
@@ -217,6 +236,12 @@ def _lift_car(k: Kit, p: dict) -> None:
         gp.bx((-gw, -0.012, gh - 0.04), (gw, 0.012, gh), "metal_dark")
         gp.bx((-gw, -0.012, 0.0), (gw, 0.012, 0.04), "metal_dark")
         gate.build()
+
+
+def sorted_x(xa: float, xb: float, lo_yz: tuple, hi_yz: tuple) -> tuple:
+    """(lo, hi) corners of a box spanning x xa..xb (either order) and the given (y, z) ranges."""
+    x0, x1 = min(xa, xb), max(xa, xb)
+    return (x0, lo_yz[0], lo_yz[1]), (x1, hi_yz[0], hi_yz[1])
 
 
 def build(ctx) -> None:

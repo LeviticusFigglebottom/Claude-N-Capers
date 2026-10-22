@@ -145,8 +145,19 @@ TINTED: dict[str, dict] = {
     "rope_tan": {"source": "fabric_upholstery", "color": "#9C865E", "roughness": 1.0},
     "ice_blue": {"source": "plastic_matte", "color": "#5F86A8", "roughness": 0.7},
     "trailer_white": {"source": "metal_painted", "color": "#CFCDC6", "roughness": 0.9},
+    # RT-C2 (Rolling Thunder, §3c): the Vaultline armoured-truck livery (deep green, a brass band), the lorry cab red
+    "rt_vaultline": {"source": "metal_painted", "color": "#2F4A42", "roughness": 0.7},
+    "rt_vaultline_band": {"source": "metal_painted", "color": "#B89448", "roughness": 0.6},
+    "rt_lorry_red": {"source": "metal_painted", "color": "#8A2E26", "roughness": 0.7},
+    "rt_skyway_green": {"source": "metal_painted", "color": "#4D805C", "roughness": 0.7},
     "laminate_grey": {"source": "plastic_matte", "color": "#8E9090", "roughness": 0.6},
     "paint_hazard_orange": {"source": "drywall_painted", "color": "#D2611E", "roughness": 0.8},
+    # RT-C2 GPU-21 (the Halfway Diner's identity): red vinyl upholstery, cream and red counter laminate, the
+    # pendants' red enamel
+    "rt_vinyl_red": {"source": "leather_dark", "color": "#9A2A2A", "roughness": 0.4},
+    "rt_laminate_cream": {"source": "plastic_matte", "color": "#D8CDB2", "roughness": 0.4},
+    "rt_laminate_red": {"source": "plastic_matte", "color": "#9C2F2A", "roughness": 0.4},
+    "rt_enamel_red": {"source": "metal_painted", "color": "#9C2F2A", "roughness": 0.35},
     # Shadow Ledger G2 (SL-1, shadow_ledger.md palette: graphite #2E3136 honed stone / carpet / BOH paint, glass teal
     # #5D8C8F, walnut and leather inside GSR saturation)
     "stone_graphite": {"source": "marble_cream", "color": "#3A3D41", "roughness": 0.55},
@@ -158,6 +169,24 @@ TINTED: dict[str, dict] = {
     "linen_white": {"source": "fabric_upholstery", "color": "#D8D4CB", "roughness": 1.0},
     "teak": {"source": "wood_veneer_walnut", "color": "#9A7A58", "roughness": 0.7},
     "felt_dark": {"source": "fabric_upholstery", "color": "#2F3A35", "roughness": 1.0},
+    # Ostrander Federal G2 landmarks / rooms (OF-C2 lane B, ostrander_federal.md palette: limestone #CBC3B0, deep
+    # ultramarine #2F3F6B, meridian bronze #B8873A; the sunburst is gilded). `of_` keys: one block per lane.
+    "of_bronze": {"source": "metal_painted", "color": "#B8873A", "roughness": 0.55, "metallic": 1.0},
+    "of_bronze_dark": {"source": "metal_painted", "color": "#6B4E2C", "roughness": 0.7, "metallic": 1.0},
+    "of_gilt": {"source": "metal_painted", "color": "#C9A55A", "roughness": 0.4, "metallic": 1.0},
+    "of_limestone": {"source": "marble_cream", "color": "#CBC3B0", "roughness": 1.3},
+    "of_ultramarine": {"source": "fabric_upholstery", "color": "#2F3F6B", "roughness": 1.0},
+    "of_leather_ultramarine": {"source": "leather_dark", "color": "#2F3F6B", "roughness": 0.8},
+    "of_box_steel": {"source": "metal_painted", "color": "#A9ACAD", "roughness": 0.45, "metallic": 1.0},
+    # OF-C2 lane A (the banking hall, the vestibule, the plaza): the hall's ultramarine marble bands and the coffer
+    # ground, the plaza's granite (steps, plinth, kerbs)
+    "of_marble_blue": {"source": "marble_cream", "color": "#3A4A70", "roughness": 0.7},
+    "of_plaster_ultramarine": {"source": "plaster_painted", "color": "#2F3F6B", "roughness": 1.0},
+    "of_granite": {"source": "marble_cream", "color": "#8E8B86", "roughness": 1.1},
+    # OF-C2 vault lane (ostrander_vault.py): fine gold, grey-blue bond boxes, the vault signs' ultramarine enamel.
+    "ofd_gold": {"source": "metal_painted", "color": "#D2A84A", "roughness": 0.35, "metallic": 1.0},
+    "ofd_bond_grey": {"source": "plaster_painted", "color": "#7D8794", "roughness": 1.0},
+    "ofd_enamel_ultra": {"source": "metal_painted", "color": "#34477A", "roughness": 0.5},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
@@ -198,9 +227,11 @@ EMISSIVE: dict[str, dict] = {
     "emit_laser": {"color": "#3A0806", "emission": "#FF0E06", "energy": 1.4},
 }
 
-# Transparent variants of glass_clear (library albedo with alpha x colour).
+# Transparent variants of the library glass (library albedo with alpha x colour). D-142: glass_frosted is the texgen
+# `glass_frosted` library material untinted (its own tint #E4E8E6, alpha ~0.82), the one frosted look the maps' privacy
+# panes share.
 GLASS: dict[str, dict] = {
-    "glass_frosted": {"source": "glass_clear", "color": "#E4E8E6", "alpha": 0.82},
+    "glass_frosted": {"source": "glass_frosted", "color": "#FFFFFF", "alpha": 1.0},
     "glass_tinted": {"source": "glass_clear", "color": "#3A4044", "alpha": 0.9},
     "glass_teal": {"source": "glass_clear", "color": "#5D8C8F", "alpha": 0.6},
 }
@@ -237,15 +268,17 @@ def all_keys() -> list[str]:
 
 # Texture width (px) of every library id whose tile is 512 px over 2 m (style: low-detail surfaces).
 LIB_512 = {"chrome", "rubber_black", "plastic_matte", "glass_clear", "ceiling_tile"}
-# Weapon/gear library ids whose 1024 px texture tiles every 1 m (metadata/uv_tile_m = 1.0): at the prop
-# density (512 px/m) they need the same one-repeat-per-metre UVs as the 512 px tiles.
+# Weapon/gear library ids whose 1024 px texture tiles every 1 m (metadata/uv_tile_m = 1.0). Prop UVs scale by the
+# texture's pixel width (the validator's texel density), not its authored tile, so these map as every other 1024 px
+# library tile: one repeat per 2 m at the prop density (512 px/m). OF-C2: the old one-repeat-per-metre mapping gave
+# 1024 px/m (the materials FAIL on the thermal drill's polymer status box; 2048 px/m on the first-person throwables).
 TILE_1M = {"polymer_black", "polymer_olive", "steel_bare", "brass_cartridge", "alu_anodized_black",
            "paint_safety_orange", "metal_matte"}
 
 
 def texture_px(mat_id: str) -> float:
     """Albedo texture size behind a material id (library or prop) -> UV density choice."""
-    if mat_id in LIB_512 or mat_id in TILE_1M:
+    if mat_id in LIB_512:
         return 512.0
     if mat_id.startswith(PROP_PREFIX):
         key = mat_id[len(PROP_PREFIX):]

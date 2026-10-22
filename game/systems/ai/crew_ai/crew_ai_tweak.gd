@@ -70,9 +70,25 @@ extends Resource
 @export_group("Revive (L6.1, L2.7)")
 ## Get this close (horizontal, m) to a downed crew member before holding interact.
 @export var revive_range_m: float = 1.2
+## P (GH Tense 4501): a bot that cannot close in (a body or prop at the downed crew member's side) and has made no
+## progress for revive_stall_s revives from where it stands when within this distance (m; the human reach is 2.5) ◇.
+@export var revive_stall_reach_m: float = 2.3
+@export var revive_stall_s: float = 1.0
+## D-145 (DB Tense seed 1: four bots knelt to revive with cops 0.6-1.0 m away, crew wipe): before starting a revive,
+## a bot fights an enemy within revive_clear_m of the downed member for up to revive_clear_s (per revive target);
+## skipped when the downed member's bleed-out is under revive_clear_min_bleed_s (last stand: revive now) ◇.
+@export var revive_clear_m: float = 3.0
+@export var revive_clear_s: float = 2.0
+@export var revive_clear_min_bleed_s: float = 10.0
 ## L4.4 (P3 gate): a Stinger tasing a crew member scores its distance x this when the AI picks a target
 ## (lower = preferred; 0.25 = shot first unless something is 4x closer) ◇.
 @export var tasing_stinger_score_mult: float = 0.25
+## L2.12 / L6.1: the officer who cuffed a downed crew member (CrewCuffs.cuffed_by_net_id) scores its distance x this
+## when the AI picks a target (shot first, like a tasing Stinger) ◇.
+@export var arrester_score_mult: float = 0.25
+## L2.12 / L6.1: a CUFFED crew member whose arresting officer is alive within this distance (m) is freed only once the
+## officer is down or gone (freed next to him, he re-arrests after the D-108 grace, before the 6 s revive ends) ◇.
+@export var arrester_guard_m: float = 3.0
 ## Start holding interact only below this horizontal speed (m/s) so the session is not cancelled
 ## by the deceleration slide (InteractionTweak.cancel_move_m).
 @export var revive_settle_speed: float = 0.3
@@ -97,6 +113,12 @@ extends Resource
 @export var chest_height_m: float = 1.15
 ## Only pull the trigger when the view is within this angle of the aim point (deg).
 @export var fire_cone_deg: float = 4.0
+## GPU-20c (PD2: bots never shoot civilians): a civilian whose chest is within this distance of the line of fire
+## (eye -> aim point, extended civilian_line_past_m beyond it for a miss) blocks the shot; the bot holds fire and
+## prefers another target (m) ◇.
+@export var civilian_line_clear_m: float = 0.6
+## How far past the aim point a civilian still blocks the shot (a missed round flies on) (m) ◇.
+@export var civilian_line_past_m: float = 4.0
 ## Turn rate of the view (deg/s) ◇.
 @export var turn_speed_deg: float = 720.0
 ## Tactical reload below this magazine fraction when no enemy is visible ◇.
@@ -155,3 +177,10 @@ extends Resource
 @export var thrown_bag_pickup_window_s: float = 6.0
 ## Vertical tolerance (m) for the resting pickup (same floor).
 @export var thrown_bag_pickup_max_dy_m: float = 1.5
+
+@export_group("Health regen (D-145 §4a)")
+## A bot regains health after this long (s) without taking damage (D-145; PD2 team AI heal fully 2 s after the last
+## hit, gentler here: 3 s).
+@export var bot_regen_delay_s: float = 3.0
+## ...at this fraction of its max health per second (D-145: 25 %/s, full in 4 s).
+@export var bot_regen_frac_per_s: float = 0.25

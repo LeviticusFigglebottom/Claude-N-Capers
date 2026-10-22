@@ -33,12 +33,12 @@ const SCAN_DIRS: Array[String] = ["world", "systems", "content", "core"]
 const SCAN_EXT: Array[String] = ["gd", "tres", "tscn"]
 ## Heists grouped in the report (the shipping five); every other id is "shared".
 const REPORT_HEISTS: Array[StringName] = [
-	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
+	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night", &"rolling_thunder",
 ]
 const SHARED: StringName = &"shared"
 ## Owner codes. R = B's generic radio reserve: a contact's generic radio line that the current heists never reach
 ## (their heist lines cover every fact), kept for speaker_overrides and new heists (content/docs/radio.md).
-const OWNER_NAMES: Dictionary = {"A": "A", "B": "B", "R": "B reserve", "C": "C"}
+const OWNER_NAMES: Dictionary = {"A": "A", "B": "B", "R": "B reserve", "C": "C", "S": "staged heist"}
 const UNSAID: String = "UNSAID"
 const EV_DONE: StringName = &"radio.objective_done"
 const EV_NEW: StringName = &"radio.objective_new"
@@ -92,6 +92,10 @@ static func audit() -> Dictionary:
 			"group": group_of(id), "owner": "", "sites": [] as Array[String], "reason": "", "line": l,
 		}
 		row["owner"] = owner_of(row)
+		# RT-B1 (D-151): a line of a heist still staged in heist_list (hidden, no mission yet) waits for that mission;
+		# once the heist is offered its lines fall back to the A / B / C rules and must be said.
+		if staged_heist_of(id) != &"":
+			row["owner"] = "S"
 		ids[id] = rows.size()
 		rows.append(row)
 	var missing: Array[Dictionary] = []
@@ -173,6 +177,16 @@ static func _abort_builder(aborts: Dictionary, rows: Array[Dictionary], ids: Dic
 
 
 ## "glasshouse" when the id names one of the report heists, else "shared".
+## The staged heist (heist_list "hidden": true) whose id `id` names, or &"".
+static func staged_heist_of(id: StringName) -> StringName:
+	var s: String = String(id)
+	var heists: Dictionary = HeistCatalog.heist_list().heists
+	for h: Variant in heists:
+		if bool((heists[h] as Dictionary).get("hidden", false)) and s.contains(String(h)):
+			return StringName(h)
+	return &""
+
+
 static func group_of(id: StringName) -> StringName:
 	var s: String = String(id)
 	for h: StringName in REPORT_HEISTS:
@@ -284,7 +298,7 @@ static func report_markdown(r: Dictionary) -> String:
 	for m: Dictionary in r["missing"]:
 		out.append("- `%s` at %s" % [m["id"], m["site"]])
 	out.append("")
-	for owner: String in ["A", "B", "R", "C"]:
+	for owner: String in ["A", "B", "R", "C", "S"]:
 		var un: Array[Dictionary] = unsaid(r, owner)
 		out.append("## Unsaid, owner %s (%d)" % [OWNER_NAMES[owner], un.size()])
 		out.append("")
@@ -327,7 +341,7 @@ static func report_markdown(r: Dictionary) -> String:
 
 ## {lines, said, unsaid, A, B, C (unsaid per owner)} for group `g` (&"" = every line).
 static func counts(r: Dictionary, g: StringName = &"") -> Dictionary:
-	var c: Dictionary = {"lines": 0, "said": 0, "unsaid": 0, "A": 0, "B": 0, "R": 0, "C": 0}
+	var c: Dictionary = {"lines": 0, "said": 0, "unsaid": 0, "A": 0, "B": 0, "R": 0, "C": 0, "S": 0}
 	for row: Dictionary in r["lines"]:
 		if g != &"" and StringName(row["group"]) != g:
 			continue

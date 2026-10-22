@@ -33,7 +33,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 0 |
+| perf | PASS | 0 | 17 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -152,12 +152,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 345 columns (0.25 m), 216699 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 345 columns (0.25 m), 216727 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2542 polygons, cell 0.10/0.10 m
+- navmesh: 2870 polygons, cell 0.10/0.10 m
 - 291 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -205,7 +205,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomHH` | 6 | 6 | 100% |
 | `Rooms/RoomX4` | 650 | 650 | 100% |
 | `Rooms/RoomLM` | 69 | 69 | 100% |
-| `Rooms/RoomX1` | 837 | 837 | 100% |
+| `Rooms/RoomX1` | 837 | 836 | 100% |
 | `Rooms/RoomX2` | 833 | 833 | 100% |
 | `Rooms/RoomX3` | 744 | 735 | 99% |
 
@@ -264,7 +264,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3833 surfaces checked
+- 3836 surfaces checked
 
 
 ## zfight: Z-fighting
@@ -373,42 +373,61 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 118 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 270 eye samples, 21870 rays, sky yes, 0 void ray(s)
+- 130 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 274 eye samples, 22194 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
-| camera | draw calls | triangles | shadow lights |
-|---|---|---|---|
-| `TopDownPlan` | 1853 | 427860 | 6 |
-| `rc_ext_parade` | 2274 | 584128 | 6 |
-| `rc_ext_wexley` | 1951 | 454732 | 6 |
-| `rc_ext_mews` | 1774 | 419228 | 6 |
-| `rc_ext_court` | 1227 | 337044 | 4 |
-| `rc_hall_entry` | 2302 | 607962 | 6 |
-| `rc_hall_landing` | 1228 | 265512 | 3 |
-| `rc_balcony` | 1684 | 428008 | 5 |
-| `rc_founders` | 1062 | 243400 | 3 |
-| `rc_drawings` | 1198 | 309230 | 3 |
-| `rc_harbour` | 1889 | 477866 | 6 |
-| `rc_benefactors` | 2045 | 522196 | 6 |
-| `rc_cloakroom` | 1361 | 325888 | 3 |
-| `rc_back_corridor` | 2374 | 581168 | 6 |
-| `rc_security` | 1020 | 246306 | 2 |
-| `rc_loading` | 1732 | 453040 | 6 |
-| `rc_break` | 273 | 54128 | 0 |
-| `rc_calloway` | 905 | 208704 | 3 |
-| `rc_sallow` | 998 | 252198 | 3 |
-| `rc_maritime` | 983 | 217296 | 2 |
-| `rc_treasury` | 259 | 64850 | 0 |
-| `rc_upper_corridor` | 1996 | 505278 | 4 |
-| `rc_curator` | 296 | 74294 | 1 |
-| `rc_conservation` | 1590 | 423982 | 6 |
-| `rc_art_store` | 2045 | 520642 | 4 |
-| `rc_plant` | 704 | 169658 | 2 |
-| `rc_roof_deck` | 1854 | 438946 | 5 |
+- Budgets REPORT-ONLY (D-146 addendum 6: judged on Forward+ on the GPU box; this is the Compatibility early warning) (map meta `perf_d146`).
+- Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
+| camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
+|---|---|---|---|---|---|---|---|---|
+| `TopDownPlan` | 1856 | 589 | 4526 | 0 | 6971 | 427860 | 6 | ChandelierW 2100, LightFixture_10 725, LightFixture_10 602, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
+| `rc_ext_parade` | 2432 | 712 | 4491 | 0 | 7635 | 623364 | 6 | ChandelierW 2084, LightFixture_10 725, LightFixture_10 588, LightFixture_5 432, LightFixture_15 377, LightFixture_6 285 |
+| `rc_ext_wexley` | 2082 | 643 | 4482 | 0 | 7207 | 504936 | 6 | ChandelierW 2083, LightFixture_10 721, LightFixture_10 579, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
+| `rc_ext_mews` | 1777 | 589 | 4526 | 0 | 6892 | 419228 | 6 | ChandelierW 2100, LightFixture_10 725, LightFixture_10 602, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
+| `rc_ext_court` | 1383 | 639 | 3402 | 0 | 5424 | 380830 | 6 | ChandelierW 1530, LightFixture_10 501, LightFixture_10 395, LightFixture_5 388, LightFixture_15 317, LightFixture_6 271 |
+| `rc_hall_entry` | 2527 | 752 | 3906 | 0 | 7185 | 654538 | 6 | ChandelierW 1653, LightFixture_10 709, LightFixture_10 529, LightFixture_5 380, LightFixture_15 379, LightFixture_6 256 |
+| `rc_hall_landing` | 1238 | 312 | 2126 | 0 | 3676 | 266314 | 3 | ChandelierW 1690, LightFixture_5 264, LightFixture_15 172 |
+| `rc_balcony` | 1728 | 308 | 2518 | 0 | 4554 | 435236 | 4 | ChandelierW 1221, LightFixture_10 603, LightFixture_10 511, LightFixture_15 183 |
+| `rc_founders` | 1065 | 351 | 1823 | 0 | 3239 | 243400 | 3 | ChandelierW 1214, LightFixture_5 350, LightFixture_6 259 |
+| `rc_drawings` | 1231 | 383 | 1991 | 0 | 3605 | 311156 | 3 | ChandelierW 1353, LightFixture_5 379, LightFixture_6 259 |
+| `rc_harbour` | 2032 | 663 | 3840 | 0 | 6535 | 514588 | 6 | ChandelierW 1572, LightFixture_10 721, LightFixture_10 530, LightFixture_15 373, LightFixture_5 367, LightFixture_6 277 |
+| `rc_benefactors` | 2266 | 648 | 4363 | 0 | 7277 | 581376 | 6 | ChandelierW 2090, LightFixture_10 650, LightFixture_10 524, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
+| `rc_cloakroom` | 1471 | 396 | 2221 | 0 | 4088 | 349616 | 3 | ChandelierW 1537, LightFixture_5 399, LightFixture_6 285 |
+| `rc_back_corridor` | 2449 | 636 | 3751 | 0 | 6836 | 605406 | 6 | ChandelierW 1588, LightFixture_10 725, LightFixture_10 567, LightFixture_15 370, LightFixture_5 307, LightFixture_6 194 |
+| `rc_security` | 1023 | 327 | 2011 | 0 | 3361 | 246306 | 3 | ChandelierW 1430, LightFixture_5 338, LightFixture_6 243 |
+| `rc_loading` | 1863 | 604 | 3564 | 0 | 6031 | 486718 | 6 | ChandelierW 1561, LightFixture_10 599, LightFixture_10 444, LightFixture_5 363, LightFixture_15 330, LightFixture_6 267 |
+| `rc_break` | 276 | 0 | 0 | 0 | 276 | 54128 | 0 |  |
+| `rc_calloway` | 908 | 350 | 1639 | 0 | 2897 | 208704 | 3 | ChandelierW 1104, LightFixture_5 340, LightFixture_6 195 |
+| `rc_sallow` | 1047 | 368 | 1839 | 0 | 3254 | 258966 | 3 | ChandelierW 1257, LightFixture_5 340, LightFixture_6 242 |
+| `rc_maritime` | 1010 | 79 | 1522 | 0 | 2611 | 226560 | 2 | ChandelierW 1393, LightFixture_15 129 |
+| `rc_treasury` | 260 | 0 | 0 | 0 | 260 | 64850 | 0 |  |
+| `rc_upper_corridor` | 2115 | 503 | 2634 | 0 | 5252 | 526318 | 4 | ChandelierW 1658, LightFixture_5 425, LightFixture_6 285, LightFixture_15 266 |
+| `rc_curator` | 299 | 0 | 0 | 0 | 299 | 74294 | 0 |  |
+| `rc_conservation` | 1713 | 593 | 3305 | 0 | 5611 | 459572 | 6 | ChandelierW 1481, LightFixture_10 499, LightFixture_10 438, LightFixture_5 342, LightFixture_15 290, LightFixture_6 255 |
+| `rc_art_store` | 2201 | 620 | 3255 | 0 | 6076 | 558658 | 5 | ChandelierW 1585, LightFixture_10 604, LightFixture_5 400, LightFixture_15 381, LightFixture_6 285 |
+| `rc_plant` | 707 | 293 | 1840 | 0 | 2840 | 169658 | 3 | ChandelierW 1294, LightFixture_5 302, LightFixture_6 244 |
+| `rc_roof_deck` | 1968 | 499 | 3224 | 0 | 5691 | 466388 | 5 | ChandelierW 1523, LightFixture_10 670, LightFixture_10 558, LightFixture_5 246, LightFixture_15 227 |
 
+- WARN `ReviewCameras/TopDownPlan` @ (9.00, 120.00, 20.00): 6971 draw calls in view (main 1856 + lit 589 + shadow 4526 + cast 0) > 4000
+- WARN `ReviewCameras/rc_art_store` @ (31.00, -2.50, 19.00): 6076 draw calls in view (main 2201 + lit 620 + shadow 3255 + cast 0) > 4000
+- WARN `ReviewCameras/rc_back_corridor` @ (3.60, 1.70, 7.00): 6836 draw calls in view (main 2449 + lit 636 + shadow 3751 + cast 0) > 4000
+- WARN `ReviewCameras/rc_balcony` @ (13.50, 7.10, 17.00): 4554 draw calls in view (main 1728 + lit 308 + shadow 2518 + cast 0) > 4000
+- WARN `ReviewCameras/rc_benefactors` @ (43.00, 1.70, 29.00): 7277 draw calls in view (main 2266 + lit 648 + shadow 4363 + cast 0) > 4000
+- WARN `ReviewCameras/rc_cloakroom` @ (17.00, 1.70, 29.00): 4088 draw calls in view (main 1471 + lit 396 + shadow 2221 + cast 0) > 4000
+- WARN `ReviewCameras/rc_conservation` @ (43.00, 7.10, 11.00): 5611 draw calls in view (main 1713 + lit 593 + shadow 3305 + cast 0) > 4000
+- WARN `ReviewCameras/rc_ext_court` @ (-8.00, 1.70, 29.00): 5424 draw calls in view (main 1383 + lit 639 + shadow 3402 + cast 0) > 4000
+- WARN `ReviewCameras/rc_ext_mews` @ (-30.00, 1.70, -4.00): 6892 draw calls in view (main 1777 + lit 589 + shadow 4526 + cast 0) > 4000
+- WARN `ReviewCameras/rc_ext_parade` @ (22.00, 1.70, 41.00): 7635 draw calls in view (main 2432 + lit 712 + shadow 4491 + cast 0) > 4000
+- WARN `ReviewCameras/rc_ext_wexley` @ (56.00, 1.70, 10.00): 7207 draw calls in view (main 2082 + lit 643 + shadow 4482 + cast 0) > 4000
+- WARN `ReviewCameras/rc_hall_entry` @ (22.00, 1.70, 29.00): 2527 main-pass draw calls in view > 2500
+- WARN `ReviewCameras/rc_hall_entry` @ (22.00, 1.70, 29.00): 7185 draw calls in view (main 2527 + lit 752 + shadow 3906 + cast 0) > 4000
+- WARN `ReviewCameras/rc_harbour` @ (43.00, 1.70, 23.00): 6535 draw calls in view (main 2032 + lit 663 + shadow 3840 + cast 0) > 4000
+- WARN `ReviewCameras/rc_loading` @ (43.00, 1.70, 11.00): 6031 draw calls in view (main 1863 + lit 604 + shadow 3564 + cast 0) > 4000
+- WARN `ReviewCameras/rc_roof_deck` @ (10.00, 10.70, 1.00): 5691 draw calls in view (main 1968 + lit 499 + shadow 3224 + cast 0) > 4000
+- WARN `ReviewCameras/rc_upper_corridor` @ (31.00, 7.10, 7.00): 5252 draw calls in view (main 2115 + lit 503 + shadow 2634 + cast 0) > 4000
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 

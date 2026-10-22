@@ -165,6 +165,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_bulwark_duty",
+			"id": "bulwark_duty",
+			"scene": "res://world/characters/bulwark_duty/bulwark_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_bulwark_frd",
 			"id": "bulwark_frd",
 			"scene": "res://world/characters/bulwark_frd/bulwark_frd.tscn",
@@ -187,6 +193,12 @@
 			"test": false,
 			"variant": "zero",
 			"variant_of": "bulwark"
+		},
+		{
+			"asset": "char_carpark_attendant",
+			"id": "carpark_attendant",
+			"scene": "res://world/characters/carpark_attendant/carpark_attendant.tscn",
+			"test": false
 		},
 		{
 			"asset": "char_cartel_gunman",
@@ -456,6 +468,18 @@
 			"asset": "char_crew_wren",
 			"id": "crew_wren",
 			"scene": "res://world/characters/crew_wren/crew_wren.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_diner_cook",
+			"id": "diner_cook",
+			"scene": "res://world/characters/diner_cook/diner_cook.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_diner_waitress",
+			"id": "diner_waitress",
+			"scene": "res://world/characters/diner_waitress/diner_waitress.tscn",
 			"test": false
 		},
 		{
@@ -905,6 +929,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_patrol_officer_duty",
+			"id": "patrol_officer_duty",
+			"scene": "res://world/characters/patrol_officer_duty/patrol_officer_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_patrol_officer_frd",
 			"id": "patrol_officer_frd",
 			"scene": "res://world/characters/patrol_officer_frd/patrol_officer_frd.tscn",
@@ -1031,6 +1061,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_stinger_duty",
+			"id": "stinger_duty",
+			"scene": "res://world/characters/stinger_duty/stinger_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_stinger_frd",
 			"id": "stinger_frd",
 			"scene": "res://world/characters/stinger_frd/stinger_frd.tscn",
@@ -1053,6 +1089,60 @@
 			"test": false,
 			"variant": "zero",
 			"variant_of": "stinger"
+		},
+		{
+			"asset": "char_street_pedestrian",
+			"id": "street_pedestrian",
+			"scene": "res://world/characters/street_pedestrian/street_pedestrian.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_b",
+			"id": "street_pedestrian_b",
+			"scene": "res://world/characters/street_pedestrian_b/street_pedestrian_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_c",
+			"id": "street_pedestrian_c",
+			"scene": "res://world/characters/street_pedestrian_c/street_pedestrian_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_d",
+			"id": "street_pedestrian_d",
+			"scene": "res://world/characters/street_pedestrian_d/street_pedestrian_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_e",
+			"id": "street_pedestrian_e",
+			"scene": "res://world/characters/street_pedestrian_e/street_pedestrian_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_f",
+			"id": "street_pedestrian_f",
+			"scene": "res://world/characters/street_pedestrian_f/street_pedestrian_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_g",
+			"id": "street_pedestrian_g",
+			"scene": "res://world/characters/street_pedestrian_g/street_pedestrian_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_h",
+			"id": "street_pedestrian_h",
+			"scene": "res://world/characters/street_pedestrian_h/street_pedestrian_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_i",
+			"id": "street_pedestrian_i",
+			"scene": "res://world/characters/street_pedestrian_i/street_pedestrian_i.tscn",
+			"test": false
 		},
 		{
 			"asset": "char_tac_heavy",
@@ -1091,11 +1181,25 @@
 			"test": false
 		},
 		{
+			"asset": "char_tac_light_duty",
+			"id": "tac_light_duty",
+			"scene": "res://world/characters/tac_light_duty/tac_light_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_tac_light_frd",
 			"id": "tac_light_frd",
 			"scene": "res://world/characters/tac_light_frd/tac_light_frd.tscn",
 			"test": false,
 			"variant": "frd",
+			"variant_of": "tac_light"
+		},
+		{
+			"asset": "char_tac_light_frd_duty",
+			"id": "tac_light_frd_duty",
+			"scene": "res://world/characters/tac_light_frd_duty/tac_light_frd_duty.tscn",
+			"test": false,
+			"variant": "frd_duty",
 			"variant_of": "tac_light"
 		},
 		{
@@ -1107,11 +1211,27 @@
 			"variant_of": "tac_light"
 		},
 		{
+			"asset": "char_tac_light_sentinel_duty",
+			"id": "tac_light_sentinel_duty",
+			"scene": "res://world/characters/tac_light_sentinel_duty/tac_light_sentinel_duty.tscn",
+			"test": false,
+			"variant": "sentinel_duty",
+			"variant_of": "tac_light"
+		},
+		{
 			"asset": "char_tac_light_zero",
 			"id": "tac_light_zero",
 			"scene": "res://world/characters/tac_light_zero/tac_light_zero.tscn",
 			"test": false,
 			"variant": "zero",
+			"variant_of": "tac_light"
+		},
+		{
+			"asset": "char_tac_light_zero_duty",
+			"id": "tac_light_zero_duty",
+			"scene": "res://world/characters/tac_light_zero_duty/tac_light_zero_duty.tscn",
+			"test": false,
+			"variant": "zero_duty",
 			"variant_of": "tac_light"
 		},
 		{
@@ -1155,6 +1275,11 @@
 			"asset": "char_bulwark_aegis_shield",
 			"id": "bulwark_aegis_shield",
 			"scene": "res://world/characters/bulwark_aegis/bulwark_aegis_shield.tscn"
+		},
+		{
+			"asset": "char_bulwark_duty_shield",
+			"id": "bulwark_duty_shield",
+			"scene": "res://world/characters/bulwark_duty/bulwark_duty_shield.tscn"
 		},
 		{
 			"asset": "char_bulwark_frd_shield",

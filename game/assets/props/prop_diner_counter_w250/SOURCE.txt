@@ -1,0 +1,8 @@
+asset: prop_diner_counter_w250
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"clear": 1.0, "group": "sales", "kind": "counter_service", "pin_only": true, "place": "wall", "support": true, "surface": "wood", "top": 0.9}, "d": 0.8, "fn": "diner_counter", "ln": 2.5}
+seed: 3219274254  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_diner_counter_w250
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

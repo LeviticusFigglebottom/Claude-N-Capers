@@ -13,6 +13,14 @@ func before_each() -> void:
 	await wait_physics_frames(2)
 
 
+func _relaunch(difficulty: int) -> void:
+	if _rt != null and is_instance_valid(_rt):
+		_rt.teardown()
+		await wait_frames(2)
+	_rt = await HeistLauncher.launch(&"unit_map", 42, difficulty, self, {"map_packed": ATestMaps.basic(0, 0)})
+	await wait_physics_frames(2)
+
+
 func after_each() -> void:
 	Engine.time_scale = 1.0
 	if _rt != null and is_instance_valid(_rt):
@@ -114,6 +122,63 @@ func test_l6_1_gate10_ai_revives_downed_human() -> void:
 		assert_true(_ai_slots().has(revives[0].y), "by an AI slot (%d)" % revives[0].y)
 	var game_s: float = real_s * TIME_SCALE
 	assert_true(game_s >= Tweak.crew().revive_time_s - 0.5, "the full 6 s revive hold (%.1f s)" % game_s)
+
+
+## P (GH Tense 4501): a downed human boxed in by low obstacles 1.7 m out (a body / prop at their side): the bot cannot
+## get within revive_range_m, stalls, and revives from where it stands (revive_stall_reach_m).
+func test_l6_1_ai_revives_over_an_obstacle() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	var at: Vector3 = Vector3(4, 0.05, 0)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, at))
+	for side: Vector3 in [Vector3(1.7, 0, 0), Vector3(-1.7, 0, 0), Vector3(0, 0, 1.7), Vector3(0, 0, -1.7)]:
+		var size: Vector3 = Vector3(0.2, 0.9, 3.6) if side.x != 0.0 else Vector3(3.6, 0.9, 0.2)
+		ATestMaps.add_wall(_rt.map, at + side + Vector3(0, 0.45, 0), size)
+	await wait_physics_frames(2)
+	_crew(0).health.go_down()
+	var ok: bool = await wait_until(func() -> bool: return _crew(0).crew_state == Enums.CrewState.NORMAL, 25.0)
+	assert_true(ok, "a bot revived the boxed-in human from outside the box")
+	for s: int in _ai_slots():
+		assert_true(_crew(s).global_position.distance_to(at) > tweakd().revive_range_m,
+			"slot %d stayed outside the box" % s)
+
+
+## B (DB Tense: revives started and never finished): the bot holding a revive keeps it when another bot comes closer
+## (no nearest-AI flip) and when it is nudged a little (no release on speed, no walk back inside revive_stall_reach_m).
+func test_l6_1_revive_in_progress_is_kept() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	var at: Vector3 = Vector3(4, 0.05, 0)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, at))
+	await wait_physics_frames(2)
+	_crew(0).health.go_down()
+	var found: Array[CrewController] = []  # lambdas capture locals by value: collect through an array
+	var started: bool = await wait_until(func() -> bool:
+		for s: int in _ai_slots():
+			var sess: Dictionary = _rt.interaction.session(s)
+			if not sess.is_empty() and float(sess["progress"]) > 0.5:
+				found.append(_crew(s))
+				return true
+		return false, 20.0)
+	assert_true(started and not found.is_empty(), "a bot started the revive")
+	if found.is_empty():
+		return
+	var reviver: CrewController = found[0]
+	var cancels: Array[int] = []
+	var cb: Callable = func(_nid: int, slot: int) -> void: cancels.append(slot)
+	EventBus.interaction_cancelled.connect(cb)
+	for s: int in _ai_slots():  # every other bot right next to the patient: the nearest pick would change
+		if _crew(s) != reviver:
+			_rt.teleport_crew(s, Transform3D(Basis.IDENTITY, at + Vector3(0.5, 0, 0.5 * float(s))))
+	reviver.global_position += Vector3(0.3, 0, 0)  # a nudge (< cancel_move_m)
+	var ok: bool = await wait_until(func() -> bool: return _crew(0).crew_state == Enums.CrewState.NORMAL, 15.0)
+	EventBus.interaction_cancelled.disconnect(cb)
+	assert_true(ok, "the human was revived")
+	assert_false(cancels.has(reviver.slot), "the reviver never dropped its revive (cancels %s)" % [cancels])
+
+
+func tweakd() -> CrewAiTweak:
+	return CrewHealth._bot_tweak()
 
 
 func test_l6_1_ai_revives_downed_ai() -> void:
@@ -220,6 +285,87 @@ func test_p3_ai_frees_cloaker_downed_and_tased_human() -> void:
 		var ok: bool = await wait_until(func() -> bool: return _crew(0).crew_state == Enums.CrewState.NORMAL, 20.0)
 		assert_true(ok, "an AI teammate freed the %s human within 20 s" % Enums.CrewState.keys()[state])
 		await wait_physics_frames(10)
+
+
+## L2.12 / L6.1 (PD2 bots free an arrested player): a downed human cuffed by police is uncuffed by an AI teammate
+## (back to DOWNED) and then revived.
+func test_l2_12_ai_uncuffs_and_revives_cuffed_downed_human() -> void:
+	await _relaunch(Enums.Difficulty.HAZARDOUS)  # D-145: police cuff a downed player from Hazardous up
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
+	await wait_physics_frames(2)
+	var c: CrewController = _crew(0)
+	c.health.go_down()
+	c.health.down_s = CustodyTweak.data().police_cuff_grace_s  # D-108 grace elapsed
+	var cuffs: CrewCuffs = CrewCuffs.of(c, true)
+	await wait_physics_frames(2)
+	assert_true(cuffs.cuff_downed(777), "cuff_downed")
+	assert_eq(c.crew_state, Enums.CrewState.CUFFED)
+	var freed_by: Array[int] = []
+	cuffs.freed.connect(func(by: int) -> void: freed_by.append(by))
+	var ok: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.NORMAL, 30.0)
+	assert_true(ok, "uncuffed and revived by the AI (state %d)" % c.crew_state)
+	assert_eq(freed_by.size(), 1, "freed once")
+	if freed_by.size() == 1:
+		assert_true(_ai_slots().has(freed_by[0]), "by an AI slot (%d), not the self-free" % freed_by[0])
+
+
+## L2.12 / L6.1: the officer who cuffed the downed human is still next to him: the AI shoot him first (arrester_score_mult)
+## and free the human only once he is down (arrester_guard_m; freed next to him he would re-arrest before the revive).
+func test_l2_12_ai_kill_the_arresting_cop_before_uncuffing() -> void:
+	await _relaunch(Enums.Difficulty.HAZARDOUS)  # D-145: police cuff a downed player from Hazardous up
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
+	await wait_physics_frames(2)
+	var c: CrewController = _crew(0)
+	var cop: NpcBase = ATestMaps.add_npc_observer(_rt, &"police", Vector3(4.8, 0.05, 0.4), Vector3.LEFT)
+	cop.max_health = 1.0e9  # soaks the AI fire: the guard window is observable
+	cop.health = cop.max_health
+	c.health.go_down()
+	c.health.down_s = CustodyTweak.data().police_cuff_grace_s
+	var cuffs: CrewCuffs = CrewCuffs.of(c, true)
+	await wait_physics_frames(2)
+	assert_true(cuffs.cuff_downed(cop.net_id), "cuffed by the cop")
+	# Long enough to walk over and hold the uncuff several times over (uncuff_s), had the cop not been there.
+	await wait_until(func() -> bool: return c.crew_state != Enums.CrewState.CUFFED, Tweak.stealth().uncuff_s + 8.0)
+	assert_eq(c.crew_state, Enums.CrewState.CUFFED, "not freed while the arresting cop stands next to him")
+	assert_true(cop.health < cop.max_health, "the AI shoot the arresting cop")
+	cop.die({}, 0)
+	var ok: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.NORMAL, 30.0)
+	assert_true(ok, "freed and revived once the cop is down (state %d)" % c.crew_state)
+
+
+## D-145 (DB Tense seed 1: four bots knelt to revive with cops 0.6-1.0 m away, a crew wipe): a cop next to the downed
+## human is fought for up to revive_clear_s before the bot kneels; past that (a cop that will not drop) it revives anyway.
+func test_d145_ai_clear_a_cop_next_to_the_downed_before_kneeling() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
+	await wait_physics_frames(2)
+	var c: CrewController = _crew(0)
+	var cop: NpcBase = ATestMaps.add_npc_observer(_rt, &"police", Vector3(5.5, 0.05, 0.6), Vector3.LEFT)
+	cop.max_health = 1.0e9  # soaks the AI fire: the clear window is observable
+	cop.health = cop.max_health
+	c.health.go_down()
+	# Game seconds from the first bot in revive range to the first revive hold (the clear window sits between).
+	var marks: Array[float] = [-1.0, -1.0]  # [arrived, first hold]
+	var t0: int = Time.get_ticks_msec()
+	var watch: Callable = func() -> bool:
+		var now: float = float(Time.get_ticks_msec() - t0) / 1000.0 * TIME_SCALE
+		for slot: int in _ai_slots():
+			var bot: CrewController = _crew(slot)
+			if marks[0] < 0.0 and bot.global_position.distance_to(c.global_position) <= tweakd().revive_range_m:
+				marks[0] = now
+			if marks[1] < 0.0 and not _rt.interaction.session(slot).is_empty():
+				marks[1] = now
+		return c.crew_state == Enums.CrewState.NORMAL
+	var ok: bool = await wait_until(watch, 30.0)
+	assert_true(cop.health < cop.max_health, "the bots fought the cop at the downed human")
+	assert_true(marks[0] >= 0.0 and marks[1] - marks[0] >= tweakd().revive_clear_s * 0.8,
+		"no revive hold in the clear window (arrived %.1f s, first hold %.1f s)" % [marks[0], marks[1]])
+	assert_true(ok, "revived anyway once the clear window ran out (the cop did not drop)")
 
 
 func test_p3_ai_shoots_the_tasing_stinger_first() -> void:

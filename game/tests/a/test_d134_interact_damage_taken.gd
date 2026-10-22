@@ -17,6 +17,7 @@ func after_each() -> void:
 func _hit(c: CrewController) -> float:
 	var before: float = c.health.health + c.health.armor
 	c.health.invuln_left = 0.0
+	c.health.grace_left = 0.0  # D-145 hit grace: back-to-back hits here test the hold multiplier
 	c.health.take_hit(Damage.info(10.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"test", c.global_position,
 		Vector3.FORWARD, 0))
 	return before - (c.health.health + c.health.armor)

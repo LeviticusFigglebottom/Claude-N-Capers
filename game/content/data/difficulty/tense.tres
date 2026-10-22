@@ -13,10 +13,10 @@ assault_intensity = 0.75
 special_limits = {
 &"enemy.bulwark": 3,
 &"enemy.stinger": 1,
-&"enemy.corpsman": 2,
+&"enemy.corpsman": 0,
 &"enemy.phantom": 0,
-&"enemy.wrecker": 1,
-&"enemy.longshot": 2
+&"enemy.wrecker": 0,
+&"enemy.longshot": 1
 }
 detection_speed_mult = 1.0
 civilian_kill_penalty = 3000

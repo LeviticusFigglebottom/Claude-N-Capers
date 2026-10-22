@@ -1,6 +1,8 @@
 ## A3-04 / L2.12: police walk up to a downed crew member who is not shooting and cuff them at 1 m
-## (CUFFED, bleedout paused); they free themselves after 60 s (◇) or a teammate uncuffs them, and are
-## downed again.
+## (CUFFED). LEAD 2026-10-21 (Cataclysm 2024: 15 CUFFED <-> DOWNED cycles in 15 min): no self-free, and
+## the bleed-out keeps running while cuffed; a teammate uncuffs them (downed again, revivable), else custody.
+## D-145: police cuff downed players only from CustodyTweak.police_cuff_min_difficulty (Hazardous) up, so these
+## run on Hazardous; on Routine / Tense the bleed-out timer alone decides custody.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -12,7 +14,14 @@ func before_each() -> void:
 	_events.clear()
 	EventBus.crew_cuffed.connect(_on_cuffed)
 	EventBus.crew_uncuffed.connect(_on_uncuffed)
-	_rt = await HeistLauncher.launch(&"unit_map", 1212, Enums.Difficulty.ROUTINE, self,
+	await _launch(Enums.Difficulty.HAZARDOUS)
+
+
+func _launch(difficulty: int) -> void:
+	if _rt != null and is_instance_valid(_rt):
+		_rt.teardown()
+		await wait_frames(2)
+	_rt = await HeistLauncher.launch(&"unit_map", 1212, difficulty, self,
 		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 1, "crew_ai": false})
 	await wait_physics_frames(1)
 
@@ -55,7 +64,20 @@ func _setup() -> NpcBase:
 func test_l2_12_tweak_values() -> void:
 	var tw: CustodyTweak = CustodyTweak.data()
 	assert_near(tw.police_cuff_range_m, 1.0, 0.001, "1 m")
-	assert_near(tw.police_cuff_self_free_s, 60.0, 0.001, "60 s self-free")
+
+
+## D-145 (P's GH Tense run: cuffed 3 s after the down): on Routine and Tense police never cuff a downed player.
+func test_d145_no_police_cuffs_on_routine_and_tense() -> void:
+	assert_eq(CustodyTweak.data().police_cuff_min_difficulty, Enums.Difficulty.HAZARDOUS, "cuffs from Hazardous up")
+	for d: int in [Enums.Difficulty.ROUTINE, Enums.Difficulty.TENSE]:
+		await _launch(d)
+		_events.clear()
+		await _setup()
+		var c: CrewController = _crew(0)
+		await wait_seconds(6.0)
+		assert_eq(c.crew_state, Enums.CrewState.DOWNED, "difficulty %d: still downed, bleeding out (not cuffed)" % d)
+		assert_false(CrewCuffs.can_police_cuff(c), "difficulty %d: never cuffable" % d)
+		assert_true(_events.is_empty(), "difficulty %d: no crew_cuffed (%s)" % [d, _events])
 
 
 func test_l2_12_police_cuff_downed_player() -> void:
@@ -67,15 +89,16 @@ func test_l2_12_police_cuff_downed_player() -> void:
 	var flat: float = Vector2(cop.global_position.x - c.global_position.x, cop.global_position.z - c.global_position.z).length()
 	assert_true(flat <= CustodyTweak.data().police_cuff_range_m + 0.05, "cuffed from 1 m (%.2f)" % flat)
 	var cuffs: CrewCuffs = CrewCuffs.of(c)
-	assert_true(cuffs.cuffed_left > 55.0, "60 s self-free timer")
+	assert_true(is_inf(cuffs.cuffed_left), "no self-free timer (PD2: wait for a teammate)")
 	var bleed: float = c.health.bleedout_left
 	await wait_seconds(0.5)
-	assert_near(c.health.bleedout_left, bleed, 0.001, "bleedout paused while cuffed")
+	assert_true(c.health.bleedout_left < bleed - 0.3, "the bleed-out keeps running while cuffed")
 	assert_false(c.weapons.can_fire(), "cuffed: cannot shoot")
-	cuffs.cuffed_left = 0.05
-	await wait_physics_frames(6)
-	assert_eq(c.crew_state, Enums.CrewState.DOWNED, "freed: downed again")
-	assert_has(_events, [&"uncuffed", 0, -1], "freed themselves")
+	assert_eq(c.crew_state, Enums.CrewState.CUFFED, "still cuffed: never flips back to DOWNED on its own")
+	c.health.bleedout_left = 0.2  # skip the rest of the bleed-out
+	var gone: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CUSTODY, 3.0)
+	assert_true(gone, "unrescued, the cuffed heister goes into custody when the bleed-out ends")
+	assert_false(_events.has([&"uncuffed", 0, -1]) and c.crew_state == Enums.CrewState.DOWNED, "never freed themselves")
 
 
 func test_l2_12_shooting_downed_player_not_cuffed() -> void:

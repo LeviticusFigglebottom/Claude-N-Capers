@@ -37,7 +37,8 @@ static func place(room: KitRoom, kit: DressingKit, seed: int, ceiling_fixtures: 
 	var st := _State.new()
 	st.room = room
 	st.kit = kit
-	st.rng.seed = ("%s|%s|%d|%d" % [kit.id, room.id, kit.seed_salt, seed]).hash()
+	var sid: StringName = kit.seed_id if kit.seed_id != &"" else kit.id
+	st.rng.seed = ("%s|%s|%d|%d" % [sid, room.id, kit.seed_salt, seed]).hash()
 	st.catalog = PropCatalog.load_catalog()
 	st.max_count = maxi(kit.min_props, int(floor(room.area() * kit.max_density)))
 	var t: float = st.rng.randf_range(0.3, 0.55)

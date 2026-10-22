@@ -23,6 +23,9 @@
 ## OF-A6 (D-136, lead): `height_m` may change at runtime (the OF rope ladder stowed at 3.2 m, dropped to its
 ## `burn_height_m` 4.0 m at the burn-through): the placeholder's rails / Top and the NavLink ends re-fit (replicated,
 ## NetEntityCodec GENERIC_PROPS). An art visual keeps its own Top marker.
+## PO-16 (D-145, ENV P free climb): a crew member flagged `set_free_climber(crew, true)` (P's CrewLadderClimb, real-input
+## humans) is skipped by the walk-in / interact trigger here; `start_climb()` still works for scripts, tests and bots.
+## Geometry for P's controller: climb_line(), face_normal(), top_step_off(), bottom_step_off().
 class_name Ladder
 extends GameplayPrefab
 
@@ -31,6 +34,8 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/ladder/ladder_pl
 const PLACEHOLDER_HEIGHT_M: float = 3.0
 ## Crew meta set while climbing (value = this ladder).
 const META_CLIMBING: StringName = &"climbing_ladder"
+## PO-16: crew meta (true) = this crew climbs freely (ENV P's controller); no teleport-climb trigger.
+const META_FREE_CLIMB: StringName = &"ladder_free_climb"
 ## Max height difference to a marker for a grab (m).
 const GRAB_HEIGHT_M: float = 0.6
 ## Navigation layer bitmask value of ladder links: layer 4 (project name "ladder"; layer 2 is "npc_only").
@@ -165,6 +170,43 @@ func bottom_position() -> Vector3:
 	return n.global_position if n != null else global_position
 
 
+## PO-16: world bottom and top of the vertical a climber holds: [Bottom, (Bottom.x, Top.y, Bottom.z)].
+func climb_line() -> Array[Vector3]:
+	var b: Vector3 = bottom_position()
+	return [b, Vector3(b.x, top_position().y, b.z)]
+
+
+## PO-16: flat unit direction from the climb side toward the wall / ledge (+Z of the ladder).
+func face_normal() -> Vector3:
+	var z: Vector3 = global_basis.z
+	z.y = 0.0
+	return z.normalized() if z.length() > 0.001 else Vector3.BACK
+
+
+## PO-16: where a climber steps off at the top (the landing, `Top`).
+func top_step_off() -> Vector3:
+	return top_position()
+
+
+## PO-16: where a climber steps off at the bottom (the floor at the foot, `Bottom`).
+func bottom_step_off() -> Vector3:
+	return bottom_position()
+
+
+## PO-16: flag `crew` as a free climber (ENV P's controller drives it): the walk-in / interact trigger skips it.
+static func set_free_climber(crew: Node, on: bool) -> void:
+	if crew == null:
+		return
+	if on:
+		crew.set_meta(META_FREE_CLIMB, true)
+	elif crew.has_meta(META_FREE_CLIMB):
+		crew.remove_meta(META_FREE_CLIMB)
+
+
+static func is_free_climber(crew: Node) -> bool:
+	return crew != null and bool(crew.get_meta(META_FREE_CLIMB, false))
+
+
 ## Seconds a full climb takes.
 func climb_time() -> float:
 	return _path_length(_path(true)) / maxf(Tweak.interaction().ladder_climb_speed_mps, 0.01)
@@ -200,6 +242,8 @@ func _on_crew_tick(crew: CrewController, intent: CrewIntent, delta: float) -> vo
 		return
 	if _climbs.has(crew.slot):
 		_advance(crew, delta)
+		return
+	if is_free_climber(crew):  # PO-16: ENV P's controller climbs this crew
 		return
 	var wants: bool = intent != null and (intent.interact or intent.move.y > 0.5)
 	if not wants:

@@ -23,6 +23,8 @@ PlayerPlaza1 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza1 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza1 Gameplay/Loot/BondSafe
 PlayerPlaza1 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza1 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza1 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza1 Gameplay/Loot/HallBox17
 PlayerPlaza1 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza1 Gameplay/Loot/HallBox18
@@ -61,6 +63,8 @@ PlayerPlaza2 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza2 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza2 Gameplay/Loot/BondSafe
 PlayerPlaza2 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza2 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza2 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza2 Gameplay/Loot/HallBox17
 PlayerPlaza2 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza2 Gameplay/Loot/HallBox18
@@ -103,6 +107,8 @@ PlayerPlaza3 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza3 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza3 Gameplay/Loot/BondSafe
 PlayerPlaza3 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza3 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza3 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza3 Gameplay/Loot/HallBox17
 PlayerPlaza3 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza3 Gameplay/Loot/HallBox18
@@ -145,6 +151,8 @@ PlayerPlaza4 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza4 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza4 Gameplay/Loot/BondSafe
 PlayerPlaza4 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza4 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza4 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza4 Gameplay/Loot/HallBox17
 PlayerPlaza4 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza4 Gameplay/Loot/HallBox18
@@ -186,7 +194,10 @@ PlayerPlaza4 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 # security room and the camera station (SR, x 16-23, z 0-7) are round the LD / BC wall (the straight line goes through
 # the north facade), the upper levels (gallery WCs, IT, server, legal, conference, the president's office and safe,
 # the terrace, the roof plant room and head house) are Stair A / B up from BC; the cash-lift landing door B is down
-# Stair A -> BB -> CQ.
+# Stair A -> BB -> CQ. OF-C2: Lane4 -> the E3 secure zone (3.09x) is the same terrace walk; the dressed navmesh routes it
+# through the west terrace door instead of the east one (polygon split, nothing on the route). Lane1 -> PantryDoor (3.12x)
+# and Lane4 -> StaffDoorTWE (3.07x), Lane2 -> ComplianceDoor (3.10x) are the direct dock-door -> LD -> BC (-> stair) walk
+# (Lane2 / Lane3 -> PantryDoor, Lane4 -> ComplianceDoor already listed).
 PlayerLane1 Gameplay/Devices/AlarmSR/UsePoint
 PlayerLane1 Gameplay/Devices/CameraStation/UsePoint
 PlayerLane1 Gameplay/Devices/PhoneEA/UsePoint
@@ -200,6 +211,7 @@ PlayerLane1 Gameplay/Doors/HeadHouseDoor
 PlayerLane1 Gameplay/Doors/HeadHouseDoor/UsePoint
 PlayerLane1 Gameplay/Doors/ITDoor/UsePoint
 PlayerLane1 Gameplay/Doors/LegalDoor/UsePoint
+PlayerLane1 Gameplay/Doors/PantryDoor/UsePoint
 PlayerLane1 Gameplay/Doors/PresidentDoor/UsePoint
 PlayerLane1 Gameplay/Doors/RoofPlantDoor/UsePoint
 PlayerLane1 Gameplay/Doors/ServerDoor/UsePoint
@@ -220,6 +232,7 @@ PlayerLane2 Gameplay/Devices/CameraStation/UsePoint
 PlayerLane2 Gameplay/Devices/PhoneEA/UsePoint
 PlayerLane2 Gameplay/Devices/PhoneSR/UsePoint
 PlayerLane2 Gameplay/Doors/AssistantDoor/UsePoint
+PlayerLane2 Gameplay/Doors/ComplianceDoor/UsePoint
 PlayerLane2 Gameplay/Doors/ConferenceDoor/UsePoint
 PlayerLane2 Gameplay/Doors/GalleryWCDoorM/UsePoint
 PlayerLane2 Gameplay/Doors/GalleryWCDoorW/UsePoint
@@ -290,11 +303,13 @@ PlayerLane4 Gameplay/Doors/PresidentDoor/UsePoint
 PlayerLane4 Gameplay/Doors/RoofPlantDoor/UsePoint
 PlayerLane4 Gameplay/Doors/ServerDoor/UsePoint
 PlayerLane4 Gameplay/Doors/StaffWCDoorM/UsePoint
+PlayerLane4 Gameplay/Doors/StaffDoorTWE/UsePoint
 PlayerLane4 Gameplay/Doors/StaffWCDoorW/UsePoint
 PlayerLane4 Gameplay/Doors/TrustDoor/UsePoint
 PlayerLane4 Gameplay/Loot/ServerDrives
 PlayerLane4 Gameplay/Loot/ServerDrives/UsePoint
 PlayerLane4 Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone
+PlayerLane4 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerLane4 Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe
 PlayerLane4 Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds
 PlayerLane4 Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint
@@ -335,6 +350,8 @@ PlayerTannery2 Gameplay/Devices/PhoneNA/UsePoint
 PlayerTannery2 Gameplay/Devices/PhoneVO/UsePoint
 PlayerTannery2 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerTannery2 Gameplay/Doors/TreasuryDoor/UsePoint
+PlayerTannery2 Gameplay/Loot/HallBox14
+PlayerTannery2 Gameplay/Loot/HallBox14/UsePoint
 PlayerTannery2 Gameplay/Loot/HallBox15
 PlayerTannery2 Gameplay/Loot/HallBox15/UsePoint
 PlayerTannery2 Gameplay/Loot/HallBox16
@@ -358,6 +375,8 @@ PlayerTannery2 Gameplay/Loot/VaultGold/UsePoint
 PlayerTannery2 Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone
 PlayerTannery2 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerTannery3 Gameplay/Devices/AlarmBM/UsePoint
+PlayerTannery3 Gameplay/Markers/CodeHintPlanner
+PlayerTannery3 Gameplay/Markers/CodeHintPlanner/UsePoint
 PlayerTannery3 Gameplay/Devices/PhoneBM/UsePoint
 PlayerTannery3 Gameplay/Devices/PhoneNA/UsePoint
 PlayerTannery3 Gameplay/Devices/PhonePC/UsePoint
@@ -395,6 +414,8 @@ PlayerTannery3 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerTannery3 Variants/Group_keycard/Slot_kc_manager_desk/Keycard
 PlayerTannery3 Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint
 PlayerTannery4 Gameplay/Devices/AlarmBM/UsePoint
+PlayerTannery4 Gameplay/Markers/CodeHintPlanner
+PlayerTannery4 Gameplay/Markers/CodeHintPlanner/UsePoint
 PlayerTannery4 Gameplay/Devices/PhoneBM/UsePoint
 PlayerTannery4 Gameplay/Devices/PhoneNA/UsePoint
 PlayerTannery4 Gameplay/Devices/PhoneVO/UsePoint
@@ -430,3 +451,51 @@ PlayerTannery4 Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone
 PlayerTannery4 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerTannery4 Variants/Group_keycard/Slot_kc_manager_desk/Keycard
 PlayerTannery4 Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint
+
+#
+# Door-clearance bake (of_gameplay._jamb_clearance, ENV P ghost run 250): paths cross every door on the frame's centre
+# line instead of cutting the jamb corner, 1-3 % longer; these routes stood at 2.97-2.99x and now read 3.00-3.08x.
+# The same long walks as the groups above (vault level / gallery east rooms / terrace / roof via Stair A or B).
+PlayerPlaza1 Gameplay/Doors/GoldCageGate
+PlayerPlaza1 Gameplay/Doors/GoldCageGate/UsePoint
+PlayerPlaza1 Gameplay/Doors/GoldCageGate/Padlock
+PlayerPlaza1 Gameplay/Doors/GoldCageGate/Padlock/UsePoint
+PlayerPlaza1 Gameplay/Loot/VaultGold
+PlayerPlaza1 Gameplay/Loot/VaultGold/UsePoint
+PlayerPlaza3 Gameplay/Doors/ConferenceGalleryDoor/UsePoint
+PlayerPlaza3 Gameplay/Loot/HallBox22
+PlayerPlaza3 Gameplay/Loot/HallBox22/UsePoint
+PlayerPlaza4 Gameplay/Doors/ConferenceGalleryDoor/UsePoint
+PlayerLane1 Gameplay/Doors/JanitorDoorM/UsePoint
+PlayerLane1 Gameplay/Loot/VaultBoxN01
+PlayerLane1 Gameplay/Loot/VaultBoxN01/UsePoint
+PlayerLane3 Gameplay/Doors/StaffWCDoorW/UsePoint
+PlayerLane3 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
+PlayerLane4 Gameplay/Doors/HeadHouseDoor
+PlayerLane4 Gameplay/Doors/HeadHouseDoor/UsePoint
+PlayerTannery1 Gameplay/Doors/TreasuryDoor/UsePoint
+PlayerTannery1 Gameplay/Doors/TrainingDoor/UsePoint
+PlayerTannery1 Gameplay/Loot/HallBox14
+PlayerTannery1 Gameplay/Loot/HallBox14/UsePoint
+PlayerTannery1 Gameplay/Loot/HallBox20
+PlayerTannery1 Gameplay/Loot/HallBox20/UsePoint
+PlayerTannery2 Gameplay/Devices/PhonePC/UsePoint
+PlayerTannery2 Gameplay/Loot/HallBox19
+PlayerTannery2 Gameplay/Loot/HallBox19/UsePoint
+
+#
+# Thin-partition bake fix (of_gameplay._box_row widens 5 cm partitions to two nav cells, ENV P r260): the paths to the
+# plaza routes no longer cut through the 5 cm hall queue rails (QueueRail1/2, solid 1 m) or an SD booth partition;
+# they walk round, ~4 m longer (2.87-2.99x -> 3.01-3.13x).
+# The same plaza -> bronze doors -> hall -> TW -> BC -> Stair A -> BB -> SD walk as the vault-level group above.
+PlayerPlaza3 Gameplay/Loot/HallBox23
+PlayerPlaza3 Gameplay/Loot/HallBox23/UsePoint
+PlayerPlaza4 Gameplay/Loot/HallBox23
+PlayerPlaza4 Gameplay/Loot/HallBox23/UsePoint
+PlayerPlaza4 Gameplay/Loot/HallBox24
+PlayerPlaza4 Gameplay/Loot/HallBox24/UsePoint
+PlayerPlaza1 Gameplay/Loot/HallBox21
+PlayerPlaza1 Gameplay/Loot/HallBox21/UsePoint
+PlayerPlaza2 Gameplay/Loot/HallBox22
+PlayerPlaza2 Gameplay/Loot/HallBox22/UsePoint
+PlayerPlaza4 Gameplay/Doors/TreasuryDoor/UsePoint

@@ -119,6 +119,11 @@ def item(it: list) -> list:
     if k == "marker":
         _k, name, f, pos, yaw, tag, todo = it
         return ["marker", name, absy(f, pos), float(yaw), tag, todo]
+    if k == "route":
+        _k, name, rid, order, tags, start, stops = it
+        return ["route", name, rid, order, tags, start, [[st[0], absy(st[1], st[2]), [float(st[3][0]), float(st[3][1])],
+                                                          st[4], st[5], None if st[6] is None else float(st[6])]
+                                                         for st in stops]]
     if k == "tac":
         _k, name, kind, f, pos, yaw, tags, breach = it
         return ["tac", name, kind, absy(f, pos), float(yaw), tags, breach]
@@ -165,36 +170,39 @@ def emit() -> tuple:
     fb, fhull = GM.fire_escape()
     flights, sboxes, srails = GM.stairs()
     gboxes, ghulls, gflights = GM.site()
-    shell = GM.sills() + GM.hall() + GM.cages() + GM.lid() + lb + sboxes + fb
+    shell = GM.sills() + GM.hall() + GM.cages() + lb + sboxes + fb
     s += const("SHELL_BOXES", shell, doc="Shell boxes (Geometry/Building/<group>): [group, name, min, max, class].")
     s += const("SITE_BOXES", gboxes, doc="Site boxes (Geometry/Site/<group>): grade, police islands, closures, neighbours.")
     cop = []
-    for nm, axis, fixed, a0, a1, y, t in GM.copings():
+    for nm, axis, fixed, a0, a1, y, _t, prof in GM.copings():
         pts = []
         for a in (a0, a1):
-            for q in ((-t / 2, 0.0), (-0.001, GM.COPING_RISE), (0.001, GM.COPING_RISE), (t / 2, 0.0)):
+            for q in prof:
                 pts.append([GM.r3(a), GM.r3(y + q[1]), GM.r3(fixed + q[0])] if axis == "x"
                            else [GM.r3(fixed + q[0]), GM.r3(y + q[1]), GM.r3(a)])
         cop.append(["Coping", nm, pts, "wall_ext"])
     hulls = [[h[0], h[1], h[2], GM.hull_faces(h[2]), h[3]] for h in lhull + fhull + ghulls + cop]
     s += const("HULLS", hulls, doc="Convex hulls (collision + mesh): [group, name, points, faces (point-index polygons, "
                "counter-clockwise seen from outside), class]: the lantern glazing, the fire-escape flights / rails, the "
-               "Tannery St ramp, the parapet copings (a 0.3 m ridge over the 0.2 m half wall: 56 deg >= 50, §7.5).")
+               "Tannery St ramp, the parapet copings (a 0.3 m ridge over the 0.2 m half wall: 56 deg >= 50, §7.5; the "
+               "terrace east parapet's throw-spot coping falls 0.6 m outward from its 1.1 m inner edge: 56 deg, §7.4).")
     s += const("FLIGHTS", flights + gflights, doc="Stair flights (ramp collision, visual steps): [name, origin (first riser "
                "line), yaw, width, risers, riser, tread]; Stairs A / B (U-stairs, first riser z %.2f) and the plaza steps."
                % GM.Z_START)
     s += const("HANDRAILS", srails, doc="Handrails (5 cm bars): [name, from, to].")
     vis = [["Meridian", [23.95, 0.002, 17.5], [24.05, 0.006, 31.9], "trim"],
-           ["LidPanel", [C.LID[0], 0.002, C.LID[1]], [C.LID[2], 0.006, C.LID[3]], "trim"],
-           ["AreawayGrate", [29.4, 0.002, -1.6], [30.6, 0.006, -0.4], "trim"]]
+           # the grate east of DumpsterE's footprint (x <= 29.95; OF-C2: its casters z-fought the plate), over the vent
+           ["AreawayGrate", [29.97, 0.002, -1.6], [30.63, 0.006, -0.4], "trim"]]
     s += const("VISUALS", vis, doc="Visual-only boxes (no collision): [name, min, max, class].")
     links = [["IslandLink" + p[0], p[3], p[4], False, 1] for p in S.POLICE_ISLANDS] + S.NAV_LINKS
     s += const("NAV_LINKS", links, doc="Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 "
                "walkable, 4 vent): the street islands' one-way links, P5's rappels, the lantern rappel, the areaway vent.")
     brs = [[nm, "window", "prop_breach_window", [float(bx), FFL["G"], round(bz - 0.2, 3)], 0.0, list(S.BREACH_SIZE),
             rid, 0.0] for nm, bx, bz, rid in S.BREACH_WINDOWS]
+    brs += [[nm, "door", "", list(pos), float(yaw), list(size), rid, 0.0, door]
+            for nm, pos, yaw, size, rid, door in S.BREACH_DOORS]
     s += const("ASSAULT_BREACHES", brs, doc="PO6-17 breaches (assault_markers.gd rows): [name, kind, scene id, room-side "
-               "face pos, yaw, size, room, depth].")
+               "face pos, yaw, size, room, depth(, door: the map path of the Door a \"door\" breach blows open)].")
     s += const("OOB", S.OOB, doc="OUT_OF_BOUNDS curtains (D-040): [name, [x0, y0, z0, x1, y1, z1]].")
     slots = []
     for g, sid, w, f, rid, x, z, y, yaw, note in S.SLOTS:
@@ -216,6 +224,15 @@ def emit() -> tuple:
     s += const("SIDE_DOORS", C.SIDE_DOORS, "Dictionary", "side_door slot -> {door: [lock, extra]}.")
     s += const("SIDE_DOOR_EXTRA", C.SIDE_DOOR_EXTRA, "Dictionary")
     s += const("ROUTE_DOORS", C.ROUTE_DOORS, "Array[String]")
+    lid = GM.lid()[0]
+    s += const("ROUTES", {k: [item(i) for i in v] for k, v in C.ROUTE_ROWS.items()}, "Dictionary",
+               "Civilian routes (OF-A4 CivilianRoute rows, see ostrander_federal_content.py): {parent path or slot id: rows}.")
+    s += const("LID", {"origin": [round((C.HOLE[0] + C.HOLE[2]) * 0.5, 3), 0.0, round((C.HOLE[1] + C.HOLE[3]) * 0.5, 3)],
+                       "plug": [lid[2], lid[3], lid[4]], "panel": [[C.LID[0], 0.002, C.LID[1]], [C.LID[2], 0.006, C.LID[3]],
+                                                                   "trim"]},
+               "Dictionary", "The lid (QC-61, OF-A6): a GameplayPrefab tagged `lid` at Gameplay/Devices/Lid holding the plug "
+               "(Plug: the 1.2 x 2.2 m hole's 0.8 m slab body) and the marble panel (Visual/LidPanel); the hole's footprint "
+               "is a permanent navmesh hole (projected obstruction), so nothing paths over it before or after the burn.")
     shell_text = s
     s = hdr.replace("layout data. GENERATED", "layout data, content half. GENERATED")
     s += const("PLAYER_SPAWNS", [[nm, tag, absy(f, [x, S.PLAZA_Y if rid == "X1" else 0.0, z]), float(yaw)]

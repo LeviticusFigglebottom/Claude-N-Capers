@@ -84,6 +84,8 @@ const METHOD_UI: Dictionary = {
 ## over the `size` table; -1 = by size).
 @export var drill_duration_s: float = -1.0
 @export var saw_duration_s: float = -1.0
+## A5-01: seconds of handheld-saw cutting that beat the lock (> 0 wins; -1 = InteractionTweak.hand_saw_safe_s by size).
+@export var hand_saw_duration_s: float = -1.0
 ## S9.5 / A5-03: charges the c4 method needs (C4 items, or trip mines with interaction.shaped_charge).
 @export var charges_required: int = 1
 ## A2-08: keycard_reader that opens this safe (`methods` must contain &"keycard"). Optional: the
@@ -112,6 +114,8 @@ var timer_left: float = -1.0
 var beaten_by: StringName = &""
 ## QC-37: handheld saw progress on the lock (0..1, replicated).
 var saw_progress: float = 0.0
+## A5-01: scales the saw times (own placed saw and hand saw); an ArmoredTruck in lockdown sets it (server).
+var saw_time_mult: float = 1.0
 ## D-138.3: the placed device visual of the safe's own runner while RUNNING / JAMMED (null otherwise; a shared
 ## drill_point shows its own).
 var device_node: Node3D:
@@ -157,7 +161,7 @@ func _prefab_ready() -> void:
 		runner.state_changed.connect(_on_shared_device_state)
 		runner.state_changed.connect(_on_own_device_state)
 	var first: StringName = &""
-	for m: StringName in METHOD_ORDER:
+	for m: StringName in _method_order():
 		if methods.has(m):
 			first = m
 			break
@@ -193,7 +197,7 @@ func saw_point() -> Vector3:
 func saw_cut(seconds: float, _attacker_net_id: int) -> void:
 	if not Net.is_authority() or not methods.has(&"saw") or opened or stage != Stage.LOCKED:
 		return
-	saw_progress = minf(saw_progress + seconds / maxf(_by_size(Tweak.interaction().hand_saw_safe_s, 40.0), 0.01), 1.0)
+	saw_progress = minf(saw_progress + seconds / maxf(hand_saw_duration(), 0.01), 1.0)
 	if saw_progress >= 1.0 - 0.0001:
 		_lock_beaten(&"saw")
 
@@ -238,11 +242,18 @@ func drill_duration() -> float:
 	return _by_size(Tweak.interaction().safe_drill_duration_s, Tweak.interaction().drill_duration_s)
 
 
-## Saw time by `size` (s).
+## Saw time by `size` (s), x saw_time_mult.
 func saw_duration() -> float:
 	if saw_duration_s > 0.0:
-		return saw_duration_s
-	return _by_size(Tweak.interaction().safe_saw_duration_s, Tweak.interaction().saw_duration_s)
+		return saw_duration_s * saw_time_mult
+	return _by_size(Tweak.interaction().safe_saw_duration_s, Tweak.interaction().saw_duration_s) * saw_time_mult
+
+
+## Seconds of handheld-saw cutting that beat the lock (QC-37), x saw_time_mult.
+func hand_saw_duration() -> float:
+	var base: float = hand_saw_duration_s if hand_saw_duration_s > 0.0 \
+		else _by_size(Tweak.interaction().hand_saw_safe_s, 40.0)
+	return base * saw_time_mult
 
 
 ## Method `crew` would use now (&"" = none; see `availability` for why).
@@ -300,7 +311,7 @@ func _pick(crew: Node) -> Array:
 			return [&"fix", InteractableComponent.BLOCK_NONE]
 		return [&"", DrillPoint.BLOCK_RUNNING if runner.state == DeviceRunner.State.RUNNING else InteractableComponent.BLOCK_STATE]
 	var first_block: StringName = &""
-	for m: StringName in METHOD_ORDER:
+	for m: StringName in _method_order():
 		if not methods.has(m):
 			continue
 		var r: StringName = _method_block(m, crew)
@@ -309,6 +320,11 @@ func _pick(crew: Node) -> Array:
 		if first_block == &"":
 			first_block = r
 	return [&"", first_block if first_block != &"" else InteractableComponent.BLOCK_DISABLED]
+
+
+## Preference when several methods are usable by the same crew member (subclasses may reorder).
+func _method_order() -> Array[StringName]:
+	return METHOD_ORDER
 
 
 func _pick_staged() -> Array:
@@ -573,8 +589,8 @@ func _inner_loot() -> Array[GameplayPrefab]:
 			stack.append(c)
 	while not stack.is_empty():
 		var n: Node = stack.pop_back()
-		if n is DrillPoint:
-			continue  # the safe's own drill point (e.g. Glasshouse SafeDrill) is how it opens, not loot
+		if n is DrillPoint or n is BurnPoint:
+			continue  # the safe's own drill / thermite point (Glasshouse SafeDrill, RT bullion) is how it opens, not loot
 		var p: GameplayPrefab = n as GameplayPrefab
 		if p != null and p.interactable != null:
 			out.append(p)

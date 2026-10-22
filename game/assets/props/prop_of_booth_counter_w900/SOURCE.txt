@@ -1,0 +1,8 @@
+asset: prop_of_booth_counter_w900
+script: tools/blender/props/ostrander_landmarks.py
+params: {"cat": {"group": "ostrander", "kind": "counter", "pin_only": true, "place": "none", "support": true, "top": 0.9}, "fn": "booth_counter"}
+seed: 1513136537  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_of_booth_counter_w900
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

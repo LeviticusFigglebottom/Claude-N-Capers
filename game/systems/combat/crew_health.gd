@@ -1,6 +1,7 @@
 ## Crew health / armor / downs component (A1-08): child `Health` of CrewController. Owner: ENV A.
 ## Server-authoritative. Fidelity rows:
-## - L2.1 health: CrewTweak.base_health (230) x defense.health_mult; no regeneration.
+## - L2.1 health: CrewTweak.base_health (230) x defense.health_mult; no regeneration (D-145 §4a: AI bots regain
+##   CrewAiTweak.bot_regen_frac_per_s of max health per second after bot_regen_delay_s without damage).
 ## - L2.2 armor: ArmorDef.armor (CrewTweak.default_armor fallback) x defense.armor_mult. Armor absorbs
 ##   first; a normal hit is capped at the remaining armor (armor gating) unless the DamageInfo has
 ##   `bypass_armor_gate` (snipers): then the overflow reaches health. A gated hit (armor broken)
@@ -34,6 +35,9 @@ signal downed(downs_used: int)
 signal revived(by_slot: int)
 signal custody()
 
+## D-145 §4a: the bots' CrewAiTweak (regen tunables), loaded once.
+static var _crew_ai_tweak: CrewAiTweak = null
+
 var health: float = 230.0
 var max_health: float = 230.0
 var armor: float = 20.0
@@ -50,8 +54,13 @@ var helpless_left: float = 0.0
 var bleedout_health: float = 0.0
 ## Seconds of post-gate invulnerability left.
 var invuln_left: float = 0.0
+## D-145 hit grace (PD2): seconds left in which a bullet hit of at most `grace_damage` does nothing.
+var grace_left: float = 0.0
+var grace_damage: float = 0.0
 ## Seconds until armor starts regenerating.
 var regen_delay_left: float = 0.0
+## D-145 §4a: seconds since this crew member last took damage (bot health regen).
+var since_damage_s: float = 0.0
 ## PO6-17b: seconds of breach / flash blindness left (replicated; the HUD whites out while > 0).
 var flashed_left: float = 0.0
 ## Downs left before the next zero-health hit means custody (HUD).
@@ -121,6 +130,7 @@ func reset_full() -> void:
 	downs_used = 0
 	bleedout_left = 0.0
 	invuln_left = 0.0
+	grace_left = 0.0
 	regen_delay_left = 0.0
 
 
@@ -185,7 +195,9 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 			out["killed"] = true
 			go_to_custody()
 		return out
-	if invuln_left > 0.0:
+	var bullet: bool = int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.BULLET
+	# D-145 (PD2 _chk_dmg_too_soon): a bullet hit within the grace of a hit at least this strong does nothing.
+	if invuln_left > 0.0 or (bullet and grace_left > 0.0 and dmg <= grace_damage + 0.001):
 		out["amount"] = 0.0
 		return out
 	# --- A2-06 dodge (L2.4): a ranged or melee hit may do nothing (melee knockback still applies, the
@@ -193,6 +205,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	var dodge_type: int = int(info.get("type", Enums.DamageType.BULLET))
 	if (dodge_type == Enums.DamageType.BULLET or dodge_type == Enums.DamageType.MELEE) and _roll_dodge():
 		regen_delay_left = _regen_delay(tw)
+		if bullet:
+			_start_grace(dmg)
 		out["amount"] = 0.0
 		out["dodged"] = true
 		_publish(out, attacker_net_id)
@@ -214,6 +228,10 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	armor -= armor_dmg
 	health = maxf(health - health_dmg, 0.0)
 	regen_delay_left = _regen_delay(tw)
+	if armor_dmg + health_dmg > 0.0:
+		since_damage_s = 0.0
+	if bullet and (armor_dmg + health_dmg > 0.0 or invuln_left > 0.0):
+		_start_grace(dmg)
 	out["amount"] = armor_dmg + health_dmg
 	out["armor_damage"] = armor_dmg
 	out["health_damage"] = health_dmg
@@ -239,6 +257,17 @@ func _publish(out: Dictionary, attacker_net_id: int) -> void:
 	EventBus.damage_applied.emit(_crew.net_id, attacker_net_id, out)
 	Net.replicate_event(&"damage_applied", [_crew.net_id, attacker_net_id, out])
 	BloodFx.hit(_crew, _crew.net_id, out, max_health, BloodFx.KIND_CREW)  # D-113
+
+
+## D-145: open the hit grace for a hit of `dmg` (PD2: the stronger of the running and the new hit sets the bar).
+func _start_grace(dmg: float) -> void:
+	var ct: CombatTweak = CombatTweak.data()
+	var arr: PackedFloat32Array = ct.bot_hit_grace_s_by_difficulty if _crew.is_ai else ct.hit_grace_s_by_difficulty
+	var g: float = arr[clampi(_difficulty(), 0, arr.size() - 1)] if not arr.is_empty() else 0.0
+	if g <= 0.0:
+		return
+	grace_damage = maxf(grace_damage, dmg) if grace_left > 0.0 else dmg
+	grace_left = g
 
 
 func _gate_invuln(tw: CrewTweak) -> float:
@@ -320,6 +349,7 @@ func revive(by_slot: int) -> void:
 	bleedout_left = 0.0
 	bleedout_health = 0.0
 	invuln_left = 0.0
+	grace_left = 0.0
 	regen_delay_left = 0.0
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.NORMAL)
@@ -330,9 +360,9 @@ func revive(by_slot: int) -> void:
 
 
 ## A3-04 (L2.8): Taser / Phantom takedown. `state` is CrewState.TASED or CLOAKER_DOWNED; only a
-## NORMAL (or SWAN_SONG) crew member can be taken down. Not a down, no bleedout; helpless until a
-## teammate revives them (ReviveInteractable); D-093: not revived within bleedout_time_s -> custody (no
-## down counted). Emits crew_tased / crew_cloaker_downed [R]. Server.
+## NORMAL (or SWAN_SONG) crew member can be taken down. TASED: helpless (not a down) until a teammate revives them,
+## the tase breaks, or it runs out (D-145: then a down). CLOAKER_DOWNED (D-145, PD2): a counted down with the
+## bleed-out timer (_kicked_down). Emits crew_tased / crew_cloaker_downed [R]. Server.
 func incapacitate(state: Enums.CrewState, by_net_id: int = 0) -> bool:
 	if _crew == null or not Net.is_authority():
 		return false
@@ -342,16 +372,40 @@ func incapacitate(state: Enums.CrewState, by_net_id: int = 0) -> bool:
 	var cur: int = _crew.crew_state
 	if cur != Enums.CrewState.NORMAL and cur != Enums.CrewState.SWAN_SONG:
 		return false
+	if state == Enums.CrewState.CLOAKER_DOWNED:
+		return _kicked_down(by_net_id)
 	_crew.set_crew_state(state)
 	helpless_left = Tweak.crew().bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")  # D-093
 	if _revive != null:
 		_revive.enabled = true
-	var sig: StringName = &"crew_tased" if state == Enums.CrewState.TASED else &"crew_cloaker_downed"
-	EventBus.emit_signal(sig, _crew.slot, by_net_id)
-	Net.replicate_event(sig, [_crew.slot, by_net_id])
-	Log.info(&"combat", "slot %d %s by %d" % [_crew.slot, sig, by_net_id])
+	EventBus.crew_tased.emit(_crew.slot, by_net_id)
+	Net.replicate_event(&"crew_tased", [_crew.slot, by_net_id])
+	Log.info(&"combat", "slot %d crew_tased by %d" % [_crew.slot, by_net_id])
 	return true
 
+
+## D-145 (PD2, LEAD; amends D-093): a Phantom kick is a revivable DOWN: a down counted (crew_downed), the bleed-out
+## timer (custody only when it runs out; the last down goes to custody at once, as go_down), revivable. The crew
+## member stays in CLOAKER_DOWNED (kicked flat, cannot shoot: PD2's incapacitated) for the presentation.
+func _kicked_down(by_net_id: int) -> bool:
+	EventBus.crew_cloaker_downed.emit(_crew.slot, by_net_id)
+	Net.replicate_event(&"crew_cloaker_downed", [_crew.slot, by_net_id])
+	Log.info(&"combat", "slot %d crew_cloaker_downed by %d" % [_crew.slot, by_net_id])
+	if downs_used >= max_downs():
+		go_to_custody()
+		return true
+	downs_used += 1
+	bleedout_left = Tweak.crew().bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")
+	down_s = 0.0
+	helpless_left = 0.0
+	_crew.set_crew_state(Enums.CrewState.CLOAKER_DOWNED)
+	if _revive != null:
+		_revive.enabled = true
+	downed.emit(downs_used)
+	EventBus.crew_downed.emit(_crew.slot, downs_used)
+	Net.replicate_event(&"crew_downed", [_crew.slot, downs_used])
+	BloodFx.bleed(_crew.net_id, true, _crew.global_position, BloodFx.RATE_DOWNED)  # D-113
+	return true
 
 ## L2.8: TASED or CLOAKER_DOWNED (helpless, revivable, not a down).
 func is_incapacitated() -> bool:
@@ -372,6 +426,18 @@ func end_tase() -> bool:
 		return false
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.NORMAL)
+	return true
+
+
+## Server, D-145 (PD2: a tase that runs out downs the player): a TASED crew member goes DOWNED (a down counted,
+## bleed-out, revivable, can shoot from the floor). The Stinger calls it when its long tase ends (L4.4); the helpless
+## timer is the fallback. Returns false when not TASED.
+func tase_expired() -> bool:
+	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.TASED:
+		return false
+	if _crew.weapons != null:
+		_crew.weapons.involuntary_fire = false
+	go_down()
 	return true
 
 
@@ -396,26 +462,26 @@ func _disable_revive() -> void:
 
 ## Down / helpless timers. True when the member is not standing (nothing else ticks).
 func _tick_down_states(delta: float) -> bool:
-	match _crew.crew_state:
-		Enums.CrewState.DOWNED:
-			bleedout_left -= delta
-			down_s += delta
-			if bleedout_left <= 0.0:
-				bleedout_left = 0.0
-				go_to_custody()
-			return true
-		Enums.CrewState.TASED, Enums.CrewState.CLOAKER_DOWNED:
-			# D-093: not revived within the bleedout time -> custody, as if bled out, no down counted.
-			helpless_left -= delta
-			if helpless_left <= 0.0:
-				helpless_left = 0.0
-				go_to_custody()
-			return true
-		Enums.CrewState.CUSTODY:
-			return true
-		Enums.CrewState.CUFFED:
-			return bleedout_left > 0.0  # L2.12: police-cuffed while downed, bleedout paused
-	return false
+	var st: int = _crew.crew_state
+	# DOWNED; D-145: a kick (CLOAKER_DOWNED) bleeds out like a down; L2.12 (LEAD 2026-10-21, Cataclysm 2024: 15
+	# CUFFED <-> DOWNED cycles over 15 min): a police-cuffed downed heister keeps bleeding out too (a teammate uncuffs and
+	# revives in time, else custody). Stealth cuffs (guards, S3.2) carry no bleed-out: not a down.
+	if st == Enums.CrewState.DOWNED or st == Enums.CrewState.CLOAKER_DOWNED \
+			or (st == Enums.CrewState.CUFFED and bleedout_left > 0.0):
+		bleedout_left -= delta
+		down_s += delta
+		if bleedout_left <= 0.0:
+			bleedout_left = 0.0
+			go_to_custody()
+		return true
+	if st == Enums.CrewState.TASED:
+		# D-145 (PD2; amends D-093): a tase that runs out ends in a DOWN (bleed-out decides custody).
+		helpless_left -= delta
+		if helpless_left <= 0.0:
+			helpless_left = 0.0
+			tase_expired()
+		return true
+	return st == Enums.CrewState.CUSTODY
 
 
 ## Server (PO6-17b): a breach blast / flashbang blinds this member for `seconds` (the longer of the two wins) and
@@ -441,6 +507,8 @@ func server_tick(delta: float) -> void:
 	_tick_health_regen(delta)  # L2.1
 	if invuln_left > 0.0:
 		invuln_left = maxf(invuln_left - delta, 0.0)
+	if grace_left > 0.0:
+		grace_left = maxf(grace_left - delta, 0.0)
 	if PerkHooks.tick(self, delta):  # perk hook (QB-62); true = a perk replaces the armor regen
 		return
 	if regen_delay_left > 0.0:
@@ -455,10 +523,21 @@ func server_tick(delta: float) -> void:
 ## L2.1: no base regen; defense.health_regen_per_sec (fraction of max health per second) heals while
 ## up (never while downed / custody / incapacitated: server_tick returns before this for those).
 func _tick_health_regen(delta: float) -> void:
+	since_damage_s += delta
 	var r: float = Modifiers.add(_slot(), &"defense.health_regen_per_sec")
+	if _crew.is_ai:  # D-145 §4a (◇, PO): bots regain health after a quiet spell
+		var ct: CrewAiTweak = _bot_tweak()
+		if ct != null and since_damage_s >= ct.bot_regen_delay_s:
+			r += ct.bot_regen_frac_per_s
 	if r > 0.0 and health > 0.0 and health < max_health:
 		health = minf(health + max_health * r * delta * Modifiers.mult(_slot(), &"defense.healing_received_mult"),
 			max_health)
+
+
+static func _bot_tweak() -> CrewAiTweak:
+	if _crew_ai_tweak == null:
+		_crew_ai_tweak = load(CrewAiBrain.TWEAK_PATH) as CrewAiTweak
+	return _crew_ai_tweak
 
 
 ## Modifier changes mid-heist rescale the current values (keeps the fraction).

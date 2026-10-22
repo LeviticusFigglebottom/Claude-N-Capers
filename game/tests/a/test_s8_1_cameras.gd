@@ -75,6 +75,21 @@ func test_s8_1_detects_masked_crew_in_cone_not_outside() -> void:
 	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "LOS from the Lens is blocked by a wall")
 
 
+## P (OF G2 throws: "CameraC9 disabled" at t=2, "ALARM camera by CameraC9" at t=36): a prefab-disabled camera is no
+## observer (GameplayPrefab.set_enabled, OF-A2), and observes again once switched back on.
+func test_s8_1_disabled_camera_sees_nothing() -> void:
+	var c: CrewController = _crew()
+	c.set_masked()
+	var cam: SecurityCamera = await _camera(Vector3(0, 3, 0), Vector3(0, 1, -6))
+	await _place(Vector3(0, 0.05, -6))
+	assert_true(_st.fill_rate(cam, c) > 0.0, "on: masked crew in the cone fills")
+	cam.set_enabled(false)
+	assert_false(cam.can_observe(), "disabled: not an observer")
+	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "disabled: no fill")
+	cam.set_enabled(true)
+	assert_true(cam.can_observe() and _st.fill_rate(cam, c) > 0.0, "switched back on: observes again")
+
+
 func test_s8_1_cone_from_exports() -> void:
 	var c: CrewController = _crew()
 	c.set_masked()

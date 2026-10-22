@@ -221,6 +221,12 @@ KITS.update(DOCKSIDE_KITS)
 from _kits_shadow import SHADOW_KITS  # noqa: E402  (Shadow Ledger kits, SL-1)
 
 KITS.update(SHADOW_KITS)
+from _kits_ostrander import ostrander_kits  # noqa: E402  (Ostrander Federal purpose variants, OF-C2)
+
+KITS.update(ostrander_kits(KITS))
+from _kits_rolling_thunder import rolling_thunder_kits  # noqa: E402  (Rolling Thunder variants, RT-C2)
+
+KITS.update(rolling_thunder_kits(KITS))
 
 
 def _sn(s: str) -> str:
@@ -267,6 +273,7 @@ def render(kit_id: str, k: dict) -> str:
         f"min_props = {k['min_props']}",
         f"lone_ok_kinds = Array[StringName]([{lone}])",
         f"seed_salt = {k['salt']}",
+        *([f"seed_id = {_sn(k['seed_id'])}"] if k.get("seed_id") else []),
         f"counts = {_dict_sn(k.get('counts', {}), lambda v: f'Vector2i({v[0]}, {v[1]})')}",
         f"assets = {_dict_sn(k.get('assets', {}), lambda v: 'PackedStringArray(' + ', '.join(f'\"{a}\"' for a in v) + ')')}",
         "ceiling = {" + ", ".join(f'"{a}": {float(s):g}' for a, s in sorted(k.get("ceiling", {}).items())) + "}",

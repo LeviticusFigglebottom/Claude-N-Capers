@@ -44,6 +44,10 @@ extends Node
 signal phase_changed(phase: int, wave_index: int)
 signal unit_spawned(npc: NpcBase, spawn_point: Node3D)
 
+## QC-83 (b/c): spawn_enemy `extra` key of a mission-spawned unit (HeistMission.spawn_units: not an assault spawn);
+## NPC meta of a non-police unit that shares the police cap.
+const MISSION_UNIT: String = "mission_unit"
+const META_SHARES_CAP: StringName = &"shares_police_cap"
 const DEFAULT_TWEAK: String = "res://systems/director/director_tweak.tres"
 const RNG_DIRECTOR: StringName = &"director"
 const RNG_SPAWNS: StringName = &"spawns"
@@ -167,7 +171,7 @@ func _prewarm() -> int:
 		var scene: Variant = def.params.get("scene", "")
 		var sp: String = String(scene) if scene is String and String(scene) != "" \
 			else String(HeistRuntime.NPC_SCENES.get(_spawn_role(def), ""))
-		for p: String in [sp] + Array(NpcVisuals.def_scene_paths(def)):
+		for p: String in [sp] + Array(NpcVisuals.def_scene_paths(def, _difficulty())):
 			if p != "" and not paths.has(p):
 				paths.append(p)
 	var queued: int = 0
@@ -222,10 +226,24 @@ func enemy_cap() -> int:
 
 
 ## D-064 (QC-36): police may fill enemy_cap() minus the alive cartel gunmen (they share the cap).
-## PO-5.4: and never more than force_cap().
+## QC-83 (c) (Rolling Thunder convoy units): likewise any alive non-police NPC with meta META_SHARES_CAP (police-role
+## mission units are alive police already). PO-5.4: and never more than force_cap().
 func police_budget() -> int:
-	var cartel: int = _runtime.npcs(CartelBrain.ROLE).size() if _runtime != null else 0
-	return mini(force_cap(), enemy_cap() - cartel)
+	return mini(force_cap(), enemy_cap() - _shared_cap_count())
+
+
+## Alive NPCs outside the police roles that share the police cap (cartel gunmen, QC-83 convoy units).
+func _shared_cap_count() -> int:
+	if _runtime == null:
+		return 0
+	var n: int = 0
+	for node: Node in _runtime.npcs():
+		var npc: NpcBase = node as NpcBase
+		if npc == null or POLICE_ROLES.has(npc.role):
+			continue
+		if npc.role == CartelBrain.ROLE or npc.has_meta(META_SHARES_CAP):
+			n += 1
+	return n
 
 
 ## PO-5.4: PD2 force crew count (GroupAIStateBase:_get_balancing_multiplier): crew not in custody,
@@ -260,7 +278,8 @@ func _force_pool(wave: int = 0) -> int:
 	var ratio: float = tweak.force_pool_per_force[clampi(st, 0, tweak.force_pool_per_force.size() - 1)]
 	if ratio <= 0.0:
 		return 0
-	return ceili(float(_force_cap_at(tweak.stage_force_mult.size() - 1)) * ratio)
+	var dmult: float = DirectorTweak.by_difficulty(tweak.force_pool_difficulty_mult, _difficulty())  # PO-17
+	return ceili(float(_force_cap_at(tweak.stage_force_mult.size() - 1)) * ratio * dmult)
 
 
 func _force_cap_at(stage_i: int) -> int:
@@ -359,8 +378,8 @@ func spawn_enemy(def: EnemyDef, xf: Transform3D, point: Node3D = null, extra: Di
 	var npc: NpcBase = _runtime.spawn_npc(_spawn_role(def), xf, info)
 	if npc != null:
 		spawned_total += 1
-		if not extra.has("captain") and not extra.has("aegis"):
-			_count_assault_spawn()  # Brandt's squad is outside the force pool
+		if not extra.has("captain") and not extra.has("aegis") and not extra.has(MISSION_UNIT):
+			_count_assault_spawn()  # Brandt's squad and mission units (QC-83) are outside the force pool
 		unit_spawned.emit(npc, point)
 	return npc
 
@@ -577,15 +596,27 @@ func _tick_assault_spawns(delta: float) -> void:
 	var rate: float = maxf(intensity * stage_mult * _drama_spawn_scale(), 0.05)
 	var under_cap: bool = alive_count() < police_budget()
 	var interval: float = tweak.assault_group_interval_s
-	if under_cap and tweak.assault_refill_interval_s > 0.0:
-		interval = minf(interval, tweak.assault_refill_interval_s)  # PO6-16: top the force back up
+	var refill: float = _refill_interval()
+	if under_cap and refill > 0.0:
+		interval = minf(interval, refill)  # PO6-16: top the force back up
 	_group_left = interval / rate
 	if under_cap:
 		_enqueue_assault()
-	elif tweak.assault_refill_interval_s > 0.0:
+	elif refill > 0.0:
 		# PO6-16: at the cap there is nothing to spawn, so re-check at the refill cadence instead of sleeping a whole
 		# (drama-stretched) group interval: kills are topped back up promptly (PD2 force balancing).
-		_group_left = tweak.assault_refill_interval_s
+		_group_left = refill
+
+
+## PO6-16 refill cadence x the PO-17 low-difficulty multiplier (0 = refill off).
+func _refill_interval() -> float:
+	if tweak.assault_refill_interval_s <= 0.0:
+		return 0.0
+	return tweak.assault_refill_interval_s * DirectorTweak.by_difficulty(tweak.refill_interval_difficulty_mult, _difficulty())
+
+
+func _difficulty() -> int:
+	return _runtime.difficulty if _runtime != null else Enums.Difficulty.ROUTINE
 
 
 ## A BUILD/SUSTAIN pick: the plain weighted squad (as before), plus, with DirectorTweak.assault_special_share[stage],
@@ -609,6 +640,7 @@ func _assault_specials() -> Array[StringName]:
 	var out: Array[StringName] = []
 	var shares: PackedFloat32Array = tweak.assault_special_share
 	var share: float = shares[clampi(stage(), 0, shares.size() - 1)] if not shares.is_empty() else 0.0
+	share *= DirectorTweak.by_difficulty(tweak.special_share_difficulty_mult, _difficulty())  # PO-17
 	if share <= 0.0 or GameRng.stream(RNG_DIRECTOR).randf() >= share:
 		return out
 	var cands: Array[SpawnGroupDef] = []
@@ -953,7 +985,7 @@ func _path_cost(from: Vector3, to: Vector3) -> float:
 	var nav_map: RID = _runtime.map.get_world_3d().navigation_map
 	if not nav_map.is_valid() or NavigationServer3D.map_get_iteration_id(nav_map) == 0:
 		return straight
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, from, to, true, 1 | Door.NAV_LAYER_BREACH)
+	var path: PackedVector3Array = NavPath.query(nav_map, from, to, true, 1 | Door.NAV_LAYER_BREACH)
 	if path.size() < 2 or path[path.size() - 1].distance_to(to) > 2.0:
 		return straight
 	var total: float = 0.0

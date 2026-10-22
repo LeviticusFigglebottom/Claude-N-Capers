@@ -64,15 +64,20 @@ func _panel(m: Dictionary) -> PanelContainer:
 	row.add_child(edge)
 	var v: VBoxContainer = UiBuild.vbox(3)
 	row.add_child(v)
-	var name_label: Label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
+	var name_label: Label = UiBuild.scrim_label(UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD)))
 	name_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
+	name_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN  # the scrim hugs the name (r249 contrast)
 	v.add_child(name_label)
 	name_labels[slot] = name_label
 	var armor_bar: ProgressBar = UiBuild.bar(tweak.armor_color, Vector2(160, 3))
 	v.add_child(armor_bar)
 	var health_bar: ProgressBar = UiBuild.bar(tweak.health_color, Vector2(160, 5))
 	v.add_child(health_bar)
-	var info_label: Label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
+	# r266 B top-3 #1: the status line (Downed / In custody / Last down) sits on the label scrim, as the name does: red on
+	# a bright scene measured 1.99:1 fill. Hidden when empty, so no empty scrim shows.
+	var info_label: Label = UiBuild.scrim_label(UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD)),
+			UiBuild.LABEL_SCRIM_STRONG_ALPHA)
+	info_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	# PQ-B-14: INFO_FONT_SIZE keeps >= 14 px at 720p; wraps instead of spilling out of the row.
 	info_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
 	info_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
