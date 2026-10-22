@@ -95,3 +95,30 @@ are long.
   armoured-transport guards are the difficulty's guard stats). No new def: a Cataclysm stop is meant to be lethal if the
   crew is in the open at the dismount. Proposal (1) (push-through, A 1c626447) and the re-measure stand; if the clean
   ambush still wipes at Cataclysm, look at the 8 s window / dismount timing (A), not the guards' values.
+
+## Revision of (1) (LEAD r279: the alarm + 75 s push measured WORSE, 0/3 on Hazardous)
+**Why it failed:** after an early alarm, the director's clock runs CONTROL 0-20 s, ANTICIPATION 20-50 s, BUILD
+50-85 s, then SUSTAIN from +85 s (`first_control_s` 20, `anticipation_s` 30, `build_s` 35). The convoy needs about
+10 s from its arrival to the stop, so "+75" stopped it at about +85. That is wave 1's SUSTAIN start: 11 convoy units
+dismounted onto the assault peak (17 alive at t = 93).
+
+**The quiet window is before BUILD.** A's first Hazardous run had 2-5 police alive from +20 to +50 s (CONTROL keeps at
+most `control_alive_max` 4 plus first responders). The convoy must stop and dismount inside it.
+
+| Option | Numbers | Stop at | Before SUSTAIN | Cost |
+|---|---|---|---|---|
+| **A (recommended): push early** | arrival = min(`convoy_eta_s`, alarm + **25 s**) | about +35 s (mid ANTICIPATION) | **50 s**: the escort + crews with about 3-5 police, then BUILD's ramp | A: one mission constant; no director change |
+| B: push into BUILD | alarm + 45 s | about +55 s (BUILD start) | 30 s, while BUILD squads arrive | the two forces still overlap; not recommended |
+| C: hold wave 1 | keep +75; SUSTAIN of wave 1 waits until the convoy has stopped **+ 30 s** | about +85 s | 30 s, and the crew has waited 85 s with nothing to do | A: director hook, a scripted hold that is not PD2-like |
+
+**Recommend A, push to alarm + 25 s.**
+- It keeps the PD2 cycle untouched, and the crew fights the convoy first and the assault second, as in a clean ambush.
+- Lockdown saws (x1.5) still start about 50 s before SUSTAIN, so the penalty D-075 wants stays: the crew opens trucks
+  under the first assault, not before it.
+- If the alarm comes later than `convoy_eta_s - 25`, the min() keeps the normal ETA; nothing changes.
+
+**Re-measure (A):** the same 5 seeds per cell. Report the convoy stop time and the alive count at the stop and at
++30 s.
+- Target as before: Hazardous ≥ 3/5 reach a truck opening.
+- If A still fails, add C's hold (+30 s after the stop) on top. Do not push earlier: at under 25 s the convoy would
+  arrive while the crew is still reacting to the alarm (CONTROL).

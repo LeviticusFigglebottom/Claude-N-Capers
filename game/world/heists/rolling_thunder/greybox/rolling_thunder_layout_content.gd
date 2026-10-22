@@ -161,18 +161,8 @@ const DOORS: Array = [
 	],
 	["SiteVehicleGateS", "SG", [-14.0, 0.0, -42.3], -90.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8, {}],
 	[
-		"SiteTanneryGateW", "SG", [-34.7, 0.0, -11.0], 180.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,
-		{
-			"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
-			"opens_with": "mixer_move",
-		},
-	],
-	[
-		"SiteTanneryGateE", "SG", [-32.3, 0.0, -11.0], 180.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,
-		{
-			"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
-			"opens_with": "mixer_move",
-		},
+		"SiteTanneryGate", "SG", [-33.5, 0.0, -11.0], 0.0, "double", "BARRED", "prop_door_site_gate_w400_h240", 4.0,
+		{"opens_with": "mixer_move", "kind": "industrial_door"},
 	],
 	[
 		"RailLaneGate", "X5", [60.0, 0.0, -72.0], 0.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,
@@ -255,10 +245,6 @@ const FURNITURE: Array = [
 	["box", "BlockPallet0", [-29.0, 3.5, -34.0], [1.2, 1.0, 1.2], 0.0, "pallet", false, "prop", {"cover": "hard"}],
 	["box", "BlockPallet1", [-45.0, 3.5, -46.0], [1.2, 1.0, 1.2], 0.0, "pallet", false, "prop", {"cover": "hard"}],
 	["box", "PlanTable", [-56.5, 0.0, -22.0], [1.2, 0.9, 2.0], 0.0, "table", true, "prop", {}],
-	[
-		"box", "MixerTruck", [-34.0, 0.0, -16.5], [8.0, 3.5, 3.0], 0.0, "vehicle", false, "prop",
-		{"todo": "TODO(A5-02): Reyes's mixer, a convoy_vehicle mover from G2", "cover": "hard"},
-	],
 ]
 ## Always-present content: {parent path: rows}.
 const ALWAYS: Dictionary = {
@@ -705,6 +691,7 @@ const CONVOY: Dictionary = {
 				"Rear", "car", [-6.0, 0.0, -87.4], 0.0,
 				[[[-6.0, 0.0, -87.4], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, 6.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
 			],
+			["Mixer", "mixer", [-33.5, 0.0, -16.6], 0.0, []],
 		],
 		"layouts": [
 			[
@@ -731,6 +718,15 @@ const CONVOY: Dictionary = {
 						[["CleanRearCoverR", [-4.4, 0.0, -61.0], 90.0], ["CleanRearCoverL", [-7.6, 0.0, -61.0], -90.0]],
 					],
 					["RearStop2", "car", [-6.0, 0.0, -49.0], 0.0, 0.0, [5.0, 1.5, 2.0], []],
+					[
+						"MixerStop", "mixer", [-5.5, 0.0, -12.0], 135.0, 0.0, [8.0, 3.5, 2.5],
+						[["CleanMixerCoverR", [-6.808, 0.0, -13.308], 225.0], ["CleanMixerCoverL", [-4.192, 0.0, -10.692], 45.0]],
+					],
+				],
+				[
+					[[-33.5, 0.0, -16.6], [0.0, 0.0, 0.0], [0.0, 0.0, 2.0]], [[-33.5, 0.0, -9.5], [0.0, 0.0, -2.0], [0.0, 0.0, 3.0]],
+					[[-27.5, 0.0, -4.5], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]], [[-14.0, 0.0, -4.5], [-3.0, 0.0, 0.0], [4.0, 0.0, 0.0]],
+					[[-5.5, 0.0, -12.0], [-2.8, 0.0, 2.8], [0.0, 0.0, 0.0]],
 				],
 			],
 			[
@@ -757,6 +753,14 @@ const CONVOY: Dictionary = {
 						[["CrashRearCoverR", [-4.424, 0.0, -44.778], 100.0], ["CrashRearCoverL", [-7.576, 0.0, -44.222], -80.0]],
 					],
 					["RearStop2", "car", [-6.0, 0.0, -33.5], 10.0, 0.0, [5.0, 1.5, 2.0], []],
+					[
+						"MixerStop", "mixer", [-7.9, 0.0, 2.8], 90.0, 0.0, [8.0, 3.5, 2.5],
+						[["CrashMixerCoverR", [-7.9, 0.0, 0.95], 180.0], ["CrashMixerCoverL", [-7.9, 0.0, 4.65], 0.0]],
+					],
+				],
+				[
+					[[-33.5, 0.0, -16.6], [0.0, 0.0, 0.0], [0.0, 0.0, 2.0]], [[-33.5, 0.0, -9.5], [0.0, 0.0, -2.0], [0.0, 0.0, 3.0]],
+					[[-28.0, 0.0, 2.8], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]], [[-7.9, 0.0, 2.8], [-3.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
 			],
 		],
@@ -800,6 +804,7 @@ const CONVOY: Dictionary = {
 					[[34.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
 			],
+			["Mixer", "mixer", [-33.5, 0.0, -16.6], 0.0, []],
 		],
 		"layouts": [
 			[
@@ -826,6 +831,15 @@ const CONVOY: Dictionary = {
 						[["CleanRearCoverR", [61.0, -4.219, -2.4], 0.0], ["CleanRearCoverL", [61.0, -4.219, -5.6], -180.0]],
 					],
 					["RearStop2", "car", [49.0, -2.344, -4.0], -90.0, 0.156, [5.0, 1.5, 2.0], []],
+					[
+						"MixerStop", "mixer", [12.5, 0.0, -3.6], 180.0, 0.0, [8.0, 3.5, 2.5],
+						[["CleanMixerCoverR", [10.65, 0.0, -3.6], 270.0], ["CleanMixerCoverL", [14.35, 0.0, -3.6], 90.0]],
+					],
+				],
+				[
+					[[-33.5, 0.0, -16.6], [0.0, 0.0, 0.0], [0.0, 0.0, 2.0]], [[-33.5, 0.0, -9.5], [0.0, 0.0, -2.0], [0.0, 0.0, 3.0]],
+					[[-28.0, 0.0, 3.0], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]], [[4.5, 0.0, 3.0], [-3.0, 0.0, 0.0], [4.4, 0.0, 0.0]],
+					[[12.5, 0.0, -3.6], [0.0, 0.0, 4.0], [0.0, 0.0, 0.0]],
 				],
 			],
 			[
@@ -852,6 +866,14 @@ const CONVOY: Dictionary = {
 						[["CrashRearCoverR", [45.222, -1.753, -3.524], -10.0], ["CrashRearCoverL", [45.778, -1.84, -6.676], -190.0]],
 					],
 					["RearStop2", "car", [34.5, -0.078, -5.1], -100.0, 0.156, [5.0, 1.5, 2.0], []],
+					[
+						"MixerStop", "mixer", [-2.2, 0.0, 1.2], 90.0, 0.0, [8.0, 3.5, 2.5],
+						[["CrashMixerCoverR", [-2.2, 0.0, -0.65], 180.0], ["CrashMixerCoverL", [-2.2, 0.0, 3.05], 0.0]],
+					],
+				],
+				[
+					[[-33.5, 0.0, -16.6], [0.0, 0.0, 0.0], [0.0, 0.0, 2.0]], [[-33.5, 0.0, -9.5], [0.0, 0.0, -2.0], [0.0, 0.0, 3.0]],
+					[[-28.0, 0.0, 2.0], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]], [[-2.2, 0.0, 1.2], [-4.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
 			],
 		],
@@ -919,7 +941,7 @@ const GRAPHS: Dictionary = {
 			"GateN": [[-16.5, 0.0, -43.0], [3.0, 8.0], "", ["guard", "site"], null],
 			"GateS": [[-16.5, 0.0, -20.0], [3.0, 8.0], "", ["guard", "site"], null],
 			"ControllerCorner": [[-17.5, 0.0, -14.5], [3.0, 8.0], "look", ["guard", "site"], null],
-			"TanneryGate": [[-33.0, 0.0, -13.5], [3.0, 8.0], "look", ["guard", "site"], null],
+			"TanneryGate": [[-29.5, 0.0, -13.5], [3.0, 8.0], "look", ["guard", "site"], null],
 			"Skip": [[-42.0, 0.0, -13.5], [3.0, 8.0], "", ["guard", "site"], null],
 			"CabinsE": [[-44.0, 0.0, -15.5], [3.0, 8.0], "", ["guard", "site"], null],
 			"CabinsW": [[-56.0, 0.0, -15.5], [3.0, 8.0], "", ["guard", "site"], null],
@@ -1074,7 +1096,7 @@ const TACTICAL: Array = [
 	["tac", "CoverCabinsE", "COVER", [-45.4, 0.0, -22.0], 90.0, ["cabins", "site"], false],
 	["tac", "CoverCabinsW", "COVER", [-58.6, 0.0, -22.0], -90.0, ["cabins", "site"], false],
 	["tac", "CoverCraneBase", "COVER", [-23.4, 0.0, -24.0], 90.0, ["crane", "site"], false],
-	["tac", "CoverMixer", "COVER", [-34.0, 0.0, -18.6], 180.0, ["mixer", "site"], false],
+	["tac", "CoverMixer", "COVER", [-35.35, 0.0, -17.0], -90.0, ["mixer", "site"], false],
 ]
 ## Levelcheck lines (bag_line): [name, metas, points at the crew's feet].
 const LINES: Array = [
