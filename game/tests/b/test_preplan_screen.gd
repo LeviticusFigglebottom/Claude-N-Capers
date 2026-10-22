@@ -189,3 +189,25 @@ func test_every_heist_fits_the_screen() -> void:
 			assert_true(vis.encloses(fb.get_global_rect()), "%s: floor tab %s on screen" % [id, fb.text])
 		s.queue_free()
 		await wait_frames(1)
+
+
+func test_opens_on_the_entry_floor() -> void:
+	# RT-B1 capture: the board opened on floor 0 (OF's basement, RT's underpass); it opens where the crew starts, with
+	# that floor's tab pressed, as the briefing's blueprint does.
+	var multi: int = 0
+	for id: StringName in HeistCatalog.ids():
+		var p: PlayerProfile = PlayerProfile.new()
+		var s: PreplanningScreen = (load(SCENE) as PackedScene).instantiate() as PreplanningScreen
+		s.save_on_confirm = false
+		s.setup(id, Enums.Difficulty.ROUTINE, p)
+		add_child(s)
+		await wait_frames(2)
+		var entry: int = s.board.blueprint.entry_floor()
+		assert_eq(s.blueprint_view.floor_index, entry, "%s opens on its entry floor" % id)
+		for i: int in range(s.floor_buttons.size()):
+			assert_eq(s.floor_buttons[i].button_pressed, i == entry, "%s floor tab %d pressed only at the entry" % [id, i])
+		if s.floor_buttons.size() > 1 and entry > 0:
+			multi += 1
+		s.queue_free()
+		await wait_frames(1)
+	assert_true(multi > 0, "some heist starts above floor 0 (OF: the ground floor over the basement)")
