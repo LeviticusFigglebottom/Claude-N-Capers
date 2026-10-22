@@ -93,6 +93,25 @@ static func blocked_keys(skill_id: StringName, part: String) -> Array:
 	return v as Array if v is Array else []
 
 
+## LEAD r280: how much of a skill works in play today: &"active", &"partial" (some granted keys still wait for a
+## runtime hook) or &"inactive" (every granted key waits). A grant key counts as waiting when it is a blocked key or a
+## qualified form of one (`weapon.ads_speed_mult.shotgun` under `weapon.ads_speed_mult`).
+static func activity(s: SkillDef) -> StringName:
+	var total: int = 0
+	var waiting: int = 0
+	for part: String in ["basic", "aced"]:
+		var blocked: Array = blocked_keys(s.id, part)
+		for k: Variant in (s.grants_basic if part == "basic" else s.grants_aced):
+			total += 1
+			for b: Variant in blocked:
+				if String(k) == String(b) or String(k).begins_with(String(b) + "."):
+					waiting += 1
+					break
+	if waiting == 0:
+		return &"active"
+	return &"inactive" if waiting == total else &"partial"
+
+
 ## Item id a part unlocks through item data (SkillTreeDef.unlocks), or &"".
 static func unlock_of(skill_id: StringName, part: String) -> StringName:
 	return StringName(SkillPoints.tree_def().unlocks.get("%s:%s" % [skill_id, part], &""))
