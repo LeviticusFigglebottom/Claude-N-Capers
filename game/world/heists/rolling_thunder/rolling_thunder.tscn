@@ -20734,7 +20734,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 20.5
 script = ExtResource("243_rt")
 links = Array[NodePath]([NodePath("../CowerFrontE"), NodePath("../CowerCounterS")])
 face_marker_forward = true
-pause_anim = &"cower_stand"
+pause_anim = &"cower"
 tags = Array[StringName]([&"cower"])
 
 [node name="CowerFrontE" type="Marker3D" parent="Patrols/DinerCower" unique_id=103256]
@@ -20742,7 +20742,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 22.5
 script = ExtResource("243_rt")
 links = Array[NodePath]([NodePath("../CowerFrontW"), NodePath("../CowerCounterN")])
 face_marker_forward = true
-pause_anim = &"cower_stand"
+pause_anim = &"cower"
 tags = Array[StringName]([&"cower"])
 
 [node name="CowerCounterN" type="Marker3D" parent="Patrols/DinerCower" unique_id=103257]
