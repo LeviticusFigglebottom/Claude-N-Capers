@@ -534,11 +534,11 @@ const SLOT_ITEMS: Dictionary = {
 	"ctrl_open": [["marker", "ControllerAjar", [-16.0, 0.0, -13.85], 0.0, "", "the cabinet door ajar (no padlock)"]],
 	"stores_c4": [
 		[
-			"prefab", "item_pickup", "C4Box1", [-23.5, 0.0, -51.0], 0.0,
+			"prefab", "item_pickup", "C4Box1", [-23.5, 0.0, -51.0], 180.0,
 			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
 		],
 		[
-			"prefab", "item_pickup", "C4Box2", [-22.5, 0.0, -51.0], 0.0,
+			"prefab", "item_pickup", "C4Box2", [-22.5, 0.0, -51.0], 180.0,
 			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
 		],
 	],
@@ -551,11 +551,11 @@ const SLOT_ITEMS: Dictionary = {
 	],
 	"stores_both": [
 		[
-			"prefab", "item_pickup", "C4Box1", [-23.5, 0.0, -51.0], 0.0,
+			"prefab", "item_pickup", "C4Box1", [-23.5, 0.0, -51.0], 180.0,
 			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
 		],
 		[
-			"prefab", "item_pickup", "C4Box2", [-22.5, 0.0, -51.0], 0.0,
+			"prefab", "item_pickup", "C4Box2", [-22.5, 0.0, -51.0], 180.0,
 			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
 		],
 		[

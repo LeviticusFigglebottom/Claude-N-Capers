@@ -130,11 +130,11 @@ func test_every_part_has_grants_or_an_unlock() -> void:
 		assert_true(by_id.has(StringName(bits[0])) and PARTS.has(bits[1]), "tag names a skill part: %s" % tag)
 
 
-## D-031: every requested key was registered and is granted, so nothing is blocked any more. Every key in
-## the "Requested keys" tables of skills.md and perk_decks.md must be granted by a skill / a perk card
-## (exactly, or as a qualified form of it), and must be grantable (known key, valid qualifier).
+## D-031: every requested key was registered and is granted. Every key in the "Requested keys" tables of skills.md
+## and perk_decks.md must be granted by a skill / a perk card (exactly, or as a qualified form of it), and must be
+## grantable (known key, valid qualifier). LEAD r280: blocked_on_keys now marks the parts whose keys have no runtime
+## hook yet; test_blocked_parts_track_the_unhooked_keys keeps it exact.
 func test_no_blocked_parts_and_every_requested_key_is_granted() -> void:
-	assert_eq(_tree.blocked_on_keys, {}, "blocked_on_keys is empty (D-031)")
 	var skill_keys: Dictionary = {}
 	for s: SkillDef in _skills:
 		for grants: Dictionary in [s.grants_basic, s.grants_aced]:
@@ -214,10 +214,11 @@ func test_design_doc_covers_tier_3_4_and_requested_keys() -> void:
 	for s: SkillDef in _skills:
 		if s.tier >= 3:
 			assert_true(decisions.contains("`%s`" % s.id), "decision note for %s" % s.id)
-	var requests: String = doc.get_slice("## Requested keys", 1)
+	# LEAD r280: a blocked key now waits for ENV A's runtime hook; each has a behaviour spec in the triage doc.
+	var triage: String = FileAccess.get_file_as_string("res://content/docs/unhooked_skill_keys.md")
 	for tag: Variant in _tree.blocked_on_keys:
 		for key: Variant in _tree.blocked_on_keys[tag]:
-			assert_true(requests.contains("`%s`" % key), "requested key %s documented" % key)
+			assert_true(triage.contains("`%s`" % key), "unhooked key %s has a spec in unhooked_skill_keys.md" % key)
 
 
 func _by_id() -> Dictionary:
@@ -307,3 +308,33 @@ func _collect_tres(dir_path: String, out: Array[String]) -> void:
 			out.append(dir_path.path_join(f))
 	for sub: String in d.get_directories():
 		_collect_tres(dir_path.path_join(sub), out)
+
+
+## LEAD r280 (content/docs/unhooked_skill_keys.md): a skill part is marked "not active yet" exactly when it grants a
+## key the P4 coverage ratchet lists as UNHOOKED (no runtime code reads it). When ENV A hooks a key and moves it out of
+## UNHOOKED, this fails until the key leaves blocked_on_keys in the same round, so the marker never outlives the gap.
+func test_blocked_parts_track_the_unhooked_keys() -> void:
+	var ratchet: GDScript = load("res://tests/integration/p4_coverage_ratchet.gd") as GDScript
+	var unhooked: Dictionary = ratchet.get_script_constant_map().get("UNHOOKED", {}) as Dictionary
+	assert_true(unhooked.size() > 0, "the ratchet lists unhooked keys")
+	var want: Dictionary = {}
+	for s: SkillDef in _skills:
+		for part: String in PARTS:
+			var keys: Array[StringName] = []
+			for k: Variant in (s.grants_basic if part == "basic" else s.grants_aced):
+				for u: Variant in unhooked:
+					if (String(k) == String(u) or String(k).begins_with(String(u) + ".")) and not keys.has(StringName(u)):
+						keys.append(StringName(u))
+			if not keys.is_empty():
+				want["%s:%s" % [s.id, part]] = keys
+	assert_eq(want.size(), _tree.blocked_on_keys.size(), "blocked parts")
+	for tag: Variant in want:
+		var have: PackedStringArray = PackedStringArray()
+		for x: Variant in _tree.blocked_on_keys.get(tag, []) as Array:
+			have.append(String(x))
+		have.sort()
+		var exp: PackedStringArray = PackedStringArray()
+		for x: StringName in want[tag]:
+			exp.append(String(x))
+		exp.sort()
+		assert_eq(have, exp, "%s blocked on its unhooked keys" % tag)

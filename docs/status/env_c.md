@@ -6,6 +6,16 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-22, **Magazine STUCK (P r280) fixed; trunk 78a57794 merged; B's 3 def tests are green.**
+  - **Cause:** the walls were in the bake (a navmesh-crossing test passed on the old map). The C4 boxes' UsePoints
+    stood 0.2 m off MagWallN, inside the bake's 0.3 m erosion, so they were off the navmesh. With MagazineDoor shut,
+    the room is its own nav island, and a bot's path ended at the nearest point beyond that wall.
+  - **Fix:** the boxes now face the door (yaw 180), so their UsePoints stand 0.7 m into the room, on its navmesh. With
+    the door shut, the nearest outside point is at the door.
+  - **New test test_rt_magazine_c4:** each UsePoint is inside the magazine and at least 0.3 m off every wall. It fails
+    on the old map and passes now.
+- 2026-10-22, **Skyway deck finish is concrete (3cdfc609).** The metallic green underside rendered black facing down.
+  The opengl3 haze review shots are in docs/levels/rolling_thunder/haze_review_r280/.
 - 2026-10-22, **The r277 haze regression is fixed, plus P's ramp STUCK and the GoodsLift count box, and the RT def is at
   its convention path.**
   - **Haze (rt_gi.gd):**
