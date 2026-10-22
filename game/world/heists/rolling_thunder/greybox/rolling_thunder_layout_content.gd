@@ -891,8 +891,8 @@ const GRAPHS: Dictionary = {
 	"DinerCower": [
 		"diner_cower", 1,
 		{
-			"CowerFrontW": [[20.5, 0.0, 14.41], [0.0, 0.0], "cower_stand", ["cower"], 180.0],
-			"CowerFrontE": [[22.5, 0.0, 14.41], [0.0, 0.0], "cower_stand", ["cower"], 180.0],
+			"CowerFrontW": [[20.5, 0.0, 14.41], [0.0, 0.0], "cower", ["cower"], 180.0],
+			"CowerFrontE": [[22.5, 0.0, 14.41], [0.0, 0.0], "cower", ["cower"], 180.0],
 			"CowerCounterN": [[23.39, 0.0, 17.0], [0.0, 0.0], "cower_stand", ["cower"], 90.0],
 			"CowerCounterS": [[23.39, 0.0, 22.6], [0.0, 0.0], "cower_stand", ["cower"], 90.0],
 		},

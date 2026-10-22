@@ -6,6 +6,24 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-22, **D-153 handover: trunk d1ecb0b6 merged; D's convoy fit and diner cower fixes in; the drive-in is live.**
+  - **Convoy seats (D's fit, env_d.md):** in each mover's space every `Seat*` now faces +Z (the front).
+    - Escort car seats sit on the footwell floor (y 0.18), with the rear row at z -0.95 (rows 1.2 m apart).
+    - Armoured cab seats sit on the cab floor (y 1.20).
+    - The glbs were rebuilt and are byte-identical over two builds.
+    - New test_rt_convoy_seats pins this: it fails on the old glbs and passes now.
+  - **Diner:** CowerFrontW / CowerFrontE (under the front window) now use activity `cower` (crouched; no wall needed).
+  - **Drive-in (D-149.8):** A's `_drive_path` already finds `Convoy/Paths/<Veh>Path` (A 88873eb2), so the movers drive
+    to their stops on the current map. I fixed only the stale comment in rt_gameplay.gd.
+  - **Gate:** regen twice byte-identical (it equals the committed scene); RT validate greybox PASS and final PASS;
+    navmesh 3,798.
+    - c tests: test_rt_* 6/6 and test_props.
+    - a tests: test_rt_a* 12/12 (a6 mission 4/4, a5 ambush 5/5).
+    - gdlint, ownership and banned clean.
+  - **For A (not changed by C):** the cab's driver `Seat0` is at mover -X, which is the right-hand side when facing
+    +Z; the car's driver is at +X. The WheelCentre follows Seat0. Tell me if the cab should be left-hand drive.
+  - **GPU re-render:** rc_convoy_cash / rc_convoy_bullion only if the seats show (the trucks' crew is hidden). Nothing
+    else needs it.
 - 2026-10-21, **GPU-22 item 1 (the diner's street neon) is in. Please queue the re-render** for rc_diner_neon, plus
   the earlier rc_diner_dining / rc_diner_function / rc_ext_junction and the convoy shots (the convoy swap is in).
   - **Sign:** a new two-sided `prop_pole_sign_halfway` ("HALFWAY", "DINER  OPEN 24 HRS"), the cabinet 4.6-6.4 m on a
