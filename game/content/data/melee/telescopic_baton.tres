@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MeleeDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/melee_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"melee.telescopic_baton"
+display_name = "Telescopic Baton"
+damage = 40.0
+charged_damage = 100.0
+charge_time_s = 1.0
+range_m = 1.8
+knockdown = 0.5
+concealment = 30
+silent = true
+price = 25000
+anim_set = &"melee_blunt"

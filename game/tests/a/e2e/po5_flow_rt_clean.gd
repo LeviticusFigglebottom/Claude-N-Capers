@@ -3,7 +3,8 @@
 ## Stealth prelude (X4StealthFlow and its stated shortcuts: teleports onto the navmesh next to each UsePoint,
 ## crew.stealth_hidden so guards, the marshal, pedestrians and cameras never see the bot, waits at Engine.time_scale
 ## FAST): mask up -> the site man-gate's padlock (lockpick) -> the controller cabinet's padlock (ctrl_locked) -> the
-## signal rig hack, every interruption restarted -> back to the heist start -> the convoy to its CLEAN stop. From the
+## signal rig hack, every interruption restarted -> the crew to the ambush spot (cover 14-28 m from the clean stop,
+## unmasked again: a harness shortcut, LEAD D-151) -> the convoy to its CLEAN stop. From the
 ## stop the auto_loud pilot (input only, po5_flow_auto_loud.gd) plays the rest: its shots spring the ambush in the
 ## 8 s window, then trucks, bags, the ride. Checks: [signals] done before the stop, no alarm before it, clean_stop,
 ## [ambush] sprung after it (any alarm then: the window's end, a shot, a guard seeing the masked crew), heist_ended(success).
@@ -14,6 +15,9 @@ const AUTO_LOUD: String = "res://tests/a/e2e/po5_flow_auto_loud.gd"
 const MAN_GATE_LOCK: NodePath = ^"Gameplay/Doors/SiteManGate/Padlock"
 const LOCK_PICK_S: float = 30.0
 const ITEM_C4: StringName = &"item.c4"
+## The ambush spot's band from the clean stop (m).
+const AMBUSH_MIN_M: float = 14.0
+const AMBUSH_MAX_M: float = 28.0
 ## RT_STORES=1 (--po5-rt-stores, LEAD: a C4 breach and a thermite burn e2e): the prelude also raids the site stores
 ## (the magazine's C4 through its padlock, the tool store's thermite bag through its lock) and carries the thermite
 ## back; the loud pilot then uses the C4 on a truck (the truck takes C4 before the saw) and burns one with the
@@ -41,16 +45,25 @@ func play(driver: Node) -> int:
 	if not await _rig_the_signals(flow, rt, m) or (raid_stores and not await _raid_stores(flow, rt, m)):
 		return _fail(driver, flow, "the signals / the site stores")
 	var carrying_before: bool = flow.crew.is_carrying_bag()
-	rt.teleport_crew(0, start)
+	# LEAD D-151: the crew waits at the planned ambush spot (cover beside the clean stop), unmasked until the stop,
+	# not standing masked in the open at the heist start (seen at t+0.6 s; downed at t+13-15 s).
+	var spot: Transform3D = _ambush_spot(rt, m, start)
+	for c: CrewController in rt.crew_members():
+		var side: Vector3 = spot.basis.x * (1.2 * float(c.slot)) if c.slot > 0 else Vector3.ZERO
+		rt.teleport_crew(c.slot, Transform3D(spot.basis, spot.origin + side))
+		c.masked = false  # shortcut, harness only: the setup was done masked; the ambush is sprung masking up
 	await flow.wait_until(func() -> bool: return false, 0.2)
-	flow.note("teleported back: carrying %s -> %s" % [carrying_before, flow.crew.is_carrying_bag()])
-	flow.note("back at the start (%s), waiting for the convoy (ETA %.0f s)" % [start.origin, m.timer_left(&"convoy")])
+	flow.note("teleported to the ambush spot: carrying %s -> %s" % [carrying_before, flow.crew.is_carrying_bag()])
+	flow.note("at the ambush spot %s (unmasked, %.0f m from the clean stop), waiting for the convoy (ETA %.0f s)" % [
+		spot.origin, spot.origin.distance_to(_clean_stop_centre(rt, m, start.origin)), m.timer_left(&"convoy")])
 	var budget: float = m.timer_left(&"convoy") + 120.0
 	var stopped: bool = await flow.fast_until(func() -> bool: return m._stop_done, budget)
 	flow.check(stopped, "the convoy stopped (%s)" % m.layout_id)
 	flow.check(m.clean_stop, "a CLEAN stop (layout %s)" % m.layout_id)
 	flow.check(flow.alarms.is_empty(), "no alarm before the stop (%s)" % [flow.alarms])
 	flow.crew.stealth_hidden = false
+	# LEAD D-151: the escort's first 60 s from the clean stop (who is up, alerted, shooting, from where).
+	Po5EscortLog.new().start(driver, rt, func(line: String) -> void: driver.call(&"note", line))
 	flow.note("clean stop %s at %.1f s heist: observers on, the loud pilot takes over" % [m.layout_id, rt.heist_time_s])
 	EventBus.voice_line_requested.disconnect(vo)
 	flow.note("hand-over: carrying %s (%s)" % [flow.crew.is_carrying_bag(),
@@ -131,6 +144,49 @@ func _raid_stores(flow: X4StealthFlow, rt: HeistRuntime, m: RollingThunderMissio
 			return false
 	flow.note("stores raided: C4 x%d, thermite %s" % [flow.crew.item_count(ITEM_C4), flow.crew.is_carrying_bag()])
 	return true
+
+
+## The ambush spot: the enabled COVER point (not the mixer's) 14-28 m from the route's clean stop, nearest the heist
+## start (the crew's approach side), facing the stop; the heist start when the map has none.
+func _ambush_spot(rt: HeistRuntime, m: RollingThunderMission, start: Transform3D) -> Transform3D:
+	var centre: Vector3 = _clean_stop_centre(rt, m, start.origin)
+	var best: TacticalPoint = null
+	for n: Node in rt.map.find_children("*", "TacticalPoint", true, false):
+		var tp: TacticalPoint = n as TacticalPoint
+		var d: float = tp.global_position.distance_to(centre)
+		if tp.kind != TacticalPoint.Kind.COVER or not tp.enabled or tp.tags.has(RollingThunderMission.TAG_MIXER_COVER) \
+				or d < AMBUSH_MIN_M or d > AMBUSH_MAX_M:
+			continue
+		if best == null or tp.global_position.distance_to(start.origin) < best.global_position.distance_to(start.origin):
+			best = tp
+	if best == null:
+		return start
+	var at: Vector3 = best.global_position
+	var to: Vector3 = Vector3(centre.x - at.x, 0.0, centre.z - at.z)
+	return Transform3D(Basis.looking_at(to.normalized()) if to.length() > 0.1 else start.basis, at)
+
+
+## The middle of the route's clean-stop layout (its Clean* truck markers; any Clean* marker when it has none).
+func _clean_stop_centre(rt: HeistRuntime, m: RollingThunderMission, fallback: Vector3) -> Vector3:
+	var layout: Node3D = ConvoyLayouts.find(rt.map, m._route() + "_clean")
+	if layout == null:
+		return fallback
+	var trucks: Array[Vector3] = []
+	var any: Array[Vector3] = []
+	for n: Node in layout.get_children():
+		var n3: Node3D = n as Node3D
+		if n3 == null or not String(n3.name).begins_with("Clean"):
+			continue
+		any.append(n3.global_position)
+		if String(n3.name).contains("Truck"):
+			trucks.append(n3.global_position)
+	var pts: Array[Vector3] = trucks if not trucks.is_empty() else any
+	if pts.is_empty():
+		return layout.global_position
+	var sum: Vector3 = Vector3.ZERO
+	for v: Vector3 in pts:
+		sum += v
+	return sum / float(pts.size())
 
 
 ## Lockpick `lock` (S2: masked, 8 s) unless it is already off.

@@ -10,8 +10,9 @@
 ## * Points: level * points_per_level + floor(level / bonus_every_levels) * bonus_points (120 at 100).
 ## * Team skills: a grant whose key starts with `team_key_prefix` is crew-wide; LoadoutResolver hands it to
 ##   the TEAM scope as source `team_source_prefix + skill_id` so the same skill never stacks.
-## * `blocked_on_keys`: "<skill_id>:basic|aced" -> Array of modifier keys requested from the lead (not yet in
-##   ModifierKeys). That part of the skill is inactive until the key ships. Empty since D-031 (tested).
+## * `blocked_on_keys`: "<skill_id>:basic|aced" -> Array of modifier keys the part grants that no runtime code reads
+##   yet (LEAD r280: the P4 coverage ratchet's UNHOOKED list; content/docs/unhooked_skill_keys.md). UI only: the skill
+##   tree marks those parts "Not active yet". Kept equal to the ratchet by test_blocked_parts_track_the_unhooked_keys.
 ## * `unlocks`: "<skill_id>:basic|aced" -> item id the part unlocks through the item's own data
 ##   (ArmorDef.unlock_skill), not through a modifier grant.
 class_name SkillTreeDef

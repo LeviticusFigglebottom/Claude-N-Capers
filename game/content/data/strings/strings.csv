@@ -49,6 +49,8 @@ ui.loadout.crumb,Contract / Gear up
 ui.loadout.primary,Primary
 ui.loadout.secondary,Secondary
 ui.loadout.melee,Melee
+ui.loadout.melee_card,Melee: {name}
+ui.loadout.melee_stats,"Damage {damage} · Charged {charged} · Knockdown {knockdown}%\nReach {reach} m · Concealment {concealment}"
 ui.loadout.throwable,Throwable
 ui.loadout.deployable,Deployable
 ui.loadout.armor,Armor
@@ -336,6 +338,28 @@ item.mod.p9_extended_mag.name,Long-Reach Magazine
 item.mod.p9_extended_mag.desc,"More rounds between reloads. Sticks out of the grip, slows the swap."
 item.melee.folding_knife.name,Folding Knife
 item.melee.folding_knife.desc,"Small, quiet and always in the pocket."
+item.melee.combat_dagger.name,Combat Dagger
+item.melee.combat_dagger.desc,"A double-edged dagger with a weighted pommel. Quick and quiet."
+item.melee.prison_shank.name,Prison Shank
+item.melee.prison_shank.desc,"A sharpened toothbrush. It hits harder than it looks when charged."
+item.melee.telescopic_baton.name,Telescopic Baton
+item.melee.telescopic_baton.desc,"Snaps out to full length with a flick. Light, and good at putting people on the floor."
+item.melee.aluminium_bat.name,Aluminium Bat
+item.melee.aluminium_bat.desc,"A batting-cage favourite. Long reach and a big charged swing."
+item.melee.claw_hammer.name,Claw Hammer
+item.melee.claw_hammer.desc,"From the toolbox in the van. Short, heavy and reliable."
+item.melee.lead_pipe.name,Lead Pipe
+item.melee.lead_pipe.desc,"A length of old plumbing. Slow to bring round, hard to stand up after."
+item.melee.crowbar.name,Crowbar
+item.melee.crowbar.desc,"Opens crates, doors and arguments."
+item.melee.sledgehammer.name,Sledgehammer
+item.melee.sledgehammer.desc,"Six kilos on a long handle. Heavy to carry, devastating when charged."
+item.melee.machete.name,Machete
+item.melee.machete.desc,"A long jungle blade with a good reach."
+item.melee.fire_axe.name,Fire Axe
+item.melee.fire_axe.desc,"Taken off a wall marked IN CASE OF EMERGENCY. This is one."
+item.melee.meat_cleaver.name,Meat Cleaver
+item.melee.meat_cleaver.desc,"A butcher's cleaver. Short, broad and heavy at the edge."
 item.armor.tailored_suit.name,Tailored Suit
 item.armor.tailored_suit.desc,"No armor, all elegance. Nobody looks twice at a good suit."
 item.armor.light_vest.name,Light Vest
@@ -911,6 +935,8 @@ ui.skills.respec,Reset Skills
 ui.skills.respec_free,Resetting skills is free.
 ui.skills.team,Crew-wide
 ui.skills.blocked,Not active yet
+ui.skills.button_inactive,Not active yet
+ui.skills.button_partial,Partly active
 ui.skills.reason.unknown_skill,Unknown skill.
 ui.skills.reason.already_aced,Already aced.
 ui.skills.reason.tier_locked,Spend {need} points in lower tiers of this subtree first ({have} spent).

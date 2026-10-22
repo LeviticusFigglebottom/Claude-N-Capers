@@ -18,22 +18,22 @@ carried_bag: D-116: Back/Socket is the carried loot bag's pivot (assemble_charac
 cash_grip: basis x=(0.0000,-0.3090,-0.9511) y=(1.0000,0.0000,-0.0000) z=(0.0000,-0.9511,0.3090) origin=(-0.0105,-0.0038,0.0271) relative to HandL/Socket; banknote stack 0.156 x 0.015 x 0.066 m (+X = the long edge, +Y = the face normal, Z = the short edge): origin at its centre; lying in the LEFT palm (palm on the -Y face, fingers along +X) in teller_count
 check.00: aim_akimbo: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.1deg
 check.01: aim_akimbo_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.02: aim_akimbo_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
+check.02: aim_akimbo_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
 check.03: aim_akimbo_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.04: aim_pistol: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
 check.05: aim_pistol_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.06: aim_pistol_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
+check.06: aim_pistol_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
 check.07: aim_pistol_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.08: aim_rifle: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.1deg
 check.09: aim_rifle_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.10: aim_rifle_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
+check.10: aim_rifle_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
 check.100: hold_akimbo_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
 check.101: hold_akimbo_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
 check.102: hold_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=4.5deg
 check.103: hold_lmg_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.104: hold_lmg_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
-check.105: hold_lmg_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.5deg
-check.106: hold_lmg_run_stop: 20f 0.67s speed=0.0 reach_err=2.0mm step=25.5deg
+check.104: hold_lmg_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.105: hold_lmg_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.106: hold_lmg_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
 check.107: hold_lmg_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.108: hold_lmg_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.109: hold_lmg_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
@@ -41,9 +41,9 @@ check.11: aim_rifle_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.110: hold_lmg_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
 check.111: hold_pistol: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=5.4deg
 check.112: hold_pistol_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.113: hold_pistol_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
-check.114: hold_pistol_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.5deg
-check.115: hold_pistol_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.5deg
+check.113: hold_pistol_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.114: hold_pistol_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.115: hold_pistol_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
 check.116: hold_pistol_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.117: hold_pistol_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.118: hold_pistol_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
@@ -51,9 +51,9 @@ check.119: hold_pistol_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2d
 check.12: bartender_pour: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=10.1deg contact_slide=0.000mm/f
 check.120: hold_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
 check.121: hold_rifle_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.122: hold_rifle_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
-check.123: hold_rifle_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.5deg
-check.124: hold_rifle_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.5deg
+check.122: hold_rifle_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.123: hold_rifle_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.124: hold_rifle_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
 check.125: hold_rifle_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.126: hold_rifle_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.127: hold_rifle_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
@@ -61,9 +61,9 @@ check.128: hold_rifle_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2de
 check.129: hold_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=4.2deg
 check.13: bartender_wipe: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=4.1deg contact_slide=0.000mm/f
 check.130: hold_smg_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.131: hold_smg_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
-check.132: hold_smg_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.5deg
-check.133: hold_smg_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.5deg
+check.131: hold_smg_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.132: hold_smg_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.133: hold_smg_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
 check.134: hold_smg_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.135: hold_smg_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.136: hold_smg_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
@@ -71,9 +71,9 @@ check.137: hold_smg_walk_stop: 18f 0.60s speed=0.0 reach_err=0.0mm step=15.2deg
 check.138: hold_sniper: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
 check.139: hold_sniper_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
 check.14: bouncer_idle: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=8.7deg contact_slide=0.000mm/f
-check.140: hold_sniper_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
-check.141: hold_sniper_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.5deg
-check.142: hold_sniper_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.5deg
+check.140: hold_sniper_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.141: hold_sniper_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.142: hold_sniper_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
 check.143: hold_sniper_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.144: hold_sniper_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.145: hold_sniper_walk_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.8deg
@@ -132,21 +132,21 @@ check.192: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
 check.193: reload_shotgun: 84f 2.80s speed=0.0 reach_err=0.0mm step=64.0deg
 check.194: reload_smg: 54f 1.80s speed=0.0 reach_err=0.0mm step=49.7deg
 check.195: reload_sniper: 78f 2.60s speed=0.0 reach_err=0.0mm step=42.0deg
-check.196: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=21.5deg slide=0.040mm/f
-check.197: run_b: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.7deg slide=0.000mm/f
-check.198: run_bl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=26.7deg slide=0.000mm/f
-check.199: run_br: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.3deg slide=0.000mm/f
+check.196: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=12.8deg slide=0.038mm/f
+check.197: run_b: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.2deg slide=0.000mm/f
+check.198: run_bl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.199: run_br: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=19.9deg slide=0.000mm/f
 check.20: climb_ladder: 36f 1.20s loop speed=0.5 reach_err=0.0mm step=17.7deg
-check.200: run_fl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.0deg slide=0.000mm/f
-check.201: run_fr: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.9deg slide=0.000mm/f
-check.202: run_l: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=25.0deg slide=0.000mm/f
-check.203: run_r: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.0deg slide=0.000mm/f
-check.204: run_reverse_back_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=27.0deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
-check.205: run_reverse_back_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=27.8deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
-check.206: run_reverse_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=29.6deg slide=0.02mm/f hip_drop=6.9mm in_err=0.00mm out_err=0.00mm
-check.207: run_reverse_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=32.8deg slide=0.02mm/f hip_drop=9.2mm in_err=0.00mm out_err=0.00mm
-check.208: run_start: 18f 0.60s speed=3.5 reach_err=0.0mm step=19.5deg slide=0.028mm/f idle0_err=0.00mm handoff_err=0.00mm
-check.209: run_stop: 20f 0.67s speed=3.5 reach_err=0.0mm step=25.5deg slide=0.038mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.200: run_fl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.1deg slide=0.000mm/f
+check.201: run_fr: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=18.1deg slide=0.000mm/f
+check.202: run_l: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.1deg slide=0.000mm/f
+check.203: run_r: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=20.4deg slide=0.000mm/f
+check.204: run_reverse_back_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.3deg slide=0.04mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
+check.205: run_reverse_back_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=20.6deg slide=0.03mm/f hip_drop=0.0mm in_err=0.00mm out_err=0.00mm
+check.206: run_reverse_l: 18f 0.60s speed=0.0 reach_err=0.0mm step=23.2deg slide=0.01mm/f hip_drop=15.9mm in_err=0.00mm out_err=0.00mm
+check.207: run_reverse_r: 18f 0.60s speed=0.0 reach_err=0.0mm step=28.0deg slide=0.02mm/f hip_drop=12.9mm in_err=0.00mm out_err=0.00mm
+check.208: run_start: 18f 0.60s speed=3.5 reach_err=0.0mm step=13.7deg slide=0.025mm/f idle0_err=0.00mm handoff_err=0.00mm
+check.209: run_stop: 20f 0.67s speed=3.5 reach_err=0.0mm step=25.3deg slide=0.038mm/f handoff_err=0.00mm idle0_err=0.00mm
 check.21: cook_stove: 180f 6.00s loop speed=0.0 reach_err=5.1mm step=20.7deg lowest_skin=-0.0mm root_drift=0.00mm
 check.210: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
 check.211: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
@@ -273,9 +273,9 @@ check.91: hit_shoulder_l: 14f 0.47s speed=0.0 reach_err=0.0mm step=39.4deg drift
 check.92: hit_shoulder_r: 14f 0.47s speed=0.0 reach_err=0.0mm step=39.4deg drift_L=0.0mm drift_R=0.0mm
 check.93: hold_akimbo: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=5.4deg
 check.94: hold_akimbo_crouch: 27f 0.90s loop speed=0.0 reach_err=0.0mm step=16.0deg
-check.95: hold_akimbo_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=21.5deg
-check.96: hold_akimbo_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=19.5deg
-check.97: hold_akimbo_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.5deg
+check.95: hold_akimbo_run: 21f 0.70s loop speed=0.0 reach_err=0.0mm step=12.8deg
+check.96: hold_akimbo_run_start: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.7deg
+check.97: hold_akimbo_run_stop: 20f 0.67s speed=0.0 reach_err=0.0mm step=25.3deg
 check.98: hold_akimbo_sprint: 18f 0.60s loop speed=0.0 reach_err=0.0mm step=28.7deg
 check.99: hold_akimbo_walk: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check_desk_placement: check_desk_write: a standing check desk. The root on the floor, facing the desk (-Z), its near edge 0.25 m ahead (Godot z = -0.25), top 1.00 m high (NOTE prop_check_table's top is 1.05 m: lower it to 1.00 or ask D for a 1.05 variant). The left palm holds the slip flat at Godot (-0.14, 1.00, -0.42); the right hand writes along x -0.01..0.09 at z -0.40 (no pen prop: the pinch shows it; a pen, if added, rides the right pinch); look_up@98. Keep the desk top clear 0.30..0.50 m ahead of the root; the body stays behind Godot z = -0.22 below the top; nothing goes through the desk (deepest skin 0.0 mm)
@@ -558,7 +558,7 @@ curve.run_reverse_back_l: root_m=0.0000,-0.1069,-0.1944,-0.2625,-0.3111,-0.3403,
 curve.run_reverse_back_r: root_m=0.0000,-0.1069,-0.1944,-0.2625,-0.3111,-0.3403,-0.3500,-0.3410,-0.3141,-0.2692,-0.2064,-0.1256,-0.0269,0.0875,0.2042,0.3208,0.4375,0.5542,0.6708 total_m=0.671 dir_godot=(0,0,-1)
 curve.run_reverse_l: root_m=0.0000,0.1069,0.1944,0.2625,0.3111,0.3403,0.3500,0.3417,0.3167,0.2750,0.2167,0.1417,0.0500,-0.0583,-0.1750,-0.2917,-0.4083,-0.5250,-0.6417 total_m=-0.642 dir_godot=(0,0,-1)
 curve.run_reverse_r: root_m=0.0000,0.1069,0.1944,0.2625,0.3111,0.3403,0.3500,0.3410,0.3141,0.2692,0.2064,0.1256,0.0269,-0.0875,-0.2042,-0.3208,-0.4375,-0.5542,-0.6708 total_m=-0.671 dir_godot=(0,0,-1)
-curve.run_start: root_m=0.0000,0.0022,0.0095,0.0232,0.0444,0.0744,0.1143,0.1652,0.2285,0.3053,0.3967,0.5040,0.6207,0.7373,0.8540,0.9707,1.0873,1.2040,1.3207 total_m=1.321 handoff=run@4
+curve.run_start: root_m=0.0000,0.0020,0.0092,0.0236,0.0471,0.0817,0.1294,0.1921,0.2717,0.3702,0.4853,0.6020,0.7187,0.8353,0.9520,1.0687,1.1853,1.3020,1.4187 total_m=1.419 handoff=run@4
 curve.run_stop: root_m=0.0000,0.1123,0.2161,0.3116,0.3989,0.4784,0.5503,0.6147,0.6719,0.7222,0.7657,0.8027,0.8333,0.8579,0.8767,0.8898,0.8975,0.9000,0.9000,0.9000,0.9000 total_m=0.900 handoff=run@0
 curve.van_exit: root_m=0.0000,0.0000,0.0000,0.0000,0.0024,0.0094,0.0206,0.0356,0.0541,0.0757,0.1001,0.1268,0.1556,0.1859,0.2176,0.2502,0.2833,0.3167,0.3498,0.3824,0.4141,0.4444,0.4732,0.4999,0.5243,0.5459,0.5644,0.5794,0.5906,0.5976,0.6000,0.6000,0.6000,0.6000,0.6000,0.6000,0.6000 total_m=0.600 dir_godot=(0,0,-1)
 curve.vehicle_exit_l: root_m=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0025,0.0099,0.0218,0.0380,0.0582,0.0820,0.1092,0.1395,0.1726,0.2082,0.2460,0.2856,0.3270,0.3696,0.4133,0.4577,0.5025,0.5475,0.5923,0.6367,0.6804,0.7230,0.7644,0.8040,0.8418,0.8774,0.9105,0.9408,0.9680,0.9918,1.0120,1.0282,1.0401,1.0475,1.0500,1.0500,1.0500,1.0500,1.0500 total_m=1.050 dir_godot=(-1,0,0)
@@ -584,7 +584,7 @@ hit_zone_checks: hit_head: start_err=0.00mm end_err=0.00mm drift_L=0.0mm drift_R
 hit_zones: D-116 non-lethal flinch by hit zone (pick from the damage info `zone` + the hit `position` in the body's root space): HEAD -> hit_head; BODY -> hit_chest; LIMB above the hips joint (y > 0.95 m x motion_scale) -> hit_shoulder_l if the hit is on the body's left (root-space x < 0) else hit_shoulder_r; LIMB below it -> hit_leg_l / hit_leg_r by the same side test. The directional hit_react set stays the fallback when no zone is known. Each starts and ends exactly on idle_alert frame 0, root fixed, both feet planted except the hit foot's in-place catch step in hit_leg_* (back 7 cm and home again); `impact` = the peak. Blend: absolute poses, not rest-relative deltas (do not feed them raw to AnimationNodeAdd2). Standing / idle_alert / unarmed: OneShot full body, weight 1.0, fade in 0.03 s, out 0.12 s. Over aim_* / fire / locomotion: OneShot filtered to hips, spine, chest, neck, head (+ clavicle/upper_arm/forearm/hand of the hit side for hit_shoulder_* when the gun hand is not that side), weight 0.7 (hit_head 0.9); never the legs while moving (hit_leg_* then = its trunk only). For a true layer, bake an additive copy at load (per track: rest * inverse(frame 0) * key) and Add2 it at 1.0.
 idle_alert_variants: D polish #2: idle_alert, idle_alert_b, idle_alert_c (loops 90 / 150 / 174 f, speed 0, in place). b = a wristwatch check and a slow weight shift; c = a thumb on the shoulder radio, then a look round. Frame 0 of each IS idle_alert frame 0 and the variant layer is zero at the seam, so anything that chains into or out of idle_alert chains into a variant unchanged. ENV A: VARIANT_GROUPS idle_alert: [idle_alert, idle_alert_b, idle_alert_c] (the per-body index, as for cower / queue_idle).
 idle_thug_weapon: idle_thug: the long gun at HandR/Socket (the weapon grip convention), held low across the body: muzzle 30 deg below the horizontal, turned 38 deg to the left; the left hand loosely under the front of the receiver (0.19 m behind LeftHandIK), not on LeftHandIK
-loco_reverse: characters v1.36 locomotion reversals (fixed facing; replace the crossfade between opposite strides, which folds the knees): run_reverse_l/_r run->run_b, run_reverse_back_l/_r run_b->run, walk_reverse_l/_r walk->walk_back, walk_reverse_back_l/_r walk_back->walk; _l = the left foot brakes. Frame 0 IS the source loop at u_in (the brake foot's touch-down: R at 0, L at frames/2 rounded up) and the last frame IS the target loop at u_out, so: start the clip when the source loop reaches u_in (pick _r or _l by whichever brake foot comes next: R at u 0, L at u 0.5 + 0.5/frames), play it without a crossfade, then switch to the target loop seeked to u_out (no crossfade). The root follows curve.<clip>: metres along the character's forward (+ = forward, Godot -Z), one value per frame from 0; its speed equals the source loop's at frame 0, crosses 0 at `push` and equals the target loop's from the other foot's landing on (planted feet stay world-still at that motion). Use it for a travel reversal of 135 deg or more; under that, keep the 8-way switch. Events: foot_plant (frame 0), push (the root speed crosses 0), done (the last frame). Hips: never lower than max_hip_drop_mm below the loops' lowest hip height. run_reverse_l: run->run_b brake=L frames=18 u_in=0.5238 (run frame 11) u_out=0.2381 (run_b frame 5) events=foot_plant@0,push@6,done@18 other_lands@13.0 brake_lifts@10.1 root_total_m=-0.642 max_hip_drop_mm=6.9 | run_reverse_r: run->run_b brake=R frames=18 u_in=0.0000 (run frame 0) u_out=0.7619 (run_b frame 16) events=foot_plant@0,push@6,done@18 other_lands@12.5 brake_lifts@9.6 root_total_m=-0.671 max_hip_drop_mm=9.2 | run_reverse_back_l: run_b->run brake=L frames=18 u_in=0.5238 (run_b frame 11) u_out=0.2381 (run frame 5) events=foot_plant@0,push@6,done@18 other_lands@13.0 brake_lifts@10.1 root_total_m=+0.642 max_hip_drop_mm=0.0 | run_reverse_back_r: run_b->run brake=R frames=18 u_in=0.0000 (run_b frame 0) u_out=0.7619 (run frame 16) events=foot_plant@0,push@6,done@18 other_lands@12.5 brake_lifts@9.6 root_total_m=+0.671 max_hip_drop_mm=0.0 | walk_reverse_l: walk->walk_back brake=L frames=24 u_in=0.5000 (walk frame 15) u_out=0.2333 (walk_back frame 7) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.6 root_total_m=-0.132 max_hip_drop_mm=2.1 | walk_reverse_r: walk->walk_back brake=R frames=24 u_in=0.0000 (walk frame 0) u_out=0.7333 (walk_back frame 22) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.6 root_total_m=-0.132 max_hip_drop_mm=2.1 | walk_reverse_back_l: walk_back->walk brake=L frames=24 u_in=0.5000 (walk_back frame 15) u_out=0.2333 (walk frame 7) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0 | walk_reverse_back_r: walk_back->walk brake=R frames=24 u_in=0.0000 (walk_back frame 0) u_out=0.7333 (walk frame 22) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0
+loco_reverse: characters v1.36 locomotion reversals (fixed facing; replace the crossfade between opposite strides, which folds the knees): run_reverse_l/_r run->run_b, run_reverse_back_l/_r run_b->run, walk_reverse_l/_r walk->walk_back, walk_reverse_back_l/_r walk_back->walk; _l = the left foot brakes. Frame 0 IS the source loop at u_in (the brake foot's touch-down: R at 0, L at frames/2 rounded up) and the last frame IS the target loop at u_out, so: start the clip when the source loop reaches u_in (pick _r or _l by whichever brake foot comes next: R at u 0, L at u 0.5 + 0.5/frames), play it without a crossfade, then switch to the target loop seeked to u_out (no crossfade). The root follows curve.<clip>: metres along the character's forward (+ = forward, Godot -Z), one value per frame from 0; its speed equals the source loop's at frame 0, crosses 0 at `push` and equals the target loop's from the other foot's landing on (planted feet stay world-still at that motion). Use it for a travel reversal of 135 deg or more; under that, keep the 8-way switch. Events: foot_plant (frame 0), push (the root speed crosses 0), done (the last frame). Hips: never lower than max_hip_drop_mm below the loops' lowest hip height. run_reverse_l: run->run_b brake=L frames=18 u_in=0.5238 (run frame 11) u_out=0.2381 (run_b frame 5) events=foot_plant@0,push@6,done@18 other_lands@13.0 brake_lifts@8.4 root_total_m=-0.642 max_hip_drop_mm=15.9 | run_reverse_r: run->run_b brake=R frames=18 u_in=0.0000 (run frame 0) u_out=0.7619 (run_b frame 16) events=foot_plant@0,push@6,done@18 other_lands@12.5 brake_lifts@7.9 root_total_m=-0.671 max_hip_drop_mm=12.9 | run_reverse_back_l: run_b->run brake=L frames=18 u_in=0.5238 (run_b frame 11) u_out=0.2381 (run frame 5) events=foot_plant@0,push@6,done@18 other_lands@13.0 brake_lifts@8.4 root_total_m=+0.642 max_hip_drop_mm=0.0 | run_reverse_back_r: run_b->run brake=R frames=18 u_in=0.0000 (run_b frame 0) u_out=0.7619 (run frame 16) events=foot_plant@0,push@6,done@18 other_lands@12.5 brake_lifts@7.9 root_total_m=+0.671 max_hip_drop_mm=0.0 | walk_reverse_l: walk->walk_back brake=L frames=24 u_in=0.5000 (walk frame 15) u_out=0.2333 (walk_back frame 7) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.6 root_total_m=-0.132 max_hip_drop_mm=2.1 | walk_reverse_r: walk->walk_back brake=R frames=24 u_in=0.0000 (walk frame 0) u_out=0.7333 (walk_back frame 22) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.6 root_total_m=-0.132 max_hip_drop_mm=2.1 | walk_reverse_back_l: walk_back->walk brake=L frames=24 u_in=0.5000 (walk_back frame 15) u_out=0.2333 (walk frame 7) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0 | walk_reverse_back_r: walk_back->walk brake=R frames=24 u_in=0.0000 (walk_back frame 0) u_out=0.7333 (walk frame 22) events=foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0
 locomotion_blend: crew 8-way blend set (D3-04): two BlendSpace2D (or two 3x3 grids of AnimationNodeBlend2/3), one per gait, blend position = the local move direction (x = right, y = forward, unit length) and ONE speed_scale per gait = v / (clip speed x motion_scale): walk (1.6 m/s, 30 f) at (0,1) walk, (0.71,0.71) walk_fr, (1,0) walk_r, (0.71,-0.71) walk_br, (0,-1) walk_b, (-0.71,-0.71) walk_bl, (-1,0) walk_l, (-0.71,0.71) walk_fl; run (3.5 m/s, 21 f) the same with run_*. Every clip of a gait has the same length, speed and stance share and the right foot down at normalised time 0, the left at 0.5 (`foot_down` in the clip rows), so blend them on one shared normalised time (BlendSpace2D sync = true, or seek every clip to the same time): the planted foot is the same foot in every direction. Walk <-> run: crossfade at the walk_run split (or a Blend2 on speed with both spaces advancing on the same normalised time: walk 1 s and run 0.7 s cycles; R down at 0 in both). strafe_l / strafe_r (1.2 m/s, 18 f shuffle) and walk_back (1.3 m/s) stay for the single-clip picker; the 8-way set replaces them inside the blend spaces.
 locomotion_holds: D-116 organic crew locomotion: hold_<kind>_<gait> (kind = the weapon_holds kinds; gait = walk, run, sprint, crouch, walk_start, walk_stop, run_start, run_stop) is the upper-body layer (the weapon_holds bone filter) over the base clip walk / run / sprint / crouch_walk / walk_start / walk_stop / run_start / run_stop, with the same frames, loop flag and events as its base, and FRAME-LOCKED to it: each frame carries the base clip's own trunk at that frame (counter-twist, bob, start / stop lean) and the weapon riding the chest a couple of frames late, with a spring on starts / stops. Play it instead of hold_<kind> while the locomotion clip is: walk, walk_* and walk_back (30 f, the right foot down at 0) -> _walk; run and run_* -> _run; sprint -> _sprint (the PD2 sprint carry: long guns across the chest, the pistol tucked at the chest); crouch_walk -> _crouch; walk_start / walk_stop / run_start / run_stop -> the same-named layer. Set the layer time to the locomotion clip's playback position every tick (never a random offset). strafe_l / strafe_r (18 f) keep hold_<kind>
 locomotion_transitions: walk_start / run_start: idle frame 0 -> the cycle; the clip's last frame IS walk frame 3 / run frame 4 (`handoff`), so switch to the cycle at that frame (no crossfade needed). walk_stop / run_stop: the clip's frame 0 IS walk / run frame 0 (`handoff`: the right heel strike) and the last frame IS idle frame 0. In place: A moves the root by `curve.<clip>` (root_m per frame, m at 1.78 m x motion_scale; the speed at both ends equals the cycle speed / 0): planted feet stay world-still at that root motion. Start = accelerate from 0 to the cycle speed by the right foot's first plant (step_r), then the cycle speed; stop = decelerate from the cycle speed to 0 at the last plant (walk: step_l, run: step_r), then settle into idle.
