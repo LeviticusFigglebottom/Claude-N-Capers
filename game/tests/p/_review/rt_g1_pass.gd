@@ -907,7 +907,7 @@ func _rt_setup() -> bool:
 		var worst: float = 0.0
 		for id: int in _peaks:
 			worst = maxf(worst, float(_peaks[id]["max"]))
-		var good: bool = t_rig > 0.0 and t_rig < eta and _alarm == &""
+		var good: bool = t_rig > 0.0 and t_rig < eta and _alarm == &"" and worst < 1.0
 		var fmt: String = "gate t=%.1f, rig hacked t=%.1f, ETA %.0f s (%.0f s spare), alarm '%s', %d observers, peak %.2f"
 		_row("setup from %s spawn" % label, "PASS" if good else "FAIL", fmt % [
 			t_gate, t_rig, eta, eta - t_rig, _alarm, _peaks.size(), worst], "-" if good else "C map / A mission")
