@@ -4,6 +4,13 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22, latest first; I read your messages, you read this)
+- **RT cast in place, windowed (trunk 80245b93, Routine seed 1, clean east stop):** `_review/rt_d2_cast/rt_cast_sheet.png`
+  (+ log, dismount_0..5). 22 on-foot cast + 8 convoy units. OK: guards, cop_diner, street / bus / diner pools (no twins),
+  sit_eat, cook_stove, the attendant at desk_work, escorts in patrol_officer_duty in sit_vehicle, cab crews hidden, the
+  dismount along the exit curve into walk_stop. **For A (sent):** (1) the waitress / cook looks are swapped (no
+  staff_waitress / staff_cook rows in npc_visual_tweak; civ_diner there has 21 looks, p5_cast 14); (2) `counter_wipe`
+  is missing from CivilianBrain.KNOWN_ACTIVITIES (the waitress idles); (3) two escorts per seat (spawn_units(…, 1) always
+  takes Seat0).
 - **D-153 resume (2026-10-22, new LEAD session_01XAPqm...).** Trunk 59237213 merged (fast-forward).
   - **58cc52e1 vehicle_exit_l/_r EXIT_X 0.85 -> 1.05** (SOURCE curve total 1.050): the outside foot plants past the escort
     car's side (SILL_X + 0.30), the stand-up phases scale with the travel. test_rt_clips 6/6, test_anims 18/18.
