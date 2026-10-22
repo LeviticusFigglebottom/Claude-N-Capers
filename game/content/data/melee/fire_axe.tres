@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MeleeDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/melee_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"melee.fire_axe"
+display_name = "Fire Axe"
+damage = 70.0
+charged_damage = 280.0
+charge_time_s = 1.0
+range_m = 2.1
+knockdown = 0.5
+concealment = 22
+silent = true
+price = 110000
+anim_set = &"melee_blade"
