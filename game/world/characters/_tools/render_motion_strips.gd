@@ -10,7 +10,7 @@
 ## Writes <out>/<case>.png (strip, 2 rows) and <out>/motion_log.txt.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_motion_strips.tscn -- --out=/abs/dir \
-##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300]
+##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300] [--cases=crew_strafe,cop_stagger]
 ## Owner: ENV D.
 extends Node3D
 
@@ -31,6 +31,8 @@ var _label: Label = null
 var _log: PackedStringArray = []
 var _done: Dictionary = {}
 var _rt: HeistRuntime = null
+## the cases to shoot (--cases=crew_strafe,...; default all)
+var _cases: Array[String] = CASES.duplicate()
 var _home: Vector3 = Vector3.INF
 var _legs: int = 0
 
@@ -45,6 +47,7 @@ func _ready() -> void:
 			"seed": _seed = int(v)
 			"difficulty": _difficulty = int(v)
 			"wait": _wait = float(v)
+			"cases": _cases = Array(v.split(","), TYPE_STRING, &"", null)
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/motion_strips"
 	RenderingServer.render_loop_enabled = false  # frames only for the strips (llvmpipe)
@@ -83,14 +86,14 @@ func _run() -> void:
 	_rt.stealth.raise_alarm(&"d_motion_strips")
 	var t: float = 0.0
 	var stagger_tried: int = 0
-	while t < _wait and _done.size() < CASES.size():
+	while t < _wait and _done.size() < _cases.size():
 		await _seconds(STEP_S)
 		t += STEP_S
 		for cl: Node in get_tree().root.find_children("*", "CanvasLayer", true, false):
 			if cl != layer:
 				(cl as CanvasLayer).visible = false
 		_cam.current = true
-		for c: String in CASES:
+		for c: String in _cases:
 			if _done.has(c) or c == "cop_stagger":
 				continue
 			var body: Node3D = _find(c)
@@ -103,16 +106,16 @@ func _run() -> void:
 			_crew_diag(t)
 		if int(t * 10.0) % 60 == 0 and (not _done.has("crew_sprint") or not _done.has("crew_strafe")):
 			_lead_off(t)
-		if not _done.has("cop_stagger") and t > 20.0 and stagger_tried < 5 and int(t * 10.0) % 50 == 0:
+		if _cases.has("cop_stagger") and not _done.has("cop_stagger") and t > 20.0 and stagger_tried < 5 and int(t * 10.0) % 50 == 0:
 			stagger_tried += 1
 			await _stagger()
-	for c: String in CASES:
+	for c: String in _cases:
 		if not _done.has(c):
 			_say("MISSING %s: not seen in %.0f s" % [c, _wait])
 	var f: FileAccess = FileAccess.open("%s/motion_log.txt" % _out, FileAccess.WRITE)
 	f.store_string("\n".join(_log) + "\n")
 	f.close()
-	print("[MOTION] RESULT DONE %d/%d %s" % [_done.size(), CASES.size(), _out])
+	print("[MOTION] RESULT DONE %d/%d %s" % [_done.size(), _cases.size(), _out])
 	get_tree().quit(0)
 
 
