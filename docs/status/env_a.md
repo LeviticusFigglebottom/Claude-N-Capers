@@ -11,7 +11,13 @@ Newest entry first, keep the last 10.
     when the map has none.
   - The runtime lookup already matched C's path, `<Slot_route_X>/Convoy/Movers/Mixer` and `<layout>/MixerStop`.
   - Results: 14/14 on a-core, and 14/14 on a scratch merge with c-worlds 41bb3e96.
-- **Next:** the D-154 amended shield re-measure (running), then the mixer e2e on 280.
+- **Mixer e2e on trunk 78a57794, Routine seed 1001: 2/2 PASS, 0 script errors.**
+  - Crash stop (auto_loud, east_crash): Reyes said the boxed line at 42 s; payday at 543 s.
+  - Clean stop (rt_clean, east_clean): clean stop at 188.5 s, boxed line at 191 s; ambush sprung; payday at 578 s.
+- **D-154 closed:**
+  - Hazardous shield share, pooled across 3 RT runs: 9.0% without the Aegis, 13.3% with them.
+  - Seed 1003 alone was 26%, and 10 of its 20 bulwarks were Brandt's Aegis.
+  - 333b5bf7: Aegis now get their own `STATS aegis=N` line (B / LEAD).
 
 ### (-30) RT P5 gate met; D's motion fixes; the padlock pilot; round 277 merged (2026-10-22)
 - **P5 loud-bot gate (LEAD: MET):**
