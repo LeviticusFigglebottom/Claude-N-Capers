@@ -8,7 +8,8 @@
 ## shared code). Built: the shell (slab, walls with every opening, closed exterior leaves, frosted panes, roofs,
 ## ceilings, the hall's rooflight wells), RoomVolumes, the 9 stations (ENV A's hub_station prefab, greybox bodies
 ## under each Visual, UsePoint, StationCam), PLAYER spawns + return markers, review cameras, the crew van stand-in,
-## the night environment, Audio/Jukebox (MusicDirector, listen_to_event_bus off) and the navmesh. Validate with
+## Audio/Jukebox (MusicDirector, listen_to_event_bus off, positional at the cabinet) and the navmesh. C4-03:
+## sh_lighting.gd (the night environment + lut_safehouse, fixtures, VoxelGI: bake_safehouse_gi.gd, probes, occluders). Validate with
 ## validate_level --scene=<SCENE_PATH> --profile=hub (tools/levelcheck/validate_all.sh --hub).
 extends SceneTree
 
@@ -20,6 +21,8 @@ const MUSIC_DIRECTOR: String = "res://world/audio/music_director.gd"
 ## (SafehouseHost enters any scene at that path, so B's 2D-hub flows would turn 3D); then this becomes that path.
 const SCENE_PATH: String = "res://world/hub/safehouse/safehouse_g1.tscn"
 const DNC: GDScript = preload("res://world/heists/shared/door_nav_clearance.gd")
+## C4-03 lighting lane: environment, fixtures, VoxelGI, probes, occluders.
+const SH_LIGHTING: GDScript = preload("res://world/hub/safehouse/greybox/sh_lighting.gd")
 ## The station art is the greybox body under Visual (as RT's truck saw points: no placeholder).
 const EMPTY_VISUAL: String = "res://world/heists/glasshouse/art/gh_empty.tscn"
 const STATION_CLASS: String = "HubStationPrefab"
@@ -72,8 +75,11 @@ func _build() -> void:
 	build_stations(n("Stations"))
 	build_props(n("Props"))
 	build_review_cameras(n("ReviewCameras"))
-	build_environment(n("Lighting"))
 	build_audio(n("Audio"))
+	var lighting: RefCounted = SH_LIGHTING.new(self)
+	lighting.call(&"environment", n("Lighting"))
+	print("safehouse lighting: " + String(lighting.call(&"build")))
+	errors.append_array(lighting.get(&"errors"))
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -206,6 +212,9 @@ func build_stations(holder: Node3D) -> void:
 		st.transform = xf
 		if id in L.WALL_MOUNTED:
 			st.set_meta(&"mount", "wall")
+		st.set_meta(&"kind", "hub_station")
+		if id in L.SUPPORT_STATIONS:
+			st.set_meta(&"support", true)
 		var up: Marker3D = st.get_node_or_null("UsePoint") as Marker3D
 		var it: Node3D = st.get_node_or_null("Interactable") as Node3D
 		var vis: Node3D = st.get_node_or_null("Visual") as Node3D
@@ -237,6 +246,7 @@ func build_props(props: Node3D) -> void:
 		var mx: Vector3 = v3(p[2])
 		var b: StaticBody3D = box(props, String(p[0]), mn, mx, String(p[3]))
 		b.set_meta(&"prop", true)
+		b.set_meta(&"kind", String(p[4]))
 		obstruct(Transform3D.IDENTITY, AABB(mn, mx - mn))
 
 
@@ -259,22 +269,6 @@ func build_review_cameras(cams: Node3D) -> void:
 		add(cams, m)
 		paths.append(NodePath("ReviewCameras/" + nm))
 	map_root.review_cameras = paths
-
-
-## G1: environment only (C4-03 adds the fixtures, GI and the LUT): a moonless overcast night sky and a warm
-## ambient so the greybox reads.
-func build_environment(lighting: Node3D) -> void:
-	var we: WorldEnvironment = HeistWorldEnvironment.new()
-	we.name = "WorldEnvironment"
-	var env: Environment = Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.05, 0.05, 0.07)
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.72, 0.66, 0.58)
-	env.ambient_light_energy = 0.9
-	env.tonemap_mode = Environment.TONE_MAPPER_AGX
-	we.environment = env
-	add(lighting, we)
 
 
 ## hub_map.md: Audio/Jukebox, the cabinet's MusicDirector (no heist facts; SafehouseMap.set_jukebox_track plays it).

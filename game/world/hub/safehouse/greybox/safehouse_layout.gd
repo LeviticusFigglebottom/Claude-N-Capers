@@ -157,6 +157,8 @@ const STATIONS: Array = [
 const JUKEBOX_SPEAKER: Vector3 = Vector3(0.0, 1.25, -0.2)
 const JUKEBOX_UNIT_SIZE: float = 4.0
 const JUKEBOX_MAX_DISTANCE: float = 30.0
+## Stations whose top carries other props (levelcheck meta support: the bench lamps, G2 dressing).
+const SUPPORT_STATIONS: Array[String] = ["planning", "armory", "masks"]
 ## Wall-hung stations (levelcheck meta mount = wall: the wall carries them, not the floor).
 const WALL_MOUNTED: Array[String] = ["board", "crew", "profile"]
 ## StationCam (hub_map: a Marker3D, -Z the view, `fov` meta): this far behind and above the UsePoint, looking at the
@@ -178,10 +180,10 @@ const SPAWNS: Array = [
 	["ReturnRange", [20.75, 0.0, 16.4], 0.0, ["hub_return_range"]],
 ]
 
-## Props/ (greybox stand-ins; G2 dresses the rooms): [name, min, max, class]. The crew van backed in under the
+## Props/ (greybox stand-ins; G2 dresses the rooms): [name, min, max, class, kind]. The crew van backed in under the
 ## roller door, rear doors (north) open.
 const PROPS: Array = [
-	["CrewVan", [2.9, 0.0, 0.6], [4.7, 2.3, 6.2], "prop"],
+	["CrewVan", [2.9, 0.0, 0.6], [4.7, 2.3, 6.2], "prop", "vehicle"],
 ]
 
 ## ReviewCameras (G0 Review shots, 16): [name, caption, position, look-at]. TopDownPlan is the plan render.
@@ -204,3 +206,80 @@ const REVIEW_CAMERAS: Array = [
 	["RooflightUpB", "rooflight_up_b", [12.0, 1.8, 8.0], [12.0, 5.7, 6.0]],
 ]
 const TOPDOWN_SIZE: float = 32.0
+
+# --- C4-03 lighting (safehouse.md §Lighting and mood) ------------------------------------------------
+
+const K2700: Color = Color(1.0, 0.66, 0.37)
+const K3000: Color = Color(1.0, 0.71, 0.42)
+const K3200: Color = Color(1.0, 0.75, 0.5)
+const K4000: Color = Color(1.0, 0.85, 0.7)
+const K5000: Color = Color(1.0, 0.94, 0.89)
+const SAFELIGHT: Color = Color(1.0, 0.12, 0.08)
+const AMBER: Color = Color(0.89, 0.61, 0.23)
+## Catalog fixtures under Lighting/Fixtures: [name, asset, anchor (ceiling: the ceiling plane; wall: the wall face at
+## the fixture's centre height; floor / furniture: the standing surface), yaw, Light overrides, shadowed, on]. Warm
+## 2700-3000 K over the crew corner, cool 4000-5000 K over the work areas, the red safelight in the mask room. Shadow
+## casters (G0: <= 6 in any view): the two table pendants, the press pendant, the loading bay work light and the
+## armory bench lamp. The hall's south high-bays are modelled but off (G0: "one bank on, dimmed").
+const FIXTURES: Array = [
+	# either side of the middle rooflight's well (x 14-16), over the table's ends
+	["TablePendantW", "prop_pendant_brass", [13.7, 5.0, 6.5], 0.0,
+		{"light_color": K2700, "light_energy": 2.0, "omni_range": 6.0}, true, true],
+	["TablePendantE", "prop_pendant_brass", [16.3, 5.0, 6.5], 0.0,
+		{"light_color": K2700, "light_energy": 2.0, "omni_range": 6.0}, true, true],
+	["PressPendant", "prop_pendant_brass", [11.0, 5.0, 10.2], 0.0,
+		{"light_color": K2700, "light_energy": 1.8, "omni_range": 5.5}, true, true],
+	["BoardLightW", "prop_picture_light", [14.0, 2.95, 0.2], 180.0, {"light_color": K3000, "light_energy": 1.6},
+		false, true],
+	["BoardLightE", "prop_picture_light", [16.0, 2.95, 0.2], 180.0, {"light_color": K3000, "light_energy": 1.6},
+		false, true],
+	["HighBayNW", "prop_highbay_led", [11.0, 5.0, 3.0], 0.0,
+		{"light_color": K4000, "light_energy": 1.2, "spot_range": 7.0}, false, true],
+	["HighBayNE", "prop_highbay_led", [19.0, 5.0, 3.0], 0.0,
+		{"light_color": K4000, "light_energy": 1.2, "spot_range": 7.0}, false, true],
+	["HighBaySW", "prop_highbay_led", [11.0, 5.0, 8.5], 0.0, {}, false, false],
+	["HighBaySE", "prop_highbay_led", [19.0, 5.0, 8.5], 0.0, {}, false, false],
+	["LbHighBay", "prop_highbay_led", [3.8, 4.5, 4.0], 0.0,
+		{"light_color": K4000, "light_energy": 2.2, "spot_range": 8.0}, false, true],
+	["LbWorkLight", "prop_highbay_led", [6.5, 4.5, 6.5], 0.0,
+		{"light_color": K5000, "light_energy": 1.6, "spot_range": 7.0}, true, true],
+	["LgFloorLamp", "prop_floor_lamp", [7.4, 0.0, 8.6], 0.0, {"light_color": K2700, "light_energy": 0.9}, false, true],
+	["LgPendant", "prop_pendant_diner", [3.5, 3.0, 15.5], 0.0,
+		{"light_color": K2700, "light_energy": 1.2, "omni_range": 4.5}, false, true],
+	["WsBatten", "prop_led_batten_cold", [25.0, 3.5, 3.5], 90.0, {"light_color": K4000, "light_energy": 1.8}, false,
+		true],
+	["WsBenchLamp", "prop_bench_lamp", [27.45, 0.9, 2.6], 90.0, {"light_color": K5000, "light_energy": 1.5}, true,
+		true],
+	["MkSafelight", "prop_bulkhead_caged", [24.5, 3.0, 9.5], 0.0,
+		{"light_color": SAFELIGHT, "light_energy": 0.9, "omni_range": 5.0}, false, true],
+	["MkMagnifier", "prop_magnifier_lamp", [27.5, 0.76, 10.2], 90.0, {"light_color": K3200, "light_energy": 0.8},
+		false, true],
+	["CoBulkheadW", "prop_bulkhead_caged", [11.5, 2.8, 12.75], 0.0, {"light_color": K4000, "light_energy": 1.0},
+		false, true],
+	["CoBulkheadE", "prop_bulkhead_caged", [18.0, 2.8, 12.75], 0.0, {"light_color": K4000, "light_energy": 1.0},
+		false, true],
+	["RvBulkhead", "prop_bulkhead_caged", [20.75, 2.8, 15.0], 0.0, {"light_color": K4000, "light_energy": 1.0},
+		false, true],
+	["BkWallLamp", "prop_wall_lamp", [16.5, 1.8, 17.8], 0.0, {"light_color": K2700, "light_energy": 0.6}, false, true],
+	["KsCageLamp", "prop_bulkhead_caged", [25.2, 3.0, 15.0], 0.0, {"light_color": K5000, "light_energy": 1.4}, false,
+		true],
+	["WcBulkhead", "prop_bulkhead_caged", [9.25, 2.7, 15.7], 0.0, {"light_color": K3000, "light_energy": 0.8}, false,
+		true],
+	["StBulkhead", "prop_bulkhead_caged", [12.25, 2.8, 15.7], 0.0, {"light_color": K4000, "light_energy": 0.9},
+		false, true],
+]
+## Map-built lights whose fixture is shell / station geometry: [name, OmniLight3D position, colour, energy, range,
+## fixture node path (meta fixture)]. The range door's LIVE FIRE lamp and the jukebox's amber glow (G0: a small
+## OmniLight with the cabinet as its fixture).
+const MAP_LIGHTS: Array = [
+	["LiveFireGlow", [20.75, 2.2, 17.62], Color(1.0, 0.1, 0.06), 0.8, 2.5, "Geometry/Building/Fills/LiveFireLamp"],
+	["JukeboxGlow", [1.0, 1.45, 10.25], AMBER, 0.7, 3.5, "Stations/jukebox"],
+]
+## One VoxelGI over the building (D-046 bake path: bake_safehouse_gi.gd), interior (the rooflights see only the night).
+const GI_VOLUME: Array = ["VoxelGI", "safehouse_voxelgi.res", Vector3(-0.3, -0.3, -0.3), Vector3(28.3, 6.1, 18.3)]
+## Rooms without a reflection probe (matte closets).
+const PROBE_SKIP: Array[String] = ["electrical"]
+## Occluders: wall pieces at least this long and tall, roof slabs at least this big (m, m²).
+const OCC_WALL_MIN_LEN: float = 2.0
+const OCC_WALL_MIN_H: float = 2.4
+const OCC_SLAB_MIN_AREA: float = 4.0

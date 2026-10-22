@@ -49,12 +49,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 10 props checked
+- 34 props checked
 
 
 ## clipping: Nothing clips
 
-- 10 props, 0 doors checked
+- 34 props, 0 doors checked
 
 
 ## scale: Human scale
@@ -74,7 +74,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 119 x 83 columns (0.25 m), 15954 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 119 x 83 columns (0.25 m), 15955 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
@@ -85,7 +85,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 |---|---|---|---|
 | `Rooms/RoomLB` | 147 | 147 | 100% |
 | `Rooms/RoomH1` | 545 | 545 | 100% |
-| `Rooms/RoomLG` | 277 | 277 | 100% |
+| `Rooms/RoomLG` | 274 | 274 | 100% |
 | `Rooms/RoomWS` | 129 | 129 | 100% |
 | `Rooms/RoomMK` | 87 | 87 | 100% |
 | `Rooms/RoomCO` | 56 | 56 | 100% |
@@ -108,7 +108,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 0 interior key light(s) in 0 room(s); 0 lack `viewmodel_lit`
+- 24 interior key light(s) in 11 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
