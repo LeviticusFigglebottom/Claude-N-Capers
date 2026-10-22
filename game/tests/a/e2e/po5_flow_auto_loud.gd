@@ -76,6 +76,9 @@ var doctor_bag: bool = "--po5-doctor-bag" in OS.get_cmdline_user_args()
 ## --po5-focus=<objective id> (LEAD OF-done: verify BondSafe): once that objective's marker is up, the pilot takes it
 ## before anything else that is up (see _is_focus).
 var focus: StringName = _focus_arg()
+## --po5-wait-convoy (RT P5 gate, LEAD): stay unmasked at the start until the convoy has stopped ([convoy] done), then
+## go loud: the crash stop without the early alarm (police after police_delay_s, not at once).
+var wait_convoy: bool = "--po5-wait-convoy" in OS.get_cmdline_user_args()
 var _lift_tries: int = 0
 ## _is_unreachable: heist time of the last path re-test per "no navmesh path" target.
 var _unreach_checked: Dictionary[int, float] = {}
@@ -121,6 +124,8 @@ func play(flow: Node) -> int:
 		if ds != null:
 			ds.give(p.crew.slot, &"deployable.doctor_bag")
 			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
+	if wait_convoy:
+		await _wait_for_the_convoy()
 	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
 	p.stuck_give_up = STUCK_GIVE_UP
@@ -150,6 +155,16 @@ func play(flow: Node) -> int:
 	if not _ended:
 		return fail("no heist end within %.0f s; markers %s" % [cap, _marker_summary()])
 	return await f.payday_to_hub()
+
+
+## --po5-wait-convoy: unmasked, in place, until [convoy] is done (its ETA is 150-210 s; bounded at 300 s).
+func _wait_for_the_convoy() -> void:
+	f.note("harness: waiting unmasked for the convoy (--po5-wait-convoy)")
+	var t0: float = rt.heist_time_s
+	while rt.mission != null and rt.mission.objective_state(&"convoy") != Enums.ObjectiveState.COMPLETED \
+			and rt.heist_time_s - t0 < 300.0:
+		await f.wait_s(1.0)
+	f.note("the convoy is in at %.0f s: going loud" % rt.heist_time_s)
 
 
 ## One decision: the first marked active objective (HUD order).
