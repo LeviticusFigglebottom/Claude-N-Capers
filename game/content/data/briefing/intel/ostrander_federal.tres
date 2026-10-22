@@ -289,4 +289,4 @@ fixed_rooms = {
 &"VC": 1
 }
 }
-surprises = Array[StringName]([&"vip_client"])
+surprises = Array[StringName]([&"vip_client", &"armored_car_early", &"tower_sniper"])

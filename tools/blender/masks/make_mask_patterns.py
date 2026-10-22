@@ -413,6 +413,70 @@ def stencil(n: int) -> np.ndarray:
     return cv.array()
 
 
+def road_lines(n: int) -> np.ndarray:
+    """Road markings (RT-D2, Rolling Thunder): solid edge lines down both sides, a dashed centre line
+    down the nose, a straight-ahead arrow on the brow, a wide stop line across the mouth and a
+    45 degree hatched box below it on the chin."""
+    x, y, px = grid(n)
+    m = np.zeros_like(x)
+    ex = 0.068                                       # edge lines (m from the centre line)
+    m = np.maximum(m, line(np.abs(x) - ex, 6.0e-3, px))
+    # dashed centre line, from under the arrow to the stop line: 16 mm dashes, 11 mm gaps
+    y0, y1 = 0.30 * H, 0.70 * H
+    period, dash = 0.027, 0.016
+    t = np.mod(y - y0, period)
+    dist_y = np.abs(t - 0.5 * dash) - 0.5 * dash
+    inside = (y > y0) & (y < y1)
+    m = np.maximum(m, np.where(inside, cover(np.maximum(np.abs(x) - 4.5e-3, dist_y), px), 0.0))
+    # straight-ahead arrow on the brow: shaft and a triangular head pointing up (toward the forehead)
+    shaft = np.maximum(np.abs(x) - 4.0e-3, np.maximum(0.13 * H - y, y - 0.26 * H))
+    hy = y - 0.13 * H                                # head: apex at 0.06 H, base at 0.13 H, half width 13 mm
+    head = np.maximum(hy, (np.abs(x) - 0.013 * (y - 0.06 * H) / (0.07 * H)) / 1.4)
+    head = np.where(y < 0.06 * H, 1.0, head)
+    m = np.maximum(m, cover(np.minimum(shaft, head), px))
+    # stop line across the mouth between the edge lines
+    stop = np.maximum(np.abs(y - 0.765 * H) - 0.012, np.abs(x) - ex)
+    m = np.maximum(m, cover(stop, px))
+    # hatched box on the chin: 45 degree stripes inside a frame
+    b0, b1 = 0.83 * H, 0.99 * H
+    frame = np.maximum(np.abs(y - 0.5 * (b0 + b1)) - 0.5 * (b1 - b0), np.abs(x) - ex)
+    m = np.maximum(m, line(frame, 3.0e-3, px))
+    hp = 0.016
+    hat = np.abs(np.mod((x + y) / np.sqrt(2.0), hp) - 0.5 * hp) - 0.25 * hp
+    m = np.maximum(m, np.where(frame < 0.0, cover(hat, px), 0.0))
+    return m
+
+
+def tread(n: int) -> np.ndarray:
+    """Tyre tread band (RT-D2): a tyre's footprint run straight down the face (forehead to chin, ~10 cm
+    wide): a solid centre rib, directional V blocks either side split by thin sipes, square shoulder
+    blocks on a different pitch, plain A outside the band."""
+    x, y, px = grid(n)
+    ax = np.abs(x)
+    m = np.zeros_like(x)
+    bw = 0.050                                       # band half width (m)
+    k = 0.65                                         # V slope (m of y per m of |x|)
+    norm = np.sqrt(1.0 + k * k)
+    # centre rib
+    m = np.maximum(m, cover(ax - 5.0e-3, px))
+    # V blocks: stripes of t = y + k |x| between the rib groove and the shoulder groove
+    period, blk = 0.026, 0.017
+    t = np.mod(y + k * ax, period)
+    vb = (np.abs(t - 0.5 * blk) - 0.5 * blk) / norm
+    zone = np.maximum(9.0e-3 - ax, ax - 0.034)       # between x 9 mm and 34 mm
+    vblk = np.maximum(vb, zone)
+    # a sipe across each V block (thin groove along its middle)
+    sipe = np.abs(np.mod(y + k * ax - 0.5 * blk, period)) / norm - 0.8e-3
+    vblk = np.maximum(vblk, -sipe)
+    m = np.maximum(m, cover(vblk, px))
+    # shoulder blocks: square lugs on a half-step pitch
+    sp, sl = 0.022, 0.015
+    ts = np.mod(y + 0.5 * sp, sp)
+    sh = np.maximum(np.abs(ts - 0.5 * sl) - 0.5 * sl, np.maximum(0.0375 - ax, ax - bw))
+    m = np.maximum(m, cover(sh, px))
+    return m
+
+
 PATTERNS = {
     "guilloche": (guilloche, "banknote guilloche rosette: two 12-lobed interlaced ring families round "
                              "the nose bridge (UV 0.5, 0.42), a 36-wave lathe-work band between two rings, "
@@ -432,6 +496,11 @@ PATTERNS = {
     "stencil": (stencil, f"container stencil: brow panel (B) with the original blocky stencil code "
                          f"'{STENCIL_TEXT}' knocked out (A, with stencil bridges) between rules; 45 degree "
                          "hazard-stripe chin band"),
+    "road_lines": (road_lines, "road markings: solid edge lines down both sides, a dashed centre line down the "
+                               "nose, a straight-ahead arrow on the brow, a wide stop line across the mouth, a "
+                               "45 degree hatched box on the chin"),
+    "tread": (tread, "tyre tread band run down the face (~10 cm wide): solid centre rib, directional V blocks "
+                     "with sipes, square shoulder blocks on a half-step pitch; A outside the band"),
 }
 
 

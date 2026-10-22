@@ -2,8 +2,8 @@
 ## NPC from in front of it (label: look, clip, spawn tags), then forces a clean convoy stop (signals rigged), shoots the
 ## seated escorts in their cars and the dismount (vehicle_exit_*) of one car, and composes a contact sheet. Logs every
 ## NPC with its look, clip, position and facing. PNGs, sheet and log go to --out.
-##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
-##     --fixed-fps 60 --resolution 960x540 --path game res://world/characters/_tools/render_rt_cast_review.tscn \
+##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --audio-driver Dummy --fixed-fps 60 --resolution 640x360 \
+##     --path game res://world/characters/_tools/render_rt_cast_review.tscn \
 ##     -- --out=/abs/dir [--seed=1] [--difficulty=0] [--no-convoy]
 ## Owner: ENV D.
 extends Node3D
@@ -59,7 +59,7 @@ func _run() -> void:
 	_label.add_theme_color_override(&"font_outline_color", Color.BLACK)
 	_label.add_theme_constant_override(&"outline_size", 6)
 	layer.add_child(_label)
-	await _ticks(180)
+	await _ticks(60)
 	_say("seed %d difficulty %d" % [_seed, _difficulty])
 	var i: int = 0
 	for n: Node in rt.npcs():
@@ -173,7 +173,7 @@ func _shot(name: String, eye: Vector3, at: Vector3) -> void:
 	if eye.distance_to(at) < 0.05:
 		eye += Vector3(0.0, 0.5, 1.0)
 	_cam.look_at_from_position(eye, at)
-	for _i: int in 4:
+	for _i: int in 2:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()

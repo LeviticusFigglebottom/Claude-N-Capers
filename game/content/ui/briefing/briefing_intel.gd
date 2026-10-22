@@ -43,6 +43,9 @@ const KEYS: Dictionary = {
 	&"surprises": &"ui.briefing.sec.surprises", &"located": &"ui.briefing.sec.located",
 	&"glass": &"ui.briefing.sec.glass",
 }
+## RT-B1: a heist's scripted convoy (trucks and escort the mission spawns or removes, so no scan counts them right):
+## ui.briefing.sec.convoy.<heist>.<d>, the highest difficulty <= the briefed one that has a key; no key = no line.
+const CONVOY_KEY_FMT: String = "ui.briefing.sec.convoy.%s.%d"
 ## Per-event display keys: ui.briefing.sec.event.<heist>.<event_id>.
 const EVENT_KEY_FMT: String = "ui.briefing.sec.event.%s.%s"
 ## Room display keys (the blueprint's labels): ui.preplan.bp.<heist>.<room_id lowercase>.
@@ -63,9 +66,12 @@ const LOCATED_LINES: Array[StringName] = [
 const PASSAGE_PURPOSES: Array[StringName] = [&"corridor", &"stair", &"exterior", &"elevator", &"shaft"]
 ## A wall-mounted device sits up to this far outside its room's box (m, horizontal).
 const ROOM_REACH_M: float = 0.75
-## Rare-event effect keys that add hostiles, move timers or harden devices (see is_surprise).
+## Rare-event effect keys that add hostiles, move timers or harden devices (see is_surprise). RT-B1: also an armoured
+## car's timed arrival (OF armored_car_early), a sniper perch (OF tower_sniper, RT crane_sniper), the route marshal or
+## the convoy coming early, a Wrecker escort, and more civilians on the street (more witnesses).
 const THREAT_EFFECTS: Array[StringName] = [
 	&"extra_guards", &"gunmen", &"timed_spawn", &"time_lock_add_s", &"police_delay_s", &"extra_hack_interruptions",
+	&"timed_spawn_s", &"perch_s3", &"marshal_lead_s", &"convoy_eta_add_s", &"wrecker_escort", &"civilians",
 ]
 ## SpawnPoint.Kind values that are hostile (GUARD, POLICE, SNIPER_PERCH, CAMERA_OPERATOR).
 const HOSTILE_SPAWNS: Array[int] = [1, 3, 4, 5]
@@ -83,7 +89,7 @@ const CATEGORIES: Array[StringName] = [
 const LINE_ORDER: Array[StringName] = [
 	&"guards", &"cartel", &"cameras", &"operator", &"pagers", &"alarm_buttons", &"keycards", &"keypads",
 	&"lasers", &"sensors", &"alarm_cases", &"time_lock", &"vault_doors", &"safes", &"padlocks", &"hack_terminals",
-	&"glass", &"surprises",
+	&"convoy", &"glass", &"surprises",
 ]
 
 ## Line id -> the scan categories it sums (pagers and the time lock come from the tweak / variant scalars).
@@ -177,6 +183,10 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 				if mode != Enums.HeistMode.LOUD_ONLY and HudTweak.load_default().d142_glass_tips \
 						and HeistCatalog.heist_list().has_glazing(heist_id):
 					_add(out, id, id, {}, Vector2i.ZERO)
+			&"convoy":
+				var ek: StringName = convoy_key(heist_id, difficulty)
+				if ek != &"":
+					out.append({"id": id, "key": ek, "args": {}, "text": UiText.t(ek), "min": 0, "max": 0})
 			&"surprises":
 				var names: PackedStringArray = PackedStringArray()
 				for ev: StringName in surprises_at(d, t, difficulty):
@@ -189,6 +199,15 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 		if LOCATED_LINES.has(l["id"]):
 			_locate(l, heist_id, room_counts(d, t, line_categories(d, StringName(l["id"])), difficulty))
 	return out
+
+
+## RT-B1: the convoy line's key for `heist_id` at `difficulty` (CONVOY_KEY_FMT, falling back to lower difficulties), or &"".
+static func convoy_key(heist_id: StringName, difficulty: int) -> StringName:
+	for d: int in range(difficulty, -1, -1):
+		var k: StringName = StringName(CONVOY_KEY_FMT % [heist_id, d])
+		if StringTable.has(k):
+			return k
+	return &""
 
 
 ## D-140: the pager carriers (guards + the camera operator) `heist_id` can field at `difficulty`, [min, max] over seeds;
