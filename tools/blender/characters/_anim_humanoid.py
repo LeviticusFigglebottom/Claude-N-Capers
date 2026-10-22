@@ -685,9 +685,13 @@ def gaits(table: dict) -> dict[str, Gait]:
         "walk": g("walk", beta=0.6, lift=0.07, drop=0.035, pelvis_yaw=7.0, strike=16.0, toeoff=-30.0,
                   centre={"L": (0.0, -0.04), "R": (0.0, -0.04)}, arm_swing=17.0, elbow=14.0,
                   upper=lambda sk, pose, ph, f: life.walk_upper(sk, pose, ph, f, arm_lag=0.04)),
-        "run": g("run", beta=0.36, lift=0.17, lift_skew=0.6, run=True, drop=0.075, bob=0.028, strike=8.0, toeoff=-40.0,
-                 lean=9.0, pelvis_yaw=9.0, pelvis_roll=4.0, arm_swing=34.0, arm_add=30.0, elbow=78.0, elbow_swing=12.0,
-                 hand="loose_fist", centre={"L": (0.0, -0.07), "R": (0.0, -0.07)}, sway=0.012, swing_toe_up=12.0,
+        # upright combat run (LEAD 2026-10-22): a jog's knees and hips, a shorter stance with a gentler toe-off (the
+        # import's key reduction slides a planted ball on a fast roll: run_start / run_stop keep < 4 mm/frame) and
+        # swing ends that do not overshoot (swing_match), so the 8-way runs' feet stay in reach without the reach fix
+        # lowering the hips
+        "run": g("run", beta=0.28, lift=0.09, lift_skew=0.6, run=True, drop=0.068, bob=0.024, strike=8.0, toeoff=-26.0,
+                 swing_match=0.4, lean=7.0, pelvis_yaw=9.0, pelvis_roll=4.0, arm_swing=34.0, arm_add=30.0, elbow=78.0,
+                 elbow_swing=12.0, hand="loose_fist", centre={"L": (0.0, -0.07), "R": (0.0, -0.07)}, sway=0.012, swing_toe_up=12.0,
                  heel_rise=0.45, flat_at=0.12),
         "sprint": g("sprint", beta=0.30, lift=0.26, lift_skew=0.55, run=True, drop=0.09, bob=0.03, strike=4.0,
                     toeoff=-46.0, lean=16.0, pelvis_yaw=10.0, pelvis_roll=4.0, arm_swing=46.0, arm_add=28.0, elbow=85.0,
