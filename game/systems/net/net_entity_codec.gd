@@ -193,6 +193,7 @@ static func state_of(node: Node) -> Dictionary:
 	var gp: GameplayPrefab = node as GameplayPrefab
 	if gp != null:
 		out["pe"] = gp.prefab_enabled  # OF-A2 (QC-61): runtime enable of every map prefab
+		out["vis"] = gp.visible  # A4-03 soak: a mission hiding a prefab on the host (DB's unrolled crate stacks)
 	return out
 
 
@@ -271,6 +272,10 @@ static func apply_state(node: Node, d: Dictionary) -> void:
 		gp.prefab_enabled = bool(d["pe"])  # OF-A2: before the prefab's own state
 		d = d.duplicate()
 		d.erase("pe")
+	if gp != null and d.has("vis"):
+		gp.visible = bool(d["vis"])  # A4-03: the host's visibility of the prefab
+		d = d.duplicate()
+		d.erase("vis")
 	if node.has_method(&"_apply_net_state"):
 		node.call(&"_apply_net_state", d)
 		return
