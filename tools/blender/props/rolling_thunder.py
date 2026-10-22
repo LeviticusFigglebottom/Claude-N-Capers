@@ -94,7 +94,8 @@ VARIANTS = {
         "fn": "c4_box",
         "cat": {"kind": "pickup_box", "place": "on", "group": "exterior", "surface": "metal"},
     },
-    # the car-park entry barrier (post + 3.6 m arm, down) and the height bars (2.1 m car park, 4.4 m underpass)
+    # the car-park entry barrier (post + 3.6 m arm, raised: the entrance is a walk route) and the height bars (2.1 m car
+    # park, 4.4 m underpass; unplaced: the map's G1 EntranceHeightBar lintel and trench HeightBar are the bars)
     "prop_car_park_barrier": {
         "fn": "barrier_arm",
         "arm": 3.6,
@@ -800,29 +801,23 @@ def _thermite_lock(k: Kit, p: dict) -> None:
 
 
 def _barrier_arm(k: Kit, p: dict) -> None:
-    """A car-park entry barrier: the motor post (0.35 x 0.3 x 1.1 m), the arm down along +X at 0.9 m in red / white
-    bands, a rest post at its tip; the pivot at the footprint centre (the post at x = -(arm - 0.135) / 2)."""
+    """A car-park entry barrier, open: the motor post (0.35 x 0.3 x 1.1 m) at the pivot and the arm raised straight up
+    from its hinge at 0.95 m in red / white bands (the entrance stays a walk route: an arm down across it would need a
+    collider and close the marshal's and the police's way in), so it stands in the open, not under a soffit."""
     arm = float(p["arm"])
-    o = -(arm - 0.135) / 2
     body = k.obj("Body")
     b = body.part(bevel=0.01)
     t = body.part(bevel=0.002)
-    b.bx((o - 0.175, -0.15, 0.0), (o + 0.175, 0.15, 1.1), "metal_yellow")
-    t.bx((o - 0.18, -0.155, 0.95), (o + 0.18, 0.155, 1.0), "metal_dark")
+    b.bx((-0.175, -0.15, 0.0), (0.175, 0.15, 1.1), "metal_yellow")
+    t.bx((-0.18, -0.155, 0.95), (0.18, 0.155, 1.0), "metal_dark")
+    b.bx((0.175, -0.07, 0.88), (0.29, 0.07, 1.02), "metal_dark")  # the hinge boss on the lane side
     n = int(arm / 0.4)
     for i in range(n):
-        x0 = o + 0.175 + i * (arm - 0.175) / n
-        x1 = o + 0.175 + (i + 1) * (arm - 0.175) / n
-        b.bx((x0, -0.04, 0.9), (x1, 0.04, 0.98), "metal_red" if i % 2 == 0 else "metal_white")
-    b.bx((o + arm - 0.04, -0.04, 0.0), (o + arm + 0.04, 0.04, 0.9), "metal_dark")  # rest post
-    t.bx((o - 0.06, 0.15, 0.6), (o + 0.06, 0.16, 0.75), "metal_red")  # lamp
+        z0 = 0.95 + i * arm / n
+        b.bx((0.19, -0.04, z0), (0.27, 0.04, z0 + arm / n), "metal_red" if i % 2 == 0 else "metal_white")
+    t.bx((-0.06, 0.15, 0.6), (0.06, 0.16, 0.75), "metal_red")  # lamp
     body.build()
-    k.collision(
-        [
-            ((o - 0.175, -0.15, 0.0), (o + 0.175, 0.15, 1.1)),
-            ((o + arm - 0.04, -0.04, 0.0), (o + arm + 0.04, 0.04, 0.9)),
-        ]
-    )
+    k.collision([((-0.175, -0.15, 0.0), (0.175, 0.15, 1.1))])
 
 
 def _height_bar(k: Kit, p: dict) -> None:

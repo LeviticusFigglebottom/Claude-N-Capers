@@ -6,6 +6,28 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-22, **The car-park barrier is placed (open, arm raised) on the forecourt by the entrance (22.35, -12.4).**
+  - The arm is raised because the entrance is the marshal's walk route and a police entry, and a down arm would
+    need a collider across it. It stands in the open because the Deck 2 parapet is over the opening.
+  - **The height bars need no props.** The G1 `EntranceHeightBar` lintel (2.4-2.7 m) and the trench `HeightBar`
+    (4.4 m, wall to wall at x 62) are the doc's bars, already finished. My batch-3 note that they had no stand-in was
+    wrong; the two height-bar props stay unplaced.
+  - Gate: regen twice byte-identical; validate greybox and final PASS; navmesh 3,809; c test_rt_ 6/6; a test_rt_a6
+    4/4.
+  - **Phase 2 (the mixer and the Tannery gate): this is a proposal and needs A. Nothing is built.**
+    - **Current state:**
+      - A's `_mixer_move` sets layouts `mixer_gone` / `tannery_open` if the map has them.
+      - Nothing implements the gates' `opens_with = mixer_move`.
+      - `ConvoyLayouts` can switch a layout on, but it cannot remove start-state bodies such as the closed gates.
+    - **Proposal:**
+      1. (C) A `Mixer` ConvoyVehicle (veh_mixer_truck) waits in the site at MixerTruck's spot.
+      2. (C) Each convoy layout gets a `MixerStop` and a `MixerPath` (the site → the Tannery gate → across the
+         convoy's front for a clean stop, or the junction centre for a crash). The layout's whole-map nav bake
+         includes the mixer at its stop and the Tannery gates open.
+      3. (A) At `_mixer_move`: open the Door prefabs tagged `tannery_gate` (unbar + open), then drive `Mixer` along
+         the active layout's `MixerPath` to its `MixerStop`.
+      - With this, the `mixer_gone` / `tannery_open` layouts are not needed. For the 3 s between a clean stop and the
+        mixer move, the nav already shows the mixer in the junction, which I think is acceptable.
 - 2026-10-22, **RT-C2 G2: the lighting lane, the audio lane, the C4 boxes and the police livery.**
   - **Lighting (ed5ed8ed, new rt_gi.gd, copied and adapted from of_gi.gd):**
     - Final 16:50 environment: AgX, SSAO/SSIL, one height-falloff dust haze with sun scatter (no volumetric fog),
