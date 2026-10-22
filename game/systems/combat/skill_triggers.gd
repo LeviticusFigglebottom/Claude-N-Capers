@@ -343,10 +343,10 @@ func _on_damage_applied(victim_net_id: int, attacker_net_id: int, info: Dictiona
 ## B4b: the weapon class of a hit / kill ("melee" for a melee weapon or melee damage, &"" when unknown).
 static func weapon_class_of(info: Dictionary) -> StringName:
 	var id: StringName = StringName(info.get("weapon_id", &""))
-	var def: WeaponDef = ContentDB.weapon(id) if id != &"" else null
+	var def: WeaponDef = ContentDB.weapon(id) if id != &"" and ContentDB.has(ContentDB.WEAPONS, id) else null
 	if def != null:
 		return Enums.weapon_class_qualifier(def.weapon_class)
-	if int(info.get("type", -1)) == Enums.DamageType.MELEE or (id != &"" and ContentDB.melee(id) != null):
+	if int(info.get("type", -1)) == Enums.DamageType.MELEE or (id != &"" and ContentDB.has(ContentDB.MELEE, id)):
 		return &"melee"
 	return &""
 
@@ -362,7 +362,8 @@ func _kill_reload(crew: CrewController, info: Dictionary) -> void:
 		var ok: bool = false
 		match String(e.get("trigger", "")):
 			"auto_kills":
-				var def: WeaponDef = ContentDB.weapon(StringName(info.get("weapon_id", &"")))
+				var wid: StringName = StringName(info.get("weapon_id", &""))
+				var def: WeaponDef = ContentDB.weapon(wid) if ContentDB.has(ContentDB.WEAPONS, wid) else null
 				ok = in_class and def != null and def.fire_modes.has(&"auto")
 			"melee_kill":
 				ok = cls == &"melee"
@@ -470,7 +471,7 @@ func _tick_outnumbered(crew: CrewController) -> void:
 
 ## Overkill: the kill weapon's class against each granted entry's trigger_class.
 func _overkill(crew: CrewController, weapon_id: StringName) -> void:
-	var def: WeaponDef = ContentDB.weapon(weapon_id) if weapon_id != &"" else null
+	var def: WeaponDef = ContentDB.weapon(weapon_id) if weapon_id != &"" and ContentDB.has(ContentDB.WEAPONS, weapon_id) else null
 	if def == null:
 		return
 	var cls: StringName = Enums.weapon_class_qualifier(def.weapon_class)
