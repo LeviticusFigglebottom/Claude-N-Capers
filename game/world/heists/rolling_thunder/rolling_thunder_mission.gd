@@ -65,6 +65,7 @@ const WRECKER: StringName = &"enemy.wrecker"
 const TAG_CIV_STREET: StringName = &"civ_street"
 const TAG_CIV_DINER: StringName = &"civ_diner"
 const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
+const PAUSE_CABINET: StringName = &"cabinet_locked"
 ## Diner customers (doc Cast: 2-5 in the booths): 3, rush_hour adds its extra_diner_customers (+2).
 const DINER_CUSTOMERS: int = 3
 const RNG_STREAM: StringName = &"rt_mission"
@@ -199,9 +200,27 @@ func _apply_rare_setup() -> void:
 	thin_civilians(TAG_CIV_DINER, diner)
 	if _slot_active(&"goods_lift", &"lift_dead"):
 		_power_lift(false)
+	if _slot_active(&"controller", &"ctrl_locked"):
+		_lock_cabinet()
 	set_sniper_perches_open(PERCH_CRANE, _rare(RARE_CRANE))
 	if _runtime != null and _runtime.difficulty < Enums.Difficulty.HAZARDOUS:
 		set_sniper_perches_open(PERCH_ASHBY, false)
+
+
+## doc Variants controller: ctrl_locked = the cabinet's padlock (8 s pick, or cut) before the rig can be worked; the
+## rig is paused (blocked) until the padlock is off.
+func _lock_cabinet() -> void:
+	var rig: HackTerminal = null
+	var lock: Padlock = null
+	for n: Node in find_tagged(TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+		elif n is Padlock:
+			lock = n as Padlock
+	if rig == null or lock == null or lock.opened:
+		return
+	rig.pause(PAUSE_CABINET)
+	lock.lock_opened.connect(func(_how: StringName) -> void: rig.resume(PAUSE_CABINET), CONNECT_ONE_SHOT)
 
 
 func _power_lift(on: bool) -> void:

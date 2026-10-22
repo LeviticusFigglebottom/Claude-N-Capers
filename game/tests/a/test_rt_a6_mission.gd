@@ -255,3 +255,36 @@ func test_alarm_during_the_drive_in_keeps_an_objective_up() -> void:
 	assert_eq(m.objective_state(&"ambush"), Enums.ObjectiveState.COMPLETED, "sprung at the stop")
 	assert_eq(m.objective_state(&"escort"), Enums.ObjectiveState.ACTIVE, "[escort] up with it")
 	assert_eq(m.objective_state(&"trucks"), Enums.ObjectiveState.ACTIVE, "[trucks] up with it")
+
+
+## doc Variants controller: ctrl_locked = the cabinet's padlock gates the signal rig (C's TODO(A) on the padlock).
+func test_locked_cabinet_gates_the_rig() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = null
+	for s: int in [4101, 4102, 4103, 4104, 4105]:
+		m = await _launch(s)
+		if m._slot_active(&"controller", &"ctrl_locked"):
+			break
+		after_each()
+		await wait_frames(1)
+		m = null
+	if m == null:
+		skip("no ctrl_locked roll in 5 seeds")
+		return
+	var rig: HackTerminal = null
+	var lock: Padlock = null
+	for n: Node in m.find_tagged(RollingThunderMission.TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+		elif n is Padlock:
+			lock = n as Padlock
+	assert_true(rig != null and lock != null, "the rig and the cabinet padlock")
+	if rig == null or lock == null:
+		return
+	assert_true(rig.is_paused(), "the rig is blocked while the cabinet is locked")
+	assert_eq(rig._availability(null), HackTerminal.BLOCK_PAUSED)
+	lock.open_lock(false, &"lockpick")
+	await wait_physics_frames(1)
+	assert_false(rig.is_paused(), "the padlock off: the rig can be worked")
