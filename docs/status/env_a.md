@@ -4,6 +4,19 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-34) D-157 crew sentry; 51 skill keys on A's side; AI crew capsules fixed (2026-10-22)
+- **f12e25ba, crew sentry (SentryGun under a DeployablePrefab of kind "sentry"):**
+  - Deploy costs 40% ◇ of the owner's ammo; pickup refunds the unused share and restocks.
+  - Targeting, turn rate, spread and health all scale with the skill keys; frontal shield; quiet / AP modes.
+  - Police target it; NpcGunner shoots it; its state is replicated.
+  - Node contract for D: Visual/Base/Yaw/Pitch with Pitch/Gun, Muzzle and Shield.
+  - DeployableTweak fallback def until B ships sentry.tres. test_d157_sentry 4/4.
+- **The 6 sentry keys are hooked:** 51 of 57 keys on A's side. P has hooked its 5 (67b66fd3). Left: pocket_ecm (held).
+- **0df59c67 + dcc9fa5e:** AI crew launched without a heister wear the first heister nobody else wears, instead of
+  the capsule placeholder.
+  - This only happened with P's direct-launch harness; the menus already hand every bot a heister.
+  - PO-5 now logs a "crew looks" line at heist start.
+
 ### (-33) A4-04: 45 of 57 unhooked skill keys hooked (B1-B6); seated units animate (2026-10-22)
 - **Cherry-pick order:** 5e7fd691 (B1), 06962d04 (B2), c8661419 (exit anim), a48b71e7 (B3), 05477b73 (B4), 48608af4
   (B5 Hot Floor + B6).
