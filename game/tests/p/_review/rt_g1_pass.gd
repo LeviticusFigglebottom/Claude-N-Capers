@@ -1327,6 +1327,8 @@ func _hazard_run(clean: bool) -> bool:
 		note("CUSTODY slot %d" % slot))
 	_watch_hp.call_deferred()
 	await shot("%s_spawn" % tag)
+	if _fast:
+		_set_fast(true)  # render loop off between screenshots (presentation only, as _launch): llvmpipe was ~130x slow
 	var m: RollingThunderMission = _mission()
 	if clean:
 		_crew_hidden(true)
@@ -1349,6 +1351,7 @@ func _hazard_run(clean: bool) -> bool:
 	if clean:
 		pilot.inp.press(&"crouch")
 		await wait_until(func() -> bool: return m._stop_done, 400.0)
+		note("clean_haz: waiting at %s crouched %s" % [Po5Pilot._v(pilot.crew.global_position), pilot.crew.crouched])
 		_crew_hidden(false)
 		pilot.combat = true
 		_peaks.clear()
