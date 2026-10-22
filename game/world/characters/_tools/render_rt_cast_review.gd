@@ -5,7 +5,7 @@
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy --fixed-fps 60 \
 ##     --resolution 640x360 \
 ##     --path game res://world/characters/_tools/render_rt_cast_review.tscn \
-##     -- --out=/abs/dir [--seed=1] [--difficulty=0] [--no-convoy]
+##     -- --out=/abs/dir [--seed=1] [--difficulty=0] [--no-convoy] [--only=<spawn tag>]
 ## Owner: ENV D.
 extends Node3D
 
@@ -18,6 +18,8 @@ var _out: String = ""
 var _seed: int = 1
 var _difficulty: int = Enums.Difficulty.ROUTINE
 var _convoy: bool = true
+## --only=<spawn tag>: shoot only the NPCs with that tag (e.g. driver_mixer), no convoy phase
+var _only: StringName = &""
 var _cam: Camera3D = null
 var _label: Label = null
 var _log: PackedStringArray = []
@@ -34,6 +36,8 @@ func _ready() -> void:
 			_difficulty = int(a.trim_prefix("--difficulty="))
 		elif a == "--no-convoy":
 			_convoy = false
+		elif a.begins_with("--only="):
+			_only = StringName(a.trim_prefix("--only="))
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/rt_cast"
 	RenderingServer.render_loop_enabled = false  # frames only for the shots (llvmpipe draws this map slowly)
@@ -68,9 +72,11 @@ func _run() -> void:
 		var npc: NpcBase = n as NpcBase
 		if npc == null or not npc.visible:
 			continue
+		if _only != &"" and not (npc.spawn_info.get("tags", []) as Array).has(_only):
+			continue
 		i += 1
 		await _npc_shot("cast_%02d" % i, npc)
-	if _convoy and rt.mission != null and &"signals_rigged" in rt.mission:
+	if _convoy and _only == &"" and rt.mission != null and &"signals_rigged" in rt.mission:
 		await _convoy_phase(rt)
 	_sheet()
 	_finish()
