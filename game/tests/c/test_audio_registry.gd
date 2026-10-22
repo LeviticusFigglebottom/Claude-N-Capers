@@ -91,9 +91,9 @@ const HEIST_MUSIC: Array[StringName] = [&"glasshouse", &"night_deposit", &"shado
 		&"gallery_night", &"ostrander_federal", &"rolling_thunder"]
 ## Heist tracks whose map does not place its Audio node yet.
 const HEIST_MUSIC_MAP_PENDING: Array[StringName] = []
-## RT-C2 / audio_cues v1.4 (QC-85): the convoy-ambush one-shots, 3D on the World bus.
+## RT-C2 / audio_cues v1.9 (QC-85): the convoy-ambush one-shots and the freight train, 3D on the World bus.
 const RT_CUES: Array[StringName] = [&"cue.convoy_approach", &"cue.convoy_brake", &"cue.mixer_ram",
-		&"cue.signal_click", &"cue.truck_doors_open"]
+		&"cue.signal_click", &"cue.truck_doors_open", &"cue.freight_train_pass"]
 const ALL_STEMS: Array[StringName] = [&"stealth", &"control", &"anticipation", &"assault", &"fade"]
 const BUSES: Array[StringName] = [&"Music", &"SFX", &"Weapons", &"Enemies", &"World", &"UI", &"Voice", &"Ambience"]
 ## PO-14 registry coverage scan (test_every_cue_referenced_in_code_is_registered).
@@ -254,7 +254,7 @@ func test_assault_event_cues() -> void:
 	assert_true(w != null and not w.positional and w.bus == &"UI" and w.cooldown_s >= 3.0, "2D UI warning sting")
 
 
-## RT-C2: the Rolling Thunder convoy cues are 3D one-shots on the World bus, each a single stream of a sane length.
+## RT-C2: the Rolling Thunder convoy cues and the freight train are 3D one-shots on the World bus, each a single stream of a sane length.
 func test_rolling_thunder_cues() -> void:
 	if _reg == null:
 		skip("no registry")
@@ -269,9 +269,14 @@ func test_rolling_thunder_cues() -> void:
 		assert_eq(c.bus, &"World", "%s World bus" % id)
 		assert_eq(c.streams.size(), 1, "%s one stream" % id)
 		var len_s: float = c.streams[0].get_length()
-		assert_true(len_s >= 0.3 and len_s <= 9.0, "%s length %.2f s" % [id, len_s])
+		assert_true(len_s >= 0.3 and len_s <= 18.5, "%s length %.2f s" % [id, len_s])
 	var approach: AudioCueDef = _reg.get_cue(&"cue.convoy_approach")
 	assert_true(approach != null and approach.max_distance >= 150.0, "convoy approach carries across the junction")
+	# v1.9: the freight train is its own long one-shot (A holds it during a Phantom charge), not part of the bed.
+	var train: AudioCueDef = _reg.get_cue(&"cue.freight_train_pass")
+	if train != null:
+		assert_true(train.streams[0].get_length() >= 15.0, "freight train pass is long (%.1f s)" % train.streams[0].get_length())
+		assert_true(train.max_distance >= 150.0, "freight train carries 150 m")
 
 
 func test_breach_burn_and_throwable_cues() -> void:

@@ -1,7 +1,7 @@
-"""Rolling Thunder cues (RT-C2): the four ambience beds of the heist doc (Audio/lighting) and the five convoy-ambush
-one-shots (audio_cues v1.4 additions, QC-85). Beds are as cues_ambience.py (stereo, 2D, Ambience bus, loop, "bed"
-loudness, seamless via make_loop); one-shots are mono, 3D, World bus. Built by tools/audiogen/build.py (it appends
-`CUES` to the cue table).
+"""Rolling Thunder cues (RT-C2): the four ambience beds of the heist doc (Audio/lighting), the five convoy-ambush
+one-shots and the freight train (audio_cues v1.9, QC-85). Beds are as cues_ambience.py (stereo, 2D, Ambience bus,
+loop, "bed" loudness, seamless via make_loop); one-shots are mono, 3D, World bus. Built by tools/audiogen/build.py
+(it appends `CUES` to the cue table).
 
 Beds (each keeps its own band / rhythm so two can overlap at a doorway or a ramp):
   amb_skyway_street   the junction under the Skyway, 16:50: the expressway's traffic rumble overhead (deck-filtered
@@ -10,10 +10,9 @@ Beds (each keeps its own band / rhythm so two can overlap at a doorway or a ramp
                       grit (crackle 2.5-7 kHz gated by the gusts), distant city traffic, a bus idling at the
                       interchange (diesel firing 22 Hz, 60-300 Hz, panned left), pigeons cooing under the girder. 48 s.
   amb_underpass       the Tannery underpass at -5.0: echoing drips (1.4-3.2 kHz pings in a long tunnel reverb),
-                      the fluorescent battens (100 Hz buzz with odd harmonics), low cut rumble, and one freight train
-                      over the rail bridge per loop (96 s: inside the doc's 90-150 s): an 18 s pass with a < 200 Hz
-                      rumble swell, bogie wheel-joint clacks (paired, rate following the speed) and intermittent
-                      wheel squeal (2.6-4.2 kHz narrow tones), panned N -> S. 96 s.
+                      the fluorescent battens (100 Hz buzz with odd harmonics), low cut rumble and far traffic in the
+                      cut. No train: the freight train is its own one-shot (cue.freight_train_pass, audio_cues v1.9) so
+                      ENV A can schedule it every 90-150 s and hold it back during a Phantom charge. 40 s.
   amb_diner           the Halfway Diner: the griddle (hiss 3-9 kHz + fat spits), a counter radio (tinny 350-2800 Hz
                       plucked progression + a DJ voice), cutlery and crockery clinks (2-6 kHz), soft murmur, the
                       fridge compressor hum (50 Hz). 32 s.
@@ -31,6 +30,9 @@ One-shots (niches):
                       seed), debris tinkle. 3D, 150 m. 3 s.
   signal_click        the rigged junction controller's relay clunk: a solenoid thump (130 Hz), a hard contact
                       click (1.6-3.4 kHz), a brief 50 Hz hum swell. 3D, 25 m. 0.5 s.
+  freight_train_pass  a freight train over the rail bridge: a 17 s pass with a < 200 Hz rumble swell, bogie
+                      wheel-joint clacks (paired, ~1.15 s per wagon) and intermittent wheel squeal (2.6-4.2 kHz narrow
+                      tones) in the underpass echo. 3D, 150 m. 17 s.
   truck_doors_open    the armoured truck's rear doors: a heavy bolt drawn (steel scrape sweep + two clunks), then
                       both hinges creaking (stick-slip FM squeal 300-900 Hz) and the doors banging on their stops.
                       3D, 40 m. 2.8 s.
@@ -86,9 +88,9 @@ def _drip(rng: np.random.Generator) -> np.ndarray:
     return osc.sine(f, d) * env.exp_decay(d, 0.04, 0.0003)
 
 
-def _train_pass(rng: np.random.Generator, d: float = 18.0) -> np.ndarray:
-    """A freight train over the bridge (stereo): a low rumble swell, bogie wheel-joint clacks (pairs, the rate
-    following the speed curve), intermittent wheel squeal, panned north -> south."""
+def _train_pass(rng: np.random.Generator, d: float = 17.0, squeal: float = 0.05) -> np.ndarray:
+    """A freight train over the bridge (mono): a low rumble swell, bogie wheel-joint clacks (pairs, one wagon every
+    ~1.15 s), intermittent wheel squeal."""
     n = nsamp(d)
     t = np.arange(n) / SR
     swell = np.clip(np.sin(np.pi * t / d), 0, None) ** 1.5
@@ -111,8 +113,8 @@ def _train_pass(rng: np.random.Generator, d: float = 18.0) -> np.ndarray:
         f = float(rng.uniform(2600, 4200)) * (1 + 0.01 * np.sin(2 * np.pi * float(rng.uniform(4, 9)) * tt))
         sq = (osc.sine(f, sd) + osc.sine(f * 1.5, sd) * 0.3) * env.adsr(sd, 0.2, 0.3, 0.8, 0.4)
         sq *= 0.6 + 0.4 * np.clip(filters.lp(noise.white(sd, rng), 6.0) * 20, -1, 1)
-        place(y, sq, nsamp(st), 0.05 * float(swell[nsamp(st)]))
-    return fx.pan(filters.lp(y, 6000), np.linspace(-0.85, 0.85, n))
+        place(y, sq, nsamp(st), squeal * float(swell[nsamp(st)]))
+    return filters.lp(y, 6000)
 
 
 def _sizzle(d: float, rng: np.random.Generator) -> np.ndarray:
@@ -190,8 +192,8 @@ def amb_skyway_street(rng: np.random.Generator, v: int) -> np.ndarray:
 
 
 def amb_underpass(rng: np.random.Generator, v: int) -> np.ndarray:
-    """The Tannery underpass (doc: echoing drips, the fluorescent buzz, a freight train passing over every 90-150 s:
-    rumble plus wheel squeal). 96 s loop with one 18 s train pass."""
+    """The Tannery underpass (doc: echoing drips, the fluorescent buzz). The freight train passing over every 90-150 s
+    is the separate one-shot cue.freight_train_pass (A schedules it). 40 s loop."""
     def render(d: float) -> np.ndarray:
         n = nsamp(d)
         out = np.stack([filters.lp(noise.brown(d, rng), 160) * 0.35 for _ in range(2)], axis=1)
@@ -203,10 +205,8 @@ def amb_underpass(rng: np.random.Generator, v: int) -> np.ndarray:
                   float(rng.uniform(0.04, 0.1)))
         out += fx.reverb(drips, "hall", 0.7, tail=False)[:n]
         out += _car_pass(rng, n, d) * 0.15
-        tr = fx.reverb(_train_pass(rng), "hall", 0.3, tail=False)
-        place(out, tr, nsamp(float(rng.uniform(30.0, 60.0))), 0.55)
         return out
-    return make_loop(render, 96.0, 2.0)
+    return make_loop(render, 40.0, 2.0)
 
 
 def amb_diner(rng: np.random.Generator, v: int) -> np.ndarray:
@@ -355,6 +355,16 @@ def signal_click(rng: np.random.Generator, v: int) -> np.ndarray:
     return _fade(y, 0.0, 0.08)
 
 
+def freight_train_pass(rng: np.random.Generator, v: int) -> np.ndarray:
+    """A freight train crossing the rail bridge over the underpass (doc: rumble plus wheel squeal): a < 200 Hz rumble
+    swell, paired bogie clacks (900-1500 Hz) one wagon every ~1.15 s and three wheel-squeal tones (2.6-4.2 kHz) in the
+    underpass echo. Niche: the only long low swell with a regular clack rhythm; masks the Phantom hum, so ENV A holds
+    it back during a charge. 17 s."""
+    y = _train_pass(rng, 17.0, 0.12)
+    y = fx.reverb(y, "hall", 0.3, stereo_out=False, tail=False)
+    return _fade(y, 0.5, 1.0)
+
+
 def truck_doors_open(rng: np.random.Generator, v: int) -> np.ndarray:
     """The armoured truck's rear doors: a heavy bolt drawn (a steel scrape sweeping 1.2 -> 2.4 kHz between two
     clunks), both hinges creaking (stick-slip FM squeal 300-900 Hz) and the doors banging on their stops. Niche: the
@@ -400,13 +410,16 @@ CUES: list[CueSpec] = [
     for name, fn, vol, role in _BEDS
 ] + [
     CueSpec("convoy_approach", convoy_approach, max_distance=200.0, cooldown_s=5.0,
-            note="RT-C2 audio_cues v1.4 (QC-85): convoy engines + two-tone Vaultline horn, 3D on the lead truck"),
+            note="RT-C2 audio_cues v1.9 (QC-85): convoy engines + two-tone Vaultline horn, 3D on the lead truck"),
     CueSpec("convoy_brake", convoy_brake, max_distance=80.0, pitch_jitter=0.03, cooldown_s=1.0,
-            note="RT-C2 audio_cues v1.4 (QC-85): air-brake hiss, 3D on each truck as it stops"),
+            note="RT-C2 audio_cues v1.9 (QC-85): air-brake hiss, 3D on each truck as it stops"),
     CueSpec("mixer_ram", mixer_ram, max_distance=150.0,
-            note="RT-C2 audio_cues v1.4 (QC-85): mixer rams the lead truck (impact, glass, metal), 3D at the hit"),
+            note="RT-C2 audio_cues v1.9 (QC-85): mixer rams the lead truck (impact, glass, metal), 3D at the hit"),
     CueSpec("signal_click", signal_click, max_distance=25.0, volume_db=-3.0, pitch_jitter=0.04, cooldown_s=0.2,
-            note="RT-C2 audio_cues v1.4 (QC-85): relay clunk when the rigged signals switch, 3D at the controller"),
+            note="RT-C2 audio_cues v1.9 (QC-85): relay clunk when the rigged signals switch, 3D at the controller"),
+    CueSpec("freight_train_pass", freight_train_pass, max_distance=150.0, cooldown_s=60.0,
+            note="RT-C2 audio_cues v1.9 (QC-85): freight train over the rail bridge; A schedules it every 90-150 s "
+                 "in the underpass and holds it during a Phantom charge"),
     CueSpec("truck_doors_open", truck_doors_open, max_distance=40.0, pitch_jitter=0.02,
-            note="RT-C2 audio_cues v1.4 (QC-85): heavy bolt + hinges, 3D at the truck's rear doors"),
+            note="RT-C2 audio_cues v1.9 (QC-85): heavy bolt + hinges, 3D at the truck's rear doors"),
 ]
