@@ -8,7 +8,7 @@ Newest entry first, keep the last 10.
      `materials.tres` loads D's two new library materials, so on B alone the mask catalog does not load.
      - On B alone: test_masks / test_mask_batch / test_achievements_b702 fail.
      - On a scratch merge of B + D 081ce136: green.
--33. **RT achievement rewards wired: all 6 RT achievements now grant a part, 44 of 44 shipped + RT.**
+-33. **RT achievement rewards wired: all 6 RT achievements now grant a part (with the 38 shipped ones: 44 of 44).**
      - Parts: rt_cataclysm -> Pylon base, rt_heavy_haul -> Ingot base, rt_full_convoy -> Armor Plate material,
        rt_iron_crew -> Hi-Vis material, rt_clean_stop -> Road Lines pattern, rt_quick -> Tread pattern.
      - **Values:** materials use D's metallic / roughness; `detail_mean` is measured from D's albedo (armor 0.204,
