@@ -434,7 +434,7 @@ u_out with no crossfade. Under 135° the 8-way switch with phase carry stays (fa
 * The shared run family (`run`, `run_fl/fr/l/r/bl/br/b`, and the `run_start` / `run_stop` /
   `hold_*_run` / `aim_*_run` / `run_reverse*` clips built from it) is a jog-height combat run.
   Hips (mean, above the root): 0.887 m forward and diagonal-forward, 0.865–0.868 m lateral and
-  backward (were 0.795–0.859 m; idle 0.912). Knees are a jog's: ≤ 65° max flex including the
+  backward (were 0.795–0.859 m; idle 0.912). Knees are a jog's: ≤ 65° max flex in D's raw probe units (≈ ≤ 30° true flex; the probe reads 34-36° on a straight leg) including the
   swing heel-kick. Slight forward lean (7°) on the forward runs; upright trunk backward.
 * Unchanged: names, speed (3.5 m/s), frames (21), loop, touch-down phases (R at 0, L at 0.5),
   the forward/back phase groups. The back group runs 0.07–0.08 of a cycle later (A's 0.10 ± 0.04
