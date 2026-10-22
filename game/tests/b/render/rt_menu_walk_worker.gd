@@ -5,6 +5,7 @@ extends Node
 
 const RT: StringName = &"rolling_thunder"
 const MAX_STEPS: int = 80
+const SIDE_KEYS: Dictionary = {SIDE_LEFT: KEY_LEFT, SIDE_TOP: KEY_UP, SIDE_RIGHT: KEY_RIGHT, SIDE_BOTTOM: KEY_DOWN}
 ## Every RT pre-planning asset (the WIP def's preplanning block) -> where it is bought: &"" = the crew tab, else a point.
 const ASSETS: Array[Array] = [
 	[&"asset.intel_route", &""], [&"asset.intel_cameras", &""], [&"asset.intel_guard_posts", &""],
@@ -67,18 +68,39 @@ func _nav_to(target: Control, label: String) -> bool:
 	if target == null or not target.is_visible_in_tree():
 		_issue("nav", "%s is not on screen" % label)
 		return false
-	var keys: Array[Key] = [KEY_DOWN, KEY_RIGHT, KEY_UP, KEY_LEFT]
-	var d: int = 0
-	var seen: Dictionary = {}
+	# The shortest arrow-key path over the game's own focus graph (Control.find_valid_focus_neighbor), then those keys
+	# are sent as real input; a step that lands elsewhere is re-planned. No path = the target is unreachable.
 	for _i: int in range(MAX_STEPS):
-		if _focus() == target:
+		var at: Control = _focus()
+		if at == target:
 			return true
-		seen[_focus()] = true
-		await _key(keys[d])
-		if seen.has(_focus()):
-			d = (d + 1) % keys.size()
-	_issue("nav", "%s not reachable by arrow keys (focus on %s)" % [label, _focus()])
+		if at == null:
+			await _key(KEY_DOWN)  # nothing focused yet: the first key gives focus
+			continue
+		var side: int = _first_step(at, target)
+		if side < 0:
+			_issue("nav", "%s not reachable by arrow keys from %s" % [label, at.name])
+			return false
+		await _key(SIDE_KEYS[side])
+	_issue("nav", "%s not reached in %d keys (focus on %s)" % [label, MAX_STEPS, _focus()])
 	return false
+
+
+## The first arrow (a Side) on a shortest focus path from `from` to `to`, or -1.
+func _first_step(from: Control, to: Control) -> int:
+	var first: Dictionary = {from: -1}
+	var queue: Array[Control] = [from]
+	while not queue.is_empty():
+		var c: Control = queue.pop_front()
+		for side: int in SIDE_KEYS:
+			var nb: Control = c.find_valid_focus_neighbor(side as Side)
+			if nb == null or first.has(nb):
+				continue
+			first[nb] = side if c == from else first[c]
+			if nb == to:
+				return int(first[nb])
+			queue.append(nb)
+	return -1
 
 
 func _press(target: Control, label: String) -> bool:

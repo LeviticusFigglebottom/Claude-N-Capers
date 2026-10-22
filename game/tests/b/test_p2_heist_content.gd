@@ -435,6 +435,8 @@ func test_dockside_burn_assets_stay_on_dockside() -> void:
 		checked += 1
 		var b: PreplanBoard = PreplanBoard.build(def.id, Enums.Difficulty.ROUTINE, def, null, PreplanBlueprint.new())
 		for id: StringName in [&"asset.intel_containers", &"asset.lift_power"]:
+			if ((def.preplanning.get("assets", {}) as Dictionary)).has(id):
+				continue  # the heist asks for it itself (RT's goods lift: asset.lift_power)
 			assert_false(b.assets.has(id), "%s hidden on %s" % [id, def.id])
 	if checked == 0:
 		skip("no other heist with a variant table in this checkout")
