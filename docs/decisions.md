@@ -1587,3 +1587,21 @@ The game has no crew sentry, and PD2's Technician isn't PD2 without one. So it's
 4. pd2_fidelity P5's deployables launch target becomes 8 (7 + sentry). pocket_ecm stays parked.
 5. (Amendment, LEAD) The sentry model is **D's**, at `tools/blender/equipment/sentry.py` → `game/assets/equipment/sentry/`
    (owners.json: those paths go to D, excluded from C). The other deployable models stay in C's `tools/blender/props/equipment.py`.
+
+## D-158: Rolling Thunder Hazardous verdict: clean-stop detection fix, a truck window after a crash stop, bots use cover (2026-10-22, LEAD; D-151 judgement)
+P's real-input Hazardous pair (P 6f7baa97: rifle, heavy vest, doctor bag, no skills; seed 4101 north): **clean stop 0/1, unfair**
+(the crew was seen 1.5 s after the hand-over by an escort still SEATED in T3's cab, then wiped in 23 s from the best cover);
+**blown 0/1, borderline** (the escort was beaten from cover in 20 s, but police wave 1 BUILD landed 15 s after the crash stop, with a
+Phantom kick and a Stinger, before anyone reached a truck across 25 m of open road). A's bot data agrees: the escort itself is fair.
+1. **Logic fix (A):** a unit seated in a vehicle has no detection (vision and hearing gauges off) until it dismounts.
+   Seated crews can't see out of an armoured cab. The clean stop's ambush window then means what it says. Dismount stays
+   triggered by the ambush / any non-seated escort's alert, as now.
+2. **RT truck window (A, D-154 amendment):** after a crash or clean stop, the first assault's BUILD can't start before
+   stop + 30 s (◇) on any difficulty. That is the heist's designed "hit the trucks" beat. The alarm-based anticipation still
+   applies when it is later. Specials in wave 1 stay (PD2).
+3. **Bots use cover (A):** when the human they follow is in cover or crouched in combat, AI teammates take the nearest cover
+   point within 8 m of them instead of standing in the open. Small, general, all heists.
+4. **Check (C):** site guards hit the crew at the pier "over or through the hoarding line". Verify the hoarding blocks LOS
+   and bullets where it is solid.
+5. Re-judge: P reruns the Hazardous pair on the round with 1-3, once with no skills and once with a PD2 loud build. RT is done
+   only when the clean stop is fair (≥ 1 truck reachable by a competent human) and the blown run is at worst "hard but fair".
