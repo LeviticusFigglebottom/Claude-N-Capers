@@ -11,7 +11,7 @@ xp_mult = 2.0
 enemy_cap = 20
 assault_intensity = 0.75
 special_limits = {
-&"enemy.bulwark": 3,
+&"enemy.bulwark": 2,
 &"enemy.stinger": 1,
 &"enemy.corpsman": 0,
 &"enemy.phantom": 0,

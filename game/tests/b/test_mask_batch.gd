@@ -182,9 +182,12 @@ func test_mask_screen_pickers_hide_requested_bases() -> void:
 
 func test_card_pool_includes_new_parts() -> void:
 	var pool: Array[StringName] = PaydayCards.pool(PaydayCards.MASK_PART, PlayerProfile.new_default())
+	var earned: Dictionary = Achievements.all_reward_ids()
 	for id: StringName in NEW_COLORS + NEW_PATTERNS + NEW_MATERIALS:
 		if MaskCatalog.part(id).default_owned:
 			assert_false(pool.has(id), "%s is default-owned" % id)
+		elif earned.has(id):
+			assert_false(pool.has(id), "%s is an achievement reward" % id)
 		else:
 			assert_has(pool, id, "%s drops from payday cards" % id)
 	var t: PaydayCardsTable = PaydayCards.table()

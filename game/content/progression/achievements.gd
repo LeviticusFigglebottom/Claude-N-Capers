@@ -152,6 +152,16 @@ static func display_progress(p: PlayerProfile, a: AchievementDef) -> int:
 
 
 ## Everything completing `a` grants: its unlock id, reward parts, extra unlock ids (in that order).
+## Every id an achievement grants (reward_ids over all()), as a set. PaydayCards keeps these out of its drop pool
+## (LEAD r278: PD2 achievement rewards never drop).
+static func all_reward_ids() -> Dictionary:
+	var out: Dictionary = {}
+	for a: AchievementDef in all():
+		for id: StringName in reward_ids(a):
+			out[id] = true
+	return out
+
+
 static func reward_ids(a: AchievementDef) -> Array[StringName]:
 	var out: Array[StringName] = []
 	if a.unlock != &"":

@@ -211,3 +211,55 @@ func test_opens_on_the_entry_floor() -> void:
 		s.queue_free()
 		await wait_frames(1)
 	assert_true(multi > 0, "some heist starts above floor 0 (OF: the ground floor over the basement)")
+
+
+func test_arrow_keys_never_trap_focus() -> void:
+	# RT walk (r276): on RT's underpass floor (markers all low on the map) the markers, the asset list and the bottom
+	# row formed a closed arrow-key loop; a keyboard / pad player could not get back to the tabs. For every heist
+	# (RT through the staged fixture) and every list shown, each focusable control leads back to the crew tab.
+	var fx: RefCounted = preload("res://tests/b/staged_heist_fixture.gd").new()
+	fx.call(&"stage")
+	var states: int = 0
+	for id: StringName in HeistCatalog.ids():
+		var s: PreplanningScreen = (load(SCENE) as PackedScene).instantiate() as PreplanningScreen
+		s.save_on_confirm = false
+		s.setup(id, Enums.Difficulty.ROUTINE, PlayerProfile.new())
+		add_child(s)
+		await wait_frames(3)
+		s.show_crew_assets()
+		await wait_frames(2)
+		_assert_no_focus_trap(s, "%s crew" % id)
+		states += 1
+		for f: int in range(maxi(s.floor_buttons.size(), 1)):
+			if f < s.floor_buttons.size():
+				s.floor_buttons[f].pressed.emit()
+			for pid: StringName in s.blueprint_view.marker_ids():
+				s.show_point(pid)
+				await wait_frames(2)
+				_assert_no_focus_trap(s, "%s floor %d %s" % [id, f, pid])
+				states += 1
+		s.queue_free()
+		await wait_frames(1)
+	fx.call(&"unstage")
+	assert_true(states > 20, "walked %d lists" % states)
+
+
+func _assert_no_focus_trap(s: PreplanningScreen, where: String) -> void:
+	var all: Array[Control] = []
+	for n: Node in s.find_children("*", "Control", true, false):
+		if (n as Control).focus_mode == Control.FOCUS_ALL and (n as Control).is_visible_in_tree():
+			all.append(n as Control)
+	var back: Dictionary = {s.crew_button: true}  # controls that reach the crew tab, grown to a fixed point
+	var grew: bool = true
+	while grew:
+		grew = false
+		for c: Control in all:
+			if back.has(c):
+				continue
+			for side: Side in [SIDE_LEFT, SIDE_TOP, SIDE_RIGHT, SIDE_BOTTOM]:
+				if back.has(c.find_valid_focus_neighbor(side)):
+					back[c] = true
+					grew = true
+					break
+	for c: Control in all:
+		assert_true(back.has(c), "%s: focus on %s cannot get back to the crew tab by arrow keys" % [where, c.name])
