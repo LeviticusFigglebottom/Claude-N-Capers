@@ -1018,8 +1018,8 @@ func _saw_truck(t: ArmoredTruck) -> bool:
 		_row("%s saw" % _truck_name(t), "FAIL", "no interactable", "A truck")
 		return false
 	var t0: float = rt.heist_time_s
-	var placed: bool = await pilot.use(comp, 60.0, func() -> bool: return t.opened or comp.kind != &"place_saw"
-		and comp.kind != &"place_c4")
+	var placed: bool = await pilot.use(comp, 60.0, func() -> bool: return (t.opened or comp.kind != &"place_saw"
+		and comp.kind != &"place_c4"))
 	note("saw: placed %s, kind now %s" % [placed, comp.kind])
 	await shot("saw_placed")
 	var jams: int = 0
@@ -1063,8 +1063,8 @@ func _thermite_truck(t: ArmoredTruck) -> bool:
 		_row("thermite bag out of the site", "FAIL", "at %s" % Po5Pilot._v(pilot.crew.global_position), "C map")
 		return false
 	var bcomp: InteractableComponent = _comp(bp)
-	var placed: bool = bcomp != null and await pilot.use(bcomp, 90.0, func() -> bool: return bcomp.kind != &"place_thermite"
-		or not pilot.crew.is_carrying_bag())
+	var placed: bool = bcomp != null and await pilot.use(bcomp, 90.0, func() -> bool: return (bcomp.kind != &"place_thermite"
+		or not pilot.crew.is_carrying_bag()))
 	_row("%s thermite carried and placed" % _truck_name(t), "PASS" if placed else "FAIL", "%.0f s carry from the tool store, placed %s" % [
 		rt.heist_time_s - t1, placed], "-" if placed else "A burn_point / C placement")
 	Engine.time_scale = DEVICE_SCALE
