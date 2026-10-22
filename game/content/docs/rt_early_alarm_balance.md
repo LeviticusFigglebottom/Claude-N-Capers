@@ -90,3 +90,8 @@ are long.
 - The run used harness damage ×0.25. A 20 s wipe means the dismount puts the crew in the open: check that the ambush
   window (8 s) and the seat dismount leave the crew in cover before the convoy shoots.
 - No data change proposed until the 10-vs-6 count is explained.
+- **Resolved (A, 19:15):** no double spawn. 6 convoy crew (2 per truck x 3) + 2 lead + 2 rear + 1 TAC Heavy at the stop;
+  "10" was cumulative (+3 site guards, +1 marshal). The Vaultline crew stay on `enemy.security_officer` (QC-83; PD2's
+  armoured-transport guards are the difficulty's guard stats). No new def: a Cataclysm stop is meant to be lethal if the
+  crew is in the open at the dismount. Proposal (1) (push-through, A 1c626447) and the re-measure stand; if the clean
+  ambush still wipes at Cataclysm, look at the 8 s window / dismount timing (A), not the guards' values.
