@@ -233,3 +233,181 @@ func test_gold_rush_pins_a_bullion_third_truck() -> void:
 	var m: RollingThunderMission = await _launch(4101, [&"gold_rush"])
 	assert_has(m.variant(&"truck_count") as Array, &"trucks_3", "gold_rush: three trucks")
 	assert_has(m.variant(&"cargo_t3") as Array, &"t3_bullion", "gold_rush: T3 is bullion")
+
+
+## B's RT HUD run: an alarm during the drive-in left no ACTIVE objective (ambush done, the stop's not up yet). The
+## ambush now springs when the stop is done, with [trucks] / [escort] / [secure] up in the same step.
+func test_alarm_during_the_drive_in_keeps_an_objective_up() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	m._convoy_arrives()  # crash stop: the movers drive in
+	await wait_physics_frames(2)
+	if m._stop_done:
+		skip("no drive-in on this map (pop-in)")
+		return
+	_rt.stealth.raise_alarm(&"test")
+	await wait_physics_frames(3)
+	assert_eq(m.objective_state(&"ambush"), Enums.ObjectiveState.ACTIVE, "[ambush] stays up during the drive-in")
+	await _stopped(m)
+	await wait_physics_frames(2)
+	assert_eq(m.objective_state(&"ambush"), Enums.ObjectiveState.COMPLETED, "sprung at the stop")
+	assert_eq(m.objective_state(&"escort"), Enums.ObjectiveState.ACTIVE, "[escort] up with it")
+	assert_eq(m.objective_state(&"trucks"), Enums.ObjectiveState.ACTIVE, "[trucks] up with it")
+
+
+## doc Variants controller: ctrl_locked = the cabinet's padlock gates the signal rig (C's TODO(A) on the padlock).
+func test_locked_cabinet_gates_the_rig() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = null
+	for s: int in [4101, 4102, 4103, 4104, 4105]:
+		m = await _launch(s)
+		if m._slot_active(&"controller", &"ctrl_locked"):
+			break
+		after_each()
+		await wait_frames(1)
+		m = null
+	if m == null:
+		skip("no ctrl_locked roll in 5 seeds")
+		return
+	var rig: HackTerminal = null
+	var lock: Padlock = null
+	for n: Node in m.find_tagged(RollingThunderMission.TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+		elif n is Padlock:
+			lock = n as Padlock
+	assert_true(rig != null and lock != null, "the rig and the cabinet padlock")
+	if rig == null or lock == null:
+		return
+	assert_true(rig.is_paused(), "the rig is blocked while the cabinet is locked")
+	assert_eq(rig._availability(null), HackTerminal.BLOCK_PAUSED)
+	lock.open_lock(false, &"lockpick")
+	await wait_physics_frames(1)
+	assert_false(rig.is_paused(), "the padlock off: the rig can be worked")
+
+
+## QC-85 (audio_cues v1.9): the mission's RT one-shots: approach at the sighting, the signal heads click when the rig
+## is done, a brake per stopped mover, the mixer's ram, the trucks' doors; the freight train, held during a Phantom
+## charge.
+func test_qc85_rt_cues() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	var cues: Array[StringName] = []
+	var on_cue: Callable = func(id: StringName, _p: Vector3, _n: int) -> void: cues.append(id)
+	EventBus.audio_cue_requested.connect(on_cue)
+	m._sighted()
+	assert_has(cues, RollingThunderMission.CUE_APPROACH, "the convoy sighted: approach")
+	var rig: HackTerminal = null
+	for n: Node in m.find_tagged(RollingThunderMission.TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+	EventBus.device_finished.emit(rig.net_id)
+	await wait_physics_frames(1)
+	assert_eq(cues.count(RollingThunderMission.CUE_SIGNAL_CLICK), 4, "every signal head clicks (%s)" % [cues])
+	m._convoy_arrives()
+	await _stopped(m)
+	var rammed: bool = await wait_until(func() -> bool: return cues.has(RollingThunderMission.CUE_MIXER_RAM),
+		RollingThunderMission.MIXER_MOVE_S + 1.0)
+	assert_true(rammed, "the mixer rams (clean: stop + %.0f s)" % RollingThunderMission.MIXER_MOVE_S)
+	if m._movers_left == 0 and not cues.has(RollingThunderMission.CUE_BRAKE):
+		assert_true(false, "a drive-in stop brakes each mover (%s)" % [cues])
+	for t: ArmoredTruck in m._trucks:
+		t.open_by_device()
+	await wait_physics_frames(2)
+	assert_eq(cues.count(ArmoredTruck.CUE_DOORS_OPEN), m._trucks.size(), "each truck's doors")
+	cues.clear()
+	m._train()
+	assert_has(cues, RollingThunderMission.CUE_TRAIN, "the freight train passes")
+	var ph: Array[NpcBase] = SpecialSpawner.spawn_special(_rt, &"enemy.phantom", Transform3D(Basis(), Vector3(30, 0, 0)))
+	await wait_physics_frames(2)
+	if not ph.is_empty():
+		(ph[0].get_node(^"Brain") as PhantomBrain).goggles_glowing = true
+		cues.clear()
+		m._train()
+		assert_false(cues.has(RollingThunderMission.CUE_TRAIN), "held back while a Phantom charge is live")
+		assert_true(m.timer_left(&"freight_train") <= RollingThunderMission.TRAIN_HOLD_S + 0.01, "re-checked soon")
+	EventBus.audio_cue_requested.disconnect(on_cue)
+
+
+## RT phase 2 (LEAD-approved C proposal): with C's `Mixer` ConvoyVehicle and the layout's MixerStop, _mixer_move opens
+## the tannery_gate doors and drives (here: parks, no MixerPath) the mixer onto its stop; without them (G1) the old
+## layout swap stays.
+func test_phase2_mixer_drives_to_its_stop() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	m._convoy_arrives()
+	await _stopped(m)
+	var layout: Node3D = ConvoyLayouts.find(_rt.map, m.layout_id)
+	var stop: Marker3D = Marker3D.new()
+	stop.name = "MixerStop"
+	layout.add_child(stop)
+	stop.global_position = layout.global_position + Vector3(4.0, 0.0, 4.0)
+	var mixer: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(-30, 0, -16), func(n: Node) -> void:
+		n.name = "Mixer") as ConvoyVehicle
+	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
+		(n as Door).objective_tag = RollingThunderMission.TAG_TANNERY_GATE
+		(n as Door).lock = Door.Lock.LOCKPICK) as Door
+	await wait_physics_frames(3)
+	assert_true(m._mixer() == mixer, "C's Mixer found")
+	m._mixer_move()
+	await wait_physics_frames(3)
+	assert_true(mixer.global_position.distance_to(stop.global_position) < 0.1, "the mixer on its MixerStop")
+	assert_true(gate.is_open, "the Tannery gate swung open")
+
+
+## RT-A6 "every VO line said": the e2e batch (auto_loud 1004 / 4102, rt_clean 1005) said 25 of the 34 RT lines; the
+## other nine hang on what the pilot never does or never rolls (the intro before its logger, the site stores' C4 /
+## thermite, the heli escape, the S2 / S3 Longshots). Each one's trigger here.
+func test_the_nine_lines_the_e2e_does_not_reach() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var said: Array[StringName] = []
+	var on_vo: Callable = func(_s: StringName, id: StringName, _c: Dictionary) -> void: said.append(id)
+	EventBus.voice_line_requested.connect(on_vo)
+	var m: RollingThunderMission = null
+	for s: int in range(4101, 4131):  # a seed with the heli escape
+		m = await _launch(s, [&"crane_sniper"], Enums.Difficulty.BRUTAL)
+		if m._heli():
+			break
+		after_each()
+		await wait_frames(1)
+		said.clear()
+		m = null
+	if m == null:
+		EventBus.voice_line_requested.disconnect(on_vo)
+		skip("no esc_heli_roof roll in 30 seeds")
+		return
+	for id: StringName in [RollingThunderMission.VO_INTRO, RollingThunderMission.VO_REYES_READY]:
+		assert_has(said, id, "%s at the start" % id)
+	EventBus.item_picked_up.emit(RollingThunderMission.ITEM_C4, 0)
+	var lm: LootManager = _rt.get_node(^"LootManager") as LootManager
+	var bag: LootBag = lm.spawn_bag(RollingThunderMission.LOOT_THERMITE, Transform3D(Basis(), Vector3(0, 1, 0)))
+	EventBus.loot_picked.emit(bag.net_id, 0)
+	m._convoy_arrives()
+	await _stopped(m)
+	var truck: ArmoredTruck = m._trucks[0]
+	EventBus.device_started.emit(truck.net_id, &"c4", 5.0)
+	EventBus.device_started.emit(truck.net_id, &"thermite", 30.0)
+	m._call_escape()
+	for tag: StringName in [&"s2", &"s3"]:  # a Longshot takes the free perch nearest the crew: only `tag` is open
+		for t: StringName in [&"s1", &"s2", &"s3", &"s4"]:
+			m.set_sniper_perches_open(t, t == tag)
+		var ls: Array[NpcBase] = SpecialSpawner.spawn_special(_rt, &"enemy.longshot")
+		assert_false(ls.is_empty(), "a Longshot on %s" % tag)
+		if not ls.is_empty():
+			m._on_special_spawned(ls[0].net_id, &"longshot")
+	await wait_physics_frames(2)
+	EventBus.voice_line_requested.disconnect(on_vo)
+	for id: StringName in [RollingThunderMission.VO_C4_FOUND, RollingThunderMission.VO_THERMITE_FOUND,
+			RollingThunderMission.VO_C4_ARMED, RollingThunderMission.VO_THERMITE_BURN, RollingThunderMission.VO_HELI_ETA,
+			RollingThunderMission.VO_SNIPER_RAIL, RollingThunderMission.VO_SNIPER_CRANE]:
+		assert_has(said, id, "%s said by its trigger" % id)

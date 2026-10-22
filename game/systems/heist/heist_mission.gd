@@ -82,6 +82,8 @@ var _bags_secured: int = 0
 var _loot_value: int = 0
 ## QC-60: spawn_loot(respawn = true) bags: bag instance id -> [LootBag, marker Node3D].
 var _respawn_bags: Dictionary[int, Array] = {}
+## spawn_units: units placed per seat / point (instance id), so later calls take the free ones.
+var _point_uses: Dictionary[int, int] = {}
 
 
 # --- Virtual hooks -----------------------------------------------------------------
@@ -313,9 +315,16 @@ func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated
 		Log.error(&"mission", "spawn_units: no seat / SpawnPoint for '%s'" % spawn_tag)
 		return out
 	for i: int in count:
-		var p: Node3D = points[i % points.size()]
+		# D (RT cast): the least-used seat / point first, over every call (the mission spawns a vehicle's units one
+		# call each), so two units never share a seat; a point used again steps 0.8 m aside per use.
+		var p: Node3D = points[0]
+		for q: Node3D in points:
+			if int(_point_uses.get(q.get_instance_id(), 0)) < int(_point_uses.get(p.get_instance_id(), 0)):
+				p = q
+		var uses: int = int(_point_uses.get(p.get_instance_id(), 0))
+		_point_uses[p.get_instance_id()] = uses + 1
 		var xf: Transform3D = p.global_transform
-		xf.origin += xf.basis.x * (0.8 * float(i / points.size()))
+		xf.origin += xf.basis.x * (0.8 * float(uses))
 		var extra: Dictionary = {AssaultDirector.MISSION_UNIT: true}
 		if not p is SpawnPoint and spawn_tag != &"":
 			extra["tags"] = [spawn_tag]
@@ -342,29 +351,68 @@ func dismount_units(units: Array, step_m: float = 1.6) -> int:
 		npc.remove_meta(META_SEATED_IN)
 		var was_visible: bool = npc.visible
 		var left: bool = true
-		var pos: Vector3 = npc.global_position
+		var seat: Vector3 = npc.global_position
+		var pos: Vector3 = seat
 		if vehicle != null:
-			var local: Vector3 = vehicle.to_local(pos)
+			var local: Vector3 = vehicle.to_local(seat)
 			left = local.x >= 0.0  # facing +Z, local +x is the character's left (D: vehicle_exit_l)
 			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if left else -1.0)
-			pos = Vector3(pos.x, vehicle.global_position.y, pos.z) + side * (absf(local.x) + step_m)
+			pos = Vector3(seat.x, vehicle.global_position.y, seat.z) + side * (absf(local.x) + step_m)
 		var fwd: Vector3 = -npc.global_basis.z
 		var yaw: float = atan2(-fwd.x, -fwd.z) if Vector2(fwd.x, fwd.z).length() > 0.01 else 0.0
-		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # upright: a seat on a ramp (RT east) is tilted
-		npc.visible = true
-		var brain: Node = npc.get_node_or_null(^"Brain")
-		if brain != null and &"anim_hint" in brain and brain.get(&"anim_hint") == SEATED_HINT:
-			brain.set(&"anim_hint", &"")
-		npc.process_mode = Node.PROCESS_MODE_INHERIT
 		var anim: AnimDriver = AnimDriver.of(npc)
-		if anim != null:
-			anim.process_mode = Node.PROCESS_MODE_INHERIT
-			if was_visible:
-				anim.play_vehicle_exit(left)  # a car door (D); an armoured cab's crew just steps out beside it
-		if _runtime.went_loud and npc.alive:
-			npc.set_alert_state(Enums.AlertState.COMBAT)
+		var exit_s: float = anim.vehicle_exit_length(left) if anim != null and was_visible and vehicle != null else 0.0
 		n += 1
+		if exit_s > 0.0:
+			# D: the exit clip is in place and starts seated, the root on the footwell floor at the seat. The body
+			# stays paused (no collision through the door frame) while the root slides out over the clip, then the
+			# brain takes over.
+			npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), seat)  # upright: a seat on a ramp is tilted
+			anim.play_vehicle_exit(left)
+			var curve: PackedFloat32Array = AnimTweak.root_curve(AnimDriver.VEHICLE_EXIT_L if left else AnimDriver.VEHICLE_EXIT_R)
+			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if left else -1.0)
+			var ground_y: float = vehicle.global_position.y
+			var tw: Tween = create_tween()
+			tw.tween_method(_exit_step.bind(npc, seat, side, ground_y, curve, pos), 0.0, exit_s, exit_s)
+			tw.tween_callback(_dismounted.bind(npc))
+			continue
+		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # an armoured cab's crew steps out beside it
+		_dismounted(npc)
 	return n
+
+
+## The exit slide at `t` s: D's root curve (curve.vehicle_exit_<side>: the root holds while the unit turns to the door,
+## then moves out on the clip's own travel, so the planted feet never skate), from the seat down to the ground; without
+## a curve, linear to `fallback` (the plain step-out spot).
+func _exit_step(t: float, npc: NpcBase, seat: Vector3, side: Vector3, ground_y: float, curve: PackedFloat32Array,
+		fallback: Vector3) -> void:
+	if not is_instance_valid(npc):
+		return
+	if curve.is_empty():
+		npc.global_position = seat.lerp(fallback, clampf(t / maxf(AnimDriver.of(npc).vehicle_exit_length(true), 0.01),
+			0.0, 1.0))
+		return
+	var total: float = maxf(curve[curve.size() - 1], 0.001)
+	var d: float = AnimTweak.curve_at(curve, t)
+	var p: Vector3 = seat + side * d
+	p.y = lerpf(seat.y, ground_y, d / total)
+	npc.global_position = p
+
+
+## A unit is out of its vehicle: brain, motor and collision back on; into the fight if the heist is loud.
+func _dismounted(npc: NpcBase) -> void:
+	if not is_instance_valid(npc):
+		return
+	npc.visible = true
+	var brain: Node = npc.get_node_or_null(^"Brain")
+	if brain != null and &"anim_hint" in brain and brain.get(&"anim_hint") == SEATED_HINT:
+		brain.set(&"anim_hint", &"")
+	npc.process_mode = Node.PROCESS_MODE_INHERIT
+	var anim: AnimDriver = AnimDriver.of(npc)
+	if anim != null:
+		anim.process_mode = Node.PROCESS_MODE_INHERIT
+	if _runtime != null and _runtime.went_loud and npc.alive:
+		npc.set_alert_state(Enums.AlertState.COMBAT)
 
 
 ## The current faction has an EnemyDef `enemy_id` (spawn_units would spawn it).
@@ -399,8 +447,13 @@ func _unit_points(spawn_tag: StringName, vehicle: Node3D) -> Array[Node3D]:
 		if not out.is_empty():
 			return out
 	if vehicle != null:
-		for i: int in 4:  # beside a plain body: left / right, front / back
-			var m: Marker3D = Marker3D.new()
+		for i: int in 4:  # beside a plain body: left / right, front / back (made once, reused by later calls)
+			var m: Marker3D = vehicle.get_node_or_null(NodePath("UnitPoint%d" % i)) as Marker3D
+			if m != null:
+				out.append(m)
+				continue
+			m = Marker3D.new()
+			m.name = "UnitPoint%d" % i
 			vehicle.add_child(m)
 			var side: float = UNIT_SIDE_M * (1.0 if i % 2 == 0 else -1.0)
 			m.position = Vector3(side, 0.05, 1.0 if i < 2 else -1.0)

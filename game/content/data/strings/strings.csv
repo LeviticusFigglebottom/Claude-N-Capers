@@ -402,6 +402,8 @@ enemy.longshot,Longshot
 enemy.corpsman,Corpsman
 enemy.commander_brandt,Commander Brandt
 enemy.aegis,Aegis Trooper
+enemy.convoy_lead,Convoy Escort
+enemy.convoy_rear,Convoy Escort
 voice.vo.mercer.heist_start_casing_1,"Alright, you're in. Keep the masks in your pockets and look like you belong."
 voice.vo.mercer.heist_start_casing_2,"Take your time. Count the cameras, count the guards, and try to look bored."
 voice.vo.mercer.crew_masked_1,Mask's on. No more pretending you belong here.
@@ -1561,6 +1563,8 @@ item.mask_pattern.acanthus.name,Acanthus
 item.mask_pattern.facets.name,Facets
 item.mask_pattern.time_lock_dial.name,Time Lock
 item.mask_pattern.stencil.name,Stencil
+item.mask_pattern.road_lines.name,Road Lines
+item.mask_pattern.tread.name,Tread
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.code,Or find the safe code
@@ -2585,6 +2589,8 @@ item.mask_material.container_rust.name,Container Rust
 item.mask_material.velvet_case.name,Jeweller's Velvet
 item.mask_material.night_safe.name,Night Safe
 item.mask_material.gilt_leaf.name,Gilt Leaf
+item.mask_material.armor_plate.name,Armor Plate
+item.mask_material.hi_vis.name,Hi-Vis
 item.mask.ledger_regent.name,Ledger Regent
 item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by crews who have retired the top of the ladder ten times."
 item.mask.last_word.name,The Last Word
@@ -2771,6 +2777,7 @@ ui.preplan.point.ostrander_federal.pp_dock_door,Insider: dock personnel door
 ui.preplan.point.ostrander_federal.pp_vault_ops,Insider: vault-ops keycard
 ui.preplan.point.ostrander_federal.pp_fire_escape,Insider: Corvino fire-escape ladder
 music.ostrander_federal.name,Clearing House
+music.rolling_thunder.name,Red Signal
 heist.rolling_thunder.name,Rolling Thunder
 heist.rolling_thunder.subtitle,Armored Convoy
 heist.rolling_thunder.brief,"A Vaultline convoy through the Southfield junction, two or three armored trucks deep. Hollis brings the roadblock; you bring the saws."
@@ -2814,6 +2821,8 @@ ui.briefing.sec.event.rolling_thunder.convoy_early,the convoy runs 45 seconds ea
 ui.briefing.sec.event.rolling_thunder.crane_sniper,a police marksman in the crane cab
 ui.briefing.sec.event.rolling_thunder.armored_escort,a Wrecker rides with the rear escort
 ui.briefing.sec.event.rolling_thunder.rush_hour,rush hour: more people on the street
+ui.briefing.sec.convoy.rolling_thunder.0,"Convoy: 2–3 armored trucks with 2 Vaultline crew each, a patrol car front and back (4 officers)"
+ui.briefing.sec.convoy.rolling_thunder.2,"Convoy: 2–3 armored trucks with 2 Vaultline crew each, an SUV front and back (4 tactical officers and 1 heavy)"
 ui.preplan.point.rolling_thunder.pp_spawn_plaza,Bus interchange
 ui.preplan.point.rolling_thunder.pp_spawn_carpark,Car park: Deck 2 stair lobby
 ui.preplan.point.rolling_thunder.pp_spawn_underpass,Underpass: north sidewalk
@@ -3294,6 +3303,8 @@ item.mask_base.shark.name,Shark
 item.mask_base.pierrot.name,Pierrot
 item.mask_base.welder.name,Welder
 item.mask_base.vault_dial.name,Combination
+item.mask_base.road_cone.name,Pylon
+item.mask_base.ingot.name,Ingot
 item.mask_base.keystone.name,Keystone
 item.mask_base.bust.name,Gallery Bust
 item.mask_base.wicker.name,Wicker
@@ -3586,6 +3597,11 @@ voice.vo.accountant.briefing_ostrander_federal_2,"Lionel Ashgrove, the day manag
 voice.vo.accountant.briefing_ostrander_federal_3,"Bring me the consolidation: cash, gold or bonds. Do it quietly, and Monday's Vaultline run leaves with a vault full of nothing."
 voice.vo.mercer.briefing_ostrander_federal_1,"It's a working bank on a Friday afternoon. Walk in as customers, masks in your pockets, and read the place before anyone moves."
 voice.vo.mercer.briefing_ostrander_federal_2,"If it goes loud, the vault seals and the time lock dies. I'll get you a thermal drill, and you go through the floor instead."
+voice.vo.reyes.briefing_rolling_thunder_1,"Vaultline runs the Southfield branches' takings by road: a car up front, two or three trucks, a car behind. They come through the Orchard and Tannery junction like clockwork."
+voice.vo.reyes.briefing_rolling_thunder_2,"Rig the junction signals and they stop on a red, polite as you like. Leave the signals and I put a cement mixer through the lead car. Either way, it gets loud."
+voice.vo.reyes.briefing_rolling_thunder_3,"The cash vans saw open quick. The bullion truck wants thermite or a lot of patience. Four bags and I'm happy; the rest is yours."
+voice.vo.mercer.briefing_rolling_thunder_1,"You start as commuters at the bus plaza, masks in your pockets. The building site next door keeps C4 and thermite in its stores, if you have time before the convoy."
+voice.vo.mercer.briefing_rolling_thunder_2,"Once they stop, deal with the escort first, then the trucks. The police are a minute or so out, so open the trucks fast and get the bags to the ride."
 voice.vo.accountant.ostrander_federal_contact_intro,Every dirty dollar in this city passes through Ostrander Federal. This weekend it all sits in one room.
 voice.vo.accountant.ostrander_federal_payday,Monday's Vaultline run will collect a remarkably clean vault. Your share has been reconciled.
 voice.vo.mercer.rolling_thunder_intro,"Convoy's on the road. You've got a few minutes to set the table."
@@ -3797,6 +3813,8 @@ ui.preplan.floor.level_41,Level 41
 ui.preplan.floor.level_42,Level 42
 ui.preplan.floor.gallery,Gallery level
 ui.preplan.floor.executive,Executive level
+ui.preplan.floor.underpass,Underpass
+ui.preplan.floor.street,Street level
 ui.preplan.bp.glasshouse.g1,Receiving
 ui.preplan.bp.glasshouse.g2,Workshop
 ui.preplan.bp.glasshouse.g3,WC
@@ -4084,3 +4102,45 @@ ui.preplan.bp.ostrander_federal.x5,Main roof
 ui.preplan.bp.ostrander_federal.xc,Executive corridor
 ui.preplan.bp.ostrander_federal.xl,Executive lounge
 ui.preplan.bp.ostrander_federal.xw,Executive restroom
+ui.preplan.bp.rolling_thunder.cp-g,"Car park, ground deck"
+ui.preplan.bp.rolling_thunder.cp-2,"Car park, deck 2"
+ui.preplan.bp.rolling_thunder.cp-r,Car park roof
+ui.preplan.bp.rolling_thunder.lf,Goods lift
+ui.preplan.bp.rolling_thunder.ab,Attendant booth
+ui.preplan.bp.rolling_thunder.cwc,Car park WC
+ui.preplan.bp.rolling_thunder.cpl,Car park plant room
+ui.preplan.bp.rolling_thunder.sta,Car park stair A
+ui.preplan.bp.rolling_thunder.sb,Car park stair B
+ui.preplan.bp.rolling_thunder.r1r2,Car park ramps
+ui.preplan.bp.rolling_thunder.dr,Diner
+ui.preplan.bp.rolling_thunder.k,Diner kitchen
+ui.preplan.bp.rolling_thunder.bc,Service corridor
+ui.preplan.bp.rolling_thunder.st,Dry store
+ui.preplan.bp.rolling_thunder.e,Electrical closet
+ui.preplan.bp.rolling_thunder.r,Rear lobby
+ui.preplan.bp.rolling_thunder.sc,Diner stair
+ui.preplan.bp.rolling_thunder.of,Manager's office
+ui.preplan.bp.rolling_thunder.w1,Customer WC
+ui.preplan.bp.rolling_thunder.w2,Customer WC
+ui.preplan.bp.rolling_thunder.u1,Function room
+ui.preplan.bp.rolling_thunder.u2,Furniture store
+ui.preplan.bp.rolling_thunder.u3,Overflow store
+ui.preplan.bp.rolling_thunder.u4,Function room WC
+ui.preplan.bp.rolling_thunder.j,Janitor's closet
+ui.preplan.bp.rolling_thunder.uc,Upper landing
+ui.preplan.bp.rolling_thunder.u5,Staff break room
+ui.preplan.bp.rolling_thunder.yd,Diner yard
+ui.preplan.bp.rolling_thunder.c1,Site office
+ui.preplan.bp.rolling_thunder.c2,Site welfare cabin
+ui.preplan.bp.rolling_thunder.c3,Site WCs
+ui.preplan.bp.rolling_thunder.c4,Tool store
+ui.preplan.bp.rolling_thunder.stw,Scaffold stair tower
+ui.preplan.bp.rolling_thunder.fg,"Frame, ground level"
+ui.preplan.bp.rolling_thunder.f1,Frame slab
+ui.preplan.bp.rolling_thunder.x1,Orchard Avenue junction
+ui.preplan.bp.rolling_thunder.x2,East arm and underpass
+ui.preplan.bp.rolling_thunder.x3,Bus plaza
+ui.preplan.bp.rolling_thunder.x4,Tanner's Reach site yard
+ui.preplan.bp.rolling_thunder.x5,Rail lane
+ui.preplan.bp.rolling_thunder.x6,Car park forecourt
+ui.preplan.bp.rolling_thunder.x7,Back alley

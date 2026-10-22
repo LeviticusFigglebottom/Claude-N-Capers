@@ -10,7 +10,7 @@
 ## Writes <out>/<case>.png (strip, 2 rows) and <out>/motion_log.txt.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_motion_strips.tscn -- --out=/abs/dir \
-##     [--heist=glasshouse] [--seed=7] [--difficulty=2] [--wait=300]
+##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300] [--cases=crew_strafe,cop_stagger]
 ## Owner: ENV D.
 extends Node3D
 
@@ -19,17 +19,22 @@ const STRIP_N: int = 12
 const STEP_S: float = 0.1
 const TILE: Vector2i = Vector2i(320, 270)
 const CAM_DIST: float = 3.6
+const LEAD_M: float = 12.0
 
 var _out: String = ""
 var _heist: String = "glasshouse"
 var _seed: int = 7
-var _difficulty: int = Enums.Difficulty.HAZARDOUS
+var _difficulty: int = Enums.Difficulty.ROUTINE
 var _wait: float = 300.0
 var _cam: Camera3D = null
 var _label: Label = null
 var _log: PackedStringArray = []
 var _done: Dictionary = {}
 var _rt: HeistRuntime = null
+## the cases to shoot (--cases=crew_strafe,...; default all)
+var _cases: Array[String] = CASES.duplicate()
+var _home: Vector3 = Vector3.INF
+var _legs: int = 0
 
 
 func _ready() -> void:
@@ -42,8 +47,10 @@ func _ready() -> void:
 			"seed": _seed = int(v)
 			"difficulty": _difficulty = int(v)
 			"wait": _wait = float(v)
+			"cases": _cases = Array(v.split(","), TYPE_STRING, &"", null)
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/motion_strips"
+	RenderingServer.render_loop_enabled = false  # frames only for the strips (llvmpipe)
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -79,14 +86,14 @@ func _run() -> void:
 	_rt.stealth.raise_alarm(&"d_motion_strips")
 	var t: float = 0.0
 	var stagger_tried: int = 0
-	while t < _wait and _done.size() < CASES.size():
+	while t < _wait and _done.size() < _cases.size():
 		await _seconds(STEP_S)
 		t += STEP_S
 		for cl: Node in get_tree().root.find_children("*", "CanvasLayer", true, false):
 			if cl != layer:
 				(cl as CanvasLayer).visible = false
 		_cam.current = true
-		for c: String in CASES:
+		for c: String in _cases:
 			if _done.has(c) or c == "cop_stagger":
 				continue
 			var body: Node3D = _find(c)
@@ -95,16 +102,20 @@ func _run() -> void:
 				await _strip(c, body)
 				_done[c] = true
 				break
-		if not _done.has("cop_stagger") and t > 20.0 and stagger_tried < 5 and int(t * 10.0) % 50 == 0:
+		if int(t * 10.0) % 100 == 0:
+			_crew_diag(t)
+		if int(t * 10.0) % 60 == 0 and (not _done.has("crew_sprint") or not _done.has("crew_strafe")):
+			_lead_off(t)
+		if _cases.has("cop_stagger") and not _done.has("cop_stagger") and t > 20.0 and stagger_tried < 5 and int(t * 10.0) % 50 == 0:
 			stagger_tried += 1
 			await _stagger()
-	for c: String in CASES:
+	for c: String in _cases:
 		if not _done.has(c):
 			_say("MISSING %s: not seen in %.0f s" % [c, _wait])
 	var f: FileAccess = FileAccess.open("%s/motion_log.txt" % _out, FileAccess.WRITE)
 	f.store_string("\n".join(_log) + "\n")
 	f.close()
-	print("[MOTION] RESULT DONE %d/%d %s" % [_done.size(), CASES.size(), _out])
+	print("[MOTION] RESULT DONE %d/%d %s" % [_done.size(), _cases.size(), _out])
 	get_tree().quit(0)
 
 
@@ -174,21 +185,17 @@ func _strip(c: String, body: Node3D) -> void:
 		var fwd: Vector3 = -body.global_basis.z
 		fwd.y = 0.0
 		fwd = fwd.normalized() if fwd.length() > 0.01 else Vector3.FORWARD
-		var side: Vector3 = Vector3(-fwd.z, 0.0, fwd.x)
 		var at: Vector3 = body.global_position + Vector3.UP * 1.0
-		var eye: Vector3 = at + (side * 0.85 + fwd * 0.5).normalized() * CAM_DIST + Vector3.UP * 0.35
-		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(at, eye)
-		if body is CollisionObject3D:
-			q.exclude = [(body as CollisionObject3D).get_rid()]
-		var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(q)
-		if not hit.is_empty():
-			eye = at + (eye - at).normalized() * maxf(at.distance_to(hit["position"]) - 0.15, 1.0)
+		var eye: Vector3 = _eye(body, at, fwd)
 		var info: String = "%s | %s @%.2f | %.1f m/s" % [ad.clip, ad.hold_layer.clip if ad.hold_layer != null else &"-",
 			ad.hold_layer.time if ad.hold_layer != null else 0.0, ad.horizontal_speed()]
 		_label.text = "%s %d  %s\n%s" % [c, k, _look(body), info]
 		_say("%s f%d %s" % [c, k, info])
 		_cam.look_at_from_position(eye, at)
+		RenderingServer.render_loop_enabled = true
+		await get_tree().process_frame
 		await RenderingServer.frame_post_draw
+		RenderingServer.render_loop_enabled = false
 		var img: Image = get_viewport().get_texture().get_image()
 		img.convert(Image.FORMAT_RGB8)
 		var w: int = img.get_height() * TILE.x / TILE.y
@@ -200,6 +207,59 @@ func _strip(c: String, body: Node3D) -> void:
 		tiles[k].resize(TILE.x, TILE.y, Image.INTERPOLATE_LANCZOS)
 		sheet.blit_rect(tiles[k], Rect2i(Vector2i.ZERO, TILE), Vector2i((k % cols) * TILE.x, (k / cols) * TILE.y))
 	sheet.save_png("%s/%s.png" % [_out, c])
+
+
+## The camera spot for `body`: the side three-quarter view first, then 7 more directions round it; the one with the
+## most clear room (rays from the chest and the head), so a wall or counter is never between the camera and the body.
+func _eye(body: Node3D, at: Vector3, fwd: Vector3) -> Vector3:
+	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
+	var base: Vector3 = (Vector3(-fwd.z, 0.0, fwd.x) * 0.85 + fwd * 0.5).normalized()
+	var best: float = -1.0
+	var eye: Vector3 = at + base * CAM_DIST + Vector3.UP * 0.35
+	for k: int in 8:
+		var dir: Vector3 = base.rotated(Vector3.UP, k * PI / 4.0)
+		var room: float = CAM_DIST
+		for from: Vector3 in [at, at + Vector3.UP * 0.6]:
+			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from,
+				from + dir * CAM_DIST + Vector3.UP * 0.35)
+			if body is CollisionObject3D:
+				q.exclude = [(body as CollisionObject3D).get_rid()]
+			var hit: Dictionary = space.intersect_ray(q)
+			if not hit.is_empty():
+				room = minf(room, from.distance_to(hit["position"]) - 0.2)
+		if room > best + 0.25:
+			best = room
+			eye = at + dir * maxf(room, 1.2) + Vector3.UP * 0.35
+	return eye
+
+
+## The bots follow the player body: move it (slot 0, first person, no third-person driver) to a nav point
+## LEAD_M away, alternating directions, so they run / sprint after it with their weapons out.
+func _lead_off(t: float) -> void:
+	var crew: Array[CrewController] = _rt.crew_members()
+	if crew.is_empty():
+		return
+	var lead: CrewController = crew[0]
+	if _home == Vector3.INF:
+		_home = lead.global_position
+	var dir: Vector3 = Vector3.FORWARD.rotated(Vector3.UP, _legs * 2.4)
+	_legs += 1
+	var want: Vector3 = _home + dir * LEAD_M if _legs % 2 == 1 else _home
+	var p: Vector3 = NavigationServer3D.map_get_closest_point(get_world_3d().navigation_map, want)
+	lead.global_position = p + Vector3.UP * 0.05
+	_say("t=%.0f lead to %s" % [t, p])
+
+
+## Every crew body's clip / layer / speed (why a crew case is not seen).
+func _crew_diag(t: float) -> void:
+	for m: CrewController in _rt.crew_members():
+		var ad: AnimDriver = AnimDriver.of(m)
+		if ad == null:
+			_say("diag t=%.0f %s no AnimDriver" % [t, m.name])
+			continue
+		_say("diag t=%.0f %s ai %s clip %s layer %s active %s speed %.1f state %s" % [t, m.name, m.is_ai, ad.clip,
+			ad.hold_layer.clip if ad.hold_layer != null else &"-", ad.hold_layer.active if ad.hold_layer != null else false,
+			ad.horizontal_speed(), m.crew_state])
 
 
 func _look(b: Node3D) -> String:

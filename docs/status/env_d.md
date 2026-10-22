@@ -4,6 +4,23 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22, latest first; I read your messages, you read this)
+- **PO "inorganic" follow-up: in-motion strips from a real loud heist** (`_tools/render_motion_strips`, Glasshouse
+  Routine seed 7, all-AI crew, trunk 80245b93 incl. A's v1.26(a)): `_review/d_motion/{crew_sprint,crew_strafe,
+  cop_run_gun,cop_stagger}.png` + motion_log.txt (base clip | layer @time | speed per frame, 0.1 s apart). v1.25 /
+  v1.26 are live (hold_rifle_sprint over sprint, aim_rifle_walk over strafe, aim_pistol_run over run_*, stagger_pistol).
+  **Found (to A):** (1) **8-way thrash**: the base clip changes direction almost every 0.1 s (walk_fl -> walk_bl ->
+  walk_fr ..., run_bl -> run_l -> run_fr -> run -> run_b) and each switch restarts the stride (layer @0.00):
+  `_locomotion_clip` rounds the smoothed velocity angle to a 45 deg sector every tick with no hysteresis and the switch
+  does not carry the phase (the 8-way clips share foot_down R@0.00 / L@0.50). Likely the biggest source of the
+  "inorganic" read. (2) **stagger cut**: stagger_pistol (1.2 s) is replaced by the cover post's cover_peek_l after
+  0.1-0.3 s. The strafe strip frames poorly (narrow corridor: the camera rays pass the doors).
+- **RT cast in place, windowed (trunk 80245b93, Routine seed 1, clean east stop):** `_review/rt_d2_cast/rt_cast_sheet.png`
+  (+ log, dismount_0..5). 22 on-foot cast + 8 convoy units. OK: guards, cop_diner, street / bus / diner pools (no twins),
+  sit_eat, cook_stove, the attendant at desk_work, escorts in patrol_officer_duty in sit_vehicle, cab crews hidden, the
+  dismount along the exit curve into walk_stop. **For A (sent):** (1) the waitress / cook looks are swapped (no
+  staff_waitress / staff_cook rows in npc_visual_tweak; civ_diner there has 21 looks, p5_cast 14); (2) `counter_wipe`
+  is missing from CivilianBrain.KNOWN_ACTIVITIES (the waitress idles); (3) two escorts per seat (spawn_units(…, 1) always
+  takes Seat0).
 - **D-153 resume (2026-10-22, new LEAD session_01XAPqm...).** Trunk 59237213 merged (fast-forward).
   - **58cc52e1 vehicle_exit_l/_r EXIT_X 0.85 -> 1.05** (SOURCE curve total 1.050): the outside foot plants past the escort
     car's side (SILL_X + 0.30), the stand-up phases scale with the travel. test_rt_clips 6/6, test_anims 18/18.

@@ -12,10 +12,23 @@ const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_led
 const DIFFICULTIES: Array[int] = [0, 1, 2, 3, 4, 5]
 
 var _strings: Dictionary = {}
+## RT-B1: staged heists (RT) join the walk through the test-only fixture until they are offered.
+var _fx: RefCounted = preload("res://tests/b/staged_heist_fixture.gd").new()
 
 
 func before_all() -> void:
 	_strings = StringTable.parse_csv()
+	_fx.call(&"stage")
+
+
+func after_all() -> void:
+	_fx.call(&"unstage")
+
+
+func _heists() -> Array[StringName]:
+	var out: Array[StringName] = HEISTS.duplicate()
+	out.append_array(_fx.get(&"staged") as Array[StringName])
+	return out
 
 
 func _def(id: StringName) -> HeistDef:
@@ -23,7 +36,7 @@ func _def(id: StringName) -> HeistDef:
 
 
 func test_every_heist_has_up_to_date_intel() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var def: HeistDef = _def(id)
 		assert_true(def != null, "%s has a HeistDef" % id)
 		var d: BriefingIntelData = BriefingIntel.data_for(id)
@@ -45,14 +58,15 @@ func test_every_heist_has_up_to_date_intel() -> void:
 
 func test_section_lines_resolve_to_strings() -> void:
 	assert_has(_strings, "ui.briefing.sec.title")
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		for diff: int in DIFFICULTIES:
 			var lines: Array[Dictionary] = BriefingIntel.lines(id, diff, int(_def(id).mode))
 			assert_true(lines.size() >= 2, "%s @%d has a security section (%d lines)" % [id, diff, lines.size()])
 			var last: int = -1
 			for l: Dictionary in lines:
 				var key: String = String(l["key"])
-				assert_true(BriefingIntel.KEYS.values().has(StringName(key)), "%s: %s is a security key" % [id, key])
+				assert_true(BriefingIntel.KEYS.values().has(StringName(key)) or key == String(BriefingIntel.convoy_key(id, diff)),
+						"%s: %s is a security key" % [id, key])
 				assert_has(_strings, key)
 				# Not hand-written: the text is exactly the strings key formatted with the data's args.
 				assert_eq(String(l["text"]), UiText.t(StringName(key), l["args"] as Dictionary), "%s %s text" % [id, key])
@@ -63,7 +77,7 @@ func test_section_lines_resolve_to_strings() -> void:
 
 
 func test_counts_match_a_brute_force_of_the_variant_rules() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var d: BriefingIntelData = BriefingIntel.data_for(id)
 		var table: HeistVariantTable = load(d.variants_path) as HeistVariantTable
 		for diff: int in DIFFICULTIES:
@@ -85,7 +99,7 @@ func test_counts_match_a_brute_force_of_the_variant_rules() -> void:
 
 func test_difficulty_add_changes_the_lines() -> void:
 	var moved: int = 0
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var d: BriefingIntelData = BriefingIntel.data_for(id)
 		var table: HeistVariantTable = load(d.variants_path) as HeistVariantTable
 		var lo: Dictionary = _by_id(BriefingIntel.lines(id, Enums.Difficulty.ROUTINE, int(_def(id).mode)))
@@ -107,7 +121,7 @@ func test_difficulty_add_changes_the_lines() -> void:
 
 func test_pagers_titan_and_loud_only() -> void:
 	var tw: StealthTweak = Tweak.stealth()
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var def: HeistDef = _def(id)
 		for diff: int in DIFFICULTIES:
 			var by_id: Dictionary = _by_id(BriefingIntel.lines(id, diff, int(def.mode)))
@@ -146,7 +160,7 @@ func test_time_lock_from_the_variant_scalar() -> void:
 func test_screen_shows_the_section_last_and_keeps_the_nav_on_screen() -> void:
 	var saved: Vector2i = get_window().size
 	get_window().size = Vector2i(1280, 720)
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		for diff: int in [Enums.Difficulty.ROUTINE, Enums.Difficulty.CATACLYSM]:
 			var s: BriefingScreen = (load(SCENE) as PackedScene).instantiate() as BriefingScreen
 			s.setup(id, diff)
@@ -173,9 +187,11 @@ func test_surprises_listed_by_name() -> void:
 	# LEAD r229: an event that forces an extra civilian (a witness stealth must handle) is a surprise too.
 	var must: Dictionary = {&"night_deposit": [&"armored_car_early"], &"dockside_burn": [&"cartel_reinforcements"],
 		&"gallery_night": [&"insurance_inspection", &"vaultline_early", &"argus_upgrade", &"late_paperwork"],
-		&"shadow_ledger": [&"timelock_extended", &"kessler_sleepover"], &"glasshouse": [&"nervous_manager"]}
+		&"shadow_ledger": [&"timelock_extended", &"kessler_sleepover"], &"glasshouse": [&"nervous_manager"],
+		&"ostrander_federal": [&"vip_client", &"armored_car_early", &"tower_sniper"],
+		&"rolling_thunder": [&"marshal_early", &"convoy_early", &"crane_sniper", &"armored_escort", &"rush_hour"]}
 	var never: Dictionary = {&"glasshouse": [&"drill_relock"], &"night_deposit": [&"fog_lifts"]}
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var d: BriefingIntelData = BriefingIntel.data_for(id)
 		var table: HeistVariantTable = load(d.variants_path) as HeistVariantTable
 		for ev_id: StringName in must.get(id, []) as Array:
@@ -207,9 +223,25 @@ func test_surprises_listed_by_name() -> void:
 	assert_true(_by_id(BriefingIntel.lines(&"night_deposit", Enums.Difficulty.CATACLYSM, 0)).has(&"surprises"), "ND Cataclysm")
 
 
+## RT-B1: Rolling Thunder's convoy (mission-spawned, so no scan finds it) gets its own line per difficulty: the patrol
+## cars on Routine/Tense, the SUVs from Hazardous; heists without convoy keys get none.
+func test_convoy_line_by_difficulty() -> void:
+	if not _heists().has(&"rolling_thunder"):
+		skip("RT neither offered nor staged")
+		return
+	for diff: int in DIFFICULTIES:
+		var l: Dictionary = _by_id(BriefingIntel.lines(&"rolling_thunder", diff, 0)).get(&"convoy", {}) as Dictionary
+		var want: String = "ui.briefing.sec.convoy.rolling_thunder.%d" % (0 if diff < Enums.Difficulty.HAZARDOUS else 2)
+		assert_eq(String(l.get("key", "")), want, "RT @%d convoy line" % diff)
+		assert_eq(String(l.get("text", "")), String(_strings.get(want, "?")), "RT @%d convoy text" % diff)
+	for id: StringName in HEISTS:
+		assert_false(_by_id(BriefingIntel.lines(id, Enums.Difficulty.CATACLYSM, int(_def(id).mode))).has(&"convoy"),
+				"%s has no convoy line" % id)
+
+
 ## Follow-up 2: frame sensors (LootSpawn alarm_on_take), live per the sensor gate's slots.
 func test_frame_sensors_counted() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var d: BriefingIntelData = BriefingIntel.data_for(id)
 		var text: String = FileAccess.get_file_as_string(d.map_path)
 		var on_map: int = text.count("alarm_on_take = true")
@@ -257,7 +289,7 @@ func test_frame_sensors_counted() -> void:
 
 ## Follow-up 3: located lines name the RoomVolume rooms (the blueprint's rooms and labels).
 func test_locations_from_the_room_mapping() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		for diff: int in DIFFICULTIES:
 			for l: Dictionary in BriefingIntel.lines(id, diff, int(_def(id).mode)):
 				if not BriefingIntel.LOCATED_LINES.has(StringName(l["id"])):
@@ -297,7 +329,7 @@ func test_locations_from_the_room_mapping() -> void:
 ## The text-scan room boxes equal the pre-planning blueprint exporter's (instanced map) room shapes.
 func test_room_boxes_match_the_blueprint_export() -> void:
 	var checked: int = 0
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var bp_path: String = "res://content/data/preplanning/blueprints/%s.tres" % id
 		var bp: PreplanBlueprint = load(bp_path) as PreplanBlueprint
 		if bp == null:

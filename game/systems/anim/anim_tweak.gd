@@ -18,6 +18,8 @@ const RELOAD_CLIPS: Dictionary = {
 }
 
 static var _cached: AnimTweak = null
+## clip -> root_m curve, parsed from CHAR_SOURCE once (root_curve).
+static var _curves: Dictionary = {}
 
 @export_group("Clip facts (characters.md v1.3 / v1.4)")
 ## Root speed of each locomotion clip at 1.78 m (m/s). speed_scale = v / (clip speed x motion_scale).
@@ -197,6 +199,14 @@ static var _cached: AnimTweak = null
 ## On-screen test: a sphere of this radius (m) around the body at anim_lod_center_y_m against the camera frustum.
 @export var anim_lod_radius_m: float = 1.2
 @export var anim_lod_center_y_m: float = 0.9
+## D (motion strips): an 8-way locomotion sector is kept until the velocity angle is this far (deg) past its centre
+## (45 deg sectors: 7.5 deg past the boundary), and a new sector is held at least this long (s).
+@export var locomotion_sector_hysteresis_deg: float = 30.0
+@export var locomotion_sector_min_hold_s: float = 0.3
+## D (test_loco_phase, measured on the clips): the backward 8-way clips (walk_back / _bl / _br, run_b / _bl / _br) put
+## their feet down this much of a cycle later than the forward ones; the phase carry adds it going back, subtracts it
+## coming out.
+@export var locomotion_back_phase_offset: float = 0.10
 ## Never LOD an NPC within this distance (m) of a crew member's aim ray (the player / a teammate aiming at it).
 @export var anim_lod_aim_radius_m: float = 2.0
 
@@ -206,6 +216,35 @@ static var _cached: AnimTweak = null
 static func clip_event_s(clip_id: StringName, event: StringName, fallback: float) -> float:
 	var ev: Dictionary = FpViewmodelTweak.source_events(CHAR_SOURCE).get(clip_id, {})
 	return float(ev[event]) / SOURCE_FPS if ev.has(event) else fallback
+
+
+## ENV D's root-motion curve of `clip_id` from SOURCE.txt (`curve.<clip>: root_m=v0,...,vN ...`): cumulative metres
+## of root travel at each frame (SOURCE_FPS), empty when the rig has none. Parsed once (a D retime needs no change here).
+static func root_curve(clip_id: StringName) -> PackedFloat32Array:
+	if _curves.is_empty():
+		_curves[&""] = PackedFloat32Array()  # parsed marker
+		var text: String = FileAccess.get_file_as_string(CHAR_SOURCE) if FileAccess.file_exists(CHAR_SOURCE) else ""
+		for raw: String in text.split("\n"):
+			var line: String = raw.strip_edges()
+			var at: int = line.find(": root_m=")
+			if not line.begins_with("curve.") or at <= 6:
+				continue
+			var vals: PackedFloat32Array = PackedFloat32Array()
+			for tok: String in line.substr(at + 9).get_slice(" ", 0).split(",", false):
+				vals.append(tok.to_float())
+			_curves[StringName(line.substr(6, at - 6))] = vals
+	return _curves.get(clip_id, PackedFloat32Array())
+
+
+## Metres along `curve` (root_curve) at `t` seconds: the frame values lerped, held at the last one.
+static func curve_at(curve: PackedFloat32Array, t: float) -> float:
+	if curve.is_empty():
+		return 0.0
+	var f: float = maxf(t, 0.0) * SOURCE_FPS
+	var i: int = int(floor(f))
+	if i >= curve.size() - 1:
+		return curve[curve.size() - 1]
+	return lerpf(curve[i], curve[i + 1], f - float(i))
 
 
 ## Reload `done` time for a reload_done_s key (SOURCE.txt first, then the tweak table, then the rifle's).
