@@ -927,7 +927,85 @@ instant. Distances are path lengths on the floor plans (1 char = 1 m; wall centr
    guard's view means ≈ 6 separate (b)/(c) windows; the solo waits in VT off the door axis between them. Still a
    ghost (no kills, no pagers) but ≈ 3–5 min longer than the old estimate; inside Size L's 25–40 min.
 4. Step 5's 270 s RC wait relies on "the end aisle is blind from BB and the centre aisle": marked as a `hide_spot`
-   for levelcheck `hide_los` (OF-C3), not trusted by eye.
+   for levelcheck `hide_los` (OF-C3), not trusted by eye. **Superseded by the proven line below:** the time lock is
+   waited out in CQ's SE corner, not RC (the vault guard's loop (b) walks RC).
+
+#### Ghost line as proven (Hazardous, seed 1002; ENV P r263)
+Source: ENV P's route note, `game/tests/p/_review/captures/of_g1_2026-10-20/ghost_route_note_hazardous.md` (on
+env/p-play 3259691d1), written for this section and the GPU box's windowed human-input check. It uses OF world metres
+(x, y, z), with y the floor (B −4, G 0, M 5, E 8.6). Times are heist seconds on seed 1002 Hazardous, trunk r263. Steps
+1-5 were proven unseen in one continuous run (haz_zd; the same lines in haz_zc / za). Step 6's sub-moves were proven in
+debug runs (`--test=ghost6`, a logged shortcut start at CQ). Step 7 is not reached by the harness yet. Where this
+differs from the steps above, this wins.
+1. Plaza spawn → Tannery Street → Ledger Lane to the dumpsters (t≈33).
+2. **Dock.**
+   - Wait for `rover_dock`'s smoke at the Tannery corner (cues t≈78, 149, 259, 317, 401).
+   - `rover_hall`'s loop (b) LD check comes every ~88 s (t≈11, 96, 185, 269, 361, 449). If he is heading in at the
+     cue, let that check pass inside the same smoke window (≤ 25 s), then mask, ECM #1, and lockpick
+     DockPersonnelDoor (8 s).
+   - If DockCorridorDoor is not clear, wait in the lane beside the dock door at (6, 0, −1.5), not inside LD.
+   - Through BC and SA, then **wait on SA's half landing (14.5, −2, 2.0)** until BB is clear. BB is clear when there
+     is no guard in BB west of x 32, in RC's front (x < 14, z < 14), walking in VC, or within 6 m of SA's door.
+   - The B landing behind SA's door is **not** a wait spot (BB walkers see it at 2 m). Back up to the half landing
+     if a guard is within 10 m of the foot.
+3. **Keycard** (manager on `mgr_vault`).
+   - Wait crouched at **(8.5, −4, 0.5)** behind WCPartitionLK2. It is the one LK floor point hidden from both his walk
+     in (LockerDoor → ManagerLKWC (7.25, −4, 2.2)) and BB.
+   - When he stands at his WC stop (t≈341), shout from there **without stepping out**: the all-round shout reaches him
+     by the short nav path. He goes down blind.
+   - Then step out, tie him (tie 1) and take the card (t≈357).
+   - Stepping out to shout fails: within 1.5 m NPCs see all round and fill 1.0 at once.
+4. **Code.**
+   - LK → SA in a BB window (step 2's rule), crouched at the LK hide (1.5, −4, 4) meanwhile.
+   - The stair waits for G and E are done from the half landing.
+   - `pc_exec` hack 45 s, 1 interruption; done t≈466.
+5. **Vault.**
+   - Down to the half landing (BB rule), then the LK hide.
+   - The gate window needs the vault guard on loop (b) (RC) and `rover_basement` away. This window is rare on
+     Hazardous: haz_zd waited 300 s twice with none (t 599-1199). That is D-150.3's lengthening trigger, if it holds
+     at acceptance.
+   - Gate, cross the sweep (lane x+0.01, 3.35 m/s), code at TL, back across.
+   - **Wait out the time lock (270 s) crouched in CQ's SE corner (12.5, −4, 3.5).** No BB point sees it, and CQ's
+     door is 2 m from the gate. Do not wait in RC (the vault guard's loop (b) walks it), and do not walk BB to LK.
+     Vault open t≈1484.
+6. **The bags.**
+   - **Timing:**
+     - After the time lock the vault guard is back on his VC post (25.6, −4, 10.9), 4 m from VT's door.
+     - Every VC crossing needs him away on loop (b) (RC, west / south) or (c) (east, x > 36, SD), about every 200 s on
+       seed 1002.
+   - **In (CQ → VT):**
+     - Go from CQ's corner when the vault guard's absence is ≤ 15 s old, or he is ≥ 25 m from the gate by path.
+     - No other guard may be in VC, within 12 m of the gate, in BB within 25 m of it, or walking toward it within
+       32 m. Project every guard ~8 s ahead.
+     - CashCageGate (BARRED) opens with the vault code at CashCageKeypad (25.25, −4, 16.6).
+   - **Out with a bag (VT → CQ):**
+     - Wait at **(24.5, −4, 20.5)** beside the cash, hidden from every VC point.
+     - Leave on the same window rule (absence ≤ 10 s or ≥ 25 m by path, projected 12 s), and cross the sweep at
+       2.56 m/s with a MEDIUM bag.
+     - **Stop just inside the gate at (17, −4, 10.3)**: VC side, blind from BB except at the gate. Step out only when
+       no guard is in BB within 25 m of the gate (or within 8 m anywhere) and the vault guard is still ≥ 18 m off. A
+       guard can step out of a side room into BB with no warning; this stop is the only defence.
+   - **Into the cash lift:** open CashLiftDoorB (11.5, −4, 3) and throw the bag in.
+     - P's runs threw from 3.2 m back inside CQ, looking steeply down, because a throw from the door hit GL's back
+       wall and rested outside the car's 2.2 m count box.
+     - **Fixed (OF-C2, LEAD GPU-22):** the car now fills GL's shaft (prop_cash_lift_car_w255, car_size_m 2.55 m), so a
+       throw from either landing door at any weight, level or looking down, rests in the car
+       (test_of_cash_lift_throw.gd).
+     - Two bags per lift cycle. Proven in ghost6_j/k/l/m: 176 s and 114 s per bag on good windows.
+   - **Lift up:**
+     - From CQ / GL, wait crouched in CQ's corner for BB, step to SA and go up to the half landing.
+     - Climb to G **4-40 s after `rover_hall`'s LD check** (ghost6_l/m: up 4 s after his t=373 check).
+     - Stage both bags by LD's personnel door, and **leave LD within ~60 s**, before his next check. ghost6_l failed
+       waiting 67 s for a posted guard 7 m off behind walls; ghost6_m left at once (6 s) and recalled the lift unseen
+       (t=424).
+7. **Lift cycles 2-3, the throw, the walk out** (not reached by the harness yet).
+   - Repeat step 6's cycle for bags 3-6.
+   - The cycle-2 in-crossing is where ghost6_m/n/o/p/q/r died. Each death was a BB guard close to the gate during the
+     gate → CQ dash: `rover_basement` standing 14 m off facing west, or stepping out of a room, or the vault guard
+     coming back down BB. A human should peek BB from inside the gate on every trip.
+   - Then ECM #2 in LD and throw the 6 staged bags from the personnel door into the E1 van's zone (4 m MEDIUM throw,
+     ~15 s of the 20 s jam). Time it when `rover_hall` is on loop (a) or (c), not (b).
+   - Walk out through the dock door and the lane. The escape opens on 6 secured.
 
 ## Loud
 **Phase outline.** Alarm → LOCKDOWN (the vault reseals, a running time lock aborts, QC-64) → CONTROL

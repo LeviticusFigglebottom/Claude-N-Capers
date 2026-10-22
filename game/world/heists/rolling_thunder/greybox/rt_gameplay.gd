@@ -1,11 +1,11 @@
 ## Rolling Thunder gameplay layer (RT-C1): the door table, every VariantSlot (resolver order, the doc's slot ids) with its
-## content, the four ConvoyLayout placeholder sets, the always-present prefabs (the signal rig, the lift breaker, loot,
-## the goods lift, the frame ladder, containers, markers), NPC spawns, patrol graphs, tactical points and furniture.
+## content, the convoy (movers, paths, the four layouts), the always-present prefabs (the signal rig, the lift breaker,
+## loot, the goods lift, the frame ladder, containers, markers), NPC spawns, patrol graphs, tactical points and furniture.
 ## Owner: ENV C. Copy-adapted from ostrander_federal/greybox/of_gameplay.gd (D-147); chain: rt_builder_base <- rt_shell
 ## <- rt_gameplay <- build_greybox. Prefabs are ENV A's (found by contract class name); visuals are catalog props
 ## (doors: the greybox door kit). Content rows: rolling_thunder_layout_content.gd (rolling_thunder_content.py).
-## G1 placeholders (D-075 / D-149): the convoy sets are static greybox boxes with no collision until ENV A's
-## convoy_vehicle / armored_truck exist (TODO(A5-01) / TODO(A5-02)); markers carry the rear-door points.
+## RT-C2: the convoy is ENV A's convoy_vehicle movers carrying their armored_truck (A5-01 / A5-02), with a stop marker
+## per vehicle in each layout (_convoy_sets).
 extends "res://world/heists/rolling_thunder/greybox/rt_shell.gd"
 
 const LOCKPICK_S: float = 8.0
@@ -15,9 +15,35 @@ const BAKE_DEPTH: float = 0.3
 const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", "hack_terminal"]
 ## Minimum width of a thin body in the nav bake (see _nav_thick).
 const RIG_NAV_MIN: float = 0.2
-## Convoy layout vehicles: greybox class per kind.
-const CONVOY_CLASS: Dictionary = {"car": "prop", "cash": "frame", "bullion": "frame"}
+## RT-C2 convoy: the truck hold (A5-01 ArmoredTruck visual) and cab (A5-02 ConvoyVehicle visual) per kind; the escort
+## cars' visual (Seat0..3; its art fronts -Z, so the mover's `Visual` is turned 180 deg).
+const CONVOY_CAR_ART: String = "veh_escort_car"
+const CONVOY_TRUCK_ART: Dictionary = {"cash": "veh_armored_truck_cash", "bullion": "veh_armored_truck_bullion"}
+const CONVOY_CAB_ART: Dictionary = {"cash": "veh_armored_cab_cash", "bullion": "veh_armored_cab_bullion"}
+const CONVOY_THERMITE_ART: String = "prop_thermite_lock"
+## ArmoredTruck defaults are the cash van (saw 120 s, hand saw 60 s, C4 x4); the bullion truck (doc Truck targets).
+const CONVOY_TRUCK_PROPS: Dictionary = {"bullion": {"saw_duration_s": 180.0, "hand_saw_duration_s": 90.0}}
+## rolling_thunder_convoy.py LEN / WIDTH (m) and the truck art's rear step and lock edge (x).
+const CONVOY_LEN: Dictionary = {"car": 5.0, "cash": 7.5, "bullion": 9.0}
+const CONVOY_WIDTH: Dictionary = {"car": 2.0, "cash": 2.5, "bullion": 2.5}
+const TRUCK_STEP: float = 0.35
+const TRUCK_LOCK_X: float = -0.85
+const TRUCK_USE_BACK: float = 0.5
+## The rear-step UsePoints stand at this x (truck-local), off the lock side's rear corner, clear of the door's swing
+## (hinge +X) and of a vehicle queued close behind (the movers wait 0.55 m apart): the truck's saw / C4 spot
+## TRUCK_USE_BACK behind the doors, the bullion thermite's THERMITE_USE_BACK.
+const TRUCK_USE_X: float = -1.8
+const THERMITE_USE_BACK: float = 1.1
+## Where the movers' `<Veh>Path` Path3Ds go: "Movers" (beside the movers) wires A's drive-in (the mission's
+## _drive_path finds them); any other name keeps the paths but the mission pops the vehicles in (park). "Paths" until
+## ENV A's test_rt_a6_mission waits for the drive-in (its stop tests assert the layout 2 frames after the arrival).
+const CONVOY_PATH_PARENT: String = "Paths"
 
+## RT-C2 convoy nav (D-149.1), read by build_greybox's bake: per route slot {route, layouts [{node, id, obs (the
+## stopped vehicles' footprints)}]}.
+var convoy_bake: Array[Dictionary] = []
+## The movers' footprints where they wait upstream (the main bake keeps them clear).
+var convoy_start_obs: Array[Array] = []
 ## [node, property, names] bound once everything is built (targets).
 var _binds: Array[Array] = []
 
@@ -356,54 +382,139 @@ func build_variants(variants: Node3D) -> void:
 			_convoy_sets(vs, sid)
 
 
-## The route's two ConvoyLayout sets (clean, crash) under its slot: `Convoy/<clean|crash>` Node3Ds (meta convoy_layout,
-## hidden: the mission shows the set it uses at the stop) with one greybox body per vehicle (no collision until A5-02:
-## collision_layer 0) and a `RearDoor` marker per truck (the UsePoint / DrillPoint / LootAnchor spot behind its doors).
+## The route's convoy under its slot (RT-C2; A5-01 / A5-02, D-149.1 / QC-RT1):
+## * `Convoy/Movers/<Veh>`: A's ConvoyVehicle at its path's start (cab +Z toward the junction); a truck mover's visual is
+##   the cab (its AnimatableBody fits it) and it carries an ArmoredTruck child (the hold: its StaticBody fits the hold,
+##   so the two bodies never stack); a bullion mover also carries the rear-door burn_point `Thermite` (QC-81, target
+##   ../Truck: beside the truck, since Safe stows any prefab inside it as loot); `<Veh>Path` Path3Ds
+##   beside them (CONVOY_PATH_PARENT);
+## * `Convoy/<Clean|Crash>` (meta convoy_layout "<route>_<mode>", hidden: ConvoyLayouts shows the one in play): a
+##   `<Veh>Stop` Marker3D per vehicle at the mover pivot (the east ramp's tilt in its basis), `RearStop2` (trucks_2: the
+##   rear car GAP behind T2) and the per-layout COVER (TacticalPoint `enabled` false until the stop). The layout's nav
+##   region is added by the bake (build_greybox `_bake_convoy`) from `convoy_bake`.
 func _convoy_sets(vs: VariantSlot, sid: String) -> void:
+	var data: Dictionary = LC.CONVOY[sid]
 	var holder: Node3D = add(vs, node3d("Convoy")) as Node3D
 	holder.transform = global_xform(vs).affine_inverse()
-	for set_row: Array in LC.CONVOY[sid]:
+	var movers: Node3D = add(holder, node3d("Movers")) as Node3D
+	var paths: Node3D = movers if CONVOY_PATH_PARENT == "Movers" else add(holder, node3d(CONVOY_PATH_PARENT)) as Node3D
+	for mv: Array in data["movers"]:
+		_convoy_mover(movers, paths, mv)
+	var entry: Dictionary = {"route": sid, "layouts": []}
+	for set_row: Array in data["layouts"]:
 		var mode: String = String(set_row[0])
 		var st: Node3D = add(holder, node3d(mode.capitalize())) as Node3D
-		st.set_meta(&"convoy_layout", "%s_%s" % [sid.trim_prefix("route_"), mode])
-		st.set_meta(&"todo", "TODO(A5-01/A5-02): armored_truck + convoy_vehicle prefabs replace these boxes; "
-			+ "TODO(A5-03): C4; TODO(QC-81): the bullion rear-door burn_point")
-		st.visible = mode == "clean" and sid == "route_north"   # the review layout (doc Review shots)
+		var lid: String = "%s_%s" % [sid.trim_prefix("route_"), mode]
+		st.set_meta(&"convoy_layout", lid)
+		st.visible = false   # ConvoyLayouts shows the layout in play at the stop
+		var obs: Array = []
 		for v: Array in set_row[1]:
-			var size: Vector3 = v3(v[3])
-			var body: StaticBody3D = StaticBody3D.new()
-			body.name = String(v[0])
-			body.collision_layer = 0
-			body.collision_mask = 0
-			# tilted onto its support line along the east arm (slope v[6] = -dy/dx): local up -> the ramp normal
-			var up: Vector3 = Vector3(float(v[6]), 1.0, 0.0).normalized()
+			var size: Vector3 = v3(v[5])   # [length, height, width]
+			# tilted onto its support line along the east arm (slope v[4] = -dy/dx): local up -> the ramp normal
+			var up: Vector3 = Vector3(float(v[4]), 1.0, 0.0).normalized()
 			var tilt: Basis = Basis(Quaternion(Vector3.UP, up)) if up.y < 0.99999 else Basis.IDENTITY
-			body.transform = Transform3D(tilt * yaw_basis(float(v[4])), v3(v[2]))
-			body.set_meta(&"kind", "convoy_" + String(v[1]))
-			body.set_meta(&"never_with", PackedStringArray(v[7]))   # the other layout of the route (one per stop)
-			body.set_meta(&"todo", "TODO(A5-02): convoy_vehicle placeholder (no collision until the mover exists)")
-			if up.y < 0.99999:
-				# LEAD r258 (RT-C1 `floating` ruling b): a box tilted flush on the east-arm ramp reads as floating from its
-				# lowest corner; RT-only exemption (lc_ignore, D-113: no collision here) until A5-02's movers replace it
-				body.set_meta(&"lc_ignore", true)
-				body.set_meta(&"lc_ignore_reason", "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)")
-			add(st, body)
-			var mi: MeshInstance3D = MeshInstance3D.new()
-			mi.name = "Mesh"
-			mi.mesh = _box_mesh(Vector3(size.z, size.y, size.x), String(CONVOY_CLASS[String(v[1])]))
-			mi.position = Vector3(0.0, size.y * 0.5, 0.0)
-			add(body, mi)
-			# per-layout COVER (doc Loud): out of the cover group until the stop shows this layout (TacticalPoint
-			# `enabled`, D-149.1 / QC-RT1; the mission enables the active layout's points)
-			for cv: Array in v[8]:
+			var xf: Transform3D = Transform3D(tilt * yaw_basis(float(v[3])), v3(v[2]))
+			var m: Marker3D = Marker3D.new()
+			m.name = String(v[0])
+			m.transform = xf
+			m.set_meta(&"kind", "convoy_stop")
+			m.set_meta(&"vehicle_kind", String(v[1]))
+			add(st, m)
+			obs.append(_vehicle_footprint(xf, String(v[1]), size))
+			for cv: Array in v[6]:
 				var tp: TacticalPoint = _tac_row(st, ["tac", String(cv[0]), "COVER", cv[1], float(cv[2]),
-					["convoy", String(st.get_meta(&"convoy_layout"))], false])
+					["convoy", lid], false])
 				tp.enabled = false
-			if String(v[1]) != "car":
-				var m: Marker3D = marker(st, String(v[0]) + "RearDoor", v3(v[5]), float(v[4]) + 180.0, "", "TODO(A5-01): "
-					+ "the truck's rear-step UsePoint / DrillPoint SAW / LootAnchor%s" % (
-						"; TODO(QC-81): the ground-level thermite point" if String(v[1]) == "bullion" else ""))
-				m.set_meta(&"truck_kind", String(v[1]))
+		(entry["layouts"] as Array).append({"node": st, "id": lid, "obs": obs})
+	convoy_bake.append(entry)
+
+
+## ["Lead", kind, start pivot, yaw, path rows]: the mover, its drive-in path and (a truck) its ArmoredTruck.
+func _convoy_mover(movers: Node3D, paths: Node3D, mv: Array) -> void:
+	var kind: String = String(mv[1])
+	var ps: PackedScene = _prefab_scene("convoy_vehicle")
+	if ps == null:
+		return
+	var veh: Node3D = ps.instantiate() as Node3D
+	veh.name = String(mv[0])
+	veh.transform = Transform3D(yaw_basis(float(mv[3])), v3(mv[2]))
+	set_prop(veh, "vehicle_kind", "truck" if kind != "car" else "car")
+	veh.set(&"visual_scene", catalog_scene(String(CONVOY_CAB_ART[kind]) if kind != "car" else CONVOY_CAR_ART))
+	veh.set_meta(&"kind", "convoy_" + kind)
+	movers.add_child(veh)
+	veh.owner = map_root
+	if kind == "car":
+		map_root.set_editable_instance(veh, true)
+		(veh.get_node("Visual") as Node3D).basis = yaw_basis(180.0)
+	var path: Path3D = Path3D.new()
+	path.name = String(mv[0]) + "Path"
+	var curve: Curve3D = Curve3D.new()
+	for p: Array in mv[4]:
+		curve.add_point(v3(p[0]), v3(p[1]), v3(p[2]))
+	path.curve = curve
+	add(paths, path)
+	convoy_start_obs.append(_vehicle_footprint(global_xform(veh), kind, Vector3(CONVOY_LEN[kind], 3.0,
+		CONVOY_WIDTH[kind])))
+	if kind != "car":
+		_convoy_truck(veh, kind)
+
+
+## A truck mover's hold: A5-01's ArmoredTruck in the mover's frame (cash defaults; bullion saw 180 / 90 s and the QC-81
+## rear-door burn_point), its rear-step UsePoint on the road behind the doors and its Interactable on the lock.
+func _convoy_truck(veh: Node3D, kind: String) -> void:
+	var ps: PackedScene = _prefab_scene("armored_truck")
+	if ps == null:
+		return
+	var t: Node3D = ps.instantiate() as Node3D
+	t.name = "Truck"
+	t.set(&"visual_scene", catalog_scene(String(CONVOY_TRUCK_ART[kind])))
+	for k: String in (CONVOY_TRUCK_PROPS.get(kind, {}) as Dictionary):
+		set_prop(t, k, CONVOY_TRUCK_PROPS[kind][k])
+	set_prop(t, "loud_only", true)   # sawn / blown after the ambush (doc Truck targets), not while it queues upstream
+	t.set_meta(&"kind", "convoy_" + kind)
+	t.set_meta(&"truck_kind", kind)
+	veh.add_child(t)
+	t.owner = map_root
+	map_root.set_editable_instance(t, true)
+	var rear: float = -float(CONVOY_LEN[kind]) * 0.5
+	var lock: Vector3 = Vector3(TRUCK_LOCK_X, 0.0, rear)
+	(t.get_node("UsePoint") as Node3D).transform = _facing(Vector3(TRUCK_USE_X, 0.0, rear - TRUCK_USE_BACK), lock)
+	(t.get_node("Interactable") as Node3D).position = Vector3(TRUCK_LOCK_X, 1.7, rear - 0.1)
+	if kind != "bullion":
+		return
+	var bps: PackedScene = _prefab_scene("burn_point")
+	if bps == null:
+		return
+	var b: Node3D = bps.instantiate() as Node3D
+	b.name = "Thermite"
+	b.position = Vector3(TRUCK_LOCK_X, 1.0, rear - 0.085)   # on the door's thermite plate, under the lock
+	b.set(&"visual_scene", catalog_scene(CONVOY_THERMITE_ART))
+	set_prop(b, "target", NodePath("../Truck"))
+	set_prop(b, "fire_volume_size", [0.0, 0.0, 0.0])
+	set_prop(b, "loud_only", true)
+	b.set_meta(&"kind", "burn_point")
+	veh.add_child(b)   # beside the truck: a prefab inside a Safe is stowed as its loot (Safe._inner_loot)
+	b.owner = map_root
+	map_root.set_editable_instance(b, true)
+	(b.get_node("UsePoint") as Node3D).transform = Transform3D(Basis.IDENTITY, -b.position) * _facing(
+		Vector3(TRUCK_USE_X, 0.0, rear - THERMITE_USE_BACK), lock)
+
+
+## A vehicle's nav footprint at `xf` (its pivot: bottom-centre, cab +Z): [corners, elevation, height, carve false],
+## the box `size` [length, height, width] plus a truck's rear step behind its doors (-Z).
+func _vehicle_footprint(xf: Transform3D, kind: String, size: Vector3) -> Array:
+	var back: float = TRUCK_STEP if kind != "car" else 0.0
+	var box: AABB = AABB(Vector3(-size.z * 0.5, 0.0, -size.x * 0.5 - back), Vector3(size.z, size.y, size.x + back))
+	var pts: PackedVector3Array = PackedVector3Array()
+	for c: Vector3 in [Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(1, 0, 1), Vector3(0, 0, 1)]:
+		pts.append(xf * (box.position + box.size * c))
+	var lo: float = INF
+	var hi: float = -INF
+	for i: int in 8:
+		var w: Vector3 = xf * (box.position + box.size * Vector3(i & 1, (i >> 1) & 1, (i >> 2) & 1))
+		lo = minf(lo, w.y)
+		hi = maxf(hi, w.y)
+	return [pts, lo, hi - lo, false]
 
 
 # --- Always-present content, NPCs, patrols, tactical ------------------------------------------------

@@ -145,8 +145,19 @@ TINTED: dict[str, dict] = {
     "rope_tan": {"source": "fabric_upholstery", "color": "#9C865E", "roughness": 1.0},
     "ice_blue": {"source": "plastic_matte", "color": "#5F86A8", "roughness": 0.7},
     "trailer_white": {"source": "metal_painted", "color": "#CFCDC6", "roughness": 0.9},
+    # RT-C2 (Rolling Thunder, §3c): the Vaultline armoured-truck livery (deep green, a brass band), the lorry cab red
+    "rt_vaultline": {"source": "metal_painted", "color": "#2F4A42", "roughness": 0.7},
+    "rt_vaultline_band": {"source": "metal_painted", "color": "#B89448", "roughness": 0.6},
+    "rt_lorry_red": {"source": "metal_painted", "color": "#8A2E26", "roughness": 0.7},
+    "rt_skyway_green": {"source": "metal_painted", "color": "#4D805C", "roughness": 0.7},
     "laminate_grey": {"source": "plastic_matte", "color": "#8E9090", "roughness": 0.6},
     "paint_hazard_orange": {"source": "drywall_painted", "color": "#D2611E", "roughness": 0.8},
+    # RT-C2 GPU-21 (the Halfway Diner's identity): red vinyl upholstery, cream and red counter laminate, the
+    # pendants' red enamel
+    "rt_vinyl_red": {"source": "leather_dark", "color": "#9A2A2A", "roughness": 0.4},
+    "rt_laminate_cream": {"source": "plastic_matte", "color": "#D8CDB2", "roughness": 0.4},
+    "rt_laminate_red": {"source": "plastic_matte", "color": "#9C2F2A", "roughness": 0.4},
+    "rt_enamel_red": {"source": "metal_painted", "color": "#9C2F2A", "roughness": 0.35},
     # Shadow Ledger G2 (SL-1, shadow_ledger.md palette: graphite #2E3136 honed stone / carpet / BOH paint, glass teal
     # #5D8C8F, walnut and leather inside GSR saturation)
     "stone_graphite": {"source": "marble_cream", "color": "#3A3D41", "roughness": 0.55},

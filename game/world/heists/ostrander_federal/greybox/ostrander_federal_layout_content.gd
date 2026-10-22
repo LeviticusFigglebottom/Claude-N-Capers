@@ -635,11 +635,11 @@ const ALWAYS: Dictionary = {
 				"travel_s": 8.0,
 				"capacity": 2,
 				"door_fold": true,
-				"car_size_m": [2.2, 2.4, 2.2],
+				"car_size_m": [2.55, 2.4, 2.55],
 				"objective_tag": "cash_lift",
 				"@landings": [["CashLiftLandingG", [0.0, 4.0, 0.0]]],
 			},
-			[11.5, -4.0, 2.2], {"walkable": true}, "prop_cash_lift_car_w240",
+			[11.5, -4.0, 2.2], {"walkable": true}, "prop_cash_lift_car_w255",
 		],
 		[
 			"prefab", "bag_lift", "Hoist", [24.0, -4.0, 15.325], 0.0,

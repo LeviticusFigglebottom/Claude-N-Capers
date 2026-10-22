@@ -22,10 +22,10 @@ counts = {
 }
 assets = {
 &"bin": PackedStringArray("prop_bin_small"),
-&"chair": PackedStringArray("prop_chair_break"),
-&"light_fixture": PackedStringArray("prop_downlight"),
+&"chair": PackedStringArray("prop_diner_chair"),
+&"light_fixture": PackedStringArray("prop_pendant_diner"),
 &"plant": PackedStringArray("prop_plant_tall"),
-&"table": PackedStringArray("prop_table_round_d120")
+&"table": PackedStringArray("prop_diner_table_w80")
 }
-ceiling = {"prop_downlight": 2.6}
-notes = "RT DR Halloran's dining room: the counter (prop_counter_sales art) with the till on it, round tables and chairs beside the map's three customer tables, downlights (prop_pendant_brass hangs to 1.05 m under the 3.0 m ceiling, so not here), the pie case and the counter stools from fixed tables. Waits: prop_diner_booth (no pair seat exists), the HALFWAY neon (prop_neon_vossberg variant)."
+ceiling = {"prop_pendant_diner": 3}
+notes = "RT DR Halloran's dining room: the counter (prop_counter_sales art) with the till on it, round tables and chairs beside the map's three customer tables, downlights (prop_pendant_brass hangs to 1.05 m under the 3.0 m ceiling, so not here), the pie case and the counter stools from fixed tables. GPU-21 (the LEAD's render review: it read as an office): diner tables and chrome chairs, red enamel pendants on a 3 m grid (prop_pendant_diner, 2.28 m clear); the booths, stools, menu board and EAT neon are the map's."

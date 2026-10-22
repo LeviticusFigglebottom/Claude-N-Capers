@@ -13,7 +13,7 @@ const KEYS: Dictionary = {
 	"ceiling_tile": ["ceiling_tile", null],
 	"concrete": ["concrete", null],
 	"drywall": ["drywall_painted", null],
-	"hoarding": ["wood_panel_oak", null],  # stand-in for plywood_painted (§3c)
+	"hoarding": ["plywood_painted", null],  # RT-C2 batch 3: the texgen plywood (§3c; the hoarding graphic is open)
 	"limestone": ["limestone_ashlar", null],
 	"metal": ["metal_painted", null],
 	"orange": ["paint_safety_orange", null],
@@ -26,10 +26,12 @@ const KEYS: Dictionary = {
 	"terrazzo": ["terrazzo", null],
 	"tile": ["tile_ceramic_white", null],
 	"vinyl": ["vinyl_floor", null],
+	"vinyl_checker": ["vinyl_checker", null],  # GPU-21: the diner's checkerboard (texgen, vinyl_floor's model)
 	"wood": ["wood_panel_oak", null],
 }
 
-## Room id -> [floor, walls, ceiling] finish keys (the interior faces 0.3 m off a face decide its room).
+## Room id -> [floor, walls, ceiling] finish keys (the interior faces 0.3 m off a face decide its room). GPU-21: the
+## diner's dining room and the function room over it take the checkerboard and a flat plaster ceiling (no drop grid).
 const ROOM_FINISH: Dictionary = {
 	"CP-G": ["concrete", "concrete", "concrete"], "CP-2": ["concrete", "concrete", "concrete"],
 	"CP-R": ["concrete", "concrete", "concrete"], "STA": ["concrete", "concrete", "concrete"],
@@ -37,12 +39,12 @@ const ROOM_FINISH: Dictionary = {
 	"R1R2": ["concrete", "concrete", "concrete"],
 	"AB": ["vinyl", "drywall", "ceiling_tile"], "CWC": ["tile", "tile", "ceiling_tile"],
 	"CPL": ["concrete", "concrete", "concrete"],
-	"DR": ["terrazzo", "plaster", "ceiling_tile"], "K": ["tile", "tile", "ceiling_tile"],
+	"DR": ["vinyl_checker", "plaster", "plaster"], "K": ["tile", "tile", "ceiling_tile"],
 	"BC": ["vinyl", "plaster", "ceiling_tile"], "E": ["vinyl", "plaster", "ceiling_tile"],
 	"ST": ["vinyl", "plaster", "ceiling_tile"], "W1": ["tile", "tile", "ceiling_tile"],
 	"W2": ["tile", "tile", "ceiling_tile"], "R": ["vinyl", "plaster", "ceiling_tile"],
 	"SC": ["vinyl", "plaster", "plaster"], "OF": ["carpet", "plaster", "ceiling_tile"],
-	"U1": ["carpet", "plaster", "ceiling_tile"], "U2": ["vinyl", "plaster", "ceiling_tile"],
+	"U1": ["vinyl_checker", "plaster", "plaster"], "U2": ["vinyl", "plaster", "ceiling_tile"],
 	"U3": ["vinyl", "plaster", "ceiling_tile"], "U4": ["tile", "tile", "ceiling_tile"],
 	"J": ["vinyl", "tile", "ceiling_tile"], "UC": ["vinyl", "plaster", "ceiling_tile"],
 	"U5": ["vinyl", "plaster", "ceiling_tile"],

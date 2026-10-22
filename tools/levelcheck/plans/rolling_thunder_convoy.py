@@ -47,6 +47,24 @@ LAYOUTS: Dict[str, List[Veh]] = {
                    ("T3", "bullion", 32, 40, -4 + 1.1, 25), ("rear", "car", 43, 48, -4 - 1.1, 10)],
 }
 CRASH_LEAD = {"north_crash": (-2.0, 2.0), "east_crash": (4.0, -2.0)}
+# RT-C2: the T-boned lead car's stop (doc Crash stops) as a vehicle row, shoved 35 deg toward the junction centre:
+# north (-2, 2) heading south-east, east (4, -2) heading north-west (its yaw sign follows `corners`).
+CRASH_LEAD_VEH: Dict[str, Veh] = {"north_crash": ("lead", "car", 4.5, -0.5, -2.0, 35.0),
+                                  "east_crash": ("lead", "car", 1.5, 6.5, -2.0, -35.0)}
+# RT-C2 movers (A5-02): the drive-in order, the queue at the start (one file in the convoy lane, START_GAP between the
+# bodies, the last body's rear START_REAR along the arm: inside the play space, x <= 104 / z >= -90; the east queue
+# starts flat in the underpass and the cut, x >= 66, below the junction's sight line; the north arm is too short to
+# hide it: its lead car starts at z -52, under the Skyway) and the trucks' rear step (behind the doors, part of the
+# footprint the nav keeps clear).
+ORDER = ["lead", "T1", "T2", "T3", "rear"]
+START_GAP = 0.55
+START_REAR = {"north": -89.9, "east": 103.9}
+LANE_Y = {"north": 0.0, "east": -5.0}
+# the lane they wait in: the east queue keeps north of the underpass escape van (E2, z -5.3..-2.7) and the east closure
+# lorry, and changes to the convoy lane (LANE) on the ramp
+START_LANE = {"north": -6.0, "east": -6.8}
+STEP = 0.35
+PATH_END = {"north": 6.0, "east": -6.0}               # every path runs past the lead stops, into the junction
 DOC_QUEUE_END = {("north", 2): -52.0, ("north", 3): -63.0}
 DOC_CASH_REAR = {"north": (-57.0, -62.0), "east": (57.0, 62.0)}   # Convoy composition (RT-C0 check)
 DOC_THIRD_TRUCK_SHIFT = {"bullion": 12.0, "cash": 10.5}   # truck_count row (RT-C0 check): T3 length + the 3 m gap
@@ -93,6 +111,57 @@ def corners(route: str, v: Veh) -> List[Pt]:
         ra, rl = da * math.cos(t) - dl * math.sin(t), da * math.sin(t) + dl * math.cos(t)
         pts.append((lat + rl, c_along + ra) if route == "north" else (c_along + ra, lat + rl))
     return pts
+
+
+def footprint(route: str, v: Veh) -> List[Pt]:
+    """`corners`, a truck's box grown by its rear step (STEP behind the doors: north -z, east +x along its axis)."""
+    if v[1] == "car":
+        return corners(route, v)
+    sgn = -1.0 if route == "north" else 1.0
+    a0, a1 = v[2], v[3]
+    rear_is_a1 = (a1 < a0) if route == "north" else (a1 > a0)
+    if rear_is_a1:
+        a1 += sgn * STEP
+    else:
+        a0 += sgn * STEP
+    ln, wd = LEN[v[1]] + STEP, WIDTH[v[1]]
+    c_along, t = (a0 + a1) / 2.0, math.radians(v[5])
+    pts: List[Pt] = []
+    for sa, sl in ((-1, -1), (-1, 1), (1, 1), (1, -1)):
+        da, dl = sa * ln / 2.0, sl * wd / 2.0
+        ra, rl = da * math.cos(t) - dl * math.sin(t), da * math.sin(t) + dl * math.cos(t)
+        pts.append((v[4] + rl, c_along + ra) if route == "north" else (c_along + ra, v[4] + rl))
+    return pts
+
+
+def stops(key: str) -> List[Veh]:
+    """A layout's stop rows: LAYOUTS, the crash layouts' T-boned lead car first, then `rear2` (trucks_2: the rear car
+    GAP behind T2, at the rear car's lateral offset and yaw)."""
+    route = key.split("_")[0]
+    vs = ([CRASH_LEAD_VEH[key]] if key in CRASH_LEAD_VEH else []) + list(LAYOUTS[key])
+    t2 = next(v for v in vs if v[0] == "T2")
+    rear = next(v for v in vs if v[0] == "rear")
+    sgn = -1.0 if route == "north" else 1.0
+    t2_rear = min(t2[2], t2[3]) if route == "north" else max(t2[2], t2[3])
+    a0 = t2_rear + sgn * GAP
+    return vs + [("rear2", "car", a0, a0 + sgn * LEN["car"], rear[4], rear[5])]
+
+
+def starts(route: str) -> List[Veh]:
+    """The movers at the start: one file in the convoy lane, ORDER from the junction end, START_GAP apart."""
+    sgn = -1.0 if route == "north" else 1.0          # along the arm, away from the junction
+    total = sum(LEN[k] for k in kinds(route)) + START_GAP * (len(ORDER) - 1)
+    cur = START_REAR[route] - sgn * total
+    out: List[Veh] = []
+    for nm, kind in zip(ORDER, kinds(route)):
+        out.append((nm, kind, cur, cur + sgn * LEN[kind], START_LANE[route], 0.0))
+        cur += sgn * (LEN[kind] + START_GAP)
+    return out
+
+
+def kinds(route: str) -> List[str]:
+    vs = {v[0]: v[1] for v in LAYOUTS[route + "_clean"]}
+    return [vs[n] for n in ORDER]
 
 
 def lateral_extent(route: str, v: Veh) -> Tuple[float, float]:
@@ -234,6 +303,21 @@ def check_movers(rep: Report) -> None:
     rep.section("Movers (D-149.8)")
     rep.expect(len(MOVERS) <= MAX_MOVERS, "%d drive-in movers (%s) <= %d; the escape van pops in"
                % (len(MOVERS), ", ".join(MOVERS), MAX_MOVERS))
+    stop_fp = {route: [footprint(route, v) for key in (route + "_clean", route + "_crash") for v in stops(key)]
+               for route in ("north", "east")}
+    for route in ("north", "east"):
+        st = starts(route)
+        ends = [min(v[2], v[3]) for v in st] + [max(v[2], v[3]) for v in st]
+        inside = (min(ends) >= S.PLAY[1]) if route == "north" else (max(ends) <= S.PLAY[2])
+        rep.expect(inside, "%s starts %.1f..%.1f inside the play space" % (route, min(ends), max(ends)))
+        if route == "east":
+            rep.expect(min(ends) >= S.RAMP_X[1], "east starts flat in the underpass / cut (x >= %.0f)" % S.RAMP_X[1])
+        gaps = [abs(b[2] - a[3]) for a, b in zip(st, st[1:])]
+        rep.expect(all(g >= START_GAP - 1e-6 for g in gaps), "%s starts one file, %.2f m apart" % (route, START_GAP))
+        lo = min(min(p[1] if route == "north" else p[0] for p in fp) for fp in stop_fp[route])
+        hi = max(max(p[1] if route == "north" else p[0] for p in fp) for fp in stop_fp[route])
+        rep.info("%s: stops span %.1f..%.1f along the arm, the starts %.1f..%.1f"
+                 % (route, lo, hi, min(ends), max(ends)))
 
 
 def check_paths(rep: Report) -> None:

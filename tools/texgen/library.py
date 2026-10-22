@@ -45,6 +45,10 @@ LIBRARY: dict[str, dict] = {
     "limestone_ashlar": {"size": 1024},
     "wood_panel_oak": {"size": 1024},
     "steel_plate_riveted": {"size": 1024},
+    # RT-C2 (Rolling Thunder §3c): the site hoarding's painted plywood.
+    "plywood_painted": {"size": 1024},
+    # RT-C2 GPU-21: the diner's checkerboard vinyl (the vinyl_floor model, cream / charcoal).
+    "vinyl_checker": {"size": 1024},
     # First-person weapon materials (D-026): 1 UV unit = 1 m, 1024 px/m.
     "polymer_black": {"size": 1024, "tile_m": 1.0},
     "polymer_stipple": {"size": 1024, "tile_m": 1.0},

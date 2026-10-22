@@ -1,0 +1,8 @@
+asset: prop_neon_eat
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "sales", "kind": "neon_sign", "mount": "wall", "pin_only": true, "place": "wall_mount", "surface": "metal"}, "fn": "neon_sign", "key": "emit_led_red", "key2": "emit_mint", "line2": "COFFEE  PIE", "text": "EAT"}
+seed: 3503034424  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_neon_eat
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

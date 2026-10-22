@@ -146,18 +146,19 @@ NEW_KITS = {
         "optional": {"plant": 0.5, "bin": 0.5},
         "counts": {"table": (1, 2)},
         "assets": {
-            "light_fixture": ["prop_downlight"],
-            "table": ["prop_table_round_d120"],
-            "chair": ["prop_chair_break"],
+            "light_fixture": ["prop_pendant_diner"],
+            "table": ["prop_diner_table_w80"],
+            "chair": ["prop_diner_chair"],
             "bin": ["prop_bin_small"],
             "plant": ["prop_plant_tall"],
         },
-        "ceiling": {"prop_downlight": 2.6},
+        "ceiling": {"prop_pendant_diner": 3.0},
         "lone_ok": ["display_case", "plant"],
         "notes": "RT DR Halloran's dining room: the counter (prop_counter_sales art) with the till on it, round "
         "tables and chairs beside the map's three customer tables, downlights (prop_pendant_brass hangs to 1.05 m "
-        "under the 3.0 m ceiling, so not here), the pie case and the counter stools from fixed tables. Waits: "
-        "prop_diner_booth (no pair seat exists), the HALFWAY neon (prop_neon_vossberg variant).",
+        "under the 3.0 m ceiling, so not here), the pie case and the counter stools from fixed tables. GPU-21 (the "
+        "LEAD's render review: it read as an office): diner tables and chrome chairs, red enamel pendants on a 3 m "
+        "grid (prop_pendant_diner, 2.28 m clear); the booths, stools, menu board and EAT neon are the map's.",
     },
     "kitchen_commercial": {
         "purpose": "kitchen",
@@ -188,15 +189,15 @@ NEW_KITS = {
         "optional": {"plant": 0.8},
         "counts": {"table": (2, 3), "chair": (6, 8)},
         "assets": {
-            "table": ["prop_table_break"],
-            "chair": ["prop_chair_break"],
+            "table": ["prop_diner_table_l120"],
+            "chair": ["prop_diner_chair"],
             "counter_bar": ["prop_bar_lounge_w300"],
-            "light_fixture": ["prop_ceiling_panel_neutral"],
+            "light_fixture": ["prop_pendant_diner"],
             "plant": ["prop_plant_tall"],
         },
-        "ceiling": {"prop_ceiling_panel_neutral": 2.6},
-        "notes": "RT U1 upstairs function room: break tables with chairs beside the map's two long tables, the "
-        "lounge bar on a wall, ceiling panels.",
+        "ceiling": {"prop_pendant_diner": 3.0},
+        "notes": "RT U1 upstairs function room (the diner's party room): diner tables with chrome chairs beside the "
+        "map's two long tables, the lounge bar on a wall, red enamel pendants (GPU-21: it read as an office).",
     },
     "site_frame_ground": {
         "purpose": "exterior",
@@ -217,7 +218,7 @@ NEW_KITS = {
         "min_props": 4,
         "salt": 4716,
         "required": ["pallet", "cone"],
-        "lone_ok": ["pallet", "cone", "gas_cylinders"],
+        "lone_ok": ["pallet", "cone", "gas_cylinders", "scaffold"],
         "notes": "RT F1 the frame's first slab: block pallets (the map's G1 boxes, prop_pallet_loaded art) with a "
         "second pallet each, cones by the slab edge. Fixed tables. Waits: prop_scaffold (edge protection), "
         "prop_site_clutter.",
@@ -243,6 +244,9 @@ NEW_KITS = {
             "pole",
             "ladder",
             "vehicle",
+            "scaffold",
+            "rebar",
+            "mixer",
         ],
         "notes": "RT X4 Tanner's Reach site yard: sodium masts, roadworks barriers with a hazard beacon, cones, gas "
         "cylinders by the cabins. Fixed tables. Waits: prop_rt_tower_crane (the G1 crane boxes), plywood_painted "
@@ -256,7 +260,7 @@ NEW_VARIANTS = {
         "exterior_street",
         "exterior",
         {
-            "lone_ok_add": ["convoy_car", "convoy_cash", "convoy_bullion"],
+            "lone_ok_add": ["convoy_car", "convoy_cash", "convoy_bullion", "vehicle", "traffic_signal"],
             "notes": "RT X1 Orchard / the junction / Tannery west: exterior_street with the convoy's vehicles "
             "(the G1 ConvoyLayout placeholders, A5-02's movers later) allowed alone: an escort stops 3-4 m off the "
             "truck it follows, and the density check's lone rule is per kit (no per-heist exemption exists).",

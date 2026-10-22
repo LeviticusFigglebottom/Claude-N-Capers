@@ -54,7 +54,7 @@ const PREPLAN: Array = [
 ## Review cameras: [id, room, eye, look-at].
 const REVIEW_CAMERAS: Array = [
 	["TopDownPlan", "", [12.0, 160.0, -9.0], [12.0, 0.0, -9.0]],
-	["rc_ext_junction", "X3", [-22.0, 1.7, 14.0], [10.0, 4.0, -12.0]],
+	["rc_ext_junction", "X3", [-16.5, 1.7, 17.5], [6.0, 3.5, -6.0]],
 	["rc_ext_north_arm", "X1", [-4.0, 1.7, -8.0], [-5.0, 2.0, -60.0]],
 	["rc_ext_east_arm", "X6", [40.0, 1.7, -12.6], [75.0, -3.0, 0.0]],
 	["rc_ext_plaza", "X3", [-16.0, 1.7, 22.0], [-40.0, 3.0, 28.0]],
@@ -69,7 +69,7 @@ const REVIEW_CAMERAS: Array = [
 	["rc_carpark_booth", "AB", [19.8, 1.7, -15.0], [17.0, 1.0, -18.0]],
 	["rc_carpark_plant", "CPL", [30.5, 1.7, -19.4], [36.0, 0.8, -15.0]],
 	["rc_carpark_stair", "STA", [17.4, 5.2, -45.0], [17.4, 4.0, -48.0]],
-	["rc_diner_dining", "DR", [14.8, 1.7, 22.0], [24.0, 1.0, 16.0]],
+	["rc_diner_dining", "DR", [16.4, 1.7, 25.2], [22.5, 1.2, 15.5]],
 	["rc_diner_kitchen", "K", [32.8, 1.7, 21.0], [28.0, 1.0, 15.0]],
 	["rc_diner_function", "U1", [25.5, 5.2, 24.8], [16.0, 4.5, 15.0]],
 	["rc_diner_office", "OF", [22.6, 1.7, 26.6], [26.5, 0.8, 30.0]],
@@ -231,6 +231,16 @@ const FURNITURE: Array = [
 	["box", "DinerTable0", [20.5, 0.0, 18.0], [0.8, 0.74, 0.8], 0.0, "table", true, "prop", {}],
 	["box", "DinerTable1", [20.5, 0.0, 22.0], [0.8, 0.74, 0.8], 0.0, "table", true, "prop", {}],
 	["box", "DinerTable2", [20.5, 0.0, 24.5], [0.8, 0.74, 0.8], 0.0, "table", true, "prop", {}],
+	["catalog", "DinerBooth0", [14.82, 0.0, 17.0], 0.0, "prop_diner_booth", {"kind": "booth"}, []],
+	["catalog", "DinerBooth1", [14.82, 0.0, 19.45], 0.0, "prop_diner_booth", {"kind": "booth"}, []],
+	["catalog", "DinerBooth2", [14.82, 0.0, 24.6], 0.0, "prop_diner_booth", {"kind": "booth"}, []],
+	["catalog", "CounterStool0", [23.15, 0.0, 17.9], -90.0, "prop_diner_stool", {"kind": "stool"}, []],
+	["catalog", "CounterStool1", [23.15, 0.0, 18.55], -90.0, "prop_diner_stool", {"kind": "stool"}, []],
+	["catalog", "CounterStool2", [23.15, 0.0, 19.2], -90.0, "prop_diner_stool", {"kind": "stool"}, []],
+	["catalog", "CounterStool3", [23.15, 0.0, 19.85], -90.0, "prop_diner_stool", {"kind": "stool"}, []],
+	["catalog", "CounterStool4", [23.15, 0.0, 20.5], -90.0, "prop_diner_stool", {"kind": "stool"}, []],
+	["catalog", "CounterStool5", [23.15, 0.0, 21.15], -90.0, "prop_diner_stool", {"kind": "stool"}, []],
+	["catalog", "CounterStool6", [23.15, 0.0, 21.8], -90.0, "prop_diner_stool", {"kind": "stool"}, []],
 	["box", "Cookline", [27.55, 0.0, 18.0], [0.8, 0.9, 5.0], 0.0, "cookline", true, "counter", {}],
 	["box", "PrepTable", [31.0, 0.0, 18.5], [2.0, 0.9, 0.8], 0.0, "table", true, "counter", {}],
 	["box", "OfficeDesk", [23.5, 0.0, 27.5], [1.4, 0.75, 0.7], 0.0, "desk", true, "prop", {}],
@@ -460,11 +470,11 @@ const FIXED_SPAWNS: Array = [
 	["spawn", "BusQueue1", "CIVILIAN", [-37.5, 0.0, 13.32], 180.0, ["civ_bus"], "sit", "", ""],
 	["spawn", "BusQueue2", "CIVILIAN", [-30.5, 0.0, 13.32], 180.0, ["civ_bus"], "sit", "", ""],
 	["spawn", "BusQueue3", "CIVILIAN", [-29.5, 0.0, 13.32], 180.0, ["civ_bus"], "sit", "", ""],
-	["spawn", "DinerCustomer0", "CIVILIAN", [19.76, 0.0, 18.0], -90.0, ["civ_diner"], "sit_eat", "", "prop_chair_task"],
-	["spawn", "DinerCustomer1", "CIVILIAN", [19.76, 0.0, 22.0], -90.0, ["civ_diner"], "sit_eat", "", "prop_chair_task"],
-	["spawn", "DinerCustomer2", "CIVILIAN", [21.24, 0.0, 18.0], 90.0, ["civ_diner"], "sit_eat", "", "prop_chair_task"],
-	["spawn", "DinerCustomer3", "CIVILIAN", [21.24, 0.0, 22.0], 90.0, ["civ_diner"], "sit_eat", "", "prop_chair_task"],
-	["spawn", "DinerCustomer4", "CIVILIAN", [19.76, 0.0, 24.5], -90.0, ["civ_diner"], "sit_eat", "", "prop_chair_task"],
+	["spawn", "DinerCustomer0", "CIVILIAN", [19.76, 0.0, 18.0], -90.0, ["civ_diner"], "sit_eat", "", "prop_diner_chair"],
+	["spawn", "DinerCustomer1", "CIVILIAN", [19.76, 0.0, 22.0], -90.0, ["civ_diner"], "sit_eat", "", "prop_diner_chair"],
+	["spawn", "DinerCustomer2", "CIVILIAN", [21.24, 0.0, 18.0], 90.0, ["civ_diner"], "sit_eat", "", "prop_diner_chair"],
+	["spawn", "DinerCustomer3", "CIVILIAN", [21.24, 0.0, 22.0], 90.0, ["civ_diner"], "sit_eat", "", "prop_diner_chair"],
+	["spawn", "DinerCustomer4", "CIVILIAN", [19.76, 0.0, 24.5], -90.0, ["civ_diner"], "sit_eat", "", "prop_diner_chair"],
 	[
 		"spawn", "Waitress", "CIVILIAN", [24.68, 0.0, 20.5], 90.0, ["staff_waitress", "staff_diner", "staff"], "counter_wipe", "",
 		"",
@@ -653,123 +663,187 @@ const SLOT_ITEMS: Dictionary = {
 		],
 	],
 }
-## ConvoyLayout placeholder sets (G1; TODO(A5-01/02/03), TODO(QC-81)) under the convoy_route slots: {route slot:
-## [[clean|crash, [[vehicle, kind, centre, size [length, height, width], yaw, rear-door point]]]]}.
+## The convoy under each convoy_route slot (RT-C2, A5-01 / A5-02, D-149.1): {route slot: {movers [[node, kind, start pivot,
+## yaw, path [[point, in, out]]]], layouts [[clean|crash, [[stop node, kind, pivot, yaw, slope, size [length, height,
+## width], cover]]]]}}.
 const CONVOY: Dictionary = {
-	"route_north": [
-		[
-			"clean",
+	"route_north": {
+		"movers": [
 			[
+				"Lead", "car", [-6.0, 0.0, -54.7], 0.0,
 				[
-					"CleanLead", "car", [-6.0, 0.0, -18.5], [5.0, 1.5, 2.0], 0.0, [-6.0, 0.0, -21.6], 0.0,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanLeadCoverR", [-4.4, 0.0, -18.5], 90.0], ["CleanLeadCoverL", [-7.6, 0.0, -18.5], -90.0]],
+					[[-6.0, 0.0, -54.7], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, -12.0], [0.0, 0.0, -4.0], [0.0, 0.0, 4.0]],
+					[[-2.0, 0.0, 2.0], [-1.721, 0.0, -2.457], [1.147, 0.0, 1.638]],
+					[[0.294, 0.0, 5.277], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
+			],
+			[
+				"T1", "cash", [-6.0, 0.0, -61.5], 0.0,
+				[[[-6.0, 0.0, -61.5], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, 6.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+			],
+			[
+				"T2", "bullion", [-6.0, 0.0, -70.3], 0.0,
+				[[[-6.0, 0.0, -70.3], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, 6.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+			],
+			[
+				"T3", "bullion", [-6.0, 0.0, -79.85], 0.0,
+				[[[-6.0, 0.0, -79.85], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, 6.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+			],
+			[
+				"Rear", "car", [-6.0, 0.0, -87.4], 0.0,
+				[[[-6.0, 0.0, -87.4], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, 6.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]],
+			],
+		],
+		"layouts": [
+			[
+				"clean",
 				[
-					"CleanT1", "cash", [-6.0, 0.0, -27.75], [7.5, 3.2, 2.5], 0.0, [-6.0, 0.0, -32.1], 0.0,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanT1CoverR", [-4.15, 0.0, -27.75], 90.0], ["CleanT1CoverL", [-7.85, 0.0, -27.75], -90.0]],
+					[
+						"LeadStop", "car", [-6.0, 0.0, -18.5], 0.0, 0.0, [5.0, 1.5, 2.0],
+						[["CleanLeadCoverR", [-4.4, 0.0, -18.5], 90.0], ["CleanLeadCoverL", [-7.6, 0.0, -18.5], -90.0]],
+					],
+					[
+						"T1Stop", "cash", [-6.0, 0.0, -27.75], 0.0, 0.0, [7.5, 3.45, 2.5],
+						[["CleanT1CoverR", [-4.15, 0.0, -27.75], 90.0], ["CleanT1CoverL", [-7.85, 0.0, -27.75], -90.0]],
+					],
+					[
+						"T2Stop", "bullion", [-6.0, 0.0, -39.0], 0.0, 0.0, [9.0, 3.85, 2.5],
+						[["CleanT2CoverR", [-4.15, 0.0, -39.0], 90.0], ["CleanT2CoverL", [-7.85, 0.0, -39.0], -90.0]],
+					],
+					[
+						"T3Stop", "bullion", [-6.0, 0.0, -51.0], 0.0, 0.0, [9.0, 3.85, 2.5],
+						[["CleanT3CoverR", [-4.15, 0.0, -51.0], 90.0], ["CleanT3CoverL", [-7.85, 0.0, -51.0], -90.0]],
+					],
+					[
+						"RearStop", "car", [-6.0, 0.0, -61.0], 0.0, 0.0, [5.0, 1.5, 2.0],
+						[["CleanRearCoverR", [-4.4, 0.0, -61.0], 90.0], ["CleanRearCoverL", [-7.6, 0.0, -61.0], -90.0]],
+					],
+					["RearStop2", "car", [-6.0, 0.0, -49.0], 0.0, 0.0, [5.0, 1.5, 2.0], []],
 				],
+			],
+			[
+				"crash",
 				[
-					"CleanT2", "bullion", [-6.0, 0.0, -39.0], [9.0, 3.6, 2.5], 0.0, [-6.0, 0.0, -44.1], 0.0,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanT2CoverR", [-4.15, 0.0, -39.0], 90.0], ["CleanT2CoverL", [-7.85, 0.0, -39.0], -90.0]],
-				],
-				[
-					"CleanT3", "bullion", [-6.0, 0.0, -51.0], [9.0, 3.6, 2.5], 0.0, [-6.0, 0.0, -56.1], 0.0,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanT3CoverR", [-4.15, 0.0, -51.0], 90.0], ["CleanT3CoverL", [-7.85, 0.0, -51.0], -90.0]],
-				],
-				[
-					"CleanRear", "car", [-6.0, 0.0, -61.0], [5.0, 1.5, 2.0], 0.0, [-6.0, 0.0, -64.1], 0.0,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanRearCoverR", [-4.4, 0.0, -61.0], 90.0], ["CleanRearCoverL", [-7.6, 0.0, -61.0], -90.0]],
+					[
+						"LeadStop", "car", [-2.0, 0.0, 2.0], 35.0, 0.0, [5.0, 1.5, 2.0],
+						[["CrashLeadCoverR", [-0.689, 0.0, 1.082], 125.0], ["CrashLeadCoverL", [-3.311, 0.0, 2.918], -55.0]],
+					],
+					[
+						"T1Stop", "cash", [-6.0, 0.0, -12.0], 15.0, 0.0, [7.5, 3.45, 2.5],
+						[["CrashT1CoverR", [-4.213, 0.0, -12.479], 105.0], ["CrashT1CoverL", [-7.787, 0.0, -11.521], -75.0]],
+					],
+					[
+						"T2Stop", "bullion", [-5.0, 0.0, -23.5], 20.0, 0.0, [9.0, 3.85, 2.5],
+						[["CrashT2CoverR", [-3.262, 0.0, -24.133], 110.0], ["CrashT2CoverL", [-6.738, 0.0, -22.867], -70.0]],
+					],
+					[
+						"T3Stop", "bullion", [-5.0, 0.0, -35.0], 15.0, 0.0, [9.0, 3.85, 2.5],
+						[["CrashT3CoverR", [-3.213, 0.0, -35.479], 105.0], ["CrashT3CoverL", [-6.787, 0.0, -34.521], -75.0]],
+					],
+					[
+						"RearStop", "car", [-6.0, 0.0, -44.5], 10.0, 0.0, [5.0, 1.5, 2.0],
+						[["CrashRearCoverR", [-4.424, 0.0, -44.778], 100.0], ["CrashRearCoverL", [-7.576, 0.0, -44.222], -80.0]],
+					],
+					["RearStop2", "car", [-6.0, 0.0, -33.5], 10.0, 0.0, [5.0, 1.5, 2.0], []],
 				],
 			],
 		],
-		[
-			"crash",
+	},
+	"route_east": {
+		"movers": [
 			[
+				"Lead", "car", [68.7, -5.0, -6.8], -90.0,
 				[
-					"CrashT1", "cash", [-6.0, 0.0, -12.0], [7.5, 3.2, 2.5], 15.0, [-6.0, 0.0, -16.6], 0.0,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashT1CoverR", [-4.213, 0.0, -12.479], 105.0], ["CrashT1CoverL", [-7.787, 0.0, -11.521], -75.0]],
+					[[68.7, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[66.0, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+					[[34.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[18.0, 0.0, -4.0], [4.0, 0.0, 0.0], [-4.0, 0.0, 0.0]],
+					[[4.0, 0.0, -2.0], [2.457, 0.0, -1.721], [-1.638, 0.0, 1.147]],
+					[[0.723, 0.0, 0.294], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
+			],
+			[
+				"T1", "cash", [75.5, -5.0, -6.8], -90.0,
 				[
-					"CrashT2", "bullion", [-5.0, 0.0, -23.5], [9.0, 3.6, 2.5], 20.0, [-5.0, 0.0, -28.6], 0.0,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashT2CoverR", [-3.262, 0.0, -24.133], 110.0], ["CrashT2CoverL", [-6.738, 0.0, -22.867], -70.0]],
+					[[75.5, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[66.0, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+					[[34.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
+			],
+			[
+				"T2", "bullion", [84.3, -5.0, -6.8], -90.0,
 				[
-					"CrashT3", "bullion", [-5.0, 0.0, -35.0], [9.0, 3.6, 2.5], 15.0, [-5.0, 0.0, -39.6], 0.0,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashT3CoverR", [-3.213, 0.0, -35.479], 105.0], ["CrashT3CoverL", [-6.787, 0.0, -34.521], -75.0]],
+					[[84.3, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[66.0, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+					[[34.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
+			],
+			[
+				"T3", "bullion", [93.85, -5.0, -6.8], -90.0,
 				[
-					"CrashRear", "car", [-6.0, 0.0, -44.5], [5.0, 1.5, 2.0], 10.0, [-6.0, 0.0, -47.6], 0.0,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashRearCoverR", [-4.424, 0.0, -44.778], 100.0], ["CrashRearCoverL", [-7.576, 0.0, -44.222], -80.0]],
+					[[93.85, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[66.0, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+					[[34.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+				],
+			],
+			[
+				"Rear", "car", [101.4, -5.0, -6.8], -90.0,
+				[
+					[[101.4, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[66.0, -5.0, -6.8], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
+					[[34.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[-6.0, 0.0, -4.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
 				],
 			],
 		],
-	],
-	"route_east": [
-		[
-			"clean",
+		"layouts": [
 			[
+				"clean",
 				[
-					"CleanLead", "car", [18.5, 0.0, -4.0], [5.0, 1.5, 2.0], 90.0, [21.6, 0.0, -4.0], 0.0,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanLeadCoverR", [18.5, 0.0, -5.6], 180.0], ["CleanLeadCoverL", [18.5, 0.0, -2.4], 0.0]],
+					[
+						"LeadStop", "car", [18.5, 0.0, -4.0], -90.0, 0.0, [5.0, 1.5, 2.0],
+						[["CleanLeadCoverR", [18.5, 0.0, -2.4], 0.0], ["CleanLeadCoverL", [18.5, 0.0, -5.6], -180.0]],
+					],
+					[
+						"T1Stop", "cash", [27.75, 0.0, -4.0], -90.0, 0.0, [7.5, 3.45, 2.5],
+						[["CleanT1CoverR", [27.75, 0.0, -2.15], 0.0], ["CleanT1CoverL", [27.75, 0.0, -5.85], -180.0]],
+					],
+					[
+						"T2Stop", "bullion", [39.0, -0.781, -4.0], -90.0, 0.156, [9.0, 3.85, 2.5],
+						[["CleanT2CoverR", [39.0, -0.781, -2.15], 0.0], ["CleanT2CoverL", [39.0, -0.781, -5.85], -180.0]],
+					],
+					[
+						"T3Stop", "bullion", [51.0, -2.656, -4.0], -90.0, 0.156, [9.0, 3.85, 2.5],
+						[["CleanT3CoverR", [51.0, -2.656, -2.15], 0.0], ["CleanT3CoverL", [51.0, -2.656, -5.85], -180.0]],
+					],
+					[
+						"RearStop", "car", [61.0, -4.219, -4.0], -90.0, 0.156, [5.0, 1.5, 2.0],
+						[["CleanRearCoverR", [61.0, -4.219, -2.4], 0.0], ["CleanRearCoverL", [61.0, -4.219, -5.6], -180.0]],
+					],
+					["RearStop2", "car", [49.0, -2.344, -4.0], -90.0, 0.156, [5.0, 1.5, 2.0], []],
 				],
+			],
+			[
+				"crash",
 				[
-					"CleanT1", "cash", [27.75, 0.0, -4.0], [7.5, 3.2, 2.5], 90.0, [32.1, 0.0, -4.0], 0.0,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanT1CoverR", [27.75, 0.0, -5.85], 180.0], ["CleanT1CoverL", [27.75, 0.0, -2.15], 0.0]],
-				],
-				[
-					"CleanT2", "bullion", [39.0, -0.781, -4.0], [9.0, 3.6, 2.5], 90.0, [44.1, -1.578, -4.0], 0.156,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanT2CoverR", [39.0, -0.781, -5.85], 180.0], ["CleanT2CoverL", [39.0, -0.781, -2.15], 0.0]],
-				],
-				[
-					"CleanT3", "bullion", [51.0, -2.656, -4.0], [9.0, 3.6, 2.5], 90.0, [56.1, -3.453, -4.0], 0.156,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanT3CoverR", [51.0, -2.656, -5.85], 180.0], ["CleanT3CoverL", [51.0, -2.656, -2.15], 0.0]],
-				],
-				[
-					"CleanRear", "car", [61.0, -4.219, -4.0], [5.0, 1.5, 2.0], 90.0, [64.1, -4.703, -4.0], 0.156,
-					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
-					[["CleanRearCoverR", [61.0, -4.219, -5.6], 180.0], ["CleanRearCoverL", [61.0, -4.219, -2.4], 0.0]],
+					[
+						"LeadStop", "car", [4.0, 0.0, -2.0], -55.0, 0.0, [5.0, 1.5, 2.0],
+						[["CrashLeadCoverR", [4.918, 0.0, -0.689], 35.0], ["CrashLeadCoverL", [3.082, 0.0, -3.311], -145.0]],
+					],
+					[
+						"T1Stop", "cash", [13.0, 0.0, -2.9], -115.0, 0.0, [7.5, 3.45, 2.5],
+						[["CrashT1CoverR", [12.218, 0.0, -1.223], -25.0], ["CrashT1CoverL", [13.782, 0.0, -4.577], -205.0]],
+					],
+					[
+						"T2Stop", "bullion", [24.5, 0.0, -5.1], -110.0, 0.0, [9.0, 3.85, 2.5],
+						[["CrashT2CoverR", [23.867, 0.0, -3.362], -20.0], ["CrashT2CoverL", [25.133, 0.0, -6.838], -200.0]],
+					],
+					[
+						"T3Stop", "bullion", [36.0, -0.312, -2.9], -115.0, 0.156, [9.0, 3.85, 2.5],
+						[["CrashT3CoverR", [35.218, -0.19, -1.223], -25.0], ["CrashT3CoverL", [36.782, -0.435, -4.577], -205.0]],
+					],
+					[
+						"RearStop", "car", [45.5, -1.797, -5.1], -100.0, 0.156, [5.0, 1.5, 2.0],
+						[["CrashRearCoverR", [45.222, -1.753, -3.524], -10.0], ["CrashRearCoverL", [45.778, -1.84, -6.676], -190.0]],
+					],
+					["RearStop2", "car", [34.5, -0.078, -5.1], -100.0, 0.156, [5.0, 1.5, 2.0], []],
 				],
 			],
 		],
-		[
-			"crash",
-			[
-				[
-					"CrashT1", "cash", [13.0, 0.0, -2.9], [7.5, 3.2, 2.5], 115.0, [17.6, 0.0, -2.9], 0.0,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashT1CoverR", [12.218, 0.0, -4.577], 205.0], ["CrashT1CoverL", [13.782, 0.0, -1.223], 25.0]],
-				],
-				[
-					"CrashT2", "bullion", [24.5, 0.0, -5.1], [9.0, 3.6, 2.5], 110.0, [29.6, 0.0, -5.1], 0.0,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashT2CoverR", [23.867, 0.0, -6.838], 200.0], ["CrashT2CoverL", [25.133, 0.0, -3.362], 20.0]],
-				],
-				[
-					"CrashT3", "bullion", [36.0, -0.312, -2.9], [9.0, 3.6, 2.5], 115.0, [40.6, -1.031, -2.9], 0.156,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashT3CoverR", [35.218, -0.19, -4.577], 205.0], ["CrashT3CoverL", [36.782, -0.435, -1.223], 25.0]],
-				],
-				[
-					"CrashRear", "car", [45.5, -1.797, -5.1], [5.0, 1.5, 2.0], 100.0, [48.6, -2.281, -5.1], 0.156,
-					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
-					[["CrashRearCoverR", [45.222, -1.753, -6.676], 190.0], ["CrashRearCoverL", [45.778, -1.84, -3.524], 10.0]],
-				],
-			],
-		],
-	],
+	},
 }
 ## Patrol graphs: name -> [graph_id, floor index, {point: [position, pause, anim, tags, facing yaw or null]}, edges].
 const GRAPHS: Dictionary = {
@@ -892,10 +966,10 @@ const GRAPHS: Dictionary = {
 }
 ## TacticalPoints: police entries, rappels, flanks, shield anchors, perches S1-S4, COVER.
 const TACTICAL: Array = [
-	["tac", "EntryClosureN", "ENTRY", [-5.5, 0.0, -80.0], 180.0, ["closure", "north", "vehicle_wide"], false],
+	["tac", "EntryClosureN", "ENTRY", [-3.0, 0.0, -80.0], 180.0, ["closure", "north", "vehicle_wide"], false],
 	["tac", "EntryClosureS", "ENTRY", [-9.0, 0.0, 62.0], 0.0, ["closure", "south", "vehicle_wide"], false],
 	["tac", "EntryClosureW", "ENTRY", [-72.0, 0.0, 6.0], -90.0, ["closure", "west", "vehicle_wide"], false],
-	["tac", "EntryClosureE", "ENTRY", [94.0, -5.0, -4.0], 90.0, ["closure", "east", "vehicle_wide"], false],
+	["tac", "EntryClosureE", "ENTRY", [94.0, -5.0, -2.0], 90.0, ["closure", "east", "vehicle_wide"], false],
 	["tac", "EntryRailGate", "ENTRY", [60.0, 0.0, -73.0], 180.0, ["rail_lane", "northeast"], true],
 	["tac", "EntryCarParkEntrance", "ENTRY", [24.0, 0.0, -13.0], 180.0, ["carpark", "south", "breach_only"], false],
 	["tac", "EntryCarParkStairA", "ENTRY", [15.0, 0.0, -46.0], 90.0, ["carpark", "west", "door", "breach_only"], true],

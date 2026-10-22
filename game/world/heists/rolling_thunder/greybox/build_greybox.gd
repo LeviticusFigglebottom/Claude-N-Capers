@@ -14,8 +14,8 @@
 ## diner x2, the site cabins, magazine, frame + slab, scaffold tower) with every opening, stairs and ramps, RoomVolumes,
 ## PUBLIC / RESTRICTED / OUT_OF_BOUNDS zones, player / police spawns, police entries (breach_only on buildings), doors
 ## (route doors 1.0 m: the service kit), the contract nodes, review cameras, VariantSlots for the 12 slot groups (the
-## 6 scalars and 8 rare events are table rows), the 4 ConvoyLayout placeholder sets, holdouts, perches S1-S4, preplan
-## points, patrol graphs, assault markers, the navmesh (door_nav_clearance, _nav_thick). No lights but the sun, the
+## 6 scalars and 8 rare events are table rows), the convoy (RT-C2: A5-02 movers + paths, the 4 layouts), holdouts,
+## perches S1-S4, preplan points, patrol graphs, assault markers, the navmesh (door_nav_clearance, _nav_thick). No lights but the sun, the
 ## sky and the dressing's fixtures.
 ## G2 (RT-C2 batch 1, reuse-first): rt_dress.gd (kit rooms, map-built art, street furniture) and rt_finish.gd (library
 ## finishes on every shell surface), both before the bake; rt_skyline.gd (the city round the site, visual only).
@@ -28,6 +28,8 @@ const DNC: GDScript = preload("res://world/heists/shared/door_nav_clearance.gd")
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the F1 edge protection, the scaffold mesh,
 ## the palisades and rail-lane fences).
 const THIN_GROUPS: Array[String] = ["Frame", "Scaffold", "Rail", "RailLane"]
+## RT-C2: the convoy nav guard (Gameplay/ConvoyNav).
+const CONVOY_NAV_GUARD: String = "res://world/heists/rolling_thunder/rt_convoy_nav.gd"
 
 
 func _initialize() -> void:
@@ -190,32 +192,27 @@ func _build_environment(lighting: Node3D) -> void:
 ## colliders minus the projected obstructions (furniture, catalog bodies, thin site bodies widened by _nav_thick, the
 ## culled tops nobody stands on: neighbour roofs, the rail bank, closure vehicles), with the door throats
 ## (door_nav_clearance.gd, as every map since ENV P's ghost run 250).
+## RT-C2 convoy (D-149.1, pre-baked nav per convoy layout, swapped at the stop): the source geometry is parsed once and
+## reused. `Navigation` is the open road before the stop (meta `convoy_open_nav` = "convoy": ConvoyLayouts turns it off
+## while a convoy layout is active), with the movers' upstream footprints kept clear; `_bake_convoy` bakes each layout.
 func _bake(nav: NavigationRegion3D) -> int:
-	var nm: NavigationMesh = NavigationMesh.new()
-	nm.agent_radius = 0.3
-	nm.agent_height = 1.8
-	nm.agent_max_climb = 0.3
-	nm.agent_max_slope = 40.0
-	nm.cell_size = 0.1
-	nm.cell_height = 0.1
-	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
-	nm.geometry_collision_mask = 1
-	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
+	var nm: NavigationMesh = _nav_mesh()
 	var holder: Node3D = Node3D.new()
 	holder.name = "BakeSource"
 	holder.add_child(map_root.get_node("Geometry").duplicate())
 	get_root().add_child(holder)
 	await physics_frame
-	var src: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
-	NavigationServer3D.parse_source_geometry_data(nm, src, holder)
+	var t0: int = Time.get_ticks_msec()
+	var base: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
+	NavigationServer3D.parse_source_geometry_data(nm, base, holder)
 	for o: Array in obstructions:
-		src.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
+		base.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
 	for c: Array in L.NAV_CULL:
 		var r: Array = c[1]
 		var pts: PackedVector3Array = PackedVector3Array([Vector3(float(r[0]), 0.0, float(r[1])),
 			Vector3(float(r[2]), 0.0, float(r[1])), Vector3(float(r[2]), 0.0, float(r[3])),
 			Vector3(float(r[0]), 0.0, float(r[3]))])
-		src.add_projected_obstruction(pts, float(c[2]), float(c[3]), true)
+		base.add_projected_obstruction(pts, float(c[2]), float(c[3]), true)
 	for b: Array in L.SITE_BOXES:
 		if not (String(b[0]) in THIN_GROUPS):
 			continue
@@ -228,10 +225,71 @@ func _bake(nav: NavigationRegion3D) -> int:
 		var corners: PackedVector3Array = PackedVector3Array()
 		for k: Vector3 in [Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(1, 0, 1), Vector3(0, 0, 1)]:
 			corners.append(bb.position + bb.size * k)
-		src.add_projected_obstruction(corners, bb.position.y, bb.size.y, false)
-	print("door throats: %d doors" % DNC.add(src, map_root, nm))
-	NavigationServer3D.bake_from_source_geometry_data(nm, src)
+		base.add_projected_obstruction(corners, bb.position.y, bb.size.y, false)
+	print("door throats: %d doors" % DNC.add(base, map_root, nm))
 	holder.queue_free()
+	var t_parse: int = Time.get_ticks_msec() - t0
+	var t1: int = Time.get_ticks_msec()
+	NavigationServer3D.bake_from_source_geometry_data(nm, _src_with(base, convoy_start_obs))
+	var t_main: int = Time.get_ticks_msec() - t1
 	await process_frame
 	nav.navigation_mesh = nm
+	nav.set_meta(&"convoy_open_nav", "convoy")
+	var guard: Node3D = node3d("ConvoyNav")   # keeps the disabled convoy regions off the nav map (rt_convoy_nav.gd)
+	guard.set_script(load(CONVOY_NAV_GUARD))
+	add(n("Gameplay"), guard)
+	var t2: int = Time.get_ticks_msec()
+	var counts: PackedStringArray = _bake_convoy(base)
+	print("navmesh bake: parse %d ms, main %d ms (%d polygons), convoy layouts %d ms: %s" % [t_parse, t_main,
+		nm.get_polygon_count(), Time.get_ticks_msec() - t2, ", ".join(counts)])
 	return nm.get_polygon_count()
+
+
+## The map's NavigationMesh settings (heist_map.md §3).
+static func _nav_mesh() -> NavigationMesh:
+	var nm: NavigationMesh = NavigationMesh.new()
+	nm.agent_radius = 0.3
+	nm.agent_height = 1.8
+	nm.agent_max_climb = 0.3
+	nm.agent_max_slope = 40.0
+	nm.cell_size = 0.1
+	nm.cell_height = 0.1
+	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
+	nm.geometry_collision_mask = 1
+	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
+	return nm
+
+
+## A copy of the parsed `base` plus the projected obstructions `obs` ([corners, elevation, height, carve]).
+static func _src_with(base: NavigationMeshSourceGeometryData3D, obs: Array) -> NavigationMeshSourceGeometryData3D:
+	var s: NavigationMeshSourceGeometryData3D = NavigationMeshSourceGeometryData3D.new()
+	s.set_vertices(base.get_vertices())
+	s.set_indices(base.get_indices())
+	s.set_projected_obstructions(base.get_projected_obstructions())
+	for o: Array in obs:
+		s.add_projected_obstruction(o[0], float(o[1]), float(o[2]), o.size() > 3 and bool(o[3]))
+	return s
+
+
+## D-149.1 per layout: `NavConvoy`, the whole map's navmesh as it stands once that layout's vehicles have stopped (the
+## same source as `Navigation`, the movers gone from upstream, the layout's stopped vehicles as normal agent-radius-grown
+## obstructions, RearStop2 with T3 and Rear so trucks_2 stays clear). Authored disabled: ConvoyLayouts turns it on and
+## `Navigation` off at the stop, so no two regions ever overlap and there is no seam to connect. (A junction-box pair
+## per layout, carved from the main mesh, did not connect in Godot 4.7: the boxes' long border edges got no edge
+## connections to the carved main edges.) Returns "<layout> <polygons>" per bake.
+func _bake_convoy(base: NavigationMeshSourceGeometryData3D) -> PackedStringArray:
+	var counts: PackedStringArray = PackedStringArray()
+	for e: Dictionary in convoy_bake:
+		for lay: Dictionary in e["layouts"]:
+			var st: Node3D = lay["node"]
+			var mesh: NavigationMesh = _nav_mesh()
+			NavigationServer3D.bake_from_source_geometry_data(mesh, _src_with(base, lay["obs"]))
+			var r: NavigationRegion3D = NavigationRegion3D.new()
+			r.name = "NavConvoy"
+			r.navigation_layers = 1
+			r.navigation_mesh = mesh
+			r.enabled = false
+			add(st, r)
+			r.transform = global_xform(st).affine_inverse()   # the mesh is in world space
+			counts.append("%s %d" % [lay["id"], mesh.get_polygon_count()])
+	return counts

@@ -6,6 +6,94 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, **OF-C2 cash lift fix for your cherry-pick: 9932f9f64** (GPU-22 item 2).
+  - The car fills GL's shaft (prop_cash_lift_car_w255, car_size_m 2.55), so a bag thrown in from either landing door,
+    at any weight, level or looking down, rests in the car.
+  - Before the fix it stopped at the back wall, 1.22 m off the car centre, outside the old 1.1 m half-box.
+  - New test: test_of_cash_lift_throw (it fails on the old map, passes now).
+  - P's Hazardous route note is folded into ostrander_federal.md ("Ghost line as proven"); the old step 5 RC wait is
+    marked superseded.
+  - Gate: OF validate final PASS, regen twice byte-identical, c test_of_* / test_ostrander* / test_props pass.
+- 2026-10-21, **RT convoy prefab swap merged (prep/c-convoy → env/c-worlds).**
+  - **What's in:**
+    - Movers `<route>/Convoy/Movers/{Lead,T1,T2,T3,Rear}` (ConvoyVehicle). Cab colliders on the movers; the
+      ArmoredTruck holds as children, plus the bullion's `Thermite` burn_point (target ../Truck, no fire volume).
+    - Trucks are loud_only. `<Veh>Stop` (east ones tilted to the ramp) + `RearStop2` + crash `LeadStop` per layout.
+    - New veh_escort_car visual. The placeholder boxes are gone.
+  - **Gate:**
+    - regen twice byte-identical; validate greybox PASS (final PASS on the branch); navmesh 3,778 main;
+    - c tests pass, including the new test_rt_convoy_layouts;
+    - **a test_rt_a6_mission 3/4.** `test_early_alarm_crash_stop_and_lockdown` injects one truck and asserts every
+      truck opened. With 2-3 real trucks it fails. The fix is A's (sent to A): open `m._trucks`.
+  - **Nav (changed from my plan).** Godot 4.7 merges disabled regions' edges, so split junction boxes never connected.
+    - Instead, `Navigation` (the open road) is tagged `convoy_open_nav`, and each layout carries a disabled
+      whole-map `NavConvoy` with its stopped vehicles as obstacles.
+    - The stopgap `Gameplay/ConvoyNav` (rt_convoy_nav.gd) takes disabled regions off the nav map until A's
+      ConvoyLayouts does `region_set_map` (asked).
+  - **Drive-in:** paths are built but not wired yet (pop-in, D-149.8). They get wired once A's test waits for the
+    stop.
+  - **Mixer / Tannery layouts:** phase 2.
+  - **Asks for you (shared levelcheck):**
+    1. `set_layout_config`: switch `convoy_open_nav` regions off for a configured layout, and iterate per
+       layout_group (as before).
+    2. `lc_check_reachability.layout_targets` still looks for `truck_kind` markers, which are gone. Please put each
+       `Convoy/Movers/<Veh>` on its `<Veh>Stop` for the layout run, and target the trucks' `UsePoint` and
+       `Thermite/UsePoint`. test_rt_convoy_layouts covers rear-step reach until then.
+- 2026-10-21, **GPU-21 fixes 1 and 2 are on env/c-worlds (0832f69b7). Please queue the re-render** for
+  rc_diner_dining, rc_diner_function and rc_ext_junction. The convoy shots come after the convoy swap.
+  - **DR:**
+    - Floor and ceiling: checker vinyl and a flat plaster ceiling, with red enamel pendants (14).
+    - Counter: diner counter modules, with 7 fixed stools at the 0.9 m counter.
+    - Tables and seating: laminate tables (0.74 m) and chrome / red vinyl chairs at the same seat points. Three
+      booths line the Orchard windows (unseated: the bench-to-table gap still blocks seating).
+    - Wall dressing: a menu board and an EAT / COFFEE PIE neon.
+  - **U1:** the same finishes and furniture. U5 (staff) is unchanged.
+  - **Gameplay unchanged:** till, office safe, cover, cower marks and customers.
+  - **New pin_only props:** stool, chair, counter, three tables, pendant, menu board and neon_eat. New material:
+    vinyl_checker (texgen). Reasons are in rolling_thunder.md "G2 diner identity" (D-147).
+  - **Cameras:** rc_diner_dining is now at (16.4, 1.7, 25.2) looking NNE. rc_ext_junction is now at (-16.5, 1.7, 17.5)
+    looking NE; the old eye stood behind a bus shelter panel.
+  - **Gate:** regen twice byte-identical; validate greybox and final PASS; c and a tests pass; navmesh 3,718.
+  - **Perf:** rc_diner_dining is still over 4,000 draws (4,355, of which 3,313 are sun shadow). Getting it under
+    needs interior shadow cuts (D-146), noted for the perf pass.
+  - Batch 3's last commit (bay lines, hoarding graphic) is in at 06f8cc6cc.
+- 2026-10-21, GPU-21 review received.
+  - **Diner identity pass in progress:** booths along the windows, fixed stools at the counter, menu board and neon,
+    a checker or vinyl floor, pendant lights and a diner ceiling. The function room gets the same pass.
+  - rc_ext_junction is being re-aimed. The convoy shots get re-shot after the convoy swap.
+  - I'll ask for the re-render here when both land.
+  - **A's pilot "not reachable" findings (charges / thermite) are by design.** The site's gates are all locked at
+    start. With only the SiteManGate padlock opened, both are reachable (checked in a HeistRuntime). The pilot
+    needs to open the gate first; I told A.
+- 2026-10-21, r269 merged (05275e84), plus **RT-C2 batch 3**: the 14 new generators (d6111ca3c, c2fffb1d1).
+  - **Batch 3:**
+    - armoured trucks (cash and bullion), the mixer, lorries, cookline, diner booth, C4 box, car-park barrier and
+      height bars;
+    - the tower crane, Skyway girder, clock pillar, traffic signals, scaffold, site clutter, rail track, HALFWAY
+      neon, and the heli-pad marking;
+    - `plywood_painted` (texgen).
+    - Wired onto their G1 stand-ins; colliders, metas and nav obstructions are unchanged.
+  - **Gate (this tree):**
+    - regen twice byte-identical; validate greybox PASS (final PASS on prep/c-rt);
+    - c test_props / test_kits / test_rt_* / door_clearance_maps / determinism and a test_rt_a6_mission: all pass;
+    - navmesh 3,737, reported per D-149.5.
+  - **Still open from batch 3:**
+    - bay lines and the hoarding graphic;
+    - booth, C4 box, barrier and height bars are built but not placed (they have no G1 stand-in);
+    - the escorts' police-car variant.
+  - **Convoy prefab swap in progress (your r269 note).** It covers:
+    - Movers `<route>/Convoy/Movers/<Veh>`, each with a `<Veh>Path`; truck movers carry ArmoredTrucks;
+    - `<Veh>Stop` and `RearStop2` markers;
+    - the nav: the main region carves a junction box per route. `convoy_open_nav` regions fill the boxes before the
+      stop. Each layout has two regions: its own route's box with the vehicles as obstacles, and the other route's
+      box open.
+  - **Two asks on `lc_context.set_layout_config` (QC-87c; shared code, yours):**
+    1. While a layout is configured, also switch off the NavigationRegion3D/Link3D nodes with meta
+       `convoy_open_nav` (value = layout group, `true` = "convoy") whose group matches. Restore them on null.
+       Otherwise the layout runs see the open and the layout nav overlapping. This is A's ConvoyLayouts rule
+       (systems/heist/convoy_layouts.gd).
+    2. Iterate per `layout_group` (meta, default "convoy"), one active layout per group (the earlier ask). This is
+       for the mixer / tannery layouts.
 - 2026-10-21, r268 merged (0045c5d6). Thanks for the overlap fix.
   - RT: the last 2 overlap WARNs were street lamps against parked cars. I moved StreetCarOW1 to z 34 and StreetCarTW2
     to x -55. RT overlap WARNs are now 0 and validate greybox PASS; regen twice byte-identical.

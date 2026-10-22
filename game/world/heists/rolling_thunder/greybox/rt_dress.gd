@@ -33,6 +33,11 @@ const NO_RETAG: Array[String] = ["sink", "toilet", "urinal"]
 const SEAT_TARGETS: Array[String] = ["desk", "table", "counter_service", "counter_transaction", "coffee_table",
 	"check_table", "counter_bar", "cocktail_table"]
 const POLE_KINDS: Array[String] = ["street_lamp", "lamp_post"]
+## Kinds whose collider and nav obstruction is a pole off the pivot: kind -> [pole centre x (local), radius, height]
+## (prop_traffic_signal: its pivot is the footprint centre, the pole at rolling_thunder.py SIGNAL_POLE).
+const POLE_OFF: Dictionary = {"traffic_signal": [-1.4, 0.14, 4.0]}
+## Landmark kinds that cast no shadow (flat or low on the rail bank / the roof deck; D-146 shadow draws).
+const NO_SHADOW_KINDS: Array[String] = ["rail_track", "marking", "signage"]
 const ART_SCALE_MIN: float = 0.55
 const ART_SCALE_MAX: float = 1.6
 ## Minimum horizontal width of a bake obstruction (two 0.1 m nav cells; rt_gameplay.RIG_NAV_MIN).
@@ -95,6 +100,7 @@ func run(builder: Object) -> void:
 		_dress_room(res[0], res[1], String(room.room_id), String(room.dressing_kit), props)
 	_rows(_folder(props, "Streets"))
 	_direct_props(_folder(props, "Direct"))
+	_landmarks()
 	_link_faces()
 	var total: int = 0
 	for k: String in counts:
@@ -227,11 +233,14 @@ static func nav_thick(b: AABB) -> AABB:
 ## stays, nx x nz scaled copies of the asset fill the box (Visual, Visual2, ...). A cell within 3 % of the asset's
 ## footprint becomes a KitPlacer anchor of its room. The catalog props already in Props/MapBuilt (BoothDesk) anchor too.
 func art_mapbuilt() -> void:
-	var mb: Node = _root.get_node_or_null("Props/MapBuilt")
-	if mb == null:
-		_err("no Props/MapBuilt")
-		return
-	for c: Node in mb.get_children():
+	var bodies: Array[Node] = []
+	for grp: String in D.ART_GROUPS:
+		var g: Node = _root.get_node_or_null(grp)
+		if g == null:
+			_err("no %s" % grp)
+			continue
+		bodies.append_array(g.get_children())
+	for c: Node in bodies:
 		var cat_asset: String = String(_scene_asset.get(c.scene_file_path, "")) if c.scene_file_path != "" else ""
 		if cat_asset != "" and c is Node3D:
 			_mapbuilt.append([c, cat_asset, _gx(c as Node3D), aabb(cat_asset).end.y])
@@ -755,6 +764,8 @@ func _place_ext(parent: Node3D, nm: String, asset: String, pos: Vector3, yaw: fl
 	if String(cat.get("kind", "")) in POLE_KINDS:
 		var bb0: AABB = aabb(asset)
 		fp = xf * AABB(Vector3(bb0.position.x, bb0.position.y, -bb0.size.x * 0.5), Vector3(bb0.size.x, 2.2, bb0.size.x))
+	elif POLE_OFF.has(String(cat.get("kind", ""))):
+		fp = xf * _pole_box(POLE_OFF[String(cat.get("kind", ""))])
 	var probe: AABB = fp.grow(0.05)
 	for e: AABB in _placed_ext:
 		if e.intersects(probe):
@@ -813,6 +824,8 @@ func _finish_node(n: Node3D, asset: String, mode: String, mount: String, xf: Tra
 		bb.size.y = top - bb.position.y
 	if kind in POLE_KINDS:  # the pole only: the arm overhangs the road at 5 m
 		bb = AABB(Vector3(bb.position.x, bb.position.y, -bb.size.x * 0.5), Vector3(bb.size.x, bb.size.y, bb.size.x))
+	elif POLE_OFF.has(kind):  # the signal's pole only: its mast arm overhangs the carriageway at 5.2 m
+		bb = _pole_box(POLE_OFF[kind])
 	var body: StaticBody3D = StaticBody3D.new()
 	body.name = "Collision"
 	body.collision_layer = 1
@@ -832,6 +845,41 @@ func _finish_node(n: Node3D, asset: String, mode: String, mount: String, xf: Tra
 		n.set_meta(&"walkable", true)
 		return
 	_b.call(&"obstruct", xf, nav_thick(bb))
+
+
+## A pole's box [centre x, radius, height] (prop-local).
+static func _pole_box(pole: Array) -> AABB:
+	var r: float = float(pole[1])
+	return AABB(Vector3(float(pole[0]) - r, 0.0, -r), Vector3(r * 2.0, float(pole[2]), r * 2.0))
+
+
+## The landmark visuals (D.LANDMARKS): no collider, no obstruction, no keep-out test; the listed G1 boxes lose their
+## greybox Mesh (their colliders stay; rt_finish.gd then leaves them alone).
+func _landmarks() -> void:
+	for lm: Array in D.LANDMARKS:
+		var ps: PackedScene = scene(String(lm[1]))
+		var parent: Node3D = _root.get_node_or_null(String(lm[2])) as Node3D
+		if ps == null or parent == null:
+			_err("landmark %s: no scene or parent %s" % [lm[0], lm[2]])
+			continue
+		var nd: Node3D = ps.instantiate() as Node3D
+		nd.name = String(lm[0])
+		nd.transform = _gx(parent).affine_inverse() * Transform3D(Basis(Vector3.UP, deg_to_rad(float(lm[4]))), lm[3])
+		parent.add_child(nd)
+		nd.owner = _root
+		if String((_cat[String(lm[1])] as Dictionary).get("kind", "")) in NO_SHADOW_KINDS:
+			_root.set_editable_instance(nd, true)
+			for gi: Node in nd.find_children("*", "GeometryInstance3D", true, false):
+				(gi as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		for path: Variant in lm[5]:
+			var mesh: Node = _root.get_node_or_null(String(path) + "/Mesh")
+			if mesh == null:
+				_err("landmark %s: no %s/Mesh" % [lm[0], path])
+				continue
+			mesh.get_parent().set_meta(&"art_asset", String(lm[1]))
+			mesh.get_parent().remove_child(mesh)
+			mesh.free()
+	counts["Landmarks"] = D.LANDMARKS.size()
 
 
 # --- Orientation links --------------------------------------------------------------------------

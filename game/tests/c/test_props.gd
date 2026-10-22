@@ -21,6 +21,9 @@ const PREFAB_NODES: Dictionary = {
 	# D-111 equipment: deployable visuals (held-form Handle, visual_slots.md D-069), burn point Fire, zipline Line
 	"deployable": ["Handle"],
 	"burn_point": ["Fire"],
+	# RT-C2 convoy (A5-01 / A5-02): the truck's hold is a Safe visual (+ optional Cab), the cab a mover visual (Seat0..n)
+	"armored_truck": ["Body", "Door", "DrillPoint", "LootAnchor"],
+	"convoy_vehicle": ["Body", "Seat0"],
 	"zipline": ["Line"],
 	# PO-C throwables (ThrowableDef.model, visual_slots.md Items): body-centre origin, `Pin` hidden at pin_pull
 	"throwable": ["Body"],

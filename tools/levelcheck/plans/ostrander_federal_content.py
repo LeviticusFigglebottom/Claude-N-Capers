@@ -482,11 +482,14 @@ ALWAYS: Dict[str, List[list]] = {
           "prop_cash_stack") for i, x in enumerate([18.3, 19.7, 22.8, 24.2])
     ] + VAULT_BOXES + SD_BOXES,
     "Gameplay/Lifts": [
+        # LEAD GPU-22 / ENV P ghost note: the car fills GL's shaft (B's inner faces z 0.24 / x 12.81) so a bag thrown
+        # in from either landing door, which stops at the shaft's back wall (1.22 m off the car centre), rests inside
+        # the count box (test_of_cash_lift_throw.gd)
         P("bag_lift", "CashLift", "B", [11.5, 0.0, 1.55], 180.0, {"travel_s": 8.0, "capacity": 2, "door_fold": True,
-                                                                 "car_size_m": [2.2, 2.4, 2.2],
+                                                                 "car_size_m": [2.55, 2.4, 2.55],
                                                                  "objective_tag": "cash_lift",
                                                                  "@landings": [["CashLiftLandingG", [0.0, 4.0, 0.0]]]},
-          [11.5, 0.0, 2.2], {"walkable": True}, "prop_cash_lift_car_w240"),
+          [11.5, 0.0, 2.2], {"walkable": True}, "prop_cash_lift_car_w255"),
         P("bag_lift", "Hoist", "B", [24.0, 0.0, HOIST_Z], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
                                                             "loud_only": True, "objective_tag": "hoist",
                                                             "phase_block_key": "ui.blocked.after_breach",
