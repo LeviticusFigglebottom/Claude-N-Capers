@@ -24,6 +24,19 @@
 ##     gives move x move_mult for `duration` s, to the whole crew with `team` (CrewBuffs "second_wind").
 ##   defense.armor_broken_stagger {persist_s} (Cornered ◇): while the holder's armor is broken (and persist_s after
 ##     it returns) its hits stun a non-special enemy for CombatTweak.armor_broken_stagger_s.
+## Batch 3 (revives and medic):
+##   revived(): ability.revive_target_buff {damage_taken_mult, duration} (the reviver's; Numbing Agent) and
+##     defense.post_revive_buff [LIST] {duration, reload_mult, swap_mult, move_mult, damage_taken_mult} (the revived
+##     one's; Back on Your Feet, Second Lease: entries multiply, the longest duration) as CrewBuffs on the revived;
+##     ability.revive_target_health_mult (Triage Aced) scales the revive health in CrewHealth.revive.
+##   reviving_mult(): defense.reviving_damage_taken_mult {mult, linger_s} (Triage): while holding a revive, and
+##     linger_s after, incoming damage x mult (CrewHealth.take_hit).
+##   deploy.fak_auto_revive {radius, cooldown} (Field Kit Aced): a crew member DOWNED within radius m of the holder's
+##     placed first-aid kit is revived by it (the kit is used); per kit at most once per cooldown s.
+##   deploy.medical_user_buff {damage_taken_mult, duration} (Bedside Manner): whoever uses the holder's doctor bag or
+##     first-aid kit takes damage x damage_taken_mult for duration s.
+##   seen_by_enemy(): defense.bleedout_pause_unseen (Playing Possum): the bleedout pauses while no enemy has line of
+##     sight to the downed holder (CrewHealth).
 class_name SkillTriggers
 extends Node
 
@@ -33,6 +46,11 @@ const BUFF_OVERKILL: StringName = &"overkill"
 const BUFF_BULLETSTORM: StringName = &"bulletstorm"
 const BUFF_UNSEEN: StringName = &"unseen_strike"
 const BUFF_SECOND_WIND: StringName = &"second_wind"
+const BUFF_REVIVE_TARGET: StringName = &"revive_target"
+const BUFF_POST_REVIVE: StringName = &"post_revive"
+const BUFF_MEDICAL: StringName = &"medical_user"
+## An enemy farther than this cannot see a downed member (Playing Possum line of sight) ◇.
+const POSSUM_SIGHT_M: float = 60.0
 
 ## slot -> self-revive charges used this heist (Messiah)
 var revives_used: Dictionary[int, int] = {}
@@ -40,6 +58,10 @@ var revives_used: Dictionary[int, int] = {}
 var _bullseye_cd: Dictionary[int, float] = {}
 ## slot -> seconds the holder's hits still stagger after its armor came back (Cornered Aced)
 var _stagger_left: Dictionary[int, float] = {}
+## slot -> seconds Triage's damage cut lingers after the revive hold
+var _reviving_left: Dictionary[int, float] = {}
+## first-aid kit instance id -> seconds until it may auto-revive again (Field Kit)
+var _fak_cd: Dictionary[int, float] = {}
 var _runtime: HeistRuntime = null
 
 
@@ -69,6 +91,51 @@ func _physics_process(delta: float) -> void:
 	for crew: CrewController in _runtime.crew_members():
 		_tick_unseen_strike(crew)
 		_tick_stagger_window(crew, delta)
+		_tick_reviving(crew, delta)
+	_tick_fak_auto_revive(delta)
+
+
+## Triage: the linger restarts every tick the holder is holding a revive.
+func _tick_reviving(crew: CrewController, delta: float) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"defense.reviving_damage_taken_mult")
+	if p.is_empty():
+		_reviving_left.erase(crew.slot)
+		return
+	var s: Dictionary = _runtime.interaction.session(crew.slot) if _runtime.interaction != null else {}
+	var comp: InteractableComponent = s.get("comp") as InteractableComponent
+	if comp != null and is_instance_valid(comp) and comp.kind == &"revive":
+		_reviving_left[crew.slot] = float(p.get("linger_s", 0.0)) + 0.001
+	else:
+		_reviving_left[crew.slot] = maxf(_reviving_left.get(crew.slot, 0.0) - delta, 0.0)
+
+
+## Triage: incoming damage multiplier for `crew` now.
+func reviving_damage_mult(crew: CrewController) -> float:
+	if _reviving_left.get(crew.slot, 0.0) <= 0.0:
+		return 1.0
+	return float(Modifiers.params(crew.slot, &"defense.reviving_damage_taken_mult").get("mult", 1.0))
+
+
+## Field Kit: each placed first-aid kit whose owner has the key revives a downed crew member in its radius.
+func _tick_fak_auto_revive(delta: float) -> void:
+	for k: int in _fak_cd.keys():
+		_fak_cd[k] = maxf(_fak_cd[k] - delta, 0.0)
+	for n: Node in get_tree().get_nodes_in_group(G.DEPLOYABLE):
+		var kit: DeployablePrefab = n as DeployablePrefab
+		if kit == null or kit.kind != &"fak" or kit.uses_left <= 0 or HeistRuntime.of(kit) != _runtime \
+				or _fak_cd.get(kit.get_instance_id(), 0.0) > 0.0:
+			continue
+		var p: Dictionary = Modifiers.params(kit.owner_slot, &"deploy.fak_auto_revive")
+		var radius: float = float(p.get("radius", 0.0))
+		if radius <= 0.0:
+			continue
+		for crew: CrewController in _runtime.crew_members():
+			if crew.crew_state == Enums.CrewState.DOWNED and crew.health != null \
+					and crew.global_position.distance_to(kit.global_position) <= radius:
+				crew.health.revive(kit.owner_slot)
+				_fak_cd[kit.get_instance_id()] = float(p.get("cooldown", 0.0))
+				kit.consume_use()
+				break
 
 
 ## Unseen Strike: refreshed every tick while the holder has gone idle_s without damage.
@@ -186,6 +253,60 @@ func on_ammo_bag(user: CrewController, owner_slot: int, share: float) -> void:
 		return
 	var dur: float = minf(float(p.get("base_duration", 0.0)) + cap * share, cap)
 	CrewBuffs.of(_runtime).grant(user.slot, BUFF_BULLETSTORM, {}, dur, [CrewBuffs.TAG_FREE_AMMO])
+
+
+## CrewHealth.revive: `crew` got up, revived by `by_slot` (Numbing Agent on the reviver, the post-revive buffs).
+func revived(crew: CrewController, by_slot: int) -> void:
+	var buffs: CrewBuffs = CrewBuffs.of(_runtime)
+	var rp: Dictionary = Modifiers.params(by_slot, &"ability.revive_target_buff") if by_slot != crew.slot else {}
+	if not rp.is_empty():
+		buffs.grant(crew.slot, BUFF_REVIVE_TARGET, {&"defense.damage_taken_mult": float(rp.get("damage_taken_mult", 1.0))},
+			float(rp.get("duration", 0.0)))
+	var values: Dictionary = {}
+	var dur: float = 0.0
+	for e: Dictionary in Modifiers.list(crew.slot, &"defense.post_revive_buff"):
+		dur = maxf(dur, float(e.get("duration", 0.0)))
+		for pair: Array in [[&"weapon.reload_speed_mult", "reload_mult"], [&"weapon.swap_speed_mult", "swap_mult"],
+				[&"movement.speed_mult", "move_mult"], [&"defense.damage_taken_mult", "damage_taken_mult"]]:
+			values[pair[0]] = float(values.get(pair[0], 1.0)) * float(e.get(pair[1], 1.0))
+	if dur > 0.0:
+		buffs.grant(crew.slot, BUFF_POST_REVIVE, values, dur)
+
+
+## CrewHealth hook (null-safe): `crew` was revived by `by_slot`.
+static func on_revived(crew: CrewController, by_slot: int) -> void:
+	var t: SkillTriggers = of(HeistRuntime.of(crew)) if crew != null else null
+	if t != null:
+		t.revived(crew, by_slot)
+
+
+## CrewHealth hook (null-safe): Triage's damage multiplier for `crew`.
+static func reviving_mult(crew: CrewController) -> float:
+	var rt: HeistRuntime = HeistRuntime.of(crew) if crew != null else null
+	var t: SkillTriggers = rt.service(SERVICE) as SkillTriggers if rt != null else null
+	return t.reviving_damage_mult(crew) if t != null else 1.0
+
+
+## DeployablePrefab hook (null-safe): `user` used `kit` (a doctor bag or first-aid kit): its owner's Bedside Manner.
+static func medical_used(kit: DeployablePrefab, user: CrewController) -> void:
+	var t: SkillTriggers = of(HeistRuntime.of(kit))
+	var p: Dictionary = Modifiers.params(kit.owner_slot, &"deploy.medical_user_buff")
+	if t == null or user == null or p.is_empty():
+		return
+	CrewBuffs.of(t._runtime).grant(user.slot, BUFF_MEDICAL,
+		{&"defense.damage_taken_mult": float(p.get("damage_taken_mult", 1.0))}, float(p.get("duration", 0.0)))
+
+
+## Playing Possum: an alive enemy within POSSUM_SIGHT_M has line of sight to the downed `crew`.
+static func seen_by_enemy(crew: CrewController) -> bool:
+	var at: Vector3 = crew.global_position + Vector3.UP * 0.4
+	for n: Node in crew.get_tree().get_nodes_in_group(G.ENEMY):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or not npc.alive or npc.global_position.distance_to(at) > POSSUM_SIGHT_M:
+			continue
+		if CombatSystem.has_los(npc, npc.global_position + Vector3.UP * 1.6, at, [npc, crew]):
+			return true
+	return false
 
 
 ## CrewHealth: `crew`'s armor just broke (Second Wind).

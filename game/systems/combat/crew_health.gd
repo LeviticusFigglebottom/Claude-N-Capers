@@ -188,6 +188,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		dmg *= Modifiers.mult(_slot(), &"defense.melee_damage_taken_mult")  # A3-13: enemy melee
 	if _interacting():
 		dmg *= Modifiers.mult(_slot(), &"defense.interact_damage_taken_mult")  # Hold the Line ACED (D-134: holds go on)
+	dmg *= SkillTriggers.reviving_mult(_crew)  # B3 Triage: reviving and linger_s after
 	dmg = TeamModifiers.hostage_reduced(_slot(), dmg, TeamModifiers.hostage_count(_crew))  # QB-60
 	if st == Enums.CrewState.DOWNED or _is_cuffed_while_down():
 		bleedout_health -= dmg
@@ -388,6 +389,8 @@ func revive(by_slot: int) -> void:
 	max_health = compute_max_health()
 	max_armor = compute_max_armor()
 	health = max_health * frac * Modifiers.mult(_slot(), &"defense.revived_health_mult")
+	if by_slot != _slot():
+		health *= Modifiers.mult(by_slot, &"ability.revive_target_health_mult")  # B3 Triage Aced (the reviver's)
 	health = clampf(health, 1.0, max_health)
 	armor = max_armor * CombatTweak.data().revive_armor_frac
 	bleedout_left = 0.0
@@ -398,6 +401,7 @@ func revive(by_slot: int) -> void:
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.NORMAL)
 	BloodFx.bleed(_crew.net_id, false, _crew.global_position, 0.0)  # D-113
+	SkillTriggers.on_revived(_crew, by_slot)  # B3 Numbing Agent, Back on Your Feet, Second Lease
 	revived.emit(by_slot)
 	EventBus.crew_revived.emit(_crew.slot, by_slot)
 	Net.replicate_event(&"crew_revived", [_crew.slot, by_slot])
@@ -512,7 +516,9 @@ func _tick_down_states(delta: float) -> bool:
 	# revives in time, else custody). Stealth cuffs (guards, S3.2) carry no bleed-out: not a down.
 	if st == Enums.CrewState.DOWNED or st == Enums.CrewState.CLOAKER_DOWNED \
 			or (st == Enums.CrewState.CUFFED and bleedout_left > 0.0):
-		bleedout_left -= delta
+		if not (st == Enums.CrewState.DOWNED and Modifiers.flag(_slot(), &"defense.bleedout_pause_unseen")
+				and not SkillTriggers.seen_by_enemy(_crew)):  # B3 Playing Possum: paused while unseen
+			bleedout_left -= delta
 		down_s += delta
 		if bleedout_left <= 0.0:
 			bleedout_left = 0.0

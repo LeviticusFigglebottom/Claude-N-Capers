@@ -160,9 +160,11 @@ func _on_completed(crew: Node) -> void:
 		&"doctor_bag":
 			c.health.heal(c.health.max_health * heal_frac, resets_downs)  # L2.11
 			SkillTriggers.doctor_bag_used(self, c)  # B1 Messiah Aced
+			SkillTriggers.medical_used(self, c)  # B3 Bedside Manner
 			_consume_use()
 		&"fak":
 			c.health.heal(heal_amount, false)  # L2.11: no down reset
+			SkillTriggers.medical_used(self, c)  # B3 Bedside Manner
 			_consume_use()
 		&"ammo_bag":
 			_give_ammo(c)
@@ -177,6 +179,11 @@ func _on_completed(crew: Node) -> void:
 		&"armor_bag":
 			DeployableSystem.wear_armor(c, bag_armor)  # QB-58
 			_consume_use()
+
+
+## Server: one use gone (B3 Field Kit: the first-aid kit that auto-revived someone).
+func consume_use() -> void:
+	_consume_use()
 
 
 func _consume_use() -> void:
