@@ -1,4 +1,4 @@
-# Contract: characters (v1.37)
+# Contract: characters (v1.38)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -442,3 +442,16 @@ u_out with no crossfade. Under 135° the 8-way switch with phase carry stays (fa
 * Known: run_l/r sit 2.2 cm under run (target 2 cm); accepted, since closing it would push run's knee past 62°.
 * A crouched close-quarters advance, if the design wants one, is a separate clip.
 * Evidence: `game/assets/characters/_review/d_motion/run_upright_before.png` / `run_upright_after.png` (LEAD reviewed).
+* v1.37 note (D 59591203, LEAD-reviewed): the run family's weapon layers (`hold_<kind>_run*`, `aim_<fam>_run*`, including run_start /
+  run_stop) add only 0.4× the weapon class's standing forward lean: the trunk lean (hips → neck from vertical) stays ≤ 7° (rifle 6°,
+  pistol 7°; base run 3°). Walk, crouch and standing aims keep the full class lean.
+
+## v1.38: two-handed heavy melee `melee_heavy` (D-156; PD2 sledgehammer / fire axe; D fb81a04c)
+* A rig_arms set with the melee clips and events: `idle*`, `sprint*`, `draw` {ready} and `holster` {gone} (20 f), `swing` 30 f
+  {hit@13, done@30}, `charge_start` (length = MeleeDef.charge_time_s, default 1.0 s) {charged}, `charge*` (held, trembling; frame 0 =
+  charge_start's last frame), `charge_swing` 26 f {hit@9, done@26}.
+* Item frame as the other melee sets: the model hangs identity on the `weapon` bone; Godot origin on the handle axis at the right
+  hand's grip pivot (20 mm below the top of the fist), handle along +Y toward the head, striking face / edge toward −Z.
+* Two-handed: the left hand closes round the same handle at item (0, −0.28, 0) in every clip. Models put the head about 0.55 m up the
+  handle (+Y) and the butt about 0.33 m below the origin.
+* MeleeDef.anim_set = `&"melee_heavy"` (B: sledgehammer, fire_axe). No A or P wiring beyond anim_set.
