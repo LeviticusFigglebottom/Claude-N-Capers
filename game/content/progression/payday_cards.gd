@@ -66,8 +66,9 @@ static func roll(run_seed: int, slot: int, difficulty: int, profile: PlayerProfi
 
 ## Unowned, droppable items of an item type (sorted ids). Weapon mods: every mod that is not a
 ## weapon's stock part. Mask parts: every available part that is not default-owned (hidden bases
-## waiting for ENV D's mesh never drop) and not a Notoriety reward (Notoriety.exclusive_ids), plus the
-## locked presets with `unlock.payday_card`.
+## waiting for ENV D's mesh never drop), not a Notoriety reward (Notoriety.exclusive_ids) and not an achievement
+## reward (Achievements.all_reward_ids; LEAD r278, PD2: achievement rewards never drop), plus the locked presets
+## with `unlock.payday_card`.
 static func pool(type: StringName, profile: PlayerProfile) -> Array[StringName]:
 	var out: Array[StringName] = []
 	match type:
@@ -82,10 +83,12 @@ static func pool(type: StringName, profile: PlayerProfile) -> Array[StringName]:
 					out.append(id)
 		MASK_PART:
 			var exclusive: Array[StringName] = Notoriety.exclusive_ids()
+			var earned: Dictionary = Achievements.all_reward_ids()
 			for kind: String in MaskCatalog.KINDS:
 				for p: MaskPartDef in MaskCatalog.parts(kind):
 					var locked: bool = p.unlock != &""  # B7-02: unlock-only parts (achievements, Notoriety) never drop
-					if not p.default_owned and not locked and not exclusive.has(p.id) and not MaskLocker.is_part_owned(profile, p.id):
+					if not p.default_owned and not locked and not exclusive.has(p.id) and not earned.has(p.id) \
+							and not MaskLocker.is_part_owned(profile, p.id):
 						out.append(p.id)
 			for md: MaskDef in MaskCatalog.payday_presets():
 				if not MaskLocker.is_drop_owned(profile, md.id):
