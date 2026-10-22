@@ -142,7 +142,17 @@ func _launch_direct() -> bool:
 		await _fail("direct: no MenuFlow")
 		return false
 	var id: StringName = StringName(heist_name.strip_edges().to_snake_case())
-	var diff: int = maxi(Enums.Difficulty.keys().find(difficulty_name.to_upper()), 0)
+	for hid: StringName in HeistRegistry.ids():  # the display name -> the def id (Golden Hour is glasshouse)
+		var def: HeistDef = HeistRegistry.get_def(hid)
+		if def != null and def.display_name == heist_name.strip_edges():
+			id = hid
+	if HeistRegistry.get_def(id) == null:  # fail fast and name the choices, not 60 s later at "did not start"
+		await _fail("direct: unknown heist '%s' (ids %s)" % [heist_name, HeistRegistry.ids()])
+		return false
+	var diff: int = Enums.Difficulty.keys().find(difficulty_name.to_upper())
+	if diff < 0:  # was: silently Routine
+		await _fail("direct: unknown difficulty '%s' (%s)" % [difficulty_name, Enums.Difficulty.keys()])
+		return false
 	var run_seed: int = HeistLauncher.next_seed_override if HeistLauncher.next_seed_override >= 0 else 1001
 	note("DEV OPTION direct launch: %s diff %d seed %d through MenuFlow.launch (staged heist, no Board)" % [id, diff, run_seed])
 	(flows[0] as MenuFlow).launch(id, diff, SaveService.load_profile().loadout, run_seed)

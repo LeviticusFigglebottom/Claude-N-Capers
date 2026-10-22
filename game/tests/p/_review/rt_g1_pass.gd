@@ -28,6 +28,7 @@
 ##   setup      from each spawn (plaza, car park, underpass), REAL detection: man-gate, rig hack; times vs the ETA and
 ##              every observer's peak D-128 fill.
 ##   trucks     the six truck-phase tests in turn.
+##   clean_haz  as blown but a CLEAN stop: the crew hidden for the setup (shortcut), masked at Pier-40, real from the stop.
 ##   blown      Hazardous blown setup, REAL play: 3 AI teammates, mask + 3 shots at the plaza, the crash stop fought
 ##              from Pier-40's cover, T1 sawn and defended; rows: truck opened, downs, where the hits come from.
 ##   all        the nine traversal tests (stairs .. fences) in turn (a fresh launch each); continues past failures, one summary at the end.
@@ -1228,8 +1229,8 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 	var door: Door = _door_near(MAGAZINE_DOOR_AT, 1.5)
 	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
 	if door != null and not door.is_open and lock != null:
-		await pilot.use(_comp(lock), 40.0, func() -> bool: return door.is_open or not door.locked
-			or _comp(lock) == null or _comp(lock).kind != &"place_saw")
+		await pilot.use(_comp(lock), 40.0, func() -> bool: return (door.is_open or not door.locked
+			or _comp(lock) == null or _comp(lock).kind != &"place_saw"))
 		# Loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut before the door.
 		Engine.time_scale = DEVICE_SCALE
 		await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
@@ -1277,8 +1278,21 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 
 
 func _rt_blown() -> bool:
+	return await _hazard_run(false)
+
+
+## The clean-stop counterpart (LEAD: A's bots die to the escort 20-60 s after a Hazardous clean stop). SHORTCUT: the
+## whole crew is stealth_hidden for the setup (the rig hack; not under test) and masks behind Pier-40; at the stop the
+## hiding comes off and the fight is real from the ambush window on.
+func _rt_clean_haz() -> bool:
+	return await _hazard_run(true)
+
+
+func _hazard_run(clean: bool) -> bool:
+	var tag: String = "clean_haz" if clean else "blown"
 	var f: Dictionary = RT_FORCE.duplicate(true)
 	f[&"convoy_route"] = [&"route_north"]
+	f[&"controller"] = [&"ctrl_open"]
 	if rt != null and is_instance_valid(rt):
 		rt.teardown()
 		rt = null
@@ -1307,28 +1321,41 @@ func _rt_blown() -> bool:
 		_downs["custody_%d" % slot] = true
 		note("CUSTODY slot %d" % slot))
 	_watch_hp.call_deferred()
-	await shot("blown_spawn")
+	await shot("%s_spawn" % tag)
 	var m: RollingThunderMission = _mission()
-	# The early alarm: mask in the plaza and fire 3 shots.
-	await _mask()
-	await pilot.face(pilot.crew.eye_position() + Vector3(0.0, 4.0, -6.0), 0.05, 1.5)
-	for _k: int in 3:
-		await pilot.inp.tap(&"fire")
-		await wait_s(0.3)
-	await wait_until(func() -> bool: return _alarm != &"" or m.alerted, 20.0)
-	_row("blown: early alarm", "PASS" if m.alerted else "FAIL", "alarm '%s' at t=%.1f, mission alerted %s" % [_alarm,
-		rt.heist_time_s, m.alerted], "-" if m.alerted else "A stealth / mission")
+	if clean:
+		_crew_hidden(true)
+		if not await _site_in() or not await _hack_rig():
+			return await _fail("signals")
+		await _go(MAN_GATE_OUT, 0.5, 60.0)
+		await _mask()
+	else:
+		# The early alarm: mask in the plaza and fire 3 shots.
+		await _mask()
+		await pilot.face(pilot.crew.eye_position() + Vector3(0.0, 4.0, -6.0), 0.05, 1.5)
+		for _k: int in 3:
+			await pilot.inp.tap(&"fire")
+			await wait_s(0.3)
+		await wait_until(func() -> bool: return _alarm != &"" or m.alerted, 20.0)
+		_row("blown: early alarm", "PASS" if m.alerted else "FAIL", "alarm '%s' at t=%.1f, mission alerted %s" % [_alarm,
+			rt.heist_time_s, m.alerted], "-" if m.alerted else "A stealth / mission")
 	# Cover by Pier-40 and fight the stop from there.
 	await _go(BLOWN_COVER, 0.6, 180.0)
+	if clean:
+		pilot.inp.press(&"crouch")
+		await wait_until(func() -> bool: return m._stop_done, 400.0)
+		_crew_hidden(false)
+		note("clean_haz: crew hiding off at the stop (t=%.1f, clean_stop %s)" % [rt.heist_time_s, m.clean_stop])
 	await _hold_cover(func() -> bool: return m._stop_done, 400.0)
 	var t_stop: float = rt.heist_time_s
-	_row("blown: crash stop", "PASS" if m._stop_done else "FAIL", "layout '%s' at t=%.1f (ETA %.0f)" % [m.layout_id,
-		t_stop, m._eta_s], "-" if m._stop_done else "A mission")
-	await shot("blown_stop")
+	var stop_ok: bool = m._stop_done and m.clean_stop == clean
+	_row("%s: %s stop" % [tag, "clean" if clean else "crash"], "PASS" if stop_ok else "FAIL",
+		"layout '%s' at t=%.1f (ETA %.0f)" % [m.layout_id, t_stop, m._eta_s], "-" if stop_ok else "A mission")
+	await shot("%s_stop" % tag)
 	await _hold_cover(func() -> bool: return _objective_done(&"escort") or rt.heist_time_s - t_stop > BLOWN_FIGHT_S,
 		BLOWN_FIGHT_S + 10.0)
 	var esc_fmt: String = "escort done %s at t=%.1f (%.0f s after the stop), %s"
-	_row("blown: escort down from cover", "PASS" if _objective_done(&"escort") else "NOTE", esc_fmt % [
+	_row("%s: escort down from cover" % tag, "PASS" if _objective_done(&"escort") else "NOTE", esc_fmt % [
 		_objective_done(&"escort"), rt.heist_time_s, rt.heist_time_s - t_stop, _downs_text()], "-")
 	# T1 by the saw, defended at the rear step.
 	var trucks: Array[ArmoredTruck] = _trucks()
@@ -1351,10 +1378,10 @@ func _rt_blown() -> bool:
 		opened = t.opened
 		t_open = rt.heist_time_s
 	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f"
-	_row("blown: a truck opened (T1 saw, Hazardous, AI crew)", "PASS" if opened else "FAIL", open_fmt % [
+	_row("%s: a truck opened (T1 saw, Hazardous, AI crew)" % tag, "PASS" if opened else "FAIL", open_fmt % [
 		opened, t_open, _downs_text(), _hp_min], "-" if opened else "balance (D-154)")
-	_danger_rows()
-	await shot("blown_end")
+	_danger_rows(tag)
+	await shot("%s_end" % tag)
 	return opened
 
 
@@ -1375,6 +1402,13 @@ func _hold_cover(done: Callable, max_s: float) -> void:
 		if pilot.crew.carried_bag == null and _reload_due():
 			await pilot.inp.tap(&"reload")
 	pilot.inp.release(&"crouch")
+
+
+func _crew_hidden(on: bool) -> void:
+	for s: int in 4:
+		var cc: CrewController = rt.crew_controller(s) as CrewController
+		if cc != null:
+			cc.stealth_hidden = on
 
 
 func _reload_due() -> bool:
@@ -1412,12 +1446,12 @@ func _watch_hp() -> void:
 		await wait_s(0.5)
 
 
-func _danger_rows() -> void:
+func _danger_rows(tag: String) -> void:
 	var keys: Array = _hits.keys()
 	keys.sort_custom(func(a: String, b: String) -> bool: return float(_hits[a]["dmg"]) > float(_hits[b]["dmg"]))
 	for k: String in keys.slice(0, 10):
 		var r: Dictionary = _hits[k]
-		_row("blown: danger %s" % k, "NOTE", "%d hits, %.0f damage, mean range %.0f m, from %s" % [int(r["n"]),
+		_row("%s: danger %s" % [tag, k], "NOTE", "%d hits, %.0f damage, mean range %.0f m, from %s" % [int(r["n"]),
 			float(r["dmg"]), float(r["dist"]) / maxf(float(r["n"]), 1.0), ", ".join(r["at"] as PackedStringArray)], "-")
 
 

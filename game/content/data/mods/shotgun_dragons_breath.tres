@@ -26,4 +26,4 @@ delta = SubResource("delta")
 price = 5500
 unlock = &""
 model = ExtResource("3")
-params = {"ammo_type": &"dragons_breath", "dot_dps": 8.0, "dot_s": 4.0, "ignite": true, "panic_civilians": true, "range_mult": 0.7, "ammo_pickup_mult": 0.8}
+params = {"ammo_type": &"dragons_breath", "dot_dps": 8.0, "dot_s": 3.0, "ignite": true, "panic_civilians": true, "range_mult": 0.7, "ammo_pickup_mult": 0.8}
