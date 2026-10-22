@@ -185,10 +185,28 @@ def _car(k: Kit, p: dict) -> None:
             trim.bx((l0, -0.18, 1.52), (l1, 0.03, 1.58), mat)
     o.build()
     if escort:
+        _police_livery(k, w, hl)
         for i, (sx, sy) in enumerate(((-1, 0.25), (1, 0.25), (-1, -0.95), (1, -0.95))):
             k.empty("Seat%d" % i, (sx * 0.4, sy, 0.18))
         return
     k.collision([((-w / 2, -hl, 0.0), (w / 2, hl, 0.96)), ((-w / 2 + 0.1, -hl + 0.9, 0.96), (w / 2 - 0.1, hl - 1.2, 1.44))])
+
+
+def _police_livery(k: Kit, w: float, hl: float) -> None:
+    """RT-C2: the escort is the city's police escort (rolling_thunder.md: Vaultline pays for it): white door panels with
+    POLICE on both flanks, proud of the body side (no coplanar faces), one mesh per flank on a turned pivot so the
+    lettering reads from outside."""
+    for name, sx in (("LiveryL", -1), ("LiveryR", 1)):
+        piv = k.empty(name, (0.0, 0.0, 0.0), rotation=(0.0, 0.0, -sx * math.pi / 2))
+        lv = k.obj(name + "Mesh", parent=piv)
+        panel = lv.part(bevel=0.0)
+        # pivot-local: x runs along the car (toward the front for the left flank, the rear for the right), +y outward
+        y0, y1 = -hl + 1.26, hl - 1.34  # inside the wheel-arch liners (y -1.08 .. 0.98)
+        a0, a1 = sorted((-sx * y0, -sx * y1))
+        panel.bx((a0, w / 2 + 0.002, 0.42), (a1, w / 2 + 0.006, 0.93), "metal_white")
+        lettering(panel, "POLICE", 0.17, -sx * (y0 + y1) / 2, w / 2 + 0.006, 0.585, "metal_dark", stroke=0.03,
+                  depth=0.003, inlay=True)
+        lv.build()
 
 
 def _hvac(k: Kit, p: dict) -> None:

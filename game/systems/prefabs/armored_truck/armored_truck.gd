@@ -12,6 +12,8 @@
 class_name ArmoredTruck
 extends Safe
 
+const CUE_DOORS_OPEN: StringName = &"cue.truck_doors_open"
+
 const TRUCK_PLACEHOLDER: PackedScene = preload("res://systems/prefabs/armored_truck/armored_truck_placeholder.tscn")
 const GROUP: StringName = &"armored_truck"
 ## C4 before the saw: C4 is only offered to a crew member carrying charges_required charges (they came to blow it);
@@ -46,6 +48,15 @@ func lockdown() -> void:
 	for dp: DrillPoint in saw_points():
 		dp.duration_mult = mult
 	Log.info(LOG_CHANNEL, "%s: lockdown (saw x%.2f)" % [name, mult])
+
+
+## QC-85: the rear doors swing open (any method): cue.truck_doors_open at the doors (server, relayed).
+func swing_open() -> void:
+	var was: bool = opened
+	super.swing_open()
+	if opened and not was and Net.is_authority():
+		var door: Node3D = visual_node("Door") as Node3D
+		_cue(CUE_DOORS_OPEN, door.global_position if door != null else global_position)
 
 
 ## SAW drill_points whose `target` is this truck (children or anywhere in the map).
