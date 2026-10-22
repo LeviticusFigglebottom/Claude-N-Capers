@@ -84,10 +84,16 @@ const AMBIENCE_BEDS: Array[StringName] = [
 	&"cue.amb_cold_store", &"cue.amb_dockside_fog",
 	&"cue.amb_gallery_gala", &"cue.amb_art_store", &"cue.amb_uptown_night",
 	&"cue.amb_bank_hall_day", &"cue.amb_bank_boh", &"cue.amb_vault", &"cue.amb_city_afternoon",
+	&"cue.amb_skyway_street", &"cue.amb_underpass", &"cue.amb_diner", &"cue.amb_site",
 ]
 ## D-117 §7: every built heist has its own music track. Shadow Ledger is stealth-only.
 const HEIST_MUSIC: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
 		&"gallery_night", &"ostrander_federal"]
+## Heist tracks whose map does not place its Audio node yet (RT-C2: the rolling_thunder generator wires it).
+const HEIST_MUSIC_MAP_PENDING: Array[StringName] = [&"rolling_thunder"]
+## RT-C2 / audio_cues v1.4 (QC-85): the convoy-ambush one-shots, 3D on the World bus.
+const RT_CUES: Array[StringName] = [&"cue.convoy_approach", &"cue.convoy_brake", &"cue.mixer_ram",
+		&"cue.signal_click", &"cue.truck_doors_open"]
 const ALL_STEMS: Array[StringName] = [&"stealth", &"control", &"anticipation", &"assault", &"fade"]
 const BUSES: Array[StringName] = [&"Music", &"SFX", &"Weapons", &"Enemies", &"World", &"UI", &"Voice", &"Ambience"]
 ## PO-14 registry coverage scan (test_every_cue_referenced_in_code_is_registered).
@@ -248,6 +254,26 @@ func test_assault_event_cues() -> void:
 	assert_true(w != null and not w.positional and w.bus == &"UI" and w.cooldown_s >= 3.0, "2D UI warning sting")
 
 
+## RT-C2: the Rolling Thunder convoy cues are 3D one-shots on the World bus, each a single stream of a sane length.
+func test_rolling_thunder_cues() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for id: StringName in RT_CUES:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c == null:
+			continue
+		assert_true(c.positional, "%s positional" % id)
+		assert_false(c.loop, "%s one-shot" % id)
+		assert_eq(c.bus, &"World", "%s World bus" % id)
+		assert_eq(c.streams.size(), 1, "%s one stream" % id)
+		var len_s: float = c.streams[0].get_length()
+		assert_true(len_s >= 0.3 and len_s <= 9.0, "%s length %.2f s" % [id, len_s])
+	var approach: AudioCueDef = _reg.get_cue(&"cue.convoy_approach")
+	assert_true(approach != null and approach.max_distance >= 150.0, "convoy approach carries across the junction")
+
+
 func test_breach_burn_and_throwable_cues() -> void:
 	if _reg == null:
 		skip("no registry")
@@ -359,7 +385,7 @@ func test_heist_ambience_beds() -> void:
 ## for (stem_for over all phases), so no phase is silent; stems are whole bars of the track's grid.
 func test_every_heist_music_track() -> void:
 	var bpms: Dictionary = {}
-	for tid: StringName in HEIST_MUSIC:
+	for tid: StringName in HEIST_MUSIC + HEIST_MUSIC_MAP_PENDING:
 		var t: MusicTrack = MusicTrack.load_track(tid)
 		assert_true(t != null, "track %s loads" % tid)
 		if t == null:
@@ -381,6 +407,7 @@ func test_every_heist_music_track() -> void:
 	assert_eq(bpms.get(&"shadow_ledger"), 132.0, "SL 132 grid (stealth 66 half-time)")
 	assert_eq(bpms.get(&"dockside_burn"), 150.0, "DB 150 grid")
 	assert_eq(bpms.get(&"gallery_night"), 144.0, "GN 144 grid (stealth 72 half-time)")
+	assert_eq(bpms.get(&"rolling_thunder"), 148.0, "RT 148 grid (stealth 74 half-time, control 111 triplets)")
 	# Stealth-only Shadow Ledger: the loud stems are aliases (abort loop; escape/jukebox keep the bed).
 	var sl: MusicTrack = MusicTrack.load_track(&"shadow_ledger")
 	if sl != null:
