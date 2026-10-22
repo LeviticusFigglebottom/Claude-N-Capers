@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_door_site_gate_w400_h240/prop_door_site_gate_w400_h240.glb" id="1_model"]
+
+[node name="PropDoorSiteGateW400H240" type="Node3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model/Frame"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

@@ -106,7 +106,6 @@ const OVERRIDES: Array = [
 	["Geometry/", "concrete"],
 	["Props/MapBuilt/Cookline", "steel_brushed"],
 	["Props/MapBuilt/Formwork", "wood"],
-	["Props/MapBuilt/MixerTruck", "orange"],
 	["Props/MapBuilt/", "metal"],
 	["Variants/", "metal"],
 ]

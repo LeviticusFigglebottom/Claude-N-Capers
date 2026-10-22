@@ -1543,6 +1543,9 @@ From ENV B's review (game/content/docs/rt_early_alarm_balance.md, env/b-content 
    - ENV B: Bulwark `special_limits` 2/3/4/4/4/4 → 1/2/3/4/4/4.
    - Verify (targeted, D-088): A re-runs the RT seeds it measured, then one loud seed each on GH / ND / DB (all heists
      share the tables) and reports the per-difficulty share.
+   - Measured (A, 2026-10-22): Routine 4.3 % (in band at the low edge), Hazardous 5.1 % (half the target). AMENDED for
+     Hazardous+: `special_bulwark.weights` → 0.25 / 0.4 / 1.0 / 1.2 / 1.4 / 1.6 (low tiers kept, Hazardous+ restored) and
+     Bulwark `special_limits` → 1 / 2 / 4 / 4 / 4 / 4 (Hazardous back to 4). A re-measures 3 Hazardous seeds + ND / DB Routine.
 2. **RT early alarm:** the convoy arrives at min(convoy_eta_s, alarm + 25 s) (REVISED from +75 s, which landed the stop on wave 1's SUSTAIN; +25 s stops it inside ANTICIPATION, B fd41028a), so wave 1 fights over the trucks
    (police_delay_s stays 0, D-075). A re-measures 5 seeds each on Hazardous and Lethal (targets: Hazardous reaches the trucks
    opening on ≥ 3/5, Lethal 1-2/5, Cataclysm ≤ 1/5). B's first-assault Stinger cap for Lethal+ is held until then.

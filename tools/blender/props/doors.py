@@ -80,6 +80,11 @@ VARIANTS = {
                                             "frame_t": 0.3,
                                             "cat": {"prefab": "door", "kind": "industrial_door", "surface": "metal",
                                                     "leaf_script": "slide", "leaf2": True}},
+    # RT phase 2 (D-149.8): the Tannery site gate, two 2.0 m hinged leaves in the 2.4 m plywood hoarding on two steel
+    # posts, NO head (Reyes's 2.5 m wide, 3.5 m tall mixer drives out through it); an industrial door (levelcheck
+    # scale: 2.4-4.0 m wide); only the posts collide (the Door prefab owns the leaves' bodies)
+    "prop_door_site_gate_w400_h240": {"fn": "site_gate", "w": 4.0, "h": 2.4, "jamb": 0.1, "wall_t": 0.2,
+                                      "cat": {"prefab": "door", "kind": "industrial_door", "surface": "metal"}},
     "prop_door_vault_strongroom_w200_h220": {"fn": "vault", "w": 2.0, "h": 2.2, "jamb": 0.1, "wall_t": 0.4,
                                              "cat": {"prefab": "door", "kind": "vault_door", "surface": "metal"}},
 }
@@ -494,8 +499,59 @@ def _vault(k: Kit, p: dict) -> None:
     k.empty("Handle", (w - 0.15, 0.0, 1.0), parent=leaf)
 
 
+def _site_gate(k: Kit, p: dict) -> None:
+    """A construction-site vehicle gate (RT Tannery gate): `Frame` = two galvanised posts (``jamb`` square, through
+    the wall thickness, ``h`` + 0.1 tall with caps) on the opening's edges and no head; `Leaf` / `Leaf2` hinged on the
+    posts' inner faces (the _leaf convention: the pivot at the hinge, the leaf toward the centre, 3 mm clear), each a galvanised
+    tube frame with a mid rail, green sheet infill both faces and a hazard band, `Handle` / `Handle2` at the meeting
+    edge. Collision: the posts only (trimesh)."""
+    w, h, jamb, t = p["w"], p["h"], p["jamb"], p["wall_t"]
+    hw = w / 2
+    fr = k.obj("Frame")
+    post = fr.part(bevel=0.006)
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * hw, sx * (hw + jamb)))
+        post.bx((x0, -t / 2 - 0.002, 0.0), (x1, t / 2 + 0.002, h + 0.1), "steel_galv")
+        post.bx((x0 - 0.01, -t / 2 - 0.012, h + 0.1), (x1 + 0.01, t / 2 + 0.012, h + 0.13), "metal_dark")  # cap
+        for z in (0.35, h - 0.35):  # the hinge knuckles on the inner face
+            k0, k1 = sorted((sx * hw, sx * (hw - 0.03)))
+            post.bx((k0, -0.042, z), (k1, 0.042, z + 0.12), "metal_dark")   # proud of the 6 cm leaf faces
+    obj = fr.build()
+    mb = geo.MeshBuilder()
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * hw, sx * (hw + jamb)))
+        mb.box((x0, -t / 2, 0.0), (x1, t / 2, h + 0.1))
+    geo.collision_from_builder(mb, "trimesh", parent=obj)
+    lw = hw   # each leaf from its post's inner face to the centre, 3 mm clear of both (levelcheck door_frame_gap)
+    lt = 0.06
+    top = h - 0.05
+    for name, sx in (("Leaf", -1.0), ("Leaf2", 1.0)):
+        leaf = k.empty(name, (sx * hw, 0.0, 0.0))
+        x0, x1 = (0.003, lw - 0.003) if sx < 0 else (-(lw - 0.003), -0.003)
+        lf = k.obj("LeafMesh" + name[4:], parent=leaf)
+        tube = lf.part(bevel=0.008, segments=2)
+        sheet = lf.part(bevel=0.0)
+        tube.bx((x0, -lt / 2, 0.01), (x0 + 0.06, lt / 2, top), "steel_galv")   # stiles (1 cm off the ground)
+        tube.bx((x1 - 0.06, -lt / 2, 0.01), (x1, lt / 2, top), "steel_galv")
+        for z0 in (0.01, top / 2 - 0.03, top - 0.06):   # bottom, mid and top rails
+            tube.bx((x0, -lt / 2, z0), (x1, lt / 2, z0 + 0.06), "steel_galv")
+        for sy in (-1, 1):   # sheet infill both faces, a hazard band at the mid rail
+            y0, y1 = sorted((sy * 0.004, sy * 0.012))
+            sheet.bx((x0 + 0.06, y0, 0.12), (x1 - 0.06, y1, top - 0.06), "metal_green_worn")
+            y2, y3 = sorted((sy * 0.012, sy * 0.016))
+            sheet.bx((x0 + 0.06, y2, top / 2 - 0.12), (x1 - 0.06, y3, top / 2 + 0.06), "paint_hazard_orange")
+        hx = x1 - 0.12 if sx < 0 else x0 + 0.12
+        for sy in (-1, 1):   # a drop-bolt handle on both faces at the meeting edge
+            yb = sy * (lt / 2 + 0.05)
+            tube.rod((hx, yb, 0.95), (hx, yb, 1.25), 0.015, "steel", segs=8)
+            for z in (0.98, 1.22):
+                tube.rod((hx, sy * lt / 2, z), (hx, yb, z), 0.01, "steel", segs=6)
+        lf.build()
+        k.empty("Handle" + name[4:], (hx, 0.0, 1.1), parent=leaf)
+
+
 def _industrial(fn: str):
-    return {"roller_twin": _roller_twin, "slide": _slide, "vault": _vault}.get(fn)
+    return {"roller_twin": _roller_twin, "slide": _slide, "vault": _vault, "site_gate": _site_gate}.get(fn)
 
 
 def build(ctx) -> None:

@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## D-116 police combat movement (ENV D SOURCE police_combat + locomotion_holds) and DB-4 in AnimDriver / CombatClips:
 ## aim_<fam>_<gait> layered while aiming on the move (frame-locked), class reloads scaled so `done` lands on
 ## completion (moving: on the upper-body layer), cover_low / cover_peek_l / _r on a brain's cover post (LOS probes),
@@ -568,3 +569,66 @@ func test_8way_resume_carry_after_a_short_stop() -> void:
 	assert_eq(d.clip, &"walk_fl")
 	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
 	assert_near(u, 0.4 + 0.033, 0.05, "walk_fl resumes walk_fr's stride (not 0)")
+
+
+## characters v1.27 (D's loco_reverse): run -> run_b holds run until the next brake-foot touch-down, plays the
+## reversal clip with no crossfade, then enters run_b at the clip's u_out with no crossfade.
+func test_v127_reversal_clip_at_the_touch_down() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71696)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"run_b"], 21)
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for c: StringName in [&"run_reverse_l", &"run_reverse_r"]:
+		var a: Animation = Animation.new()
+		a.length = 18.0 / 30.0
+		lib.add_animation(c, a)
+	AnimTweak.reversals_override = {&"run>run_b": [
+		{"clip": &"run_reverse_l", "frames": 18, "u_in": 0.5238, "u_out": 0.2381},
+		{"clip": &"run_reverse_r", "frames": 18, "u_in": 0.0, "u_out": 0.7619}]}
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(0.0, 3.5)
+	for _i: int in 10:
+		d.player.advance(0.033)
+		d.tick(0.033)
+	assert_eq(d.clip, &"run")
+	d.player.seek(0.2 * d.player.get_animation(d.player.current_animation).length, true)  # u 0.2: the L foot (0.52) is next
+	npc.velocity = _vel_at(180.0, 3.5)
+	d.tick(0.033)
+	assert_eq(d.clip, &"run", "held on run until the brake foot lands")
+	var seen: StringName = &""
+	for _i: int in 30:
+		d.player.advance(0.033)
+		d.tick(0.033)
+		if String(d.clip).contains("_reverse_"):
+			seen = d.clip
+			assert_near(d.last_blend_s, 0.0, 0.0001, "no crossfade into the reversal")
+			break
+	assert_eq(seen, &"run_reverse_l", "the left foot was next (u 0.52)")
+	for _i: int in 30:
+		d.player.advance(0.033)
+		d.tick(0.033)
+		if d.clip == &"run_b":
+			break
+	assert_eq(d.clip, &"run_b", "then the target loop")
+	assert_near(d.last_blend_s, 0.0, 0.0001, "no crossfade out")
+	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	assert_near(u, 0.2381, 0.06, "entered at run_reverse_l's u_out")
+	AnimTweak.reversals_override = {}
+
+
+## v1.27: D's loco_reverse SOURCE line parses into the reversal table (its exact entry format, two entries here).
+func test_v127_loco_reverse_parse() -> void:
+	var line: String = "loco_reverse: characters v1.27 locomotion reversals (fixed facing ...): ... run_reverse_l: " \
+		+ "run->run_b brake=L frames=18 u_in=0.5238 (run frame 11) u_out=0.2381 (run_b frame 5) events=foot_plant@0," \
+		+ "push@6,done@18 other_lands@13.0 brake_lifts@10.1 root_total_m=-0.642 max_hip_drop_mm=6.9 | walk_reverse_back_r:" \
+		+ " walk_back->walk brake=R frames=24 u_in=0.0000 (walk_back frame 0) u_out=0.7333 (walk frame 22) events=" \
+		+ "foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0"
+	var t: Dictionary = AnimTweak.parse_reversals("clip.walk: 30f\n" + line + "\n")
+	assert_eq(t.keys().size(), 2, "two pairs (%s)" % [t.keys()])
+	var r: Dictionary = (t.get(&"run>run_b", [{}]) as Array)[0]
+	assert_eq(r.get("clip"), &"run_reverse_l")
+	assert_near(float(r.get("u_in", 0.0)), 0.5238, 0.0001)
+	assert_near(float(r.get("u_out", 0.0)), 0.2381, 0.0001)
+	var w: Dictionary = (t.get(&"walk_back>walk", [{}]) as Array)[0]
+	assert_eq([w.get("clip"), w.get("frames")], [&"walk_reverse_back_r", 24])
+	assert_near(float(w.get("u_out", 0.0)), 0.7333, 0.0001)
