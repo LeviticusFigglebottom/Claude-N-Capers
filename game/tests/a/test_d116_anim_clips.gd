@@ -546,3 +546,25 @@ func test_8way_reversal_short_crossfade() -> void:
 	assert_near(d.last_blend_s, AnimTweak.data().locomotion_reversal_blend_s, 0.0001, "a short crossfade")
 	assert_true(AnimDriver._reversal(&"run_bl", &"run_r") and not AnimDriver._reversal(&"run", &"run_r"),
 		"135 deg is a reversal, 90 deg is not")
+
+
+## D (motion strips): a bot's stop-start (a moment under the move threshold) resumes the stride's phase within the
+## resume window instead of restarting it at 0.
+func test_8way_resume_carry_after_a_short_stop() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71695)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"walk_fr", &"walk_fl", &"walk_br", &"walk_bl"], 30)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(45.0, 1.3)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_eq(d.clip, &"walk_fr")
+	d.player.seek(0.4, true)
+	npc.velocity = Vector3.ZERO
+	d.tick(0.033)
+	assert_false(String(d.clip).begins_with("walk_f"), "stopped (%s)" % d.clip)
+	npc.velocity = _vel_at(-45.0, 1.3)
+	d.tick(0.033)
+	assert_eq(d.clip, &"walk_fl")
+	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	assert_near(u, 0.4 + 0.033, 0.05, "walk_fl resumes walk_fr's stride (not 0)")

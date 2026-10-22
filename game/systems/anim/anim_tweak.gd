@@ -210,6 +210,9 @@ static var _curves: Dictionary = {}
 ## D (motion strips): the crossfade (s) between two 8-way clips 135 deg or more apart; a full blend averages the
 ## opposite strides into a knees-bent squat.
 @export var locomotion_reversal_blend_s: float = 0.05
+## D (motion strips): back into the same 8-way gait family within this (s) of leaving it (a bot's stop-start), the
+## new loop continues the old stride's phase (advanced by the time away) instead of restarting at 0.
+@export var locomotion_resume_window_s: float = 0.3
 ## Never LOD an NPC within this distance (m) of a crew member's aim ray (the player / a teammate aiming at it).
 @export var anim_lod_aim_radius_m: float = 2.0
 

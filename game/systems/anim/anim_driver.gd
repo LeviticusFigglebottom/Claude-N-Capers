@@ -285,6 +285,11 @@ var bag_visual: Node3D = null
 ## _locomotion_clip's current 8-way sector (-1 = none yet) and how long it has been held (s).
 var _sector: int = -1
 var _sector_age: float = 0.0
+## The last 8-way gait loop left for a non-gait clip, its normalised time then, and the seconds since (the resume
+## carry: a bot's stop-start reset the stride, D's motion strips).
+var _left_gait: StringName = &""
+var _left_gait_u: float = 0.0
+var _left_gait_age: float = INF
 var _state_oneshot: StringName = &""
 var _state_oneshot_left: float = 0.0
 var _state_oneshot_t: float = 0.0
@@ -497,6 +502,7 @@ func tick(delta: float) -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_sector_age += delta
+	_left_gait_age += delta
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
 	net_oneshot_left = maxf(net_oneshot_left - delta, 0.0)
 	_update_start_stop(tw)
@@ -1123,12 +1129,27 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 ## stay out), else -1.
 func _gait_phase(from: StringName, to: StringName) -> float:
 	var fam: String = _gait_family(from)
-	if fam == "" or fam != _gait_family(to) or player == null or not player.is_playing():
+	if fam == "" and _gait_family(to) != "" and _gait_family(to) == _gait_family(_left_gait) \
+			and _left_gait_age <= AnimTweak.data().locomotion_resume_window_s and player != null:
+		# back into the family within the resume window (a short stop / idle frame): the old stride, run on
+		var la: Animation = player.get_animation("%s/%s" % [LIBRARY, _left_gait]) \
+			if player.has_animation("%s/%s" % [LIBRARY, _left_gait]) else null
+		var lu: float = _left_gait_u + (_left_gait_age / la.length if la != null and la.length > 0.0 else 0.0)
+		var sh: float = (1.0 if _gait_back(to) else 0.0) - (1.0 if _gait_back(_left_gait) else 0.0)
+		return fposmod(lu + sh * AnimTweak.data().locomotion_back_phase_offset, 1.0)
+	if fam == "" or player == null or not player.is_playing():
 		return -1.0
 	var a: Animation = player.get_animation(player.current_animation)
 	if a == null or a.length <= 0.0:
 		return -1.0
 	var u: float = player.current_animation_position / a.length
+	if _gait_family(to) == "":  # leaving the family: remember the stride for a quick resume
+		_left_gait = from
+		_left_gait_u = u
+		_left_gait_age = 0.0
+		return -1.0
+	if fam != _gait_family(to):
+		return -1.0
 	# D (test_loco_phase): the backward clips' feet run back_phase_offset of a cycle after the forward ones.
 	var shift: float = (1.0 if _gait_back(to) else 0.0) - (1.0 if _gait_back(from) else 0.0)
 	return fposmod(u + shift * AnimTweak.data().locomotion_back_phase_offset, 1.0)
