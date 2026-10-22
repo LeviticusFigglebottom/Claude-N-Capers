@@ -6,12 +6,15 @@ Read it at the start of every work session.
 ## Sessions
 | Role | Session id | Branch | Focus now |
 |---|---|---|---|
-| LEAD | session_014E3p2DmSYTneJjytGwKKfc | claude/dreamy-hamilton-pc7vck | 2026-10-20 resume: round 245, Ostrander Federal to done (D-144), D-145 |
-| ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | OF-A6 phase 2 (stealth + loud e2e, 3 seeds), mission audit, D-145 A items |
-| ENV B | session_0159qCTRV9CsDQs465nGSW28 | env/b-content | OF-B1 (strings/VO/briefing/preplan, un-hide gate), OF menus real input, D-145 B items |
-| ENV C | session_013uMHd1Npqkx1reY1pJMaye | env/c-worlds | OF-C2 G2 to final, §7 fixes (hoist/rope ladder), validate final |
-| ENV D | session_01EZDt9WkE187YkB8ANEbuhb | env/d-art | OF-D1 QC-67 placements, cast perf, D-145.3 duty looks |
-| ENV P | session_01FYVVhNtxKAoQmyfnZ9rb3t | env/p-play | OF-P1 §7 windowed pass (G1 then G2), ghost line, D-145 acceptance runs |
+| LEAD | session_01XAPqmFJ32zHKLK9Sezymym | claude/dreamy-hamilton-pc7vck | 2026-10-22 resume (D-153): round 274, Rolling Thunder build |
+| ENV A | session_01HBgXGNuNNwYwQ7xqJejmbK | env/a-core | RT G1 pilot end to end, C's convoy asks, RT-A6 rest |
+| ENV B | session_01MMDTT6yt3ghyaHcc9W6EJK | env/b-content | convoy EnemyDefs, RT HUD on real trucks, RT-B1 polish (rewards, intel/blueprint) |
+| ENV C | session_01EHpb8385S6zq9RWeYycb9W | env/c-worlds | convoy seat data (D's fit), diner cower points, drive-in, RT-C2 G2 to final |
+| ENV D | session_01ReDcHVcp53RGGD6F8ciuZ9 | env/d-art | convoy fit re-probe, EXIT_X, convoy look ids, RT-D2 rest, v1.25/v1.26 in-game evidence |
+| ENV P | session_01UNffXHzJ1NoyJWd14HT67i | env/p-play | RT-P1 G1 pass (non-truck items now, trucks when A's pilot plays end to end) |
+
+2026-10-22 (D-153): the 10-20 team (LEAD session_014E3p2… + its envs) is in another account and unreachable; it stopped
+after round 273. The original LEAD session_01XAPqm… resumed with a fresh env team.
 
 2026-10-20: the D-129 team (LEAD session_01HwYKRg… + its envs) was in another account and is unreachable; it stopped
 ~20:40 UTC 2026-10-17 after round 244 with OF work unmerged on the env branches (merged in round 245). The 10-14 team
