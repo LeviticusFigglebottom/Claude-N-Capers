@@ -2116,6 +2116,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_idle_var as idlev  # noqa: PLC0415 - D polish #2 idle_alert variety; imports this module
 
     extra.update(idlev.clips(sk, solver, table))
+    import _anim_reverse as rev  # noqa: PLC0415 - characters v1.27 locomotion reversals; imports this module
+
+    extra.update(rev.clips(sk, solver, table))
     import _anim_holds as holds  # noqa: PLC0415 - D-116 third-person weapon holds; imports this module
 
     extra.update(holds.clips(sk, solver, table))
