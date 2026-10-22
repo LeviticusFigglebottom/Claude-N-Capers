@@ -18811,6 +18811,7 @@
    "CabDoorRMesh",
    "Seat0",
    "Seat1",
+   "SteeringWheel",
    "WheelCentre",
    "Wheels"
   ],
@@ -18852,6 +18853,7 @@
    "CabDoorRMesh",
    "Seat0",
    "Seat1",
+   "SteeringWheel",
    "WheelCentre",
    "Wheels"
   ],
@@ -19286,8 +19288,9 @@
    "CabDoorLMesh",
    "CabDoorR",
    "CabDoorRMesh",
-   "SeatDriver",
-   "SeatPassenger",
+   "Seat0",
+   "Seat1",
+   "SteeringWheel",
    "WheelCentre",
    "Wheels"
   ],
@@ -19327,8 +19330,9 @@
    "CabDoorLMesh",
    "CabDoorR",
    "CabDoorRMesh",
-   "SeatDriver",
-   "SeatPassenger",
+   "Seat0",
+   "Seat1",
+   "SteeringWheel",
    "WheelCentre",
    "Wheels"
   ],
@@ -19370,8 +19374,9 @@
    "CabDoorRMesh",
    "Drum",
    "DrumMesh",
-   "SeatDriver",
-   "SeatPassenger",
+   "Seat0",
+   "Seat1",
+   "SteeringWheel",
    "WheelCentre",
    "Wheels"
   ],
@@ -19415,6 +19420,7 @@
    "DrumMesh",
    "Seat0",
    "Seat1",
+   "SteeringWheel",
    "WheelCentre",
    "Wheels"
   ],

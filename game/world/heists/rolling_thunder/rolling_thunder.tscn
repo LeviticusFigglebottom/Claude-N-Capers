@@ -24692,7 +24692,7 @@ shape = SubResource("rt_1017")
 [node name="Mixer" type="Node3D" parent="Variants/Group_convoy_route/Slot_route_north/Convoy/Movers" unique_id=103752 instance=ExtResource("296_rt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.5, 0, -16.6)
 script = ExtResource("297_rt")
-vehicle_kind = &"truck"
+vehicle_kind = &"mixer"
 visual_scene = ExtResource("311_rt")
 metadata/kind = "convoy_mixer"
 
@@ -25194,7 +25194,7 @@ shape = SubResource("rt_1017")
 [node name="Mixer" type="Node3D" parent="Variants/Group_convoy_route/Slot_route_east/Convoy/Movers" unique_id=103819 instance=ExtResource("296_rt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33.5, 0, -16.6)
 script = ExtResource("297_rt")
-vehicle_kind = &"truck"
+vehicle_kind = &"mixer"
 visual_scene = ExtResource("311_rt")
 metadata/kind = "convoy_mixer"
 
