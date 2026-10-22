@@ -510,3 +510,21 @@ func test_stagger_plays_out() -> void:
 		d.tick(0.1)
 	d.play_oneshot(&"fire_pistol")
 	assert_eq(d._oneshot, &"fire_pistol", "after it ends, shots play again")
+
+
+## D (test_loco_phase): forward -> backward carries the phase + back_phase_offset (backward -> forward subtracts it).
+func test_8way_phase_carry_back_offset() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71693)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"walk_fr", &"walk_fl", &"walk_br", &"walk_bl"], 30)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(45.0, 1.2)
+	for _i: int in 20:
+		d.tick(0.033)
+	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	npc.velocity = _vel_at(135.0, 1.2)  # a 90 deg turn: walk_br at once
+	d.tick(0.033)
+	assert_eq(d.clip, &"walk_br")
+	var now: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	var want: float = fposmod(u + AnimTweak.data().locomotion_back_phase_offset + 0.033, 1.0)
+	assert_near(now, want, 0.06, "walk_fr -> walk_br: + the back group's offset")

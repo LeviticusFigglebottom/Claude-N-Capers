@@ -1115,7 +1115,8 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 	player.speed_scale = speed
 
 
-## D (motion strips): the normalised time of `from` to carry into `to` when both are loops of one 8-way gait family
+## D (motion strips): the normalised time of `from` to carry into `to` (shifted by the back group's phase offset
+## between a forward and a backward clip) when both are loops of one 8-way gait family
 ## (walk / walk_* / walk_back at 30 f, run / run_* at 21 f; strafe_l / _r (18 f), the starts / stops and walk_text
 ## stay out), else -1.
 func _gait_phase(from: StringName, to: StringName) -> float:
@@ -1125,7 +1126,14 @@ func _gait_phase(from: StringName, to: StringName) -> float:
 	var a: Animation = player.get_animation(player.current_animation)
 	if a == null or a.length <= 0.0:
 		return -1.0
-	return fposmod(player.current_animation_position / a.length, 1.0)
+	var u: float = player.current_animation_position / a.length
+	# D (test_loco_phase): the backward clips' feet run back_phase_offset of a cycle after the forward ones.
+	var shift: float = (1.0 if _gait_back(to) else 0.0) - (1.0 if _gait_back(from) else 0.0)
+	return fposmod(u + shift * AnimTweak.data().locomotion_back_phase_offset, 1.0)
+
+
+static func _gait_back(c: StringName) -> bool:
+	return c in [&"walk_back", &"walk_bl", &"walk_br", &"run_b", &"run_bl", &"run_br"]
 
 
 static func _gait_family(c: StringName) -> String:
