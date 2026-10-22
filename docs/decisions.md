@@ -1571,3 +1571,17 @@ I had planned to move the 11 melee models to D (B's queue is long). B had alread
 2. **D** builds a new two-handed FP arms set `melee_heavy` (PD2: the sledgehammer and fire axe are two-handed). The right hand sits at the grip pivot (the item origin, as in every melee set) and the left hand on the same handle 0.28 m further down (item −Z).
    Clips and events have the melee_blunt/blade shape, charge_time_s 1.0; characters v1.38 row when it lands.
    B switches `sledgehammer` / `fire_axe` to `anim_set = &"melee_heavy"` in the same round, and makes the models' handles fit that two-hand grip.
+
+## D-157: The crew sentry gun is built (2026-10-22, LEAD; D-151 judgement)
+B's skill trees (Technician: Engineering / Sapper) carry six sentry keys: sentry_accuracy_mult, turn_speed_mult, cost_mult, health_mult, sentry_shield, sentry_modes.
+The game has no crew sentry, and PD2's Technician isn't PD2 without one. So it's built, not parked:
+1. **A** (after skills B6): the sentry prefab.
+   - It's placed like a deployable, with a hold to deploy, and its ammo is paid from the owner's ammo (PD2: 40% of total ammo, ◇ until B sets it).
+   - Targeting, turn rate, spread, health; it marks enemies the way PD2 sentries draw aggro.
+   - Pickup returns the remaining ammo.
+   - Mode toggle (standard / armour-piercing, the latter needing Engineering) and the sentry shield.
+   - Server-authoritative and replicated.
+   - It hooks the six keys.
+2. **B**: `deployables/sentry.tres` (DeployableDef kind "sentry"), loadout/armory entry, strings, the values (PD2-shaped), and the Technician markers.
+3. **D**: the model and its deploy/fold animation, once A's prefab nodes are fixed. A placeholder box until then.
+4. pd2_fidelity P5's deployables launch target becomes 8 (7 + sentry). pocket_ecm stays parked.
