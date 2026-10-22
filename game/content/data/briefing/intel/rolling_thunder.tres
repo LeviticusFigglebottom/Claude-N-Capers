@@ -1,0 +1,108 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_0hlpp"]
+
+[resource]
+script = ExtResource("1_0hlpp")
+heist_id = &"rolling_thunder"
+map_path = "res://world/heists/rolling_thunder/rolling_thunder.tscn"
+variants_path = "res://world/heists/rolling_thunder/rolling_thunder_variants.tres"
+fixed = {
+&"hack_terminal": 2,
+&"padlock": 3,
+&"safe": 2
+}
+groups = {
+&"camera": {
+&"cam_gate": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_magazine": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_mast_cabins": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"controller": {
+&"ctrl_locked": {
+"counts": {
+&"padlock": 1
+},
+"rooms": {},
+"weight": 0.7
+},
+&"ctrl_open": {
+"counts": {},
+"rooms": {},
+"weight": 0.3
+}
+},
+&"cop_on_scene": {
+&"cop_diner": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 0.3
+},
+&"cop_none": {
+"counts": {},
+"rooms": {},
+"weight": 0.3
+},
+&"cop_plaza": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 0.4
+}
+},
+&"guard_post": {
+&"post_site_cabins": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"post_site_frame": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"post_site_gate": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+}
+}
+fixed_rooms = {
+&"hack_terminal": {
+&"CPL": 1,
+&"X4": 1
+},
+&"safe": {
+&"CP-G": 1,
+&"OF": 1
+}
+}
+surprises = Array[StringName]([&"marshal_early", &"convoy_early", &"crane_sniper", &"armored_escort", &"rush_hour"])

@@ -1,12 +1,11 @@
 ## RT-A6 stage 1 (D-151): rolling_thunder_mission on C's G1 map. Objectives and the setup clock; signals rigged ->
 ## clean stop (layout in, convoy units beside the G1 bodies, the 8 s window raises the ambush alarm, units awake);
-## an early alarm -> police at once, crash stop, trucks locked down; a truck opening spawns its cargo; four bags
+## an early alarm -> police at once, crash stop, C's 2-3 real trucks locked down; a truck opening spawns its cargo; four bags
 ## secured call the ride after escape_eta_s. The stop is called directly (no 150-210 s wait).
 extends TestCase
 
 const HEIST: StringName = &"rolling_thunder"
 const VARIANTS: String = "res://world/heists/rolling_thunder/rolling_thunder_variants.tres"
-const TRUCK: PackedScene = preload("res://systems/prefabs/armored_truck/armored_truck.tscn")
 
 var _rt: HeistRuntime = null
 
@@ -74,6 +73,12 @@ func test_clean_stop_window_then_ambush() -> void:
 			tags[StringName(t)] = true
 	for t: StringName in [&"convoy_lead", &"convoy_t1", &"convoy_t2", &"convoy_rear"]:
 		assert_true(tags.has(t), "a unit carries the look tag %s (D's npc_visual_tweak RT rows)" % t)
+	var defs: Dictionary = {}
+	for u: NpcBase in m._units:
+		defs[u.enemy_def.id if u.enemy_def != null else &""] = true
+	for d: StringName in [&"enemy.convoy_lead", &"enemy.convoy_rear", &"enemy.security_officer"]:
+		assert_true(defs.has(d), "an escort / crew unit is %s (D-149.12; has %s)" % [d, defs.keys()])
+	assert_false(defs.has(&"enemy.patrol_officer"), "the escort officers wear the convoy defs, not patrol_officer")
 	Engine.time_scale = 4.0
 	var loud: bool = await wait_until(func() -> bool: return _rt.went_loud, RollingThunderMission.WINDOW_S + 2.0)
 	assert_true(loud, "the window ended in the alarm")
@@ -93,9 +98,6 @@ func test_early_alarm_crash_stop_and_lockdown() -> void:
 	assert_true(m.alerted, "an alarm before the convoy alerts it")
 	assert_near(m.police_delay_s, 0.0, 0.001, "police at once")
 	var layout_id: String = "%s_crash" % m._route()
-	if _rt.map.find_children("*", "ArmoredTruck", true, false).is_empty():
-		ConvoyLayouts.find(_rt.map, layout_id).add_child(TRUCK.instantiate())  # pre-swap G1: one truck in the layout
-		await wait_physics_frames(1)
 	m._convoy_arrives()
 	await _stopped(m)
 	assert_false(m.clean_stop, "crash stop")
@@ -103,7 +105,7 @@ func test_early_alarm_crash_stop_and_lockdown() -> void:
 	assert_true(bool(m.objectives().filter(func(o: Dictionary) -> bool: return o["id"] == &"signals")[0]["data"].get(
 		"skipped", false)), "as skipped, not done")
 	assert_eq(m.layout_id, layout_id)
-	assert_false(m._trucks.is_empty(), "trucks in play")
+	assert_true(m._trucks.size() >= 2 and m._trucks.size() <= 3, "C's 2-3 real trucks in play (%d)" % m._trucks.size())
 	for t: ArmoredTruck in m._trucks:
 		assert_true(t.locked_down, "%s locked down: deadbolts thrown" % t.name)
 		assert_has(m.find_tagged(RollingThunderMission.TAG_TRUCK_IN_PLAY), t, "[trucks] marks %s" % t.name)
@@ -157,3 +159,132 @@ func test_rare_events_at_the_setup() -> void:
 	var ashby_open: bool = SpecialSpawner.open_perches(_rt).any(func(tp: TacticalPoint) -> bool:
 		return tp.tags.has(RollingThunderMission.PERCH_ASHBY))
 	assert_false(ashby_open, "Routine: S4 closed")
+	var diner: int = 0
+	for n: Node in _rt.npcs(&"civilian"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_CIV_DINER):
+			diner += 1
+	assert_eq(diner, RollingThunderMission.DINER_CUSTOMERS + 2, "rush_hour: +2 diner customers")
+	# marshal_early: he walks his own check, then a second one
+	m._spawn_marshal()
+	await wait_physics_frames(2)
+	var marshal: NpcBase = null
+	for n: Node in _rt.npcs(&"guard"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_MARSHAL_SPAWN):
+			marshal = n as NpcBase
+	assert_true(marshal != null, "the marshal is out")
+	if marshal == null:
+		return
+	var graphs: Dictionary = {}
+	for p: PatrolPoint in (marshal.get_node(^"Brain") as GuardBrain).route_points:
+		graphs[(p.get_parent() as PatrolGraph).graph_id] = true
+	assert_eq(graphs.size(), 2, "marshal_early: two checks (%s)" % [graphs.keys()])
+
+
+func test_no_rare_marshal_walks_one_check_and_diner_has_three() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch(4101, [&"informant_tip"])
+	var diner: int = 0
+	for n: Node in _rt.npcs(&"civilian"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_CIV_DINER):
+			diner += 1
+	assert_eq(diner, RollingThunderMission.DINER_CUSTOMERS, "diner customers without rush_hour")
+	m._spawn_marshal()
+	await wait_physics_frames(2)
+	for n: Node in _rt.npcs(&"guard"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(RollingThunderMission.TAG_MARSHAL_SPAWN):
+			var graphs: Dictionary = {}
+			for p: PatrolPoint in (n.get_node(^"Brain") as GuardBrain).route_points:
+				graphs[(p.get_parent() as PatrolGraph).graph_id] = true
+			assert_eq(graphs.size(), 1, "one check (%s)" % [graphs.keys()])
+
+
+## doc Variants goods_lift: lift_dead = an unpowered lift from the start; the plant-room breaker's hack restores it.
+func test_lift_dead_and_the_breaker() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	var lifts: Array[Node] = _rt.get_tree().get_nodes_in_group(&"goods_lift")
+	assert_false(lifts.is_empty(), "the goods lift")
+	var lift: BagLift = lifts[0] as BagLift
+	var dead: bool = m._slot_active(&"goods_lift", &"lift_dead")
+	assert_eq(lift.powered, not dead, "powered unless lift_dead (dead=%s)" % dead)
+	m._power_lift(false)
+	assert_eq(lift._availability(null, 0), InteractableComponent.BLOCK_DISABLED, "a dead lift's panels are blocked")
+	var breaker: Node = null
+	for n: Node in m.find_tagged(RollingThunderMission.TAG_LIFT_BREAKER):
+		if n is HackTerminal:
+			breaker = n
+	assert_true(breaker != null, "the plant-room breaker")
+	if breaker == null:
+		return
+	EventBus.device_finished.emit((breaker as GameplayPrefab).net_id)
+	await wait_physics_frames(1)
+	assert_true(lift.powered, "the breaker restores the lift")
+
+
+## doc Rare events gold_rush: "forces trucks_3 + t3_bullion" (both pins, force_active as an Array).
+func test_gold_rush_pins_a_bullion_third_truck() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch(4101, [&"gold_rush"])
+	assert_has(m.variant(&"truck_count") as Array, &"trucks_3", "gold_rush: three trucks")
+	assert_has(m.variant(&"cargo_t3") as Array, &"t3_bullion", "gold_rush: T3 is bullion")
+
+
+## B's RT HUD run: an alarm during the drive-in left no ACTIVE objective (ambush done, the stop's not up yet). The
+## ambush now springs when the stop is done, with [trucks] / [escort] / [secure] up in the same step.
+func test_alarm_during_the_drive_in_keeps_an_objective_up() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	m._convoy_arrives()  # crash stop: the movers drive in
+	await wait_physics_frames(2)
+	if m._stop_done:
+		skip("no drive-in on this map (pop-in)")
+		return
+	_rt.stealth.raise_alarm(&"test")
+	await wait_physics_frames(3)
+	assert_eq(m.objective_state(&"ambush"), Enums.ObjectiveState.ACTIVE, "[ambush] stays up during the drive-in")
+	await _stopped(m)
+	await wait_physics_frames(2)
+	assert_eq(m.objective_state(&"ambush"), Enums.ObjectiveState.COMPLETED, "sprung at the stop")
+	assert_eq(m.objective_state(&"escort"), Enums.ObjectiveState.ACTIVE, "[escort] up with it")
+	assert_eq(m.objective_state(&"trucks"), Enums.ObjectiveState.ACTIVE, "[trucks] up with it")
+
+
+## doc Variants controller: ctrl_locked = the cabinet's padlock gates the signal rig (C's TODO(A) on the padlock).
+func test_locked_cabinet_gates_the_rig() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = null
+	for s: int in [4101, 4102, 4103, 4104, 4105]:
+		m = await _launch(s)
+		if m._slot_active(&"controller", &"ctrl_locked"):
+			break
+		after_each()
+		await wait_frames(1)
+		m = null
+	if m == null:
+		skip("no ctrl_locked roll in 5 seeds")
+		return
+	var rig: HackTerminal = null
+	var lock: Padlock = null
+	for n: Node in m.find_tagged(RollingThunderMission.TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+		elif n is Padlock:
+			lock = n as Padlock
+	assert_true(rig != null and lock != null, "the rig and the cabinet padlock")
+	if rig == null or lock == null:
+		return
+	assert_true(rig.is_paused(), "the rig is blocked while the cabinet is locked")
+	assert_eq(rig._availability(null), HackTerminal.BLOCK_PAUSED)
+	lock.open_lock(false, &"lockpick")
+	await wait_physics_frames(1)
+	assert_false(rig.is_paused(), "the padlock off: the rig can be worked")

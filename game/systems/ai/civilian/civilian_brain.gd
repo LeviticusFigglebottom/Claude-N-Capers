@@ -49,7 +49,7 @@ const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone",
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
 	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
 	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke", &"counter", &"check_desk",
-	&"sit_eat", &"cook", &"teller_count", &"queue_idle"]
+	&"sit_eat", &"cook", &"cook_stove", &"teller_count", &"queue_idle", &"idle"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
 const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated", &"sit_eat"]
 ## Within this of its seat (m) a seated civilian counts as still seated.

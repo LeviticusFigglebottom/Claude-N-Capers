@@ -10,15 +10,28 @@ const MIN_INSIDE: float = 0.7
 const INSIDE_KINDS: Array[StringName] = [&"room", &"building"]
 
 var _strings: Dictionary = {}
+## RT-B1: staged heists (RT) join the walk through the test-only fixture until they are offered.
+var _fx: RefCounted = preload("res://tests/b/staged_heist_fixture.gd").new()
 
 
 func before_all() -> void:
 	PreplanBoard.clear_cache()
 	_strings = StringTable.parse_csv(StringTable.CSV_PATH)
+	_fx.call(&"stage")
+
+
+func after_all() -> void:
+	_fx.call(&"unstage")
+
+
+func _heists() -> Array[StringName]:
+	var out: Array[StringName] = HEISTS.duplicate()
+	out.append_array(_fx.get(&"staged") as Array[StringName])
+	return out
 
 
 func test_each_heist_has_a_drawn_blueprint() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var drawn: PreplanBlueprint = PreplanBoard.drawn_blueprint(id)
 		assert_eq(drawn.heist_id, id, "%s has blueprints/%s.tres" % [id, id])
 		assert_false(drawn.placeholder, "%s drawn blueprint is not the placeholder" % id)
@@ -28,7 +41,7 @@ func test_each_heist_has_a_drawn_blueprint() -> void:
 
 
 func test_blueprints_have_rooms() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var bp: PreplanBlueprint = PreplanBoard.drawn_blueprint(id)
 		var rooms: int = 0
 		for s: Dictionary in bp.shapes:
@@ -41,7 +54,7 @@ func test_blueprints_have_rooms() -> void:
 
 
 func test_map_points_lie_in_bounds_and_mostly_inside_shapes() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var bp: PreplanBlueprint = PreplanBoard.blueprint_for(id)
 		assert_true(bp.points.size() > 0, "%s has map points" % id)
 		var inside: int = 0
@@ -61,7 +74,7 @@ func test_map_points_lie_in_bounds_and_mostly_inside_shapes() -> void:
 
 
 func test_labels_and_floor_names_exist_in_strings() -> void:
-	for id: StringName in HEISTS:
+	for id: StringName in _heists():
 		var bp: PreplanBlueprint = PreplanBoard.drawn_blueprint(id)
 		for k: StringName in bp.floor_names:
 			assert_true(_strings.has(String(k)), "%s floor name %s in strings.csv" % [id, k])

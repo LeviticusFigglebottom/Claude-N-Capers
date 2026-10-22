@@ -416,3 +416,42 @@ func test_db4_armed_seated_idle() -> void:
 	assert_eq(AnimDriver.of(trunk).choose_clip(), &"sit_chair", "rig without sit_chair_armed: sit_chair (today)")
 	AnimDriver.of(cartel).tick(0.016)
 	assert_eq(String(AnimDriver.of(cartel).player.current_animation), "humanoid/sit_chair_armed", "played")
+
+
+## characters.md v1.26 (a): an alert, armed NPC on the move (not aiming) holds its weapon like the crew:
+## hold_<kind>_<gait> frame-locked to the gait, hold_<kind> when D has no gait clip; calm or unarmed: no layer.
+func test_v126a_npc_hold_layer_on_the_move() -> void:
+	var npc: NpcBase = _npc(&"police", true, 71690)
+	var d: AnimDriver = AnimDriver.of(npc)
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for c: StringName in [&"hold_rifle", &"hold_rifle_walk"]:
+		if not lib.has_animation(c):
+			var a: Animation = Animation.new()
+			a.length = 1.0
+			a.loop_mode = Animation.LOOP_LINEAR
+			lib.add_animation(c, a)
+	d.weapon_kind = &"rifle"
+	var gun: Node3D = Node3D.new()
+	npc.add_child(gun)
+	d.weapon_visual = gun
+	_brain(npc).anim_hint = &"idle"
+	npc.alert_state = Enums.AlertState.COMBAT
+	npc.velocity = Vector3(0, 0, -1.6)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_eq([d.clip, d.hold_layer.clip], [&"walk", &"hold_rifle_walk"], "alert + armed + walking: hold_rifle_walk")
+	assert_near(d.hold_layer.influence, 1.0, 0.001, "weight 1")
+	assert_near(d.hold_layer.time, d.player.current_animation_position, 0.0001, "frame-locked to the walk")
+	npc.velocity = Vector3(0, 0, -3.5)
+	d.tick(0.033)
+	assert_eq([d.clip, d.hold_layer.clip], [&"run", &"hold_rifle"], "no hold_rifle_run: plain hold_rifle")
+	npc.alert_state = Enums.AlertState.CALM
+	npc.velocity = Vector3(0, 0, -1.6)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_near(d.hold_layer.influence, 0.0, 0.001, "calm: no hold layer")
+	npc.alert_state = Enums.AlertState.COMBAT
+	d.weapon_visual = null
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_near(d.hold_layer.influence, 0.0, 0.001, "unarmed: no hold layer")

@@ -1022,6 +1022,14 @@ func play_vehicle_exit(left: bool) -> bool:
 	return true
 
 
+## Seconds of vehicle_exit_l / _r on this rig, 0 when it has none (the mission slides the root out over it).
+func vehicle_exit_length(left: bool) -> float:
+	var key: String = "%s/%s" % [LIBRARY, VEHICLE_EXIT_L if left else VEHICLE_EXIT_R]
+	if player == null or not player.has_animation(key):
+		return 0.0
+	return player.get_animation(key).length
+
+
 ## A one-shot only when the library has exactly that clip (the fallback chain would play idle / walk instead).
 func _play_if_present(p_clip: StringName, while_moving: bool) -> void:
 	if player != null and player.has_animation("%s/%s" % [LIBRARY, p_clip]):

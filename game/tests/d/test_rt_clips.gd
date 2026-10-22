@@ -28,7 +28,7 @@ const COUNTER_DROP: float = 0.15
 ## exit clip -> Godot x sign of its root travel
 const EXITS: Dictionary = {"vehicle_exit_l": -1.0, "vehicle_exit_r": 1.0}
 ## the exits' total sideways root travel (m)
-const EXIT_X: float = 0.85
+const EXIT_X: float = 1.05
 ## a one-shot's first / last frame must match its source pose within this (m, worst bone)
 const POSE_TOL: float = 0.01
 const NOTES: Array[String] = ["rt_vehicle_placement"]

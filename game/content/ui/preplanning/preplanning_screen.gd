@@ -296,6 +296,9 @@ func _build_map_column() -> VBoxContainer:
 	crew_button.name = "CrewButton"
 	crew_button.pressed.connect(_on_crew_pressed)
 	bar.add_child(crew_button)
+	# RT-B1 capture: the board opened on floor 0 (OF's basement, RT's underpass); it opens where the crew starts, as the
+	# briefing's blueprint does (entry_floor).
+	var entry: int = board.blueprint.entry_floor()
 	if board.blueprint.floor_count() > 1:
 		# LEAD r229 real-input run: the crew tab and the floor tabs are separate choices (no map point picked / the
 		# floor shown) and both showed "selected"; a divider and a MAP caption make the floors their own group.
@@ -308,7 +311,7 @@ func _build_map_column() -> VBoxContainer:
 		for i: int in range(board.blueprint.floor_count()):
 			var fb: Button = UiBuild.tab(_small_button(board.blueprint.floor_names[i]))
 			fb.name = "FloorTab%d" % i
-			fb.set_pressed_no_signal(i == 0)
+			fb.set_pressed_no_signal(i == entry)
 			fb.pressed.connect(_on_floor.bind(i))
 			bar.add_child(fb)
 			floor_buttons.append(fb)
@@ -328,6 +331,7 @@ func _build_map_column() -> VBoxContainer:
 	blueprint_view.custom_minimum_size = Vector2(720, 480)
 	col.add_child(blueprint_view)
 	blueprint_view.setup(board)
+	blueprint_view.set_floor(entry)
 	blueprint_view.point_pressed.connect(_on_point_pressed)
 	return col
 

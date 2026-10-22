@@ -63,6 +63,12 @@ const PERCH_ASHBY: StringName = &"ashby"
 const WRECKER: StringName = &"enemy.wrecker"
 ## Street pedestrians (`civilians` scalar 6 / 9 / 12; rush_hour 12).
 const TAG_CIV_STREET: StringName = &"civ_street"
+const TAG_CIV_DINER: StringName = &"civ_diner"
+const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
+const PAUSE_CABINET: StringName = &"cabinet_locked"
+## Diner customers (doc Cast: 2-5 in the booths): 3, rush_hour adds its extra_diner_customers (+2).
+const DINER_CUSTOMERS: int = 3
+const RNG_STREAM: StringName = &"rt_mission"
 
 ## Convoy units per vehicle (doc "Convoy units per difficulty"): escorts by difficulty (Routine/Tense patrol cars,
 ## Hazardous+ SUVs), two Vaultline crew per truck.
@@ -72,6 +78,7 @@ const ESCORT_REAR_HIGH: Array[StringName] = [&"enemy.tac_light", &"enemy.tac_lig
 const VAULTLINE_CREW: Array[StringName] = [&"enemy.security_officer", &"enemy.security_officer"]
 ## D-149.12: the escorts' own EnemyDefs (looks by difficulty) once B / D land them; the rows above until then.
 const ESCORT_DEFS: Dictionary = {"Lead": &"enemy.convoy_lead", "Rear": &"enemy.convoy_rear"}
+const ESCORT_SWAPPED: Array[StringName] = [&"enemy.patrol_officer", &"enemy.tac_light"]
 
 const SPEAKER_REYES: StringName = &"reyes"
 const VO_INTRO: StringName = &"vo.mercer.rolling_thunder_intro"
@@ -137,6 +144,8 @@ var _opened: Dictionary = {}
 var _said: Dictionary = {}
 var _escape_called: bool = false
 var _movers_left: int = 0
+## Every mover is on its stop (the layout is in and the stop's objectives are up).
+var _stop_done: bool = false
 ## Last published [trucks opened, escort down] (the poll publishes only changes).
 var _last_counts: Vector2i = Vector2i(-1, -1)
 
@@ -187,9 +196,37 @@ func _apply_rare_setup() -> void:
 	if _rare(RARE_INFORMANT):
 		for g: Variant in _fx(RARE_INFORMANT, &"reveal", []) as Array:
 			reveal_variant_group(StringName(g))
+	var diner: int = DINER_CUSTOMERS + (int(_fx(RARE_RUSH_HOUR, &"extra_diner_customers", 2)) if _rare(RARE_RUSH_HOUR) else 0)
+	thin_civilians(TAG_CIV_DINER, diner)
+	if _slot_active(&"goods_lift", &"lift_dead"):
+		_power_lift(false)
+	if _slot_active(&"controller", &"ctrl_locked"):
+		_lock_cabinet()
 	set_sniper_perches_open(PERCH_CRANE, _rare(RARE_CRANE))
 	if _runtime != null and _runtime.difficulty < Enums.Difficulty.HAZARDOUS:
 		set_sniper_perches_open(PERCH_ASHBY, false)
+
+
+## doc Variants controller: ctrl_locked = the cabinet's padlock (8 s pick, or cut) before the rig can be worked; the
+## rig is paused (blocked) until the padlock is off.
+func _lock_cabinet() -> void:
+	var rig: HackTerminal = null
+	var lock: Padlock = null
+	for n: Node in find_tagged(TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+		elif n is Padlock:
+			lock = n as Padlock
+	if rig == null or lock == null or lock.opened:
+		return
+	rig.pause(PAUSE_CABINET)
+	lock.lock_opened.connect(func(_how: StringName) -> void: rig.resume(PAUSE_CABINET), CONNECT_ONE_SHOT)
+
+
+func _power_lift(on: bool) -> void:
+	for n: Node in get_tree().get_nodes_in_group(&"goods_lift"):
+		if n is BagLift and _runtime.is_ancestor_of(n):
+			(n as BagLift).set_powered(on)
 
 
 func _add(id: StringName, state: Enums.ObjectiveState, tags: Array, data: Dictionary = {}) -> void:
@@ -217,8 +254,26 @@ func _spawn_marshal() -> void:
 	var m: Array[Node] = spawn_guards(1, TAG_MARSHAL_SPAWN)
 	if m.is_empty():
 		return
+	if _rare(RARE_MARSHAL_EARLY):
+		_second_check(m[0] as NpcBase)
 	activate(&"marshal")
 	_say_once(VO_MARSHAL)
+
+
+## marshal_early: the marshal walks a second check after his own (another `marshal_walk` graph, by the mission stream).
+func _second_check(npc: NpcBase) -> void:
+	var brain: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain if npc != null else null
+	if brain == null:
+		return
+	var others: Array[PatrolGraph] = []
+	for n: Node in _runtime.map.find_children("*", "PatrolGraph", true, false):
+		var g: PatrolGraph = n as PatrolGraph
+		if String(g.graph_id).begins_with("marshal_") and not _slot_active(&"marshal_walk", g.graph_id):
+			others.append(g)
+	if others.is_empty():
+		return
+	others.sort_custom(func(a: PatrolGraph, b: PatrolGraph) -> bool: return String(a.graph_id) < String(b.graph_id))
+	brain.extend_route(others[GameRng.stream(RNG_STREAM).randi_range(0, others.size() - 1)])
 
 
 func _sighted() -> void:
@@ -228,6 +283,8 @@ func _sighted() -> void:
 ## [signals]: the junction rig's hack finished (doc: without it the stop is a crash).
 func _on_device_finished(device_net_id: int) -> void:
 	var dev: Node = Ids.lookup(device_net_id)
+	if dev != null and _tagged(dev, TAG_LIFT_BREAKER):
+		_power_lift(true)  # doc Variants goods_lift: the plant-room breaker restores a dead lift
 	if dev != null and _tagged(dev, TAG_SIGNALS) and dev is HackTerminal and not signals_rigged:
 		signals_rigged = true
 		_complete_once(&"signals")
@@ -277,6 +334,13 @@ func _on_alarm(_reason: StringName) -> void:
 		_say_once(VO_ALERTED)
 		_say_once(VO_POLICE)
 		return
+	if not _stop_done:
+		return  # the drive-in: _stopped() springs it with [trucks] / [escort] up (B's HUD run: no empty objective line)
+	_spring_ambush()
+
+
+## The ambush is on: [ambush] done, Mercer's go, the police line, the dismount (the stop's objectives are already up).
+func _spring_ambush() -> void:
 	_complete_once(&"ambush")
 	_say_once(VO_GO)
 	start_timer(&"police_line", maxf(police_delay_s, 0.1), func() -> void: _say_once(VO_POLICE))
@@ -344,6 +408,7 @@ func _mover_stopped() -> void:
 
 ## Every vehicle is on its stop marker: swap the layout in, units, trucks, then the window (clean) or the impact (crash).
 func _stopped() -> void:
+	_stop_done = true
 	set_layout(layout_id)
 	if _slot_active(&"truck_count", &"trucks_2"):
 		_drop_vehicle("T3")
@@ -370,9 +435,11 @@ func _stopped() -> void:
 		return
 	_say_once(VO_REYES_CRASH, {}, SPEAKER_REYES)
 	_mixer_move()
-	if went_loud:
+	if alerted:
 		_complete_once(&"ambush")  # an early alarm: the crash is the ambush (no second alarm comes)
 		_dismount_all()
+	elif went_loud:
+		_spring_ambush()  # the alarm came during the drive-in
 	else:
 		raise_alarm(&"ambush")
 
@@ -400,9 +467,10 @@ func _spawn_convoy_units() -> void:
 			if _rare(RARE_ARMORED_ESCORT):
 				ids.append(WRECKER)  # Lethal+: a Wrecker rides in the rear escort
 		if ESCORT_DEFS.has(veh) and has_enemy(ESCORT_DEFS[veh]):
+			# D-149.12: the escort officers wear the car's EnemyDef; the TAC Heavy and the Wrecker keep theirs
 			var own: Array[StringName] = []
-			own.resize(ids.size())
-			own.fill(ESCORT_DEFS[veh])
+			for id: StringName in ids:
+				own.append(ESCORT_DEFS[veh] if ESCORT_SWAPPED.has(id) else id)
 			ids = own
 		var seat: bool = clean_stop and not went_loud and body is ConvoyVehicle
 		var look_tag: StringName = StringName("convoy_" + veh.to_lower())  # convoy_lead / convoy_t1.. / convoy_rear
