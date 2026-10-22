@@ -231,6 +231,11 @@ func _wire_exits() -> void:
 		tab = floor_buttons[blueprint_view.floor_index]
 	if not asset_buttons.is_empty():
 		asset_buttons[0].set_focus_neighbor(SIDE_TOP, asset_buttons[0].get_path_to(tab))
+	# RT walk: a floor switch rebuilds the markers, so Left from the list pointed at a freed marker (an invalid
+	# neighbour path: Left did nothing). Re-aim it at the anchor that exists now (the marker, else the crew tab).
+	var anchor: Control = _anchor_control()
+	for b: Button in asset_buttons:
+		b.set_focus_neighbor(SIDE_LEFT, b.get_path_to(anchor))
 	var top: Control = null
 	var top_z: float = INF
 	for pid: StringName in blueprint_view.marker_ids():

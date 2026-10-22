@@ -623,9 +623,10 @@ func _dismount_all() -> void:
 func _dismount_crash() -> void:
 	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
 	var first: Array[NpcBase] = []
-	for u: NpcBase in _seated:
-		if not is_instance_valid(u):
+	for v: Variant in _seated:
+		if not is_instance_valid(v):
 			continue
+		var u: NpcBase = v as NpcBase
 		var tags: Array = u.spawn_info.get("tags", []) as Array
 		var def_id: StringName = u.enemy_def.id if u.enemy_def != null else &""
 		if (tags.has(&"convoy_lead") or tags.has(&"convoy_rear")) and def_id != &"enemy.tac_heavy":

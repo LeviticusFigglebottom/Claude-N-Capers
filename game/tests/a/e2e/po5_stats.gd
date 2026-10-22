@@ -13,6 +13,9 @@ var regained: Dictionary = {}
 var loadouts: Dictionary = {}  # slot -> "primary / armor"
 var enemies: Dictionary = {}  # EnemyDef id -> count of distinct units seen
 var specials: Dictionary = {}
+## D-154 close (B / LEAD): Brandt's Aegis shields (META_AEGIS at first sight; they are enemy.bulwark units) count here
+## only, never in police / specials / composition, so the Bulwark share (bulwark / police) is the director funnel's.
+var aegis: int = 0
 var peak_alive: int = 0
 ## LEAD (D-145, DB vs GH Tense): damage the pilot (slot 0) took while standing, by attacker EnemyDef id
 ## (id -> [hits landed, damage, hits that did nothing (graced / dodged / invulnerable)]) and by attacker distance band.
@@ -79,6 +82,9 @@ func _sample() -> void:
 		if _seen.has(key):
 			continue
 		_seen[key] = true
+		if npc.has_meta(AegisCaptain.META_AEGIS):
+			aegis += 1
+			continue
 		var id: StringName = npc.enemy_def.id
 		enemies[id] = int(enemies.get(id, 0)) + 1
 		if npc.enemy_def.is_special:
@@ -118,6 +124,7 @@ func summary() -> String:
 	var dps: float = total / maxf(loud_up_s, 1.0)
 	var head: String = "STATS difficulty=%d police=%d peak_alive=%d specials=%s composition=%s | %s" % [difficulty, units,
 		peak_alive, specials, enemies, "; ".join(crew)]
+	head += "\nSTATS aegis=%d (Brandt's shields: not in police / specials / composition)" % aegis
 	var tail: String = "INTAKE pilot standing loud %.0f s, %.0f dmg, %.2f dmg/s, %.1f enemies within 20 m on average" % [
 		loud_up_s, total, dps, near_sum / maxf(loud_up_s, 1.0)]
 	return "%s\n%s | by attacker [hits, dmg, nulled] %s | by range %s" % [head, tail, intake, intake_bands]

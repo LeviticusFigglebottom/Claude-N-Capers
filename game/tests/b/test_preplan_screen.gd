@@ -3,6 +3,7 @@
 extends TestCase
 
 const SCENE: String = "res://content/ui/preplanning/preplanning_screen.tscn"
+const STAGED_FIXTURE: GDScript = preload("res://tests/b/staged_heist_fixture.gd")
 
 
 func _screen(cash: int, difficulty: int = Enums.Difficulty.BRUTAL) -> PreplanningScreen:
@@ -217,7 +218,7 @@ func test_arrow_keys_never_trap_focus() -> void:
 	# RT walk (r276): on RT's underpass floor (markers all low on the map) the markers, the asset list and the bottom
 	# row formed a closed arrow-key loop; a keyboard / pad player could not get back to the tabs. For every heist
 	# (RT through the staged fixture) and every list shown, each focusable control leads back to the crew tab.
-	var fx: RefCounted = preload("res://tests/b/staged_heist_fixture.gd").new()
+	var fx: RefCounted = STAGED_FIXTURE.new()
 	fx.call(&"stage")
 	var states: int = 0
 	for id: StringName in HeistCatalog.ids():
@@ -263,3 +264,34 @@ func _assert_no_focus_trap(s: PreplanningScreen, where: String) -> void:
 					break
 	for c: Control in all:
 		assert_true(back.has(c), "%s: focus on %s cannot get back to the crew tab by arrow keys" % [where, c.name])
+
+
+func test_list_left_neighbour_survives_a_floor_switch() -> void:
+	# RT walk: with a point's assets listed, switching floors freed the markers, and the list's Left neighbour kept a
+	# path to the freed marker ("Neighbor focus node path is invalid"; Left did nothing). It now aims at a live control.
+	var fx: RefCounted = STAGED_FIXTURE.new()
+	fx.call(&"stage")
+	var checked: int = 0
+	for id: StringName in HeistCatalog.ids():
+		var s: PreplanningScreen = (load(SCENE) as PackedScene).instantiate() as PreplanningScreen
+		s.save_on_confirm = false
+		s.setup(id, Enums.Difficulty.ROUTINE, PlayerProfile.new())
+		add_child(s)
+		await wait_frames(3)
+		if s.floor_buttons.size() < 2 or s.blueprint_view.marker_ids().is_empty():
+			s.queue_free()
+			continue
+		s.show_point(s.blueprint_view.marker_ids()[0])
+		var other: int = (s.blueprint_view.floor_index + 1) % s.floor_buttons.size()
+		s.floor_buttons[other].pressed.emit()
+		await wait_frames(3)
+		for b: Button in s.asset_buttons:
+			var nb: NodePath = b.get_focus_neighbor(SIDE_LEFT)
+			var target: Node = b.get_node_or_null(nb) if not nb.is_empty() else null
+			assert_true(target != null and is_instance_valid(target) and not target.is_queued_for_deletion(),
+					"%s: Left from '%s' after a floor switch points at a live control (%s)" % [id, b.text, nb])
+		checked += 1
+		s.queue_free()
+		await wait_frames(1)
+	fx.call(&"unstage")
+	assert_true(checked >= 3, "multi-floor heists checked: %d" % checked)
