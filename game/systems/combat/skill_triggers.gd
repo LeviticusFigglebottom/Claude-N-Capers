@@ -54,6 +54,17 @@
 ##   defense.outnumbered {enemies, radius, damage_mult, damage_taken_mult, duration} (Outnumbered): with `enemies`+
 ##     alive enemies within radius m, damage x damage_mult and damage taken x damage_taken_mult, held `duration` s.
 ##   (weapon.body_expertise: CombatSystem / NpcBase; defense.flashbang_duration_mult: CrewHealth.flash.)
+## Batch 6 (hostages, converts, marks):
+##   ability.convert_owner_buff {move_mult, health_mult} (Accomplice): while the holder owns a living converted enemy,
+##     move x move_mult and max health x health_mult (CrewBuffs "accomplice", refreshed every tick).
+##   ability.hostage_regen {per_hostage, max_hostages, interval} (Leverage): every `interval` s while standing, heal
+##     per_hostage x min(hostages, max_hostages) of max health.
+##   ability.stockholm (Captive Audience Aced): a downed holder is revived by the nearest tied hostage within
+##     STOCKHOLM_M after STOCKHOLM_DELAY_S ◇ (PD2: when asked); each hostage does it once.
+##   stealth.noise_intimidates_civilians (Captive Audience): the holder's gunfire intimidates civilians within the
+##     shout range (as a shout: CivilianBrain.on_shouted); ShoutSystem also widens its civilian range.
+##   stealth.mark_by_aim (Price Tag Aced): aiming at a markable enemy for MARK_AIM_S marks it (no shout).
+##   (stealth.mark_damage_bonus_mult / mark_far_damage_mult: StealthDirector.mark_damage_mult, the marker's skill.)
 class_name SkillTriggers
 extends Node
 
@@ -67,6 +78,12 @@ const BUFF_REVIVE_TARGET: StringName = &"revive_target"
 const BUFF_POST_REVIVE: StringName = &"post_revive"
 const BUFF_MEDICAL: StringName = &"medical_user"
 const BUFF_OUTNUMBERED: StringName = &"outnumbered"
+const BUFF_ACCOMPLICE: StringName = &"accomplice"
+const STOCKHOLM_M: float = 15.0
+const STOCKHOLM_DELAY_S: float = 3.0
+## Seconds of aim on the same markable enemy that mark it (Price Tag Aced) ◇.
+const MARK_AIM_S: float = 0.5
+const META_STOCKHOLM_USED: StringName = &"stockholm_used"
 ## CrewBuffs tag of a kill reload buff that lasts until the next reload ends (duration 0).
 const TAG_NEXT_RELOAD: StringName = &"next_reload"
 const NEXT_RELOAD_CAP_S: float = 600.0
@@ -89,6 +106,10 @@ var _stacks: Dictionary[String, int] = {}
 ## slot -> clock times of qualifying headshots (Economy)
 var _headshots: Dictionary[int, Array] = {}
 var _clock: float = 0.0
+## slot -> seconds until the next hostage regen tick (Leverage)
+var _regen_left: Dictionary[int, float] = {}
+## slot -> [target net id, seconds aimed] (Price Tag Aced)
+var _aim_mark: Dictionary[int, Array] = {}
 var _runtime: HeistRuntime = null
 
 
@@ -108,6 +129,88 @@ static func of(rt: HeistRuntime) -> SkillTriggers:
 func _ready() -> void:
 	EventBus.npc_killed.connect(_on_npc_killed)
 	EventBus.damage_applied.connect(_on_damage_applied)
+	EventBus.weapon_fired.connect(_on_weapon_fired)
+
+
+## Captive Audience: the holder's gunfire intimidates the civilians within the shout range.
+func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: bool, origin: Vector3) -> void:
+	var crew: CrewController = _crew(shooter_net_id)
+	if crew == null or not Net.is_authority() or not Modifiers.flag(crew.slot, &"stealth.noise_intimidates_civilians"):
+		return
+	var r: float = Tweak.stealth().shout_range_m
+	for n: Node in _runtime.npcs(&"civilian"):
+		var npc: NpcBase = n as NpcBase
+		var brain: Node = npc.get_node_or_null(^"Brain") if npc != null else null
+		if brain != null and npc.alive and brain.has_method(&"on_shouted") and npc.global_position.distance_to(origin) <= r:
+			brain.call(&"on_shouted", crew)
+
+
+func _tick_accomplice(crew: CrewController) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"ability.convert_owner_buff")
+	if p.is_empty():
+		return
+	for n: Node in _runtime.npcs():
+		var npc: NpcBase = n as NpcBase
+		var ally: ConvertedAllyBrain = npc.get_node_or_null(NodePath(ConvertedAllyBrain.NODE_NAME)) as ConvertedAllyBrain \
+			if npc != null and npc.alive else null
+		if ally != null and ally.owner_slot == crew.slot:
+			CrewBuffs.of(_runtime).grant(crew.slot, BUFF_ACCOMPLICE, {&"movement.speed_mult": float(p.get("move_mult", 1.0)),
+				&"defense.health_mult": float(p.get("health_mult", 1.0))}, 0.5)
+			return
+
+
+func _tick_hostage_regen(crew: CrewController, delta: float) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"ability.hostage_regen")
+	var n: int = mini(TeamModifiers.hostage_count(crew), int(p.get("max_hostages", 0)))
+	if p.is_empty() or n <= 0 or crew.health == null or crew.crew_state != Enums.CrewState.NORMAL:
+		_regen_left.erase(crew.slot)
+		return
+	_regen_left[crew.slot] = _regen_left.get(crew.slot, float(p.get("interval", 5.0))) - delta
+	if _regen_left[crew.slot] > 0.0:
+		return
+	_regen_left[crew.slot] = float(p.get("interval", 5.0))
+	crew.health.heal(crew.health.max_health * float(p.get("per_hostage", 0.0)) * float(n))
+
+
+func _tick_stockholm(crew: CrewController) -> void:
+	if crew.crew_state != Enums.CrewState.DOWNED or crew.health == null or crew.health.down_s < STOCKHOLM_DELAY_S \
+			or not Modifiers.flag(crew.slot, &"ability.stockholm"):
+		return
+	var best: NpcBase = null
+	for n: Node in get_tree().get_nodes_in_group(G.HOSTAGE):
+		var h: NpcBase = n as NpcBase
+		if h == null or not h.alive or h.has_meta(META_STOCKHOLM_USED) or HeistRuntime.of(h) != _runtime:
+			continue
+		var d: float = h.global_position.distance_to(crew.global_position)
+		if d <= STOCKHOLM_M and (best == null or d < best.global_position.distance_to(crew.global_position)):
+			best = h
+	if best != null:
+		best.set_meta(META_STOCKHOLM_USED, true)
+		crew.health.revive(crew.slot)
+
+
+func _tick_mark_by_aim(crew: CrewController, delta: float) -> void:
+	if crew.weapons == null or not crew.weapons.aiming or not Modifiers.flag(crew.slot, &"stealth.mark_by_aim") \
+			or _runtime.stealth == null:
+		_aim_mark.erase(crew.slot)
+		return
+	var eye: Vector3 = crew.eye_position()
+	var range_m: float = Tweak.stealth().mark_range_m * Modifiers.mult(crew.slot, &"ability.shout_range_mult")
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, eye + crew.aim_direction() * range_m)
+	q.exclude = [crew.get_rid()]
+	var hit: Dictionary = crew.get_world_3d().direct_space_state.intersect_ray(q)
+	var col: Node = hit.get("collider") as Node
+	while col != null and not col is NpcBase:
+		col = col.get_parent()
+	var npc: NpcBase = col as NpcBase
+	if npc == null or StealthDirector.mark_kind_of(npc) == &"":
+		_aim_mark.erase(crew.slot)
+		return
+	var prev: Array = _aim_mark.get(crew.slot, [0, 0.0])
+	var t: float = float(prev[1]) + delta if int(prev[0]) == npc.net_id else delta
+	_aim_mark[crew.slot] = [npc.net_id, t]
+	if t >= MARK_AIM_S and not _runtime.stealth.is_marked(npc):
+		_runtime.stealth.mark(npc, crew.slot)
 
 
 func _physics_process(delta: float) -> void:
@@ -117,6 +220,10 @@ func _physics_process(delta: float) -> void:
 	if not Net.is_authority() or _runtime == null:
 		return
 	for crew: CrewController in _runtime.crew_members():
+		_tick_accomplice(crew)
+		_tick_hostage_regen(crew, delta)
+		_tick_stockholm(crew)
+		_tick_mark_by_aim(crew, delta)
 		_tick_outnumbered(crew)
 		_tick_unseen_strike(crew)
 		_tick_stagger_window(crew, delta)
