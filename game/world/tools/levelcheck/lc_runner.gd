@@ -2,6 +2,10 @@
 class_name LcRunner
 extends RefCounted
 
+## hub_map.md (C4-02): checks the hub profile skips (no police, AI, loot, stealth or variants in the safehouse).
+const HUB_SKIP: Array[StringName] = [&"secure_zones", &"barred_doors", &"patrols", &"lasers", &"camera_spine",
+	&"camera_screen", &"bag_line", &"hide_los", &"teller_worktop"]
+
 
 ## All checks in report order (level_standards §7 table order + walkthrough).
 static func all_checks() -> Array[LcCheck]:
@@ -27,6 +31,10 @@ static func run(ctx: LcContext, only: PackedStringArray = PackedStringArray()) -
 	var done: Array[LcCheck] = []
 	for c: LcCheck in all_checks():
 		if not only.is_empty() and not (String(c.id) in only):
+			continue
+		if ctx.profile == "hub" and c.id in HUB_SKIP:
+			c.skipped_reason = "not in the hub profile"
+			done.append(c)
 			continue
 		if not c.applies(ctx.stage):
 			c.skipped_reason = "not run at stage %s" % ctx.stage
