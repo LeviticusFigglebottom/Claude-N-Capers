@@ -335,14 +335,30 @@ func test_qc85_rt_cues() -> void:
 	EventBus.audio_cue_requested.disconnect(on_cue)
 
 
-## RT phase 2 (LEAD-approved C proposal): with C's `Mixer` ConvoyVehicle and the layout's MixerStop, _mixer_move opens
-## the tannery_gate doors and drives (here: parks, no MixerPath) the mixer onto its stop; without them (G1) the old
-## layout swap stays.
+## RT phase 2 (C f2c05253): `<slot>/Convoy/Movers/Mixer` stays out of the stop's drive-in; at _mixer_move the Door(s)
+## with meta opens_with = "mixer_move" swing open, the "mixer" COVER goes off and the Mixer drives (here: parks, no
+## MixerPath) onto the layout's MixerStop.
 func test_phase2_mixer_drives_to_its_stop() -> void:
 	if not _available():
 		skip("rolling_thunder map not on this branch")
 		return
 	var m: RollingThunderMission = await _launch()
+	var movers: Node = m._route_slot().get_node(NodePath(RollingThunderMission.MOVERS_PATH))
+	var mixer: ConvoyVehicle = (load("res://systems/prefabs/convoy_vehicle/convoy_vehicle.tscn") as PackedScene) \
+		.instantiate() as ConvoyVehicle
+	mixer.name = "Mixer"
+	movers.add_child(mixer)
+	mixer.global_position = Vector3(-30, 0, -16)
+	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
+		n.set_meta(&"opens_with", "mixer_move")
+		(n as Door).lock = Door.Lock.LOCKPICK) as Door
+	var cover: TacticalPoint = TacticalPoint.new()
+	cover.kind = TacticalPoint.Kind.COVER
+	cover.tags = [&"mixer"] as Array[StringName]
+	_rt.map.add_child(cover)
+	await wait_physics_frames(3)
+	assert_true(m._mixer() == mixer, "C's Mixer under the route's Convoy/Movers")
+	assert_false(m._movers().has(mixer), "the Mixer is no stop leg")
 	m._convoy_arrives()
 	await _stopped(m)
 	var layout: Node3D = ConvoyLayouts.find(_rt.map, m.layout_id)
@@ -350,17 +366,11 @@ func test_phase2_mixer_drives_to_its_stop() -> void:
 	stop.name = "MixerStop"
 	layout.add_child(stop)
 	stop.global_position = layout.global_position + Vector3(4.0, 0.0, 4.0)
-	var mixer: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(-30, 0, -16), func(n: Node) -> void:
-		n.name = "Mixer") as ConvoyVehicle
-	var gate: Door = ATestMaps.add_prefab(_rt, "door", Vector3(-40, 0, -30), func(n: Node) -> void:
-		(n as Door).objective_tag = RollingThunderMission.TAG_TANNERY_GATE
-		(n as Door).lock = Door.Lock.LOCKPICK) as Door
-	await wait_physics_frames(3)
-	assert_true(m._mixer() == mixer, "C's Mixer found")
 	m._mixer_move()
 	await wait_physics_frames(3)
 	assert_true(mixer.global_position.distance_to(stop.global_position) < 0.1, "the mixer on its MixerStop")
-	assert_true(gate.is_open, "the Tannery gate swung open")
+	assert_true(gate.is_open, "the opens_with gate swung open")
+	assert_false(cover.enabled, "the mixer's cover goes with it")
 
 
 ## RT-A6 "every VO line said": the e2e batch (auto_loud 1004 / 4102, rt_clean 1005) said 25 of the 34 RT lines; the
@@ -413,18 +423,51 @@ func test_the_nine_lines_the_e2e_does_not_reach() -> void:
 		assert_has(said, id, "%s said by its trigger" % id)
 
 
-## B's early-alarm balance (item 1): an early alarm brings the convoy at min(ETA, alarm + 75 s); a later alarm (ETA
-## already under 75 s) leaves it.
+## D-154.2 (revised, B fd41028a): an early alarm brings the convoy at min(ETA, alarm + EARLY_PUSH_S = 25 s); a later alarm
+## (ETA already under it) leaves it.
 func test_early_alarm_pushes_the_convoy_through() -> void:
 	if not _available():
 		skip("rolling_thunder map not on this branch")
 		return
 	var m: RollingThunderMission = await _launch()
-	assert_true(m.timer_left(&"convoy") > RollingThunderMission.EARLY_PUSH_S, "ETA is over 75 s at the start")
+	assert_true(m.timer_left(&"convoy") > RollingThunderMission.EARLY_PUSH_S, "ETA is over the push at the start")
 	_rt.stealth.raise_alarm(&"test")
 	await wait_physics_frames(3)
-	assert_near(m.timer_left(&"convoy"), RollingThunderMission.EARLY_PUSH_S, 0.5, "the convoy pushes through: 75 s")
+	assert_near(m.timer_left(&"convoy"), RollingThunderMission.EARLY_PUSH_S, 0.5, "the convoy pushes through: alarm + 25 s")
 	for id: StringName in [&"eta_60", &"eta_30", &"marshal"]:
 		assert_true(m.timer_left(id) <= RollingThunderMission.EARLY_PUSH_S, "%s does not come after the arrival" % id)
 	assert_true(m.timer_left(&"sighted") > 0.0, "sighted re-timed before the arrival")
 	assert_near(m.police_delay_s, 0.0, 0.001, "police at once (D-075) unchanged")
+
+
+## D-154 amended (lever (a)): a crash stop seats the convoy units, then the escorts get out at once and the Vaultline
+## crews / TAC Heavy over the next CRASH_DISMOUNT_S (seeded), not all eleven at once.
+func test_crash_stop_staggers_the_dismount() -> void:
+	if not _available():
+		skip("rolling_thunder map not on this branch")
+		return
+	var m: RollingThunderMission = await _launch()
+	_rt.stealth.raise_alarm(&"test")  # early alarm: crash stop
+	await wait_physics_frames(3)
+	m._convoy_arrives()
+	await _stopped(m)
+	await wait_physics_frames(2)
+	var out_escorts: int = 0
+	var seated_crew: int = 0
+	for u: NpcBase in m._units:
+		var tags: Array = u.spawn_info.get("tags", []) as Array
+		var seated: bool = u.has_meta(HeistMission.META_SEATED_IN)
+		if (tags.has(&"convoy_lead") or tags.has(&"convoy_rear")) and u.enemy_def.id != &"enemy.tac_heavy":
+			out_escorts += 0 if seated else 1
+		elif not seated:
+			pass
+		else:
+			seated_crew += 1
+	assert_true(out_escorts >= 2, "the escorts are out at once (%d)" % out_escorts)
+	assert_true(seated_crew >= 2, "the crews are still inside (%d)" % seated_crew)
+	Engine.time_scale = 4.0
+	var all_out: bool = await wait_until(func() -> bool:
+		return m._units.all(func(u: NpcBase) -> bool: return not is_instance_valid(u) or not u.has_meta(HeistMission.META_SEATED_IN)),
+		RollingThunderMission.CRASH_DISMOUNT_S + 3.0)
+	Engine.time_scale = 1.0
+	assert_true(all_out, "everyone is out within CRASH_DISMOUNT_S")

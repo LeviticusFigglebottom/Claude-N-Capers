@@ -40,7 +40,10 @@ func play(driver: Node) -> int:
 		return _fail(driver, flow, "mask up")
 	if not await _rig_the_signals(flow, rt, m) or (raid_stores and not await _raid_stores(flow, rt, m)):
 		return _fail(driver, flow, "the signals / the site stores")
+	var carrying_before: bool = flow.crew.is_carrying_bag()
 	rt.teleport_crew(0, start)
+	await flow.wait_until(func() -> bool: return false, 0.2)
+	flow.note("teleported back: carrying %s -> %s" % [carrying_before, flow.crew.is_carrying_bag()])
 	flow.note("back at the start (%s), waiting for the convoy (ETA %.0f s)" % [start.origin, m.timer_left(&"convoy")])
 	var budget: float = m.timer_left(&"convoy") + 120.0
 	var stopped: bool = await flow.fast_until(func() -> bool: return m._stop_done, budget)
@@ -50,6 +53,8 @@ func play(driver: Node) -> int:
 	flow.crew.stealth_hidden = false
 	flow.note("clean stop %s at %.1f s heist: observers on, the loud pilot takes over" % [m.layout_id, rt.heist_time_s])
 	EventBus.voice_line_requested.disconnect(vo)
+	flow.note("hand-over: carrying %s (%s)" % [flow.crew.is_carrying_bag(),
+		(flow.crew.carried_bag as LootBag).loot_id if flow.crew.is_carrying_bag() else &""])
 	var failures: Array[String] = flow.failures.duplicate()
 	flow.detach()
 	if not failures.is_empty():
