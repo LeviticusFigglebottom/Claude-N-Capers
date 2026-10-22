@@ -14,8 +14,8 @@ Blender +Y = Godot -Z, as the van and the limo; static visual scenes that A5-01 
     D-138), `LootAnchor` (the hold floor), `ThermitePoint` (bullion), `Rear` (the rear step and tail lights, outside
     `Body`) and the rear axles;
   * the cab (``veh_armored_cab_*``, A5-02 ``convoy_vehicle``'s visual): `Body` (the cab and the front chassis: the
-    mover's collision is fitted to it), `Seat0` (driver) / `Seat1` (passenger) at the cushion (0.36 m over the cab
-    floor 1.2 m up: the cab dismount needs van_exit or a root drop), `WheelCentre` 0.40 m ahead / 0.76 m up, cab doors
+    mover's collision is fitted to it), `Seat0` (driver) / `Seat1` (passenger) on the cab floor 1.2 m up (sit_vehicle's
+    root, the cushion 0.36 m over it; facing the front, +Z; the cab dismount needs van_exit or a root drop), `WheelCentre` 0.40 m ahead / 0.76 m up, cab doors
     `CabDoorL` / `CabDoorR` from 0.30 m behind to 0.65 m ahead of the seat centre with the sill <= 0.22 m over the cab
     floor (D's clip numbers, rolling_thunder_convoy.py SEAT_REQ), and the front axle.
 * ``veh_mixer_truck``: Reyes's concrete mixer (8 m): cab, chassis, the drum on `Drum` (its pivot on the drum axis, so a
@@ -337,10 +337,10 @@ def _cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str) -
 
 
 def _cab_markers(k: Kit, w: float, yf: float) -> None:
-    """D's driver / passenger clip numbers (SEAT_REQ): seats at the cushion, the wheel, the cab doors (closed)."""
+    """D's driver / passenger clip numbers (SEAT_REQ): seats on the cab floor, the wheel, the cab doors (closed)."""
     seat_y = yf + 1.0
     for name, sx in (("Seat0", -1), ("Seat1", 1)):  # driver, passenger (ConvoyVehicle.seats())
-        k.empty(name, (sx * (w / 2 - 0.6), seat_y, CAB_FLOOR + 0.36))
+        k.empty(name, (sx * (w / 2 - 0.6), seat_y, CAB_FLOOR), rotation=(0.0, 0.0, math.pi))  # root on the floor, facing the front
     k.empty("WheelCentre", (-(w / 2 - 0.6), seat_y - 0.40, CAB_FLOOR + 0.76))
     for name, sx in (("CabDoorL", -1), ("CabDoorR", 1)):
         piv = k.empty(name, (sx * (w / 2 + 0.014), seat_y - 0.65, CAB_FLOOR + 0.2))

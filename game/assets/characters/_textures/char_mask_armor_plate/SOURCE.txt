@@ -1,0 +1,9 @@
+generator: python3 tools/blender/characters/make_materials.py --only char_mask_armor_plate
+palette: tools/blender/characters/_outfit_palette.py (all_char_materials)
+kind: tread; colour #8C8E91; roughness 0.45; metallic 1.0
+seed: 455923465 (zlib.crc32('char_mask_armor_plate'))
+size_px: 512; tile_m: 2.0 (1 UV unit = 2.0 m); texel_density_px_per_m: 256
+use: achievement mask surface grain (MaskMaterialDef, content/docs/masks.md); features sized per texture tile (~12 cm of mask at uv_tile 1.5); generator tools/blender/characters/_mask_surfaces.py
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+texgen (ENV C, read-only): noise, ops, materials.base.finalize, io, godot
+edit policy: generated, never edit by hand

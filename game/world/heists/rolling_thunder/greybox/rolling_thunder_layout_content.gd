@@ -608,7 +608,7 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_van_carpark": [
 		[
 			"prefab", "secure_zone", "SecureCarPark", [23.0, 0.0, -26.8], 0.0,
-			{"objective_tag": "secure", "zone_size_m": [2.6, 2.5, 2.2]}, null, {"kind": "vehicle", "escape_label": "E1"},
+			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 8.0]}, null, {"kind": "vehicle", "escape_label": "E1"},
 			"veh_van_secure",
 		],
 		[
@@ -621,7 +621,7 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_van_underpass": [
 		[
 			"prefab", "secure_zone", "SecureUnderpass", [88.8, -5.0, -4.0], 90.0,
-			{"objective_tag": "secure", "zone_size_m": [2.6, 2.5, 2.2]}, null, {"kind": "vehicle", "escape_label": "E2"},
+			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 8.0]}, null, {"kind": "vehicle", "escape_label": "E2"},
 			"veh_van_secure",
 		],
 		[
@@ -891,8 +891,8 @@ const GRAPHS: Dictionary = {
 	"DinerCower": [
 		"diner_cower", 1,
 		{
-			"CowerFrontW": [[20.5, 0.0, 14.41], [0.0, 0.0], "cower_stand", ["cower"], 180.0],
-			"CowerFrontE": [[22.5, 0.0, 14.41], [0.0, 0.0], "cower_stand", ["cower"], 180.0],
+			"CowerFrontW": [[20.5, 0.0, 14.41], [0.0, 0.0], "cower", ["cower"], 180.0],
+			"CowerFrontE": [[22.5, 0.0, 14.41], [0.0, 0.0], "cower", ["cower"], 180.0],
 			"CowerCounterN": [[23.39, 0.0, 17.0], [0.0, 0.0], "cower_stand", ["cower"], 90.0],
 			"CowerCounterS": [[23.39, 0.0, 22.6], [0.0, 0.0], "cower_stand", ["cower"], 90.0],
 		},

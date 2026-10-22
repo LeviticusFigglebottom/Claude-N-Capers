@@ -8,6 +8,7 @@
 ## jester) under the same contract.
 ## D-111: eight more bases (kraken, lion, shark, pierrot, welder, wicker, lucha, signal), same contract.
 ## D-ACH: three achievement-reward bases (vault_dial, keystone, bust), same contract.
+## RT-D2: two Rolling Thunder reward bases (road_cone, ingot), same contract.
 ## D-073: every mask is fitted over the crew face envelope (tools/blender/masks/_face_envelope.py);
 ## the envelope must have been generated from the current crew heads.
 ## Run after `godot --import`.
@@ -21,7 +22,7 @@ const BASE_NAMES: Array[String] = [
 	"heron", "visage", "vulpine", "bruiser", "owl", "skull", "theatre", "gasmask", "demon", "goalie",
 	"ram", "stag", "cat", "boar", "serpent", "moth", "knight", "doll", "sunburst", "geo", "robot", "jester",
 	"kraken", "lion", "shark", "pierrot", "welder", "wicker", "lucha", "signal",
-	"vault_dial", "keystone", "bust",
+	"vault_dial", "keystone", "bust", "road_cone", "ingot",
 ]
 const BASE_MATERIAL: String = "M_char_mask_base"
 const BASE_LIBRARY: String = "res://world/materials/char_mask_base.tres"

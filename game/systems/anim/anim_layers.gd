@@ -38,6 +38,9 @@ func update_hold(delta: float, tw: AnimTweak) -> void:
 		elif _d._crew != null:
 			plain = _d._held_weapon_clip(&"hold_")
 			want = HoldGait.clip_for(plain, clip, player, AnimDriver.LIBRARY)  # v1.25: hold_<kind>_<gait> when D has it
+		else:
+			plain = npc_hold_clip()
+			want = HoldGait.clip_for(plain, clip, player, AnimDriver.LIBRARY)  # v1.26 (a): NPCs get the crew's layer
 	var gait_locked: bool = want != &"" and want != plain and not moving_reload
 	if want != &"" and want != hold_layer.clip:
 		var a: Animation = player.get_animation("%s/%s" % [AnimDriver.LIBRARY, want])
@@ -51,6 +54,16 @@ func update_hold(delta: float, tw: AnimTweak) -> void:
 	var target: float = 1.0 if want != &"" else 0.0
 	hold_layer.influence = move_toward(hold_layer.influence, target, delta / maxf(tw.hold_layer_blend_s, 0.001))
 	hold_layer.active = hold_layer.influence > 0.0
+
+
+## characters.md v1.26 (a): an alert, armed NPC (police, guards, escorts) on the move holds its weapon like the crew:
+## `hold_<kind>` (HoldGait picks hold_<kind>_<gait> when D has it), &"" when calm, unarmed or the rig has no hold clip.
+func npc_hold_clip() -> StringName:
+	var npc: NpcBase = _d._npc
+	if npc == null or _d.weapon_visual == null or not AnimDriver.ALERT_STATES.has(npc.alert_state):
+		return &""
+	var c: StringName = StringName("hold_" + String(_d.weapon_kind))
+	return c if _d._has_clip(c) else &""
 
 
 ## Lead ruling (c) / characters.md v1.19: the left hand goes onto the held weapon's LeftHandIK (HandL/Socket on the

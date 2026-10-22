@@ -68,3 +68,7 @@ func test_x3_dockside_burn_each_event_runs_at_a_marker() -> void:
 
 func test_x3_gallery_night_each_event_runs_at_a_marker() -> void:
 	await _each_kind_runs(&"gallery_night", 33)
+
+
+func test_x3_rolling_thunder_each_event_runs_at_a_marker() -> void:
+	await _each_kind_runs(&"rolling_thunder", 34)

@@ -17,7 +17,7 @@ const GENERIC_PROPS: Array[StringName] = [
 	&"active", &"destroyed", &"disabled_reason", &"cameras_off", &"staffed", &"tripped", &"remaining",
 	&"stored", &"state", &"progress", &"duration", &"stage", &"timer_left", &"beaten_by", &"uses_left",
 	&"ammo_left", &"ecm_state", &"jam_left", &"arrival_left", &"landing", &"destination", &"trip_t",
-	&"saw_progress", &"usable", &"delivered", &"placed_kind", &"height_m",
+	&"saw_progress", &"usable", &"delivered", &"placed_kind", &"height_m", &"powered",
 ]
 ## Crew members' replicated fields (crew_state, mask, inventory, carried bag, vitals).
 const CREW_HEALTH_PROPS: Array[StringName] = [

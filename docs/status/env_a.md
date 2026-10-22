@@ -3,7 +3,54 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21 update; newest at top)
+## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-27) RT G1 PLAYS END TO END; B's defs in; round 274 merged; clean-stop flow (2026-10-22)
+- **RT G1 end to end:** auto_loud seed 1001, Routine, headless: **RESULT PASS**.
+  - Crash stop at t=180, escort down at t=200, truck 1 open at t=390.
+  - 4 bags secured by t=464, the ride at t=584, success, back in the hub.
+- **fd7b0159:** trunk round 274 (59237213) merged. The rolling_thunder.tscn conflict resolved to trunk's ids with
+  the 4x3x8 secure zones kept.
+- **98908f0a:** B's 8 convoy EnemyDefs installed, replacing mine.
+  - Base def = the patrol car with a pistol; frd / sentinel / zero = that faction's TAC Light with a rifle.
+  - New EnemyDef params `character`: the faction files wear tac_light (D's looks). NpcVisuals.def_character_id.
+- **2a0e7782 (B's HUD):**
+  - An alarm during the drive-in now springs the ambush at the stop, with [trucks] / [escort] / [secure] up in the
+    same step (no empty objective line).
+  - A bark_director teardown guard.
+- **ddae2218 (D):** car occupants play vehicle_exit_<side> from the seat while the root slides out over the clip,
+  body paused. Armoured-cab crews keep the 1.6 m step.
+- **27ed55a7:** ctrl_locked: the cabinet padlock gates the signal rig (C's TODO(A) on ControllerPadlock).
+- **po5_flow_rt_clean (LEAD: A writes it; P's windowed RT-P1 / P5 clean-setup run follows its route):**
+  - Stealth prelude with X4 shortcuts: man-gate padlock -> cabinet padlock -> rig hack.
+  - Back to the start, the convoy to its clean stop.
+  - Then auto_loud springs the ambush and plays the rest.
+- **Running:** crash seeds 1002 / 1003 and the clean-stop seed 1001.
+### (-26) Handover: trunk merged, convoy EnemyDefs, RT audit gaps, G1 pilot's secure-zone bug (2026-10-22)
+- **edca000e:** trunk d1ecb0b6 merged.
+- **99cc0b98:** the crash-stop test asserts C's 2-3 real trucks.
+- **C's asks were already met** (88873eb23 / 5dfef0e19): ConvoyLayouts does `region_set_map`, so rt_convoy_nav.gd can go.
+- **f43cc6be: `enemy.convoy_lead` / `convoy_rear`** (D-153 amended: A writes, B reviews).
+  - Routine/Tense use patrol health/damage; Hazardous+ use TAC Light.
+  - npc_rifle on every difficulty (EnemyDef has no per-difficulty weapon).
+  - The look is patrol_officer until D's ids arrive.
+  - The mission swaps only the patrol / TAC Light escorts; the rear TAC Heavy and the Wrecker stay. test_rt_convoy_looks passes.
+- **Audit gaps** (31766e43, 27a9f07f, 95e862f3):
+  - lift_dead: the goods lift is unpowered (`BagLift.powered`), and the LiftBreaker hack restores it.
+  - marshal_early: two checks (`GuardBrain.extend_route`).
+  - rush_hour: diner customers 3 -> 5.
+  - gold_rush pins trucks_3 and t3_bullion.
+  - RT assault event rows on C's markers.
+- **6b58399f, G1 pilot bug:** the E1/E2 SecureZone (2.6x2.5x2.2) sat inside the van's collision, so only a bag on the
+  roof secured. It is now 4x3x8. **C:** mirror it in `tools/levelcheck/plans/rolling_thunder_content.py`.
+- **G1 pilot run 1** (seed 1001, Routine):
+  - Crash stop, escort down, both trucks sawn (t=390 / 520), bags picked.
+  - 0 secured: the zone bug above. Re-running on 6b58399f.
+- **Open:**
+  - **Clean-stop e2e:** auto_loud masks at t≈7, so every run is a crash stop. A clean stop needs a stealth prelude:
+    the man-gate, the SignalRig hack, then mask at the stop.
+  - **bonds_courier cab safe:** waits on the truck art.
+  - B's vo_coverage.md is stale for RT (all 34 lines are said).
+### (2026-10-21 entries)
 ### (-25) D-152 items done; RT pilot on C's real convoy gets the trucks open (01:10 UTC)
 - **(1) OF vault guard margin, 0cc1558d7:**
   - `hub_loops` gets an optional `dwell_add_s` {point: s} plus `dwell_add_max_difficulty`.
