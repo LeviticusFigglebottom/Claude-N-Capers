@@ -4,6 +4,27 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-27) RT G1 PLAYS END TO END; B's defs in; round 274 merged; clean-stop flow (2026-10-22)
+- **RT G1 end to end:** auto_loud seed 1001, Routine, headless: **RESULT PASS**.
+  - Crash stop at t=180, escort down at t=200, truck 1 open at t=390.
+  - 4 bags secured by t=464, the ride at t=584, success, back in the hub.
+- **fd7b0159:** trunk round 274 (59237213) merged. The rolling_thunder.tscn conflict resolved to trunk's ids with
+  the 4x3x8 secure zones kept.
+- **98908f0a:** B's 8 convoy EnemyDefs installed, replacing mine.
+  - Base def = the patrol car with a pistol; frd / sentinel / zero = that faction's TAC Light with a rifle.
+  - New EnemyDef params `character`: the faction files wear tac_light (D's looks). NpcVisuals.def_character_id.
+- **2a0e7782 (B's HUD):**
+  - An alarm during the drive-in now springs the ambush at the stop, with [trucks] / [escort] / [secure] up in the
+    same step (no empty objective line).
+  - A bark_director teardown guard.
+- **ddae2218 (D):** car occupants play vehicle_exit_<side> from the seat while the root slides out over the clip,
+  body paused. Armoured-cab crews keep the 1.6 m step.
+- **27ed55a7:** ctrl_locked: the cabinet padlock gates the signal rig (C's TODO(A) on ControllerPadlock).
+- **po5_flow_rt_clean (LEAD: A writes it; P's windowed RT-P1 / P5 clean-setup run follows its route):**
+  - Stealth prelude with X4 shortcuts: man-gate padlock -> cabinet padlock -> rig hack.
+  - Back to the start, the convoy to its clean stop.
+  - Then auto_loud springs the ambush and plays the rest.
+- **Running:** crash seeds 1002 / 1003 and the clean-stop seed 1001.
 ### (-26) Handover: trunk merged, convoy EnemyDefs, RT audit gaps, G1 pilot's secure-zone bug (2026-10-22)
 - **edca000e:** trunk d1ecb0b6 merged.
 - **99cc0b98:** the crash-stop test asserts C's 2-3 real trucks.
