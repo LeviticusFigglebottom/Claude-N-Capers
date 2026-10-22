@@ -12,6 +12,9 @@ signal stem_changed(stem_name: StringName)
 
 const SILENCE: StringName = &""
 const FADE_FLOOR_DB: float = -60.0
+## set_ducked (hub_map.md): -6 dB over 0.25 s.
+const DUCK_DB: float = -6.0
+const DUCK_S: float = 0.25
 
 @export var track_id: StringName = &"glasshouse"
 @export var track: MusicTrack
@@ -32,6 +35,9 @@ var _players: Array[AudioStreamPlayer] = []
 var _active: int = -1
 var _stinger: AudioStreamPlayer = null
 var _tweens: Array[Tween] = [null, null]
+var _duck_db: float = 0.0
+var _duck_target: float = 0.0
+var _duck_tween: Tween = null
 ## True once the track came from the heist (launch options / HeistDef), not the `track_id` export.
 var _heist_track: bool = false
 
@@ -116,6 +122,34 @@ func preview(p_track_id: StringName, stem: StringName = MusicTrack.STEM_ASSAULT)
 	target_stem = stem
 	_switch(0.0)
 	return true
+
+
+## hub_map.md (QC-48): duck the whole director by DUCK_DB over DUCK_S (the safehouse cabinet while another station's
+## screen is open), or restore it. An offset on the playing stems; a crossfade's target carries it too.
+func set_ducked(on: bool) -> void:
+	var to: float = DUCK_DB if on else 0.0
+	if is_equal_approx(to, _duck_target):
+		return
+	_duck_target = to
+	if _duck_tween != null and _duck_tween.is_valid():
+		_duck_tween.kill()
+	if not is_inside_tree():
+		_apply_duck(to)
+		return
+	_duck_tween = create_tween()
+	_duck_tween.tween_method(_apply_duck, _duck_db, to, DUCK_S)
+
+
+func is_ducked() -> bool:
+	return _duck_target < 0.0
+
+
+func _apply_duck(v: float) -> void:
+	var delta: float = v - _duck_db
+	_duck_db = v
+	for p: AudioStreamPlayer in _players:
+		if p.playing and p.volume_db > FADE_FLOOR_DB + 1.0:
+			p.volume_db += delta
 
 
 ## Stop the jukebox preview immediately.
@@ -238,7 +272,7 @@ func _switch(bar_pos: float) -> void:
 	p.volume_db = FADE_FLOOR_DB
 	if p.is_inside_tree():
 		p.play(start)
-	_fade(nxt, track.stem_gain_db(to_stem), fade_s, false)
+	_fade(nxt, track.stem_gain_db(to_stem) + _duck_db, fade_s, false)
 	_active = nxt
 
 
