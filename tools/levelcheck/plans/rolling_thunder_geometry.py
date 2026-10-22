@@ -31,9 +31,9 @@ PARAPET = 1.1
 GUARD = 1.1
 COPING_RISE = 0.3  # a ridge over the 0.3 m parapet (OF §7.5 copings: >= 50 deg)
 DOOR_HEAD = 2.2
-## Phase 2 (D-149.8): the Tannery gate (plan x 24..29 on the site's south hoarding) is one 4.2 m opening with no
-## head, closed by the site gate prop_door_site_gate_w400_h240 (two 2.0 m leaves on its 0.1 m posts): the mixer
-## (2.5 m wide, 3.5 m tall) drives out through it.
+# Phase 2 (D-149.8): the Tannery gate (plan x 24..29 on the site's south hoarding) is one 4.2 m opening with no
+# head, closed by the site gate prop_door_site_gate_w400_h240 (two 2.0 m leaves on its 0.1 m posts): the mixer
+# (2.5 m wide, 3.5 m tall) drives out through it.
 TANNERY_GAP = (24.4, 28.6)
 CEIL_T = 0.05
 GRADE_T = 0.3
