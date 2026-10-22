@@ -128,6 +128,10 @@ const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_ch
 ## the rig has them (play_vehicle_exit; no fallback clip). No caller yet: the convoy / police dismount is QC-83/86.
 const VEHICLE_EXIT_L: StringName = &"vehicle_exit_l"
 const VEHICLE_EXIT_R: StringName = &"vehicle_exit_r"
+## characters v1.27 reversal states (_reversal_step).
+const REV_NONE: int = 0
+const REV_PENDING: int = 1
+const REV_PLAYING: int = 2
 const DEATH_SEATED_SLUMP: StringName = &"death_seated_slump"
 const DEATH_SEATED_FALL: StringName = &"death_seated_fall"
 ## characters.md v1.10 8-way locomotion by 45 deg sector clockwise from forward (index 0 = forward).
@@ -285,6 +289,17 @@ var bag_visual: Node3D = null
 ## _locomotion_clip's current 8-way sector (-1 = none yet) and how long it has been held (s).
 var _sector: int = -1
 var _sector_age: float = 0.0
+## characters v1.27 reversal (D's loco_reverse clips): REV_NONE, REV_PENDING (the source loop runs on to the brake foot's
+## touch-down `_rev_u_in`), REV_PLAYING (`_rev_clip`, `_rev_left` s); then `_rev_target` is entered at `_rev_u_out`.
+var _rev_state: int = REV_NONE
+var _rev_clip: StringName = &""
+var _rev_target: StringName = &""
+var _rev_u_in: float = 0.0
+var _rev_u_out: float = 0.0
+var _rev_prev_u: float = 0.0
+var _rev_left: float = 0.0
+## Set when a reversal clip ends: _apply enters `_rev_target` at this normalised time without a crossfade.
+var _rev_seek: float = -1.0
 ## The last 8-way gait loop left for a non-gait clip, its normalised time then, and the seconds since (the resume
 ## carry: a bot's stop-start reset the stride, D's motion strips).
 var _left_gait: StringName = &""
@@ -502,6 +517,8 @@ func tick(delta: float) -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_sector_age += delta
+	if _rev_state == REV_PLAYING:
+		_rev_left -= delta
 	_left_gait_age += delta
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
 	net_oneshot_left = maxf(net_oneshot_left - delta, 0.0)
@@ -766,7 +783,7 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	elif _oneshot_left > 0.0 and (not moving or _oneshot_while_moving) and not cover_hold:
 		out = _oneshot
 	elif moving:
-		out = _locomotion_clip(speed, tw)
+		out = _reversal_step(_locomotion_clip(speed, tw))
 	elif aiming:
 		out = cover if cover != &"" else aim_clip()
 	elif hint_clip != &"" and hint_clip != &"idle" and not ONCE_ONLY_HINTS.has(hint_clip):
@@ -1100,8 +1117,10 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			blend = tw.hit_zone_blend_in_s if HIT_ZONE_CLIPS.has(want) else tw.oneshot_blend_s
 		elif HIT_ZONE_CLIPS.has(clip):
 			blend = tw.hit_zone_blend_out_s
+		elif String(want).contains("_reverse_") or (want == _rev_target and _rev_seek >= 0.0):
+			blend = 0.0  # v1.27: frame 0 IS the source loop at u_in; the last frame IS the target loop at u_out
 		elif _reversal(clip, want):
-			blend = tw.locomotion_reversal_blend_s  # D: opposite strides averaged fold the legs into a squat
+			blend = tw.locomotion_reversal_blend_s  # D: opposite strides averaged fold the legs into a squat (fallback)
 		var chained: bool = HOLD_END.get(clip, &"") == want or CivPanic.chained(clip, want)
 		loop_resume.leaving(clip, want)
 		var carry: float = _gait_phase(clip, want)
@@ -1109,6 +1128,10 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 		last_blend_s = blend
 		if restart:
 			player.seek(_oneshot_start, true)
+		elif want == _rev_target and _rev_seek >= 0.0:
+			player.seek(_rev_seek * player.get_animation(full).length, true)
+			_rev_seek = -1.0
+			_rev_target = &""
 		elif carry >= 0.0:  # D: same gait family, shared foot contacts: the new direction keeps the stride's phase
 			player.seek(carry * player.get_animation(full).length, true)
 		elif not chained and not loop_resume.resume(want, full):  # D-115: a loop cut by a one-shot resumes its phase
@@ -1153,6 +1176,61 @@ func _gait_phase(from: StringName, to: StringName) -> float:
 	# D (test_loco_phase): the backward clips' feet run back_phase_offset of a cycle after the forward ones.
 	var shift: float = (1.0 if _gait_back(to) else 0.0) - (1.0 if _gait_back(from) else 0.0)
 	return fposmod(u + shift * AnimTweak.data().locomotion_back_phase_offset, 1.0)
+
+
+## characters v1.27: `want` after the reversal gate. A >= 135 deg run <-> run_b / walk <-> walk_back switch with D's
+## clips holds the source loop until the next brake-foot touch-down (u_in, the nearer of the two), then plays the
+## reversal clip (no crossfade), then the target loop from u_out (no crossfade). Root travel stays the motor's (the body is
+## server-moved by its velocity; the clip's curve is not applied to the body). Any other switch passes through.
+func _reversal_step(want: StringName) -> StringName:
+	if _rev_state == REV_PLAYING:
+		if _rev_left > 0.0:
+			return _rev_clip
+		_rev_state = REV_NONE
+		_rev_seek = _rev_u_out
+		return _rev_target
+	if _rev_state == REV_PENDING:
+		return _reversal_pending(want)
+	var u: float = _clip_u()
+	var options: Array = AnimTweak.reversals().get(StringName("%s>%s" % [clip, want]), []) if u >= 0.0 else []
+	var best: Dictionary = {}
+	for o: Dictionary in options:
+		if _has_clip(o["clip"]) and (best.is_empty()
+				or fposmod(float(o["u_in"]) - u, 1.0) < fposmod(float(best["u_in"]) - u, 1.0)):
+			best = o
+	if best.is_empty():
+		return want
+	_rev_state = REV_PENDING
+	_rev_clip = best["clip"]
+	_rev_target = want
+	_rev_u_in = best["u_in"]
+	_rev_u_out = best["u_out"]
+	_rev_prev_u = u
+	return clip
+
+
+## REV_PENDING: the source loop until it crosses u_in, then the reversal clip; a new turn cancels it.
+func _reversal_pending(want: StringName) -> StringName:
+	var u: float = _clip_u()
+	if want != _rev_target or u < 0.0:
+		_rev_state = REV_NONE  # turned again (or the source is gone): plain switch
+		return want
+	var crossed: bool = (_rev_prev_u <= _rev_u_in and u >= _rev_u_in) if u >= _rev_prev_u \
+		else (_rev_prev_u <= _rev_u_in or u >= _rev_u_in)  # wrapped past 1
+	_rev_prev_u = u
+	if not crossed:
+		return clip
+	_rev_state = REV_PLAYING
+	_rev_left = player.get_animation("%s/%s" % [LIBRARY, _rev_clip]).length
+	return _rev_clip
+
+
+## The current base loop's normalised time, -1 when nothing plays.
+func _clip_u() -> float:
+	if player == null or not player.is_playing():
+		return -1.0
+	var a: Animation = player.get_animation(player.current_animation)
+	return fposmod(player.current_animation_position / a.length, 1.0) if a != null and a.length > 0.0 else -1.0
 
 
 ## D (motion strips): two 8-way locomotion clips 135 deg or more apart (run <-> run_b, run_bl <-> run_r ...).
