@@ -3,7 +3,60 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-22 00:55; send_message to you is refused, so read this)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-22 18:40)
+-34. **MERGE ORDER: env/d-art 081ce136 (D's RT mask parts) BEFORE or WITH env/b-content's RT mask commits.** B's
+     `materials.tres` loads D's two new library materials, so on B alone the mask catalog does not load.
+     - On B alone: test_masks / test_mask_batch / test_achievements_b702 fail.
+     - On a scratch merge of B + D 081ce136: green.
+-33. **RT achievement rewards wired: all 6 RT achievements now grant a part, 44 of 44 shipped + RT.**
+     - Parts: rt_cataclysm -> Pylon base, rt_heavy_haul -> Ingot base, rt_full_convoy -> Armor Plate material,
+       rt_iron_crew -> Hi-Vis material, rt_clean_stop -> Road Lines pattern, rt_quick -> Tread pattern.
+     - **Values:** materials use D's metallic / roughness; `detail_mean` is measured from D's albedo (armor 0.204,
+       hi-vis 0.302; the same method gives bronze's 0.164). Patterns get procedural fallbacks 20 / 21 in the mask
+       shader (D's textures win).
+     - **Strings:** part names, plus `enemy.convoy_lead` / `enemy.convoy_rear` ("Convoy Escort").
+     - **Tests (B + D scratch merge):** b/test_mask_batch 10, b/test_masks 18, b/test_achievements 31,
+       b/test_achievements_b702 11, b/test_heist_achievements 13, b/test_achievements_in_play 8,
+       b/test_heist_screens_text 8, d/test_masks 9, d/test_mask_achievement_surfaces 2. All green.
+     - **Convoy EnemyDefs (D-153 amended), reviewed: OK.** A installed B's 8 files unchanged, plus
+       `params.character` (tac_light) on the faction files. Its mission swaps only the light-escort slots, so the
+       TAC Heavy and the Wrecker keep their own defs. The values match the doc's convoy table.
+-32. **RT-B1 audit vs next_heist_rolling_thunder.md §6 (round of 2026-10-22).**
+     - Done: values block (base XP, the allow-lists, `asset.c4_drop`); 34 VO lines (30 Mercer, 4 Reyes) covering every
+       doc category; briefing steps; 13 point labels; 6 achievements; and now the intel + blueprint (-31).
+     - Waiting: D's 6 mask parts (asked by name, -30); the 5 RT cue ids for audio_cues v1.4 (LEAD):
+       `cue.convoy_approach`, `cue.convoy_brake`, `cue.mixer_ram`, `cue.signal_click`, `cue.truck_doors_open` (C makes
+       the sounds).
+     - RT stays hidden on the Board until the LEAD lifts it.
+-31. **RT briefing intel + blueprint on C's G1 greybox (2be7bde9).** Rerun both exporters when C's G2 moves rooms,
+     locks or points (test_briefing_intel / test_blueprints fail while stale).
+     - **Intel:** guards 1-2 / 2-3, cameras 1-2, pagers, site safes 2, padlocks, hack terminals, a new per-difficulty
+       **convoy line** (`ui.briefing.sec.convoy.rolling_thunder.<d>`: trucks 2-3, crew, patrol cars / SUVs) and all 5
+       bad rare events as **surprises**.
+     - **Surprise filter widened** (`BriefingIntel.THREAT_EFFECTS`): RT's events used keys it did not know. This also
+       lists **OF's `armored_car_early` and `tower_sniper`**, whose briefing strings existed but never showed.
+       OF intel is re-exported.
+     - **Blueprint:** floors Underpass / Street level / Upper / Roof, 42 room names, 13 points.
+     - **Fix (all heists):** the pre-planning screen opened on floor 0 (OF's basement, RT's underpass). It now opens
+       on the entry floor, as the briefing does. New `test_opens_on_the_entry_floor` (fails without the fix).
+     - Tests: `test_briefing_intel` 15, `test_blueprints` 8 (both now walk RT through a shared staged fixture),
+       `test_preplan_screen` 8, `test_preplan` 38, `test_preplan_variants` 2, `test_heist_screens_text` 8,
+       `test_heist_readiness` 9, `test_heist_text_audit` 5, `test_d130_stealth_note` 6, `test_d142_glass` 2,
+       `test_new_player_flow` 6, `test_p2_heist_content` 15, `test_heist_strings_gh_nd` 7.
+     - Windowed shots (1920x1080): `game/content/ui/_review/rt_b1_blueprint/`.
+-30. **RT rewards: asked D for 6 parts by name.** mask_base.road_cone (rt_cataclysm), mask_base.ingot (rt_heavy_haul),
+     mask_material.armor_plate (rt_full_convoy), mask_material.hi_vis (rt_iron_crew), mask_pattern.road_lines
+     (rt_clean_stop), mask_pattern.tread (rt_quick). I wire them the day they land.
+-29. **RT HUD on trunk d1ecb0b6 with C's real trucks (no stub), 40e38041.** Clean except:
+     - **C:** the saw timer never draws at a truck. `veh_armored_truck_*.tscn` holds only a Model (no DrillPoint /
+       Door), so the runner anchors inside the cargo box and the HUD's occlusion ray hits the truck. Sent to C.
+     - **A (minor):** the objective line is empty for about 4 s between [ambush] completing and [escort] / [trucks].
+       There are also 9 teardown errors in `bark_director._nearest_slot`. Sent to A.
+     - The harness now prints why a timer is not drawn, plus the model's objective states on each beat.
+-28b. **Convoy escort EnemyDefs (D-149.12), 79a50d2d.** Staged as `game/content/docs/rt_convoy_enemydefs/`; A installed
+     them (D-153 amended, env/a-core 98908f0a). Reviewed in -33.
+
+## Earlier (previous LEAD, unreachable since round 273)
 -28. **New: RT HUD re-checked on A's fix (env/a-core aab423484; A's message said 7e83bc1f0, which does not exist).
      All clean, 0 harness issues. Please merge aab423484.**
      - **Run:** a scratch merge of env/b-content + aab423484, headless `rt_hud_capture.gd -- <out> stub_trucks`. The
@@ -175,268 +228,7 @@ Newest entry first, keep the last 10.
        so a later palette or jam colour change cannot make them collide. Documented in `content/docs/options.md`.
      - **Green:** `options_palettes` 6 and `hud_palettes_new` 2.
      - **Next:** #3, the payday's "+N more" line for unlocks below the fold.
--19. **New: top-3 #1 done, HUD status text readable on bright scenes.**
-     - **Fix:** a new strong label scrim (`UiBuild.LABEL_SCRIM_STRONG_ALPHA` 0.75; names keep the 45% one) under:
-       - the vitals ARMOR / HEALTH captions (the value stays on the right, after a spacer);
-       - a teammate's status line (Down / In custody / Last down / Civilian; hidden when empty, so no empty pill);
-       - the downed overlay's DOWNED caption (hugging the word).
-
-       The 45% scrim alone was not enough: on the bright backdrop ARMOR still measured 1.75:1.
-     - **Fill gate before -> after:** HEALTH 2.94 -> pass, In custody 1.99 -> pass, DOWNED 1.27 -> pass, ARMOR
-       (`hud_bright`) 1.75 -> pass. Contrast PASS on the loud and hud mocks; only the crosshair "+" keeps a note.
-       These labels are scrimmed, so the gate now **fails** if any of them regresses.
-     - **Shots:** `game/content/ui/_review/r266_status_scrim/`.
-     - **Test:** the new `test_hud_status_scrim.gd` (3 tests) pins the scrims headless, and fails 3/3 on the old
-       widgets.
-     - **Green:** `hud_feedback` 7, `hud_frame_budget` 3, `hud_palettes_new` 2, `hud_queue` 7, `heisters` 9,
-       `options_palettes` 6, `pp_hud_720p` 4, `pp_live_hud_720p` 4, `pp_subtitles_720p` 3, `ui_hud` 17,
-       `ui_theme` 19, `ui_scoreboard` 13, `dropin_wiring` 9, `onboarding_card` 10.
-     - **Next:** #2, the device jam colour in the colourblind palettes.
--18. **New: B's top 3 improvements for the shipped heists (your round 266 ask). Starting #1 now.**
-     1. **HUD status text readable on bright scenes (accessibility, measured).**
-        - **Problem:** the contrast worker's fill check still notes two live HUD labels under 3:1 on the bright
-          backdrop: a teammate's **"In custody" at 1.99:1** (red status text, no scrim) and the vitals caption
-          **"HEALTH" at 2.94:1**. Teammate names already got the r249 label scrim; their status line (Downed / In
-          custody / Last down) and the vitals captions did not.
-        - **Value:** "a teammate is down / in custody" is the call a crew must not miss. Bright scenes (DB at
-          dawn, GN's white galleries, OF's limestone hall) are exactly where it fades.
-        - **Fix:** scrim those labels; the fill gate then fails if they regress.
-     2. **Device jam colour follows the colourblind palette.**
-        - **Problem:** `HudTweak.device_jam_color` (red) is not in `HudPalette`, so deuteranopia / protanopia
-          players get a red jam bar against the gold objective accent and the yellow paused one. The palettes
-          remap detection, health and markers, but not the drill / saw / hack jam state.
-        - **Value:** the jam is the most frequent loud call ("fix the drill"). It keeps its text cue, but the bar
-          colour is the at-a-glance signal.
-     3. **Payday: say when more unlocks sit below the fold.**
-        - **Problem:** a Cataclysm OF clear unlocks 6 achievements, and only 3 show without scrolling.
-        - **Value:** a "+3 more" line on the panel. It tells players their best moment has more to it; the focus
-          scroll already works, but nothing says to use it.
--17. **New: the screen-text walk now covers every heist; all clean.**
-     - **The test:** `test_of_screens_text` is renamed to **`test_heist_screens_text.gd`** (8 tests). It loops over
-       `HeistCatalog.ids()` (GH, ND, SL, DB, GN, OF; a new heist in the catalogue is walked automatically) and checks:
-       - the Board broker at 6 difficulties and every contract card;
-       - the briefing at 6 difficulties;
-       - the pre-planning board on every blueprint point, plus the crew assets;
-       - the HUD line for every objective, each one waited for until it shows, with its `{args}` filled from its
-         own string;
-       - the Tab sheet;
-       - the payday with all of the heist's achievements;
-       - the achievements screen with every heist set unlocked.
-     - **Result:** green on trunk r263, **no string problems in any heist**.
-     - **Proof:** I broke one key per heist, each caught on its own screen:
-       - GH `objective.glasshouse.keycard`: HUD line and Tab sheet;
-       - ND `ui.preplan.point.pp_drop_quay`: that preplan point;
-       - SL `heist.shadow_ledger.briefing`: briefing d0-d5;
-       - DB `achievement.db_all_hands.name`: payday and achievements screen;
-       - GN `heist.gallery_night.name`: broker d0-d5 and briefing.
-
-       The file was restored afterwards (no diff).
--16. **Your two questions, answered.**
-     1. **What the OF string sweep found: nothing.** I found no missing key, raw id, `{placeholder}` or dev tag on
-        any OF screen: the Board broker / cards, the briefing at 6 difficulties, the preplan board on all 14 points,
-        the HUD line for every objective, the Tab sheet, the payday with every OF achievement, and the achievements
-        screen. The walk is `test_of_screens_text` (item -14). It is proven by breaking two keys on purpose, which it
-        caught.
-     2. **D-148 regression on trunk b0bd47a0: green, nothing out of reach.** Each suite ran once:
-        - payday / progression: `of_payday_e2e` 7, `payout_calculator` 20, `xp_curve` 4, `heist_freshness` 14,
-          `payday_sum` 2, `payday_cards` 10, `ui_payday` 14, `ui_progression` 3, `difficulty_unlock` 3;
-        - menu reach: `menu_reach` 2, `reach_today` 5, `heist_readiness` 9;
-        - briefing: `briefing` 38, `briefing_cap` 3, `briefing_intel` 14.
-
-        **New `test_d148_pace.gd` (3 tests):**
-        - **Every heist's first-clear level is pinned to progression_pace.md** at all 6 difficulties (L2...L19 for
-          GH; L4...L22 for ND / SL / DB / GN; L6...L25 for OF), and it asserts every offered heist is pinned.
-        - **Every level gate is reachable:** 36 weapons + 7 armors (max L45), the Board's L80 Lethal / Cataclysm
-          gate and Notoriety's L100 all sit inside 0-100, with a finite XP cost (23.28 M to L100), and each is
-          reached at its XP.
-        - **A new player reaches every item unlock within 40 clears** (Routine, Tense, Hazardous rotations, then
-          Brutal; the pace doc says ~32).
-
-        The only gate that moved is the one already flagged: Board L80 now takes ~230 Brutal clears (it was 131). It
-        is still the PO's call, kept at 80; B suggests 70.
--15. **New: AH values on paper, `game/content/docs/ah_b1_values.md`** (the same shape as RT-B1, for C's generator).
-     - **What's in it:** HeistDef values; variant rows with per-difficulty weights (guard posts 1 / 2 / 3, crowd
-       12-20, dance clusters 4-6, safe bags, lasers, camera operator); the 6 rare events with 4 surprise strings;
-       the pre-planning block (**every AH asset already exists, nothing to build**); briefing steps; the
-       `heist_tag_characters[&"afterhours"]` rows from the doc's roster; 15 point labels; ~28 voice lines; and 6
-       achievements on existing condition keys.
-     - **Corrections found** (all on paper; nothing in data):
-       (a) **base_payout is $40k** (D-143, pinned by `test_p5_catalogue`), not the doc's and my plan's $75k.
-       (b) The doc's HeistDef `escape_options [van, walk]` contradicts its own Escape section and D-075: should be
-           `[van]` (C).
-       (c) The doc's loot table still has the pre-D-120 values (C).
-       (d) `ah_last_call` ("safe opened by code") needs the AH mission to record `open_method` on `[safe]`, as
-           Glasshouse's does (C).
--14. **New: OF player-facing strings, walked headless on r262+: clean, nothing to fix.**
-     - **New test** `tests/b/test_of_screens_text.gd` (7 tests). It instances the real screens and checks every
-       visible Label / Button / RichText for raw keys (`objective.` / `ui.` / `item.` / `asset.` / `achievement.` ...),
-       `{placeholders}`, dev tags and gate tags:
-       - the Board's broker on OF at all 6 difficulties, plus every contract card;
-       - the briefing at all 6 difficulties (88 texts on Hazardous, with its security and objective lists);
-       - the pre-planning board, every OF point (14) and the crew assets;
-       - the HUD line for each of OF's objectives, with the data the mission passes (drill 1/3, secure 2/4,
-         time-lock and escape seconds); the test waits until each one's own text shows;
-       - the Tab sheet with all objectives;
-       - the payday with every OF achievement;
-       - the achievements screen.
-     - **The test is proven:** with two keys broken on purpose (one objective, one asset name) it fails with
-       `hud keycard: 'objective.ostrander_federal.keycard'` and
-       `preplan board: 'item.asset.intel_code_pc.name - $8,000, 2 favors'`. Restored afterwards.
-     - **Also green:** the data-side string tests, `test_heist_text_audit` 5, `test_strings` 22 and
-       `test_ui_strings` 3.
-     - **RT allow-list:** noted as ruled "after the OF done check". The two exact lines are in `rt_b1_values.md` §10.
-     - **Next:** the AH values on paper.
--13. **New: your payday nit ("Oxblood Her..."), fixed on r262.**
-     - **Fix:** an achievement's "REWARD <name>" no longer ellipsises. The entry's top row is now a flow row, so a
-       reward that doesn't fit beside the name moves, whole, to its own line under it. Splitting "Oxblood / Herald"
-       across two lines looked worse, so I didn't do that.
-     - **Shot:** `r262_of_payday_hub/payday_d5_1920x1080_reward_flow.png`.
-     - **Test:** the new `test_ui_payday` test, `test_reward_names_are_never_truncated`, checks all six OF Cataclysm
-       unlocks at 720p and 1080p. For every reward it asserts no trimming, every line shown, no word split, and the
-       label inside its column. It fails on the old code.
-     - **Green:** `test_ui_payday` 14, `test_achievements` 30, `test_achievements_in_play` 8.
--12. **New: OF done check, payday / progression on trunk 40ef789d (D-148 in place): PASS, plus one hub fix.**
-    1. **`test_of_payday_e2e`: 7/7 green.** It runs the 5 earlier tests plus 2 new ones:
-       - `test_d148_first_clear_levels_match_the_pace_table`: a first OF stealth clear (6 bags, crew of 4 alive,
-         fresh profile, freshness as PaydayScreen applies it) lands on L6 / 11 / 18 / 23 / 24 / 25 from Routine to
-         Cataclysm. That is **exactly progression_pace.md's D-148 table**. XP is 5,850 / 11,700 / 29,250 / 58,500 /
-         67,275 / 81,900.
-       - `test_coop_every_slot_gets_the_same_payday`: with 4 human slots, every slot gets the same contract, loot,
-         total, XP and level at every difficulty.
-       - The pace tool re-run on 40ef789d prints the same table: 23.28 M XP to L100, new-player path L17 ... L49,
-         408 Cataclysm clears to 100. Also re-run and green: `test_ui_scoreboard` 13 and `test_ui_theme` 19.
-    2. **1080p stills for the PO** are in `game/content/ui/_review/r262_of_payday_hub/`. They come from the new
-       `tests/b/render/of_payday_hub_capture.gd`, which runs the real PaydayScreen, then the HubMenu, on a scratch
-       profile.
-       - **Hazardous:** $367,224. 29,250 XP takes the fresh profile 0 -> L18 ("Level up! Now level 18"), and it
-         banks the stealth bonus. Unlocked: First Score and No Harm Done (my run answered 1 pager and took 21 min,
-         so no Quiet Weekend / Bank Holiday).
-       - **Cataclysm:** $1,299,408. 81,900 XP takes the profile to L25. It unlocks 6 achievements; 3 show and the
-         rest sit below the fold (the r246 focus-scroll design). One reward name ellipsises ("Oxblood Her...") in
-         the 3-column panel.
-       - **Hub:** level, XP bar (1,205 / 4,151 to the next level), spending and stash all correct.
-       - **Fixed (B):** the Armory card's "20 SKILL POINTS · 58 PERK POINTS" ran past the card at 1080p. The counts
-         are now one per line, and the card grows. `test_hub` has a new test, 38/38 green; it fails on the old code.
-       - **PO note:** one Hazardous clear gives 58 perk points at L18. Perk points are total XP / 500
-         (`PerkPointTweak.xp_per_perk_point`), and D-148's bigger OF XP (5,850 vs 4,550 on Routine) raised them too.
-         Worth a look in P6 balance; no change from me.
-    3. **RT-B1 on paper, done:** `rt_b1_values.md` gains §7 strings and §8 voice. §7 has the 2 briefing steps, all
-       13 `pp_*` point labels (the doc's pre-planning table), the 5 surprise strings and `asset.c4_drop`'s name and
-       desc. §8 is a draft list of ~36 Mercer + Reyes lines by phase, using the doc's own two lines. Nothing is in
-       data; all of it is ready for when the OF gate opens. Still open: the D-143.5 allow-list question in item -11.
--11. **New: ultrawide 3440x1440 + 16:10 + 1080p HUD pass (your 10:34 follow-up), and RT-B1 values on paper.** Shots: `game/content/ui/_review/r261_ultrawide/`.
-    - **Did the 10:34 renders finish?** Only partly. The live OF `ui_audit_capture` at 3440x1440 timed out at 40 min on
-      llvmpipe (rc 124) after shot 1 (casing HUD). That shot is fine: the HUD sits on the screen edges, the scrims
-      show and nothing stretches. I stopped the 16:10 live run (same cost, no shots). **The live loud OF run at
-      3440x1440 needs the GPU box**:
-      `ui_audit_capture.gd -- <out> heist - ostrander_federal` with `--resolution 3440x1440`.
-    - **Loud HUD mock at 3440x1440, 1920x1200 and 1920x1080** (`hud_contrast_capture.gd -- loud <WxH>`, new
-      optional size arg; it uses the game's `expand` stretch, so a wider aspect gets a wider canvas and 16:10 a
-      taller one). The banner stack, trade counter, objective, vitals, ammo, teammates, downed timer and prompts are
-      all placed correctly at every size; nothing clips.
-    - **One fix:** the Tab sheet was 43 px right of centre at every aspect. Its columns needed ~1,326 px, but its
-      box was 1,240, so the sheet grew to the right only. I tightened the sheet's gaps and made the box 1,260 and
-      centred, so it no longer meets the teammate panel. `test_ui_theme` now checks that the sheet fits its box
-      and is centred.
-    - The 720p contrast gate still passes. Thanks for the `_visible_rect` hotfix (4a28ff35); trunk r261 is merged.
-    - **RT-B1 values** are in `game/content/docs/rt_b1_values.md` (paper, in QB-2 shape, for C). It covers the
-      HeistDef values, the variant rows with per-difficulty weights, the 8 rare-event keys and their "surprise"
-      strings, the preplan block (`asset.c4_drop` at 2,000 and 2 favors), the briefing steps, and the
-      staff_diner / staff_booth tag rows.
-    - **Payout correction:** RT `base_payout` is **$30k**, pinned by D-141.1 and `test_p5_catalogue`; the G0 doc
-      and my rt_content_plan said $85k.
-    - **Your call:** do I add the D-143.5 `heists = [&"rolling_thunder"]` allow-list rows to `signal_insider` and
-      `intel_route` now (two lines in existing B files), or after the OF gate?
--10. **New: D-145 DB Tense on r257 (+ the engage fix), both cells done. For your lever ruling:**
-
-    | Cell (headless auto_loud x1.0, solo + 3 bots) | Wins | Player downs (s1 / s2 / s3) | Median |
-    |---|---|---|---|
-    | Plain | **2/3** (s2 PASS 1226 s, s3 PASS 889 s; s1 custody 642 s) | 3 / 3 / 1 | 3 |
-    | `--po5-doctor-bag` | **2/3** (s2 PASS 1273 s, s3 PASS 882 s; s1 custody 684 s) | 6 / 2 / 2 | **2** |
-
-    The doctor bag meets the <= 2 median (s1 still loses: 6 downs, the bag twice). Seed 1 is the hard roll in both
-    cells (custody at ~640-690 s). B's read: 2/3 + median 2 with a doctor bag is PD2-normal for Hard; if you want
-    seed 1 to pass too, the Bulwark cap 3 -> 2 is the next lever (s2 fought 40 Bulwarks plain).
-    Also pushed: **8cdcf64d GPU-19 HUD fix** (device timers / objective badges step below the banner + boss stack).
--9. **New: D-145 DB Tense PLAIN on r257 (+ the engage fix for s2): 2/3.** s1 custody 642 s (3 player downs); s2 PASS
-   1226 s (3 downs, 5 revives, a long fight: 40 Bulwarks, 9 Stingers); s3 PASS 889 s (1 down). Player downs 3 / 3 / 1
-   (median 3). **Doctor-bag cell running**: s1 custody 684 s after **6** player downs (the bag reset the down
-   counter), s2 / s3 in progress; numbers here when done.
--8. **New: D-145 DB Tense on r257 (P's capsule fix), running, not idle.** Plain r257 x3: s1 custody 642 s (3 player
-   downs), s3 PASS 889 s (1 down), **s2 crashed (signal 11) in A's harness**: `po5_pilot.gd engage()` resumes on a
-   freed enemy after an await (same crash as my r256 doctor-bag s1). A's fix **60d8c6ab (env/a-core, harness only)
-   is not on trunk yet: please merge it**. Now running in a scratch worktree (r257 + 60d8c6ab cherry-picked, not on
-   env/b-content): plain s2 re-run (at t=683 s, crew all up, no crash), then the doctor-bag cell x3. Numbers here when
-   done. r256 doctor-bag partial (before the fix): s1 crash, s2 custody 657 s (all_custody after 1 player down).
--7. **New: D-145 DB Tense on trunk r256 3312326b** (cap 1 Longshot + A's Longshot timing + revive fixes, headless
-   auto_loud x1.0, solo + 3 bots, no doctor bag): **1/3**. s3 PASS 873 s (player downs 1); s1 custody 583 s and s2
-   custody 664 s, both after the player's 3 downs (revives land: 5 and 3). Police 171 / 186 / 101, Longshots 2-3 per
-   run, Bulwarks 11-21. Across the four Tense batches since the revive fix: 1/3, 2/3, 1/3, 1/3: Tense on DB still
-   fails on the player's damage over the ~10 min loud phase. Next lever is A's / yours (damage grace, Stinger,
-   health, or the opt-in doctor bag in the harness); B's data levers left: Tense Bulwark cap 3 -> 2 or Stinger 1 -> 0.
--6. **New: r255 note + DB Tense on trunk.** Your r255 message says the Longshot cap is on trunk, but **trunk
-   e9c8744f still has `tense.tres` longshot 2**: my 8e88e851 (cap 1) and A's f01d11db (Longshot timing) both missed
-   r255. env/b-content (417b4a75 = trunk r255 + the cap) is ready to merge. DB Tense x3 on that branch (cap only, no
-   A timing, no doctor bag): **1/3** (s3 PASS 805 s, 0 player downs; s1 custody 570 s, 3 downs; s2 all_custody at
-   684 s: a tase, a down, custody). With A's timing added (my run on A's f9b86af0 + the cap): **2/3**. So the
-   ruling needs both commits on trunk; then I re-run on trunk.
--5. **New: D-148 XP option D applied** (xp_curve scale 1.0 = PD2's 23.28 M; `PayoutTweak.base_xp_by_heist`
-   GH 1,500 / ND, DB 2,000 / SL, GN 2,500 / OF 3,000, failure XP from the same base; PD2 multipliers kept).
-   Tests updated (xp_curve, payout_calculator + a D-148 test, heist_freshness: also fixed its stale v9 pin, the
-   save is v10 since PO-19). Pace re-run and the **level-unlock re-check** in `game/content/docs/progression_pace.md`
-   (D-148 section): every item unlock (<= L45) still comes within ~32 clears (was 24); **the board's level-80 Lethal /
-   Cataclysm gate now takes ~230 clears (was 131)**: PO call, B suggests lowering it to 70 (135 clears = the old
-   time-to-Lethal); not changed.
-   **pd2_fidelity is yours (docs/design/):** suggested P1 "Ours" text: "Level 0-100, same point formula (120). XP
-   curve: PD2's 900 -> 1,000,000 per level (~23.3 M), D-148. Base heist XP by size (S 1,500 / M 2,000 / L 2,500-3,000,
-   PayoutTweak.base_xp_by_heist) + 250 per bag, PD2 difficulty multipliers."
--4. **New: D-145 DB Tense with the 1-Longshot cap (8e88e851) + A's Longshot timing (f01d11db) + nav fix: 2/3**
-   (s2 PASS 1008 s, s3 PASS 865 s, s1 custody 599 s). Player downs 3 / 3 / 1 (median 3, target <= 2). No doctor bag.
-   **New: RT content plan** (paper, no RT data): `game/content/docs/rt_content_plan.md`: def values (base $85k, D-148
-   base XP 2,500), strings (13 objective keys exist; ~40 new: preplan points, briefing steps, rare events, mode label),
-   ~35-40 VO lines (Mercer + Reyes), briefing/blueprint after C's G1, preplan (all assets exist except
-   `asset.c4_drop`, needs A's QC-84), 6 achievements (5 on existing conditions, 1 needs a variant condition).
--3. **New: XP progression pace model for the PO: `game/content/docs/progression_pace.md`** (no data changed;
-   docs/design/ is not B-owned). Script `tests/b/tools/progression_pace.gd` drives the real payout / freshness /
-   stealth-bank / XpCurve code. Findings: XP is flat per heist (2000 + 250/bag x difficulty); our curve has PD2's
-   endpoints (900 -> 1 M per level) at half PD2's 23 M total; 6 Routine clears = L21, one first Cataclysm clear =
-   L26-29; level 100 = 221 Cataclysm / 310 Brutal / ~3,100 Routine clears rotating (grinding OF alone ~6x slower,
-   D-139). Options A (curve x4), B (flatter multipliers), C (heist-size base), D (curve x2 = PD2 + size base;
-   B's pick: first OF clear L6 / L25, 6 Routine clears L17, ~408 Cataclysm clears to 100) with tables.
--2. **New: GPU-9 review (gpu/renders/b): fixed on env/b-content.**
-   - 1080p real-input OF (13 shots): clean. Loud OF HUD (6 shots): the Turret Van event marker clamped to the left
-     edge drew its label off-screen ("URRET VAN") -> labels of objective and assault-event markers now stay inside the
-     screen (ObjectiveMarkers.label_x; test_assault_events).
-   - Loud payday at 720p: the third achievement description ran under the fold -> payday descriptions cap at 2 lines
-     with an ellipsis (the trimmed tail repeats the REWARD line). Evidence _review/r252_gpu_review (before/after).
-   - The 6 "QA ISSUE overlap" lines (payday title / Heist complete x the achievement toast) are rect false positives:
-     full-width labels under the toast, no text overlap in the shots.
-   - of_run_capture + crew_capture now keep profiles under user:// (they wrote profiles/ into the out dir).
-   - For A (not B): with a saw running on the cash-cage padlock the prompt says "Press F to open / Can't do that right
-     now" (ui.blocked.state); a device-running reason fits better, and B's ui.blocked.device_running string reads "The
-     drill is running", so a per-device key (or a neutral "Already being cut") is needed if A switches to it.
--1. **New: D-144 next-heist prep notes (RT + Afterhours)**: `game/content/docs/next_heist_prep_rt_ah.md`. Both heists
-   have only menu stubs on B's side (hidden heist_list entries, board, accents) plus objective strings for every doc
-   tag (13 / 12); loot defs and contacts exist. Missing: everything map-derived (no world dir yet: intel, blueprint),
-   voice lines (0), achievements (0), briefing step strings, music, def values. Order of work listed there.
-0. **New: D-145 DB Tense on A's revive fix 0f317b90 + trunk e91fa3c0: 1/3, revives now land** (player revived 3/4/4).
-   s2 PASS 1126 s; s1 custody 451 s and s3 custody 513 s, both after the player's three downs (not unrevived
-   bleed-outs). Tense on DB now fails on player damage, not revive logic. r252 merged (c94bed27): briefing_intel 14,
-   heist_text_audit 5, heist_readiness 9, of_payday_e2e 5, heist_achievements 13 all green on the final OF art.
-1. **OF payday / achievement / progression e2e: PASS, no B data gaps.** New `tests/b/test_of_payday_e2e.gd` (5 tests):
-   HeistRuntime-shaped results through PayoutCalculator, apply_heist_payout (XpCurve) and Achievements.on_payday on a
-   fresh profile, every difficulty. Contract = $80k x (1 / 2 / 2.6 / 4.2 / 7.2 / 9.2) = the briefing preview; loot from
-   the LootDef values; stash + spending = total; XP grows with difficulty; the stealth clear banks OF's x1.25.
-   Stealth clear unlocks Quiet Weekend / No Harm Done / Bank Holiday (+ OF Cataclysm on d5) and grants vault_bolts,
-   limestone, guilloche (+ vault_dial); loud breach with every bag unlocks Burn and Hoist / Clearing House (bronze,
-   keystone); a failure pays and unlocks nothing (D-120); a second clear grants nothing twice.
-   Numbers (stealth, 4 cash + 2 bonds, level-1 profile): d0 $138.6k / 4,550 XP / level 9 ... d5 $1.275M / 63,700 XP /
-   level 29 (+ Offshore Million). **PO balance note:** one first OF clear takes a new player to level 9 (Routine) /
-   21 (Hazardous) / 29 (Cataclysm): the XP curve and xp_mult, not a data gap.
-2. **D-145 DB Tense on A's revive fix (df866e99 + trunk c04cb710): 1/3** (s3 PASS 1085 s; s1 custody 331 s, crew wipe;
-   s2 custody 753 s). Sent to A: revive sessions open at <= 1.2 m but never complete (bot 3 held `sess=true` ~16 s on
-   the downed player in s2; bot 2 ~8 s in s1). Re-run after A's next fix. Routine on r251 was 3/3 (entry below).
-3. Windowed command lines for the PO's GPU box: entry 2026-10-21 00:30 below.
+(-1 .. -19: in git history, `git log -p docs/status/env_b.md`.)
 
 ## 2026-10-21 02:00: D-145 DB cells on trunk r251 c04cb710 (headless auto_loud x1.0, solo + 3 bots)
 - Routine: 3/3 PASS, player downs 2 / 0 / 0 (median 0 <= 2), no nav give-ups (A's doorway fixes hold).
