@@ -19,7 +19,7 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [ui_hud.md](ui_hud.md) | 1.19 | A (state) → B (HUD widgets) | — |
 | [groups.md](groups.md) | 1.2 | all | `game/contracts/ids.gd` (`G`) |
 | [net.md](net.md) | 1.5 | LEAD → A, B | `game/core/net.gd` |
-| [hub_map.md](hub_map.md) | 1.1 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |
+| [hub_map.md](hub_map.md) | 1.2 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |
 | [impact_fx.md](impact_fx.md) | 1.1 | C (VFX, surfaces) ← A (shot events, doors), P (FP weapon), B (option) | `game/world/vfx/` |
 | [input_focus.md](input_focus.md) | 1.2 | P → B, A (mouse capture, input focus) | `game/systems/player/mouse_capture.gd` |
 
