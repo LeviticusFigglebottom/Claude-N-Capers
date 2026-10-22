@@ -188,6 +188,23 @@ func test_s10_carrier_downed_drops_bag() -> void:
 	c.set_crew_state(Enums.CrewState.NORMAL)
 
 
+## S10.5 (A4-01 audit): a bag dropped by a player taken into custody stays where it fell (no despawn, no return).
+func test_s10_5_custody_drop_stays() -> void:
+	var c: CrewController = _crew_at(Vector3(0, 0.05, 0))
+	await wait_physics_frames(2)
+	var bag: LootBag = await _give_bag(c, &"loot.cash")
+	c.health.go_to_custody()
+	await wait_physics_frames(3)
+	assert_false(c.is_carrying_bag(), "custody drops the bag")
+	var at: Vector3 = bag.global_position
+	Engine.time_scale = 4.0
+	await wait_seconds(5.0)
+	Engine.time_scale = 1.0
+	assert_true(is_instance_valid(bag) and bag.is_inside_tree(), "still in the world after 20 s")
+	assert_false(bag.is_carried() or bag.secured, "loose, not secured or carried away")
+	assert_true(bag.global_position.distance_to(at) < 0.5, "where it fell (%s -> %s)" % [at, bag.global_position])
+
+
 func test_s10_pick_bag_rules_casing_and_one_at_a_time() -> void:
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
