@@ -19,13 +19,16 @@ const RIG_NAV_MIN: float = 0.2
 ## cars' visual (Seat0..3; its art fronts -Z, so the mover's `Visual` is turned 180 deg).
 const CONVOY_CAR_ART: String = "veh_escort_car"
 const CONVOY_TRUCK_ART: Dictionary = {"cash": "veh_armored_truck_cash", "bullion": "veh_armored_truck_bullion"}
+## Phase 2: Reyes's mixer, a convoy mover waiting in the site (A drives it at the mixer move along the layout's
+## `MixerPath` to its `MixerStop`).
+const CONVOY_MIXER_ART: String = "veh_mixer_truck_mover"
 const CONVOY_CAB_ART: Dictionary = {"cash": "veh_armored_cab_cash", "bullion": "veh_armored_cab_bullion"}
 const CONVOY_THERMITE_ART: String = "prop_thermite_lock"
 ## ArmoredTruck defaults are the cash van (saw 120 s, hand saw 60 s, C4 x4); the bullion truck (doc Truck targets).
 const CONVOY_TRUCK_PROPS: Dictionary = {"bullion": {"saw_duration_s": 180.0, "hand_saw_duration_s": 90.0}}
 ## rolling_thunder_convoy.py LEN / WIDTH (m) and the truck art's rear step and lock edge (x).
-const CONVOY_LEN: Dictionary = {"car": 5.0, "cash": 7.5, "bullion": 9.0}
-const CONVOY_WIDTH: Dictionary = {"car": 2.0, "cash": 2.5, "bullion": 2.5}
+const CONVOY_LEN: Dictionary = {"car": 5.0, "cash": 7.5, "bullion": 9.0, "mixer": 8.0}
+const CONVOY_WIDTH: Dictionary = {"car": 2.0, "cash": 2.5, "bullion": 2.5, "mixer": 2.5}
 const TRUCK_STEP: float = 0.35
 const TRUCK_LOCK_X: float = -0.85
 const TRUCK_USE_BACK: float = 0.5
@@ -310,7 +313,8 @@ func build_doors(parent: Node3D) -> void:
 
 
 ## One door prefab ([name, floor, origin, yaw, kind, lock, visual, width_m, extra]) under `parent` with `lock`.
-## extra: push_bar, npc (spawn tags a locked door lets through), tag (objective_tag), padlock (objective tag of a
+## extra: kind (meta kind, default "door"; the Tannery gate: industrial_door), push_bar, npc (spawn tags a locked door
+## lets through), tag (objective_tag), padlock (objective tag of a
 ## padlock on the leaf: a BARRED gate / magazine door opened by lockpick 8 s or a placed saw, D-138), todo.
 func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary) -> Node3D:
 	var kind: String = String(d[4])
@@ -326,7 +330,7 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		props["objective_tag"] = String(extra["tag"])
 	if extra.has("leaf"):
 		props["leaf_surface"] = String(extra["leaf"])
-	var metas: Dictionary = {"kind": "door", "swing_side": "back"}
+	var metas: Dictionary = {"kind": String(extra.get("kind", "door")), "swing_side": "back"}
 	if bool(extra.get("push_bar", false)):
 		metas["fire_exit"] = true
 	if kind == "service":
@@ -338,7 +342,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 	var it: Array = ["prefab", "door", nm, d[2], float(d[3]), props, null, metas, String(d[6])]
 	var inst: Node3D = place_prefab(parent, it)
 	if lock == "BARRED":   # D-073 / D-122: baked closed; the door's NavLink bridges it once open (OF bake_closed)
-		var w: float = {"single": 1.0, "service": 1.2, "double": 2.0}.get(kind, 2.0) + 0.3
+		# (the Tannery site gate's 4.0 m width_m is wider than a double's 2.0 m frame)
+		var w: float = maxf({"single": 1.0, "service": 1.2, "double": 2.0}.get(kind, 2.0), float(d[7])) + 0.3
 		obstruct(Transform3D(yaw_basis(float(d[3])), v3(d[2])), AABB(Vector3(-w * 0.5, -0.2, -BAKE_DEPTH),
 			Vector3(w, 2.6, BAKE_DEPTH * 2.0)))
 	if inst != null and extra.has("padlock"):
@@ -427,6 +432,8 @@ func _convoy_sets(vs: VariantSlot, sid: String) -> void:
 				var tp: TacticalPoint = _tac_row(st, ["tac", String(cv[0]), "COVER", cv[1], float(cv[2]),
 					["convoy", lid], false])
 				tp.enabled = false
+		if set_row.size() > 2:   # phase 2: the mixer's drive from the site to this layout's MixerStop
+			add(st, _convoy_path("MixerPath", set_row[2]))
 		(entry["layouts"] as Array).append({"node": st, "id": lid, "obs": obs})
 	convoy_bake.append(entry)
 
@@ -441,24 +448,32 @@ func _convoy_mover(movers: Node3D, paths: Node3D, mv: Array) -> void:
 	veh.name = String(mv[0])
 	veh.transform = Transform3D(yaw_basis(float(mv[3])), v3(mv[2]))
 	set_prop(veh, "vehicle_kind", "truck" if kind != "car" else "car")
-	veh.set(&"visual_scene", catalog_scene(String(CONVOY_CAB_ART[kind]) if kind != "car" else CONVOY_CAR_ART))
+	var art: String = CONVOY_CAR_ART if kind == "car" else (CONVOY_MIXER_ART if kind == "mixer" else
+		String(CONVOY_CAB_ART[kind]))
+	veh.set(&"visual_scene", catalog_scene(art))
 	veh.set_meta(&"kind", "convoy_" + kind)
 	movers.add_child(veh)
 	veh.owner = map_root
 	if kind == "car":
 		map_root.set_editable_instance(veh, true)
 		(veh.get_node("Visual") as Node3D).basis = yaw_basis(180.0)
-	var path: Path3D = Path3D.new()
-	path.name = String(mv[0]) + "Path"
-	var curve: Curve3D = Curve3D.new()
-	for p: Array in mv[4]:
-		curve.add_point(v3(p[0]), v3(p[1]), v3(p[2]))
-	path.curve = curve
-	add(paths, path)
+	if not (mv[4] as Array).is_empty():
+		add(paths, _convoy_path(String(mv[0]) + "Path", mv[4]))
 	convoy_start_obs.append(_vehicle_footprint(global_xform(veh), kind, Vector3(CONVOY_LEN[kind], 3.0,
 		CONVOY_WIDTH[kind])))
-	if kind != "car":
+	if kind == "cash" or kind == "bullion":
 		_convoy_truck(veh, kind)
+
+
+## A drive-in Path3D `nm` from [[point, in handle, out handle]] rows (world; its parent sits at the world origin).
+func _convoy_path(nm: String, rows: Array) -> Path3D:
+	var path: Path3D = Path3D.new()
+	path.name = nm
+	var curve: Curve3D = Curve3D.new()
+	for p: Array in rows:
+		curve.add_point(v3(p[0]), v3(p[1]), v3(p[2]))
+	path.curve = curve
+	return path
 
 
 ## A truck mover's hold: A5-01's ArmoredTruck in the mover's frame (cash defaults; bullion saw 180 / 90 s and the QC-81
