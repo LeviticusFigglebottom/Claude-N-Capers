@@ -1528,5 +1528,7 @@ session_014E3p2… and its envs) is in another account and unreachable from here
   `docs/status/env_*.md`; the obsolete local round-229 merge on `claude/epic-fermi-k5fa09` is superseded by D-129's gate;
 * gates round 274 = the env commits pushed after round 273 (A 0eb9537a, C bfdf43e7, P 5e01c275).
 Rolling Thunder stays the active heist (D-148 / D-151 / D-152).
-Ruling (A's open question, status env_a -23): the `enemy.convoy_lead` / `enemy.convoy_rear` EnemyDefs are ENV B's data;
-ENV D supplies their look ids (D-149.12).
+Ruling (A's open question, status env_a -23; AMENDED same day after A's ownership note): the `enemy.convoy_lead` /
+`enemy.convoy_rear` EnemyDefs live in A's path (game/systems/ai/data/enemies), so ENV A writes them with the design doc's
+stats (Routine/Tense patrol-officer, Hazardous+ TAC); ENV D supplies their look ids (D-149.12); ENV B reviews the values
+for the balance tool.
