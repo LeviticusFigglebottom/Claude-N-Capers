@@ -82,13 +82,14 @@ CASING walk-in so that phase is never silent.
 | `cue.amb_art_store` | GN | climate-plant drone, humidifier ticks, mist hiss | 24 s | −15 |
 | `cue.amb_uptown_night` | GN | light traffic with wet-tyre hiss, wind in trees, one far taxi horn | 36 s | −12 |
 | `cue.amb_skyway_street` | RT | Skyway traffic rumble overhead, expansion-joint thumps every 3-6 s, gusts with leaves and grit, far traffic, a bus idling, pigeons | 48 s | −12 |
-| `cue.amb_underpass` | RT | tunnel drips, fluorescent buzz, low rumble, one freight train over the bridge per loop (rumble, bogie clacks, wheel squeal; period 96 s, inside the doc's 90-150 s) | 96 s | −12 |
+| `cue.amb_underpass` | RT | tunnel drips (long echo), fluorescent buzz, low rumble, far traffic in the cut; no train (see below) | 40 s | −12 |
 | `cue.amb_diner` | RT | griddle sizzle + spits, counter radio (tinny plucks + DJ), cutlery / crockery, soft murmur, fridge hum | 32 s | −14 |
 | `cue.amb_site` | RT | diesel generator (25 Hz firing, 50 Hz hum), scaffold clanks on the gusts, wind on the hoarding, far traffic | 40 s | −13 |
 
-RT beds and the convoy cues live in `cues_rolling_thunder.py` (like `cues_ostrander.py`). RT freight trains are part of
-the underpass bed, so they cannot be suppressed during a Phantom charge (the doc's readability note): a separate
-train cue would be needed for that (ENV A schedules it).
+RT beds and the convoy cues live in `cues_rolling_thunder.py` (like `cues_ostrander.py`). The RT freight train is its
+own 3D one-shot, `cue.freight_train_pass` (audio_cues v1.9; 17 s, 150 m, World bus): ENV A schedules it in the underpass
+every 90–150 s and holds it back while a Phantom charge is live (the doc's readability note), so `amb_underpass` has no
+train.
 
 Not done: the doc's post-last-call change of the GN hall bed (gala -> room tone) would need a second bed
 switched by the mission (ENV A); the gala bed plays all night for now.

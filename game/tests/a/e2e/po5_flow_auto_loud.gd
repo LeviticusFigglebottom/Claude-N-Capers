@@ -33,6 +33,13 @@ const LIFT_NEAR_M: float = 15.0
 const LIFT_TRIES_MAX: int = 6
 ## _is_unreachable: a target set aside for "no navmesh path" has its path re-tested this often (s).
 const UNREACH_RECHECK_S: float = 10.0
+## _deliver_tool: a burn point this close (m) to a marker is that marker's (RT: a truck's rear-door burn point, ~4 m
+## from the truck marker at its origin).
+const TRUCK_BURN_M: float = 6.0
+## _open_gate_toward: a padlock this close (m) to where a short navmesh path ends is the gate in the way.
+const GATE_LOCK_M: float = 10.0
+## _open_gate_toward: longest stay at a gate whose device runs (a saw through a padlock with jams) (heist s).
+const GATE_WAIT_S: float = 150.0
 ## Give up carrying one bag to the van after this long (s).
 const CARRY_LIMIT_S: float = 300.0
 
@@ -71,6 +78,9 @@ var doctor_bag: bool = "--po5-doctor-bag" in OS.get_cmdline_user_args()
 ## --po5-focus=<objective id> (LEAD OF-done: verify BondSafe): once that objective's marker is up, the pilot takes it
 ## before anything else that is up (see _is_focus).
 var focus: StringName = _focus_arg()
+## --po5-wait-convoy (RT P5 gate, LEAD): stay unmasked at the start until the convoy has stopped ([convoy] done), then
+## go loud: the crash stop without the early alarm (police after police_delay_s, not at once).
+var wait_convoy: bool = "--po5-wait-convoy" in OS.get_cmdline_user_args()
 var _lift_tries: int = 0
 ## _is_unreachable: heist time of the last path re-test per "no navmesh path" target.
 var _unreach_checked: Dictionary[int, float] = {}
@@ -105,18 +115,24 @@ func play(flow: Node) -> int:
 	EventBus.interaction_started.connect(func(nid: int, slot: int, _k: StringName) -> void:
 		_note_bot_interaction(nid, slot, &"started"))
 	EventBus.objective_updated.connect(func(id: StringName, st: int, _d: Dictionary) -> void:
-		f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
+		if is_instance_valid(rt):
+			f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
 	EventBus.loot_secured.connect(func(_b: int, l: StringName, v: int) -> void:
-		f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
+		if is_instance_valid(rt):
+			f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
 	# RT-A6 "every VO line said": the lines a run plays, for the coverage over seeds (grep "EVENT vo ").
 	EventBus.voice_line_requested.connect(func(speaker: StringName, line_id: StringName, _c: Dictionary) -> void:
-		f.note("EVENT vo %s %s t=%.0f" % [speaker, line_id, rt.heist_time_s]))
+		if is_instance_valid(rt):  # the payday / hub plays lines after the runtime is freed
+			f.note("EVENT vo %s %s t=%.0f" % [speaker, line_id, rt.heist_time_s]))
 	if doctor_bag:
 		var ds: DeployableSystem = rt.service(DeployableSystem.SERVICE) as DeployableSystem
 		if ds != null:
 			ds.give(p.crew.slot, &"deployable.doctor_bag")
 			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
-	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
+	if wait_convoy:
+		await _wait_for_the_convoy()
+	if not p.crew.masked:  # stores1001: masked, G throws the carried bag (rt_clean hands over masked with the thermite)
+		await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
 	p.stuck_give_up = STUCK_GIVE_UP
 	# GN probe 6: the pilot walked past three downed teammates on its way to the vault drill (t=275-288), then went
@@ -145,6 +161,17 @@ func play(flow: Node) -> int:
 	if not _ended:
 		return fail("no heist end within %.0f s; markers %s" % [cap, _marker_summary()])
 	return await f.payday_to_hub()
+
+
+## --po5-wait-convoy: unmasked, in place, until [convoy] is done or the crash's alarm is up (ETA 150-210 s; at most 300).
+func _wait_for_the_convoy() -> void:
+	f.note("harness: waiting unmasked for the convoy (--po5-wait-convoy)")
+	var t0: float = rt.heist_time_s
+	# The crash itself is the alarm (the mixer's impact raises the ambush): mask the moment it is loud, too.
+	while rt.mission != null and rt.mission.objective_state(&"convoy") != Enums.ObjectiveState.COMPLETED \
+			and not rt.went_loud and rt.heist_time_s - t0 < 300.0:
+		await f.wait_s(1.0)
+	f.note("the convoy is in (or the crash raised the alarm) at %.0f s: going loud" % rt.heist_time_s)
 
 
 ## One decision: the first marked active objective (HUD order).
@@ -176,22 +203,102 @@ func step() -> void:
 			_stalls[id] = float(_stalls.get(id, 0.0))  # started: keep defending its drill after this (see _pick)
 		p.watch_point = Vector3.INF
 		await p.use(comp, 30.0, func() -> bool: return not comp.enabled or comp.availability(p.crew) != &"")
-		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"":
+		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"" \
+				and not await _open_lock_near(comp.global_position, true):
 			_mark_if_unreached(comp)  # still usable and still far: the walk failed (GN Slot_orchard_calloway)
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
-	if not p.near(p.crew.global_position, pos, 4.0):
-		# C (DB seed 2): an objective that ended during the walk (burn done -> its shutters barred) is no finding.
-		if not await p.goto(_marker_stand(pos), 2.5, 60.0) and _marked(id):
-			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
-			if p.last_blocked_door != null:
-				_marker_blocked[_marker_key(m)] = p.last_blocked_door  # GN probe 6: behind the BARRED shutter -> yield at once
-			elif not _has_path(_marker_stand(pos)) or p.last_goto_stuck:
-				_stalls[id] = maxf(float(_stalls.get(id, 0.0)), STALL_SKIP_S)  # GN probe 4: no path -> yield at once
-	_stalls[id] = _stalls.get(id, 0.0) + 3.0
-	if int(_stalls[id]) % 60 == 0:
-		f.note("waiting at %s for %.0f s (nothing usable within 2.5 m)" % [id, _stalls[id]])
-	await p.hold_position(3.0)
+	if p.near(p.crew.global_position, pos, 4.0) or not await _walk_to_marker(m, id, pos):
+		_stalls[id] = _stalls.get(id, 0.0) + 3.0
+		if int(_stalls[id]) % 60 == 0:
+			f.note("waiting at %s for %.0f s (nothing usable within 2.5 m)" % [id, _stalls[id]])
+		await p.hold_position(3.0)
+
+
+## Walk to marker `m`. True when the walk failed and a padlocked gate on the way was worked instead (RT-A6); a failed
+## walk otherwise yields the marker (findings as before).
+func _walk_to_marker(m: Dictionary, id: StringName, pos: Vector3) -> bool:
+	# C (DB seed 2): an objective that ended during the walk (burn done -> its shutters barred) is no finding.
+	if await p.goto(_marker_stand(pos), 2.5, 60.0) or not _marked(id):
+		return false
+	if await _open_gate_toward(_marker_stand(pos)):
+		return true  # RT-A6 (LEAD): the padlocked site gate first, then the marker behind it
+	_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
+	if p.last_blocked_door != null:
+		_marker_blocked[_marker_key(m)] = p.last_blocked_door  # GN probe 6: behind the BARRED shutter -> yield at once
+	elif not _has_path(_marker_stand(pos)) or p.last_goto_stuck:
+		_stalls[id] = maxf(float(_stalls.get(id, 0.0)), STALL_SKIP_S)  # GN probe 4: no path -> yield at once
+	return false
+
+
+## RT-A6 (LEAD: the pilot opens padlocks, so auto_loud raids RT's site stores): the navmesh path to `stand` ends short
+## (a padlocked gate: its door is off the crew's nav while locked), or runs through a shut locked door with a padlock
+## (the magazine). The nearest padlock within GATE_LOCK_M of where the path ends (or that door's own padlock) that the
+## pilot can work now (lockpick / saw / C4, Padlock picks the method) is used; the gate opens with it. True when it
+## worked one (the next step retries the marker).
+func _open_gate_toward(stand: Vector3) -> bool:
+	var path: PackedVector3Array = p.nav_path(stand)
+	if path.is_empty():
+		return false
+	var end: Vector3 = path[path.size() - 1]
+	var door: Door = null
+	if end.distance_to(stand) <= 1.5:
+		# pad1002b: the path runs through a shut, padlocked door (the RT magazine: the walk stuck on its wall)
+		door = _locked_on_path(stand)
+		if door == null:
+			return false
+		end = door.global_position
+	return await _work_lock(_lock_near(end, door, false), "where the path to %s ends" % Po5Pilot._v(stand))
+
+
+## pad1002c: a target behind a shut padlocked door whose use stand snapped outside its wall (the RT magazine's C4
+## boxes): the use failed on the wall. That door's padlock (within GATE_LOCK_M of the target) is worked. True when one was.
+func _open_lock_near(pos: Vector3, door_only: bool) -> bool:
+	return await _work_lock(_lock_near(pos, null, door_only), "the target at %s" % Po5Pilot._v(pos))
+
+
+## The nearest workable padlock within GATE_LOCK_M of `pos` (of `door` when given; on a shut door when `door_only`).
+func _lock_near(pos: Vector3, door: Door, door_only: bool) -> InteractableComponent:
+	var best: InteractableComponent = null
+	var best_d: float = GATE_LOCK_M
+	for n: Node in rt.map.find_children("*", "Padlock", true, false):
+		var lock: Padlock = n as Padlock
+		if lock.opened or lock.interactable == null or not lock.interactable.enabled \
+				or lock.interactable.availability(p.crew) != &"" or _is_unreachable(lock.interactable):
+			continue
+		if door != null and not door.is_ancestor_of(lock):
+			continue
+		var host: Door = lock.get_parent() as Door
+		if door_only and (host == null or host.is_open):
+			continue
+		var d: float = lock.global_position.distance_to(pos)
+		if d < best_d:
+			best_d = d
+			best = lock.interactable
+	return best
+
+
+## Work padlock `best` (null: false): use it, then stay with a placed saw / drill (defend, fix jams) until it is off.
+func _work_lock(best: InteractableComponent, why: String) -> bool:
+	if best == null:
+		return false
+	f.note("gate: %s near %s: opening it" % [best.owner_node().get_path(), why])
+	p.watch_point = Vector3.INF
+	var lock: Padlock = best.owner_node() as Padlock
+	var t0: float = rt.heist_time_s
+	# A placed saw / drill runs on: stay at the gate, defend it, fix its jams (pad1002: the saw jammed, the pilot had
+	# walked off) until the lock is off.
+	while is_instance_valid(lock) and not lock.opened and rt.heist_time_s - t0 < GATE_WAIT_S and not _ended:
+		if best.enabled and best.availability(p.crew) == &"":
+			await p.use(best, 45.0, func() -> bool: return lock.opened or best.availability(p.crew) != &"")
+			if is_instance_valid(lock) and not lock.opened and best.availability(p.crew) == &"":
+				_mark_if_unreached(best)  # nothing placed: the walk or the hold failed
+				break
+		else:
+			await p.hold_position(3.0, func() -> bool: return lock.opened or _ended)
+	if is_instance_valid(lock) and lock.opened:
+		f.note("gate: %s open at %.0f s" % [lock.get_path(), rt.heist_time_s])
+	return true
 
 
 ## Bags first: the thermite (a tool) goes to the burn point (DB), a [burn] marker without it fetches it, a carried
@@ -649,11 +756,11 @@ func _carrying_tool() -> bool:
 
 
 ## The enabled `place_thermite` interactable (BurnPoint) within 2.5 m of `pos`, else null.
-func _burn_comp_near(pos: Vector3) -> InteractableComponent:
+func _burn_comp_near(pos: Vector3, radius: float = 2.5) -> InteractableComponent:
 	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
 		if c != null and c.kind == &"place_thermite" and c.enabled and rt.is_ancestor_of(c) \
-				and c.global_position.distance_to(pos) <= 2.5:
+				and c.global_position.distance_to(pos) <= radius:
 			return c
 	return null
 
@@ -708,6 +815,13 @@ func _deliver_tool(markers: Array[Dictionary]) -> void:
 		p.watch_point = Vector3.INF
 		await p.use(bp, 30.0, func() -> bool: return not _carrying_tool() or not bp.enabled)
 		return
+	for m2: Dictionary in markers:  # RT: the burn point is the truck's own (its rear doors), under the [trucks] marker
+		var bt: InteractableComponent = _burn_comp_near(m2["position"] as Vector3, TRUCK_BURN_M)
+		if bt != null:
+			f.note("burn: carrying the thermite to %s on %s" % [Po5Pilot._v(bt.global_position), m2["id"]])
+			p.watch_point = Vector3.INF
+			await p.use(bt, 30.0, func() -> bool: return not _carrying_tool() or not bt.enabled)
+			return
 	f.note("carrying a tool bag with no burn point marked: putting it down")
 	await p.inp.tap(&"drop_bag")
 	await p.inp.ticks(10)

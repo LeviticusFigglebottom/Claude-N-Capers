@@ -220,3 +220,17 @@ func test_of_officers_and_sd_attendant_share_one_pool() -> void:
 	for i: int in tags.size():
 		npcs.append(_spawn(&"civilian", i, {"tags": [tags[i]]}))
 	_check(npcs, pool, "OF officers + SD attendant")
+
+
+## D (RT cast review): the waitress and the cook wear their own looks (staff_waitress / staff_cook before staff_diner),
+## the diner booths take p5_cast's 14 civ_diner looks, and counter_wipe is a civilian activity with its own clip.
+func test_rt_diner_staff_and_counter_wipe() -> void:
+	var rt_tags: Dictionary = NpcVisuals.tweak().heist_tag_characters.get(&"rolling_thunder", {})
+	assert_eq(rt_tags.get(&"staff_waitress", []), [&"diner_waitress"], "the waitress")
+	assert_eq(rt_tags.get(&"staff_cook", []), [&"diner_cook"], "the cook")
+	var cast: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://world/characters/p5_cast.json"))
+	var want: Array = (cast["tag_map"]["rolling_thunder"]["civ_diner"] as Array).map(func(x: Variant) -> StringName:
+		return StringName(x))
+	assert_eq((rt_tags.get(&"civ_diner", []) as Array), want, "civ_diner mirrors p5_cast (no back-bag looks)")
+	assert_has(CivilianBrain.KNOWN_ACTIVITIES, &"counter_wipe", "counter_wipe is a known activity")
+	assert_eq(AnimDriver.HINT_CLIPS.get(&"counter_wipe", &""), &"counter_wipe", "it plays the counter_wipe clip")

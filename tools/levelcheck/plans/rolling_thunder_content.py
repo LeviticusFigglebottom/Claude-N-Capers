@@ -200,25 +200,17 @@ GATES: List[list] = [
     # [name, level, plan opening, front, lock, extra]
     ["SiteVehicleGateN", "SG", "vehicle_gate", -1, "E", "BARRED", {"padlock": "site_gate"}],
     ["SiteVehicleGateS", "SG", "vehicle_gate", 1, "E", "BARRED", {}],
+    # phase 2 (D-149.8): one industrial site gate across the 4.2 m Tannery opening (rolling_thunder_geometry
+    # TANNERY_GAP), its leaves swinging out onto the sidewalk (the mixer waits inside), opened by A at the mixer move
+    # (meta opens_with), then the mixer drives out through it
     [
-        "SiteTanneryGateW",
+        "SiteTanneryGate",
         "SG",
         "tannery_gate",
-        -1,
-        "S",
+        0,
+        "N",
         "BARRED",
-        {"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
-         "opens_with": "mixer_move"},
-    ],
-    [
-        "SiteTanneryGateE",
-        "SG",
-        "tannery_gate",
-        1,
-        "S",
-        "BARRED",
-        {"todo": "TODO(A5-02): opens when the mixer leaves (baked closed, its NavLink bridges it: D-149.1)",
-         "opens_with": "mixer_move"},
+        {"opens_with": "mixer_move", "visual": "prop_door_site_gate_w400_h240", "width": 4.0, "kind": "industrial_door"},
     ],
 ]
 
@@ -268,9 +260,9 @@ def doors() -> List[list]:
         c += side * 1.2
         ox, oz = P.BUILDINGS[P.LEVEL_BUILDING[level]]
         pos = [r3(c + ox), 0.0, r3(fixed + oz)] if axis == "x" else [r3(fixed + ox), 0.0, r3(c + oz)]
-        out.append(
-            [name, level, pos, FRONT_YAW[front], "double", lock, "prop_door_double_grille_t20", 1.8, dict(extra)]
-        )
+        ex = {k: v for k, v in extra.items() if k not in ("visual", "width")}
+        out.append([name, level, pos, FRONT_YAW[front], "double", lock,
+                    extra.get("visual", "prop_door_double_grille_t20"), float(extra.get("width", 1.8)), ex])
     out.append(
         [
             "RailLaneGate",
@@ -386,19 +378,7 @@ def furniture() -> List[list]:
             B("BlockPallet%d" % i, si(x, 3.5, z), [1.2, 1.0, 1.2], 0.0, "pallet", False, "prop", {"cover": "hard"})
         )
     out.append(B("PlanTable", si(3.5, 0.0, 34.0), [1.2, 0.9, 2.0], 0.0, "table", True, "prop"))
-    # Reyes's mixer (dressing until it moves, QC-82): static hard cover inside the Tannery gate (TODO(A5-02))
-    out.append(
-        B(
-            "MixerTruck",
-            si(26.0, 0.0, 39.5),
-            [8.0, 3.5, 3.0],
-            0.0,
-            "vehicle",
-            False,
-            "prop",
-            {"todo": "TODO(A5-02): Reyes's mixer, a convoy_vehicle mover from G2", "cover": "hard"},
-        )
-    )
+    # Reyes's mixer: phase 2, the `Mixer` convoy_vehicle mover of each route slot (convoy_sets MIXER_START)
     return out
 
 
@@ -688,7 +668,7 @@ SITE_POINTS = {
     "GateN": [-16.5, 0.0, -43.0],
     "GateS": [-16.5, 0.0, -20.0],
     "ControllerCorner": [-17.5, 0.0, -14.5],
-    "TanneryGate": [-33.0, 0.0, -13.5],
+    "TanneryGate": [-29.5, 0.0, -13.5],   # east of the mixer parked inside the gate (MIXER_START)
     "Skip": [-42.0, 0.0, -13.5],
     "CabinsE": [-44.0, 0.0, -15.5],
     "CabinsW": [-56.0, 0.0, -15.5],
@@ -960,7 +940,8 @@ def static_cover() -> List[list]:
     out.append(T("CoverCabinsE", "COVER", [-46.0 + COVER_OFF, 0.0, -22.0], 90.0, ["cabins", "site"]))
     out.append(T("CoverCabinsW", "COVER", [-58.0 - COVER_OFF, 0.0, -22.0], -90.0, ["cabins", "site"]))
     out.append(T("CoverCraneBase", "COVER", [-24.0 + COVER_OFF, 0.0, -24.0], 90.0, ["crane", "site"]))
-    out.append(T("CoverMixer", "COVER", si(26.0, 0.0, 38.0 - COVER_OFF), 180.0, ["mixer", "site"]))
+    # the parked mixer's west side (MIXER_START: x -34.75..-32.25, z -20.6..-12.6), facing it
+    out.append(T("CoverMixer", "COVER", [-34.75 - COVER_OFF, 0.0, -17.0], -90.0, ["mixer", "site"]))
     return out
 
 
@@ -1249,11 +1230,35 @@ def _path(route: str, start: tuple) -> List[list]:
     return pts
 
 
+# Phase 2 (D-149.8, the LEAD's ruling of 2026-10-22): Reyes's mixer, one `Mixer` mover per route slot, parked inside
+# the Tannery gate (x -36..-31 in the hoarding at z -11) facing it (cab +Z, south), driven by A at the mixer move along
+# the active layout's `MixerPath` to its `MixerStop`: a clean stop noses across the convoy's front (about 2 m ahead of
+# the lead car), a crash stop rams the lead car from the west along Tannery (0.2-0.5 m off its side).
+MIXER_START = [-33.5, 0.0, -16.6]
+MIXER_SIZE = [8.0, 3.5, 2.5]          # [length, height (the drum), width] (rolling_thunder.py veh_mixer_truck)
+_OUT = [[-33.5, 0.0, -16.6], [0.0, 0.0, 0.0], [0.0, 0.0, 2.0]]       # out of the gate, south
+_GATE = [[-33.5, 0.0, -9.5], [0.0, 0.0, -2.0], [0.0, 0.0, 3.0]]
+MIXER = {  # layout key: [stop pivot, Godot yaw, path rows [[point, in handle, out handle]] (world)]
+    # (north clean: on the road round the NW corner kerbs (Orchard x -10.5, Tannery z -8.5), nosed in diagonally, NE)
+    "north_clean": [[-5.5, 0.0, -12.0], 135.0, [_OUT, _GATE, [[-27.5, 0.0, -4.5], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
+                                                [[-14.0, 0.0, -4.5], [-3.0, 0.0, 0.0], [4.0, 0.0, 0.0]],
+                                                [[-5.5, 0.0, -12.0], [-2.8, 0.0, 2.8], [0.0, 0.0, 0.0]]]],
+    "north_crash": [[-7.9, 0.0, 2.8], 90.0, [_OUT, _GATE, [[-28.0, 0.0, 2.8], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
+                                             [[-7.9, 0.0, 2.8], [-3.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]],
+    "east_clean": [[12.5, 0.0, -3.6], 180.0, [_OUT, _GATE, [[-28.0, 0.0, 3.0], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
+                                              [[4.5, 0.0, 3.0], [-3.0, 0.0, 0.0], [4.4, 0.0, 0.0]],
+                                              [[12.5, 0.0, -3.6], [0.0, 0.0, 4.0], [0.0, 0.0, 0.0]]]],
+    "east_crash": [[-2.2, 0.0, 1.2], 90.0, [_OUT, _GATE, [[-28.0, 0.0, 2.0], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
+                                            [[-2.2, 0.0, 1.2], [-4.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]],
+}
+
+
 def convoy_sets() -> Dict[str, dict]:
     """{route slot: {movers, layouts}} (rolling_thunder_convoy LAYOUTS / CRASH_LEAD_VEH / starts, RT-C2): movers:
     [[node, kind, start pivot, yaw, path]] (A5-02 ConvoyVehicle at its path's start, a truck carrying its A5-01
-    ArmoredTruck); layouts: [[mode, [[stop node, kind, pivot, yaw, slope, size [length, height, width], cover
-    rows]]]] (the `<Veh>Stop` markers at the mover pivot, bottom-centre, cab +Z; slope = the east ramp's -dy/dx the
+    ArmoredTruck; the `Mixer` waits in the site with no path of its own); layouts: [[mode, [[stop node, kind, pivot,
+    yaw, slope, size [length, height, width], cover rows]], mixer path rows]] (`MixerStop` and the layout's
+    `MixerPath`) (the `<Veh>Stop` markers at the mover pivot, bottom-centre, cab +Z; slope = the east ramp's -dy/dx the
     marker is tilted onto; `RearStop2` the trucks_2 queue end; cover rows [name, pos, yaw] beside each vehicle, not
     beside RearStop2)."""
     out: Dict[str, dict] = {}
@@ -1263,6 +1268,7 @@ def convoy_sets() -> Dict[str, dict]:
             base, _s = _stop_base(route, v)
             base[1] = CV.LANE_Y[route]
             movers.append([VEH_NODE[v[0]], v[1], base, _ry(route, 0.0), _path(route, v)])
+        movers.append(["Mixer", "mixer", MIXER_START, 0.0, []])   # its paths are per layout (MixerPath)
         layouts = []
         for mode in ("clean", "crash"):
             key = "%s_%s" % (route, mode)
@@ -1278,7 +1284,10 @@ def convoy_sets() -> Dict[str, dict]:
                     cover = convoy_cover("%s%s" % (mode.capitalize(), VEH_NODE[v[0]]), base[0], base[2], ry,
                                          CV.WIDTH[kind], route)
                 rows.append([nm, kind, base, ry, slope, [CV.LEN[kind], VEH_HEIGHT[kind], CV.WIDTH[kind]], cover])
-            layouts.append([mode, rows])
+            m_pos, m_yaw, m_path = MIXER[key]
+            rows.append(["MixerStop", "mixer", m_pos, m_yaw, 0.0, MIXER_SIZE,
+                         convoy_cover("%sMixer" % mode.capitalize(), m_pos[0], m_pos[2], m_yaw, MIXER_SIZE[2], route)])
+            layouts.append([mode, rows, m_path])
         out["route_" + route] = {
             "movers": movers,
             "layouts": layouts,

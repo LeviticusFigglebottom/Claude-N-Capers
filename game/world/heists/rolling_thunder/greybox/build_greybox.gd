@@ -52,8 +52,6 @@ const AUDIO_BEDS: Array = [
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the F1 edge protection, the scaffold mesh,
 ## the palisades and rail-lane fences).
 const THIN_GROUPS: Array[String] = ["Frame", "Scaffold", "Rail", "RailLane"]
-## RT-C2: the convoy nav guard (Gameplay/ConvoyNav).
-const CONVOY_NAV_GUARD: String = "res://world/heists/rolling_thunder/rt_convoy_nav.gd"
 
 
 func _initialize() -> void:
@@ -238,9 +236,6 @@ func _bake(nav: NavigationRegion3D) -> int:
 	await process_frame
 	nav.navigation_mesh = nm
 	nav.set_meta(&"convoy_open_nav", "convoy")
-	var guard: Node3D = node3d("ConvoyNav")   # keeps the disabled convoy regions off the nav map (rt_convoy_nav.gd)
-	guard.set_script(load(CONVOY_NAV_GUARD))
-	add(n("Gameplay"), guard)
 	var t2: int = Time.get_ticks_msec()
 	var counts: PackedStringArray = _bake_convoy(base)
 	print("navmesh bake: parse %d ms, main %d ms (%d polygons), convoy layouts %d ms: %s" % [t_parse, t_main,

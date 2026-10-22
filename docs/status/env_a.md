@@ -4,6 +4,47 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-30) RT P5 gate met; D's motion fixes; the padlock pilot; round 277 merged (2026-10-22)
+- **P5 loud-bot gate (LEAD: MET):**
+  - Routine 6/6: 1001 583 s / 1002 810 / 1003 778 / 4101 750 / 1004 731 / 4102 791. 4-6 bags; downs 0-3 total per
+    run; no custody.
+  - Hazardous 1001 (WAIT_CONVOY, CREW_DMG 0.25): PASS, 534 s, 4 bags. Downs 3/0/1/3, one AI teammate in custody.
+  - Data only:
+    - Hazardous full damage: lost at 546 s while holding for the ride.
+    - Early-alarm Hazardous / Cataclysm: wiped at about 110 s.
+    - Shield and police counts sent to B (balance review).
+- **Backlog (LEAD: parked):**
+  - Cataclysm RT is not bot-passable: the pilot charges the intact convoy (14 units at Cataclysm strength) and the
+    crew is down in about 20 s.
+  - A fight-from-range pilot behaviour would fix it.
+- **D's motion strips (PO "inorganic"):**
+  - a0a876d4: 8-way sector hysteresis + min hold (neighbouring sectors only); phase carry in the walk / run
+    families; the stagger plays out.
+  - b435e4c4: the back-group +0.10 offset.
+  - Reversals of 135 deg or more crossfade in 0.05 s.
+  - df90b80d: the resume carry after a short stop (0.3 s window).
+  - Pending: D's v1.27 reversal one-shots.
+- **auto_loud:**
+  - `WAIT_CONVOY=1` (the planned ambush). It also ends when the crash raises the alarm.
+  - The pilot works the padlock of a gate at the end of a short path, or of a locked door on the path.
+  - It stays with a placed saw (fixing jams) until the lock is off.
+  - pad1002b: gate open at t=81, signals rigged at t=120, then stuck at the magazine wall (b8ac58dd fixes that).
+- **718cf2c0:** round 277 merged, then --import.
+### (-29) RT VO coverage, D's cast fixes, phase-2 mixer ready, round 276 merged (2026-10-22)
+- **VO:**
+  - Batch: auto_loud 1004 / 4102 and rt_clean 1005, 3/3 PASS. 25 of the 34 RT lines were said e2e.
+  - The other 9 are covered by test_the_nine_lines_the_e2e_does_not_reach, so all 34 are said.
+- **d32d344e (D's cast review):**
+  - staff_waitress / staff_cook look rows; civ_diner = p5_cast's 14.
+  - counter_wipe activity + clip.
+  - spawn_units takes the least-used seat (two escorts shared Seat0).
+- **f62766cc:** phase-2 mixer. With C's `Mixer` ConvoyVehicle and the layout's `MixerStop` (`MixerPath` optional), the
+  tannery_gate doors open and the mixer drives. G1's layout swap stays the fallback until C's map lands.
+- **982828a4:** round 276 merged, then --import; RT / cast / anim tests green.
+- **Waiting:**
+  - QC-85 cue defs in cues.tres (B).
+  - C's Mixer map.
+  - bonds_courier cab safe (truck art).
 ### (-28) RT e2e: crash 3/3, clean 3/3, all 3 escapes; D/LEAD items; QC-85 cues; round 275 merged (2026-10-22)
 - **Crash stop** (auto_loud), success each:
   - 1001: 584 s, E1.

@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## D-116 police combat movement (ENV D SOURCE police_combat + locomotion_holds) and DB-4 in AnimDriver / CombatClips:
 ## aim_<fam>_<gait> layered while aiming on the move (frame-locked), class reloads scaled so `done` lands on
 ## completion (moving: on the upper-body layer), cover_low / cover_peek_l / _r on a brain's cover post (LOS probes),
@@ -455,3 +456,179 @@ func test_v126a_npc_hold_layer_on_the_move() -> void:
 	for _i: int in 20:
 		d.tick(0.033)
 	assert_near(d.hold_layer.influence, 0.0, 0.001, "unarmed: no hold layer")
+
+
+func _add_loops(d: AnimDriver, names: Array, frames: int) -> void:
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for c: StringName in names:
+		if not lib.has_animation(c):
+			var a: Animation = Animation.new()
+			a.length = float(frames) / 30.0
+			a.loop_mode = Animation.LOOP_LINEAR
+			lib.add_animation(c, a)
+
+
+static func _vel_at(deg: float, speed: float) -> Vector3:
+	return Vector3(sin(deg_to_rad(deg)), 0.0, -cos(deg_to_rad(deg))) * speed  # the body faces -Z, +X is its right
+
+
+## D (motion strips, PO "inorganic"): the 8-way sector holds through jitter around a boundary (hysteresis, min hold),
+## and a switch inside the walk family carries the stride's phase instead of restarting at 0.
+func test_8way_sector_hysteresis_and_phase_carry() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71691)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"walk_fr", &"walk_fl", &"walk_br", &"walk_bl"], 30)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(45.0, 1.2)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_eq(d.clip, &"walk_fr", "45 deg: walk_fr")
+	for deg: float in [68.0, 30.0, 70.0, 25.0, 66.0]:  # jitter across the 67.5 / 22.5 deg boundaries
+		npc.velocity = _vel_at(deg, 1.2)
+		for _i: int in 5:
+			d.tick(0.033)
+		assert_eq(d.clip, &"walk_fr", "%.0f deg: still walk_fr (within 30 deg of its centre)" % deg)
+	var phase: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	npc.velocity = _vel_at(-45.0, 1.2)
+	d.tick(0.033)
+	assert_eq(d.clip, &"walk_fl", "a real turn to -45 deg: walk_fl")
+	var now: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	assert_near(now, fposmod(phase + 0.033 / 1.0, 1.0), 0.06, "walk_fl picks up walk_fr's phase (not 0)")
+
+
+## D (motion strips): a stagger is not cut short by the shots / turns that follow it (the cover loop took over).
+func test_stagger_plays_out() -> void:
+	var npc: NpcBase = _npc(&"police", true, 71692)
+	var d: AnimDriver = AnimDriver.of(npc)
+	d.play_oneshot(&"stagger_pistol", -1.0, true)
+	d.tick(0.1)
+	d.play_oneshot(&"fire_pistol")
+	d.play_oneshot(&"turn_l")
+	d.tick(0.1)
+	assert_eq(d._oneshot, &"stagger_pistol", "the stagger keeps playing")
+	assert_eq(d.clip, &"stagger_pistol", "and is the clip")
+	for _i: int in 12:
+		d.tick(0.1)
+	d.play_oneshot(&"fire_pistol")
+	assert_eq(d._oneshot, &"fire_pistol", "after it ends, shots play again")
+
+
+## D (test_loco_phase): forward -> backward carries the phase + back_phase_offset (backward -> forward subtracts it).
+func test_8way_phase_carry_back_offset() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71693)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"walk_fr", &"walk_fl", &"walk_br", &"walk_bl"], 30)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(45.0, 1.2)
+	for _i: int in 20:
+		d.tick(0.033)
+	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	npc.velocity = _vel_at(135.0, 1.2)  # a 90 deg turn: walk_br at once
+	d.tick(0.033)
+	assert_eq(d.clip, &"walk_br")
+	var now: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	var want: float = fposmod(u + AnimTweak.data().locomotion_back_phase_offset + 0.033, 1.0)
+	assert_near(now, want, 0.06, "walk_fr -> walk_br: + the back group's offset")
+
+
+## D (motion strips): a 180 deg reversal (run <-> run_b) crossfades in locomotion_reversal_blend_s, not the full blend.
+func test_8way_reversal_short_crossfade() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71694)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"run_b", &"run_fr"], 21)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(0.0, 3.5)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_eq(d.clip, &"run")
+	npc.velocity = _vel_at(180.0, 3.5)
+	d.tick(0.033)
+	assert_eq(d.clip, &"run_b", "reversed")
+	assert_near(d.last_blend_s, AnimTweak.data().locomotion_reversal_blend_s, 0.0001, "a short crossfade")
+	assert_true(AnimDriver._reversal(&"run_bl", &"run_r") and not AnimDriver._reversal(&"run", &"run_r"),
+		"135 deg is a reversal, 90 deg is not")
+
+
+## D (motion strips): a bot's stop-start (a moment under the move threshold) resumes the stride's phase within the
+## resume window instead of restarting it at 0.
+func test_8way_resume_carry_after_a_short_stop() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71695)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"walk_fr", &"walk_fl", &"walk_br", &"walk_bl"], 30)
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(45.0, 1.3)
+	for _i: int in 20:
+		d.tick(0.033)
+	assert_eq(d.clip, &"walk_fr")
+	d.player.seek(0.4, true)
+	npc.velocity = Vector3.ZERO
+	d.tick(0.033)
+	assert_false(String(d.clip).begins_with("walk_f"), "stopped (%s)" % d.clip)
+	npc.velocity = _vel_at(-45.0, 1.3)
+	d.tick(0.033)
+	assert_eq(d.clip, &"walk_fl")
+	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	assert_near(u, 0.4 + 0.033, 0.05, "walk_fl resumes walk_fr's stride (not 0)")
+
+
+## characters v1.27 (D's loco_reverse): run -> run_b holds run until the next brake-foot touch-down, plays the
+## reversal clip with no crossfade, then enters run_b at the clip's u_out with no crossfade.
+func test_v127_reversal_clip_at_the_touch_down() -> void:
+	var npc: NpcBase = _npc(&"police", false, 71696)
+	var d: AnimDriver = AnimDriver.of(npc)
+	_add_loops(d, [&"run_b"], 21)
+	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+	for c: StringName in [&"run_reverse_l", &"run_reverse_r"]:
+		var a: Animation = Animation.new()
+		a.length = 18.0 / 30.0
+		lib.add_animation(c, a)
+	AnimTweak.reversals_override = {&"run>run_b": [
+		{"clip": &"run_reverse_l", "frames": 18, "u_in": 0.5238, "u_out": 0.2381},
+		{"clip": &"run_reverse_r", "frames": 18, "u_in": 0.0, "u_out": 0.7619}]}
+	_brain(npc).anim_hint = &"idle"
+	npc.velocity = _vel_at(0.0, 3.5)
+	for _i: int in 10:
+		d.player.advance(0.033)
+		d.tick(0.033)
+	assert_eq(d.clip, &"run")
+	d.player.seek(0.2 * d.player.get_animation(d.player.current_animation).length, true)  # u 0.2: the L foot (0.52) is next
+	npc.velocity = _vel_at(180.0, 3.5)
+	d.tick(0.033)
+	assert_eq(d.clip, &"run", "held on run until the brake foot lands")
+	var seen: StringName = &""
+	for _i: int in 30:
+		d.player.advance(0.033)
+		d.tick(0.033)
+		if String(d.clip).contains("_reverse_"):
+			seen = d.clip
+			assert_near(d.last_blend_s, 0.0, 0.0001, "no crossfade into the reversal")
+			break
+	assert_eq(seen, &"run_reverse_l", "the left foot was next (u 0.52)")
+	for _i: int in 30:
+		d.player.advance(0.033)
+		d.tick(0.033)
+		if d.clip == &"run_b":
+			break
+	assert_eq(d.clip, &"run_b", "then the target loop")
+	assert_near(d.last_blend_s, 0.0, 0.0001, "no crossfade out")
+	var u: float = d.player.current_animation_position / d.player.get_animation(d.player.current_animation).length
+	assert_near(u, 0.2381, 0.06, "entered at run_reverse_l's u_out")
+	AnimTweak.reversals_override = {}
+
+
+## v1.27: D's loco_reverse SOURCE line parses into the reversal table (its exact entry format, two entries here).
+func test_v127_loco_reverse_parse() -> void:
+	var line: String = "loco_reverse: characters v1.27 locomotion reversals (fixed facing ...): ... run_reverse_l: " \
+		+ "run->run_b brake=L frames=18 u_in=0.5238 (run frame 11) u_out=0.2381 (run_b frame 5) events=foot_plant@0," \
+		+ "push@6,done@18 other_lands@13.0 brake_lifts@10.1 root_total_m=-0.642 max_hip_drop_mm=6.9 | walk_reverse_back_r:" \
+		+ " walk_back->walk brake=R frames=24 u_in=0.0000 (walk_back frame 0) u_out=0.7333 (walk frame 22) events=" \
+		+ "foot_plant@0,push@11,done@24 other_lands@17.0 brake_lifts@20.0 root_total_m=+0.309 max_hip_drop_mm=0.0"
+	var t: Dictionary = AnimTweak.parse_reversals("clip.walk: 30f\n" + line + "\n")
+	assert_eq(t.keys().size(), 2, "two pairs (%s)" % [t.keys()])
+	var r: Dictionary = (t.get(&"run>run_b", [{}]) as Array)[0]
+	assert_eq(r.get("clip"), &"run_reverse_l")
+	assert_near(float(r.get("u_in", 0.0)), 0.5238, 0.0001)
+	assert_near(float(r.get("u_out", 0.0)), 0.2381, 0.0001)
+	var w: Dictionary = (t.get(&"walk_back>walk", [{}]) as Array)[0]
+	assert_eq([w.get("clip"), w.get("frames")], [&"walk_reverse_back_r", 24])
+	assert_near(float(w.get("u_out", 0.0)), 0.7333, 0.0001)

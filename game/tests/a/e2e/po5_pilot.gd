@@ -770,6 +770,8 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			inp.release(&"interact")
 			if await _run_hook():
 				await face(target, 0.03, 1.0)
+			if not is_instance_valid(comp):  # stores1001: a bot secured the bag during the re-aim
+				break
 			if no_blind_press and not await _aim_on(comp, target):
 				break
 			inp.press(&"interact")

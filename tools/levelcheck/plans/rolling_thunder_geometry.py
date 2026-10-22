@@ -31,6 +31,10 @@ PARAPET = 1.1
 GUARD = 1.1
 COPING_RISE = 0.3  # a ridge over the 0.3 m parapet (OF §7.5 copings: >= 50 deg)
 DOOR_HEAD = 2.2
+# Phase 2 (D-149.8): the Tannery gate (plan x 24..29 on the site's south hoarding) is one 4.2 m opening with no
+# head, closed by the site gate prop_door_site_gate_w400_h240 (two 2.0 m leaves on its 0.1 m posts): the mixer
+# (2.5 m wide, 3.5 m tall) drives out through it.
+TANNERY_GAP = (24.4, 28.6)
 CEIL_T = 0.05
 GRADE_T = 0.3
 # Car park (local): decks 0.8 thick (0.3 slab + 0.5 downstand beams as one greybox body: the 2.7 m clear, QC-87).
@@ -415,7 +419,12 @@ def window_prefabs() -> List[list]:
 def holes_local() -> List[list]:
     out = []
     for o in OPENINGS_G1:
-        if o.name in ("vehicle_gate", "tannery_gate"):
+        if o.name == "tannery_gate":   # phase 2: one 4.2 m opening, no head (the mixer drives out)
+            c = o.z if o.along == "z" else o.x
+            axis, fixed = ("z", o.x) if o.along == "z" else ("x", o.z)
+            out.append([o.level, axis, float(fixed), r3(TANNERY_GAP[0]), r3(TANNERY_GAP[1]), 0.0, HOARDING_H])
+            continue
+        if o.name == "vehicle_gate":
             c = o.z if o.along == "z" else o.x
             axis, fixed = ("z", o.x) if o.along == "z" else ("x", o.z)
             for d in (-1.2, 1.2):  # two 2.0 m double gates either side of a 0.4 m post
@@ -808,7 +817,7 @@ def site() -> Tuple[List[list], List[list]]:
         ("N", "x", 0.0, 0.0, 46.0, []),
         ("W", "z", 0.0, 0.0, 45.0, []),
         ("E", "z", 46.0, 0.0, 45.0, [(10.3, 12.3), (12.7, 14.7), MANGATE_PANEL[:2], (39.4, 40.6)]),
-        ("S", "x", 45.0, 0.0, 46.0, [(24.3, 26.3), (26.7, 28.7)]),
+        ("S", "x", 45.0, 0.0, 46.0, [TANNERY_GAP]),
     ]
     for nm, axis, fixed, a0, a1, gaps in hz:
         spans, cur = [], a0
@@ -846,6 +855,8 @@ def site() -> Tuple[List[list], List[list]]:
                     )
                 )
         for g0, g1 in gaps:  # the gate heads (2.2 m openings in the 2.4 m hoarding)
+            if (g0, g1) == TANNERY_GAP:   # no head: Reyes's 3.5 m mixer drives out through it (phase 2)
+                continue
             if (g0, g1) == MANGATE_PANEL[:2]:   # the vision panel: hoarding below and above, the mesh in between
                 y0, y1 = MANGATE_PANEL[2:]
                 xa, xb = fixed - HOARD_T / 2 + sx, fixed + HOARD_T / 2 + sx
