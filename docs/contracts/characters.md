@@ -1,4 +1,4 @@
-# Contract: characters (v1.38)
+# Contract: characters (v1.39)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -455,3 +455,9 @@ u_out with no crossfade. Under 135° the 8-way switch with phase carry stays (fa
 * Two-handed: the left hand closes round the same handle at item (0, −0.28, 0) in every clip. Models put the head about 0.55 m up the
   handle (+Y) and the butt about 0.33 m below the origin.
 * MeleeDef.anim_set = `&"melee_heavy"` (B: sledgehammer, fire_axe). No A or P wiring beyond anim_set.
+
+## v1.39: police port-arms run carry (D-153 TAC ruling; D d2a2e3fd)
+* `hold_rifle_port_run`: hold_rifle_run's port-arms variant (the rifle diagonally across the chest at the sprint carry's frame, over
+  the run with the plain run's upright trunk; same frames / loop / events as run, frame-locked; SOURCE `loco_port`).
+* Police NPC rifles (TAC Light / Heavy and their faction looks) play it instead of hold_rifle_run while running and not aiming;
+  the crew keep hold_rifle_run. A: `anim_layers.update_hold`, NPC branch, police only, when the rig has the clip.
