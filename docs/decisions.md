@@ -1546,4 +1546,9 @@ From ENV B's review (game/content/docs/rt_early_alarm_balance.md, env/b-content 
 2. **RT early alarm:** the convoy arrives at min(convoy_eta_s, alarm + 25 s) (REVISED from +75 s, which landed the stop on wave 1's SUSTAIN; +25 s stops it inside ANTICIPATION, B fd41028a), so wave 1 fights over the trucks
    (police_delay_s stays 0, D-075). A re-measures 5 seeds each on Hazardous and Lethal (targets: Hazardous reaches the trucks
    opening on ≥ 3/5, Lethal 1-2/5, Cataclysm ≤ 1/5). B's first-assault Stinger cap for Lethal+ is held until then.
+   - Result at +25 s (A ce09f134): the stop lands at ~+33 s with only 2-3 police, but Hazardous is still 0/5; the crash
+     stop dismounts all 11 convoy units at once onto a 4-bot crew in the open. Ruling: **staggered crash dismount** (A):
+     escorts out first, the Vaultline crew and the TAC Heavy over the next ~6 s (the clean stop already staggers 4 s).
+     Re-measure Hazardous 5 seeds. If still < 3/5, the call is made on P's real-input run of a blown setup on Hazardous,
+     not on the bot: a human crew using cover is the target audience; the bot's convoy tactics stay a parked item.
 3. **Payday cards:** achievement-reward parts never drop (PD2; B 804c97f0).
