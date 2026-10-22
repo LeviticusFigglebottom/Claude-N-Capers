@@ -128,3 +128,32 @@ func test_glb_seats_are_plain_node3d() -> void:
 		var anim: AnimDriver = AnimDriver.of(u)
 		if anim != null:
 			assert_eq(anim.process_mode, Node.PROCESS_MODE_ALWAYS, "the pose keeps playing while paused")
+
+
+## D (round 274): a car occupant plays vehicle_exit_<side> from the seat (in place, starts seated) while its root slides
+## out over the clip, body paused; only then the brain runs. Without the clip it steps out at once.
+func test_car_occupant_slides_out_over_the_exit_clip() -> void:
+	_rt.stealth.raise_alarm(&"test")
+	await wait_physics_frames(3)
+	var car: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(0, 0, -12), func(n: Node) -> void:
+		(n as ConvoyVehicle).vehicle_kind = &"car") as ConvoyVehicle
+	await wait_physics_frames(2)
+	var units: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.patrol_officer", 1, &"", true, car)
+	assert_eq(units.size(), 1, "one unit")
+	if units.is_empty():
+		return
+	var u: NpcBase = units[0]
+	assert_true(u.visible, "a car occupant is visible")
+	var seat: Vector3 = u.global_position
+	var left: bool = car.to_local(seat).x >= 0.0
+	var exit_s: float = AnimDriver.of(u).vehicle_exit_length(left)
+	_rt.mission.dismount_units(units)
+	if exit_s <= 0.0:
+		assert_eq(u.process_mode, Node.PROCESS_MODE_INHERIT, "no exit clip on this rig: out at once")
+		return
+	assert_true(u.global_position.distance_to(seat) < 0.05, "starts at the seat")
+	assert_eq(u.process_mode, Node.PROCESS_MODE_DISABLED, "paused while the clip plays")
+	await wait_seconds(exit_s + 0.2)
+	assert_eq(u.process_mode, Node.PROCESS_MODE_INHERIT, "the brain runs after the clip")
+	assert_true(absf(car.to_local(u.global_position).x) > 1.5, "beside the car (x %.2f)" % car.to_local(u.global_position).x)
+	assert_eq(u.alert_state, Enums.AlertState.COMBAT, "awake: it is loud")

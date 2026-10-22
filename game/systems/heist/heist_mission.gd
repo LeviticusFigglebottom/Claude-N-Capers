@@ -342,29 +342,47 @@ func dismount_units(units: Array, step_m: float = 1.6) -> int:
 		npc.remove_meta(META_SEATED_IN)
 		var was_visible: bool = npc.visible
 		var left: bool = true
-		var pos: Vector3 = npc.global_position
+		var seat: Vector3 = npc.global_position
+		var pos: Vector3 = seat
 		if vehicle != null:
-			var local: Vector3 = vehicle.to_local(pos)
+			var local: Vector3 = vehicle.to_local(seat)
 			left = local.x >= 0.0  # facing +Z, local +x is the character's left (D: vehicle_exit_l)
 			var side: Vector3 = vehicle.global_basis.x.normalized() * (1.0 if left else -1.0)
-			pos = Vector3(pos.x, vehicle.global_position.y, pos.z) + side * (absf(local.x) + step_m)
+			pos = Vector3(seat.x, vehicle.global_position.y, seat.z) + side * (absf(local.x) + step_m)
 		var fwd: Vector3 = -npc.global_basis.z
 		var yaw: float = atan2(-fwd.x, -fwd.z) if Vector2(fwd.x, fwd.z).length() > 0.01 else 0.0
-		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # upright: a seat on a ramp (RT east) is tilted
-		npc.visible = true
-		var brain: Node = npc.get_node_or_null(^"Brain")
-		if brain != null and &"anim_hint" in brain and brain.get(&"anim_hint") == SEATED_HINT:
-			brain.set(&"anim_hint", &"")
-		npc.process_mode = Node.PROCESS_MODE_INHERIT
 		var anim: AnimDriver = AnimDriver.of(npc)
-		if anim != null:
-			anim.process_mode = Node.PROCESS_MODE_INHERIT
-			if was_visible:
-				anim.play_vehicle_exit(left)  # a car door (D); an armoured cab's crew just steps out beside it
-		if _runtime.went_loud and npc.alive:
-			npc.set_alert_state(Enums.AlertState.COMBAT)
+		var exit_s: float = anim.vehicle_exit_length(left) if anim != null and was_visible and vehicle != null else 0.0
 		n += 1
+		if exit_s > 0.0:
+			# D: the exit clip is in place and starts seated, the root on the footwell floor at the seat. The body
+			# stays paused (no collision through the door frame) while the root slides out over the clip, then the
+			# brain takes over.
+			npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), seat)  # upright: a seat on a ramp is tilted
+			anim.play_vehicle_exit(left)
+			var tw: Tween = create_tween()
+			tw.tween_property(npc, ^"global_position", pos, exit_s)
+			tw.tween_callback(_dismounted.bind(npc))
+			continue
+		npc.global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)  # an armoured cab's crew steps out beside it
+		_dismounted(npc)
 	return n
+
+
+## A unit is out of its vehicle: brain, motor and collision back on; into the fight if the heist is loud.
+func _dismounted(npc: NpcBase) -> void:
+	if not is_instance_valid(npc):
+		return
+	npc.visible = true
+	var brain: Node = npc.get_node_or_null(^"Brain")
+	if brain != null and &"anim_hint" in brain and brain.get(&"anim_hint") == SEATED_HINT:
+		brain.set(&"anim_hint", &"")
+	npc.process_mode = Node.PROCESS_MODE_INHERIT
+	var anim: AnimDriver = AnimDriver.of(npc)
+	if anim != null:
+		anim.process_mode = Node.PROCESS_MODE_INHERIT
+	if _runtime != null and _runtime.went_loud and npc.alive:
+		npc.set_alert_state(Enums.AlertState.COMBAT)
 
 
 ## The current faction has an EnemyDef `enemy_id` (spawn_units would spawn it).
