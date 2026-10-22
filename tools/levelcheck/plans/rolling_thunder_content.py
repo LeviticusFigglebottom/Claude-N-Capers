@@ -202,7 +202,7 @@ GATES: List[list] = [
     ["SiteVehicleGateS", "SG", "vehicle_gate", 1, "E", "BARRED", {}],
     # phase 2 (D-149.8): one industrial site gate across the 4.2 m Tannery opening (rolling_thunder_geometry
     # TANNERY_GAP), its leaves swinging out onto the sidewalk (the mixer waits inside), opened by A at the mixer move
-    # (meta opens_with), then the mixer drives out through it
+    # (objective_tag tannery_gate, A's lookup; meta opens_with), then the mixer drives out through it
     [
         "SiteTanneryGate",
         "SG",
@@ -210,7 +210,8 @@ GATES: List[list] = [
         0,
         "N",
         "BARRED",
-        {"opens_with": "mixer_move", "visual": "prop_door_site_gate_w400_h240", "width": 4.0, "kind": "industrial_door"},
+        {"opens_with": "mixer_move", "tag": "tannery_gate", "visual": "prop_door_site_gate_w400_h240", "width": 4.0,
+         "kind": "industrial_door"},
     ],
 ]
 
@@ -538,13 +539,13 @@ def always() -> Dict[str, List[list]]:
                     "travel_s": 8.0,
                     "capacity": 2,
                     "door_fold": True,
-                    "car_size_m": [2.2, 2.4, 2.2],
+                    "car_size_m": [2.6, 2.4, 2.7],   # = the car (P r278: thrown bags rest at the shaft's walls)
                     "objective_tag": "goods_lift",
                     "@landings": [["GoodsLiftLanding2", [0.0, 3.5, 0.0]], ["GoodsLiftLandingR", [0.0, 7.0, 0.0]]],
                 },
                 cp(4.5, 0.0, 3.6),
                 {"walkable": True, "group": "goods_lift"},
-                "prop_cash_lift_car_w240",
+                "prop_cash_lift_car_w260_l270",
             ),
         ],
         "Gameplay/Ladders": [

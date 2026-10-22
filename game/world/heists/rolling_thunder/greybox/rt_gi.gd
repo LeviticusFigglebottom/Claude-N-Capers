@@ -26,6 +26,10 @@ const SUN_COLOR: Color = Color(1.0, 0.8, 0.62)
 const SUN_ENERGY: float = 1.8
 const SUN_SHADOW_MODE: DirectionalLight3D.ShadowMode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 const SUN_SHADOW_MAX_DISTANCE: float = 60.0
+## The dust haze (depth fog): clear to HAZE_BEGIN_M, HAZE_MAX opacity at HAZE_END_M (the far ring of towers).
+const HAZE_BEGIN_M: float = 35.0
+const HAZE_END_M: float = 320.0
+const HAZE_MAX: float = 0.3
 
 ## RenderBudgetPolicy (D-146; GPU-21: rc_diner_dining drew 3,313 sun-shadow draws): dressing and small gameplay props
 ## inside the interior rooms cast no shadow (the diner's tables and chairs among them; the shell, finishes and exterior
@@ -89,8 +93,8 @@ func _init(builder: Object) -> void:
 
 ## 16:50, a low autumn sun down Tannery (doc §Audio/lighting; style guide §3 row): a clear procedural sky (blue
 ## overhead, a bright amber horizon, a visible low sun disc), a neutral daylight ambient so no shade goes black, sky
-## reflections, AgX, SSAO + SSIL, the one height-falloff dust haze (no volumetric fog, no FogVolumes, §Budgets) whose
-## sun scatter catches the light down Tannery, a strong glow on the sun axis (glare as bloom only, D-149 ruling 7) and
+## reflections, AgX, SSAO + SSIL, the one depth-fog dust haze (no volumetric fog, no FogVolumes, §Budgets) whose sun
+## scatter catches the light down Tannery, a strong glow on the sun axis (glare as bloom only, D-149 ruling 7) and
 ## lut_rolling_thunder (amber highlights, teal-green shadows, a lifted floor).
 func environment(lighting: Node3D) -> void:
 	var root: Node = b.get(&"map_root")
@@ -114,9 +118,11 @@ func environment(lighting: Node3D) -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	# the shade under the Skyway and in the decks reads teal-cool against the amber sun (the LUT pushes it further)
-	env.ambient_light_color = Color(0.58, 0.66, 0.7)
-	env.ambient_light_energy = 0.42
+	# the shade under the Skyway and in the decks reads teal-cool against the amber sun (the LUT pushes it further);
+	# 0.7 so the shade keeps its detail on the Compatibility path too (no SSAO / SSIL / VoxelGI bounce there: at 0.42
+	# the Skyway's shadow went near black in the r279 opengl3 review shots)
+	env.ambient_light_color = Color(0.62, 0.68, 0.72)
+	env.ambient_light_energy = 0.7
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
 	env.tonemap_exposure = 1.1
@@ -126,15 +132,21 @@ func environment(lighting: Node3D) -> void:
 	env.ssil_enabled = true
 	env.ssil_radius = 3.0
 	env.ssil_intensity = 0.5
-	# the dust haze: thin, held near the ground (height falloff), warm, with sun scatter down the sun axis
+	# the dust haze (the LEAD's review, r277: the height-falloff fog washed every exterior to beige and filled the
+	# diner): DEPTH fog, none within HAZE_BEGIN_M (the rooms, a character at 10 m), rising to HAZE_MAX at HAZE_END_M
+	# so only the far blocks and the skyline soften; no height term (it thickened everything near the ground, indoors
+	# too). Both renderers draw depth fog (Forward+ and the Compatibility path).
 	env.fog_enabled = true
-	env.fog_light_color = Color(0.82, 0.72, 0.6)
-	env.fog_density = 0.0025
-	env.fog_height = 3.0
-	env.fog_height_density = 0.12
-	env.fog_sun_scatter = 0.35
-	env.fog_sky_affect = 0.25
-	env.fog_aerial_perspective = 0.35
+	env.fog_mode = Environment.FOG_MODE_DEPTH
+	env.fog_depth_begin = HAZE_BEGIN_M
+	env.fog_depth_end = HAZE_END_M
+	env.fog_depth_curve = 1.4
+	env.fog_density = HAZE_MAX
+	env.fog_light_color = Color(0.8, 0.72, 0.62)
+	env.fog_height_density = 0.0
+	env.fog_sun_scatter = 0.2
+	env.fog_sky_affect = 0.2
+	env.fog_aerial_perspective = 0.0
 	env.glow_enabled = true
 	env.glow_intensity = 0.45
 	env.glow_bloom = 0.06
