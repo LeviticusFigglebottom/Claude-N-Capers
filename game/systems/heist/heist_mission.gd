@@ -416,7 +416,7 @@ func _dismounted(npc: NpcBase) -> void:
 	npc.process_mode = Node.PROCESS_MODE_INHERIT
 	var anim: AnimDriver = AnimDriver.of(npc)
 	if anim != null:
-		anim.process_mode = Node.PROCESS_MODE_INHERIT
+		_hold_anim(anim, false)
 	if _runtime != null and _runtime.went_loud and npc.alive:
 		npc.set_alert_state(Enums.AlertState.COMBAT)
 
@@ -441,7 +441,17 @@ func _seat(npc: NpcBase, vehicle: Node3D, driver: bool = false, shown: bool = fa
 	npc.process_mode = Node.PROCESS_MODE_DISABLED  # no brain, motor or collision until it gets out
 	var anim: AnimDriver = AnimDriver.of(npc)
 	if anim != null and npc.visible:
-		anim.process_mode = Node.PROCESS_MODE_ALWAYS  # holds sit_vehicle while the body is paused
+		_hold_anim(anim, true)  # sit_vehicle, then the exit clip, animate while the body is paused (D r283)
+
+
+## D r283: keep `anim` animating while its body is paused (a seated unit is PROCESS_MODE_DISABLED). The AnimationPlayer
+## sits in the body's visual subtree and inherits DISABLED, so it goes ALWAYS with the driver (the sit loop and the
+## vehicle_exit clip advance); off: both inherit again.
+static func _hold_anim(anim: AnimDriver, on: bool) -> void:
+	var mode: Node.ProcessMode = Node.PROCESS_MODE_ALWAYS if on else Node.PROCESS_MODE_INHERIT
+	anim.process_mode = mode
+	if anim.player != null:
+		anim.player.process_mode = mode
 
 
 func _unit_points(spawn_tag: StringName, vehicle: Node3D) -> Array[Node3D]:

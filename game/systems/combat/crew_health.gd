@@ -144,7 +144,8 @@ func dodge_chance() -> float:
 		var def: ArmorDef = ContentDB.armor(l.armor)
 		if def != null:
 			base = def.dodge
-	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add") + PerkHooks.dodge_add(self), 0.0, 1.0)  # perk hook
+	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add") + PerkHooks.dodge_add(self)  # perk hook
+		+ SkillTriggers.dodge_add(_crew), 0.0, 1.0)  # B2 concealment / sprint dodge
 
 
 ## A2-06 (L2.11): heal `amount` (clamped to max health); `reset_downs` (doctor bag) also restores
@@ -227,8 +228,11 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 			invuln_left = _gate_invuln(tw)  # L2.2 armor gate: the overflow is discarded
 	else:
 		armor_dmg = dmg
+	var had_armor: bool = armor > 0.0
 	armor -= armor_dmg
 	health = maxf(health - health_dmg, 0.0)
+	if had_armor and armor <= 0.0:
+		SkillTriggers.armor_broke(_crew)  # B2 Second Wind
 	regen_delay_left = _regen_delay(tw)
 	if armor_dmg + health_dmg > 0.0:
 		since_damage_s = 0.0
