@@ -103,9 +103,10 @@ static func make_variants() -> HeistVariantTable:
 		{"id": &"bonds_courier", "chance": 0.08, "good": true, "effects": {"bonds_courier": true}},
 		{"id": &"informant_tip", "chance": 0.06, "good": true,
 			"effects": {"reveal": [&"convoy_route", &"marshal_walk"]}},
-		# gold_rush pins trucks_3 (+ t3_bullion: one force_active per event; the second pin is A's mission, RT-A6)
+		# gold_rush pins trucks_3 + t3_bullion (force_active takes an Array of pins, A 02da5f92f)
 		{"id": &"gold_rush", "chance": 0.04, "good": true,
-			"effects": {"force_active": {"group": &"truck_count", "slot": &"trucks_3"}, "cargo_t3": &"t3_bullion"}},
+			"effects": {"force_active": [{"group": &"truck_count", "slot": &"trucks_3"},
+				{"group": &"cargo_t3", "slot": &"t3_bullion"}]}},
 		{"id": &"marshal_early", "chance": 0.08, "good": false, "effects": {"marshal_lead_s": 90.0}},
 		{"id": &"convoy_early", "chance": 0.06, "good": false, "effects": {"convoy_eta_add_s": -45.0}},
 		{"id": &"crane_sniper", "chance": 0.08, "good": false, "min_difficulty": Enums.Difficulty.BRUTAL,

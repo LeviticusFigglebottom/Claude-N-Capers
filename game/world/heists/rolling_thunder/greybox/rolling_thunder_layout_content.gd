@@ -433,7 +433,7 @@ const ALWAYS: Dictionary = {
 		["marker", "ConvoyMarker", [0.0, 0.0, -14.0], 0.0, "convoy", "the convoy's HUD marker (moves until the stop: B mocks it)"],
 		["marker", "AmbushMarker", [0.0, 0.0, 0.0], 0.0, "ambush", "the stop (clean or crash)"],
 		["marker", "MarshalMarker", [-6.0, 0.0, -16.0], 0.0, "marshal", "the route marshal's scout car stops here (scripted)"],
-		["marker", "ChargesMarker", [-23.0, 0.0, -50.5], 0.0, "charges", "TODO(A5-03): the magazine's C4 boxes (item_pickup)"],
+		["marker", "ChargesMarker", [-23.0, 0.0, -50.5], 0.0, "charges", "the magazine's C4 boxes (item_pickup)"],
 		["marker", "TrucksMarker", [-6.0, 0.0, -38.0], 0.0, "trucks", "the trucks (the active ConvoyLayout set)"],
 		["marker", "CargoMarker", [-6.0, 0.0, -38.0], 0.0, "cargo", "the trucks' cargo (loot_spawn behind the rear doors)"],
 		["marker", "EscortMarker", [-6.0, 0.0, -18.0], 0.0, "escort", "the escort / Vaultline crews (bonus)"],
@@ -547,8 +547,14 @@ const SLOT_ITEMS: Dictionary = {
 	],
 	"ctrl_open": [["marker", "ControllerAjar", [-16.0, 0.0, -13.85], 0.0, "", "the cabinet door ajar (no padlock)"]],
 	"stores_c4": [
-		["marker", "C4Box1", [-23.5, 0.0, -51.0], 0.0, "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"],
-		["marker", "C4Box2", [-22.5, 0.0, -51.0], 0.0, "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)"],
+		[
+			"prefab", "item_pickup", "C4Box1", [-23.5, 0.0, -51.0], 0.0,
+			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
+		],
+		[
+			"prefab", "item_pickup", "C4Box2", [-22.5, 0.0, -51.0], 0.0,
+			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
+		],
 	],
 	"stores_thermite": [
 		[
@@ -558,8 +564,14 @@ const SLOT_ITEMS: Dictionary = {
 		],
 	],
 	"stores_both": [
-		["marker", "C4Box1", [-23.5, 0.0, -51.0], 0.0, "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"],
-		["marker", "C4Box2", [-22.5, 0.0, -51.0], 0.0, "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)"],
+		[
+			"prefab", "item_pickup", "C4Box1", [-23.5, 0.0, -51.0], 0.0,
+			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
+		],
+		[
+			"prefab", "item_pickup", "C4Box2", [-22.5, 0.0, -51.0], 0.0,
+			{"item_id": "item.c4", "count": 4, "objective_tag": "charges"}, null, {}, "prop_c4_box",
+		],
 		[
 			"prefab", "loot_spawn", "ThermiteBag", [-47.5, 0.0, -20.5], 180.0,
 			{"loot_id": "loot.thermite", "count": 1, "objective_tag": "thermite"}, [-47.5, 0.0, -18.8], {},

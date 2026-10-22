@@ -29,6 +29,7 @@ const PREFAB_CLASSES: Dictionary = {
 	"alarm_button": "AlarmButton", "phone": "Phone", "body_container": "BodyContainer", "ladder": "Ladder",
 	"secure_zone": "SecureZone", "escape_zone": "EscapeZone", "bag_lift": "BagLift", "padlock": "Padlock",
 	"convoy_vehicle": "ConvoyVehicle", "armored_truck": "ArmoredTruck", "burn_point": "BurnPoint",
+	"item_pickup": "ItemPickup",
 }
 ## Greybox surface classes -> library material (the bullet surface follows the material, surface_map.json).
 const CLASS_MAT: Dictionary = {

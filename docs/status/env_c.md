@@ -6,6 +6,59 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-22, **The car-park barrier is placed (open, arm raised) on the forecourt by the entrance (22.35, -12.4).**
+  - The arm is raised because the entrance is the marshal's walk route and a police entry, and a down arm would
+    need a collider across it. It stands in the open because the Deck 2 parapet is over the opening.
+  - **The height bars need no props.** The G1 `EntranceHeightBar` lintel (2.4-2.7 m) and the trench `HeightBar`
+    (4.4 m, wall to wall at x 62) are the doc's bars, already finished. My batch-3 note that they had no stand-in was
+    wrong; the two height-bar props stay unplaced.
+  - Gate: regen twice byte-identical; validate greybox and final PASS; navmesh 3,809; c test_rt_ 6/6; a test_rt_a6
+    4/4.
+  - **Phase 2 (the mixer and the Tannery gate): this is a proposal and needs A. Nothing is built.**
+    - **Current state:**
+      - A's `_mixer_move` sets layouts `mixer_gone` / `tannery_open` if the map has them.
+      - Nothing implements the gates' `opens_with = mixer_move`.
+      - `ConvoyLayouts` can switch a layout on, but it cannot remove start-state bodies such as the closed gates.
+    - **Proposal:**
+      1. (C) A `Mixer` ConvoyVehicle (veh_mixer_truck) waits in the site at MixerTruck's spot.
+      2. (C) Each convoy layout gets a `MixerStop` and a `MixerPath` (the site → the Tannery gate → across the
+         convoy's front for a clean stop, or the junction centre for a crash). The layout's whole-map nav bake
+         includes the mixer at its stop and the Tannery gates open.
+      3. (A) At `_mixer_move`: open the Door prefabs tagged `tannery_gate` (unbar + open), then drive `Mixer` along
+         the active layout's `MixerPath` to its `MixerStop`.
+      - With this, the `mixer_gone` / `tannery_open` layouts are not needed. For the 3 s between a clean stop and the
+        mixer move, the nav already shows the mixer in the junction, which I think is acceptable.
+- 2026-10-22, **RT-C2 G2: the lighting lane, the audio lane, the C4 boxes and the police livery.**
+  - **Lighting (ed5ed8ed, new rt_gi.gd, copied and adapted from of_gi.gd):**
+    - Final 16:50 environment: AgX, SSAO/SSIL, one height-falloff dust haze with sun scatter (no volumetric fog),
+      glow on the sun axis, and the new `lut_rolling_thunder` (texgen gsr; built twice, identical).
+    - Sun at 245° / 9°, 3800 K, 2 cascades over 60 m.
+    - 22 street / plaza / roof-deck lamps are off in daylight (fixtures stay).
+    - 6 shadowed lights: the sun, 2 underpass battens, 1 per car-park deck, 1 diner pendant (§Budgets ≤ 8).
+    - VoxelGI for the car park (128) and the diner (64). The bake runs here under xvfb (lavapipe) and is
+      byte-identical over two bakes.
+    - 23 reflection probes; 125 box occluders (walls, slabs, hoarding, neighbours, Skyway deck).
+    - RenderBudgetPolicy: interior dressing casts no shadows. **rc_diner_dining is no longer over 4,000 draws**;
+      the only perf warn left is the top-down plan cam (4,254).
+  - **Audio (73ec9b55):**
+    - `rolling_thunder` music in F minor on a 148 grid: stealth (74 half-time), control, anticipation, assault, fade,
+      win and lose.
+    - Beds: amb_skyway_street, amb_underpass (the freight train baked in, 96 s), amb_diner and amb_site.
+    - Cues: cue.convoy_approach, convoy_brake, mixer_ram, signal_click and truck_doors_open.
+    - All within the loudness rules, and built twice identical.
+    - The map now places its Audio node: 19 beds, the CuePlayer and the MusicDirector.
+  - **C4:** the magazine's C4Box1/2 are now A's `item_pickup` (item.c4 ×4, tag charges, `prop_c4_box`), no longer
+    G1 markers.
+  - **Escort livery:** `veh_escort_car` has white door panels with POLICE on both flanks (the city's police escort).
+  - **For the LEAD:**
+    - (a) QC-85: the 5 cues and 4 beds are not in audio_cues.md (v1.8).
+    - (b) The freight train is in the bed, so A cannot hold it back during a Phantom charge. If you want that, I'll
+      build a separate `cue.freight_train_pass` one-shot for A to schedule.
+    - (c) A triggers the one-shots (sighted / stop / ram / signals / truck open).
+  - **GPU re-render: every RT review shot** (the environment, LUT and GI changed everywhere). The convoy shots also
+    show the livery.
+  - **Still open for G2:** the car-park barrier and height bars (built, not placed), the mixer / tannery layouts
+    (phase 2), and review of the shots.
 - 2026-10-22, **D-153 handover: trunk d1ecb0b6 merged; D's convoy fit and diner cower fixes in; the drive-in is live.**
   - **Convoy seats (D's fit, env_d.md):** in each mover's space every `Seat*` now faces +Z (the front).
     - Escort car seats sit on the footwell floor (y 0.18), with the rear row at z -0.95 (rows 1.2 m apart).
