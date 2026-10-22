@@ -65,6 +65,7 @@ const WRECKER: StringName = &"enemy.wrecker"
 const TAG_CIV_STREET: StringName = &"civ_street"
 const TAG_CIV_DINER: StringName = &"civ_diner"
 const TAG_LIFT_BREAKER: StringName = &"lift_breaker"
+const PAUSE_CABINET: StringName = &"cabinet_locked"
 ## Diner customers (doc Cast: 2-5 in the booths): 3, rush_hour adds its extra_diner_customers (+2).
 const DINER_CUSTOMERS: int = 3
 const RNG_STREAM: StringName = &"rt_mission"
@@ -143,6 +144,8 @@ var _opened: Dictionary = {}
 var _said: Dictionary = {}
 var _escape_called: bool = false
 var _movers_left: int = 0
+## Every mover is on its stop (the layout is in and the stop's objectives are up).
+var _stop_done: bool = false
 ## Last published [trucks opened, escort down] (the poll publishes only changes).
 var _last_counts: Vector2i = Vector2i(-1, -1)
 
@@ -197,9 +200,27 @@ func _apply_rare_setup() -> void:
 	thin_civilians(TAG_CIV_DINER, diner)
 	if _slot_active(&"goods_lift", &"lift_dead"):
 		_power_lift(false)
+	if _slot_active(&"controller", &"ctrl_locked"):
+		_lock_cabinet()
 	set_sniper_perches_open(PERCH_CRANE, _rare(RARE_CRANE))
 	if _runtime != null and _runtime.difficulty < Enums.Difficulty.HAZARDOUS:
 		set_sniper_perches_open(PERCH_ASHBY, false)
+
+
+## doc Variants controller: ctrl_locked = the cabinet's padlock (8 s pick, or cut) before the rig can be worked; the
+## rig is paused (blocked) until the padlock is off.
+func _lock_cabinet() -> void:
+	var rig: HackTerminal = null
+	var lock: Padlock = null
+	for n: Node in find_tagged(TAG_SIGNALS):
+		if n is HackTerminal:
+			rig = n as HackTerminal
+		elif n is Padlock:
+			lock = n as Padlock
+	if rig == null or lock == null or lock.opened:
+		return
+	rig.pause(PAUSE_CABINET)
+	lock.lock_opened.connect(func(_how: StringName) -> void: rig.resume(PAUSE_CABINET), CONNECT_ONE_SHOT)
 
 
 func _power_lift(on: bool) -> void:
@@ -313,6 +334,13 @@ func _on_alarm(_reason: StringName) -> void:
 		_say_once(VO_ALERTED)
 		_say_once(VO_POLICE)
 		return
+	if not _stop_done:
+		return  # the drive-in: _stopped() springs it with [trucks] / [escort] up (B's HUD run: no empty objective line)
+	_spring_ambush()
+
+
+## The ambush is on: [ambush] done, Mercer's go, the police line, the dismount (the stop's objectives are already up).
+func _spring_ambush() -> void:
 	_complete_once(&"ambush")
 	_say_once(VO_GO)
 	start_timer(&"police_line", maxf(police_delay_s, 0.1), func() -> void: _say_once(VO_POLICE))
@@ -380,6 +408,7 @@ func _mover_stopped() -> void:
 
 ## Every vehicle is on its stop marker: swap the layout in, units, trucks, then the window (clean) or the impact (crash).
 func _stopped() -> void:
+	_stop_done = true
 	set_layout(layout_id)
 	if _slot_active(&"truck_count", &"trucks_2"):
 		_drop_vehicle("T3")
@@ -406,9 +435,11 @@ func _stopped() -> void:
 		return
 	_say_once(VO_REYES_CRASH, {}, SPEAKER_REYES)
 	_mixer_move()
-	if went_loud:
+	if alerted:
 		_complete_once(&"ambush")  # an early alarm: the crash is the ambush (no second alarm comes)
 		_dismount_all()
+	elif went_loud:
+		_spring_ambush()  # the alarm came during the drive-in
 	else:
 		raise_alarm(&"ambush")
 
