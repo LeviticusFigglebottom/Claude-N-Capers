@@ -38,6 +38,8 @@ const UNREACH_RECHECK_S: float = 10.0
 const TRUCK_BURN_M: float = 6.0
 ## _open_gate_toward: a padlock this close (m) to where a short navmesh path ends is the gate in the way.
 const GATE_LOCK_M: float = 10.0
+## _open_gate_toward: longest stay at a gate whose device runs (a saw through a padlock with jams) (heist s).
+const GATE_WAIT_S: float = 150.0
 ## Give up carrying one bag to the van after this long (s).
 const CARRY_LIMIT_S: float = 300.0
 
@@ -249,9 +251,20 @@ func _open_gate_toward(stand: Vector3) -> bool:
 	f.note("gate: %s %.1f m from where the path to %s ends: opening it" % [best.owner_node().get_path(), best_d,
 		Po5Pilot._v(stand)])
 	p.watch_point = Vector3.INF
-	await p.use(best, 45.0, func() -> bool: return not best.enabled or (best.owner_node() as Padlock).opened)
-	if is_instance_valid(best) and best.enabled and not (best.owner_node() as Padlock).opened:
-		_mark_if_unreached(best)
+	var lock: Padlock = best.owner_node() as Padlock
+	var t0: float = rt.heist_time_s
+	# A placed saw / drill runs on: stay at the gate, defend it, fix its jams (pad1002: the saw jammed, the pilot had
+	# walked off) until the lock is off.
+	while is_instance_valid(lock) and not lock.opened and rt.heist_time_s - t0 < GATE_WAIT_S and not _ended:
+		if best.enabled and best.availability(p.crew) == &"":
+			await p.use(best, 45.0, func() -> bool: return lock.opened or best.availability(p.crew) != &"")
+			if is_instance_valid(lock) and not lock.opened and best.availability(p.crew) == &"":
+				_mark_if_unreached(best)  # nothing placed: the walk or the hold failed
+				break
+		else:
+			await p.hold_position(3.0, func() -> bool: return lock.opened or _ended)
+	if is_instance_valid(lock) and lock.opened:
+		f.note("gate: %s open at %.0f s" % [lock.get_path(), rt.heist_time_s])
 	return true
 
 
