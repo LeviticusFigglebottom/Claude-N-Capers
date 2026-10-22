@@ -104,6 +104,7 @@ func _first_step(from: Control, to: Control) -> int:
 
 
 func _press(target: Control, label: String) -> bool:
+	print("RTWALK step %s (t=%.0f s)" % [label, Time.get_ticks_msec() / 1000.0])
 	if not await _nav_to(target, label):
 		return false
 	await _key(KEY_ENTER)

@@ -11,7 +11,7 @@ const SCENE_PATH: String = OUT_DIR + "rolling_thunder.tscn"
 ## D-144 / D-149 hold: until G1 is approved and ENV B's RT-B1 values land, the def stays off the registry's
 ## `<id>_def.tres` convention (HeistRegistry.ids()), so RT is not a registered heist (B's catalogue tests, menus).
 ## At G1 approval rename it back to "rolling_thunder_def.tres".
-const DEF_PATH: String = OUT_DIR + "rolling_thunder_wip_def.tres"
+const DEF_PATH: String = OUT_DIR + "rolling_thunder_def.tres"   # the convention path (HeistRegistry, B r278)
 const VARIANTS_PATH: String = OUT_DIR + "rolling_thunder_variants.tres"
 
 

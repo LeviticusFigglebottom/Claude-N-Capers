@@ -6,6 +6,29 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-22, **The r277 haze regression is fixed, plus P's ramp STUCK and the GoodsLift count box, and the RT def is at
+  its convention path.**
+  - **Haze (rt_gi.gd):**
+    - The height-falloff exponential fog thickened everything near the ground (indoors too), so it is replaced by
+      DEPTH fog: nothing within 35 m, rising to 0.3 at 320 m. Rooms and characters at 10 m are clear; only the far
+      blocks and the skyline soften.
+    - lut_rolling_thunder no longer lifts the blacks: contrast 1.0 (was 0.96, which raised black to about 0.02) and
+      the offset is 0.002.
+    - Ambient raised to 0.7 so the Skyway's shade keeps detail on the Compatibility path (it has no SSAO / SSIL /
+      VoxelGI bounce).
+    - Evidence: new tool game/world/tools/rt_haze_review.tscn (opengl3). It renders the junction, booth and dining
+      review cams, a street NPC at 3 m and 10 m, and a diner customer at 3 m.
+  - **Ramp STUCK:**
+    - The deck-2 strip guards' bake obstruction is grown by 0.1 m (GUARD_NAV_PAD), so the navmesh keeps 0.4 m off
+      them and around their ends; the crew capsule is 0.35 m.
+    - New test test_rt_ramp_guards fails on the old map (0.29 m) and passes now.
+  - **GoodsLift:**
+    - New car prop_cash_lift_car_w260_l270 fills LF's shaft (at least 5 cm clear), and car_size_m is [2.6, 2.4, 2.7],
+      the car.
+    - New test test_rt_goods_lift_throw: at all 3 landings, two bags in a row (weights 0 and 3, level and looking
+      down) are both counted. It FAILS on the old map and PASSES now.
+  - **RT def:** git mv to game/world/heists/rolling_thunder/rolling_thunder_def.tres (same uid); the generator writes
+    only that file now. B has been told.
 - 2026-10-22, **Phase 2 (the mixer and the Tannery gate), C side built (approved by the LEAD).**
   - **What A gets on the map:**
     - **The mover:** `<route slot>/Convoy/Movers/Mixer` is a ConvoyVehicle (veh_mixer_truck_mover; Seat0 driver on +X
