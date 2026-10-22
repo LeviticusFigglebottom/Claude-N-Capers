@@ -539,6 +539,7 @@ func _tick_down_states(delta: float) -> bool:
 func flash(seconds: float) -> void:
 	if _crew == null or not Net.is_authority() or seconds <= 0.0 or _crew.crew_state != Enums.CrewState.NORMAL:
 		return
+	seconds *= Modifiers.mult(_slot(), &"defense.flashbang_duration_mult")  # B4b Thick Skin
 	flashed_left = maxf(flashed_left, seconds)
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.interaction != null:

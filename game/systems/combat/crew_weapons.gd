@@ -74,6 +74,8 @@ var involuntary_fire: bool = false:
 			involuntary_spread_mult = 1.0
 			involuntary_pitch_up_deg = 0.0
 var involuntary_spread_mult: float = 1.0
+## B4a: aiming down sights this tick (the intent's aim; weapon.hip_fire_rate_mult applies while false).
+var aiming: bool = false
 var involuntary_pitch_up_deg: float = 0.0
 ## B4-18 (presentation + HUD): bow draw 0..1 while the trigger is held, minigun spin 0..1.
 var charge: float = 0.0
@@ -310,6 +312,7 @@ func damage_at(ws: int, distance: float) -> float:
 	var ai: float = Tweak.crew().ai_damage_mult if _crew != null and _crew.is_ai else 1.0  # PO6-15: PD2 bots hit soft
 	var rm: float = maxf(float(s.ammo.get("range_mult", 1.0)), 0.01)  # D-118: ammo range scales the falloff
 	var per_pellet: float = float(maxi(s.stats.pellets, 1)) / float(maxi(s.pellets, 1))  # D-118: per-shot total kept
+	rm *= Modifiers.mult(slot, &"weapon.falloff_range_mult", s.qualifier)  # B4a Long Barrel: falloff distances x value
 	return s.stats.damage * per_pellet * CombatSystem.falloff_mult(s.stats, distance / rm) \
 		* Modifiers.mult(slot, &"weapon.damage_mult", s.qualifier) * ai * SkillTriggers.berserk_mult(_crew, true)  # B1
 
@@ -359,6 +362,7 @@ func mag_size(ws: int) -> int:
 ## Authority: every physics tick for every crew member (CrewController._tick_server_actions).
 func server_tick(intent: CrewIntent, delta: float) -> void:
 	_server_clock += delta
+	aiming = intent.aim
 	_tick_timers(delta)
 	_handle_controls(intent)
 	if intent.gadget and not _prev_gadget:
@@ -374,6 +378,7 @@ func server_tick(intent: CrewIntent, delta: float) -> void:
 
 ## Owning client of a remote human: predicted firing; claims go to the server.
 func client_tick(intent: CrewIntent, delta: float) -> void:
+	aiming = intent.aim
 	_tick_timers(delta)
 	_handle_controls(intent)
 	_try_fire(intent)
@@ -454,6 +459,7 @@ func _finish_reload() -> void:
 	reload_finished.emit(equipped_slot)
 	ammo_changed.emit(equipped_slot)
 	_sync_ammo(equipped_slot)
+	SkillTriggers.reload_done(_crew)  # B4b: "next reload" kill buffs are spent
 
 
 func _try_fire(intent: CrewIntent) -> void:
@@ -695,11 +701,16 @@ func _spread_deg(s: WeaponState, intent: CrewIntent) -> float:
 	var base: float = s.stats.spread_deg_ads * tw.ads_spread_mult if intent.aim else s.stats.spread_deg_hip  # D-131
 	var hv: float = Vector2(_crew.velocity.x, _crew.velocity.z).length()
 	var mult: float = tw.spread_mult_still
+	var moving: bool = hv > tw.moving_speed_threshold
 	if _crew.crouched:
 		mult = tw.spread_mult_crouched  # D-097: PD2 crouching row (moving or not)
-	elif hv > tw.moving_speed_threshold:
+	elif moving:
 		mult = tw.spread_mult_moving
-	return maxf(base * mult * Modifiers.mult(_crew.slot, &"weapon.spread_mult", s.qualifier), 0.0)
+	var q: StringName = s.qualifier
+	var skill: float = Modifiers.mult(_crew.slot, &"weapon.moving_spread_mult" if moving else &"weapon.still_spread_mult", q)
+	if not intent.aim:
+		skill *= Modifiers.mult(_crew.slot, &"weapon.hip_spread_mult", q)  # B4a Hip Discipline / Steady Aim / Snap Shot
+	return maxf(base * mult * skill * Modifiers.mult(_crew.slot, &"weapon.spread_mult", q), 0.0)
 
 
 ## Direction inside a cone of half-angle `deg` around `fwd` (`rng`, default GameRng &"spread"; shots use the
@@ -807,6 +818,8 @@ func server_check_shot(claim: Dictionary) -> StringName:
 ## Seconds between shots: 60 / rpm / weapon.fire_rate_mult (A4-04; higher mult = faster).
 func _shot_interval(s: WeaponState) -> float:
 	var m: float = Modifiers.mult(_crew.slot, &"weapon.fire_rate_mult", s.qualifier) if _crew != null else 1.0
+	if _crew != null and not aiming:
+		m *= Modifiers.mult(_crew.slot, &"weapon.hip_fire_rate_mult", s.qualifier)  # B4a Hip Fire
 	return 60.0 / maxf(s.stats.fire_rate_rpm * maxf(m, 0.01), 1.0)
 
 

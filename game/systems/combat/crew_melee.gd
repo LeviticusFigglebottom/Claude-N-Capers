@@ -132,10 +132,9 @@ func _strike() -> void:
 	var amount: float = base * Modifiers.mult(_crew.slot, &"weapon.damage_mult", DAMAGE_QUALIFIER) * _bloodthirst_mult() \
 		* PerkHooks.melee_damage_mult(_crew) * SkillTriggers.berserk_mult(_crew, false)  # perk.infiltrator; B1 Berserker
 	var center: Vector3 = (best as Node3D).global_position + Vector3(0.0, 1.0, 0.0) if best is Node3D else eye
-	var crit: float = SkillTriggers.roll_crit(_crew)  # B2
-	var info: Dictionary = Damage.info(amount * crit, Enums.DamageType.MELEE, Enums.HitZone.BODY,
+	var info: Dictionary = Damage.info(amount, Enums.DamageType.MELEE, Enums.HitZone.BODY,
 		def.id if def != null else &"melee.bash", center, fwd, _crew.net_id)
-	info["crit"] = crit > 1.0
+	info["crit"] = SkillTriggers.roll_crit(_crew)  # B2: the target applies it (D-027 QB-29)
 	CombatSystem.deliver_hit(best, info, _crew.net_id)
 	ShotFx.melee_hit(_crew, eye, center, best)  # PO-8: shot_fx (&"melee") here + relayed (impact_fx.md)
 	_bloodthirst_kills = 0
