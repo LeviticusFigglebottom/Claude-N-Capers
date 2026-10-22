@@ -76,7 +76,7 @@ func test_crit_chance_from_concealment_and_the_roll() -> void:
 	_set_dr(0, 40)
 	assert_eq(SkillTriggers.crit_chance(_crew(0)), 0.0, "over the threshold DR: nothing")
 	Modifiers.set_source(0, &"test.crit", {&"weapon.crit_chance_add": 1.0})
-	assert_eq(SkillTriggers.roll_crit(_crew(0)), CombatTweak.data().crit_damage_mult, "a sure crit rolls the mult")
+	assert_true(SkillTriggers.roll_crit(_crew(0)), "a sure crit rolls")
 	var me: CrewController = _crew(0)
 	var aim: Vector3 = me.aim_direction()
 	var npc: NpcBase = _an_enemy(me.global_position + Vector3(aim.x, 0.0, aim.z).normalized() * 1.0)

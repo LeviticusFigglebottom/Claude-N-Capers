@@ -15,7 +15,8 @@
 ## Batch 2 (crits and dodge):
 ##   crit_chance(): weapon.crit_chance_add [ADD] + weapon.crit_per_concealment {per_step, points_per_step, threshold_dr,
 ##     max} (PD2 Low Blow, Cheap Shot: per_step per points_per_step detection-risk points under threshold_dr, at most
-##     max); roll_crit() on GameRng "crit" (CombatSystem bullets, CrewMelee) multiplies by CombatTweak.crit_damage_mult.
+##     max); roll_crit() on GameRng "crit" (CombatSystem bullets, CrewMelee) sets info.crit: the target then applies
+##     its HEAD multiplier on any zone (D-027 QB-29, as in PD2; NpcBase).
 ##   weapon.unseen_strike {idle_s, crit_add, duration} (PD2 Unseen Strike, Ambusher): idle_s without damage taken
 ##     gives +crit_add crit for as long as it lasts, and `duration` s after the next hit (CrewBuffs "unseen_strike").
 ##   dodge_add(): defense.dodge_per_concealment (PD2 Sneaky Bastard, Slippery; same shape as Low Blow) +
@@ -37,6 +38,22 @@
 ##     first-aid kit takes damage x damage_taken_mult for duration s.
 ##   seen_by_enemy(): defense.bleedout_pause_unseen (Playing Possum): the bleedout pauses while no enemy has line of
 ##     sight to the downed holder (CrewHealth).
+## Batch 4b (combat triggers; the weapon class comes from the hit's / kill's weapon_id, "melee" for melee):
+##   weapon.kill_reload_buff [LIST] {trigger auto_kills / melee_kill / headshot_kill, kills, classes, reload_mult,
+##     duration, min_mult, mag_falloff, mag_falloff_from} (Run and Gun, Wind Up, Reload Rhythm): `kills` qualifying
+##     kills give weapon.reload_speed_mult x reload_mult (falling mag_falloff per round of magazine past
+##     mag_falloff_from, not below min_mult) for `duration` s, or (duration 0) until the next reload ends.
+##   weapon.hit_stack_buff [LIST] {class, stat damage / accuracy, per_hit, max_stacks, duration} (Hot Streak, Rhythm):
+##     each hit with the class adds a stack (damage x (1 + per_hit x stacks), or spread x (1 - per_hit x stacks)).
+##   weapon.headshot_refund {classes, headshots, window, refund} (Economy): that many headshots within `window` s put
+##     `refund` rounds back in the magazine.
+##   weapon.graze {class, radius, frac, headshot_kill_frac} (Grazing Fire): a hit with the class deals frac (a headshot
+##     kill: headshot_kill_frac) of its damage to the other enemies within radius m of the target.
+##   weapon.stagger_chance_add [ADD, class] (Knockdown): the chance a hit stuns a non-special enemy for
+##     CombatTweak.skill_stagger_s.
+##   defense.outnumbered {enemies, radius, damage_mult, damage_taken_mult, duration} (Outnumbered): with `enemies`+
+##     alive enemies within radius m, damage x damage_mult and damage taken x damage_taken_mult, held `duration` s.
+##   (weapon.body_expertise: CombatSystem / NpcBase; defense.flashbang_duration_mult: CrewHealth.flash.)
 class_name SkillTriggers
 extends Node
 
@@ -49,6 +66,10 @@ const BUFF_SECOND_WIND: StringName = &"second_wind"
 const BUFF_REVIVE_TARGET: StringName = &"revive_target"
 const BUFF_POST_REVIVE: StringName = &"post_revive"
 const BUFF_MEDICAL: StringName = &"medical_user"
+const BUFF_OUTNUMBERED: StringName = &"outnumbered"
+## CrewBuffs tag of a kill reload buff that lasts until the next reload ends (duration 0).
+const TAG_NEXT_RELOAD: StringName = &"next_reload"
+const NEXT_RELOAD_CAP_S: float = 600.0
 ## An enemy farther than this cannot see a downed member (Playing Possum line of sight) ◇.
 const POSSUM_SIGHT_M: float = 60.0
 
@@ -62,6 +83,12 @@ var _stagger_left: Dictionary[int, float] = {}
 var _reviving_left: Dictionary[int, float] = {}
 ## first-aid kit instance id -> seconds until it may auto-revive again (Field Kit)
 var _fak_cd: Dictionary[int, float] = {}
+## "slot:entry" -> qualifying kills counted (kill reload buffs) / hit stacks
+var _kill_counts: Dictionary[String, int] = {}
+var _stacks: Dictionary[String, int] = {}
+## slot -> clock times of qualifying headshots (Economy)
+var _headshots: Dictionary[int, Array] = {}
+var _clock: float = 0.0
 var _runtime: HeistRuntime = null
 
 
@@ -86,9 +113,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	for slot: int in _bullseye_cd:
 		_bullseye_cd[slot] = maxf(_bullseye_cd[slot] - delta, 0.0)
+	_clock += delta
 	if not Net.is_authority() or _runtime == null:
 		return
 	for crew: CrewController in _runtime.crew_members():
+		_tick_outnumbered(crew)
 		_tick_unseen_strike(crew)
 		_tick_stagger_window(crew, delta)
 		_tick_reviving(crew, delta)
@@ -176,6 +205,7 @@ func _on_npc_killed(_npc_net_id: int, killer_net_id: int, info: Dictionary) -> v
 	if crew.crew_state == Enums.CrewState.DOWNED:
 		_self_revive(crew)
 	_overkill(crew, StringName(info.get("weapon_id", &"")))
+	_kill_reload(crew, info)
 
 
 func _on_damage_applied(victim_net_id: int, attacker_net_id: int, info: Dictionary) -> void:
@@ -185,10 +215,150 @@ func _on_damage_applied(victim_net_id: int, attacker_net_id: int, info: Dictiona
 	var npc: NpcBase = Ids.lookup(victim_net_id) as NpcBase
 	if npc == null:
 		return
-	if staggers(crew) and npc.alive and not (npc.enemy_def != null and npc.enemy_def.is_special):
+	var special: bool = npc.enemy_def != null and npc.enemy_def.is_special
+	if staggers(crew) and npc.alive and not special:
 		npc.stun(CombatTweak.data().armor_broken_stagger_s)  # B2 Cornered
-	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD:
+	var head: bool = int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD
+	if head:
 		_bullseye(crew)
+	if bool(info.get("graze", false)):
+		return  # B4b: a graze hit triggers nothing more
+	var cls: StringName = weapon_class_of(info)
+	var stagger: float = Modifiers.add(crew.slot, &"weapon.stagger_chance_add", cls)
+	if npc.alive and not special and stagger > 0.0 and GameRng.stream(&"stagger").randf() < stagger:
+		npc.stun(CombatTweak.data().skill_stagger_s)  # B4b Knockdown
+	_hit_stacks(crew, cls)
+	if head:
+		_headshot_refund(crew, cls, StringName(info.get("weapon_id", &"")))
+	_graze(crew, npc, info, cls, head)
+
+
+## B4b: the weapon class of a hit / kill ("melee" for a melee weapon or melee damage, &"" when unknown).
+static func weapon_class_of(info: Dictionary) -> StringName:
+	var id: StringName = StringName(info.get("weapon_id", &""))
+	var def: WeaponDef = ContentDB.weapon(id) if id != &"" else null
+	if def != null:
+		return Enums.weapon_class_qualifier(def.weapon_class)
+	if int(info.get("type", -1)) == Enums.DamageType.MELEE or (id != &"" and ContentDB.melee(id) != null):
+		return &"melee"
+	return &""
+
+
+func _kill_reload(crew: CrewController, info: Dictionary) -> void:
+	var cls: StringName = weapon_class_of(info)
+	var head: bool = int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD
+	var entries: Array[Dictionary] = Modifiers.list(crew.slot, &"weapon.kill_reload_buff")
+	for i: int in entries.size():
+		var e: Dictionary = entries[i]
+		var classes: Array = e.get("classes", [])
+		var in_class: bool = classes.is_empty() or classes.has(String(cls))
+		var ok: bool = false
+		match String(e.get("trigger", "")):
+			"auto_kills":
+				var def: WeaponDef = ContentDB.weapon(StringName(info.get("weapon_id", &"")))
+				ok = in_class and def != null and def.fire_modes.has(&"auto")
+			"melee_kill":
+				ok = cls == &"melee"
+			"headshot_kill":
+				ok = head and in_class
+		if not ok:
+			continue
+		var k: String = "%d:%s:%s" % [crew.slot, e.get("_source", ""), e.get("trigger", "")]
+		_kill_counts[k] = _kill_counts.get(k, 0) + 1
+		if _kill_counts[k] < int(e.get("kills", 1)):
+			continue
+		_kill_counts[k] = 0
+		var mag: int = crew.weapons.mag_size(crew.weapons.equipped_slot) if crew.weapons != null else 0
+		var past: float = maxf(float(mag - int(e.get("mag_falloff_from", 0))), 0.0)
+		var mult: float = maxf(float(e.get("reload_mult", 1.0)) - float(e.get("mag_falloff", 0.0)) * past,
+			float(e.get("min_mult", 1.0)))
+		var dur: float = float(e.get("duration", 0.0))
+		CrewBuffs.of(_runtime).grant(crew.slot, StringName("kill_reload.%s" % e.get("_source", i)), {&"weapon.reload_speed_mult": mult},
+			dur if dur > 0.0 else NEXT_RELOAD_CAP_S, [] if dur > 0.0 else [TAG_NEXT_RELOAD])
+
+
+## CrewWeapons hook (null-safe): `crew` finished a reload: the "next reload" kill buffs are spent.
+static func reload_done(crew: CrewController) -> void:
+	var rt: HeistRuntime = HeistRuntime.of(crew) if crew != null else null
+	var buffs: CrewBuffs = rt.service(CrewBuffs.SERVICE) as CrewBuffs if rt != null else null
+	if buffs == null or not Net.is_authority():
+		return
+	for source: StringName in (buffs._buffs.get(crew.slot, {}) as Dictionary).keys():
+		if (((buffs._buffs[crew.slot] as Dictionary)[source] as Dictionary).get("tags", []) as Array).has(TAG_NEXT_RELOAD):
+			buffs.end(crew.slot, source)
+
+
+func _hit_stacks(crew: CrewController, cls: StringName) -> void:
+	var entries: Array[Dictionary] = Modifiers.list(crew.slot, &"weapon.hit_stack_buff")
+	var buffs: CrewBuffs = CrewBuffs.of(_runtime)
+	for i: int in entries.size():
+		var e: Dictionary = entries[i]
+		if StringName(e.get("class", &"")) != cls:
+			continue
+		var source: StringName = StringName("hit_stack.%s.%s" % [e.get("_source", i), e.get("stat", "")])
+		var k: String = "%d:%s" % [crew.slot, source]
+		var n: int = mini((_stacks.get(k, 0) if buffs.active(crew.slot, source) else 0) + 1, int(e.get("max_stacks", 1)))
+		_stacks[k] = n
+		var per: float = float(e.get("per_hit", 0.0)) * float(n)
+		var values: Dictionary = {StringName("weapon.damage_mult.%s" % cls): 1.0 + per} if String(e.get("stat", "")) == "damage" \
+			else {StringName("weapon.spread_mult.%s" % cls): maxf(1.0 - per, 0.1)}
+		buffs.grant(crew.slot, source, values, float(e.get("duration", 0.0)))
+
+
+func _headshot_refund(crew: CrewController, cls: StringName, weapon_id: StringName) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"weapon.headshot_refund")
+	if p.is_empty() or not (p.get("classes", []) as Array).has(String(cls)) or crew.weapons == null:
+		return
+	var times: Array = _headshots.get(crew.slot, [])
+	times.append(_clock)
+	var window: float = float(p.get("window", 0.0))
+	times = times.filter(func(t: float) -> bool: return _clock - t <= window)
+	_headshots[crew.slot] = times
+	if times.size() < int(p.get("headshots", 1)):
+		return
+	_headshots[crew.slot] = []
+	var w: CrewWeapons = crew.weapons
+	for ws: int in [Enums.WeaponSlot.PRIMARY, Enums.WeaponSlot.SECONDARY]:
+		if w.has_weapon(ws) and w.weapon_id(ws) == weapon_id:
+			w.set_ammo(ws, mini(w.mag(ws) + int(p.get("refund", 1)), w.mag_size(ws)), w.reserve(ws))
+			return
+
+
+func _graze(crew: CrewController, npc: NpcBase, info: Dictionary, cls: StringName, head: bool) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"weapon.graze")
+	if p.is_empty() or StringName(p.get("class", &"")) != cls:
+		return
+	var kill: bool = bool(info.get("killed", false)) or not npc.alive  # damage_applied fires before alive flips
+	var frac: float = float(p.get("headshot_kill_frac" if head and kill else "frac", 0.0))
+	var dmg: float = float(info.get("amount", 0.0)) * frac
+	var radius: float = float(p.get("radius", 0.0))
+	if dmg <= 0.0 or radius <= 0.0:
+		return
+	for n: Node in get_tree().get_nodes_in_group(G.ENEMY):
+		var other: NpcBase = n as NpcBase
+		if other == null or other == npc or not other.alive or other.global_position.distance_to(npc.global_position) > radius:
+			continue
+		var g: Dictionary = Damage.info(dmg, Enums.DamageType.BULLET, Enums.HitZone.BODY, StringName(info.get("weapon_id", &"")),
+			other.global_position, Vector3.ZERO, crew.net_id)
+		g["graze"] = true
+		CombatSystem.deliver_hit(other, g, crew.net_id)
+
+
+## Outnumbered: refreshed every tick the holder has `enemies`+ alive enemies within radius m.
+func _tick_outnumbered(crew: CrewController) -> void:
+	var p: Dictionary = Modifiers.params(crew.slot, &"defense.outnumbered")
+	if p.is_empty() or crew.crew_state != Enums.CrewState.NORMAL:
+		return
+	var radius: float = float(p.get("radius", 0.0))
+	var n: int = 0
+	for node: Node in get_tree().get_nodes_in_group(G.ENEMY):
+		var npc: NpcBase = node as NpcBase
+		if npc != null and npc.alive and npc.global_position.distance_to(crew.global_position) <= radius:
+			n += 1
+	if n < int(p.get("enemies", 1)):
+		return
+	CrewBuffs.of(_runtime).grant(crew.slot, BUFF_OUTNUMBERED, {&"weapon.damage_mult.all": float(p.get("damage_mult", 1.0)),
+		&"defense.damage_taken_mult": float(p.get("damage_taken_mult", 1.0))}, float(p.get("duration", 0.0)))
 
 
 ## Overkill: the kill weapon's class against each granted entry's trigger_class.
@@ -350,12 +520,10 @@ static func crit_chance(crew: CrewController) -> float:
 		+ per_concealment(crew, &"weapon.crit_per_concealment"), 0.0, 1.0)
 
 
-## B2: roll a crit for `crew`'s hit (server; GameRng "crit"). The damage multiplier when it crits, else 1.
-static func roll_crit(crew: CrewController) -> float:
+## B2: roll a crit for `crew`'s hit (server; GameRng "crit"). True: the hit is a crit (info.crit, D-027 QB-29).
+static func roll_crit(crew: CrewController) -> bool:
 	var c: float = crit_chance(crew)
-	if c <= 0.0 or GameRng.stream(&"crit").randf() >= c:
-		return 1.0
-	return CombatTweak.data().crit_damage_mult
+	return c > 0.0 and GameRng.stream(&"crit").randf() < c
 
 
 ## B2: dodge `crew` adds from its concealment (Sneaky Bastard) and from sprinting (Duck and Cover).
