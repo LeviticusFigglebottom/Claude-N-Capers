@@ -297,3 +297,43 @@ func test_rt_escort_knobs_reach_the_convoy() -> void:
 			held += 1
 	assert_true(damped >= 6, "every convoy unit hits at x0.7 after the stop (%d)" % damped)
 	assert_true(held_any and held >= 1, "the escorts that got out hold fire (%d)" % held)
+
+
+## D-158 amendment 9: at a CLEAN stop the rear car (and its TAC Heavy) stops at RearStop on both truck counts (RtTweak
+## rear_close_up_clean ships false), >= 42 m behind LeadStop on both routes; the crash stop keeps trucks_2's close-up.
+func test_clean_stop_rear_car_holds_back_on_both_routes_and_truck_counts() -> void:
+	var path: String = HeistLauncher.map_path(RT_HEIST, {})
+	if path == "" or not ResourceLoader.exists(path):
+		skip("rolling_thunder map not on this branch")
+		return
+	assert_false(RtTweak.data().rear_close_up_clean, "shipped: no close-up at a clean stop")
+	var m: RollingThunderMission = await _rt_stop(true)
+	var map: Node = (load(path) as PackedScene).instantiate()  # both routes' layouts (the variant frees the other)
+	var saved: Variant = _rt.variants.get(&"truck_count")
+	for route: String in ["north", "east"]:
+		for trucks: StringName in [&"trucks_2", &"trucks_3"]:
+			_rt.variants[&"truck_count"] = [trucks]
+			for mode: String in ["clean", "crash"]:
+				var layout: Node3D = _layout_in(map, "%s_%s" % [route, mode])
+				assert_true(layout != null, "%s_%s exists" % [route, mode])
+				var lead: Node3D = m._stop_marker(layout, "Lead")
+				var rear: Node3D = m._stop_marker(layout, "Rear")
+				var d: float = lead.position.distance_to(rear.position)
+				if mode == "clean":
+					assert_true(d >= 42.0, "%s %s clean: rear %.1f m behind LeadStop" % [route, trucks, d])
+					assert_eq(String(rear.name), "RearStop", "%s %s clean: RearStop" % [route, trucks])
+				elif trucks == &"trucks_2":
+					assert_eq(String(rear.name), "RearStop2", "%s crash keeps the close-up" % route)
+	RtTweak.data().rear_close_up_clean = true
+	_rt.variants[&"truck_count"] = [&"trucks_2"]
+	assert_eq(String(m._stop_marker(_layout_in(map, "east_clean"), "Rear").name), "RearStop2", "the knob restores it")
+	RtTweak.data().rear_close_up_clean = false
+	_rt.variants[&"truck_count"] = saved
+	map.free()
+
+
+func _layout_in(map: Node, id: String) -> Node3D:
+	for n: Node in map.find_children("*", "Node3D", true, false):
+		if String(n.get_meta(&"convoy_layout", "")) == id:
+			return n as Node3D
+	return null

@@ -12,3 +12,4 @@ wave1_exclude_min_difficulty = 2
 escort_engage_delay_s = 1.5
 escort_accuracy_mult = 0.7
 escort_accuracy_window_s = 10.0
+rear_close_up_clean = false

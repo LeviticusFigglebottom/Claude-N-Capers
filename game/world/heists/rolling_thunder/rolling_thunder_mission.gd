@@ -485,11 +485,13 @@ func _convoy_arrives() -> void:
 			v.park(leg[1] as Node3D)
 
 
-## `<Veh>Stop` in `layout`; on trucks_2 the rear car closes up behind T2 at `RearStop2` when the layout has one (C).
+## `<Veh>Stop` in `layout`; on trucks_2 the rear car closes up behind T2 at `RearStop2` when the layout has one (C),
+## at a clean stop only with RtTweak.rear_close_up_clean (D-158 amendment 9).
 func _stop_marker(layout: Node3D, veh: String) -> Node3D:
 	if layout == null:
 		return null
-	if veh == "Rear" and _slot_active(&"truck_count", &"trucks_2"):
+	var clean: bool = String(layout.get_meta(&"convoy_layout", "")).ends_with("_clean")
+	if veh == "Rear" and _slot_active(&"truck_count", &"trucks_2") and (not clean or RtTweak.data().rear_close_up_clean):
 		var short: Node3D = layout.get_node_or_null(NodePath(veh + STOP_SUFFIX + "2")) as Node3D
 		if short != null:
 			return short
