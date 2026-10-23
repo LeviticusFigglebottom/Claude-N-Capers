@@ -1632,3 +1632,12 @@ pd2_fidelity lists Hacker as the first "further deck" (S8.7 pocket ECM, P4 row).
    it jams like the ECM (pagers, cameras, phones) but cannot open doors / ATMs; in loud it does feedback per PD2. Replicated,
    behaviour-tested; this removes the last UNHOOKED ratchet key.
 3. **B (now):** S10.6: pin the D-120 bag-value table and the bag share of a full clear in a test (golden values).
+
+## D-162: Further perk decks, batch 1: Yakuza, Biker, Maniac (2026-10-23, LEAD; B sizing)
+B's sizing ranked the pd2_fidelity "further decks" by new A behaviour. Batch 1 = the three cheapest:
+- **Yakuza** (S): one per-tick health-scaled scaler (armor regen and move speed rise as health falls below the threshold; card 9 moves the threshold to 50%).
+- **Biker** (S-M): kill → health + armor, at most N per window, scaled by missing health/armor. Needs a shared **crew-kill event**
+  (any teammate's kill), which also serves Hacker card 9 (crew_kill_heal).
+- **Maniac** (M): Hysteria stacks from damage dealt → flat absorb, with decay; the crew shares the best holder's; replicated.
+B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac hooks + the crew-kill event. Values per PD2
+(docs/research/pd2_research.md). Next candidates: Sicario, Tag Team; then Leech, Copycat.
