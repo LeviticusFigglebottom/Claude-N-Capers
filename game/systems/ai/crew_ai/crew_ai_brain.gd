@@ -440,7 +440,7 @@ func _revive_threat(c: CrewController, delta: float) -> NpcBase:
 	if c.net_id != _clear_for_net_id:
 		_clear_for_net_id = c.net_id
 		_clear_spent_s = 0.0
-	for role: StringName in HOSTILE_ROLES if tweak.cuffer_score_mult < 1.0 else []:  # LEAD r288: a cuffer first
+	for role: StringName in HOSTILE_ROLES if tweak.cuffer_clear_first and tweak.cuffer_score_mult < 1.0 else []:
 		for n: Node in _rt.npcs(role):
 			var cop: NpcBase = n as NpcBase
 			if cop != null and _is_hostile(cop) and _is_cuffing(cop) \

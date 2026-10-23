@@ -34,6 +34,8 @@ static func apply_levers() -> String:
 		t.escort_accuracy_mult = ESCORT_ACCURACY
 	elif mode == "nocuff":  # LEAD r288 A/B baseline: the bots' cuffer priority off (cuffer_score_mult 1.0)
 		ct.cuffer_score_mult = 1.0
+	elif mode == "cuffscore":  # LEAD r288 split: target scoring only, no clear-first at the patient
+		ct.cuffer_clear_first = false
 	return "levers %s: window_from %s, wave1_exclude %s (>= diff %d), cover_prefer %.1f, escort delay %.1f s acc x%.2f, cuffer x%.2f" % [
 		mode if mode != "" else "defaults", t.truck_window_from, t.wave1_exclude, t.wave1_exclude_min_difficulty,
 		ct.cover_prefer_behind_leader_m, t.escort_engage_delay_s, t.escort_accuracy_mult, ct.cuffer_score_mult]

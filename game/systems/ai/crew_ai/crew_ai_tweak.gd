@@ -93,6 +93,8 @@ extends Resource
 ## LEAD r288 (RT done path: downs -> cuffs -> custody): a cop going for / applying the cuffs on a downed teammate
 ## (PoliceBrain mode &"cuff") scores its distance x this, so a bot that sees it shoots it before anything else ◇.
 @export var cuffer_score_mult: float = 0.15
+## LEAD r288: a cop cuffing the patient within revive_clear_m is cleared before kneeling, even in a last stand ◇.
+@export var cuffer_clear_first: bool = true
 ## L2.12 / L6.1: a CUFFED crew member whose arresting officer is alive within this distance (m) is freed only once the
 ## officer is down or gone (freed next to him, he re-arrests after the D-108 grace, before the 6 s revive ends) ◇.
 @export var arrester_guard_m: float = 3.0
