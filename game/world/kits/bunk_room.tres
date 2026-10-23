@@ -25,8 +25,8 @@ counts = {
 }
 assets = {
 &"bag": PackedStringArray("prop_bag_floor"),
-&"bed": PackedStringArray("prop_bed_queen"),
+&"bed": PackedStringArray("prop_sh_bunk_bed"),
 &"rug": PackedStringArray("prop_rug_rect")
 }
 ceiling = {}
-notes = "Safehouse BK bunk room (5 x 4.5 m): two beds (the G0's bunk beds wait for their asset), four personal lockers (two banks), duffels, a bedside table and lamp."
+notes = "Safehouse BK bunk room (5 x 4.5 m): two bunk beds (4 berths), four personal lockers (two banks), duffels, a bedside table and lamp."

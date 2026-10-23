@@ -6,7 +6,7 @@
 script = ExtResource("1_kit")
 id = &"armory_workshop"
 purpose = &"workshop"
-required_items = Array[StringName]([&"lockers", &"shelving", &"crate", &"box"])
+required_items = Array[StringName]([&"gun_cabinet", &"shelving", &"crate", &"box"])
 optional_items = {
 &"bin": 1,
 &"fire_extinguisher": 1,
@@ -17,14 +17,15 @@ clutter_groups = {}
 min_density = 0.1
 max_density = 0.8
 min_props = 6
-lone_ok_kinds = Array[StringName]([&"lockers", &"shelving", &"crate", &"fire_extinguisher"])
+lone_ok_kinds = Array[StringName]([&"gun_cabinet", &"shelving", &"crate", &"fire_extinguisher"])
 seed_salt = 4804
 counts = {
-&"lockers": Vector2i(2, 2)
+&"gun_cabinet": Vector2i(2, 2)
 }
 assets = {
+&"gun_cabinet": PackedStringArray("prop_sh_gun_cabinet"),
 &"shelving": PackedStringArray("prop_shelving_parts"),
 &"stool": PackedStringArray("prop_stool_shop")
 }
 ceiling = {}
-notes = "Safehouse WS workshop (6 x 7 m): two locked gun cabinets on the north wall (lockers stand in), parts shelving on wall z 7, ammo crates, a stool where it fits. The armory bench and its pegboard are the station (its approach is kept clear)."
+notes = "Safehouse WS workshop (6 x 7 m): two locked gun cabinets, parts shelving on wall z 7, ammo crates, a stool where it fits. The armory bench and its pegboard are the station (its approach is kept clear)."

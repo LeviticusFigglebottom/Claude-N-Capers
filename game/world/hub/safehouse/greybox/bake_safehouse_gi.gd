@@ -8,7 +8,7 @@
 extends SceneTree
 
 const L: GDScript = preload("res://world/hub/safehouse/greybox/safehouse_layout.gd")
-const SCENE_PATH: String = "res://world/hub/safehouse/safehouse_g1.tscn"
+const SCENE_PATH: String = "res://world/hub/safehouse/safehouse.tscn"
 const OUT_DIR: String = "res://world/hub/safehouse/"
 
 

@@ -1,7 +1,7 @@
 ## Review screenshot renderer (level_standards §8). Owner: ENV C. Needs a GPU/xvfb (not headless):
 ## xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --path game --resolution 1920x1080 \
 ##   res://world/tools/review_shots.tscn -- --heist=<id> --stage=<g1|g2|g3> [--plan] [--out=<dir>]
-##   [--scene=<res path>] [--cameras=a,b] [--warmup=<frames>]
+##   [--scene=<res path>] [--cameras=a,b] [--warmup=<frames>] [--probe-warmup=<frames per probe>]
 ## Renders every HeistMap.review_cameras node (Marker3D: meta fov, caption; TopDown*: orthographic,
 ## meta size) to <out>/<camera>.jpg (JPEG, <= 400 KB), contact_sheet.jpg and shots.md.
 ## --plan instead renders one top-down floor plan per floor (cut at floor + 1.5 m) with
@@ -18,6 +18,7 @@ const MAX_BYTES: int = 400000
 const PLAN_CUT: float = 1.5
 const PLAN_DEPTH: float = 2.5
 const BP_MAX_BYTES: int = 1000000
+const PROBE_WARM_FRAMES: int = 24
 const BP_GROUND: Color = Color(0.09, 0.22, 0.42)
 const BP_FLOOR: Color = Color(0.13, 0.29, 0.52)
 const BP_LINE: Color = Color(0.93, 0.96, 1.0)
@@ -78,6 +79,7 @@ func _main() -> void:
 	add_child(_cam)
 	_cam.make_current()
 	var warm: int = int(args.get("warmup", "12"))
+	await _warm_probes(int(args.get("probe-warmup", str(PROBE_WARM_FRAMES))))
 	if blueprint:
 		var label: String = heist if heist != "" else String(_map.name)
 		var extra: String = ""
@@ -117,6 +119,27 @@ func _ensure_lighting(plan: bool) -> void:
 		sun.light_energy = 0.6 if has_light else 1.0
 		sun.shadow_enabled = false
 		add_child(sun)
+
+
+## UPDATE_ONCE ReflectionProbes render only once a camera sees them, over ~14-20 frames. Library metals
+## (ORM metallic) have no diffuse, so until their probe has rendered they read black whenever the
+## environment's reflected light source is disabled. Visit every such probe from its own centre first so
+## the first shot never catches it unrendered (black-faces root cause, LEAD approval (a)).
+func _warm_probes(frames: int) -> void:
+	if frames <= 0:
+		return
+	var probes: Array[ReflectionProbe] = []
+	for n: Node in _map.find_children("*", "ReflectionProbe", true, false):
+		var rp: ReflectionProbe = n as ReflectionProbe
+		if rp.visible and rp.update_mode == ReflectionProbe.UPDATE_ONCE:
+			probes.append(rp)
+	for rp: ReflectionProbe in probes:
+		_cam.projection = Camera3D.PROJECTION_PERSPECTIVE
+		_cam.global_transform = Transform3D(Basis.IDENTITY, rp.global_position)
+		for i: int in range(frames):
+			await get_tree().process_frame
+	if not probes.is_empty():
+		print("  warmed %d reflection probe(s), %d frames each" % [probes.size(), frames])
 
 
 func _apply_camera(n: Node3D) -> void:

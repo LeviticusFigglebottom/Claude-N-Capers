@@ -199,13 +199,17 @@ static func _on_rect_edge(r: Rect2, pos: Vector3, along_x: bool) -> bool:
 		and pos.z < r.end.y
 
 
-## Everything the dressing leaves alone: the stations' bodies (and the wall-hung ones' faces) and their UsePoint
+## Everything the dressing leaves alone: the stations' bodies and hero art (and the wall-hung ones' faces) and their UsePoint
 ## approaches, the spawns / return markers, the review cameras' standpoints, the props (the van, the wall fixtures) and
 ## the explicit fixtures' floor footprints.
 func _collect() -> void:
 	for st: Node in _root.get_node("Stations").get_children():
 		for body: Node in st.find_children("*", "StaticBody3D", true, false):
 			_boxes.append(_body_box(body as StaticBody3D).grow(0.1))
+		var art: Node3D = st.get_node_or_null("Visual/Art") as Node3D
+		if art != null:   # D's hero art (convex collision): its catalog model box
+			var ab: AABB = _b.call(&"_catalog_aabb", String(art.get_meta(&"art_asset")))
+			_boxes.append((_b.call(&"global_xform", art) as Transform3D) * ab.grow(0.1))
 		var up: Node3D = st.get_node_or_null("UsePoint") as Node3D
 		if up != null:
 			var u: Vector3 = _b.call(&"global_xform", up).origin
