@@ -4,6 +4,7 @@
 ## nearest enemy, fire, reload). Every CHECK_S the replicated state (LoopbackProbe.of_state: phase, loud, objectives,
 ## doors, prefabs, bags, NPC positions) of each client is compared with the host's (a discrete mismatch is re-checked
 ## RETRIES times before it counts as a desync; positions within a tolerance), and memory is sampled on every peer.
+## test_a4_03_two_humans_two_bots_soak: the same with one client process and two AI teammates (the common co-op crew).
 ## Fails on: a client that does not join or build its replica, a desync that persists, memory growth past
 ## MEM_GROWTH_MB on any peer, or a peer that drops. SCRIPT ERROR lines of the clients go to this process's stdout
 ## (inherited), so the CI runner fails on them like on ours (D-047). Duration: SOAK_S, or env CAPER_SOAK_S (a long
@@ -47,6 +48,7 @@ func after_each() -> void:
 	if _probe != null and is_instance_valid(_probe):
 		_probe.queue_free()
 	_probe = null
+	_reports = {}
 	Net.leave()
 	await wait_frames(2)
 
@@ -57,6 +59,18 @@ func _soak_s() -> float:
 
 
 func test_a4_03_four_peer_soak() -> void:
+	await _soak(CLIENTS)
+
+
+## LEAD: bots in co-op are the common case. The host and one client process, Net.fill_with_ai gives the other two
+## slots to AI teammates (CrewAiBrain on the host, replicated like any crew member).
+func test_a4_03_two_humans_two_bots_soak() -> void:
+	await _soak(1)
+	if _rt != null:
+		assert_eq(_rt.crew_members().filter(func(c: CrewController) -> bool: return c.is_ai).size(), 2, "two bots")
+
+
+func _soak(clients: int) -> void:
 	var soak_s: float = _soak_s()
 	var timeout_s: int = int(soak_s) + 240
 	var port: int = _host()
@@ -70,7 +84,7 @@ func test_a4_03_four_peer_soak() -> void:
 		if not _reports.has(peer):
 			_reports[peer] = {}
 		(_reports[peer] as Dictionary)[kind] = data)
-	for i: int in CLIENTS:
+	for i: int in clients:
 		var pid: int = OS.create_process(OS.get_executable_path(), PackedStringArray([
 			"--headless", "--path", ProjectSettings.globalize_path("res://"), CLIENT_SCENE, "--", "--port=%d" % port,
 			"--timeout=%d" % timeout_s]))
@@ -78,13 +92,13 @@ func test_a4_03_four_peer_soak() -> void:
 			fail("client %d could not be spawned" % i)
 			return
 		_pids.append(pid)
-	var joined: bool = await wait_until(func() -> bool: return Net.human_slots().size() >= CLIENTS + 1, 90.0)
-	assert_true(joined, "%d clients joined (%d humans)" % [CLIENTS, Net.human_slots().size()])
+	var joined: bool = await wait_until(func() -> bool: return Net.human_slots().size() >= clients + 1, 90.0)
+	assert_true(joined, "%d clients joined (%d humans)" % [clients, Net.human_slots().size()])
 	if not joined:
 		return
 	var map_env: String = OS.get_environment("CAPER_SOAK_MAP")
 	var heist: StringName = StringName(map_env) if map_env != "" else SOAK_MAP
-	_rt = await HeistLauncher.launch(heist, SEED, Enums.Difficulty.HAZARDOUS, get_tree().root, {"skip_casing": true})
+	_rt = await HeistLauncher.launch(heist, SEED, Enums.Difficulty.HAZARDOUS, get_tree().root, {"skip_casing": true, "crew_ai": true})
 	assert_true(_rt != null, "the host launched")
 	if _rt == null:
 		return
@@ -121,8 +135,9 @@ func test_a4_03_four_peer_soak() -> void:
 				desyncs.append("round %d peer %d: %s" % [rounds, p, "; ".join(d.slice(0, 4))])
 	var mem1: Dictionary = await _memory(peers)
 	var npcs: int = _rt.npcs().size()
-	print("PERF soak %s %.0f s, %d peers, %d check rounds, %d NPCs at the end, loud %s" % [_rt.heist_id, soak_s,
-		peers.size() + 1, rounds, npcs, _rt.went_loud])
+	var bots: int = _rt.crew_members().filter(func(c: CrewController) -> bool: return c.is_ai).size()
+	print("PERF soak %s %.0f s, %d peers + %d bots, %d check rounds, %d NPCs at the end, loud %s" % [_rt.heist_id, soak_s,
+		peers.size() + 1, bots, rounds, npcs, _rt.went_loud])
 	for k: Variant in mem0:
 		assert_true(int(mem0[k]) > 0 and int(mem1.get(k, 0)) > 0, "memory sampled on %s" % k)
 		var grow: float = (float(mem1.get(k, 0)) - float(mem0[k])) / 1048576.0
