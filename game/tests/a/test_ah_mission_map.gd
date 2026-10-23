@@ -123,3 +123,28 @@ func test_vip_party_guests_spawn_only_on_the_event() -> void:
 	var guests: Array = m.call(&"spawn_civilians", &"civ_vip")
 	assert_eq(guests.size(), 6, "the six VIPGuest spawns")
 
+
+
+## P AH read #3: Bag_cash_bricks2 was pushed out of the safe's solid box to (33.6, 4.2, 20.8), behind it, unreachable.
+## The open safe's bags stay on their shelves and a crew member at the safe's use point can aim at every one.
+func test_safe_cash_stays_on_the_shelves_and_is_aimable() -> void:
+	if _pending():
+		return
+	var m: HeistMission = await _launch_real()
+	m.call(&"open_safe", &"code")
+	await wait_seconds(2.0)
+	var safe: Safe = m.find_tagged(&"safe")[0] as Safe
+	var interior: AABB = safe.interior_aabb().grow(0.05)
+	var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	_rt.teleport_crew(0, safe.use_point.global_transform)
+	await wait_physics_frames(3)
+	var n: int = 0
+	for b: LootBag in lm.bags():
+		if b.loot_id != &"loot.cash_bricks":
+			continue
+		n += 1
+		var local: Vector3 = safe.global_transform.affine_inverse() * b.global_position
+		assert_true(interior.has_point(local), "%s on its shelf (local %s)" % [b.name, local])
+		assert_true(_rt.interaction._has_los(c, c.eye_position(), b.interactable), "%s aimable from the use point" % b.name)
+	assert_true(n >= 4, "the safe cash spawned (%d)" % n)
