@@ -166,8 +166,27 @@ func _items_state() -> Dictionary:
 
 
 func _use_deck_item() -> void:
-	await pilot.inp.tap(&"throw_item")
+	var c: CrewController = pilot.crew
+	var used: Array[StringName] = []
+	var on_used: Callable = func(id: StringName, _k: StringName) -> void: used.append(id)
+	c.throwables.deck_item_used.connect(on_used)
+	var perks: CrewPerks = PerkHooks.of(c)
+	var pt: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable if perks != null else null
+	note("G: masked %s, state %d, bag %s, perks %s, item %s" % [c.masked, c.crew_state, c.is_carrying_bag(),
+		perks.components.keys() if perks != null else [], pt.item_id() if pt != null else &"-"])
+	var edges: int = 0
+	pilot.inp.press(&"throw_item")
+	for _k: int in 3:
+		await get_tree().physics_frame
+		edges += 1 if c.intent != null and c.intent.throw_item else 0
+	pilot.inp.release(&"throw_item")
 	await wait_s(0.4)  # the FP use pose is up (FpViewmodelDeck)
+	note("G: intent.throw_item on %d of 3 ticks, deck_item_used %s" % [edges, used])
+	if used.is_empty():
+		_row("G uses the deck item (real input)", "FAIL", "intent edges %d, no deck_item_used; direct PerkHooks.use_throwable %s"
+			% [edges, PerkHooks.use_throwable(c)], "P input / A perk.throwable")
+		await wait_s(0.4)
+	c.throwables.deck_item_used.disconnect(on_used)
 
 
 # --- decks ----------------------------------------------------------------------------------------------------------
