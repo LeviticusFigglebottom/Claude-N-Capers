@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"club_lounge"
+purpose = &"bar"
+required_items = Array[StringName]([&"vending", &"fire_extinguisher"])
+optional_items = {
+&"bin": 1,
+&"plant": 0.6
+}
+clutter_groups = {}
+min_density = 0
+max_density = 1
+min_props = 2
+lone_ok_kinds = Array[StringName]([&"vending", &"fire_extinguisher", &"plant", &"bin"])
+seed_salt = 4802
+counts = {}
+assets = {
+&"plant": PackedStringArray("prop_plant_tall"),
+&"vending": PackedStringArray("prop_ah_cigarette_machine")
+}
+ceiling = {"prop_downlight": 3}
+notes = "AH G7 under the circle: the booths and high tables are the map's; the kit adds the cigarette machine (the alcove), an extinguisher and downlights in the circle's soffit."

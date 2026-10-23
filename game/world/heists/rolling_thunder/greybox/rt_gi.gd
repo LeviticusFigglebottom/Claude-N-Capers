@@ -64,14 +64,13 @@ const GI_VOLUMES: Array = [
 		VoxelGI.SUBDIV_64, false],
 ]
 
-## Sun stops (LEAD r309, rc_diner_office): a windowless room the low sun (9 deg) still reaches through its thin walls
-## (the 2-split, 60 m cascades cannot hold a 0.2-0.4 m wall at that angle: a soft dark cone on the east wall where the
-## facade's shadow does land). One shadows-only box filling the room (inset 5 cm from the wall faces, slab to slab):
-## its sun-facing faces sit nearer the light than anything inside, so nothing in the room takes direct sun. No visual,
-## no collider, no GI. [node name, AABB min, AABB max].
-const SUN_STOPS: Array = [
-	["SunStopOF", Vector3(22.15, -0.05, 26.15), Vector3(26.85, 3.15, 31.75)],
-]
+## Sun-skip rooms (LEAD r309, rc_diner_office): windowless rooms the low sun (9 deg) still reaches through the walls,
+## a stippled soft-shadow cone over the office's east wall (gone with the sun hidden; GI, SSIL and the probe ruled
+## out). Their interior finish (Geometry/Finish/Visual_R_<room>: the inner wall faces, floor and ceiling) moves from
+## render layer 1 to SUN_SKIP_LAYER, which the sun's light_cull_mask leaves out: the fixtures still light it, the sun
+## cannot (it still casts the sun's shadows: shadow_caster_mask is untouched). Layer 5 as OF's of_gi.SUN_SKIP_LAYER.
+const SUN_SKIP_ROOMS: Array[String] = ["OF"]
+const SUN_SKIP_LAYER: int = 1 << 4
 
 ## Rooms (purposes) without a reflection probe: the exteriors and the roof deck (sky), the stairs, ramps and the lift
 ## shaft (no box to project into), the electrical and janitor closets (matte, small).
@@ -177,6 +176,7 @@ func environment(lighting: Node3D) -> void:
 	sun.light_color = SUN_COLOR
 	sun.light_energy = SUN_ENERGY
 	sun.light_angular_distance = 0.5
+	sun.light_cull_mask = 0xFFFFFFFF & ~SUN_SKIP_LAYER
 	sun.shadow_enabled = true
 	sun.shadow_blur = 1.5
 	sun.directional_shadow_mode = SUN_SHADOW_MODE
@@ -198,31 +198,24 @@ func build() -> void:
 	counts["voxelgi"] = voxel_gi(lighting, root)
 	counts["probes"] = reflection_probes(_holder(lighting, "ReflectionProbes", root), root)
 	counts["occluders"] = occluders(_holder(lighting, "Occluders", root), root)
-	counts["sun_stops"] = sun_stops(_holder(lighting, "SunStops", root), root)
+	counts["sun_skip"] = sun_skip(root)
 	_render_budget_policy(lighting, root)
-	print("rt_gi: %d lamps off, %d shadowed fixtures, %d VoxelGI, %d reflection probes, %d occluders, %d sun stops" % [
+	print("rt_gi: %d lamps off, %d shadowed fixtures, %d VoxelGI, %d reflection probes, %d occluders, %d sun-skip rooms" % [
 		counts["lamps_off"], counts["shadowed"], counts["voxelgi"], counts["probes"], counts["occluders"],
-		counts["sun_stops"]])
+		counts["sun_skip"]])
 
 
-## One shadows-only box per SUN_STOPS row. The holder carries meta `lc_ignore` (validate_level: no prop extent, so
-## no clipping against the room's contents; as OF's cosmetic FX roots).
-func sun_stops(parent: Node3D, root: Node) -> int:
-	parent.set_meta(&"lc_ignore", true)
-	for row: Array in SUN_STOPS:
-		var lo: Vector3 = row[1]
-		var hi: Vector3 = row[2]
-		var bm: BoxMesh = BoxMesh.new()
-		bm.size = hi - lo
-		var mi: MeshInstance3D = MeshInstance3D.new()
-		mi.name = String(row[0])
-		mi.mesh = bm
-		mi.position = (lo + hi) * 0.5
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
-		mi.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
-		parent.add_child(mi)
-		mi.owner = root
-	return SUN_STOPS.size()
+## SUN_SKIP_ROOMS: each room's finish off the sun's layer (the sun's light_cull_mask is set in environment()).
+func sun_skip(root: Node) -> int:
+	var n: int = 0
+	for rid: String in SUN_SKIP_ROOMS:
+		var fin: GeometryInstance3D = root.get_node_or_null("Geometry/Finish/Visual_R_" + rid) as GeometryInstance3D
+		if fin == null:
+			_err("sun-skip finish Visual_R_%s missing" % rid)
+			continue
+		fin.layers = (fin.layers & ~1) | SUN_SKIP_LAYER
+		n += 1
+	return n
 
 
 static func _holder(parent: Node3D, nm: String, root: Node) -> Node3D:

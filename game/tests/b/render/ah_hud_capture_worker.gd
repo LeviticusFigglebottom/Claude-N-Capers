@@ -55,7 +55,7 @@ func _menu_launch() -> void:
 
 func _wait_runtime() -> bool:
 	var t0: int = Time.get_ticks_msec()
-	while _flow.runtime == null and Time.get_ticks_msec() - t0 < 120000:
+	while _flow.runtime == null and Time.get_ticks_msec() - t0 < 360000:  # RT's map loads slowly on llvmpipe
 		await _frames(5)
 	if _flow.runtime == null:
 		print("AH ISSUE the heist did not launch")

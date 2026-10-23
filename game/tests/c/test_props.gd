@@ -5,8 +5,8 @@
 extends TestCase
 
 ## Named hero props (style guide §5: the 20k budget): set pieces a level is built around (LEAD r308: the Old Press is
-## the safehouse centrepiece).
-const HERO_PROPS: Array[StringName] = [&"prop_chandelier_ring", &"prop_sh_old_press"]
+## the safehouse centrepiece; prop_ah_back_bar: the 7 m bar back, a main read).
+const HERO_PROPS: Array[StringName] = [&"prop_ah_back_bar", &"prop_chandelier_ring", &"prop_sh_old_press"]
 const PREFAB_NODES: Dictionary = {
 	"door": ["Frame", "Leaf", "Handle"],
 	"display_case": ["Body", "Glass", "LootAnchor"],

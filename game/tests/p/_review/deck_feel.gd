@@ -11,7 +11,7 @@
 ## Each: the alarm by a burst (real input), the deck's moment with ONE shot (HUD + FP pose), FIGHT_S of fighting, rows
 ## with numbers and a PD2 judgement line. Stated shortcuts: direct HeistLauncher.launch (seed, Routine), the
 ## hazard kit (corsair_ar + kestrel + heavy vest + doctor bag), the alarm by gunfire.
-##     --out=/abs/dir [--seed=N] [--open (advance on the nearest enemy, no holding at the spawn)]
+##     --out=/abs/dir [--seed=N] [--open (advance on the nearest enemy)] [--diff=hazardous]
 ## Output: "[DKF ...]" notes and "[DKF] ROW <deck> | <item> | PASS|FAIL|NOTE | <detail> | <owner>"; "[DKF] RESULT".
 ## Owner: ENV P.
 extends "res://tests/p/_review/rt_g1_pass.gd"
@@ -27,6 +27,7 @@ const COPYCAT_CHOICES: Dictionary = {0: 1, 2: 2, 4: 2, 6: 3}
 
 ## --open: the pilot advances on the nearest enemy instead of fighting from where it stands.
 const OPEN_STOP_M: float = 7.0
+const VEIL_WINDOW_S: float = 15.0
 
 var _kills: int = 0
 var _open: bool = OS.get_cmdline_user_args().has("--open")
@@ -92,6 +93,15 @@ func _deck_loadout(deck: StringName) -> Loadout:
 	return CrewWeapons.build_loadout(lo)
 
 
+## --diff=hazardous etc. (default Routine): Routine armor regen out-heals the incoming fire, so the defensive decks
+## need a harder difficulty to be exercised.
+func _dk_diff() -> Enums.Difficulty:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--diff="):
+			return Enums.Difficulty.get(a.trim_prefix("--diff=").to_upper(), Enums.Difficulty.ROUTINE) as Enums.Difficulty
+	return Enums.Difficulty.ROUTINE
+
+
 ## Glasshouse with the deck, 3 AI bots ON, masked, then the alarm by a burst (real input). True once loud.
 func _deck_launch(deck: StringName) -> bool:
 	if rt != null and is_instance_valid(rt):
@@ -102,7 +112,7 @@ func _deck_launch(deck: StringName) -> bool:
 	_heal_events.clear()
 	if Net.crew.is_empty():
 		Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
-	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, Enums.Difficulty.ROUTINE, self,
+	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, _dk_diff(), self,
 		{"skip_casing": true, "ai_teammates": 3, "crew_ai": true, "loadouts": {Net.local_slot(): _deck_loadout(deck)}})
 	if rt == null:
 		return await _fail("launch")
@@ -123,7 +133,8 @@ func _deck_launch(deck: StringName) -> bool:
 			_crew_ids[NetIds.of(cc)] = s
 	if not EventBus.damage_applied.is_connected(_on_blown_hit):
 		EventBus.damage_applied.connect(_on_blown_hit)
-	note("launched %s deck %s, spawn %s" % [GH_HEIST, deck, Po5Pilot._v(c.global_position)])
+	note("launched %s (%s) deck %s, spawn %s" % [GH_HEIST, Enums.Difficulty.keys()[_dk_diff()], deck,
+		Po5Pilot._v(c.global_position)])
 	var eff: Loadout = rt.crew_loadouts.get(c.slot) as Loadout
 	note("deck check: local_slot %d, crew.slot %d, effective deck %s, perks %s, perk.throwable %s" % [Net.local_slot(),
 		c.slot, eff.perk_deck if eff != null else &"-", PerkHooks.of(c).components.keys(),
@@ -182,6 +193,15 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 		", open moves %d" % _open_moves if _open else ""])
 
 
+## Total damage logged on the pilot's slot so far (_on_blown_hit's rows "<attacker>|slot N").
+func _pilot_damage() -> float:
+	var sum: float = 0.0
+	for k: String in _hits:
+		if k.ends_with("|slot %d" % pilot.crew.slot):
+			sum += float(_hits[k]["dmg"])
+	return sum
+
+
 ## Enemies (alive) within `r` of the crew.
 func _enemies_within(r: float) -> Array[NpcBase]:
 	var out: Array[NpcBase] = []
@@ -214,7 +234,10 @@ func _use_deck_item() -> void:
 	pilot.inp.release(&"throw_item")
 	await wait_s(0.4)  # the FP use pose is up (FpViewmodelDeck)
 	note("G: intent.throw_item on %d of 3 ticks, deck_item_used %s" % [edges, used])
-	if used.is_empty():
+	if used.is_empty() and c.crew_state != Enums.CrewState.NORMAL:
+		_row("G uses the deck item (real input)", "NOTE", "pressed while %s: not usable (harness timing)" %
+			Enums.CrewState.keys()[c.crew_state], "-")
+	elif used.is_empty():
 		_row("G uses the deck item (real input)", "FAIL", "intent edges %d, no deck_item_used; direct PerkHooks.use_throwable %s"
 			% [edges, PerkHooks.use_throwable(c)], "P input / A perk.throwable")
 		await wait_s(0.4)
@@ -277,22 +300,32 @@ func _dk_lifeline() -> bool:
 func _dk_veil() -> bool:
 	if not await _deck_launch(DECKS[&"veil"]):
 		return false
-	await _fight(120.0, func() -> bool: return _enemies_within(25.0).size() >= 2)
-	var h0: float = _health() + pilot.crew.health.armor
+	# Measure under fire: wait until the pilot's armor is broken (real pressure), not just enemies near; the
+	# before / inside windows are VEIL_WINDOW_S each (8 s was too short to see a hit at Hazardous).
+	await _fight(240.0, func() -> bool: return pilot.crew.health.armor <= 0.5 or _health() < _max_health() - 1.0)
+	# Damage taken from the hit log (armor regen hides it in a health + armor delta).
+	var d0: float = _pilot_damage()
 	var t0: float = rt.heist_time_s
-	await _fight(15.0)
-	var out_dps: float = maxf(h0 - (_health() + pilot.crew.health.armor), 0.0) / maxf(rt.heist_time_s - t0, 0.1)
+	await _fight(VEIL_WINDOW_S)
+	var out_dps: float = (_pilot_damage() - d0) / maxf(rt.heist_time_s - t0, 0.1)
+	# A deck item is not usable while downed (PD2: the smoke bomb too): wait for the revive before G.
+	await wait_until(func() -> bool: return pilot.crew.crew_state == Enums.CrewState.NORMAL or _in_custody(), 90.0)
 	await pilot.face(pilot.crew.global_position + pilot.crew.global_transform.basis.z * -1.5 + Vector3.DOWN * 1.2, 0.05, 1.5)
 	await _use_deck_item()
 	await wait_s(1.5)
 	var in_cloud: bool = SmokeZones.in_smoke(pilot.crew)
 	await shot("veil_in_cloud")
-	var h1: float = _health() + pilot.crew.health.armor
+	var d1: float = _pilot_damage()
 	var t1: float = rt.heist_time_s
-	await _fight(8.0)
-	var in_dps: float = maxf(h1 - (_health() + pilot.crew.health.armor), 0.0) / maxf(rt.heist_time_s - t1, 0.1)
-	_row("smoke at the feet: in the cloud", "PASS" if in_cloud else "FAIL", "in smoke %s, damage/s before %.1f, inside %.1f" % [
-		in_cloud, out_dps, in_dps], "A PerkSicario / SmokeZones")
+	var was_open: bool = _open
+	_open = false  # hold in the cloud: --open would walk the pilot out of it
+	await _fight(VEIL_WINDOW_S)
+	_open = was_open
+	var in_dps: float = (_pilot_damage() - d1) / maxf(rt.heist_time_s - t1, 0.1)
+	var still_in: bool = SmokeZones.in_smoke(pilot.crew)
+	_row("smoke at the feet: in the cloud", "PASS" if in_cloud else "FAIL",
+		"in smoke %s (still at the end %s), damage/s before %.1f, inside %.1f" % [in_cloud, still_in, out_dps, in_dps],
+		"A PerkSicario / SmokeZones")
 	_danger_rows("veil")
 	return in_cloud
 
@@ -309,6 +342,8 @@ func _dk_buddy() -> bool:
 	if mate == null:
 		_row("tag a bot", "FAIL", "no bot", "A bots")
 		return false
+	# Tag when the fight is on (the pair lasts duration_s, kills extend it): enemies near first.
+	await _fight(120.0, func() -> bool: return _enemies_within(NEAR_M).size() >= 2)
 	pilot.combat = false
 	await pilot.face(mate.global_position + Vector3.UP * 1.2, 0.02, 2.0)
 	await _use_deck_item()
@@ -318,10 +353,35 @@ func _dk_buddy() -> bool:
 	await shot("buddy_tagged")
 	_row("G tags the aimed bot", "PASS" if tagged == mate.slot else "FAIL", "tagged slot %d (aimed %d, %.0f m)" % [tagged,
 		mate.slot, mate.global_position.distance_to(pilot.crew.global_position)], "A TagPairs")
-	await _fight(FIGHT_S)
+	# Sample the pair while it lasts: its length (kills extend it), the kills by the pair (CrewKillFeed: each heals the
+	# holder holder_kill_heal and the mate tagged_kill_heal), the holder's Synergy absorb.
 	var tt: PerkTagTeam = PerkHooks.of(pilot.crew).component(PerkTagTeam.KEY) as PerkTagTeam
-	_row("paired kills: heals + Synergy absorb", "NOTE", "kills %d, heals %s, absorb %s" % [_kills,
-		", ".join(_heal_events), tt.get(&"absorb") if tt != null else "-"])
+	var paired: Array[int] = [0, 0]  # holder kills, mate kills while paired
+	var feed: CrewKillFeed = CrewKillFeed.of(rt)
+	var on_kill: Callable = func(k: int, _v: int, _i: Dictionary) -> void:
+		if tp != null and tp.tagged_of(pilot.crew.slot) >= 0:
+			paired[0 if k == pilot.crew.slot else 1] += 1 if k == pilot.crew.slot or k == tagged else 0
+	if feed != null:
+		feed.crew_kill.connect(on_kill)
+	var t_tag: float = rt.heist_time_s
+	var absorb_max: float = 0.0
+	var pair_s: float = 0.0
+	var t_end: float = rt.heist_time_s + FIGHT_S
+	while rt.heist_time_s < t_end and not _in_custody():
+		await _fight(1.0)
+		if tp != null and tp.tagged_of(pilot.crew.slot) >= 0:
+			pair_s = rt.heist_time_s - t_tag
+		absorb_max = maxf(absorb_max, float(tt.get(&"absorb")) if tt != null else 0.0)
+	if feed != null:
+		feed.crew_kill.disconnect(on_kill)
+	var heal_h: float = float(tt.params.get("holder_kill_heal", 0.0)) if tt != null else 0.0
+	var heal_m: float = float(tt.params.get("tagged_kill_heal", 0.0)) if tt != null else 0.0
+	var pk: int = paired[0] + paired[1]
+	_row("paired kills: heals + Synergy absorb", "PASS" if pk > 0 else "NOTE",
+		("pair lasted ~%.0f s (base %.0f s), paired kills %d (holder %d, mate %d) = holder +%.0f / mate +%.0f health, "
+		+ "absorb max %.1f, kills %d") % [
+		pair_s, float(tt.params.get("duration_s", 0.0)) if tt != null else 0.0, pk, paired[0], paired[1], pk * heal_h,
+		pk * heal_m, absorb_max, _kills], "-")
 	_danger_rows("buddy")
 	return tagged == mate.slot
 

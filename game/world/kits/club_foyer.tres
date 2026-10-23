@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"club_foyer"
+purpose = &"lobby"
+required_items = Array[StringName]([&"stanchion", &"plant", &"picture", &"light_fixture"])
+optional_items = {
+&"bench": 0.6,
+&"picture": 1,
+&"plant": 1
+}
+clutter_groups = {}
+min_density = 0.04
+max_density = 0.6
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"stanchion", &"plant", &"picture", &"bench"])
+seed_salt = 4803
+counts = {
+&"stanchion": Vector2i(1, 2)
+}
+assets = {
+&"light_fixture": PackedStringArray("prop_pendant_brass"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b", "prop_wall_art_c"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"stanchion": PackedStringArray("prop_stanchion_velvet")
+}
+ceiling = {"prop_pendant_brass": 3}
+notes = "AH G1 the foyer: velvet ropes to the hall doors, palms, framed posters, brass pendants (2700 K); the box office counter and the grand stair are the map's."
