@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only velvet_plum --preset gsr
+module: tools/texgen/materials/velvet_plum.py
+preset: tools/texgen/presets/gsr.py
+seed: 577862350 (zlib.crc32('velvet_plum'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.0702, "albedo_lum_mean_linear": 0.0568, "albedo_lum_min_linear": 0.0475, "ao_mean": 0.961, "lum_floor_linear": 0.04, "metallic_mean": 0.0, "roughness_mean": 0.933}

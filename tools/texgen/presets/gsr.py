@@ -139,6 +139,20 @@ PRESET = {
             "tile_a": "#D9D1BF", "tile_b": "#3A3A3D", "chip_dark": "#6E6A62", "chip_light": "#C9C3B6",
             "tile_m": 0.25, "rough": (0.3, 0.46), "wear": 0.3, "grime": 0.4,
         },
+        # ---- AH-C2: Afterhours (the club: velvet plum dominant, black lacquer secondary, gilded plaster; wear medium) ----
+        "velvet_plum": {
+            "base": "#5E3468", "heather": "#6B3E76", "weave_cells_per_m": 110, "rough": (0.9, 0.98),
+            "relief_ref_mm": 0.3, "wear": 0.25, "grime": 0.3,
+        },
+        "lacquer_black": {"base": "#3E3A42", "rough": (0.18, 0.3), "wear": 0.3, "grime": 0.25},
+        "plaster_gilded": {
+            "base": "#A8894F", "rough": (0.42, 0.56), "undulation_mm": 0.6, "trowel_mm": 0.25,
+            "mottle": 0.05, "wear": 0.2, "grime": 0.3,
+        },
+        "carpet_plum": {
+            "base": "#4A2C52", "heather_a": "#40254A", "heather_b": "#583662", "seam": "#2E1C33",
+            "tile_m": 0.5, "rows_per_tile": 32, "rough": (0.9, 0.98), "wear": 0.3, "grime": 0.4,
+        },
         # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
         "polymer_black": {
             "base": "#45464A", "rough": (0.64, 0.76), "grain_cells_per_m": 300, "wear": 0.25,
