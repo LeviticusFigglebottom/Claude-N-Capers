@@ -10,9 +10,8 @@
 | lift | lift landing 0: car floor | NOTE | crew y 0.001 vs landing 0.000 (+0.001 m) | - |
 | lift | lift landing 0: walk out | PASS | mean 3.29 m/s, min 3.50 m/s on the floor, rise +0.00 m | - |
 | lift | lift: 2 bags in the car (HEAVY + MEDIUM) | PASS | 2 bags | - |
-| lift | lift: ground -> Deck 2 by stair A to meet the car | PASS | 6.9 s, 0 STUCK row(s) | - |
-| lift | lift: ground -> roof (2 sends, via Deck 2) | PASS | 26.1 s heist time, 2 bags rode up | - |
-| lift | lift: Deck 2 -> roof by stair A to meet the car | PASS | 5.2 s, 0 STUCK row(s) | - |
+| lift | lift: ground -> roof in ONE send ("Send to Roof") | PASS | at the roof true, 9.8 s heist time, 2 bags rode up | - |
+| lift | lift: ground -> roof by stair A to meet the car | PASS | 10.3 s, 0 STUCK row(s) | - |
 | lift | lift: into the car on the roof for bag 0 | PASS | mean 3.20 m/s, min 3.50 m/s on the floor, rise +0.00 m | - |
 | lift | lift: into the car on the roof for bag 1 | PASS | mean 3.19 m/s, min 3.50 m/s on the floor, rise +0.00 m | - |
 | lift | lift: both bags out on the roof | PASS | 2 of 2 taken out by F | - |

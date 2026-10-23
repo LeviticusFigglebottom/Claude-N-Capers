@@ -3,7 +3,7 @@
 | fences | hoarding N: standable >= 0.3 m within 0.5 m of the face | PASS | none | - |
 | fences | hoarding W: standable >= 0.3 m within 0.5 m of the face | PASS | none | - |
 | fences | hoarding E: standable >= 0.3 m within 0.5 m of the face | PASS | none | - |
-| fences | hoarding S: standable >= 0.3 m within 0.5 m of the face | FAIL | 1.00 m @(-59.5, -10.5) Collision, 1.00 m @(-59.2, -10.5) Collision | C map |
+| fences | hoarding S: standable >= 0.3 m within 0.5 m of the face | PASS | none | - |
 | fences | jump: hoarding E from the Orchard sidewalk | PASS | stayed on its side; feet peaked 1.12 m above the stand, ended (-13.5, 0.0, -29.8) | - |
 | fences | jump: hoarding S from the Tannery sidewalk | PASS | stayed on its side; feet peaked 1.12 m above the stand, ended (-44.7, 0.0, -10.5) | - |
 | fences | street -> man-gate (Orchard sidewalk) | PASS | 12.0 s, 0 STUCK row(s) | - |

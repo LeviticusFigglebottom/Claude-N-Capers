@@ -501,7 +501,10 @@ func _active_escape(max_s: float) -> EscapeZone:
 				return n as EscapeZone
 		if rt.heist_time_s >= t_end:
 			return null
-		await wait_s(1.0)
+		if rt.went_loud:  # loud: hold cover and fight while the van comes back (r305: 3 downs + custody idling here)
+			await _hold_cover(func() -> bool: return false, 1.0)
+		else:
+			await wait_s(1.0)
 	return null
 
 
