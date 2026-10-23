@@ -214,6 +214,7 @@ func open_safe(method: StringName) -> void:
 			s.call(&"unlock")
 	complete(&"safe")
 	_skip_if_active(&"safe_code")
+	_spawn_safe_bags()
 	activate(&"safe_loot")
 	if method != &"left_open":
 		say(&"vo.mercer.afterhours_safe_open")
@@ -309,19 +310,24 @@ func _try_escape() -> void:
 
 # --- Loot, rare events, DJ ------------------------------------------------------------------
 
-## Safe bags (scalar safe_bags, +1 with count_done), the product (scalar product_bags, +EXTRA_PRODUCT with the rare
-## event) and the count's cash spawn at their tagged loot markers (the active variant slots' markers only).
+## The product (scalar product_bags, +EXTRA_PRODUCT with the rare event) and the count's cash spawn at their tagged
+## loot markers (the active variant slots' markers only) at the start; the safe's bags when it opens.
 func _spawn_loot() -> void:
-	var safe_n: int = int(variant(&"safe_bags")) if variant(&"safe_bags") != null else REQUIRED_BAGS + 1
-	if _slot_active(&"count_room", &"count_done"):
-		safe_n += 1
-	spawn_loot(LOOT_SAFE, TAG_SAFE_LOOT, safe_n)
 	var product_n: int = int(variant(&"product_bags")) if variant(&"product_bags") != null else 3
 	if _rare(&"extra_product"):
 		product_n += EXTRA_PRODUCT
 	spawn_loot(LOOT_PRODUCT, TAG_PRODUCT, product_n)
 	if _slot_active(&"count_room", &"count_running"):
 		spawn_loot(LOOT_COUNT, TAG_COUNT, 2)
+
+
+## The safe's cash (scalar safe_bags, +1 with count_done) at the safe_loot markers, when the safe opens (PD2: the
+## loot is there once the door swings; nothing to grab through a shut safe; P's route 1 looked for it then).
+func _spawn_safe_bags() -> void:
+	var safe_n: int = int(variant(&"safe_bags")) if variant(&"safe_bags") != null else REQUIRED_BAGS + 1
+	if _slot_active(&"count_room", &"count_done"):
+		safe_n += 1
+	spawn_loot(LOOT_SAFE, TAG_SAFE_LOOT, safe_n)
 
 
 func _rare_start() -> void:

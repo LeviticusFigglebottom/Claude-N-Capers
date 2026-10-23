@@ -4,6 +4,14 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-57) AH safe cash spawns when the safe opens; ui_hud v1.23 ads_blend (2026-10-23)
+- `afterhours_mission.gd`: the safe's bags (safe_bags, +1 count_done) spawn at the safe_loot markers in `open_safe`
+  (code / drill / left_open), not at the heist start: nothing in a shut safe (PD2), and what P's route 1 expected.
+  P's "contents() empty, 0 bags" (seed 6501): the bags are loose LootBags (loot.cash_bricks) at the marker, not the
+  Safe prefab's contents(), and were already there on dafcc0fb. Tests on C's 2c3cbe99: a/test_ah_mission_map 4/4 (no
+  cash before the safe opens; >= 4 at safe_loot after the keypad), a/test_x4_ah_stealth 3/3, a/test_ah_a1_mission 6/6.
+- PO-22 (6a8932cc): `LocalHudModel.ads_blend` (ui_hud v1.23, written by P's CrewView); a/test_ui_hud_v1_23 1/1.
+
 ### (-56) AH e2e: gear step, ah_loud flow, the stealth route + mission-placed loot no longer alarms (2026-10-23)
 - Lift strings blocker (LEAD r305): bag_lift.gd lists `ui.prompt.send_lift_to_0..3` whole (5203144d); b/test_strings
   23/0 with B's 16c4ef81, a/test_a3_09_bag_lift 9/0. Built `ui.*` keys never pass the scan (only `vo.*_%s`).
