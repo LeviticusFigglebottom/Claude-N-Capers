@@ -1645,6 +1645,11 @@ B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac ho
    The two new levers (cuffer_score_mult: shoot the cop moving to cuff first; cuffer_clear_first: clear a cuffer near the patient
    before kneeling) measured WORSE on rt_clean in every diverging A/B comparison (4/4) and equal elsewhere. Both ship OFF (1.0 / false)
    and stay as knobs. The cuff-vs-revive race is lost on time, not targeting.
+8. (Amendment 2026-10-23, LEAD) P verdict 3/4 (blown, loud build, escort knobs on): the escort is now won and the saw placed, but
+   the crew is pinned at the open truck during the 180 s lockdown cut by wave 1's specials (2 Phantoms + 2 Stingers: each tase/kick
+   costs a revive). That is the "survives the escort, dies in the first assault" case, so: **truck_window_from = escort_down**
+   (BUILD 30 s after the last escort dies, capped at stop + 60 s) and **wave1_exclude = [stinger, phantom]** on Hazardous+ (RT only;
+   wave 2+ unchanged). Lockdown multipliers stay as they are (PD2). P's confirm run judges the result.
 
 ## D-163: Further perk decks, batch 2: Sicario, Tag Team (2026-10-23, LEAD; A plan)
 - **Sicario:** Smoke Bomb = a new thrown kind `smoke` (existing thrown-item path; 10 s cloud). Crew inside avoid 50% of bullet hits
