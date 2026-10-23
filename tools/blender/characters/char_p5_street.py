@@ -42,6 +42,7 @@ No blend shapes (baked at the params below).
 
 import math
 
+import _cartel_gear as cgr
 import _contact_gear as cg
 import _crew_heisters as crew
 import _gear_kit as gk
@@ -79,9 +80,10 @@ VARIANTS = {
     # finish-only swaps (D-147): a / b / f's params with only skin, hair colour and garment materials changed
     "char_street_pedestrian_g": {"height": 1.71, "build": 0.4, "gender": 1.0, "age": 0.32, "skin": 5,
                                  "hair": "bob", "hair_color": "brown", "look": "commuter",
-                                 "recolor": {"char_mac_cherry": "char_knit_teal", "char_knit_grey": "char_knit_navy"},
-                                 "note": "Commuter g (finish swap of a): belted teal mac over a navy roll-neck, black "
-                                         "trousers, black flats, brown bob"},
+                                 "recolor": {"char_mac_cherry": "char_knit_teal", "char_knit_grey": "char_knit_navy",
+                                            "char_knit_teal": "char_silk_ivory"},
+                                 "note": "Commuter g (finish swap of a): belted teal mac over a navy roll-neck, ivory "
+                                         "scarf, black trousers, black flats, brown bob"},
     "char_street_pedestrian_h": {"height": 1.80, "build": 0.35, "gender": 0.0, "age": 0.12, "skin": 2,
                                  "beard_shadow": 0.2, "hair": "short", "hair_color": "blond", "look": "jogger",
                                  "recolor": {"char_hoodie_heather": "char_hoodie_cream",
@@ -132,7 +134,8 @@ def waitress(kit: Kit) -> None:
     kit.add_head(cg.earrings(fit, "chrome", drop=False))
     _waitress_g3(kit, waist)
     kit.notes["look"] = ("Diner waitress (RT-D1 staff_diner): 1950s-style pale rose short-sleeved uniform dress to the "
-                         "knee, short cream bistro apron tied at the waist, brass name badge, black flats, dark bun; G3: white "
+                         "knee, short cream bistro apron tied at the waist, brass name badge, black flats, dark bun; "
+                         "G3: white "
                          "collar and cuffs, bodice buttons, order pad and pencil in the apron pocket")
 
 
@@ -154,17 +157,20 @@ def cook(kit: Kit) -> None:
     kit.add_head(_paper_cap(fit, "char_shirt_white"))
     _cook_g3(kit)
     kit.notes["look"] = ("Diner cook (RT-D1 staff_diner): cook's whites (white band-collar jacket, double row of "
-                         "buttons, sleeves rolled), long cream bib apron, black trousers and shoes, white paper cook's cap, "
+                         "buttons, sleeves rolled), long cream bib apron, black trousers and shoes, white paper "
+                         "cook's cap, "
                          "red neckerchief, side towel")
 
 
-def _arm_ring(kit: Kit, side: str, t: float, out: float = 0.003) -> list[Vector]:
-    """A closed ring of points on the outer surface round the arm at arm parameter ``t`` (0 shoulder, 1 elbow)."""
+def _arm_ring(kit: Kit, side: str, t: float, out: float = 0.003, reach: float = 0.07) -> list[Vector]:
+    """A closed ring of points on the outer surface round the arm at arm parameter ``t`` (0 shoulder, 1 elbow, 2 wrist);
+    the rays start ``reach`` out from the bone (just outside the sleeve, so the bind-pose torso is never hit)."""
     fit, k = kit.fit, kit.k
     hull = kit.hull()
-    sh, el = Vector(fit.J[f"shoulder.{side}"]), Vector(fit.J[f"elbow.{side}"])
-    axis = (el - sh).normalized()
-    c = sh.lerp(el, t)
+    sh, el, wr = (Vector(fit.J[f"{j}.{side}"]) for j in ("shoulder", "elbow", "wrist"))
+    a0, a1, tt = (sh, el, t) if t <= 1.0 else (el, wr, t - 1.0)
+    axis = (a1 - a0).normalized()
+    c = a0.lerp(a1, tt)
     ref = Vector((0.0, 1.0, 0.0))
     u = (ref - axis * ref.dot(axis)).normalized()
     v = axis.cross(u)
@@ -172,9 +178,18 @@ def _arm_ring(kit: Kit, side: str, t: float, out: float = 0.003) -> list[Vector]
     for i in range(20):
         a = math.tau * i / 20
         d = u * math.cos(a) + v * math.sin(a)
-        hit = hull.cast(c + d * 0.12 * k, -d, 0.12 * k)
-        ring.append((hit[0] if hit[0] is not None else c + d * 0.05 * k) + d * out * k)
+        hit = hull.cast(c + d * reach * k, -d, reach * k)
+        ring.append((hit[0] if hit[0] is not None else c + d * 0.6 * reach * k) + d * out * k)
     return ring
+
+
+def _arm_band(kit: Kit, side: str, t: float, width: float, mat: str) -> None:
+    """A closed band (tape, armband) round the arm at arm parameter ``t``."""
+    k = kit.k
+    m = Mesh()
+    o.strip(m, kit.hull(), _arm_ring(kit, side, t, out=0.004), width * 0.5 * k, 0.003 * k, mat, segs_across=1,
+            chamfer=0.001 * k, closed=True, cast_back=0.03 * k)
+    kit.add_soft(m)
 
 
 def _waitress_g3(kit: Kit, waist: float) -> None:
@@ -193,8 +208,8 @@ def _waitress_g3(kit: Kit, waist: float) -> None:
             path.append(o.push_out(p5._front_hit(hull, x, edge - 0.014 * k, cy + 0.1 * k), hull, 0.002 * k))
         o.strip(det, hull, path, 0.016 * k, 0.0025 * k, "char_shirt_white", segs_across=2, chamfer=0.002 * k)
     for side in ("L", "R"):                                                    # cuffs at the sleeve hem
-        o.strip(det, hull, _arm_ring(kit, side, 0.27), 0.011 * k, 0.003 * k, "char_shirt_white", segs_across=1,
-                chamfer=0.001 * k, closed=True)
+        o.strip(det, hull, _arm_ring(kit, side, 0.27, reach=0.12), 0.011 * k, 0.003 * k, "char_shirt_white",
+                segs_across=1, chamfer=0.001 * k, closed=True)
     kit.add_soft(det)
     hull = kit.hull()
     gear = Mesh()
@@ -279,6 +294,39 @@ def _cook_g3(kit: Kit) -> None:
     kit.add_gear(gear)
 
 
+def _neck_scarf(kit: Kit, mat: str) -> None:
+    """A light scarf wrapped once round the neck, knotted at the front with two short tails."""
+    fit, k = kit.fit, kit.k
+    nk = g.Neck(fit)
+    m = Mesh()
+    ring = [nk.point(math.tau * i / 20, 0.15, 0.016 * k) for i in range(20)]
+    o.strip(m, kit.hull(), ring, 0.020 * k, 0.006 * k, mat, segs_across=2, chamfer=0.003 * k, closed=True)
+    kit.add_soft(m)
+    hull = kit.hull()
+    knot = nk.point(0.0, 0.05, 0.030 * k)
+    gear = Mesh()
+    gear.extend(gk.bar(hull, knot, Vector((0.0, 1.0, 0.0)), 0.034, 0.028, 0.014, mat, k=k, bevel=0.004))
+    for sx, dz in ((-0.012, -0.075), (0.014, -0.065)):
+        gear.extend(gk.bar(hull, knot + Vector((sx * k, 0.004 * k, dz * k)), Vector((0.0, 1.0, 0.0)), 0.030, 0.10,
+                           0.004, mat, k=k))
+    kit.add_gear(gear)
+
+
+def _elbow_patches(kit: Kit, mat: str) -> None:
+    """Oval suede patches on the backs of the elbows."""
+    fit, k = kit.fit, kit.k
+    m = Mesh()
+    for side in ("L", "R"):
+        sh, el, wr = (Vector(fit.J[f"{j}.{side}"]) for j in ("shoulder", "elbow", "wrist"))
+        axis = (wr - sh).normalized()
+        back = Vector((0.0, -1.0, 0.0))
+        back = (back - axis * back.dot(axis)).normalized()
+        u = axis.cross(back).normalized()
+        outline = [(0.030 * k * math.cos(a), 0.045 * k * math.sin(a)) for a in [math.tau * i / 16 for i in range(16)]]
+        o.patch(m, kit.hull(), el + back * 0.12 * k, u, axis, outline, 0.0025 * k, mat, -back)
+    kit.add_soft(m)
+
+
 def attendant(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     hips_z, belt_z, tuck = _z(kit)
@@ -291,6 +339,12 @@ def attendant(kit: Kit) -> None:
     kit.add_gear(zipm)
     n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.16)
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    b = gk.Belt(fit, Hull(fit, [tr], body_regions=set()), belt_z, height=0.03, thick=0.005)   # G3: belt radio
+    bg = Mesh()
+    bg.extend(gk.radio(b, math.radians(100.0)))
+    kit.add_gear(bg)
+    kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.085 * k, 0.2, 1.33 * k)), k=k, mat="chrome"))
+    kit.add_head(cgr.beanie(fit, "char_knit_navy", front_el=12.0, back_el=-10.0, cuff=0.16, slouch=0.006))
     kit.notes["look"] = ("Car-park attendant (RT-D1 staff_booth): teal polo under a dark espresso fleece gilet, the "
                          "staff lanyard and white card, grey slacks, black belt and shoes, watch (no hi-vis)")
 
@@ -311,6 +365,8 @@ def commuter(kit: Kit) -> None:
     waist = fit.ring_centre("waist").z
     cb = gk.Belt(fit, Hull(fit, [coat], body_regions=set()), waist, height=0.038, thick=0.004, drop=0.0)
     kit.add_soft(cb.mesh("char_mac_cherry"))
+    _neck_scarf(kit, "char_knit_teal")                                          # G3
+    n.messenger_bag(kit, "char_leather_black", "char_leather_black", a_deg=-115.0, z=1.00, w=0.17, h=0.13, d=0.06)
     kit.notes["look"] = ("Commuter (RT-D1): belted double-breasted cherry mac above the knee over a grey roll-neck, "
                          "black trousers, black flats, dark bob")
 
@@ -322,6 +378,8 @@ def jogger(kit: Kit) -> None:
     n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.050)
     n.hoodie(kit, "char_hoodie_heather", hips_z - 0.06 * k, string_mat="char_shirt_white")
     n.watch(kit, "L", strap="rubber_black", case="polymer_black")
+    p5.headphones_on(kit, "polymer_black", "rubber_black", accent="char_hivis_orange")       # G3
+    _arm_band(kit, "R", 0.45, 0.05, "rubber_black")                              # running armband
     kit.notes["look"] = ("Jogger (RT-D1): heather-grey hoodie (hood down), black joggers, white trainers, black sports "
                          "watch")
 
@@ -337,6 +395,14 @@ def student(kit: Kit) -> None:
                          flare=0.05, chest_welt=False, base=0.012)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     p5.backpack(kit, "char_hoodie_rust", "char_nylon_black", trim="char_nylon_black")
+    hull = kit.hull()                                                           # G3: enamel pins on the jacket
+    pins = Mesh()
+    cy = fit.ring_centre("chest").y
+    for (x, z), mat in zip(((0.085, 1.33), (0.105, 1.30), (0.075, 1.29)), ("char_bank_red", "char_rubber_yellow",
+                                                                            "char_knit_teal")):
+        pins.extend(gk.button(hull, p5._front_hit(hull, x * k, z * k, cy + 0.12 * k), mat, r=0.008, k=k, thick=0.004))
+    kit.add_gear(pins)
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.notes["look"] = ("Student (RT-D1): denim jacket over a white tee, black trousers, white trainers, rust daypack "
                          "on both shoulders")
 
@@ -355,6 +421,8 @@ def retiree(kit: Kit) -> None:
     cap, _info = cg.flat_cap(fit, "char_tweed_grey")
     kit.add_head(cap)
     kit.add_head(gk.glasses(fit, "char_metal_silver"))
+    _elbow_patches(kit, "leather_dark")                                    # G3
+    n.watch(kit, "L", strap="leather_dark", case="brass")
     kit.notes["look"] = ("Retiree (RT-D1): tweed flat cap, oat cardigan over a pale blue shirt, brown trousers, belt "
                          "and shoes, silver glasses")
 
@@ -369,7 +437,10 @@ def rider(kit: Kit) -> None:
     jk = crew.bomber(kit, "char_nylon_green", "char_knit_graphite", "char_nylon_green", hips_z - 0.01 * k, 1.36 * k,
                      neck_w=0.05)
     n.cull_under(kit, n0, jk, "faces_hidden_by_bomber")
-    p5.backpack(kit, "char_nylon_green", "char_nylon_black", trim="char_nylon_black", z=1.16, w=0.20, h=0.26, d=0.20)
+    p5.backpack(kit, "char_nylon_green", "char_nylon_black", trim="char_hivis_orange", z=1.16, w=0.20, h=0.26,
+                d=0.20)                                                         # G3: hi-vis orange trim
+    for side in ("L", "R"):                                                      # G3: reflective forearm bands
+        _arm_band(kit, side, 1.55, 0.030, "char_reflect_silver")
     kit.notes["look"] = ("Delivery rider (RT-D1): green padded bomber over a graphite knit, charcoal work trousers, grey "
                          "trainers, big green insulated delivery backpack")
 
@@ -386,6 +457,8 @@ def office(kit: Kit) -> None:
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     n.messenger_bag(kit, "char_leather_black", "char_leather_black", a_deg=-120.0, z=0.98, w=0.20, h=0.15, d=0.07)
     kit.add_head(cg.earrings(fit, "chrome", drop=False))
+    n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.18)               # G3
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.notes["look"] = ("Office worker (RT-D1): forest-green blazer over a white shirt, black trousers, low heels, black "
                          "leather shoulder bag, silver stud earrings")
 
