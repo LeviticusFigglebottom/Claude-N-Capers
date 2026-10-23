@@ -133,9 +133,12 @@ func _soak(clients: int) -> void:
 			var d: Array[String] = await _compare(p)
 			if p == peers[0]:
 				var snap: Dictionary = await _snap(p, {})
-				print("PERF soak round %d t=%.0f s: host mem %.1f MB %s | peer mem %.1f MB %s" % [rounds,
-					soak_s - float(t_end - Time.get_ticks_msec()) / 1000.0, OS.get_static_memory_usage() / 1048576.0,
-					PROBE.counts(), float(snap.get("mem", 0)) / 1048576.0, snap.get("counts", {})])
+				var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+				print("PERF soak round %d t=%.0f s: host mem %.1f MB %s | peer mem %.1f MB %s | director %s wave %d, %d NPCs, crew %s" % [
+					rounds, soak_s - float(t_end - Time.get_ticks_msec()) / 1000.0, OS.get_static_memory_usage() / 1048576.0,
+					PROBE.counts(), float(snap.get("mem", 0)) / 1048576.0, snap.get("counts", {}),
+					Enums.AssaultPhase.keys()[dir.assault_phase] if dir != null else "-", dir.wave_index if dir != null else 0,
+					_rt.npcs().size(), _rt.crew_members().map(func(c: CrewController) -> int: return int(c.crew_state))])
 			if not d.is_empty():
 				desyncs.append("round %d peer %d: %s" % [rounds, p, "; ".join(d.slice(0, 4))])
 	var mem1: Dictionary = await _memory(peers)
