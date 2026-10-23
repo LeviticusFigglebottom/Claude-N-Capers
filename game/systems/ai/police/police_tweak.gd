@@ -5,6 +5,13 @@ extends Resource
 
 ## Target re-evaluation interval range (s).
 @export var retarget_s: Vector2 = Vector2(0.5, 1.0)
+## D-168 ◇ (PD2 attention weighs who is shooting at the unit, not pure distance): a crew member who damaged this unit,
+## or a squadmate within threat_squad_m of it, in the last threat_window_s scores distance² x threat_dist_mult.
+@export var threat_window_s: float = 3.0
+@export var threat_dist_mult: float = 0.5
+@export var threat_squad_m: float = 10.0
+## D-168 ◇: the current target scores distance² x sticky_dist_mult (no flip-flopping between two near-equal crew).
+@export var sticky_dist_mult: float = 0.85
 ## Cover-lite: a COVER TacticalPoint within this distance band of the target with LOS to it.
 @export var cover_min_m: float = 8.0
 @export var cover_max_m: float = 20.0
