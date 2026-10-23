@@ -318,9 +318,10 @@ what was run. The LEAD's merge rounds follow the same rule (test what the merged
   - Info for A (PP-C-1 walk rows, not failures): night_deposit STUCK-DOOR at AtmInnerDoor (23.4,0,17.6), AlarmSecurity (21.7,0,18.0), SallyPersonnelDoor (13.2,0,1.5).
 
 ## Rules in force
-- D-144: one new heist at a time; Rolling Thunder until its done check, then Afterhours. D-160 (PO): no PO-only steps on done paths.
+- D-165: Afterhours is the active build (RT awaits only the LEAD final-shot review). D-160 (PO): no PO-only steps on done paths. PO: no env stalls on a single pending approval.
 - Regen after a trunk merge: run `godot --headless --path game --import` FIRST (new classes must be imported, or generators write defaults; C, r286).
 - Only quote a commit sha after the push output shows it.
+- LEAD: after ANY extra merge into a round, re-run the full round test list (not just the new env's suites) before pushing (r303 red on vo_coverage).
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
