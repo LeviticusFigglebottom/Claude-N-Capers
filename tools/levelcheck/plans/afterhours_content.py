@@ -189,7 +189,8 @@ def furniture() -> List[list]:
         # the box-office counter on the foyer side of G2 (the cloakroom hatch at its south end)
         B("BoxOfficeCounter", [22.4, 0.0, 24.0], [0.6, BAR_TOP, 4.4], 0.0, "counter", True, "counter"),
         # the stage: the DJ booth (1.0 m deck) and the speaker stacks
-        B("DJBooth", [15.5, 0.3, 8.2], [3.0, 1.0, 1.0], 0.0, "counter", True, "counter"),   # clear of the backstage door
+        # clear of the backstage door; 1.15 m off the stage's back wall so the DJ's root behind it is on the navmesh
+        B("DJBooth", [15.5, 0.3, 8.85], [3.0, 1.0, 1.0], 0.0, "counter", True, "counter"),
         B("SpeakerStackW", [8.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
         B("SpeakerStackE", [18.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
         # G7 booths: banquettes (1.1 m backs) along the circle's south wall and the reserved corner booth (east end)
@@ -294,7 +295,7 @@ def always() -> Dict[str, List[list]]:
         ] + [M("SafeLoot%d" % (i + 1), [33.35 + 0.3 * (i % 2), U + (0.3 if i < 2 else 0.85), 20.35], "safe_loot",
                "safe_bags x loot.cash_bricks (+1 on count_done): A's spawn_loot cycles the 2 x 2 (the LARGE safe's "
                "interior is 0.66 m wide, 2 shelves)") for i in range(4)] + [
-            M("DJStage", [15.5, 1.3, 8.2], "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"),
+            M("DJStage", [15.5, 1.3, 8.85], "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"),
         ] + [M("Holdout" + h, [x, y, z], "holdout_" + h.lower(), "doc Loud holdout " + h)
              for h, x, y, z in [("H1", 31.0, U, 18.0), ("H2", 13.0, U, 20.0), ("H3", 31.0, 0.0, 4.0),
                                 ("H4", 32.0, 0.0, 17.0)]],
@@ -325,7 +326,7 @@ PATRONS = [
     ("PatronHighTable2", [21.0, 0.0, 16.8], 180.0, "walk_text"), ("PatronFoyer1", [12.5, 0.0, 24.0], 90.0, "walk_text"),
     ("PatronFoyer2", [19.5, 0.0, 25.5], -90.0, "queue"), ("PatronWC", [2.0, 0.0, 25.0], 0.0, "walk_text"),
     ("PatronPassage1", [-1.6, 0.0, 22.0], 90.0, "smoke"), ("PatronPassage2", [-1.4, 0.0, 25.5], -90.0, "smoke"),
-    ("PatronBalcony1", [6.6, U, 19.6], 180.0, "sit"), ("PatronBalcony2", [20.0, U, 19.6], 180.0, "sit"),
+    ("PatronBalcony1", [6.6, U, 19.6], 180.0, "sit"), ("PatronBalcony2", [7.6, U, 19.6], 180.0, "sit"),
     ("PatronVIP1", [14.0, U, 23.0], 0.0, "walk_text"), ("PatronVIP2", [18.0, U, 23.5], 0.0, "walk_text"),
     ("PatronVIP3", [13.6, U, 22.4], -90.0, "walk_text"), ("PatronUnderCircle", [13.0, 0.0, 18.5], 0.0, "walk_text"),
 ]
@@ -351,9 +352,14 @@ def fixed_spawns() -> List[list]:
     for i, x in enumerate([33.6, 36.4]):
         out.append(S("Courier%d" % (i + 1), "GUARD", [x, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "",
                      "Courier"))
-    # rare off_duty_cop: a U1 booth; A's mission spawns enemy.patrol_officer here (A cef43029: POLICE + scripted, so
+    # rare off_duty_cop: his own U1 booth (VIPBooth3); A's mission spawns enemy.patrol_officer here (A cef43029: POLICE + scripted, so
     # nothing spawns at load; the plain-clothes look comes off the civ_offduty tag)
     out.append(S("OffDutyCop", "POLICE", [20.0, U, 19.6], 180.0, ["civ_offduty", "scripted"], "sit"))
+    # rare vip_party: +6 guests in the VIP lounge (U2), tag civ_vip (+ scripted: A's mission spawns them with the event,
+    # D's club_vip a-f looks); clear of the sofa, the coffee table, the bar and the regular VIP patrons
+    for i, (x, z, yaw) in enumerate([(12.0, 22.5, 90.0), (12.5, 24.2, 90.0), (19.5, 22.5, -90.0), (19.0, 24.3, -90.0),
+                                     (14.2, 24.6, 180.0), (17.8, 24.6, 180.0)]):
+        out.append(S("VIPGuest%d" % (i + 1), "CIVILIAN", [x, U, z], yaw, ["civ_vip", "scripted"], "walk_text"))
     for nm, pos, yaw, idle in PATRONS:
         out.append(S(nm, "CIVILIAN", pos, yaw, ["civ_patron"], idle, "Patrons"))
     for c, (cx, cz) in enumerate(CLUSTERS):
@@ -559,7 +565,7 @@ def tactical() -> List[list]:
              ("CoverCratesG13W", [10.0, 0.0, 6.4], 0.0), ("CoverCratesG13E", [25.0, 0.0, 6.4], 0.0),
              ("CoverKegRack", [34.5, 0.0, 2.5], 90.0), ("CoverDumpsterW", [21.0, 0.0, -2.0], 0.0),
              ("CoverCarTolley1", [43.0, 0.0, 6.0], -90.0), ("CoverCarMarlin1", [30.0, 0.0, 32.0], 180.0),
-             ("CoverVIPBar", [16.0, U, 24.9], 180.0), ("CoverDJBooth", [15.5, 0.3, 9.2], 0.0)]
+             ("CoverVIPBar", [16.0, U, 24.9], 180.0), ("CoverDJBooth", [15.5, 0.3, 9.75], 0.0)]
     out += [T(n, "COVER", p, y, ["cover"]) for n, p, y in cover]
     return out
 
@@ -578,13 +584,13 @@ SLOTS: List[list] = [
     ["gear_drop", "gear_cloak", 1.0, "G2", [22.4, 0.0, 25.5], 0.0, "across the cloakroom counter from the foyer"],
     ["gear_drop", "gear_booth", 1.0, "G7", [24.6, 0.0, 18.8], 0.0, "under the reserved booth's banquette"],
     ["gear_drop", "gear_van", 1.0, "X1", [26.6, 0.0, -4.0], 0.0, "the van (E1)"],
-    ["dj_set", "dj_on", 0.65, "G6", [15.5, 0.3, 9.4], 0.0, "the DJ on stage"],
+    ["dj_set", "dj_on", 0.65, "G6", [15.5, 0.3, 8.05], 0.0, "the DJ on stage"],
     ["dj_set", "dj_break", 0.35, "G11", [11.0, 0.0, 2.5], 0.0, "the DJ in the green room"],
     ["keycard", "kc_staff_room", 1.0, "G12", [18.0, 0.75, 2.6], 0.0, "the staff-room table under the rota"],
     ["keycard", "kc_bouncer_board", 1.0, "G24", [30.4, 1.0, 20.55], 0.0, "the door-log desk"],
     ["keycard", "kc_vip_bar", 1.0, "U2", [12.5, U + BAR_TOP, 25.9], 0.0, "behind the VIP register"],
     ["keycard", "kc_count_room", 0.75, "U10", [32.0, U + 0.75, 11.4], 0.0, "the count-room desk"],
-    ["keycard", "kc_dj_booth", 0.75, "G6", [16.7, 1.3, 8.2], 0.0, "beside the decks (requires dj_break)"],
+    ["keycard", "kc_dj_booth", 0.75, "G6", [16.7, 1.3, 8.85], 0.0, "beside the decks (requires dj_break)"],
     ["code_note", "code_staff_board", 1.0, "G12", [17.0, 1.5, 0.2], 0.0, "the rota board"],
     ["code_note", "code_bouncer_log", 1.0, "G24", [29.6, 1.0, 20.55], 0.0, "the door log"],
     ["code_note", "code_count_board", 1.0, "U10", [31.6, U + 1.5, 13.9], 0.0, "the whiteboard beside the door"],
@@ -679,13 +685,14 @@ def slot_content() -> Dict[str, List[list]]:
         "gear_cloak": _gear([22.4, BAR_TOP, 25.5], 90.0, [21.5, 0.0, 25.5]),
         "gear_booth": _gear([24.6, 0.0, 18.8], 0.0, [24.6, 0.0, 18.0]),
         "gear_van": _gear([26.6, 0.0, -4.0], 90.0, [25.8, 0.0, -4.0]),
-        "dj_on": [S("DJ", "CIVILIAN", [15.5, 0.3, 9.4], 180.0, ["civ_dj_stage", STAFF, "staff_dj"], "dj_mix")],
+        # behind the booth (z 8.35-9.35), its front edge 0.30 m ahead of the root (D's ah_dj_placement), facing the crowd
+        "dj_on": [S("DJ", "CIVILIAN", [15.5, 0.3, 8.05], 180.0, ["civ_dj_stage", STAFF, "staff_dj"], "dj_mix")],
         "dj_break": [S("DJ", "CIVILIAN", [11.0, 0.0, 2.5], 0.0, ["civ_dj_green", STAFF, "staff_dj"], "sit")],
         "kc_staff_room": _keycard([18.0, 0.75, 2.6], 0.0, [18.0, 0.0, 3.4]),
         "kc_bouncer_board": _keycard([30.4, 1.0, 20.55], 0.0, [30.4, 0.0, 19.8]),
         "kc_vip_bar": _keycard([12.5, U + BAR_TOP, 25.9], 0.0, [12.5, U, 26.6]),
         "kc_count_room": _keycard([32.0, U + 0.75, 11.4], 0.0, [32.0, U, 12.2]),
-        "kc_dj_booth": _keycard([16.7, 1.3, 8.2], 180.0, [16.7, 0.3, 9.2]),
+        "kc_dj_booth": _keycard([16.7, 1.3, 8.85], 180.0, [16.7, 0.3, 9.75]),
         "code_staff_board": _code(_wall_pt("G", [17.0, 1.2, 0.2]), 180.0, [17.0, 0.0, 1.0], "wall",
                                   "prop_bulletin_board"),
         "code_bouncer_log": _code([29.6, 1.0, 20.55], 0.0, [29.6, 0.0, 19.8]),
