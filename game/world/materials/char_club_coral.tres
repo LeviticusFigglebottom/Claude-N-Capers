@@ -15,4 +15,5 @@ normal_enabled = true
 normal_scale = 1.0
 normal_texture = ExtResource("3_normal")
 ao_enabled = true
+cull_mode = 2
 metadata/uv_tile_m = 2.0

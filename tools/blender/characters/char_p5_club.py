@@ -125,6 +125,11 @@ VIOLET = "char_club_violet"
 PALE = "char_button_pale"
 LIME = "char_club_lime"
 CORAL = "char_club_coral"
+#: The door team's SECURITY back print (LEAD r-AH1: it must read under the magenta floor light at 10 m): white print
+#: with a UV glow, bold block letters 0.056 m tall (strokes padded to ~1.9 units), about 0.34 m across: wider and the
+#: S / Y land on the A-pose upper arms and swing out with them.
+SECURITY_H = 0.056
+SECURITY_MAT = "char_club_print"
 
 
 def _z(kit: Kit) -> tuple[float, float, float]:
@@ -163,7 +168,7 @@ def bouncer(kit: Kit) -> None:
     a_radio = math.radians(96.0)  # more to the side than the belt radios: the bomber stands further out
     kit.add_gear(gk.radio(wb, a_radio))
     kit.seats["Hip"] = wb.point(a_radio, dz=0.0, out=0.045 * k)
-    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    p5.stamp_back(kit, "SECURITY", 1.31, SECURITY_H, SECURITY_MAT, bold=0.45)
     n.earpiece(kit, "R")
     kit.notes["hip_note"] = ("Hip seat = the radio clipped outside the bomber on its ribbed waistband (right hip); "
                              "the pager rides there")
@@ -184,7 +189,7 @@ def bouncer_b(kit: Kit) -> None:
     a_radio = math.radians(108.0)
     kit.add_gear(gk.radio(b, a_radio))
     kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
-    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    p5.stamp_back(kit, "SECURITY", 1.31, 0.050, SECURITY_MAT, bold=0.45)  # short sleeves: narrower
     n.earpiece(kit, "R")
     kit.notes["hip_note"] = "Hip seat = the radio on the belt (right hip); the pager rides there"
     n.front_item(kit, -0.070, belt_z / k - 0.005, (0.034, 0.046, 0.022), "char_metal_silver", lift=0.004)  # AH-G3: a
@@ -326,7 +331,7 @@ def bouncer_d(kit: Kit) -> None:
     jk, _info = n.jacket(kit, "char_suit_dark", 0.58 * k, 1.08 * k, button_mat="char_button_dark", lapel_w=0.06,
                          neck_w=0.085, flare=0.08, open_below=0.0)
     n.cull_under(kit, n0, jk, "faces_hidden_by_coat")
-    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    p5.stamp_back(kit, "SECURITY", 1.31, SECURITY_H, SECURITY_MAT, bold=0.45)
     n.earpiece(kit, "R")
     n.watch(kit, "L", strap="char_satin_gold", case="char_satin_gold")                 # AH-G3: a gold watch
     kit.notes["hip_note"] = "Hip seat = the radio on the belt under the coat (right hip); the pager rides there"
@@ -347,7 +352,7 @@ def bouncer_e(kit: Kit) -> None:
     kit.add_gear(gk.radio(b, a_radio))
     kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.050 * k)
     n.hoodie(kit, "char_nylon_black", hips_z - 0.05 * k, string_mat="char_knit_graphite")
-    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    p5.stamp_back(kit, "SECURITY", 1.31, SECURITY_H, SECURITY_MAT, bold=0.45)
     n.earpiece(kit, "R")
     n.front_item(kit, -0.090, 1.290, (0.018, 0.110, 0.018), "polymer_black", lift=0.003)  # AH-G3: a torch
     n.front_item(kit, -0.090, 1.348, (0.022, 0.012, 0.020), "char_medic_white", lift=0.003)  # and its lens
@@ -367,7 +372,7 @@ def bouncer_f(kit: Kit) -> None:
     a_radio = math.radians(108.0)
     kit.add_gear(gk.radio(b, a_radio))
     kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
-    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    p5.stamp_back(kit, "SECURITY", 1.31, 0.044, SECURITY_MAT, bold=0.45)  # short sleeves: narrower
     n.earpiece(kit, "R")
     kit.add_head(gk.glasses(fit, "char_button_dark"))
     n.front_item(kit, -0.092, 1.300, (0.008, 0.075, 0.007), "char_medic_white", lift=0.003)  # AH-G3: a white pen
@@ -438,7 +443,7 @@ def _track_jacket(kit: Kit, mat: str, bottom_z: float) -> Mesh:
 def patron_e(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     n.shoes(kit, heel=True)
-    d = g.dress(fit, "char_silk_ivory", 0.50 * k, sleeve=0.0, scoop=0.08, flare=0.05)
+    d = g.dress(fit, "char_club_satin_ivory", 0.50 * k, sleeve=0.0, scoop=0.08, flare=0.05)
     kit.add_soft(d)
     kit.add_head(cg.earrings(fit, "char_satin_gold"))                                 # AH-G3: gold drop earrings
     kit.notes["look"] = "Club patron: ivory satin slip mini dress, heels, gold drop earrings, brown side part"
@@ -469,7 +474,7 @@ def patron_g(kit: Kit) -> None:
     waist_z = fit.ring_centre("waist").z
     top = g.knit_top(fit, kit.hull(), LIME, belt_z - 0.01 * k, sleeve=0.0, neck="crew", base=0.004, rib=0.02)
     kit.add_soft(top)
-    n.skirt(kit, "char_satin_black", waist_z + 0.01 * k, 0.52 * k, flare=0.05)
+    n.skirt(kit, "char_club_satin_black", waist_z + 0.01 * k, 0.52 * k, flare=0.05)
     kit.add_head(cg.earrings(fit, "char_satin_gold"))                                 # AH-G3: big gold hoops
     kit.notes["look"] = "Club patron: sleeveless lime top, black satin mini skirt, black boots, gold hoops, dark bob"
     del bt
@@ -493,7 +498,7 @@ def patron_h(kit: Kit) -> None:
 def patron_i(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     n.shoes(kit, heel=True)
-    d = g.dress(fit, "char_satin_black", 0.42 * k, sleeve=0.40, scoop=0.06, flare=0.08)
+    d = g.dress(fit, "char_club_satin_black", 0.42 * k, sleeve=0.40, scoop=0.06, flare=0.08)
     kit.add_soft(d)
     waist = fit.ring_centre("waist").z
     b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.020, thick=0.003, drop=0.0)
@@ -573,7 +578,8 @@ def dancer(kit: Kit) -> None:
     _crop(kit, "char_satin_gold")
     _wide(kit, "char_trousers_black", sh, hem_r=0.07)
     n.arm_band(kit, "R", 1.86, 0.012, LIME, height=0.004)                             # AH-G3: a lime glow bracelet
-    kit.notes["look"] = "Club dancer: gold satin crop top, black high-waist trousers, white trainers, lime glow bracelet"
+    kit.notes["look"] = ("Club dancer: gold satin crop top, black high-waist trousers, white trainers, lime glow "
+                         "bracelet")
 
 
 def dancer_b(kit: Kit) -> None:
@@ -641,7 +647,7 @@ def dancer_g(kit: Kit) -> None:
     top = g.knit_top(fit, kit.hull(), "char_shirt_white", tuck, sleeve=0.0, neck="crew", base=0.004, rib=0.02)
     kit.add_soft(top)
     n0 = len(kit.soft.f)
-    sr = _shorts(kit, "char_satin_black")
+    sr = _shorts(kit, "char_club_satin_black")
     n.cull_under(kit, n0, sr, "faces_hidden_by_shorts")
     n.belt(kit, sr, belt_z, buckle="chrome", height=0.028)                             # covers the tuck line
     n.arm_band(kit, "L", 1.86, 0.012, CORAL, height=0.004)                            # AH-G3: a coral wristband
@@ -691,7 +697,8 @@ def dancer_k(kit: Kit) -> None:
     kit.add_head(cg.chignon(fit, "char_hair_dark", size=1.0, lift=0.02))
     for t in (1.84, 1.90):                                                             # AH-G3: coral bangles
         n.arm_band(kit, "L", t, 0.007, CORAL, height=0.003)
-    kit.notes["look"] = "Club dancer: gold satin two-piece (crop top, wide trousers), heels, high chignon, coral bangles"
+    kit.notes["look"] = ("Club dancer: gold satin two-piece (crop top, wide trousers), heels, high chignon, coral "
+                         "bangles")
 
 
 def dancer_l(kit: Kit) -> None:
