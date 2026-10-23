@@ -92,7 +92,8 @@ extends Resource
 @export var arrester_score_mult: float = 0.25
 ## LEAD r288 (RT done path: downs -> cuffs -> custody): a cop going for / applying the cuffs on a downed teammate
 ## (PoliceBrain mode &"cuff") scores its distance x this, so a bot that sees it shoots it before anything else ◇.
-@export var cuffer_score_mult: float = 0.15
+## Ships 1.0 (off): the headless RT A/B (LEAD r288) found 0.15 cost the crew time on rt_clean, with no gain elsewhere.
+@export var cuffer_score_mult: float = 1.0
 ## LEAD r288: a cop cuffing the patient within revive_clear_m is cleared before kneeling, even in a last stand ◇.
 @export var cuffer_clear_first: bool = false
 ## L2.12 / L6.1: a CUFFED crew member whose arresting officer is alive within this distance (m) is freed only once the
