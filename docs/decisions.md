@@ -1705,7 +1705,7 @@ FADE never comes, and the AH van waits on it. In PD2 a Winters-held assault dela
 Ruling, both parts:
 - **Product (A, `afterhours_mission.gd`; C amends afterhours.md Loud step 4):** the van rule is "at the second assault's FADE or
   300 s after `[secure]`'s first bag, whichever is later; **if a captain is active when the 300 s runs out, the van comes
-  then**". Waiting for the 2nd FADE stays the normal case. A captain lock only waives it. The director is unchanged
+  then**" (also if the captain arrives after the 300 s ran out: on `captain_arrived` the van comes then). Waiting for the 2nd FADE stays the normal case. A captain lock only waives it. The director is unchanged
   (the captain still holds the assault).
 - **Harness (A):** once the required loot is secured, the pilot targets an active captain. This tests the human answer too.
 - Re-run seeds 1 and 4242 on loud Hazardous with both parts. The other Hazardous losses (2 and 7: wave-1 wipes; 6501:
