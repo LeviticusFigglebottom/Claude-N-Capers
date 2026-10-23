@@ -4720,6 +4720,7 @@ shape = SubResource("ah_15")
 [node name="MarqueeArt" type="Node3D" parent="Geometry/Site/Landmarks" unique_id=100037 instance=ExtResource("4_ah")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 17, 3.6, 28.2)
 metadata/kind = &"sign"
+metadata/mount = &"wall"
 
 [node name="Building" type="Node3D" parent="Geometry" unique_id=100038]
 
@@ -9356,7 +9357,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.013999999)
 shape = SubResource("ah_357")
 
 [node name="KeyCabinet_1" type="Node3D" parent="Props/Dress/G24" unique_id=101117 instance=ExtResource("164_ah")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.99033, 1.5, 20.897999)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.994003, 1.5, 20.897999)
 metadata/kind = &"key_cabinet"
 metadata/mount = &"wall"
 

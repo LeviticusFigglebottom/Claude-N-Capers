@@ -4,5 +4,6 @@
 
 [node name="PropAhMarquee" type="Node3D"]
 metadata/kind = &"sign"
+metadata/mount = &"wall"
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
