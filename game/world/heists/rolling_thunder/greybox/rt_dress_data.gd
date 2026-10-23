@@ -63,6 +63,12 @@ const PROP_ART: Dictionary = {
 	"LorryS": ["veh_lorry", 90.0, 1, 1, false, true],
 	"LorryW": ["veh_lorry", 0.0, 1, 1, false, true],
 	"LorryE": ["veh_lorry_tm", 0.0, 1, 1, false, true],
+	# the 4 sidewalk closures (LEAD r304: a bare grey block read as a snag): jersey barriers in 2 m units along the run,
+	# stretched to the 1.2 m collider (above the jump apex) so the art and the blocker agree
+	"BarrierNE": ["prop_barrier_jersey", 0.0, 2, 1, false, false],
+	"BarrierSE": ["prop_barrier_jersey", 0.0, 2, 1, false, false],
+	"BarrierWN": ["prop_barrier_jersey", 90.0, 1, 2, false, false],
+	"BarrierES": ["prop_barrier_jersey", 90.0, 1, 2, false, false],
 	# landmark 2, the formwork stacks (prop_site_clutter), the scaffold-tower cladding and the F1 edge protection
 	# (prop_scaffold bays over the thin G1 boxes; nx / nz bays along the run)
 	"ClockPillar": ["prop_rt_clock_pillar", 0.0, 1, 1, false, true],
