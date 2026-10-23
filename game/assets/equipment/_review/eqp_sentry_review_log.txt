@@ -1,0 +1,19 @@
+node Base (MeshInstance3D) local (0.0, 0.0, 0.0)
+node Base/AmmoBox (MeshInstance3D) local (0.0, 0.0, 0.0)
+node Base/Yaw (Node3D) local (0.0, 0.55, 0.0)
+node Base/Yaw/Pitch (Node3D) local (0.0, 0.1, 0.0)
+node Base/Yaw/Pitch/Gun (MeshInstance3D) local (0.0, 0.0, 0.0)
+node Base/Yaw/Pitch/Muzzle (Node3D) local (0.0, 0.0, -0.6)
+node Base/Yaw/Pitch/Shield (MeshInstance3D) local (0.0, 0.0, 0.0)
+node Base/Yaw/YawMesh (MeshInstance3D) local (0.0, 0.0, 0.0)
+OK   Base / Yaw / Pitch / Muzzle exist
+OK   Pitch/Gun and Pitch/Shield exist
+OK   Base/AmmoBox exists
+OK   hierarchy Base/Yaw/Pitch/Muzzle
+OK   Yaw pivot 0.550 m above the floor (~0.55)
+OK   Muzzle -Z faces the front (-Z), level: (0.0, 0.0, -1.0)
+OK   barrel reach 0.600 m in front of the pitch pivot (~0.6)
+OK   stand footprint 0.49 x 0.44 m, nothing below the floor (0.000)
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/sentry/eqp_sentry_turntable.png
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/sentry/eqp_sentry_ingame.png
+in-game: sentry at (0.8, 0.0, 14.4)
