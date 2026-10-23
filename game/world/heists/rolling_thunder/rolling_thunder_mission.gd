@@ -533,6 +533,7 @@ func _stopped() -> void:
 			t.lockdown()
 		_say_once(VO_DEADBOLTS)
 	_spawn_convoy_units()
+	_apply_escort_accuracy()
 	if _rare(RARE_BONDS):
 		spawn_loot(LOOT_BONDS, RARE_BONDS, BONDS_BAGS)
 	update_objective_data(&"trucks", {"opened": 0, "total": _trucks.size(), "marker_tags": [TAG_TRUCK_IN_PLAY]})
@@ -691,6 +692,26 @@ func _poll() -> void:
 	_last_counts = Vector2i(opened, down)
 	if not escape_open:
 		start_timer(&"poll", POLL_S, _poll)
+
+
+## RtTweak escort_accuracy_mult: every convoy unit hits at that multiple for escort_accuracy_window_s from the stop.
+func _apply_escort_accuracy() -> void:
+	var rtw: RtTweak = RtTweak.data()
+	if is_equal_approx(rtw.escort_accuracy_mult, 1.0):
+		return
+	for u: NpcBase in _units:
+		var g: NpcGunner = u.get_node_or_null(^"Gunner") as NpcGunner if is_instance_valid(u) else null
+		if g != null:
+			g.hit_chance_mult = rtw.escort_accuracy_mult
+			g.hit_chance_mult_left = rtw.escort_accuracy_window_s
+
+
+## RtTweak escort_engage_delay_s: a convoy unit that just got out holds fire that long.
+func _on_dismounted(npc: NpcBase) -> void:
+	var delay: float = RtTweak.data().escort_engage_delay_s
+	var g: NpcGunner = npc.get_node_or_null(^"Gunner") as NpcGunner
+	if delay > 0.0 and g != null and _units.has(npc):
+		g.engage_hold_left = delay
 
 
 ## RtTweak.FROM_ESCORT_DOWN: the last convoy unit is down, so the BUILD hold now ends truck_window_s from here (or at

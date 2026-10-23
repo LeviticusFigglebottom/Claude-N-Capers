@@ -1,4 +1,5 @@
-## LEAD r287 RT lever A/B (headless pilot, as data): on a Rolling Thunder run, env CAPER_RT_LEVERS=on switches all
+## LEAD r287 RT lever A/B (headless pilot, as data): on a Rolling Thunder run, env CAPER_RT_LEVERS=escort switches only
+## the escort knobs on (engage delay ESCORT_DELAY_S, accuracy x ESCORT_ACCURACY); CAPER_RT_LEVERS=on switches the
 ## three D-158 knobs on (RtTweak truck_window_from escort_down + wave1_exclude [stinger], CrewAiTweak
 ## cover_prefer_behind_leader_m 4.0; in memory only, never saved). The log then times, from the convoy's stop: the
 ## escort down, the first BUILD, each crew down / cuff / custody (before or after that BUILD), the first crew member
@@ -8,6 +9,8 @@ extends RefCounted
 
 const TRUCK_REACH_M: float = 3.0
 const COVER_PREFER_M: float = 4.0
+const ESCORT_DELAY_S: float = 1.5
+const ESCORT_ACCURACY: float = 0.7
 
 var _rt: HeistRuntime = null
 var _note: Callable
@@ -19,15 +22,19 @@ var _reached: Dictionary = {}  # slot -> true
 
 ## Before the stop: apply the levers when asked (env CAPER_RT_LEVERS=on) and log which set is live.
 static func apply_levers() -> String:
-	var on: bool = OS.get_environment("CAPER_RT_LEVERS") == "on"
+	var mode: String = OS.get_environment("CAPER_RT_LEVERS")
 	var t: RtTweak = RtTweak.data()
 	var ct: CrewAiTweak = load(CrewAiBrain.TWEAK_PATH) as CrewAiTweak
-	if on:
+	if mode == "on":
 		t.truck_window_from = RtTweak.FROM_ESCORT_DOWN
 		t.wave1_exclude = [&"stinger"] as Array[StringName]
 		ct.cover_prefer_behind_leader_m = COVER_PREFER_M
-	return "levers %s: window_from %s, wave1_exclude %s (>= diff %d), cover_prefer %.1f" % ["ON" if on else "defaults",
-		t.truck_window_from, t.wave1_exclude, t.wave1_exclude_min_difficulty, ct.cover_prefer_behind_leader_m]
+	elif mode == "escort":  # LEAD r287: only the escort knobs
+		t.escort_engage_delay_s = ESCORT_DELAY_S
+		t.escort_accuracy_mult = ESCORT_ACCURACY
+	return "levers %s: window_from %s, wave1_exclude %s (>= diff %d), cover_prefer %.1f, escort delay %.1f s acc x%.2f" % [
+		mode if mode != "" else "defaults", t.truck_window_from, t.wave1_exclude, t.wave1_exclude_min_difficulty,
+		ct.cover_prefer_behind_leader_m, t.escort_engage_delay_s, t.escort_accuracy_mult]
 
 
 func start(host: Node, rt: HeistRuntime, note: Callable) -> void:

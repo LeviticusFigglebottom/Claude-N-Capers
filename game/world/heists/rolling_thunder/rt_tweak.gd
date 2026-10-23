@@ -18,6 +18,12 @@ static var _cached: RtTweak = null
 ## wave1_exclude_min_difficulty and above. [] = today.
 @export var wave1_exclude: Array[StringName] = []
 @export var wave1_exclude_min_difficulty: Enums.Difficulty = Enums.Difficulty.HAZARDOUS
+## The escort fight (P's verdicts / A's A/B: the pilot down 8-13 s after the stop): convoy units hold fire this long
+## after getting out (on top of their normal aim delay), and hit at x escort_accuracy_mult for the first
+## escort_accuracy_window_s after the stop. 0 / 1.0 = today.
+@export var escort_engage_delay_s: float = 0.0
+@export var escort_accuracy_mult: float = 1.0
+@export var escort_accuracy_window_s: float = 10.0
 
 
 static func data() -> RtTweak:

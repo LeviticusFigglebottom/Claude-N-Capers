@@ -9,3 +9,6 @@ truck_window_s = 30.0
 escort_down_max_s = 60.0
 wave1_exclude = Array[StringName]([])
 wave1_exclude_min_difficulty = 2
+escort_engage_delay_s = 0.0
+escort_accuracy_mult = 1.0
+escort_accuracy_window_s = 10.0

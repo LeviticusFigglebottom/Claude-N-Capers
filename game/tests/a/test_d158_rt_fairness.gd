@@ -235,3 +235,62 @@ func test_cover_prefer_behind_leader() -> void:
 	var picked: Node3D = b._pick_cover(leader)
 	tw.cover_prefer_behind_leader_m = 0.0
 	assert_eq(picked, back, "preferring cover behind the leader")
+
+
+# --- LEAD r287 escort knobs ----------------------------------------------------------------------
+
+func test_escort_knob_defaults_are_today() -> void:
+	var t: RtTweak = RtTweak.data()
+	assert_eq(t.escort_engage_delay_s, 0.0, "no extra engage delay")
+	assert_eq(t.escort_accuracy_mult, 1.0, "full accuracy")
+
+
+func test_gunner_engage_hold_then_fires() -> void:
+	await _launch_unit(0)
+	_rt.stealth.raise_alarm(&"test", 0)
+	var crew: CrewController = _rt.crew_controller(0) as CrewController
+	crew.set_masked(true)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	var cop: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -8)), {})
+	await wait_physics_frames(2)
+	var g: NpcGunner = cop.get_node("Gunner") as NpcGunner
+	var shots: Array[int] = [0]
+	g.shot.connect(func(_t: Object, _h: bool) -> void: shots[0] += 1)
+	g.engage_hold_left = 2.0
+	await wait_seconds(1.5)
+	assert_eq(shots[0], 0, "held: no shot")
+	assert_true(await wait_until(func() -> bool: return shots[0] > 0, 6.0), "fires once the hold is over")
+	g.hit_chance_mult = 0.5
+	g.hit_chance_mult_left = 1.0
+	assert_eq(g._timed_hit_mult(), 0.5, "the timed mult applies")
+	g.hit_chance_mult_left = 0.0
+	assert_eq(g._timed_hit_mult(), 1.0, "and lapses")
+
+
+func test_rt_escort_knobs_reach_the_convoy() -> void:
+	var path: String = HeistLauncher.map_path(RT_HEIST, {})
+	if path == "" or not ResourceLoader.exists(path):
+		skip("rolling_thunder map not on this branch")
+		return
+	var t: RtTweak = RtTweak.data()
+	t.escort_engage_delay_s = 1.5
+	t.escort_accuracy_mult = 0.7
+	var m: RollingThunderMission = await _rt_stop(false)  # crash stop: the escorts get out at once
+	var held_any: bool = await wait_until(func() -> bool:
+		return m._units.any(func(u: NpcBase) -> bool:
+			var gg: NpcGunner = u.get_node_or_null(^"Gunner") as NpcGunner if is_instance_valid(u) else null
+			return gg != null and gg.engage_hold_left > 0.0), 4.0)  # after the exit clip (_dismounted)
+	t.escort_engage_delay_s = 0.0
+	t.escort_accuracy_mult = 1.0
+	var held: int = 0
+	var damped: int = 0
+	for u: NpcBase in m._units:
+		var g: NpcGunner = u.get_node_or_null(^"Gunner") as NpcGunner if is_instance_valid(u) else null
+		if g == null:
+			continue
+		if g.hit_chance_mult_left > 0.0 and is_equal_approx(g.hit_chance_mult, 0.7):
+			damped += 1
+		if g.engage_hold_left > 0.0:
+			held += 1
+	assert_true(damped >= 6, "every convoy unit hits at x0.7 after the stop (%d)" % damped)
+	assert_true(held_any and held >= 1, "the escorts that got out hold fire (%d)" % held)
