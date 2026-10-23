@@ -34,6 +34,21 @@ def r3(v: float) -> float:
     return round(float(v) + 0.0, 3)
 
 
+def on_wall(level: str, x: float, z: float, off: float) -> List[float]:
+    """(x, z) moved onto the nearest wall face(s) within 0.8 m, `off` out from the face on the point's side (a wall
+    mount: cameras 0, cower spots 0.21, wall boards the prop's half depth)."""
+    ox, oz = x, z
+    for w in GM.walls():
+        if w[0] != level:
+            continue
+        axis, fixed, a0, a1, t = w[1], w[2], w[3], w[4], w[5]
+        if axis == "x" and a0 - 0.3 <= x <= a1 + 0.3 and abs(z - fixed) < 0.8:
+            oz = fixed + (1.0 if z >= fixed else -1.0) * (t / 2.0 + off)
+        elif axis == "z" and a0 - 0.3 <= z <= a1 + 0.3 and abs(x - fixed) < 0.8:
+            ox = fixed + (1.0 if x >= fixed else -1.0) * (t / 2.0 + off)
+    return [r3(ox), r3(oz)]
+
+
 def Pf(kind: str, name: str, pos: list, yaw: float, props: Dict = None, use: list = None, metas: Dict = None,
        vis: str = "") -> list:
     return ["prefab", kind, name, [r3(v) for v in pos], float(yaw), props or {},
@@ -111,20 +126,19 @@ SLOT_DOORS: Dict[str, Dict[str, str]] = {
     "gate_chained": {"PassageGateN": "BARRED"},
 }
 # the smokers' passage north gate (a double steel gate between the Hallam wall and the Velvet, x -3 .. -0.2)
-PASSAGE_GATE = [-1.5, 0.0, 0.0]
+PASSAGE_GATE = [-1.6, 0.0, 0.0]
 
 
 def _door_visual(kind: str, style: str, t: float) -> str:
-    tt = "t%02d" % int(round(t * 100))
-    if kind == "double" and style in ("glass", "walnut", "steel", "ivory"):
-        return "prop_door_double_%s_%s" % (style, "t40" if t > 0.3 else "t20")
+    """The catalog leaf matching the wall: double t20 / t40; service t20 / t40, and t30 (the 0.3 m core walls) only
+    in steel (door_frame_gap)."""
+    if kind == "double":
+        return "prop_door_double_%s_%s" % (style, "t40" if t > 0.25 else "t20")
     if style == "glass":
         style = "ivory"
-    if kind == "service" and t > 0.3:
-        tt = "t40"
-    elif kind == "service" and t > 0.2:
-        tt = "t30" if style == "steel" else "t20"
-    return "prop_door_%s_%s_%s" % (kind, style, tt)
+    if abs(t - 0.3) < 1e-6:
+        return "prop_door_service_steel_t30"
+    return "prop_door_%s_%s_%s" % (kind, style, "t40" if t > 0.3 else "t20")
 
 
 def _wall_t_at(level: str, axis: str, fixed: float, c: float) -> float:
@@ -150,8 +164,8 @@ def doors() -> List[list]:
     out.append(["PassageGateN", "G", PASSAGE_GATE, FRONT_YAW["N"], "double", "", "prop_door_double_grille_t20", 1.8,
                 {"padlock": "side_gate"}])
     # the stock cage's gate (G10, prod_stock): a BARRED mesh gate with a padlock (lockpick 8 s or saw 20 s, D-057)
-    out.append(["StockCageGate", "G", [3.0, 0.0, 2.5], FRONT_YAW["S"], "single", "BARRED",
-                "prop_door_single_steel_t04", 0.9, {"padlock": "prod_stock"}])
+    out.append(["StockCageGate", "G", [3.0, 0.0, 2.55], FRONT_YAW["S"], "single", "BARRED",
+                "prop_door_single_steel_t10", 0.9, {"padlock": "prod_stock"}])
     return out
 
 
@@ -162,44 +176,45 @@ def furniture() -> List[list]:
         B("MainBarBack", [0.6, 0.0, 13.5], [0.6, 1.0, 7.0], 0.0, "counter", True, "counter"),
         B("MainBarCounter", [2.2, 0.0, 13.5], [0.6, BAR_TOP, 7.0], 0.0, "counter", True, "counter"),
         # the east bar (x 24, z 8-14) and its back bar against the hall's east wall
-        B("EastBarBack", [25.5, 0.0, 11.0], [0.6, 1.0, 6.0], 0.0, "counter", True, "counter"),
+        # (split round the service door at z 11)
+        B("EastBarBackN", [25.5, 0.0, 9.1], [0.6, 1.0, 2.2], 0.0, "counter", True, "counter"),
+        B("EastBarBackS", [25.5, 0.0, 12.9], [0.6, 1.0, 2.2], 0.0, "counter", True, "counter"),
         B("EastBarCounter", [23.9, 0.0, 11.0], [0.6, BAR_TOP, 6.0], 0.0, "counter", True, "counter"),
         # the VIP bar on U2's south wall (x 12-20)
         B("VIPBarBack", [16.0, U, 27.5], [8.0, 1.0, 0.6], 0.0, "counter", True, "counter"),
         B("VIPBarCounter", [16.0, U, 25.9], [8.0, BAR_TOP, 0.6], 0.0, "counter", True, "counter"),
         # the box-office counter on the foyer side of G2 (the cloakroom hatch at its south end)
-        B("BoxOfficeCounter", [22.9, 0.0, 24.0], [0.6, BAR_TOP, 4.4], 0.0, "counter", True, "counter"),
+        B("BoxOfficeCounter", [22.4, 0.0, 24.0], [0.6, BAR_TOP, 4.4], 0.0, "counter", True, "counter"),
         # the stage: the DJ booth (1.0 m deck) and the speaker stacks
-        B("DJBooth", [13.0, 0.3, 8.2], [3.0, 1.0, 1.0], 0.0, "counter", True, "counter"),
+        B("DJBooth", [15.5, 0.3, 8.2], [3.0, 1.0, 1.0], 0.0, "counter", True, "counter"),   # clear of the backstage door
         B("SpeakerStackW", [8.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
         B("SpeakerStackE", [18.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
         # G7 booths: banquettes (1.1 m backs) along the circle's south wall and the reserved corner booth (east end)
-        B("BoothW1", [4.5, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
-        B("BoothW2", [8.5, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
+        B("BoothW1", [6.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),   # clear of the WC door (x 4)
+        B("BoothW2", [9.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
         B("BoothE1", [22.0, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
         B("BoothReserved", [24.6, 0.0, 19.8], [1.6, 1.1, 1.6], 0.0, "sofa"),
         B("HighTable1", [6.5, 0.0, 17.5], [0.7, 1.05, 0.7], 0.0, "table", True),
         B("HighTable2", [21.0, 0.0, 17.5], [0.7, 1.05, 0.7], 0.0, "table", True),
         # U1 VIP booths along the rail, U2 sofas
-        B("VIPBooth1", [5.0, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
-        B("VIPBooth2", [9.0, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
+        B("VIPBooth1", [6.6, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
+        B("VIPBooth2", [9.6, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
+        B("VIPTable2", [9.6, U, 19.5], [0.8, 0.75, 0.6], 0.0, "table", True),
         B("VIPBooth3", [20.0, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
         B("VIPSofa", [16.0, U, 22.4], [3.0, 0.9, 0.9], 0.0, "sofa"),
+        B("VIPCoffeeTable", [16.0, U, 23.3], [1.2, 0.45, 0.6], 0.0, "table", True),
         # G13: crate stacks at x 9 and x 24 (1.4 m crouch cover) and keg trolleys
         B("CratesG13W", [9.0, 0.0, 5.55], [1.2, 1.4, 0.7], 0.0, "crate"),
         B("CratesG13E", [24.0, 0.0, 5.55], [1.2, 1.4, 0.7], 0.0, "crate"),
         B("KegTrolley", [16.0, 0.0, 5.5], [0.6, 1.0, 0.6], 0.0, "crate"),
         # G21: keg racks, the bottle bank
-        B("KegRack", [30.0, 0.0, 0.75], [2.4, 1.6, 0.8], 0.0, "shelving"),
-        B("BottleBank", [34.5, 0.0, 3.7], [1.2, 1.2, 0.9], 0.0, "bin"),
-        # the G10 stock cage (4 x 1.5 m mesh on the north wall; its gate is a door)
-        B("StockCageW", [1.05, 0.0, 1.4], [0.1, 2.4, 2.4], 0.0, "cage", False, "mesh"),
-        B("StockCageE", [4.95, 0.0, 1.4], [0.1, 2.4, 2.4], 0.0, "cage", False, "mesh"),
-        B("StockCageFrontW", [1.775, 0.0, 2.55], [1.45, 2.4, 0.1], 0.0, "cage", False, "mesh"),
-        B("StockCageFrontE", [4.225, 0.0, 2.55], [1.45, 2.4, 0.1], 0.0, "cage", False, "mesh"),
+        B("KegRack", [35.4, 0.0, 2.5], [0.8, 1.6, 2.4], 0.0, "shelving"),   # the east wall, clear of the doors
+        B("BottleBank", [33.2, 0.0, 3.7], [1.2, 1.2, 0.9], 0.0, "bin"),
         # U10 counting tables, U9 desk, U12 shelving, G11 flight cases
         B("CountTable", [29.0, U, 10.5], [2.4, 0.9, 1.2], 0.0, "table", True),
-        B("CountDesk", [32.0, U, 12.6], [1.4, 0.75, 0.7], 0.0, "desk", True),
+        B("CountDesk", [32.0, U, 11.4], [1.4, 0.75, 0.7], 0.0, "desk", True),
+        B("DoorLogDesk", [30.0, 0.0, 20.55], [1.2, 1.0, 0.5], 0.0, "counter", True, "counter"),
+        B("StaffTable", [17.5, 0.0, 2.6], [1.4, 0.75, 0.8], 0.0, "table", True),
         B("OfficeDesk", [31.0, U, 18.0], [1.8, 0.75, 0.9], 0.0, "desk", True),
         B("PrivateShelving", [35.4, U, 23.0], [0.6, 2.0, 3.0], 0.0, "shelving", True),
         B("FlightCases", [12.5, 0.0, 1.0], [1.6, 1.0, 0.8], 0.0, "crate"),
@@ -211,8 +226,6 @@ def furniture() -> List[list]:
         B("CarMarlin2", [-8.0, 0.0, 33.5], [4.6, 1.45, 1.9], 0.0, "car", False, "prop"),
         # the passage's south rope barrier (PUBLIC) and its gate's fill posts
         B("PassageRope", [-1.6, 0.0, 28.6], [2.6, 1.0, 0.1], 0.0, "barrier"),
-        B("PassageGatePostW", [-2.75, 0.0, 0.0], [0.5, 2.2, 0.2], 0.0, "frame", False, "frame"),
-        B("PassageGatePostE", [-0.35, 0.0, 0.0], [0.3, 2.2, 0.2], 0.0, "frame", False, "frame"),
         # the loading roller door: closed shutter at G1 (the personnel door beside it is the route)
         B("RollerShutter", [31.0, 0.0, 0.0], [3.0, 3.0, 0.12], 0.0, "shutter", False, "door"),
     ]
@@ -237,11 +250,11 @@ def always() -> Dict[str, List[list]]:
         ("TillMainBar", [2.2, BAR_TOP, 12.0], 0.0, 600, [3.0, 0.0, 12.0]),
         ("TillEastBar", [23.9, BAR_TOP, 10.0], 0.0, 600, [23.1, 0.0, 10.0]),
         ("TillVIPBar", [18.0, U + BAR_TOP, 25.9], 0.0, 600, [18.0, U, 25.2]),
-        ("TillBoxOffice", [22.9, BAR_TOP, 23.0], 0.0, 600, [22.1, 0.0, 23.0]),
-        ("TipJarCloak", [22.9, BAR_TOP, 26.0], 0.0, 300, [22.1, 0.0, 26.0]),
-        ("BottleServiceU1", [9.0, U + 0.75, 19.4], 0.0, 800, [9.0, U, 18.6]),
-        ("BottleServiceU2", [16.0, U + 0.45, 23.2], 0.0, 800, [16.0, U, 24.0]),
-        ("DeskDrawerU9", [31.6, U + 0.6, 18.5], 0.0, 1200, [31.6, U, 19.3]),
+        ("TillBoxOffice", [22.4, BAR_TOP, 23.0], 0.0, 600, [23.3, 0.0, 23.0]),
+        ("TipJarCloak", [22.4, BAR_TOP, 26.0], 0.0, 300, [23.3, 0.0, 26.0]),
+        ("BottleServiceU1", [9.6, U + 0.75, 19.5], 0.0, 800, [9.6, U, 18.6]),
+        ("BottleServiceU2", [16.0, U + 0.45, 23.3], 0.0, 800, [16.0, U, 24.1]),
+        ("DeskDrawerU9", [31.6, U + 0.75, 18.1], 0.0, 1200, [31.6, U, 19.3]),
     ]
     small = [Pf("small_loot", n, p, y, {"loot_id": "loot.small_valuables", "value": v}, u, {}, "prop_cash_stack")
              for n, p, y, v, u in sl]
@@ -257,7 +270,7 @@ def always() -> Dict[str, List[list]]:
             Pf("safe", "OfficeSafe", [33.5, U, 20.35], 0.0,
                {"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe"},
                [33.5, U, 19.2], {}, "prop_safe_large"),
-            Pf("drill_point", "SafeDrill", [33.5, U + 1.0, 19.9], 0.0, {"objective_tag": "safe_drill",
+            Pf("drill_point", "SafeDrill", [33.5, U + 0.05, 19.6], 0.0, {"objective_tag": "safe_drill",
                                                                         "@target": "OfficeSafe"},
                [33.5, U, 19.2], {}, ""),
             # the door take: G26's drop safe (SMALL, drill / saw; saw 60 s), small loot x3 inside
@@ -269,13 +282,13 @@ def always() -> Dict[str, List[list]]:
         ] + small,
         "Gameplay/Ladders": [
             # the drop ladder from the alley to the BOH roof (+4.2), through the parapet gap at x 30
-            Pf("ladder", "DropLadder", [30.0, 0.0, -0.45], 0.0, {"height_m": 4.2, "objective_tag": "drop_ladder"}, None,
+            Pf("ladder", "DropLadder", [30.0, 0.0, -0.6], 0.0, {"height_m": 4.2, "objective_tag": "drop_ladder"}, None,
                {"todo": "ladders need the mask (doc Stealth routes 3)"}, "prop_ladder_fire_escape_h420"),
         ],
         "Gameplay/Markers": [
             M("CasingFoyer", [16.0, 0.0, 24.5], "casing", "casing objective marker: the foyer"),
             M("SafeLoot", [33.5, U + 0.3, 20.35], "safe_loot", "safe_bags x loot.cash_bricks (+1 on count_done)"),
-            M("DJStage", [13.0, 1.3, 8.2], "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"),
+            M("DJStage", [15.5, 1.3, 8.2], "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"),
         ] + [M("Holdout" + h, [x, y, z], "holdout_" + h.lower(), "doc Loud holdout " + h)
              for h, x, y, z in [("H1", 31.0, U, 18.0), ("H2", 13.0, U, 20.0), ("H3", 31.0, 0.0, 4.0),
                                 ("H4", 32.0, 0.0, 17.0)]],
@@ -301,14 +314,14 @@ PATRONS = [
     # [name, pos, yaw, idle]: bars, booths, the foyer, the WCs, the passage, the balcony, the VIP lounge
     ("PatronMainBar1", [3.0, 0.0, 11.5], -90.0, "walk_text"), ("PatronMainBar2", [3.0, 0.0, 15.0], -90.0, "walk_text"),
     ("PatronEastBar1", [22.8, 0.0, 9.5], 90.0, "walk_text"), ("PatronEastBar2", [22.8, 0.0, 12.5], 90.0, "walk_text"),
-    ("PatronBoothW1", [4.5, 0.0, 19.6], 180.0, "sit"), ("PatronBoothW2", [8.5, 0.0, 19.6], 180.0, "sit"),
+    ("PatronBoothW1", [6.6, 0.0, 19.6], 180.0, "sit"), ("PatronBoothW2", [9.6, 0.0, 19.6], 180.0, "sit"),
     ("PatronBoothE1", [22.0, 0.0, 19.6], 180.0, "sit"), ("PatronHighTable1", [6.5, 0.0, 16.8], 180.0, "walk_text"),
     ("PatronHighTable2", [21.0, 0.0, 16.8], 180.0, "walk_text"), ("PatronFoyer1", [12.5, 0.0, 24.0], 90.0, "walk_text"),
     ("PatronFoyer2", [19.5, 0.0, 25.5], -90.0, "queue"), ("PatronWC", [2.0, 0.0, 25.0], 0.0, "walk_text"),
     ("PatronPassage1", [-1.6, 0.0, 22.0], 90.0, "smoke"), ("PatronPassage2", [-1.4, 0.0, 25.5], -90.0, "smoke"),
-    ("PatronBalcony1", [5.0, U, 19.6], 180.0, "sit"), ("PatronBalcony2", [20.0, U, 19.6], 180.0, "sit"),
+    ("PatronBalcony1", [6.6, U, 19.6], 180.0, "sit"), ("PatronBalcony2", [20.0, U, 19.6], 180.0, "sit"),
     ("PatronVIP1", [14.0, U, 23.0], 0.0, "walk_text"), ("PatronVIP2", [18.0, U, 23.5], 0.0, "walk_text"),
-    ("PatronVIP3", [16.0, U, 21.7], 180.0, "sit"), ("PatronUnderCircle", [13.0, 0.0, 18.5], 0.0, "walk_text"),
+    ("PatronVIP3", [13.6, U, 22.4], -90.0, "walk_text"), ("PatronUnderCircle", [13.0, 0.0, 18.5], 0.0, "walk_text"),
 ]
 
 
@@ -324,15 +337,17 @@ def fixed_spawns() -> List[list]:
           "bartender_wipe"),
         S("BartenderVIP", "CIVILIAN", [16.0, U, 26.2 + BAR_BEHIND], 0.0, ["civ_bar_vip", STAFF, "staff_bar"],
           "bartender_pour"),
-        S("BoxOffice", "CIVILIAN", [23.2 + BAR_BEHIND, 0.0, 23.5], 90.0, ["civ_box_office", STAFF, "staff_front"],
+        S("BoxOffice", "CIVILIAN", [22.7 + BAR_BEHIND, 0.0, 23.5], 90.0, ["civ_box_office", STAFF, "staff_front"],
           "desk_work"),
     ]
-    # rare co_op_pickup (A: 14:00): two cartel couriers at the loading door, held back (HeistRuntime's scripted tag)
+    # rare co_op_pickup (A 9a335a1d: 14:00): two couriers walk in calm from the loading door (held back by
+    # HeistRuntime's scripted tag; no `cartel` tag, which spawns in COMBAT) and patrol the Courier graph
     for i, x in enumerate([33.6, 36.4]):
-        out.append(S("Courier%d" % (i + 1), "GUARD", [x, 0.0, -2.4], 0.0, ["cartel_courier", "cartel", "scripted"],
-                     "", "Courier"))
-    # rare off_duty_cop: a patron in a U1 booth (A spawns enemy.patrol_officer here)
-    out.append(S("OffDutyCop", "CIVILIAN", [20.0, U, 19.6], 180.0, ["civ_offduty"], "sit"))
+        out.append(S("Courier%d" % (i + 1), "GUARD", [x, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "",
+                     "Courier"))
+    # rare off_duty_cop: a U1 booth; A's mission spawns enemy.patrol_officer here (A cef43029: POLICE + scripted, so
+    # nothing spawns at load; the plain-clothes look comes off the civ_offduty tag)
+    out.append(S("OffDutyCop", "POLICE", [20.0, U, 19.6], 180.0, ["civ_offduty", "scripted"], "sit"))
     for nm, pos, yaw, idle in PATRONS:
         out.append(S(nm, "CIVILIAN", pos, yaw, ["civ_patron"], idle, "Patrons"))
     for c, (cx, cz) in enumerate(CLUSTERS):
@@ -353,7 +368,7 @@ FOH = {"Foyer": [16.0, 0.0, 24.5], "HallDoorW": [13.0, 0.0, 19.4], "Booths": [8.
 FOH_EDGES = [["Foyer", "HallDoorW"], ["HallDoorW", "Booths"], ["Booths", "WCs"], ["WCs", "WestBar"],
              ["WestBar", "StageFront"], ["StageFront", "EastBar"], ["EastBar", "Booths"], ["EastBar", "G20"],
              ["G20", "G13Mid"], ["G13Mid", "StageBack"], ["StageBack", "StageFront"]]
-BOH = {"G13W": [3.0, 0.0, 6.0], "G10": [4.0, 0.0, 3.6], "G13Mid": [13.0, 0.0, 6.0], "G12": [17.0, 0.0, 3.0],
+BOH = {"G13W": [3.0, 0.0, 6.0], "G10": [4.0, 0.0, 3.6], "G13Mid": [13.0, 0.0, 6.0], "G12": [15.5, 0.0, 3.0],
        "G13E": [31.0, 0.0, 6.0], "G21": [31.0, 0.0, 3.0], "G20": [27.0, 0.0, 14.0], "G25": [31.0, 0.0, 15.5],
        "G24": [32.0, 0.0, 19.0]}
 BOH_EDGES = [["G13W", "G10"], ["G13W", "G13Mid"], ["G13Mid", "G12"], ["G13Mid", "G13E"], ["G13E", "G21"],
@@ -372,17 +387,18 @@ PATRON_PTS = {"Foyer": [16.0, 0.0, 25.5], "MainBar": [3.4, 0.0, 14.0], "EastBar"
               "DanceEdge": [13.0, 0.0, 17.2]}
 PATRON_EDGES = [["Foyer", "Booths"], ["Booths", "MainBar"], ["MainBar", "WCs"], ["Booths", "EastBar"],
                 ["Booths", "DanceEdge"], ["MainBar", "Passage"]]
-COWER = [  # 0.21 m off walls (cower_stand), facing away from the wall
-    ("CowerHallW1", [0.41, 0.0, 9.5], -90.0), ("CowerHallW2", [0.41, 0.0, 18.0], -90.0),
-    ("CowerCircleS1", [6.0, 0.0, 20.59], 0.0), ("CowerCircleS2", [16.0, 0.0, 20.59], 0.0),
-    ("CowerFoyerW", [10.31, 0.0, 23.5], -90.0), ("CowerFoyerE", [21.69, 0.0, 22.5], 90.0),
-    ("CowerVIP", [11.0, U, 21.31], 180.0),
+COWER_RAW = [  # 0.21 m off walls (cower_stand, snapped by on_wall), facing away from the wall
+    ("CowerHallW1", "G", 0.4, 9.5, 0.0, -90.0), ("CowerHallW2", "G", 0.4, 18.0, 0.0, -90.0),
+    ("CowerCircleS1", "G", 4.0, 20.6, 0.0, 0.0), ("CowerCircleS2", "G", 16.0, 20.6, 0.0, 0.0),
+    ("CowerFoyerW", "G", 10.3, 23.5, 0.0, -90.0), ("CowerFoyerE", "G", 21.7, 22.5, 0.0, 90.0),
+    ("CowerVIP", "U", 11.0, 21.3, U, 180.0),
 ]
+COWER = [(nm, [on_wall(lv, x, z, 0.21)[0], y, on_wall(lv, x, z, 0.21)[1]], yaw) for nm, lv, x, z, y, yaw in COWER_RAW]
 # just outside each crowd exit: the main doors (Marlin Ave) and the hall's two west fire exits (the passage)
 FLEE = [("FleeMainW", [15.0, 0.0, 31.0]), ("FleeMainE", [18.0, 0.0, 31.0]), ("FleeFireN", [-1.5, 0.0, 8.3]),
         ("FleeFireS", [-1.5, 0.0, 19.0]), ("FleePassageS", [-1.5, 0.0, 30.0])]
 # the couriers' walk: the loading door -> G21 -> G13 -> the product rooms
-COURIER = {"Door": [35.0, 0.0, -1.6], "G21": [33.0, 0.0, 3.0], "G13E": [31.0, 0.0, 6.0], "G13Mid": [13.0, 0.0, 6.0],
+COURIER = {"Door": [35.0, 0.0, -1.6], "G21": [33.0, 0.0, 3.0], "G21W": [30.0, 0.0, 3.5], "G13E": [31.0, 0.0, 6.0], "G13Mid": [13.0, 0.0, 6.0],
            "G10": [4.0, 0.0, 3.6], "G11": [11.0, 0.0, 3.6]}
 
 
@@ -417,8 +433,11 @@ def graphs() -> Dict[str, list]:
         "CivFlee": ["civ_flee", 0, {nm: [p, [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], None] for nm, p in FLEE},
                     [["FleeMainW", "FleeMainE"], ["FleeMainW", "FleePassageS"], ["FleePassageS", "FleeFireS"],
                      ["FleeFireS", "FleeFireN"]]],
+        # loops (patrols: >= 3 through the start for a 2-guard graph): the loading bay and the corridor both way
+        # round, the stock and green rooms in a ring off G13
         "Courier": ["courier", 0, pts(COURIER, [3.0, 6.0], ["courier"]),
-                    [["Door", "G21"], ["G21", "G13E"], ["G13E", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"]]],
+                    [["Door", "G21"], ["Door", "G21W"], ["G21", "G21W"], ["G21", "G13E"], ["G21W", "G13E"],
+                     ["G13E", "G13Mid"], ["G21W", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"], ["G10", "G11"]]],
     }
 
 
@@ -486,13 +505,13 @@ def review_cameras() -> List[list]:
         ["rc_office", "U9", [28.8, U + 1.7, 16.8], [34.5, U + 0.8, 20.5]],
         ["rc_private_room", "U12", [28.8, U + 1.7, 21.8], [35.5, U + 1.0, 24.0]],
         ["rc_count_room", "U10", [32.5, U + 1.7, 13.3], [26.5, U + 1.0, 10.5]],
-        ["rc_upper_corridor", "U6b", [27.0, U + 1.7, 27.5], [27.0, U + 1.2, 16.5]],
+        ["rc_upper_corridor", "U6b", [27.0, U + 1.7, 27.2], [27.0, U + 1.2, 16.5]],
         ["rc_back_corridor", "G13", [0.8, 1.7, 6.0], [36.0, 1.2, 6.0]],
         ["rc_east_corridor", "G20", [27.0, 1.7, 7.6], [27.0, 1.2, 20.5]],
         ["rc_stock_room", "G10", [6.5, 1.7, 4.5], [2.5, 1.0, 1.0]],
         ["rc_green_room", "G11", [13.5, 1.7, 4.5], [9.0, 1.0, 0.8]],
         ["rc_staff_room", "G12", [19.5, 1.7, 4.5], [15.0, 1.0, 0.8]],
-        ["rc_loading", "G21", [31.0, 1.7, 0.6], [31.0, 1.0, 4.5]],
+        ["rc_loading", "G21", [28.6, 1.7, 1.0], [34.0, 1.0, 3.5]],
         ["rc_door_team", "G24", [28.6, 1.7, 17.6], [35.5, 1.0, 20.5]],
     ]
 
@@ -529,12 +548,12 @@ def tactical() -> List[list]:
     cover = [("CoverMainBarN", [3.0, 0.0, 9.6], 180.0), ("CoverMainBarS", [3.0, 0.0, 17.4], 0.0),
              ("CoverEastBarN", [23.2, 0.0, 7.6], 180.0), ("CoverEastBarS", [23.2, 0.0, 14.4], 0.0),
              ("CoverStageW", [7.0, 0.0, 10.6], 0.0), ("CoverStageE", [19.0, 0.0, 10.6], 0.0),
-             ("CoverBoothW1", [4.5, 0.0, 19.4], 0.0), ("CoverBoothE1", [22.0, 0.0, 19.4], 0.0),
+             ("CoverBoothW1", [6.6, 0.0, 19.4], 0.0), ("CoverBoothE1", [22.0, 0.0, 19.4], 0.0),
              ("CoverRailW", [6.0, U, 15.6], 0.0), ("CoverRailE", [20.0, U, 15.6], 0.0),
              ("CoverCratesG13W", [10.0, 0.0, 6.4], 0.0), ("CoverCratesG13E", [25.0, 0.0, 6.4], 0.0),
-             ("CoverKegRack", [30.0, 0.0, 1.6], 0.0), ("CoverDumpsterW", [21.0, 0.0, -2.0], 0.0),
+             ("CoverKegRack", [34.5, 0.0, 2.5], 90.0), ("CoverDumpsterW", [21.0, 0.0, -2.0], 0.0),
              ("CoverCarTolley1", [43.0, 0.0, 6.0], -90.0), ("CoverCarMarlin1", [30.0, 0.0, 32.0], 180.0),
-             ("CoverVIPBar", [16.0, U, 24.9], 180.0), ("CoverDJBooth", [13.0, 0.3, 9.2], 0.0)]
+             ("CoverVIPBar", [16.0, U, 24.9], 180.0), ("CoverDJBooth", [15.5, 0.3, 9.2], 0.0)]
     out += [T(n, "COVER", p, y, ["cover"]) for n, p, y in cover]
     return out
 
@@ -550,19 +569,19 @@ GROUP_ORDER = ["gear_drop", "dj_set", "keycard", "code_note", "count_room", "pro
 # note]
 SLOTS: List[list] = [
     ["gear_drop", "gear_wc", 1.0, "G3b", [4.5, 0.0, 27.3], 0.0, "the duct panel in the patrons' WC"],
-    ["gear_drop", "gear_cloak", 1.0, "G2", [22.9, 0.0, 25.5], 0.0, "across the cloakroom counter from the foyer"],
-    ["gear_drop", "gear_booth", 1.0, "G7", [24.6, 0.0, 20.0], 0.0, "under the reserved booth's banquette"],
-    ["gear_drop", "gear_van", 1.0, "X1", [28.3, 0.0, -4.0], 0.0, "the van (E1)"],
-    ["dj_set", "dj_on", 0.65, "G6", [13.0, 0.3, 9.4], 0.0, "the DJ on stage"],
+    ["gear_drop", "gear_cloak", 1.0, "G2", [22.4, 0.0, 25.5], 0.0, "across the cloakroom counter from the foyer"],
+    ["gear_drop", "gear_booth", 1.0, "G7", [24.6, 0.0, 18.8], 0.0, "under the reserved booth's banquette"],
+    ["gear_drop", "gear_van", 1.0, "X1", [26.6, 0.0, -4.0], 0.0, "the van (E1)"],
+    ["dj_set", "dj_on", 0.65, "G6", [15.5, 0.3, 9.4], 0.0, "the DJ on stage"],
     ["dj_set", "dj_break", 0.35, "G11", [11.0, 0.0, 2.5], 0.0, "the DJ in the green room"],
-    ["keycard", "kc_staff_room", 1.0, "G12", [19.75, 1.4, 1.5], 0.0, "the key hooks by the rota"],
-    ["keycard", "kc_bouncer_board", 1.0, "G24", [35.0, 1.4, 17.15], 0.0, "the key board"],
+    ["keycard", "kc_staff_room", 1.0, "G12", [18.0, 0.75, 2.6], 0.0, "the staff-room table under the rota"],
+    ["keycard", "kc_bouncer_board", 1.0, "G24", [30.4, 1.0, 20.55], 0.0, "the door-log desk"],
     ["keycard", "kc_vip_bar", 1.0, "U2", [12.5, U + BAR_TOP, 25.9], 0.0, "behind the VIP register"],
-    ["keycard", "kc_count_room", 0.75, "U10", [32.0, U + 0.75, 12.6], 0.0, "the count-room desk"],
-    ["keycard", "kc_dj_booth", 0.75, "G6", [14.6, 1.3, 8.2], 0.0, "beside the decks (requires dj_break)"],
-    ["code_note", "code_staff_board", 1.0, "G12", [17.0, 1.5, 0.25], 0.0, "the rota board"],
-    ["code_note", "code_bouncer_log", 1.0, "G24", [30.0, 1.0, 20.5], 0.0, "the door log"],
-    ["code_note", "code_count_board", 1.0, "U10", [31.5, U + 1.5, 13.85], 0.0, "the whiteboard beside the door"],
+    ["keycard", "kc_count_room", 0.75, "U10", [32.0, U + 0.75, 11.4], 0.0, "the count-room desk"],
+    ["keycard", "kc_dj_booth", 0.75, "G6", [16.7, 1.3, 8.2], 0.0, "beside the decks (requires dj_break)"],
+    ["code_note", "code_staff_board", 1.0, "G12", [17.0, 1.5, 0.2], 0.0, "the rota board"],
+    ["code_note", "code_bouncer_log", 1.0, "G24", [29.6, 1.0, 20.55], 0.0, "the door log"],
+    ["code_note", "code_count_board", 1.0, "U10", [31.6, U + 1.5, 13.9], 0.0, "the whiteboard beside the door"],
     ["code_note", "code_office_blotter", 0.5, "U9", [31.0, U + 0.75, 18.0], 0.0, "the office desk blotter"],
     ["count_room", "count_running", 0.6, "U10", [29.0, U, 10.5], 0.0, "the counter at the tables, 2 cash bags"],
     ["count_room", "count_done", 0.4, "U10", [29.0, U, 10.5], 0.0, "empty (+1 safe bag)"],
@@ -576,8 +595,8 @@ SLOTS: List[list] = [
     ["guard_post", "rover_boh", 1.0, "G13", BOH["G13W"], 0.0, "back of house (boh)"],
     ["guard_post", "rover_upper", 1.0, "U6", UPPER["U6E"], 0.0, "the staff wing (upper)"],
     ["guard_post", "alley_smoker", 1.0, "X1", ALLEY["Mouth"], 0.0, "the alley"],
-    ["security_room_staffed", "sec_staffed", 0.6, "U5", [24.0, U, 26.6], 0.0, "the operator at the monitors"],
-    ["security_room_staffed", "sec_empty", 0.4, "U5", [24.0, U, 26.6], 0.0, "nobody watching"],
+    ["security_room_staffed", "sec_staffed", 0.6, "U5", [24.0, U, 26.5], 0.0, "the operator at the monitors"],
+    ["security_room_staffed", "sec_empty", 0.4, "U5", [24.0, U, 26.5], 0.0, "nobody watching"],
     ["camera", "cam_a", 1.0, "G1", [21.6, 3.2, 21.4], 0.0, "C1 C2 C5 C7 C8"],
     ["camera", "cam_b", 1.0, "G1", [21.6, 3.2, 21.4], 0.0, "C1 C3 C4 C9 C10"],
     ["camera", "cam_c", 1.0, "G1", [21.6, 3.2, 21.4], 0.0, "C1 C3 C6 C8 C10"],
@@ -591,17 +610,23 @@ SLOTS: List[list] = [
     ["escape", "esc_tolley", 0.45, "X2", [40.0, 0.0, 17.0], 0.0, "E2: Tolley St"],
 ]
 # the doc's cameras (x, z, height above the floor, floor y, yaw: the view direction)
-CAMS = {"C1": (21.6, 21.4, 3.2, 0.0, 135.0), "C2": (0.4, 6.0, 2.8, 0.0, -90.0), "C3": (27.0, 7.4, 2.8, 0.0, 180.0),
-        "C4": (35.6, 0.4, 3.2, 0.0, 135.0), "C5": (33.0, -0.4, 3.0, 0.0, 90.0), "C6": (28.4, 14.4, 2.8, 0.0, -90.0),
-        "C7": (27.0, 27.6, 2.8, U, 0.0), "C8": (32.6, 7.4, 2.8, U, 90.0), "C9": (0.4, 0.4, 2.8, 0.0, -135.0),
+CAMS = {"C1": (21.0, 21.4, 3.2, 0.0, 180.0), "C2": (0.4, 6.0, 2.8, 0.0, -90.0), "C3": (27.0, 7.4, 2.8, 0.0, 180.0),
+        "C4": (34.0, 0.4, 3.2, 0.0, 180.0), "C5": (33.0, -0.4, 3.0, 0.0, 0.0), "C6": (28.4, 14.9, 2.8, 0.0, -90.0),
+        "C7": (27.0, 27.6, 2.8, U, 0.0), "C8": (32.6, 8.0, 2.8, U, 90.0), "C9": (0.4, 3.8, 2.8, 0.0, -90.0),
         "C10": (25.6, 15.4, 3.0, U, 90.0)}
 CAM_LAYOUTS = {"cam_a": ["C1", "C2", "C5", "C7", "C8"], "cam_b": ["C1", "C3", "C4", "C9", "C10"],
                "cam_c": ["C1", "C3", "C6", "C8", "C10"]}
 
 
+CAM_BACK = 0.0   # the wall camera's pivot is its back-centre: flush on the face
+
+
 def _camera(cid: str) -> list:
     x, z, h, y, yaw = CAMS[cid]
-    return Pf("security_camera", "Camera" + cid, [x, y + h, z], yaw, {"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0},
+    x, z = on_wall("U" if y > 0.0 else "G", x, z, CAM_BACK)
+    # C5 is fixed (no pan): it watches the rear door, not the roof throw west of it (bag_line)
+    pan = 0.0 if cid == "C5" else 40.0
+    return Pf("security_camera", "Camera" + cid, [x, y + h, z], yaw, {"fov_deg": 60.0, "range_m": 20.0, "pan_deg": pan},
               None, {"mount": "wall", "kind": "security_camera", "camera_id": cid}, "prop_security_camera_wall")
 
 
@@ -609,20 +634,30 @@ def _gear(pos: list, yaw: float, use: list) -> list:
     return [Pf("gear_pickup", "GearBag", pos, yaw, {"objective_tag": "gear"}, use, {}, "prop_bag_floor")]
 
 
-def _keycard(pos: list, yaw: float, use: list) -> list:
-    return [Pf("keycard_pickup", "Keycard", pos, yaw, {"objective_tag": "keycard"}, use, {}, "prop_keycard_bank")]
+def _keycard(pos: list, yaw: float, use: list, wall: str = "") -> list:
+    """A keycard on a desk / counter top, or (wall = level) hung on the nearest wall face (the key hooks / board)."""
+    metas = {}
+    if wall:
+        x, z = on_wall(wall, pos[0], pos[2], 0.0)
+        pos, metas = [x, pos[1], z], {"mount": "wall"}
+    return [Pf("keycard_pickup", "Keycard", pos, yaw, {"objective_tag": "keycard"}, use, metas, "prop_keycard_bank")]
 
 
-def _code(pos: list, yaw: float, use: list, mount: str = "") -> list:
+def _wall_pt(level: str, p: list) -> list:
+    x, z = on_wall(level, p[0], p[2], 0.0)
+    return [x, p[1], z]
+
+
+def _code(pos: list, yaw: float, use: list, mount: str = "", vis: str = "prop_notebook") -> list:
     return [Pf("code_note", "SafeCode", pos, yaw, {"code_group": "office", "objective_tag": "safe_code",
                                                    "casing_allowed": True}, use, {"mount": mount} if mount else {},
-               "prop_notebook")]
+               vis)]
 
 
-def _laser(pattern: str, props: Dict) -> list:
-    p = {"pattern": pattern, "size_m": [3.6, 2.2, 0.1], "objective_tag": "lasers"}
+def _laser(pattern: str, props: Dict, width: float = 3.6, z: float = 23.0) -> list:
+    p = {"pattern": pattern, "size_m": [width, 2.2, 0.1], "objective_tag": "lasers"}
     p.update(props)
-    return [Pf("laser_grid", "PrivateLasers", [34.3, U, 23.0], 90.0, p, None, {}, "")]
+    return [Pf("laser_grid", "PrivateLasers", [34.3, U, z], 90.0, p, None, {}, "")]
 
 
 def _rover(nm: str, graph: str, tag: str, pos: list) -> list:
@@ -630,23 +665,25 @@ def _rover(nm: str, graph: str, tag: str, pos: list) -> list:
 
 
 def slot_content() -> Dict[str, List[list]]:
-    station = Pf("camera_station", "CameraStation", [24.0, U, 27.45], 0.0, {}, [24.0, U, 26.6], {},
+    station = Pf("camera_station", "CameraStation", [24.0, U, 27.3], 0.0, {}, [24.0, U, 26.5], {},
                  "prop_camera_station")
     sc: Dict[str, List[list]] = {
-        "gear_wc": _gear([4.5, 1.0, 27.3], 0.0, [4.5, 0.0, 26.5]),
-        "gear_cloak": _gear([22.9, BAR_TOP, 25.5], 90.0, [22.0, 0.0, 25.5]),
-        "gear_booth": _gear([24.6, 0.0, 20.0], 0.0, [24.6, 0.0, 19.0]),
-        "gear_van": _gear([28.3, 0.0, -4.0], 90.0, [27.4, 0.0, -4.0]),
-        "dj_on": [S("DJ", "CIVILIAN", [13.0, 0.3, 9.4], 180.0, ["civ_dj_stage", STAFF, "staff_dj"], "dj_mix")],
+        "gear_wc": _gear([4.5, 0.0, 27.3], 0.0, [4.5, 0.0, 26.5]),
+        "gear_cloak": _gear([22.4, BAR_TOP, 25.5], 90.0, [23.3, 0.0, 25.5]),
+        "gear_booth": _gear([24.6, 0.0, 18.8], 0.0, [24.6, 0.0, 18.0]),
+        "gear_van": _gear([26.6, 0.0, -4.0], 90.0, [25.8, 0.0, -4.0]),
+        "dj_on": [S("DJ", "CIVILIAN", [15.5, 0.3, 9.4], 180.0, ["civ_dj_stage", STAFF, "staff_dj"], "dj_mix")],
         "dj_break": [S("DJ", "CIVILIAN", [11.0, 0.0, 2.5], 0.0, ["civ_dj_green", STAFF, "staff_dj"], "sit")],
-        "kc_staff_room": _keycard([19.75, 1.4, 1.5], 90.0, [19.0, 0.0, 1.5]),
-        "kc_bouncer_board": _keycard([35.0, 1.4, 17.15], 180.0, [35.0, 0.0, 17.9]),
+        "kc_staff_room": _keycard([18.0, 0.75, 2.6], 0.0, [18.0, 0.0, 3.4]),
+        "kc_bouncer_board": _keycard([30.4, 1.0, 20.55], 0.0, [30.4, 0.0, 19.8]),
         "kc_vip_bar": _keycard([12.5, U + BAR_TOP, 25.9], 0.0, [12.5, U, 26.6]),
-        "kc_count_room": _keycard([32.0, U + 0.75, 12.6], 0.0, [32.0, U, 13.3]),
-        "kc_dj_booth": _keycard([14.6, 1.3, 8.2], 180.0, [14.6, 0.3, 9.2]),
-        "code_staff_board": _code([17.0, 1.5, 0.25], 180.0, [17.0, 0.0, 1.0], "wall"),
-        "code_bouncer_log": _code([30.0, 1.0, 20.5], 0.0, [30.0, 0.0, 19.8]),
-        "code_count_board": _code([31.5, U + 1.5, 13.85], 0.0, [31.5, U, 13.1], "wall"),
+        "kc_count_room": _keycard([32.0, U + 0.75, 11.4], 0.0, [32.0, U, 12.2]),
+        "kc_dj_booth": _keycard([16.7, 1.3, 8.2], 180.0, [16.7, 0.3, 9.2]),
+        "code_staff_board": _code(_wall_pt("G", [17.0, 1.2, 0.2]), 180.0, [17.0, 0.0, 1.0], "wall",
+                                  "prop_bulletin_board"),
+        "code_bouncer_log": _code([29.6, 1.0, 20.55], 0.0, [29.6, 0.0, 19.8]),
+        "code_count_board": _code(_wall_pt("U", [31.6, U + 1.2, 13.9]), 0.0, [31.6, U, 13.0], "wall",
+                                  "prop_whiteboard"),
         "code_office_blotter": _code([31.0, U + 0.75, 18.0], 0.0, [31.0, U, 17.2]),
         "count_running": [
             S("Counter", "CIVILIAN", [29.0, U, 11.3], 0.0, ["civ_count", STAFF, "staff_upper"], "desk_work"),
@@ -657,7 +694,7 @@ def slot_content() -> Dict[str, List[list]]:
         "prod_stock": [M("ProductStock", [3.0, 0.1, 1.0], "product", "the stock cage (padlocked gate)")],
         "prod_green": [M("ProductGreen", [12.5, 1.0, 1.0], "product", "on the DJs' flight cases")],
         "prod_private": [M("ProductPrivate", [35.4, U + 0.1, 23.0], "product", "the shelving behind the lasers")],
-        "lz_static": _laser("static", {"beam_count": 3}),
+        "lz_static": _laser("static", {"beam_count": 3}, 2.6, 22.5),   # the bypass: 1.0 m on the south side
         "lz_sweep": _laser("sweep", {"period_s": 6.0, "sweep_beams": 1}),
         "lz_timed": _laser("timed", {"period_s": 16.0, "off_s": 4.0}),
         "rover_floor": _rover("RoverFloor", "Foh", "guard_floor", FOH["Foyer"]),
@@ -665,9 +702,9 @@ def slot_content() -> Dict[str, List[list]]:
         "rover_upper": _rover("RoverUpper", "Upper", "guard_upper", UPPER["U6E"]),
         "alley_smoker": _rover("AlleySmoker", "Alley", "guard_alley", ALLEY["RearDoor"]),
         "sec_staffed": [
-            Pf("camera_station", "CameraStation", [24.0, U, 27.45], 0.0, {"@operator_spawn": "CameraOperatorSeat"},
-               [24.0, U, 26.6], {}, "prop_camera_station"),
-            S("CameraOperatorSeat", "CAMERA_OPERATOR", [24.0, U, 26.6], 180.0, ["guard", "camera_operator"],
+            Pf("camera_station", "CameraStation", [24.0, U, 27.3], 0.0, {"@operator_spawn": "CameraOperatorSeat"},
+               [24.0, U, 26.5], {}, "prop_camera_station"),
+            S("CameraOperatorSeat", "CAMERA_OPERATOR", [24.0, U, 26.5], 180.0, ["guard", "camera_operator"],
               "desk_work"),
         ],
         "sec_empty": [station],
@@ -676,7 +713,7 @@ def slot_content() -> Dict[str, List[list]]:
                              {"openable": True, "breakable": True, "walkable": True}, [30.0, U, 7.8],
                              {"open": True}, "prop_window_w120_h210")],
         "ow_count_latched": [Pf("window", "CountWindow", [30.0, U + GM.WINDOW[0], 7.0], 0.0,
-                                {"openable": False, "breakable": True, "walkable": True}, None, {},
+                                {"openable": False, "breakable": True, "walkable": True}, [30.0, U, 7.8], {},
                                 "prop_window_w120_h210")],
         "gate_open": [], "gate_chained": [],
         "esc_alley": _escape("Alley", [30.5, 0.0, -4.0], 90.0, [4.0, 3.0, 7.0], [25.0, 0.0, -3.6], [4.0, 3.0, 4.0],
