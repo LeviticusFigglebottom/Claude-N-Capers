@@ -84,7 +84,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | D3-04 | ✅ DONE (D audit 347bf9e3, env_d.md). Animation polish: crew locomotion blend set (start/stop, strafe 8-way), hit-react and death variety (×3 each), downed crawl, a heavy (Wrecker) gait | P6 polish |
 | D4-01 | ✅ DONE (D audit 347bf9e3, env_d.md). Character LODs for performance (A4-02): 3 LOD levels per body/outfit (≈ 100 / 45 / 15 %), visibility ranges, crowd-friendly lowest LOD (Afterhours, Gallery Night gala) | A4-02, P5 |
 | D4-02 | ✅ DONE (D audit 347bf9e3; deviation accepted: whole-look pools + A per-pool round-robin instead of runtime part mixing). Crowd variety: +8 civilian outfits/variants for P5 crowds (club patrons, gala guests, bank customers, commuters), mix-and-match tops/bottoms/hair/colour so no two neighbours match | P5 |
-| D4-03 | GAP 6/8 heisters (D adding Juno + Hale, D audit 347bf9e3). Four more heisters (8 total, PD2 grew its roster): bodies, outfits, faces, FP sleeves, portraits, masks-fit envelope regen; ids to ENV B for the picker | P6 |
+| D4-03 | ✅ DONE (round 299: juno + hale; D fb5f8981, B b23bef38, P b0f89465, A e73e946a). Four more heisters (8 total, PD2 grew its roster): bodies, outfits, faces, FP sleeves, portraits, masks-fit envelope regen; ids to ENV B for the picker | P6 |
 | A3-11 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
 | C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 

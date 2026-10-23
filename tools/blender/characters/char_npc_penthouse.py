@@ -146,6 +146,7 @@ def kessler_robe(kit: Kit) -> None:
                            neck_w=0.085, lapel_w=0.075, flare=0.10, base=0.012, open_below=0.06, sleeve=1.88)
     n.cull_under(kit, n0, robe, "faces_hidden_by_robe")
     n.sash(kit, robe, SILK_GRAPHITE, wrap_z - 0.01 * k, side=1.0)
+    kit.add_head(gk.glasses(fit, "char_satin_gold"))                                  # SL-G3: gold reading glasses
     kit.notes["target_note"] = ("Kessler (default, reading in the armchair): tallest, silver hair; long ice-silk robe with a "
                                 "graphite shawl collar and sash over graphite pyjamas with ice piping. The long-coat "
                                 "version is char_npc_kessler_coat")

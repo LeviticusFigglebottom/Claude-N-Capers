@@ -11,10 +11,10 @@ attach_Hip: bone hips, local [0.1757, 0.0511, 0.0416] (model [0.1757, 1.0040, 0.
 body_faces_culled: 4478
 body_params: {"age": 0.65, "beard_shadow": 0.0, "build": 0.3, "gender": 1.0, "hair": "bob", "hair_color": "grey", "hair_peak": 0.0, "height": 1.78, "lip": "auto", "skin": 2}
 bones: 52
-look: Helena Moor: ivory silk blouse with rolled sleeves, charcoal trousers, slim belt, low heels, slim watch (left), reading glasses on, silver bob; jacket off (chair prop)
+look: Helena Moor: ivory silk blouse with rolled sleeves, charcoal trousers, slim belt, low heels, slim watch (left), reading glasses on, silver bob; jacket off
 meshes: Body,Gear,Hair,Headwear,Outfit
 prop_note: phone in hand is a prop: attach at HandR/Socket (not skinned)
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26334
-tris_by_mesh: {"Body": 9788, "Gear": 440, "Hair": 2088, "Headwear": 498, "Outfit": 13520}
+tris: 26386
+tris_by_mesh: {"Body": 9788, "Gear": 492, "Hair": 2088, "Headwear": 498, "Outfit": 13520}

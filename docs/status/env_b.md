@@ -4,6 +4,38 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### Afterhours B gap list (LEAD r299 (b), read-only audit vs docs/design/heists/afterhours.md; nothing built yet)
+Already on trunk:
+- heist_list row (hidden, requires afterhours_mission.gd), city_map entry (contact.accountant, midtown), heist accent.
+- strings: heist.afterhours.{name,subtitle,brief,briefing}, 12 objective.afterhours.*, music.afterhours.name.
+- preplan assets intel_safe_code and intel_product, both with heists=[afterhours].
+  gear_drop and count_window are generic (no heists filter).
+- LootDefs: cash_bricks, parcels and cash (no new def needed).
+- test_p5_catalogue pins $40k base (D-143) and the 6 contract values.
+- B docs: ah_content_plan.md, ah_b1_values.md, afterhours_values_block.txt, heists/afterhours.md.
+
+Gaps, in dependency order (B = mine; dep = what it waits on):
+| # | Gap | Dep |
+|---|---|---|
+| 1 | payout.tres xp row afterhours: 2500 (RT has the same) | none |
+| 2 | small_loot values: till $600, drop safe $900 x3, bottle service $800, desk drawer $1,200, tip jar $300 | none (ids final once C names the props) |
+| 3 | VO text: Accountant briefing/contract and Mercer in-heist lines, plus the new `dj` speaker (voice_line_table + lines.tres + voice.vo.* strings) | `dj` speaker row needs a LEAD ok |
+| 4 | rare-event "surprises" briefing strings: count_left_open, extra_product, vip_party, off_duty_cop, co_op_pickup, rooftop_watch | none (text); A's mission fires them |
+| 5 | first-time tip card: onboarding_tips HEISTS + onboarding_card ROWS + strings | none |
+| 6 | achievements (none yet) | LEAD picks the set |
+| 7 | 15 ui.preplan.point.afterhours.* strings (pp_spawn_foyer/vip/alley, pp_gear_wc/cloak/booth/van, pp_insider_keycard, pp_back_door, pp_count_window, pp_drop_alley/roof/tolley, pp_escape_alley/tolley) | text now; point ids frozen by C's map markers |
+| 8 | preplan asset heists filters: decide whether gear_drop/count_window stay generic; an insider keycard asset for pp_insider_keycard (signal_insider is RT-only) | C's def + map |
+| 9 | briefing intel + blueprint | C's greybox map |
+| 10 | heist_text_audit + vo_coverage HEISTS rows, test_heist_readiness/test_music rows, un-hide (the RT recipe) | A's afterhours_mission.gd, C's def/map, C's music track |
+
+Not mine but blocking: C's HeistDef (generated from ah_b1_values), the map and the music track
+(world/audio/music has no afterhours); A's mission.
+
+Design-doc staleness for the LEAD:
+- (a) loot values predate D-120 (LootDefs are 8,000 / 7,500 / 6,500);
+- (b) its HeistDef says $75k vs D-143's $40k;
+- (c) escape_options [van, walk] breaks ruling 9 (no walk-out), so it should be [van].
+
 ### RT done-check, B slice (LEAD r292 queue (1), D-115 style; trunk r292 ae834d65)
 | Check | How | Result |
 |---|---|---|

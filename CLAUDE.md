@@ -1,7 +1,7 @@
 # CAPERWORKS: shared rules for every Claude session in this repo
 
 This is an original co-op heist game in **Godot 4.7.2** with Payday 2-faithful mechanics. Team v3 (D-086):
-the **LEAD** (orchestrator) plus three Claude Code cloud sessions: ENV P, ENV B, ENV A (C and D are dormant).
+the **LEAD** (orchestrator) plus five Claude Code cloud sessions: ENV A, ENV B, ENV C, ENV D, ENV P (all active since D-153).
 
 ## Who am I?
 Look at your git branch:

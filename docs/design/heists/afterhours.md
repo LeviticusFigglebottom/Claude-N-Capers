@@ -695,9 +695,9 @@ Saw noise is the S4.3 saw radius; in stealth a saw anywhere in the BOH reaches t
 
 | id | Weight | Base | Where | Count | Status |
 |---|---|---|---|---|---|
-| `loot.cash_bricks` | MEDIUM | $1,600 | office safe (U9) | `safe_bags` 4–6 (+1 `count_done`) | existing (B) |
-| `loot.parcels` | LIGHT | $1,500 | `product_location`: G10 cage / G11 flight cases / U12 boxes | `product_bags` 3–5 (+2 `extra_product`) | existing (B6-01; "Sealed Parcels") |
-| `loot.cash` | LIGHT | $1,200 | U10 count tables (`count_running`) | 2 | existing |
+| `loot.cash_bricks` | MEDIUM | $8,000 (D-120) | office safe (U9) | `safe_bags` 4–6 (+1 `count_done`) | existing (B) |
+| `loot.parcels` | LIGHT | $7,500 (D-120) | `product_location`: G10 cage / G11 flight cases / U12 boxes | `product_bags` 3–5 (+2 `extra_product`) | existing (B6-01; "Sealed Parcels") |
+| `loot.cash` | LIGHT | $6,500 (D-120) | U10 count tables (`count_running`) | 2 | existing |
 | `small_loot` (prefab values ◇) | — | till $600; drop safe $900 ×3; bottle-service cash $800; desk drawer $1,200; tip jar $300 | as above | ~12 pickups | values for ENV B (D-068: $600–1,500 range) |
 | `loot.body_bag` | HEAVY | 0 | — | — | existing |
 
@@ -981,8 +981,8 @@ straight-line distance (the roof is reached only by the drop ladder from the all
 
 ## HeistDef (proposed data, `afterhours_def.tres`)
 `id afterhours`, display "Afterhours", contact `contact.accountant` (D-075), mode STEALTH_OR_LOUD,
-**`start_mode &"civilian"`** (D-065), base_payout **$75,000** (ENV B's placeholder; P6 balance),
-loot `[loot.cash_bricks, loot.parcels, loot.cash]`, escape_options `[van, walk]`, music_track
+**`start_mode &"civilian"`** (D-065), base_payout **$40,000** (D-143.1),
+loot `[loot.cash_bricks, loot.parcels, loot.cash]`, escape_options `[van]` (D-143.3, ruling 9), music_track
 `afterhours`, objectives `[casing, gear, keycard, office, safe_code, safe, safe_loot, secure,
 product, count_room, escape_wait, escape]`, preplanning as above. Map
 `game/world/heists/afterhours/afterhours.tscn`; `floor_heights [0.0, 4.2]`,

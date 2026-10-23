@@ -49,7 +49,8 @@ func _distinct(heisters: Array) -> bool:
 
 
 func test_roster_data_and_names() -> void:
-	assert_eq(Heisters.ids(), [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay"] as Array[StringName], "roster order")
+	assert_eq(Heisters.ids(), [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale"] as Array[StringName],
+			"roster order (D4-03: juno, hale)")
 	for id: StringName in Heisters.ids():
 		assert_eq(Heisters.name_key(id), StringName("crew.%s" % id))
 		assert_ne(Heisters.display_name(id), String(Heisters.name_key(id)), "%s has a name string" % id)
@@ -68,13 +69,15 @@ func test_assign_rule() -> void:
 	assert_eq(c[1], &"sable", "first claim keeps")
 	assert_eq(c[0], &"dutch", "next after sable in roster order")
 	assert_true(_distinct(c.values()))
-	# next after wren is marten, then jay (D-111); wrap-around: jay taken -> rook
+	# next after wren is marten, then jay (D-111), juno, hale (D4-03); wrap-around: hale taken -> rook
 	var w: Dictionary = Heisters.assign([0, 1] as Array[int], {0: &"wren", 1: &"wren"}, [] as Array[int])
 	assert_eq(w[1], &"marten")
 	var m: Dictionary = Heisters.assign([0, 1] as Array[int], {0: &"marten", 1: &"marten"}, [] as Array[int])
 	assert_eq(m[1], &"jay")
 	var j: Dictionary = Heisters.assign([0, 1] as Array[int], {0: &"jay", 1: &"jay"}, [] as Array[int])
-	assert_eq(j[1], &"rook", "wraps to the start")
+	assert_eq(j[1], &"juno")
+	var h: Dictionary = Heisters.assign([0, 1] as Array[int], {0: &"hale", 1: &"hale"}, [] as Array[int])
+	assert_eq(h[1], &"rook", "wraps to the start")
 	# no preference = first free; conflicts are served after every uncontested pick
 	var g: Dictionary = Heisters.assign([0, 1, 2] as Array[int], {0: &"", 1: &"rook", 2: &"rook"}, [3] as Array[int])
 	assert_eq(g[1], &"rook")
@@ -115,7 +118,8 @@ func test_picker_lists_roster_and_saves() -> void:
 	ls.setup(p)
 	add_child(ls)
 	await wait_frames(1)
-	assert_eq(ls.option_ids(ls.heister_option), [&"", &"rook", &"sable", &"dutch", &"wren", &"marten", &"jay"] as Array[StringName])
+	assert_eq(ls.option_ids(ls.heister_option), [&"", &"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno",
+		&"hale"] as Array[StringName])
 	assert_false(ls.select_heister(&"marten"), "D-111: Marten is earned (The Planner)")
 	assert_eq(ls.heister_option.get_item_text(5), UiText.t(&"ui.loadout.heister_locked", {"name": Heisters.display_name(&"marten")}))
 	assert_eq(ls.current_loadout().heister, &"dutch", "starts on the profile's pick")
