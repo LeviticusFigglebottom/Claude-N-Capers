@@ -27,6 +27,7 @@ const COPYCAT_CHOICES: Dictionary = {0: 1, 2: 2, 4: 2, 6: 3}
 
 ## --open: the pilot advances on the nearest enemy instead of fighting from where it stands.
 const OPEN_STOP_M: float = 7.0
+const VEIL_WINDOW_S: float = 15.0
 
 var _kills: int = 0
 var _open: bool = OS.get_cmdline_user_args().has("--open")
@@ -287,10 +288,12 @@ func _dk_lifeline() -> bool:
 func _dk_veil() -> bool:
 	if not await _deck_launch(DECKS[&"veil"]):
 		return false
-	await _fight(120.0, func() -> bool: return _enemies_within(25.0).size() >= 2)
+	# Measure under fire: wait until the pilot is actually being hit (armor down), not just enemies near; the
+	# before / inside windows are VEIL_WINDOW_S each (8 s was too short to see a hit at Hazardous).
+	await _fight(180.0, func() -> bool: return pilot.crew.health.armor < pilot.crew.health.max_armor - 1.0)
 	var h0: float = _health() + pilot.crew.health.armor
 	var t0: float = rt.heist_time_s
-	await _fight(15.0)
+	await _fight(VEIL_WINDOW_S)
 	var out_dps: float = maxf(h0 - (_health() + pilot.crew.health.armor), 0.0) / maxf(rt.heist_time_s - t0, 0.1)
 	await pilot.face(pilot.crew.global_position + pilot.crew.global_transform.basis.z * -1.5 + Vector3.DOWN * 1.2, 0.05, 1.5)
 	await _use_deck_item()
@@ -299,7 +302,7 @@ func _dk_veil() -> bool:
 	await shot("veil_in_cloud")
 	var h1: float = _health() + pilot.crew.health.armor
 	var t1: float = rt.heist_time_s
-	await _fight(8.0)
+	await _fight(VEIL_WINDOW_S)
 	var in_dps: float = maxf(h1 - (_health() + pilot.crew.health.armor), 0.0) / maxf(rt.heist_time_s - t1, 0.1)
 	_row("smoke at the feet: in the cloud", "PASS" if in_cloud else "FAIL", "in smoke %s, damage/s before %.1f, inside %.1f" % [
 		in_cloud, out_dps, in_dps], "A PerkSicario / SmokeZones")
