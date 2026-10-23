@@ -1,0 +1,4 @@
+seed 1 difficulty 0
+cast_01 Npc_civilian26 role civilian tags [&"staff_waitress", &"staff_diner", &"staff"] activity counter_wipe look diner_waitress clip counter_wipe at (24.68, 0.00, 20.50) facing 90
+cast_02 Npc_civilian27 role civilian tags [&"staff_cook", &"staff_diner", &"staff"] activity cook_stove look diner_cook clip cook_stove at (28.25, 0.00, 17.00) facing 90
+sheet rt_cast_sheet.png 2 shots
