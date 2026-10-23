@@ -95,8 +95,16 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 		"soak_drive":  # A4-03: drive this client's crew member with varied intents for `seconds`
 			_soak_drive(float(args.get("seconds", 60.0)), int(args.get("seed", 1)))
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
+		"hub_check":  # C4-03: the real safehouse on this client while the session is up
+			_hub_check(String(args.get("root_dir", "user://a_hub_client")))
 		"quit":
 			get_tree().quit(0)
+
+
+## Client (C4-03): HubCheck on this peer, reported as "hub_check".
+func _hub_check(root_dir: String) -> void:
+	var res: Dictionary = await HubCheck.run(get_tree().root, root_dir)
+	_rpc_report.rpc_id(1, "hub_check", res)
 
 
 ## Client (C11): `await HeistLauncher.launch_client()` again. Its listener is connected before the first
