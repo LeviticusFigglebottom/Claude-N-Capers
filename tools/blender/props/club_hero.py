@@ -126,8 +126,7 @@ VARIANTS = {
     "prop_ah_bar_counter_2m": {"fn": "bar_counter", "end": False, "cat": dict(_FLOOR, kind="counter", surface="wood")},
     "prop_ah_bar_counter_end": {"fn": "bar_counter", "end": True, "cat": dict(_FLOOR, kind="counter", surface="wood")},
     "prop_ah_box_office_counter": {"fn": "box_office_counter", "cat": dict(_FLOOR, kind="counter", surface="wood")},
-    "prop_ah_marquee": {"fn": "marquee", "cat": {"place": "wall", "group": "afterhours", "pin_only": True,
-                                                 "kind": "sign", "surface": "metal"}},
+    "prop_ah_marquee": {"fn": "marquee", "cat": dict(_WALL, z=4.0, kind="sign", surface="metal")},
     "prop_ah_ice_bucket": {"fn": "ice_bucket", "cat": dict(_ON, kind="loot_visual", surface="metal")},
     "prop_ah_tip_jar": {"fn": "tip_jar", "cat": dict(_ON, kind="loot_visual", surface="glass")},
     "prop_ah_till": {"fn": "till", "cat": dict(_ON, kind="loot_visual", surface="plastic")},
@@ -332,7 +331,7 @@ def _truss(k: Kit, p: dict) -> None:
         for z in (zt, zb):
             t.rod((x0, -s, z), (x1, s, z), 0.009, "alu_black", segs=6)
     for x in (-hl, hl):                                                                     # end plates
-        t.bx((x - 0.006, -s - 0.03, zb - 0.03), (x + 0.006, s + 0.03, zt + 0.03), "metal_dark")
+        t.bx((x - 0.006, -s - 0.03, zb - 0.03), (x + 0.006, s + 0.03, 0.0), "metal_dark")       # top = the hanging point
     sockets = []
     for i, x in enumerate((-0.5, 0.5)):                                                     # two moving heads
         t.bx((x - 0.05, -0.04, zb - 0.05), (x + 0.05, 0.04, zb - 0.025), "metal_dark")         # clamp
@@ -696,11 +695,12 @@ def _marquee(k: Kit, p: dict) -> None:
     body = k.obj("Body")
     c = body.part(bevel=0.01)
     t = body.part(bevel=0.0)
-    c.bx((-hx, 0.0, z0 + 0.15), (hx, d - 0.05, z1 - 0.05), LACQUER)                         # the canopy box
+    w0 = 0.005                                                   # bevelled boxes start off the wall (the bevel bulges)
+    c.bx((-hx, w0, z0 + 0.15), (hx, d - 0.05, z1 - 0.05), LACQUER)                          # the canopy box
     c.bx((-hx - 0.03, d - 0.08, z0), (hx + 0.03, d, z1), "metal_dark")                      # the street fascia
     for sx in (-1, 1):                                                                       # side fascias
-        c.bx((sx * hx - 0.04, 0.0, z0), (sx * hx + 0.04, d, z1), "metal_dark")
-    c.bx((-hx, 0.0, z0), (hx, d, z0 + 0.15), "metal_dark")                                  # soffit frame
+        c.bx((sx * hx - 0.04, w0, z0), (sx * hx + 0.04, d, z1), "metal_dark")
+    c.bx((-hx, w0, z0), (hx, d, z0 + 0.15), "metal_dark")                                   # soffit frame
     t.bx((-hx + 0.05, 0.05, z0 - 0.002), (hx - 0.05, d - 0.10, z0), "plastic_grey")         # soffit panel
     t.bx((-hx, d - 0.10, z1), (hx, d, z1 + 0.04), "brass")                                  # top band
     lettering(t, "VELVET", 0.46, 0.0, d, z0 + 0.22, MAGENTA, stroke=0.05, depth=0.04, round_tube=True)
@@ -883,14 +883,16 @@ def _clock_in(k: Kit, p: dict) -> None:
 def _key_hooks(k: Kit, p: dict) -> None:
     hw, hh, d = 0.2, 0.25, 0.08
     body = k.obj("Body")
-    c = body.part(bevel=0.003)
+    c = body.part(bevel=0.0)
     t = body.part(bevel=0.001)
-    c.bx((-hw, 0.0, -hh), (hw, d, -hh + 0.012), "metal_grey")                                 # the box: bottom,
-    c.bx((-hw, 0.0, hh - 0.012), (hw, d, hh), "metal_grey")                                   #  top,
-    for sx in (-1, 1):                                                                         #  sides
-        c.bx((sx * hw - (0.012 if sx > 0 else 0.0), 0.0, -hh), (sx * hw + (0.0 if sx > 0 else 0.012), d, hh),
-             "metal_grey")
+    # the back alone is on the wall plane (y = 0); the frame sits on it (coplanar overlapping faces at y = 0 would be
+    # pushed 4 mm through the wall by dezfight, test_props' wall-back check)
     c.bx((-hw, 0.0, -hh), (hw, 0.008, hh), "paint_greige")                                    # back (light: keys read)
+    c.bx((-hw, 0.008, -hh), (hw, d, -hh + 0.012), "metal_grey")                               # the box: bottom,
+    c.bx((-hw, 0.008, hh - 0.012), (hw, d, hh), "metal_grey")                                 #  top,
+    for sx in (-1, 1):                                                                         #  sides
+        c.bx((sx * hw - (0.012 if sx > 0 else 0.0), 0.008, -hh), (sx * hw + (0.0 if sx > 0 else 0.012), d, hh),
+             "metal_grey")
     # the door, open to the left (hinged on the -X edge, swung ~110 deg out)
     c.bx((-hw - 0.15, d, -hh), (-hw - 0.14, d + 0.36, hh), "metal_grey")
     for r in range(3):                                                                         # hooks, keys, tags
