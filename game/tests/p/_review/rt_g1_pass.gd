@@ -499,7 +499,7 @@ func _site_in() -> bool:
 			await _wait_unseen("man-gate")
 		await _mask()  # interactions need the mask (InteractableComponent: casing_allowed only); mask at the gate
 		var used: bool = await pilot.use(_comp(lock), 40.0, func() -> bool: return gate.is_open or not gate.locked)
-		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "gate open %s" % gate.is_open,
+		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "padlock off %s, gate open %s" % [not gate.locked, gate.is_open],
 			"-" if used else "A padlock / C placement")
 		if not gate.is_open:
 			await pilot.use(_comp(gate), 20.0, func() -> bool: return gate.is_open)
