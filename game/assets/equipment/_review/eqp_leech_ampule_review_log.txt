@@ -1,0 +1,2 @@
+eqp_leech_ampule aabb pos (-0.012, -0.082, -0.013) size (0.024, 0.175, 0.024818) (x 0.02  y 0.17  z 0.02)  tris 1092
+  node Tip (Node3D) at (0.0, 0.093, 0.0)
