@@ -323,10 +323,15 @@ func _workshop() -> String:
 	return ""
 
 
+## The safe's loot is there and takeable (its interactable only exists once the safe has opened).
+func _safe_loot_ready() -> bool:
+	var loot: InteractableComponent = _comp_tagged(&"safe_loot")
+	return loot != null and loot.enabled
+
+
 ## Keycard reader (or the safe's code when a note was read), then wait for the door to swing.
 func _safe() -> String:
-	var loot: InteractableComponent = _comp_tagged(&"safe_loot")
-	if loot != null and loot.enabled:
+	if _safe_loot_ready():
 		return ""
 	if not _has_keycard() and KEYCARD_AT.has(_variant(&"keycard")):
 		var err: String = await _take_keycard()
@@ -334,12 +339,12 @@ func _safe() -> String:
 			return err
 	var reader: InteractableComponent = _comp_tagged(&"safe_reader")
 	if _has_keycard() and reader != null:
-		await p.use(reader, 6.0, func() -> bool: return loot.enabled)
+		await p.use(reader, 6.0, _safe_loot_ready)
 	var t: float = 0.0
-	while not loot.enabled and t < 5.0:
+	while not _safe_loot_ready() and t < 5.0:
 		await p.tick()
 		t += p.dt()
-	if not loot.enabled:
+	if not _safe_loot_ready():
 		await f.shot("safe_closed")
 		return "PO-5.stealth.safe: the safe did not open (keycard=%s)" % _has_keycard()
 	await f.shot("safe_open")

@@ -4,6 +4,39 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-52) All-shipped-heists harness sweep (LEAD r296..299), Routine, headless, real menus (2026-10-23)
+Code: env/a-core (trunk r294..299 + A). `DIRECT=1 HEADLESS=1 run_po5.sh <flow> <seed> 3000 <out> "<Heist>" Routine`, plus
+the X4 stealth tests.
+
+| Heist | Flow | Seed | Result | Heist time (s) | Cause / note | STUCK | SCRIPT ERR |
+|---|---|---|---|---|---|---|---|
+| Golden Hour | auto_loud | 1 / 2 | PASS / PASS | 260 / 253 | | 5 / 7 | 0 / 1 (harness) |
+| Dockside Burn | auto_loud | 1 / 2 | PASS / PASS | 820 / 1001 | | 3 / 0 | 0 |
+| Gallery Night | auto_loud | 1 / 2 | PASS / PASS | 647 / 585 | | 0 / 0 | 0 |
+| Shadow Ledger | auto_loud | 1 / 2 | n/a | 11 | stealth-only heist: auto_loud ends at the alarm (stealth_only_alarm), by design | | |
+| Nightfall Depository | auto_loud | 1 / 2 | FAIL / FAIL | 774 / 976 | custody after long bag ferries (pick_bag under fire) | 18 / 22 | 0 |
+| Nightfall Depository | auto_loud | 1001 (control; passed r266) | PASS | 1087 | seed variance, not a regression | 41 | 0 |
+| Ostrander Federal | auto_loud | 1 / 2 | FAIL / PASS | timeout / 1115 | seed 1: nav finding (below) | 341 / 17 | 0 |
+| Rolling Thunder | auto_loud | 1 (control) | PASS | 759 | | 19 | 0 |
+| Golden Hour | gh_stealth | 1 / 2 / 1001 | FAIL ×3 → PASS (1001, fixed) | 117 | **game bug, fixed:** the operator's pager unanswerable (below) | 0 | harness, fixed |
+| Ostrander Federal | of_stealth | 1 / 1002 / 2 | PASS / PASS / FAIL | | seed 2: harness: ties the kc_on_manager curator in the gallery, the rover sees her (restrained alarm) | 0 | 0 |
+| GN / ND / SL / OF | test_x4_*_stealth | fixed seeds | PASS ×4 (OF 5/5) | | test_x4_of_loud 3/3; test_x4_of_hard opt-in (5 skipped) | | |
+
+- **Regression found and fixed (game, A): the GH camera operator's pager could not be answered.**
+  - Knifed at his station, the body folds over the CameraStation desk, so PagerSystem._follow_body put the prompt at
+    the hips, INSIDE the desk's collision box. No eye anywhere had line of sight (InteractionSystem._has_los), and a
+    player would have failed the pager the same way.
+  - _follow_body now keeps the prompt on the root's side of any static geometry between root and hips.
+  - Test: test_s5_pagers::test_pager_prompt_kept_out_of_geometry. gh_stealth 1001 then PASSED end to end (pager
+    answered at t=40, escape, hub).
+- **Harness fixes:**
+  - gh_stealth: the safe-loot lambda read a null component before the safe opened (63 errors).
+  - po5_pilot.use: a freed target after an await.
+- **Nav finding for C (OF seed 1):** the navmesh path from the upper floor to the vault drops 8.4 m through the atrium
+  lantern, at (13.6, 8.6, 26.0) against Geometry/Building/Lantern/CurbW + Glazing. The pilot wedged there 336 times,
+  and the run timed out at 2400 s.
+- **Not regressions:** ND seeds 1 / 2 (the r266 seed 1001 passes) and the stealth seed-2 harness limits above.
+
 ### (-51) D-158 amendment 9 (3585dce5): clean stop keeps RearStop on trucks_2 (2026-10-23)
 - Root cause of east's 33 m: trucks_2, not the route. Both routes share the stop geometry (Lead 18.5, T1 27.75,
   T2 39, T3 51, Rear 61, RearStop2 49 along the route). _stop_marker closed the rear car up to RearStop2 on every
