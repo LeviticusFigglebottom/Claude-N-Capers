@@ -17,5 +17,5 @@ look: Velvet bouncer: biggest build, bald; black nylon bomber over a black tee, 
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27016
-tris_by_mesh: {"Body": 9108, "Gear": 1312, "Hair": 580, "Outfit": 16016}
+tris: 27336
+tris_by_mesh: {"Body": 9108, "Gear": 1312, "Hair": 580, "Outfit": 16336}

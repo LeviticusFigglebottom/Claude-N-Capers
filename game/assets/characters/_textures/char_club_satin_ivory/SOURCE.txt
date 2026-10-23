@@ -1,0 +1,8 @@
+generator: python3 tools/blender/characters/make_materials.py --only char_club_satin_ivory
+palette: tools/blender/characters/_outfit_palette.py (all_char_materials)
+kind: cloth; colour #D3CBB8; roughness 0.45; metallic 0.0
+seed: 4262972109 (zlib.crc32('char_club_satin_ivory'))
+size_px: 256; tile_m: 2.0 (1 UV unit = 2.0 m); texel_density_px_per_m: 128
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+texgen (ENV C, read-only): noise, ops, materials.base.finalize, io, godot
+edit policy: generated, never edit by hand

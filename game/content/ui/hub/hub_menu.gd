@@ -122,7 +122,7 @@ func build_ui() -> void:
 	focus_chain.append(options_button)
 	var footer: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(footer)
-	back_button = UiBuild.ghost(UiBuild.button(&"ui.hub.main_menu"))
+	back_button = UiBuild.back(UiBuild.button(&"ui.hub.main_menu"))
 	back_button.pressed.connect(back_requested.emit)
 	footer.add_child(back_button)
 	focus_chain.append(back_button)

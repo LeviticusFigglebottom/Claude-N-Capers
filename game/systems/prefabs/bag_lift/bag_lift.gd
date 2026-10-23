@@ -41,8 +41,10 @@ const PANEL_PREFIX: String = "LandingPanel"
 const SEND_PREFIX: String = "LandingSend"
 ## Vertical spacing of a landing's per-destination send buttons (m).
 const SEND_BUTTON_STEP_M: float = 0.14
-## Fallback prompt of the send to landing j (when `send_prompt_keys` names none): "ui.prompt.send_lift_to_<j>".
-const SEND_PROMPT_FALLBACK: String = "ui.prompt.send_lift_to_%d"
+## Fallback prompt of the send to landing j (when `send_prompt_keys` names none), listed whole so B's strings scan
+## checks each key (b/test_strings: no built ui.* keys); landings past these use the plain send prompt.
+const SEND_PROMPT_FALLBACK: Array[StringName] = [&"ui.prompt.send_lift_to_0", &"ui.prompt.send_lift_to_1",
+	&"ui.prompt.send_lift_to_2", &"ui.prompt.send_lift_to_3"]
 
 ## Other landings (Node3D markers at the car floor), in order. Landing 0 = this prefab.
 @export var targets: Array[NodePath] = []
@@ -373,7 +375,7 @@ func _spawn_send_buttons(i: int) -> void:
 func send_prompt_key(j: int) -> StringName:
 	if j < send_prompt_keys.size() and send_prompt_keys[j] != &"":
 		return send_prompt_keys[j]
-	return StringName(SEND_PROMPT_FALLBACK % j)
+	return SEND_PROMPT_FALLBACK[j] if j < SEND_PROMPT_FALLBACK.size() else &"ui.prompt.send_lift"
 
 
 func _send_availability(crew: Node, i: int) -> StringName:

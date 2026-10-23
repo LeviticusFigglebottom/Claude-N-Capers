@@ -3,6 +3,10 @@
 class_name UiBuild
 extends RefCounted
 
+## header()'s breadcrumb label name, and the crumb roots set_crumb_root() swaps.
+const CRUMB_NAME: String = "Crumb"
+const CRUMB_SAFEHOUSE: StringName = &"ui.crumb.safehouse"
+const CRUMB_MAIN_MENU: StringName = &"ui.crumb.main_menu"
 const THEME_PATH: String = "res://content/ui/theme/caper_theme.tres"
 ## Theme type variations defined in caper_theme.tres.
 const HEADER: StringName = &"HeaderLabel"
@@ -134,6 +138,13 @@ static func keycap_variation(text: String) -> StringName:
 
 
 ## Marks `b` as a tertiary action (Back, Reset): no fill until hovered. Returns `b`.
+## Marks `b` as a Back / Cancel / Leave button: the standard panelled Button (LEAD r299 / r304: a ghost reads faint
+## over the 3D safehouse and the briefing backdrops) with the back click. Returns `b`.
+static func back(b: Button) -> Button:
+	sfx(b, UiSfx.KIND_BACK)
+	return b
+
+
 static func ghost(b: Button) -> Button:
 	b.theme_type_variation = GHOST
 	sfx(b, UiSfx.KIND_BACK)
@@ -167,9 +178,26 @@ static func primary(b: Button) -> Button:
 ## The title label is the box's last child (`header_title()`).
 static func header(crumb_key: StringName, title_key: StringName, args: Dictionary = {}) -> VBoxContainer:
 	var v: VBoxContainer = vbox(UiTokens.S1)
-	v.add_child(caption(crumb_key))
+	var crumb: Label = caption(crumb_key)
+	crumb.name = CRUMB_NAME
+	crumb.set_meta(&"crumb_key", crumb_key)
+	v.add_child(crumb)
 	v.add_child(label(title_key, HEADER, args))
 	return v
+
+
+## LEAD r307: the breadcrumb follows the path taken. Every header() crumb of `screen` that starts "Safehouse / …"
+## reads "Main menu / …" when `from_main_menu` (MenuFlow's direct entries), else its own text.
+static func set_crumb_root(screen: Node, from_main_menu: bool) -> void:
+	var safe: String = UiText.t(CRUMB_SAFEHOUSE)
+	for n: Node in screen.find_children(CRUMB_NAME, "Label", true, false):
+		var l: Label = n as Label
+		if not l.has_meta(&"crumb_key"):
+			continue
+		var full: String = UiText.t(StringName(l.get_meta(&"crumb_key")))
+		if from_main_menu and full.begins_with(safe + " /"):
+			full = UiText.t(CRUMB_MAIN_MENU) + full.substr(safe.length())
+		l.text = full
 
 
 ## The H1 of a box made by header().
@@ -193,12 +221,12 @@ static func spacer() -> Control:
 	return c
 
 
-## PO-4 footer band (style.md §2): `back` (made ghost) on the left, `middle` controls after it, then
-## `primary_button` (made primary) pushed to the right. Either may be null.
-static func footer(back: Button, primary_button: Button = null, middle: Array[Control] = []) -> HBoxContainer:
+## PO-4 footer band (style.md §2): `back_button` (made back(): panelled, LEAD r304) on the left, `middle` controls
+## after it, then `primary_button` (made primary) pushed to the right. Either may be null.
+static func footer(back_button: Button, primary_button: Button = null, middle: Array[Control] = []) -> HBoxContainer:
 	var h: HBoxContainer = hbox(UiTokens.S3)
-	if back != null:
-		h.add_child(ghost(back))
+	if back_button != null:
+		h.add_child(back(back_button))
 	for c: Control in middle:
 		h.add_child(c)
 	h.add_child(spacer())

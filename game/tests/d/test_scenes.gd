@@ -7,6 +7,7 @@
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 const MASK: String = "res://assets/masks/mask_gilded_heron/mask_gilded_heron.glb"
 
 var _index: Array[Dictionary] = []
@@ -187,14 +188,18 @@ func test_no_null_materials() -> void:
 			if mi.mesh == null:
 				continue
 			# D-067(b): the scene inherits the glb, so every mesh is the glb's own imported sub-resource
-			# (D4-01: except the LOD2 proxy, which is <scene>_lod.res).
+			# (D4-01: except the LOD2 proxy, which is <scene>_lod.res; D-132 D1: and the merged nodes, meta
+			# source_materials, which are <scene>_<Node>.res).
 			var glb: String = "res://assets/characters/%s/%s.glb" % [e["asset"], e["asset"]]
 			if String(mi.name) == "CrowdLod":
 				glb = String(e["scene"]).get_basename() + "_lod.res"
+			elif mi.has_meta(Layers.META_SOURCE):
+				glb = "%s_%s.res" % [String(e["scene"]).get_basename(), mi.name]
 			assert_true(mi.mesh.resource_path.begins_with(glb + "::") or mi.mesh.resource_path == glb,
 				"%s/%s mesh comes from %s (got '%s')" % [e["id"], mi.name, glb, mi.mesh.resource_path])
-			for s: int in range(mi.mesh.get_surface_count()):
-				var mat: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var mat: Material = look[s]
 				assert_true(mat != null, "%s/%s surface %d material" % [e["id"], mi.name, s])
 		root.queue_free()
 

@@ -333,6 +333,18 @@
 			"test": false
 		},
 		{
+			"asset": "char_club_bartender_c",
+			"id": "club_bartender_c",
+			"scene": "res://world/characters/club_bartender_c/club_bartender_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bartender_d",
+			"id": "club_bartender_d",
+			"scene": "res://world/characters/club_bartender_d/club_bartender_d.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_club_bouncer",
 			"id": "club_bouncer",
 			"scene": "res://world/characters/club_bouncer/club_bouncer.tscn",
@@ -345,9 +357,111 @@
 			"test": false
 		},
 		{
+			"asset": "char_club_bouncer_c",
+			"id": "club_bouncer_c",
+			"scene": "res://world/characters/club_bouncer_c/club_bouncer_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_d",
+			"id": "club_bouncer_d",
+			"scene": "res://world/characters/club_bouncer_d/club_bouncer_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_e",
+			"id": "club_bouncer_e",
+			"scene": "res://world/characters/club_bouncer_e/club_bouncer_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_f",
+			"id": "club_bouncer_f",
+			"scene": "res://world/characters/club_bouncer_f/club_bouncer_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer",
+			"id": "club_dancer",
+			"scene": "res://world/characters/club_dancer/club_dancer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_b",
+			"id": "club_dancer_b",
+			"scene": "res://world/characters/club_dancer_b/club_dancer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_c",
+			"id": "club_dancer_c",
+			"scene": "res://world/characters/club_dancer_c/club_dancer_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_d",
+			"id": "club_dancer_d",
+			"scene": "res://world/characters/club_dancer_d/club_dancer_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_e",
+			"id": "club_dancer_e",
+			"scene": "res://world/characters/club_dancer_e/club_dancer_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_f",
+			"id": "club_dancer_f",
+			"scene": "res://world/characters/club_dancer_f/club_dancer_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_g",
+			"id": "club_dancer_g",
+			"scene": "res://world/characters/club_dancer_g/club_dancer_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_h",
+			"id": "club_dancer_h",
+			"scene": "res://world/characters/club_dancer_h/club_dancer_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_i",
+			"id": "club_dancer_i",
+			"scene": "res://world/characters/club_dancer_i/club_dancer_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_j",
+			"id": "club_dancer_j",
+			"scene": "res://world/characters/club_dancer_j/club_dancer_j.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_k",
+			"id": "club_dancer_k",
+			"scene": "res://world/characters/club_dancer_k/club_dancer_k.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_dancer_l",
+			"id": "club_dancer_l",
+			"scene": "res://world/characters/club_dancer_l/club_dancer_l.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_club_dj",
 			"id": "club_dj",
 			"scene": "res://world/characters/club_dj/club_dj.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_offduty_cop",
+			"id": "club_offduty_cop",
+			"scene": "res://world/characters/club_offduty_cop/club_offduty_cop.tscn",
 			"test": false
 		},
 		{
@@ -372,6 +486,90 @@
 			"asset": "char_club_patron_d",
 			"id": "club_patron_d",
 			"scene": "res://world/characters/club_patron_d/club_patron_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_e",
+			"id": "club_patron_e",
+			"scene": "res://world/characters/club_patron_e/club_patron_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_f",
+			"id": "club_patron_f",
+			"scene": "res://world/characters/club_patron_f/club_patron_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_g",
+			"id": "club_patron_g",
+			"scene": "res://world/characters/club_patron_g/club_patron_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_h",
+			"id": "club_patron_h",
+			"scene": "res://world/characters/club_patron_h/club_patron_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_i",
+			"id": "club_patron_i",
+			"scene": "res://world/characters/club_patron_i/club_patron_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_j",
+			"id": "club_patron_j",
+			"scene": "res://world/characters/club_patron_j/club_patron_j.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_k",
+			"id": "club_patron_k",
+			"scene": "res://world/characters/club_patron_k/club_patron_k.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_patron_l",
+			"id": "club_patron_l",
+			"scene": "res://world/characters/club_patron_l/club_patron_l.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip",
+			"id": "club_vip",
+			"scene": "res://world/characters/club_vip/club_vip.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_b",
+			"id": "club_vip_b",
+			"scene": "res://world/characters/club_vip_b/club_vip_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_c",
+			"id": "club_vip_c",
+			"scene": "res://world/characters/club_vip_c/club_vip_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_d",
+			"id": "club_vip_d",
+			"scene": "res://world/characters/club_vip_d/club_vip_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_e",
+			"id": "club_vip_e",
+			"scene": "res://world/characters/club_vip_e/club_vip_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_f",
+			"id": "club_vip_f",
+			"scene": "res://world/characters/club_vip_f/club_vip_f.tscn",
 			"test": false
 		},
 		{

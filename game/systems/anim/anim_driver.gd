@@ -63,6 +63,8 @@ const HINT_CLIPS: Dictionary = {
 	&"bartender": &"bartender_wipe", &"bartender_wipe": &"bartender_wipe", &"bartender_pour": &"bartender_pour",
 	&"bouncer": &"bouncer_idle", &"teller": &"teller_count", &"dance_a": &"dance_a", &"dance_b": &"dance_b",
 	&"dance_c": &"dance_c", &"teller_count": &"teller_count",  # QC-67: OF spawns name the clip as the activity
+	# AH (afterhours.md cast table): the bouncers' posts and the DJ's set name their clips (QC-74 dj_mix).
+	&"bouncer_idle": &"bouncer_idle", &"dj_mix": &"dj_mix",
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"queue_idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
@@ -99,6 +101,11 @@ const VARIANT_GROUPS: Dictionary = {
 	&"flee": [&"flee", &"flee_b", &"flee_c"],
 	# OF-D1 SOURCE queue_variants (same index: queue_idle_b <-> cower_b <-> hands_up_b ...).
 	&"queue_idle": [&"queue_idle", &"queue_idle_b", &"queue_idle_c"],
+	# D 7d86014f SOURCE idle_variants / idle_alert_variants: a calm post (idle) and the alert stand (idle_alert) per
+	# body; frame 0 is the base's frame 0, so chains into / out of them are unchanged (no gear: civilians and
+	# unmasked crew share idle). Not offset loops: entered from walk_stop / a one-shot on frame 0 like the base.
+	&"idle": [&"idle", &"idle_b", &"idle_c"],
+	&"idle_alert": [&"idle_alert", &"idle_alert_b", &"idle_alert_c"],
 }
 ## Variant loops that start at a per-body random offset (SOURCE surrender_variants: the periods differ, so they never
 ## re-sync). surrender_idle* reached from its surrender* one-shot starts on frame 0 instead (the chain frame).
@@ -129,6 +136,9 @@ const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_ch
 ## the rig has them (play_vehicle_exit; no fallback clip). No caller yet: the convoy / police dismount is QC-83/86.
 const VEHICLE_EXIT_L: StringName = &"vehicle_exit_l"
 const VEHICLE_EXIT_R: StringName = &"vehicle_exit_r"
+## The dismount's `foot_out` (SOURCE: frame 14 of 45 at 30 fps) when the rig's SOURCE lacks it: the weapon is drawn
+## again from there (a seated body holsters it).
+const VEHICLE_FOOT_OUT_S: float = 14.0 / 30.0
 ## characters v1.27 reversal states (_reversal_step).
 const REV_NONE: int = 0
 const REV_PENDING: int = 1
@@ -200,7 +210,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle", &"turn_l_45": &"turn_l", &"turn_r_45": &"turn_r",
 	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
 	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
-	&"bartender_pour": &"browse", &"bouncer_idle": &"idle", &"teller_count": &"desk_type", &"dance_a": &"idle",
+	&"bartender_pour": &"browse", &"teller_count": &"desk_type", &"dance_a": &"idle",
 	&"dance_b": &"idle", &"dance_c": &"idle",
 	# v1.10: 8-way, hit reacts, death variety (each falls back to the v1.3 set).
 	&"walk_fl": &"walk", &"walk_fr": &"walk", &"walk_bl": &"walk_back", &"walk_br": &"walk_back",
@@ -614,17 +624,29 @@ func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1
 ## (crew_cuffed*, kneel_cuffed*); shown while downed (downed / downed_fire / downed_reload / downed_getup); in
 ## downed_arrested until its `disarm` event, in crew_cuffed_free from its `free` event (AnimTweak event times).
 func weapon_shown(c: StringName) -> bool:
-	if _death_clip != &"" or (crew_action != null and crew_action.holsters_weapon()):
-		return false  # v1.23: none while casing (PD2), drawn when mask_on has finished
+	if _death_clip != &"" or (crew_action != null and crew_action.holsters_weapon()) \
+			or c == &"sit_vehicle" or c == &"sit_vehicle_drive":
+		return false  # v1.23: none while casing (PD2), drawn when mask_on has finished; RT shot review (D 38b3a924):
+		# holstered in a vehicle seat, not held on the wheel
 	var tw: AnimTweak = AnimTweak.data()
+	var shown: bool = not POSE_CLIPS.has(c)
 	match c:
 		&"downed", &"downed_crawl", &"downed_fire", &"downed_reload", &"downed_getup":
-			return true
+			shown = true
 		&"downed_arrested":
-			return _state_oneshot_t < tw.disarm_s()
+			shown = _state_oneshot_t < tw.disarm_s()
 		&"crew_cuffed_free":
-			return _state_oneshot_t >= tw.free_s()
-	return not POSE_CLIPS.has(c)
+			shown = _state_oneshot_t >= tw.free_s()
+		VEHICLE_EXIT_L, VEHICLE_EXIT_R:  # drawn again once the door-side foot is out
+			shown = _vehicle_exit_elapsed() >= AnimTweak.clip_event_s(c, &"foot_out", VEHICLE_FOOT_OUT_S)
+	return shown
+
+
+## Seconds into the running vehicle_exit_l / _r one-shot (clip time, speed applied); -1 when none plays.
+func _vehicle_exit_elapsed() -> float:
+	if _oneshot != VEHICLE_EXIT_L and _oneshot != VEHICLE_EXIT_R:
+		return -1.0
+	return _oneshot_start + (_oneshot_dur - _oneshot_left) * _oneshot_speed
 
 
 ## Play `p_clip` once for `duration` seconds (-1 = the clip's length / speed). `while_moving` lets it
@@ -665,7 +687,17 @@ func choose_clip() -> StringName:
 		return _held_pose(pose_variant(hint_clip))
 	if crew_action != null and crew_action.action != &"" and horizontal_speed() <= AnimTweak.data().move_threshold_mps:
 		return crew_action.action  # v1.23 standing: full body (moving: CrewActionAnim's upper-body layer)
-	return _shield_clip(_active_clip(hint_clip))
+	return _idle_variant(_shield_clip(_active_clip(hint_clip)))
+
+
+## The body's idle / idle_alert variant (VARIANT_GROUPS) for the plain stands only: after the shield remap (a raised
+## shield keeps its shield idle), never the armed idle_alert_<kind> holds nor a body showing a weapon.
+func _idle_variant(c: StringName) -> StringName:
+	if c != &"idle" and c != &"idle_alert":
+		return c
+	if weapon_visual != null and is_instance_valid(weapon_visual) and weapon_shown(c):
+		return c  # D 7a1f91d3 (couriers): an armed body never stretches / checks the watch with the pistol in hand
+	return pose_variant(c)
 
 
 ## A4-02: choose_clip() at most once per tick unless a one-shot started since (TurnInPlace asks first; the tick reuses
@@ -1066,7 +1098,7 @@ func _update_start_stop(tw: AnimTweak) -> void:
 	if moving:
 		var fwd: Vector3 = -_body.global_transform.basis.z
 		var dir: Vector3 = Vector3(_vel.x, 0.0, _vel.z).normalized()
-		if dir.dot(fwd) >= START_STOP_DOT and (clip == &"idle" or String(clip).begins_with("idle_alert") or clip == &""):
+		if dir.dot(fwd) >= START_STOP_DOT and (String(clip).begins_with("idle") or clip == &""):
 			_play_if_present(&"walk_start" if speed <= tw.walk_run_split_mps else &"run_start", true)
 	elif clip == &"walk" or clip == &"run":
 		_play_if_present(&"walk_stop" if clip == &"walk" else &"run_stop", false)

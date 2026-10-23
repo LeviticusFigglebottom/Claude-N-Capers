@@ -1,0 +1,32 @@
+prop_ah_speaker_stack aabb pos (-0.604, 0.0, -0.511) size (1.208, 2.2, 1.011) (x 1.21  y 2.20  z 1.01)  tris 2332
+prop_ah_vip_sofa aabb pos (-1.5, 0.0, -0.45) size (3.0, 0.9, 0.9) (x 3.00  y 0.90  z 0.90)  tris 1356
+  node Seat0 (Node3D) at (-0.85, 0.0, -0.45)
+  node Seat1 (Node3D) at (0.0, 0.0, -0.45)
+  node Seat2 (Node3D) at (0.85, 0.0, -0.45)
+prop_ah_vip_coffee_table aabb pos (-0.6, 0.0, -0.3) size (1.2, 0.542, 0.6) (x 1.20  y 0.54  z 0.60)  tris 1360
+prop_ah_bottle_table aabb pos (-0.4, 0.0, -0.3) size (0.8, 1.372, 0.6) (x 0.80  y 1.37  z 0.60)  tris 2216
+prop_ah_high_table aabb pos (-0.35, 0.0, -0.35) size (0.7, 1.1, 0.7) (x 0.70  y 1.10  z 0.70)  tris 880
+prop_ah_private_shelving aabb pos (-1.5, 0.0, -0.3) size (3.0, 2.0, 0.6) (x 3.00  y 2.00  z 0.60)  tris 2420
+prop_ah_keg_trolley aabb pos (-0.31, 0.0, -0.16) size (0.62, 1.015235, 0.56) (x 0.62  y 1.02  z 0.56)  tris 1284
+prop_ah_keg_rack aabb pos (-1.2, 0.0, -0.4) size (2.4, 1.6, 0.8) (x 2.40  y 1.60  z 0.80)  tris 4552
+prop_ah_bottle_bank aabb pos (-0.61, 0.000518, -0.49) size (1.22, 1.199482, 0.96) (x 1.22  y 1.20  z 0.96)  tris 5288
+prop_ah_crates aabb pos (-0.6, 0.0, -0.324) size (1.2, 1.37, 0.644) (x 1.20  y 1.37  z 0.64)  tris 5288
+prop_ah_flight_cases aabb pos (-0.800839, 0.001958, -0.400839) size (1.601679, 1.020042, 0.801679) (x 1.60  y 1.02  z 0.80)  tris 5092
+prop_ah_bar_counter_2m aabb pos (-1.004, -0.000578, -0.295923) size (2.008, 1.050578, 0.595923) (x 2.01  y 1.05  z 0.60)  tris 2172
+prop_ah_bar_counter_end aabb pos (-0.304, -0.000578, -0.295923) size (0.608, 1.050578, 0.595923) (x 0.61  y 1.05  z 0.60)  tris 580
+prop_ah_box_office_counter aabb pos (-2.21, 0.0, -0.3) size (4.42, 1.1955, 0.6) (x 4.42  y 1.20  z 0.60)  tris 2088
+prop_ah_ice_bucket aabb pos (-0.129677, 0.0, -0.11) size (0.259354, 0.435, 0.22) (x 0.26  y 0.43  z 0.22)  tris 716
+prop_ah_tip_jar aabb pos (-0.058496, 0.0, -0.062) size (0.116991, 0.18, 0.122) (x 0.12  y 0.18  z 0.12)  tris 480
+prop_ah_till aabb pos (-0.2, 0.0, -0.2) size (0.4, 0.42, 0.405) (x 0.40  y 0.42  z 0.41)  tris 356
+prop_ah_marquee aabb pos (-6.07, -0.02, -2.845) size (12.14, 0.96, 2.849) (x 12.14  y 0.96  z 2.85)  tris 4844
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_bulb_mirror aabb pos (-0.6, -0.48, -0.16) size (1.2, 0.93, 0.16) (x 1.20  y 0.93  z 0.16)  tris 1236
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_cigarette_machine aabb pos (-0.375, 0.0, -0.28) size (0.75, 1.8, 0.53) (x 0.75  y 1.80  z 0.53)  tris 1804
+prop_ah_projector aabb pos (-0.2, 0.0, -0.53) size (0.4, 1.47, 0.979426) (x 0.40  y 1.47  z 0.98)  tris 1244
+prop_ah_radio_charger aabb pos (-0.3, -0.125, -0.153) size (0.6, 0.25, 0.153) (x 0.60  y 0.25  z 0.15)  tris 1288
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_clock_in aabb pos (-0.375, -0.3, -0.126) size (0.75, 0.6, 0.126) (x 0.75  y 0.60  z 0.13)  tris 1848
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_key_hooks aabb pos (-0.35, -0.252828, -0.44) size (0.554, 0.506828, 0.444) (x 0.55  y 0.51  z 0.44)  tris 1802
+  node Mount (Node3D) at (0.0, 0.0, 0.0)

@@ -2,7 +2,8 @@
 
 [resource]
 resource_name = "M_char_crowd_lod"
+cull_mode = 2
 vertex_color_use_as_albedo = true
 vertex_color_is_srgb = true
 roughness = 0.8
-metadata/doc = "D4-01 ENV D: shared material of every character's merged LOD2 (Skeleton3D/CrowdLod, world/characters/_tools/crowd_lod.gd); albedo = per-vertex mean albedo of the source materials."
+metadata/doc = "D4-01 ENV D: shared material of every character's merged LOD2 (Skeleton3D/CrowdLod, world/characters/_tools/crowd_lod.gd); albedo = per-vertex mean albedo of the source materials. Double-sided (D-165): skirt / dress / apron hems show their inside, not a see-through gap."

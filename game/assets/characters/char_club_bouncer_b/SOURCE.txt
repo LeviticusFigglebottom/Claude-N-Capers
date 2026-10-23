@@ -16,5 +16,5 @@ look: Velvet bouncer: big build, tight black short-sleeved tee tucked in, SECURI
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25526
-tris_by_mesh: {"Body": 10652, "Gear": 1258, "Hair": 1200, "Outfit": 12416}
+tris: 25570
+tris_by_mesh: {"Body": 10652, "Gear": 1302, "Hair": 1200, "Outfit": 12416}

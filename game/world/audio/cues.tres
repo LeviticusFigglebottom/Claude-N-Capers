@@ -370,6 +370,13 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_destroyed/sfx_sentry_destroyed.ogg" id="s_sentry_sd"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_deploy/sfx_sentry_deploy.ogg" id="s_sentry_sp"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/smoke_bomb/sfx_smoke_bomb.ogg" id="s_d163_smoke"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_afterhours_club_music/sfx_amb_afterhours_club_music.ogg" id="s_ah_amb_afterhours_club_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_afterhours_club/sfx_amb_afterhours_club.ogg" id="s_ah_amb_afterhours_club"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_afterhours_boh/sfx_amb_afterhours_boh.ogg" id="s_ah_amb_afterhours_boh"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_street_wet_night/sfx_amb_street_wet_night.ogg" id="s_ah_amb_street_wet_night"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/club_power_down/sfx_club_power_down.ogg" id="s_ah_club_power_down"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/crowd_stampede/sfx_crowd_stampede.ogg" id="s_ah_crowd_stampede"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/dj_mic_feedback/sfx_dj_mic_feedback.ogg" id="s_ah_dj_mic_feedback"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/gas_dispenser_tag/sfx_gas_dispenser_tag.ogg" id="s_d163_gas"]
 
 [sub_resource type="Resource" id="cue_1"]
@@ -2869,6 +2876,90 @@ pitch_jitter = 0.0
 cooldown_s = 0.0
 loop = false
 
+[sub_resource type="Resource" id="cue_195"]
+script = ExtResource("2_def")
+id = &"cue.amb_afterhours_club_music"
+streams = Array[AudioStream]([ExtResource("s_ah_amb_afterhours_club_music")])
+volume_db = -4.0
+bus = &"Ambience"
+positional = true
+max_distance = 30.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = true
+
+[sub_resource type="Resource" id="cue_196"]
+script = ExtResource("2_def")
+id = &"cue.amb_afterhours_club"
+streams = Array[AudioStream]([ExtResource("s_ah_amb_afterhours_club")])
+volume_db = -14.0
+bus = &"Ambience"
+positional = false
+max_distance = 40.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = true
+
+[sub_resource type="Resource" id="cue_197"]
+script = ExtResource("2_def")
+id = &"cue.amb_afterhours_boh"
+streams = Array[AudioStream]([ExtResource("s_ah_amb_afterhours_boh")])
+volume_db = -14.0
+bus = &"Ambience"
+positional = false
+max_distance = 40.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = true
+
+[sub_resource type="Resource" id="cue_198"]
+script = ExtResource("2_def")
+id = &"cue.amb_street_wet_night"
+streams = Array[AudioStream]([ExtResource("s_ah_amb_street_wet_night")])
+volume_db = -14.0
+bus = &"Ambience"
+positional = false
+max_distance = 40.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = true
+
+[sub_resource type="Resource" id="cue_199"]
+script = ExtResource("2_def")
+id = &"cue.club_power_down"
+streams = Array[AudioStream]([ExtResource("s_ah_club_power_down")])
+volume_db = -2.0
+bus = &"World"
+positional = true
+max_distance = 45.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = false
+
+[sub_resource type="Resource" id="cue_200"]
+script = ExtResource("2_def")
+id = &"cue.crowd_stampede"
+streams = Array[AudioStream]([ExtResource("s_ah_crowd_stampede")])
+volume_db = -4.0
+bus = &"World"
+positional = true
+max_distance = 35.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = true
+
+[sub_resource type="Resource" id="cue_201"]
+script = ExtResource("2_def")
+id = &"cue.dj_mic_feedback"
+streams = Array[AudioStream]([ExtResource("s_ah_dj_mic_feedback")])
+volume_db = -6.0
+bus = &"World"
+positional = true
+max_distance = 35.0
+pitch_jitter = 0.0
+cooldown_s = 0.0
+loop = false
+
 [resource]
 script = ExtResource("1_reg")
-cues = Array[ExtResource("2_def")]([SubResource("cue_1"), SubResource("cue_2"), SubResource("cue_3"), SubResource("cue_4"), SubResource("cue_5"), SubResource("cue_6"), SubResource("cue_7"), SubResource("cue_8"), SubResource("cue_9"), SubResource("cue_10"), SubResource("cue_11"), SubResource("cue_12"), SubResource("cue_13"), SubResource("cue_14"), SubResource("cue_15"), SubResource("cue_16"), SubResource("cue_17"), SubResource("cue_18"), SubResource("cue_19"), SubResource("cue_20"), SubResource("cue_21"), SubResource("cue_22"), SubResource("cue_23"), SubResource("cue_24"), SubResource("cue_25"), SubResource("cue_26"), SubResource("cue_27"), SubResource("cue_28"), SubResource("cue_29"), SubResource("cue_30"), SubResource("cue_31"), SubResource("cue_32"), SubResource("cue_33"), SubResource("cue_34"), SubResource("cue_35"), SubResource("cue_36"), SubResource("cue_37"), SubResource("cue_38"), SubResource("cue_39"), SubResource("cue_40"), SubResource("cue_41"), SubResource("cue_42"), SubResource("cue_43"), SubResource("cue_44"), SubResource("cue_45"), SubResource("cue_46"), SubResource("cue_47"), SubResource("cue_48"), SubResource("cue_49"), SubResource("cue_50"), SubResource("cue_51"), SubResource("cue_52"), SubResource("cue_53"), SubResource("cue_54"), SubResource("cue_55"), SubResource("cue_56"), SubResource("cue_57"), SubResource("cue_58"), SubResource("cue_59"), SubResource("cue_60"), SubResource("cue_61"), SubResource("cue_62"), SubResource("cue_63"), SubResource("cue_64"), SubResource("cue_65"), SubResource("cue_66"), SubResource("cue_67"), SubResource("cue_68"), SubResource("cue_69"), SubResource("cue_70"), SubResource("cue_71"), SubResource("cue_72"), SubResource("cue_73"), SubResource("cue_74"), SubResource("cue_75"), SubResource("cue_76"), SubResource("cue_77"), SubResource("cue_78"), SubResource("cue_79"), SubResource("cue_80"), SubResource("cue_81"), SubResource("cue_82"), SubResource("cue_83"), SubResource("cue_84"), SubResource("cue_85"), SubResource("cue_86"), SubResource("cue_87"), SubResource("cue_88"), SubResource("cue_89"), SubResource("cue_90"), SubResource("cue_91"), SubResource("cue_92"), SubResource("cue_93"), SubResource("cue_94"), SubResource("cue_95"), SubResource("cue_96"), SubResource("cue_97"), SubResource("cue_98"), SubResource("cue_99"), SubResource("cue_100"), SubResource("cue_101"), SubResource("cue_102"), SubResource("cue_103"), SubResource("cue_104"), SubResource("cue_105"), SubResource("cue_106"), SubResource("cue_107"), SubResource("cue_108"), SubResource("cue_109"), SubResource("cue_110"), SubResource("cue_111"), SubResource("cue_112"), SubResource("cue_113"), SubResource("cue_114"), SubResource("cue_115"), SubResource("cue_116"), SubResource("cue_117"), SubResource("cue_118"), SubResource("cue_119"), SubResource("cue_120"), SubResource("cue_121"), SubResource("cue_122"), SubResource("cue_123"), SubResource("cue_124"), SubResource("cue_125"), SubResource("cue_126"), SubResource("cue_127"), SubResource("cue_128"), SubResource("cue_129"), SubResource("cue_130"), SubResource("cue_131"), SubResource("cue_132"), SubResource("cue_133"), SubResource("cue_134"), SubResource("cue_135"), SubResource("cue_136"), SubResource("cue_137"), SubResource("cue_138"), SubResource("cue_139"), SubResource("cue_140"), SubResource("cue_141"), SubResource("cue_142"), SubResource("cue_143"), SubResource("cue_144"), SubResource("cue_145"), SubResource("cue_146"), SubResource("cue_147"), SubResource("cue_148"), SubResource("cue_149"), SubResource("cue_150"), SubResource("cue_151"), SubResource("cue_152"), SubResource("cue_153"), SubResource("cue_154"), SubResource("cue_155"), SubResource("cue_156"), SubResource("cue_157"), SubResource("cue_158"), SubResource("cue_159"), SubResource("cue_160"), SubResource("cue_161"), SubResource("cue_162"), SubResource("cue_163"), SubResource("cue_164"), SubResource("cue_165"), SubResource("cue_166"), SubResource("cue_167"), SubResource("cue_168"), SubResource("cue_169"), SubResource("cue_170"), SubResource("cue_171"), SubResource("cue_172"), SubResource("cue_173"), SubResource("cue_174"), SubResource("cue_175"), SubResource("cue_176"), SubResource("cue_177"), SubResource("cue_178"), SubResource("cue_179"), SubResource("cue_180"), SubResource("cue_181"), SubResource("cue_ui_ui_focus"), SubResource("cue_ui_ui_confirm"), SubResource("cue_ui_ui_back"), SubResource("cue_ui_ui_primary"), SubResource("cue_ui_ui_error"), SubResource("cue_ui_ui_tab"), SubResource("cue_ui_hud_objective_done"), SubResource("cue_ui_hud_hint"), SubResource("cue_ui_payday_total"), SubResource("cue_ui_card_flip"), SubResource("cue_ui_hud_hit"), SubResource("cue_ui_hud_headshot"), SubResource("cue_ui_hud_kill"), SubResource("cue_ui_hud_heartbeat"), SubResource("cue_182"), SubResource("cue_183"), SubResource("cue_184"), SubResource("cue_185"), SubResource("cue_186"), SubResource("cue_187"), SubResource("cue_188"), SubResource("cue_189"), SubResource("cue_190"), SubResource("cue_191"), SubResource("cue_192"), SubResource("cue_193"), SubResource("cue_194")])
+cues = Array[ExtResource("2_def")]([SubResource("cue_1"), SubResource("cue_2"), SubResource("cue_3"), SubResource("cue_4"), SubResource("cue_5"), SubResource("cue_6"), SubResource("cue_7"), SubResource("cue_8"), SubResource("cue_9"), SubResource("cue_10"), SubResource("cue_11"), SubResource("cue_12"), SubResource("cue_13"), SubResource("cue_14"), SubResource("cue_15"), SubResource("cue_16"), SubResource("cue_17"), SubResource("cue_18"), SubResource("cue_19"), SubResource("cue_20"), SubResource("cue_21"), SubResource("cue_22"), SubResource("cue_23"), SubResource("cue_24"), SubResource("cue_25"), SubResource("cue_26"), SubResource("cue_27"), SubResource("cue_28"), SubResource("cue_29"), SubResource("cue_30"), SubResource("cue_31"), SubResource("cue_32"), SubResource("cue_33"), SubResource("cue_34"), SubResource("cue_35"), SubResource("cue_36"), SubResource("cue_37"), SubResource("cue_38"), SubResource("cue_39"), SubResource("cue_40"), SubResource("cue_41"), SubResource("cue_42"), SubResource("cue_43"), SubResource("cue_44"), SubResource("cue_45"), SubResource("cue_46"), SubResource("cue_47"), SubResource("cue_48"), SubResource("cue_49"), SubResource("cue_50"), SubResource("cue_51"), SubResource("cue_52"), SubResource("cue_53"), SubResource("cue_54"), SubResource("cue_55"), SubResource("cue_56"), SubResource("cue_57"), SubResource("cue_58"), SubResource("cue_59"), SubResource("cue_60"), SubResource("cue_61"), SubResource("cue_62"), SubResource("cue_63"), SubResource("cue_64"), SubResource("cue_65"), SubResource("cue_66"), SubResource("cue_67"), SubResource("cue_68"), SubResource("cue_69"), SubResource("cue_70"), SubResource("cue_71"), SubResource("cue_72"), SubResource("cue_73"), SubResource("cue_74"), SubResource("cue_75"), SubResource("cue_76"), SubResource("cue_77"), SubResource("cue_78"), SubResource("cue_79"), SubResource("cue_80"), SubResource("cue_81"), SubResource("cue_82"), SubResource("cue_83"), SubResource("cue_84"), SubResource("cue_85"), SubResource("cue_86"), SubResource("cue_87"), SubResource("cue_88"), SubResource("cue_89"), SubResource("cue_90"), SubResource("cue_91"), SubResource("cue_92"), SubResource("cue_93"), SubResource("cue_94"), SubResource("cue_95"), SubResource("cue_96"), SubResource("cue_97"), SubResource("cue_98"), SubResource("cue_99"), SubResource("cue_100"), SubResource("cue_101"), SubResource("cue_102"), SubResource("cue_103"), SubResource("cue_104"), SubResource("cue_105"), SubResource("cue_106"), SubResource("cue_107"), SubResource("cue_108"), SubResource("cue_109"), SubResource("cue_110"), SubResource("cue_111"), SubResource("cue_112"), SubResource("cue_113"), SubResource("cue_114"), SubResource("cue_115"), SubResource("cue_116"), SubResource("cue_117"), SubResource("cue_118"), SubResource("cue_119"), SubResource("cue_120"), SubResource("cue_121"), SubResource("cue_122"), SubResource("cue_123"), SubResource("cue_124"), SubResource("cue_125"), SubResource("cue_126"), SubResource("cue_127"), SubResource("cue_128"), SubResource("cue_129"), SubResource("cue_130"), SubResource("cue_131"), SubResource("cue_132"), SubResource("cue_133"), SubResource("cue_134"), SubResource("cue_135"), SubResource("cue_136"), SubResource("cue_137"), SubResource("cue_138"), SubResource("cue_139"), SubResource("cue_140"), SubResource("cue_141"), SubResource("cue_142"), SubResource("cue_143"), SubResource("cue_144"), SubResource("cue_145"), SubResource("cue_146"), SubResource("cue_147"), SubResource("cue_148"), SubResource("cue_149"), SubResource("cue_150"), SubResource("cue_151"), SubResource("cue_152"), SubResource("cue_153"), SubResource("cue_154"), SubResource("cue_155"), SubResource("cue_156"), SubResource("cue_157"), SubResource("cue_158"), SubResource("cue_159"), SubResource("cue_160"), SubResource("cue_161"), SubResource("cue_162"), SubResource("cue_163"), SubResource("cue_164"), SubResource("cue_165"), SubResource("cue_166"), SubResource("cue_167"), SubResource("cue_168"), SubResource("cue_169"), SubResource("cue_170"), SubResource("cue_171"), SubResource("cue_172"), SubResource("cue_173"), SubResource("cue_174"), SubResource("cue_175"), SubResource("cue_176"), SubResource("cue_177"), SubResource("cue_178"), SubResource("cue_179"), SubResource("cue_180"), SubResource("cue_181"), SubResource("cue_ui_ui_focus"), SubResource("cue_ui_ui_confirm"), SubResource("cue_ui_ui_back"), SubResource("cue_ui_ui_primary"), SubResource("cue_ui_ui_error"), SubResource("cue_ui_ui_tab"), SubResource("cue_ui_hud_objective_done"), SubResource("cue_ui_hud_hint"), SubResource("cue_ui_payday_total"), SubResource("cue_ui_card_flip"), SubResource("cue_ui_hud_hit"), SubResource("cue_ui_hud_headshot"), SubResource("cue_ui_hud_kill"), SubResource("cue_ui_hud_heartbeat"), SubResource("cue_182"), SubResource("cue_183"), SubResource("cue_184"), SubResource("cue_185"), SubResource("cue_186"), SubResource("cue_187"), SubResource("cue_188"), SubResource("cue_189"), SubResource("cue_190"), SubResource("cue_191"), SubResource("cue_192"), SubResource("cue_193"), SubResource("cue_194"), SubResource("cue_195"), SubResource("cue_196"), SubResource("cue_197"), SubResource("cue_198"), SubResource("cue_199"), SubResource("cue_200"), SubResource("cue_201")])

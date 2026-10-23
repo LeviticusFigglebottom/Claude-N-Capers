@@ -131,6 +131,8 @@ func play(flow: Node) -> int:
 			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
 	if wait_convoy:
 		await _wait_for_the_convoy()
+	if p.crew.civilian and not await _gear_up():
+		return fail("civilian start: no gear pickup reached (t=%.0f)" % rt.heist_time_s)
 	if not p.crew.masked:  # stores1001: masked, G throws the carried bag (rt_clean hands over masked with the thermite)
 		await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
@@ -157,10 +159,52 @@ func play(flow: Node) -> int:
 		if rt.heist_time_s - last_shot > 90.0:
 			last_shot = rt.heist_time_s
 			await f.shot("auto_%d" % int(rt.heist_time_s))
-		await step()
+		if not await _hunt_captain():
+			await step()
 	if not _ended:
 		return fail("no heist end within %.0f s; markers %s" % [cap, _marker_summary()])
 	return await f.payday_to_hub()
+
+
+## S1.3 civilian start (AH, D-065): no mask without gear. Walk to the nearest enabled GearPickup this civilian may use
+## (the rolled gear_drop slot) and take the gear; the AI teammates gear up with the pilot. True when no longer civilian.
+func _gear_up() -> bool:
+	var picks: Array[GearPickup] = []
+	for n: Node in rt.find_children("*", "GearPickup", true, false):
+		var g: GearPickup = n as GearPickup
+		if g != null and g.is_enabled() and g.interactable != null and g.interactable.enabled:
+			picks.append(g)
+	var from: Vector3 = p.crew.global_position
+	picks.sort_custom(func(a: GearPickup, b: GearPickup) -> bool:
+		return a.global_position.distance_to(from) < b.global_position.distance_to(from))
+	for g: GearPickup in picks:
+		f.note("civilian start: taking the gear at %s %s (t=%.0f)" % [g.name, g.global_position, rt.heist_time_s])
+		await p.use(g.interactable, 90.0, func() -> bool: return not p.crew.civilian)
+		if not p.crew.civilian:
+			f.note("geared up at %s (t=%.0f)" % [g.name, rt.heist_time_s])
+			return true
+		f.note("civilian start: %s not used (%s)" % [g.name, g.interactable.availability(p.crew)])
+	return not p.crew.civilian
+
+
+## D-166 (harness): once the required loot is secured (no `secure` marker left), an active captain (Brandt, who holds
+## the assault in SUSTAIN) is the pilot's target, as a crew waiting on the escape would go and end the siege (AH
+## done-check, Hazardous 1 / 4242). Walk until he is in sight, then engage him. True when it acted.
+func _hunt_captain() -> bool:
+	var d: AssaultDirector = rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	if d == null or not d.captain_active() or _marked(&"secure"):
+		return false
+	var brandt: NpcBase = d.captain.brandt
+	if brandt == null or not is_instance_valid(brandt) or not brandt.is_alive():
+		return false
+	_note_once(&"_captain", "required loot secured, Brandt holds the assault: hunting him (t=%.0f)" % rt.heist_time_s)
+	if p.has_los(p._aim_point(brandt), brandt) and p.crew.global_position.distance_to(brandt.global_position) <= 40.0:
+		await p.engage(brandt, 3.0)
+	else:
+		await p.goto(p.stand_point(brandt.global_position), 8.0, 6.0)
+	if not is_instance_valid(brandt) or not brandt.is_alive():
+		f.note("Brandt down at t=%.0f" % rt.heist_time_s)
+	return true
 
 
 ## --po5-wait-convoy: unmasked, in place, until the convoy has stopped (RT _stop_done) or the crash's alarm is up
@@ -522,6 +566,9 @@ func _fetch_bag() -> bool:
 		_note_once(&"_nobag", "secure is the only marked objective but no bag source is usable")
 		return false
 	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
+	if not p.crew.is_carrying_bag() and is_instance_valid(best) \
+			and (await _open_gate_toward(p._use_stand(best)) or await _open_lock_near(best.global_position, true)):
+		return true  # AH prod_stock (C): the parcels sit in the padlocked stock cage: the padlock first, then the bags
 	_mark_if_unreached(best)
 	if not p.crew.is_carrying_bag() and is_instance_valid(best) and best.kind == &"pick_bag":
 		var key: int = best.get_instance_id()
@@ -675,6 +722,8 @@ func _mark_if_unreached(c: InteractableComponent) -> void:
 ## A target `_mark_if_unreached` blacklisted: for the run when it had no path, else while its door still blocks.
 func _is_unreachable(c: InteractableComponent) -> bool:
 	var key: int = c.get_instance_id()
+	if int(_bag_fails.get(key, 0)) >= BAG_FAIL_LIMIT:
+		return true  # AH 6501 (prod_private): a path re-test un-skipped a bag the shelving hid; 700 s on it, no safe
 	if _skip_until.has(key):
 		if rt.heist_time_s < _skip_until[key]:
 			return true

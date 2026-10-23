@@ -5,13 +5,15 @@
 ##             --audio-driver Dummy --path game res://world/characters/_tools/bench_crowd.tscn -- --ids=a,b,c --n=30
 ##             [--near=4] [--far=45] [--lod=off] [--frames=300] [--seed=1] [--layer]
 ##   presets (D-132, the real-GPU check; README_bench.md): `-- --preset=both` runs gn34 then loud50 (each with --layer)
-##             and prints one "[BENCH] preset=..." line per case; `--preset=gn34` / `--preset=loud50` run one.
+##             and prints one "[BENCH] preset=..." line per case; `--preset=gn34` / `--preset=loud50` run one;
+##             `--preset=ah50` is the Afterhours dance floor (D-165: 50 club looks on dance_a/b/c, 5-18 m, no layer).
 ## Stats prints one "[CHAR]" line per id: mesh surfaces (= draw calls at LOD0/LOD1, shadow casters double that), distinct
 ## materials, vertices and triangles at LOD0, the first automatic LOD (LOD1, Godot picks it by screen size) and LOD2
 ## (Skeleton3D/CrowdLod, one surface), the LOD2 switch distance, bones and ragdoll bodies.
 ## Bench places --n characters (ids cycled) at seeded spots between --near and --far metres in front of a camera
-## (eye 1.65 m, FOV 75), each looping `walk` from a seeded offset in place (--layer: plus hold_rifle_walk on a second
-## AnimationPlayer, as AnimDriver's upper-body layer), and prints "[BENCH]" with the mean / p95 frame time (wall),
+## (eye 1.65 m, FOV 75), each looping `walk` from a seeded offset in place (--clip=dance: dance_a/b/c instead; --layer:
+## plus hold_rifle_walk on a second AnimationPlayer, as AnimDriver's upper-body layer), and prints "[BENCH]" with the
+## mean / p95 frame time (wall),
 ## Performance process time, draw calls, primitives, visible objects and the texture / video memory in use
 ## (MB, end of run). --lod=off forces LOD0 (no CrowdLod).
 extends Node
@@ -29,6 +31,15 @@ const PRESETS: Dictionary = {
 	"loud50": {"n": 50, "ids": ["tac_light", "tac_heavy", "patrol_officer", "frd_agent", "tac_light_frd", "tac_heavy_frd",
 		"bulwark", "wrecker", "corpsman", "phantom", "stinger", "longshot", "gallery_patron", "gallery_patron_b", "crew_rook",
 		"crew_sable"]},
+	# D-165 Afterhours dance floor: 30 dancers + 14 patrons + 6 staff, 5-18 m, every one on a dance loop
+	"ah50": {"n": 50, "near": 5.0, "far": 18.0, "clip": "dance", "layer": false, "ids": ["club_dancer", "club_patron",
+		"club_dancer_b", "club_dancer_c", "club_patron_b", "club_dancer_d", "club_bouncer", "club_dancer_e", "club_patron_c",
+		"club_dancer_f", "club_dancer_g", "club_patron_d", "club_dancer_h", "club_bartender", "club_dancer_i", "club_patron_e",
+		"club_dancer_j", "club_dancer_k", "club_patron_f", "club_dancer_l", "club_bouncer_b", "club_dancer", "club_patron_g",
+		"club_dancer_b", "club_dancer_c", "club_patron_h", "club_dancer_d", "club_dj", "club_dancer_e", "club_patron_i",
+		"club_dancer_f", "club_dancer_g", "club_patron_j", "club_dancer_h", "club_bartender_b", "club_dancer_i", "club_patron_k",
+		"club_dancer_j", "club_dancer_k", "club_patron_l", "club_dancer_l", "club_bouncer_c", "club_dancer", "club_patron",
+		"club_dancer_b", "club_bouncer_d", "club_dancer_c", "club_patron_b", "club_dancer_d", "club_dancer_e"]},
 }
 
 var _ids: PackedStringArray = []
@@ -47,6 +58,8 @@ var _label: String = ""
 var _switch: float = 0.0
 ## --small_shadows=off: surfaces under CrowdLod.MIN_SURFACE_TRIS cast no shadow (eyes, lashes, badges)
 var _small_shadows: bool = true
+## --clip=walk|dance: the loop every character plays (dance = dance_a/b/c by index, as AmbientHints spreads them)
+var _clip: String = "walk"
 
 
 func _ready() -> void:
@@ -66,6 +79,7 @@ func _ready() -> void:
 			"preset": _preset = v
 			"switch": _switch = float(v)
 			"small_shadows": _small_shadows = v != "off"
+			"clip": _clip = v
 	if _stats:
 		for id: String in _ids:
 			_print_stats(id)
@@ -80,7 +94,10 @@ func _ready() -> void:
 			var p: Dictionary = PRESETS[name]
 			_ids = PackedStringArray(p["ids"])
 			_n = int(p["n"])
-			_layer = true
+			_layer = bool(p.get("layer", true))
+			_near = float(p.get("near", _near))
+			_far = float(p.get("far", _far))
+			_clip = String(p.get("clip", "walk"))
 			_label = "preset=%s " % name
 			await _bench()
 			for c: Node in get_children():
@@ -192,8 +209,9 @@ func _bench() -> void:
 			_split_small_shadows(ch)
 		var ap: AnimationPlayer = ch.get_node_or_null(^"AnimationPlayer") as AnimationPlayer
 		if ap != null:
-			ap.play(&"humanoid/walk")
-			ap.seek(rng.randf_range(0.0, 1.0), true)
+			var clip: String = "walk" if _clip != "dance" else ["dance_a", "dance_b", "dance_c"][i % 3]
+			ap.play(StringName("humanoid/" + clip))
+			ap.seek(rng.randf_range(0.0, ap.current_animation_length), true)
 			if _layer:
 				var lay: AnimationPlayer = AnimationPlayer.new()
 				lay.root_node = ap.root_node
@@ -225,8 +243,8 @@ func _bench() -> void:
 	mean /= float(times.size())
 	var f: float = float(_frames)
 	var mb: float = 1024.0 * 1024.0
-	print(("[BENCH] " + _label + "n=%d lod=%s layer=%s near=%.0f far=%.0f frame_ms mean=%.2f p95=%.2f process_ms=%.2f draws=%.0f prims=%.0f"
-		+ " objects=%.0f tex_mem_mb=%.1f video_mem_mb=%.1f")
-		% [_n, "on" if _lod else "off", _layer, _near, _far, mean, sorted[int(0.95 * (sorted.size() - 1))], proc / f,
+	print(("[BENCH] " + _label + "n=%d clip=%s lod=%s layer=%s near=%.0f far=%.0f frame_ms mean=%.2f p95=%.2f process_ms=%.2f"
+		+ " draws=%.0f prims=%.0f objects=%.0f tex_mem_mb=%.1f video_mem_mb=%.1f")
+		% [_n, _clip, "on" if _lod else "off", _layer, _near, _far, mean, sorted[int(0.95 * (sorted.size() - 1))], proc / f,
 		draws / f, prims / f, objs / f, Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED) / mb,
 		Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / mb])

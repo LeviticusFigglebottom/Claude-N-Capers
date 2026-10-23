@@ -76,6 +76,27 @@ func _placeholder_scene() -> PackedScene:
 	return PLACEHOLDER
 
 
+## PO report (OF LidDrill): a device scene set as the spot's `visual_scene` stood in the bank from the start. The
+## spot never shows a device at rest (PD2: it exists once placed): a device art there (a scene with a `Bit`) becomes
+## the placed device (`device_scene`, unless one is set) and the spot keeps the placeholder mark.
+func _build_visual() -> void:
+	if visual_scene != null and _is_device_art(visual_scene):
+		Log.warn(LOG_CHANNEL, "%s: visual_scene %s is device art: shown only once placed (set device_scene instead)"
+			% [name, visual_scene.resource_path])
+		if device_scene == null:
+			device_scene = visual_scene
+		visual_scene = null
+	super._build_visual()
+
+
+static func _is_device_art(scene: PackedScene) -> bool:
+	var st: SceneState = scene.get_state()
+	for i: int in st.get_node_count():
+		if st.get_node_name(i) == &"Bit":
+			return true
+	return scene.resource_path.begins_with(G.PROPS_DIR + "drill/")
+
+
 func _default_interaction_time() -> float:
 	return Tweak.interaction().drill_place_s
 

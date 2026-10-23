@@ -15,5 +15,5 @@ look: Club patron: teal satin shirt, black trousers and belt, white trainers, si
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 24744
-tris_by_mesh: {"Body": 8952, "Gear": 440, "Hair": 1200, "Outfit": 14152}
+tris: 27064
+tris_by_mesh: {"Body": 8952, "Gear": 2760, "Hair": 1200, "Outfit": 14152}

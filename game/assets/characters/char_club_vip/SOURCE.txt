@@ -1,0 +1,19 @@
+asset: char_club_vip
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.3, "build": 0.35, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "height": 1.7, "lip": "char_lip_rose", "look": "vip", "skin": 4}
+seed: 3512331084  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_vip
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0849, 0.0905] (model [0.0000, 1.2416, 0.1081], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0774, -0.0847] (model [0.0000, 1.5911, -0.0733], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1629, 0.0488, 0.0403] (model [0.1629, 0.9588, 0.0427], Godot axes, rest pose)
+body_faces_culled: 2451
+body_params: {"age": 0.3, "beard_shadow": 0.0, "build": 0.35, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.7, "lip": "char_lip_rose", "skin": 4}
+bones: 52
+look: VIP party host (birthday): black satin mini dress, ivory satin sash over the right shoulder, heels, gold drop earrings, gold VIP wristband
+meshes: Body,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 23490
+tris_by_mesh: {"Body": 13842, "Hair": 1856, "Headwear": 376, "Outfit": 7416}

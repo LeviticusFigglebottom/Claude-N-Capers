@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/p/_review/po_confirm.gd" id="1"]
+
+[node name="PoConfirm" type="Node"]
+script = ExtResource("1")

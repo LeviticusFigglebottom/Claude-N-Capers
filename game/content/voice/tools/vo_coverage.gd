@@ -13,6 +13,11 @@
 ##     when its event, objective and loot match a fact; a generic line when some fact has no always-ready heist
 ##     line (empty pool, or every heist line has a cooldown);
 ##   * builder BriefingModel.voice_lines (B2-02): the briefing lines of every heist and its contact.
+## A literal / builder site inside a .gd function counts only when that function can run (LEAD r306, AH gear_line: a
+## builder in a function nothing called looked said): its name is referenced anywhere in the scanned code besides its
+## own `func` line (a call, a connect(), a call(&"name") string, an override the base calls), or it is an engine
+## virtual (ENGINE_VIRTUALS). Class-level sites (consts, vars) and .tres / .tscn sites always count. Tests are not
+## scanned, so a function only tests call is dead.
 ## Owner of a line's trigger: briefing / radio.* lines = B; mission lines of a heist = C; everything else
 ## (barks, order acks, pager / abort / cuff lines, the dev sandbox) = A. A radio line keyed to a real objective
 ## (HeistDef lists or the mission) that the mission never moves is C's (the fact is missing). An unsaid generic
@@ -31,9 +36,14 @@ const SELF_PATHS: Array[String] = [
 ## Top folders scanned for trigger sites (res://<dir>).
 const SCAN_DIRS: Array[String] = ["world", "systems", "content", "core"]
 const SCAN_EXT: Array[String] = ["gd", "tres", "tscn"]
+## Godot callbacks the engine calls with no reference in code (the reachability rule above).
+const ENGINE_VIRTUALS: Array[String] = ["_ready", "_process", "_physics_process", "_init", "_enter_tree", "_exit_tree",
+	"_input", "_unhandled_input", "_unhandled_key_input", "_shortcut_input", "_gui_input", "_notification", "_draw",
+	"_initialize", "_finalize", "_to_string", "_get", "_set", "_get_property_list", "_validate_property", "_run",
+	"_integrate_forces", "_can_drop_data", "_drop_data", "_get_drag_data", "_make_custom_tooltip", "_has_point"]
 ## Heists grouped in the report (the shipping five); every other id is "shared".
 const REPORT_HEISTS: Array[StringName] = [
-	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night", &"rolling_thunder",
+	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night", &"rolling_thunder", &"afterhours",
 ]
 const SHARED: StringName = &"shared"
 ## Owner codes. R = B's generic radio reserve: a contact's generic radio line that the current heists never reach
@@ -103,11 +113,18 @@ static func audit() -> Dictionary:
 	for d: String in SCAN_DIRS:
 		_collect("res://%s" % d, files)
 	var heist_files: Dictionary = {}
+	var pending: Array[Dictionary] = []  # {raw, site, func} sites inside a .gd function, kept until reachability is known
 	for path: String in files:
 		if path == LINES_PATH or SELF_PATHS.has(path):
 			continue
 		_note_heist_file(path, heist_files)
-		_scan_file(path, rows, ids, missing)
+		_scan_file(path, rows, ids, missing, pending)
+	var live: Dictionary = _reachable_funcs(pending, files)
+	for p: Dictionary in pending:
+		if bool(live.get(p["func"], false)):
+			_apply_site(String(p["raw"]), String(p["site"]), rows, ids)
+		else:
+			_note_dead_site(String(p["raw"]), "%s, only in `%s()` which nothing calls" % [p["site"], p["func"]], rows, ids)
 	var heists: Array[StringName] = []
 	for h: StringName in heist_files:
 		if (heist_files[h] as Dictionary).has("def"):
@@ -137,6 +154,8 @@ static func audit() -> Dictionary:
 	for row: Dictionary in rows:
 		if not strings.has(String((row["line"] as Dictionary).get("text_key", ""))):
 			no_text.append(String(row["id"]))
+		if (row["sites"] as Array).is_empty() and String(row["reason"]) == "" and row.has("dead"):
+			row["reason"] = "built at %s" % row["dead"]
 		if (row["sites"] as Array).is_empty() and String(row["reason"]) == "":
 			row["reason"] = "nothing says it: no literal id or builder, and no code maps the `%s` fact to its lines" % row["event"]
 	return {"lines": rows, "missing": missing, "orphan_strings": orphans, "no_text": no_text, "heists": heists,
@@ -428,16 +447,25 @@ static func _note_heist_file(path: String, heist_files: Dictionary) -> void:
 	(heist_files[StringName(id)] as Dictionary)[key] = path
 
 
-static func _scan_file(path: String, rows: Array[Dictionary], ids: Dictionary, missing: Array[Dictionary]) -> void:
+static func _scan_file(path: String, rows: Array[Dictionary], ids: Dictionary, missing: Array[Dictionary],
+		pending: Array[Dictionary]) -> void:
 	var text: String = FileAccess.get_file_as_string(path)
 	if not text.contains("vo."):
 		return
 	var rx: RegEx = RegEx.create_from_string(RX_ID)
+	var rx_func: RegEx = RegEx.create_from_string("^\\s*(?:static\\s+)?func\\s+(\\w+)")
 	var is_gd: bool = path.get_extension() == "gd"
 	var rel: String = path.trim_prefix("res://")
 	var n: int = 0
+	var fn: String = ""  # the .gd function the line is in ("" = class level)
 	for ln: String in text.split("\n"):
 		n += 1
+		if is_gd:
+			var fm: RegExMatch = rx_func.search(ln)
+			if fm != null:
+				fn = fm.get_string(1)
+			elif ln != "" and not ln.begins_with("\t") and not ln.begins_with(" ") and not ln.begins_with("#"):
+				fn = ""  # back at class level (var / const / signal / class)
 		if not ln.contains("vo."):
 			continue
 		var code: String = _code_part(ln) if is_gd else ln
@@ -445,22 +473,72 @@ static func _scan_file(path: String, rows: Array[Dictionary], ids: Dictionary, m
 			var raw: String = m.get_string(1)
 			var site: String = "%s:%d" % [rel, n]
 			if raw.contains("%"):
-				var hits: int = _apply_pattern(raw, site, rows)
-				if hits == 0:
+				if _apply_pattern(raw, site, rows, false) == 0:
 					missing.append({"id": raw, "site": site})
-			elif ids.has(StringName(raw)):
-				_add_site(rows[ids[StringName(raw)]], site)
-			else:
+			elif not ids.has(StringName(raw)):
 				missing.append({"id": raw, "site": site})
+			if fn != "" and not ENGINE_VIRTUALS.has(fn):
+				pending.append({"raw": raw, "site": site, "func": fn})
+			else:
+				_apply_site(raw, site, rows, ids)
 
 
-## Marks every table id of the builder's shape; returns how many matched.
-static func _apply_pattern(raw: String, site: String, rows: Array[Dictionary]) -> int:
+## Records a site of literal / builder `raw` on the table rows it names.
+static func _apply_site(raw: String, site: String, rows: Array[Dictionary], ids: Dictionary) -> void:
+	if raw.contains("%"):
+		_apply_pattern(raw, site, rows)
+	elif ids.has(StringName(raw)):
+		_add_site(rows[ids[StringName(raw)]], site)
+
+
+## A site in a function nothing calls: no site, but the row's reason names it (kept when a live site comes later).
+static func _note_dead_site(raw: String, why: String, rows: Array[Dictionary], ids: Dictionary) -> void:
+	var targets: Array[Dictionary] = []
+	if raw.contains("%"):
+		var rx: RegEx = RegEx.create_from_string("^%s$" % _escape(raw).replace("%s", "\\w+").replace("%d", "\\d+"))
+		for row: Dictionary in rows:
+			if rx.search(String(row["id"])) != null:
+				targets.append(row)
+	elif ids.has(StringName(raw)):
+		targets.append(rows[ids[StringName(raw)]])
+	for row: Dictionary in targets:
+		row["dead"] = why
+
+
+## Function name -> true when it can run: referenced in any scanned file besides its own `func` lines.
+static func _reachable_funcs(pending: Array[Dictionary], files: Array[String]) -> Dictionary:
+	var names: Dictionary = {}
+	for p: Dictionary in pending:
+		names[String(p["func"])] = true
+	var out: Dictionary = {}
+	if names.is_empty():
+		return out
+	var alt: String = "|".join(PackedStringArray(names.keys()))
+	var rx_ref: RegEx = RegEx.create_from_string("\\b(%s)\\b" % alt)
+	var rx_def: RegEx = RegEx.create_from_string("(?m)^\\s*(?:static\\s+)?func\\s+(%s)\\b" % alt)
+	for path: String in files:
+		if SELF_PATHS.has(path):
+			continue
+		var text: String = FileAccess.get_file_as_string(path)
+		if path.get_extension() == "gd":
+			text = strip_comments(text)
+		var defs: Dictionary = {}
+		for d: RegExMatch in rx_def.search_all(text):
+			defs[d.get_start(1)] = true
+		for m: RegExMatch in rx_ref.search_all(text):
+			if not defs.has(m.get_start(1)):
+				out[m.get_string(1)] = true
+	return out
+
+
+## Marks every table id of the builder's shape (only counts with `mark` false); returns how many matched.
+static func _apply_pattern(raw: String, site: String, rows: Array[Dictionary], mark: bool = true) -> int:
 	var rx: RegEx = RegEx.create_from_string("^%s$" % _escape(raw).replace("%s", "\\w+").replace("%d", "\\d+"))
 	var hits: int = 0
 	for row: Dictionary in rows:
 		if rx.search(String(row["id"])) != null:
-			_add_site(row, "%s (builder `%s`)" % [site, raw])
+			if mark:
+				_add_site(row, "%s (builder `%s`)" % [site, raw])
 			hits += 1
 	return hits
 

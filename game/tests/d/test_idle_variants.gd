@@ -1,14 +1,19 @@
-## D polish #2: idle_alert variety (tools/blender/characters/_anim_idle_var.py). idle_alert_b (a watch check, a weight
-## shift) and idle_alert_c (the shoulder radio, a look round) are loops whose frame 0 IS idle_alert frame 0 (so A can
-## swap them in through VARIANT_GROUPS without touching any chain), close exactly, keep the root fixed, stay above the
-## floor and move smoothly; SOURCE carries the note A follows. Run after `godot --import`.
+## D polish #2: idle_alert and idle variety (tools/blender/characters/_anim_idle_var.py). idle_alert_b (a watch check, a
+## weight shift) and idle_alert_c (the shoulder radio, a look round) start on idle_alert frame 0; idle_b (a watch check,
+## a weight shift) and idle_c (a stretch, a look round) on idle frame 0 (calm posts). Every variant is a loop whose frame 0
+## IS its base's frame 0 (so A can swap them in through VARIANT_GROUPS without touching any chain), closes exactly, keeps
+## the root fixed, stays above the floor and moves smoothly; SOURCE carries the notes A follows. Run after
+## `godot --import`.
 extends TestCase
 
 const GLB: String = "res://assets/characters/char_anim_humanoid/char_anim_humanoid.glb"
 const SOURCE: String = "res://assets/characters/char_anim_humanoid/SOURCE.txt"
-## clip -> [frames, event, event frame]
-const CLIPS: Dictionary = {"idle_alert_b": [150, "watch", 57], "idle_alert_c": [174, "radio", 44]}
-## frame 0 vs idle_alert frame 0, worst bone (m): the variant layer is zero at the seam
+## clip -> [frames, event, event frame, base clip]
+const CLIPS: Dictionary = {
+	"idle_alert_b": [150, "watch", 57, "idle_alert"], "idle_alert_c": [174, "radio", 44, "idle_alert"],
+	"idle_b": [162, "watch", 70, "idle"], "idle_c": [198, "stretch", 65, "idle"],
+}
+## frame 0 vs the base's frame 0, worst bone (m): the variant layer is zero at the seam
 const SEAM_TOL: float = 0.002
 ## per-frame local rotation budget for every bone (idle loops)
 const MAX_STEP_DEG: float = 15.0
@@ -60,9 +65,10 @@ func test_variants_present_seam_and_note() -> void:
 		return
 	var src: String = FileAccess.get_file_as_string(SOURCE)
 	assert_true(src.contains("idle_alert_variants:") and src.contains("VARIANT_GROUPS"), "SOURCE idle_alert_variants")
-	var base: Array = _pose("idle_alert", 0)
+	assert_true(src.contains("idle_variants:"), "SOURCE idle_variants")
 	for clip: String in CLIPS:
 		var spec: Array = CLIPS[clip]
+		var base: Array = _pose(String(spec[3]), 0)
 		var a: Animation = _player.get_animation(StringName(clip)) if _player.has_animation(StringName(clip)) else null
 		assert_true(a != null, "clip %s" % clip)
 		if a == null:
@@ -72,9 +78,9 @@ func test_variants_present_seam_and_note() -> void:
 		assert_true(src.contains("clip.%s: %df loop=True" % [clip, int(spec[0])]), "SOURCE clip.%s" % clip)
 		assert_true(src.contains("%s@%d" % [spec[1], int(spec[2])]), "%s: event %s@%d" % [clip, spec[1], int(spec[2])])
 		var d0: float = _worst(_pose(clip, 0)[0], base[0])
-		assert_true(d0 < SEAM_TOL, "%s frame 0 == idle_alert frame 0 (worst bone %.4f m)" % [clip, d0])
+		assert_true(d0 < SEAM_TOL, "%s frame 0 == %s frame 0 (worst bone %.4f m)" % [clip, spec[3], d0])
 		var dn: float = _worst(_pose(clip, int(spec[0]))[0], base[0])
-		assert_true(dn < SEAM_TOL, "%s closes on idle_alert frame 0 (worst bone %.4f m)" % [clip, dn])
+		assert_true(dn < SEAM_TOL, "%s closes on %s frame 0 (worst bone %.4f m)" % [clip, spec[3], dn])
 
 
 func test_variants_smooth_rooted_above_floor() -> void:

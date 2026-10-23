@@ -1,0 +1,20 @@
+asset: char_club_dancer_j
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.3, "beard_shadow": 0.3, "build": 0.45, "gender": 0.0, "hair": "side_part", "hair_color": "blond", "height": 1.79, "look": "dancer_j", "skin": 1}
+seed: 2162622872  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_dancer_j
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0897, 0.1030] (model [0.0000, 1.3073, 0.1216], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1806, 0.0511, 0.0352] (model [0.1806, 1.0096, 0.0377], Godot axes, rest pose)
+body_faces_culled: 4104
+body_params: {"age": 0.3, "beard_shadow": 0.3, "build": 0.45, "gender": 0.0, "hair": "side_part", "hair_color": "blond", "hair_peak": 0.0, "height": 1.79, "lip": "auto", "skin": 1}
+bones: 52
+faces_hidden_by_trousers: 149
+look: Club dancer: teal polo, charcoal trousers, white trainers, lime glow bracelet
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 24250
+tris_by_mesh: {"Body": 10536, "Gear": 140, "Hair": 1856, "Outfit": 11718}

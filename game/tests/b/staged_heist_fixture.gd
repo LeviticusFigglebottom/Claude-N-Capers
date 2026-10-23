@@ -6,7 +6,8 @@
 extends RefCounted
 
 ## { heist id: its WIP def path }.
-const STAGED_WIP: Dictionary = {&"rolling_thunder": "res://world/heists/rolling_thunder/rolling_thunder_wip_def.tres"}
+const STAGED_WIP: Dictionary = {&"rolling_thunder": "res://world/heists/rolling_thunder/rolling_thunder_wip_def.tres",
+	&"afterhours": ""}  # AH (D-165): its real def has landed; only the hidden switch is lifted
 
 var staged: Array[StringName] = []
 var _wip: Array[Resource] = []

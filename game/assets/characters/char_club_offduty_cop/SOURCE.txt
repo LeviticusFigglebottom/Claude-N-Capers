@@ -1,0 +1,21 @@
+asset: char_club_offduty_cop
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.6, "beard_shadow": 0.8, "build": 0.7, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.82, "look": "offduty_cop", "skin": 2}
+seed: 2614534069  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_offduty_cop
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0917, 0.1174] (model [0.0000, 1.3292, 0.1363], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0828, -0.0907] (model [0.0000, 1.7034, -0.0784], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2425, 0.0651, 0.0428] (model [0.2425, 1.0393, 0.0460], Godot axes, rest pose)
+body_faces_culled: 4831
+body_params: {"age": 0.6, "beard_shadow": 0.8, "build": 0.7, "gender": 0.0, "hair": "short", "hair_color": "grey", "hair_peak": 0.0, "height": 1.82, "lip": "auto", "skin": 2}
+bones: 52
+faces_hidden_by_jacket: 2551
+hip_note: Hip seat = the holster on the belt (right hip), under the open jacket
+look: Off-duty cop: black leather jacket open over a grey henley, jeans, brown boots, gold shield badge on the belt beside the buckle, holstered pistol on the right hip, grey short hair
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26656
+tris_by_mesh: {"Body": 9082, "Gear": 772, "Hair": 1728, "Outfit": 15074}

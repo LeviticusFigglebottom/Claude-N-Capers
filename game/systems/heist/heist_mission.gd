@@ -265,6 +265,24 @@ func spawn_guards(count: int, spawn_tag: StringName) -> Array[Node]:
 	return out
 
 
+## AH vip_party (rare): spawn the civilians of every CIVILIAN SpawnPoint tagged `spawn_tag` (scripted ones are not
+## spawned at load), with that point's tags and idle activity. Returns them.
+func spawn_civilians(spawn_tag: StringName) -> Array[NpcBase]:
+	var out: Array[NpcBase] = []
+	if _runtime == null or _runtime.map == null:
+		return out
+	for n: Node in _runtime.map.get_slots(G.CIVILIAN_SPAWN):
+		var sp: SpawnPoint = n as SpawnPoint
+		if sp == null or not sp.tags.has(spawn_tag):
+			continue
+		var npc: NpcBase = _runtime.spawn_npc(&"civilian", sp.global_transform, HeistRuntime.spawn_info(sp))
+		if npc != null:
+			out.append(npc)
+	if out.is_empty():
+		Log.error(&"mission", "spawn_civilians: no CIVILIAN SpawnPoint tagged '%s'" % spawn_tag)
+	return out
+
+
 func _spawn_scripted(sp: SpawnPoint, xf: Transform3D) -> NpcBase:
 	var info: Dictionary = HeistRuntime.spawn_info(sp)
 	if not sp.tags.has(CartelBrain.SPAWN_TAG):
@@ -524,7 +542,9 @@ func is_variant_revealed(group: StringName) -> bool:
 ## metadata `objective_tag`) is `tag`, in tree order, cycling (0.4 m up per reuse) when count > markers. Server.
 ## `respawn` (§3b.9: no soft lock): a bag destroyed / freed without being secured or consumed by a device
 ## (LootManager.META_CONSUMED) comes back at its marker, and a loose bag that fell InteractionTweak
-## loot_lost_below_m below its marker (off the map) is put back there. Returns the bags ([] with no marker, logged).
+## loot_lost_below_m below its marker (off the map) is put back there. The bags are pre-placed style (LootBag.moved
+## false, S4.1): no guard or camera reacts to one until a crew member first picks it up (AH seed 2: the count room's
+## cash in CameraC8's view raised the alarm 2 s in). Returns the bags ([] with no marker, logged).
 func spawn_loot(loot_id: StringName, tag: StringName, count: int = 1, respawn: bool = false) -> Array:
 	var out: Array = []
 	var loot: LootManager = _runtime.service(G.SVC_LOOT) as LootManager if _runtime != null else null
@@ -577,7 +597,7 @@ func _spawn_loot_at(loot: LootManager, loot_id: StringName, marker: Node3D, laye
 	var xf: Transform3D = marker.global_transform
 	xf.basis = xf.basis.orthonormalized()
 	xf.origin += Vector3.UP * (0.4 * float(layer))
-	return loot.spawn_bag(loot_id, xf)
+	return loot.spawn_bag(loot_id, xf, false)  # S4.1: placed loot is ignored by guards / cameras until first picked up
 
 
 func _watch_respawn(bag: LootBag, marker: Node3D) -> void:

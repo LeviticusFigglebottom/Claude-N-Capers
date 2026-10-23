@@ -1,0 +1,8 @@
+asset: prop_ah_radio_charger
+script: tools/blender/props/club_hero.py
+params: {"cat": {"group": "afterhours", "kind": "charger", "pin_only": true, "place": "wall_mount", "surface": "plastic", "z": 1.2}, "fn": "radio_charger"}
+seed: 298982464  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ah_radio_charger
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

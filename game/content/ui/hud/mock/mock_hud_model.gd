@@ -225,6 +225,12 @@ var player_mode: StringName = &"":
 		player_mode = v
 		player_mode_changed.emit()
 
+## v1.23 (PO-22): aim-down-sights blend, 0 hip .. 1 fully aimed (P writes it); the crosshair fades by (1 - ads_blend).
+var ads_blend: float = 0.0:
+	set(v):
+		ads_blend = v
+		changed.emit(&"ads_blend")
+
 ## LocalHudModel extra: mask-up hold progress 0..1 (announced through `changed`).
 var mask_progress: float = 0.0:
 	set(v):

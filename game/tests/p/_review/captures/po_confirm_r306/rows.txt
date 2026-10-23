@@ -1,0 +1,7 @@
+[POC] r306 trunk 80ca7d568
+PO-21 no release held PASS (held [])
+PO-21 wants_capture PASS (OS mode 2)
+PO-21 mouse turns camera PASS (yaw 0.000 -> -0.320)
+PO-22 hip crosshair PASS alpha 1.00
+PO-22 ADS crosshair hidden PASS alpha 0.00, ads_blend 1.0
+RESULT PASS

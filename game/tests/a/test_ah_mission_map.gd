@@ -69,8 +69,10 @@ func test_stealth_line_on_the_real_map() -> void:
 		return
 	var m: HeistMission = await _launch_real()
 	var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
-	assert_true(lm.bags().filter(func(b: LootBag) -> bool: return b.loot_id == &"loot.cash_bricks").size() >= 4,
-		"the safe's cash bags spawned at safe_loot")
+	var cash: Callable = func() -> int:
+		return lm.bags().filter(func(b: LootBag) -> bool: return b.loot_id == &"loot.cash_bricks").size()
+	if not m.get(&"safe_open"):  # the rare count_left_open starts it open
+		assert_eq(cash.call(), 0, "no safe cash before the safe opens")
 	assert_true(lm.bags().filter(func(b: LootBag) -> bool: return b.loot_id == &"loot.parcels").size() >= 3,
 		"the product spawned at the active product marker")
 	EventBus.item_picked_up.emit(&"item.gear", 0)
@@ -78,6 +80,11 @@ func test_stealth_line_on_the_real_map() -> void:
 	EventBus.interaction_completed.emit(_first_net_id(&"office_reader"), 0, &"keycard_reader")
 	EventBus.item_picked_up.emit(&"item.code_note", 0)
 	m.call(&"open_safe", &"code")
+	assert_true(int(cash.call()) >= 4, "the open safe holds its cash at safe_loot (%d)" % cash.call())
+	var marker: Node3D = (m.loot_markers(&"safe_loot") as Array)[0] as Node3D
+	for b: LootBag in lm.bags():
+		if b.loot_id == &"loot.cash_bricks":
+			assert_true(b.global_position.distance_to(marker.global_position) < 3.0, "%s in the safe" % b.name)
 	for id: StringName in [&"gear", &"keycard", &"office", &"safe_code", &"safe"]:
 		assert_eq(m.objective_state(id), Enums.ObjectiveState.COMPLETED, "%s done" % id)
 	var secured: int = 0
@@ -102,3 +109,17 @@ func test_loud_on_the_real_map_cuts_the_club_and_locks_down() -> void:
 	assert_eq(m.objective_state(&"escape_wait"), Enums.ObjectiveState.ACTIVE, "escape_wait")
 	var lights: Node = _rt.map.find_child("ClubLights", true, false)
 	assert_true(lights != null, "C's ClubLights on the map")
+
+
+## vip_party (C 5f0b8f52): the VIPGuest spawns (civ_vip + scripted) are empty at load; the rare event spawns all six.
+func test_vip_party_guests_spawn_only_on_the_event() -> void:
+	if _pending():
+		return
+	var m: HeistMission = await _launch_real()
+	var tagged: Callable = func() -> int:
+		return _rt.npcs(&"civilian").filter(func(n: NpcBase) -> bool:
+			return (n.spawn_info.get("tags", []) as Array).has(&"civ_vip")).size()
+	assert_eq(tagged.call(), 0 if not m.call(&"_rare", &"vip_party") else tagged.call(), "no VIP guests at load")
+	var guests: Array = m.call(&"spawn_civilians", &"civ_vip")
+	assert_eq(guests.size(), 6, "the six VIPGuest spawns")
+
