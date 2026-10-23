@@ -1,0 +1,19 @@
+asset: char_club_dancer_k
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.35, "build": 0.4, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "height": 1.73, "lip": "char_lip_rose", "look": "dancer_k", "skin": 5}
+seed: 4158664974  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_dancer_k
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0864, 0.0922] (model [0.0000, 1.2635, 0.1102], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0787, -0.0862] (model [0.0000, 1.6192, -0.0745], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1716, 0.0497, 0.0416] (model [0.1716, 0.9758, 0.0440], Godot axes, rest pose)
+body_faces_culled: 3408
+body_params: {"age": 0.35, "beard_shadow": 0.0, "build": 0.4, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.73, "lip": "char_lip_rose", "skin": 5}
+bones: 52
+look: Club dancer: gold satin two-piece (crop top, wide trousers), heels, high chignon, coral bangles
+meshes: Body,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26132
+tris_by_mesh: {"Body": 11928, "Hair": 1856, "Headwear": 1144, "Outfit": 11204}
