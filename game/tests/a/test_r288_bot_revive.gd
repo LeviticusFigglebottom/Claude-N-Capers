@@ -67,7 +67,11 @@ func test_r288_bots_shoot_the_cuffing_cop_first() -> void:
 	cuffer.add_child(fake)
 	b._scan_left = 0.0
 	b._tick_scan(0.1)
-	assert_eq(b.target_enemy, cuffer, "the cop going for the cuffs, before the nearer one")
+	assert_eq(b.target_enemy, near, "shipped cuffer_score_mult 1.0 (LEAD r288 A/B ruling): still the nearest cop")
+	b.tweak.cuffer_score_mult = 0.15
+	b._scan_left = 0.0
+	b._tick_scan(0.1)
+	assert_eq(b.target_enemy, cuffer, "knob on: the cop going for the cuffs, before the nearer one")
 	var c: CrewController = _crew(0)
 	c.health.go_down()
 	c.health.bleedout_left = 1.0  # last stand: revive_clear would skip an ordinary cop
@@ -76,6 +80,7 @@ func test_r288_bots_shoot_the_cuffing_cop_first() -> void:
 	b._clear_for_net_id = 0
 	var cleared: NpcBase = b._revive_threat(c, 0.1)
 	b.tweak.cuffer_clear_first = false
+	b.tweak.cuffer_score_mult = 1.0
 	assert_eq(cleared, cuffer, "with the knob on, a cuffer at the patient is cleared even in a last stand")
 
 
