@@ -239,10 +239,12 @@ func test_cover_prefer_behind_leader() -> void:
 
 # --- LEAD r287 escort knobs ----------------------------------------------------------------------
 
-func test_escort_knob_defaults_are_today() -> void:
+## D-158 amendment 6 (LEAD, from A's escort A/B): the escort knobs ship ON.
+func test_escort_knobs_ship_on() -> void:
 	var t: RtTweak = RtTweak.data()
-	assert_eq(t.escort_engage_delay_s, 0.0, "no extra engage delay")
-	assert_eq(t.escort_accuracy_mult, 1.0, "full accuracy")
+	assert_near(t.escort_engage_delay_s, 1.5, 0.0001, "1.5 s engage delay after getting out")
+	assert_near(t.escort_accuracy_mult, 0.7, 0.0001, "x0.7 accuracy")
+	assert_near(t.escort_accuracy_window_s, 10.0, 0.0001, "for 10 s after the stop")
 
 
 func test_gunner_engage_hold_then_fires() -> void:
@@ -273,15 +275,12 @@ func test_rt_escort_knobs_reach_the_convoy() -> void:
 		skip("rolling_thunder map not on this branch")
 		return
 	var t: RtTweak = RtTweak.data()
-	t.escort_engage_delay_s = 1.5
-	t.escort_accuracy_mult = 0.7
+	assert_near(t.escort_engage_delay_s, 1.5, 0.0001, "shipped on (amendment 6)")
 	var m: RollingThunderMission = await _rt_stop(false)  # crash stop: the escorts get out at once
 	var held_any: bool = await wait_until(func() -> bool:
 		return m._units.any(func(u: NpcBase) -> bool:
 			var gg: NpcGunner = u.get_node_or_null(^"Gunner") as NpcGunner if is_instance_valid(u) else null
 			return gg != null and gg.engage_hold_left > 0.0), 4.0)  # after the exit clip (_dismounted)
-	t.escort_engage_delay_s = 0.0
-	t.escort_accuracy_mult = 1.0
 	var held: int = 0
 	var damped: int = 0
 	for u: NpcBase in m._units:
