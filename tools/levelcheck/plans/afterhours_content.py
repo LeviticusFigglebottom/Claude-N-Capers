@@ -228,13 +228,13 @@ def furniture() -> List[list]:
         # the DJ's break seat, its back to the north wall
         B("GreenRoomSofa", [10.5, 0.0, 0.52], [2.2, 1.0, 0.6], 180.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
         # Marlin Ave: the queue barriers (posts), parked cars on Tolley St
-        B("QueueRail", [8.0, 0.0, 30.5], [6.0, 1.0, 0.1], 0.0, "barrier"),
+        B("QueueRail", [8.0, 0.0, 30.5], [6.0, 1.0, 0.3], 0.0, "barrier"),   # G2: 0.3 deep, the velvet stanchions
         B("CarTolley1", [44.5, 0.0, 6.0], [1.9, 1.45, 4.6], 0.0, "car", False, "prop"),
         B("CarTolley2", [44.5, 0.0, 26.0], [1.9, 1.45, 4.6], 0.0, "car", False, "prop"),
         B("CarMarlin1", [30.0, 0.0, 33.5], [4.6, 1.45, 1.9], 0.0, "car", False, "prop"),
         B("CarMarlin2", [-8.0, 0.0, 33.5], [4.6, 1.45, 1.9], 0.0, "car", False, "prop"),
         # the passage's south rope barrier (PUBLIC) and its gate's fill posts
-        B("PassageRope", [-1.6, 0.0, 28.6], [2.6, 1.0, 0.1], 0.0, "barrier"),
+        B("PassageRope", [-1.6, 0.0, 28.6], [2.6, 1.0, 0.3], 0.0, "barrier"),
         # the loading roller door: closed shutter at G1 (the personnel door beside it is the route)
         B("RollerShutter", [31.0, 0.0, 0.0], [3.0, 3.0, 0.12], 0.0, "shutter", False, "door"),
     ]

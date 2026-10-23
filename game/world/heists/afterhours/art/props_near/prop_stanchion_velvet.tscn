@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/gallery/prop_stanchion_velvet.tscn" id="1_base"]
+
+[node name="PropStanchionVelvet" instance=ExtResource("1_base")]
+
+[node name="Stanchions" parent="Model"]
+visibility_range_end = 34.0
+visibility_range_end_margin = 3.4
+visibility_range_fade_mode = 1
+cast_shadow = 0
+
+[editable path="Model"]

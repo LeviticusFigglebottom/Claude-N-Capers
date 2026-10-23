@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"club_box_office"
+purpose = &"reception"
+required_items = Array[StringName]([&"chair", &"coat_rail", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"file_cabinet": 0.6
+}
+clutter_groups = {}
+min_density = 0.05
+max_density = 1.2
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"chair", &"coat_rail", &"bin", &"file_cabinet"])
+seed_salt = 4804
+counts = {}
+assets = {
+&"chair": PackedStringArray("prop_stool_teller"),
+&"coat_rail": PackedStringArray("prop_coat_rail"),
+&"light_fixture": PackedStringArray("prop_downlight")
+}
+ceiling = {"prop_downlight": 2.5}
+notes = "AH G2 box office and cloakroom: the cashier's stool behind the counter (the map's, D's prop_ah_box_office_counter), the coat rail behind the hatch."

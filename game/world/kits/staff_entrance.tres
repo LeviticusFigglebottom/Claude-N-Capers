@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"staff_entrance"
+purpose = &"lobby"
+required_items = Array[StringName]([&"terminal", &"bulletin_board", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"bin": 0.8,
+&"box": 0.6,
+&"picture": 1
+}
+clutter_groups = {}
+min_density = 0.15
+max_density = 1.2
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"box", &"cart", &"cleaning_cart", &"lectern", &"mail_bins", &"terminal"])
+seed_salt = 301
+seed_id = &"service_lobby"
+counts = {
+&"box": Vector2i(1, 2),
+&"picture": Vector2i(2, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"box": PackedStringArray("prop_box_stack"),
+&"cart": PackedStringArray("prop_mail_trolley"),
+&"cleaning_cart": PackedStringArray("prop_cleaner_cart"),
+&"lectern": PackedStringArray("prop_lectern_signin"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_cool"),
+&"mail_bins": PackedStringArray("prop_mail_bins"),
+&"picture": PackedStringArray("prop_notice_frame"),
+&"terminal": PackedStringArray("prop_ah_clock_in")
+}
+ceiling = {"prop_ceiling_panel_cool": 2.6}
+notes = "Afterhours (lobby), from service_lobby: AH G25 staff entrance: the clock-in terminal and card rack, the rota board, an extinguisher."

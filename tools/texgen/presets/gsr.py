@@ -139,6 +139,20 @@ PRESET = {
             "tile_a": "#D9D1BF", "tile_b": "#3A3A3D", "chip_dark": "#6E6A62", "chip_light": "#C9C3B6",
             "tile_m": 0.25, "rough": (0.3, 0.46), "wear": 0.3, "grime": 0.4,
         },
+        # ---- AH-C2: Afterhours (the club: velvet plum dominant, black lacquer secondary, gilded plaster; wear medium) ----
+        "velvet_plum": {
+            "base": "#5E3468", "heather": "#6B3E76", "weave_cells_per_m": 110, "rough": (0.9, 0.98),
+            "relief_ref_mm": 0.3, "wear": 0.25, "grime": 0.3,
+        },
+        "lacquer_black": {"base": "#3E3A42", "rough": (0.18, 0.3), "wear": 0.3, "grime": 0.25},
+        "plaster_gilded": {
+            "base": "#A8894F", "rough": (0.42, 0.56), "undulation_mm": 0.6, "trowel_mm": 0.25,
+            "mottle": 0.05, "wear": 0.2, "grime": 0.3,
+        },
+        "carpet_plum": {
+            "base": "#4A2C52", "heather_a": "#40254A", "heather_b": "#583662", "seam": "#2E1C33",
+            "tile_m": 0.5, "rows_per_tile": 32, "rough": (0.9, 0.98), "wear": 0.3, "grime": 0.4,
+        },
         # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
         "polymer_black": {
             "base": "#45464A", "rough": (0.64, 0.76), "grain_cells_per_m": 300, "wear": 0.25,
@@ -288,6 +302,18 @@ PRESET = {
         # Rolling Thunder (rolling_thunder.md §Audio/lighting, RT-C2): 16:50, the low autumn sun down Tannery: warm amber
         # highlights, teal-green shadows under the Skyway, the blacks held.
         # (the LEAD's r277 review: no lifted blacks, so no offset lift and contrast 1.0 round the pivot)
+        # Afterhours (afterhours.md §Audio/lighting, AH-C2): 00:40 in a club: deep violet shadows, magenta-pink
+        # highlights, warm skin protected (a mild slope, the tints only at the ends of the range); blacks held.
+        "afterhours": {
+            "slope": (1.0, 0.985, 1.02),
+            "offset": (0.0, 0.0, 0.004),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (0.006, -0.004, 0.016),
+            "highlight_tint": (0.02, -0.004, 0.012),
+            "contrast": 1.04,
+            "pivot": 0.45,
+            "saturation": 1.04,
+        },
         "rolling_thunder": {
             "slope": (1.03, 1.0, 0.955),
             "offset": (0.0, 0.002, 0.002),

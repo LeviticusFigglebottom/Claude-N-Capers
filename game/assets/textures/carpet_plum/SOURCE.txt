@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only carpet_plum --preset gsr
+module: tools/texgen/materials/carpet_plum.py
+preset: tools/texgen/presets/gsr.py
+seed: 1448485465 (zlib.crc32('carpet_plum'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.0546, "albedo_lum_mean_linear": 0.0426, "albedo_lum_min_linear": 0.04, "ao_mean": 0.952, "lum_floor_linear": 0.04, "metallic_mean": 0.0, "roughness_mean": 0.956}
