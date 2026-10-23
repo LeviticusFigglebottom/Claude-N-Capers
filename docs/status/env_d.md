@@ -3,6 +3,25 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-23: Afterhours crowd performance and special roles (D-165)
+### Done
+- **D1 surface merge, scoped to Afterhours (LEAD-accepted trade-off).** The parked D-132 D1 code
+  (`char_layers.gd`, `build_char_layers.gd`, the assemble hook, `char_layered.gdshader`, `test_d1_layers`) runs only
+  for the ids under `world/characters/_layers/d1_exclude.json` "only": the 42 `club_*` looks (not the cartel
+  couriers they borrow). D1 stays parked for every other cast (D-132 addendum 2). ah50 dance floor: booth view
+  3238 → 1708 draws, player eye 1100 → 571, bench 1440 → 745 (-48 %), primitives unchanged, review parity < 1/255.
+  **Cost:** +18 MB video memory and **~57 MB of committed merged meshes (42 looks)** (`club_*/<id>_<Node>.res`), which all
+  regenerate whenever a new plain material enters the arrays (their layer indices shift). Fallback per look: its id
+  under "ids", then build_char_layers, `--import`, assemble.
+- LOD2 proxy material (`char_crowd_lod.tres`) is double-sided: skirt / dress / apron hems no longer show a gap.
+- AH special roles: `club_offduty` = `club_offduty_cop` (plain clothes: black leather jacket, grey henley, jeans,
+  gold belt badge + holster as the tell) instead of frd_agent's FRD windbreaker; `club_vip` = six vip_party looks
+  (`club_vip` a birthday host with an ivory sash + five guests, gold VIP wristbands); `club_courier` = the Co-op
+  gunmen without face covers. Crale is not on site and Mercer is comms only: no looks. Review:
+  `_review/ah_cast/ah_special_*`.
+### Ready for integration
+- yes (needs A's `heist_tag_characters[&"afterhours"]` rows; ids sent to B)
+
 ## D roadmap audit: the rows with no ✅ (LEAD, 2026-10-23)
 Evidence: the tests under game/tests/d (full D suite 206/206 at 2879613c), the review sheets under
 game/assets/characters/_review, and this file's session entries.

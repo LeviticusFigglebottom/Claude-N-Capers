@@ -117,24 +117,28 @@
 			"layer": 24,
 			"tier": 256
 		},
-		"res://world/materials/char_shirt_black.tres": {
+		"res://world/materials/char_satin_black.tres": {
 			"layer": 25,
 			"tier": 256
 		},
-		"res://world/materials/char_shirt_white.tres": {
+		"res://world/materials/char_shirt_black.tres": {
 			"layer": 26,
 			"tier": 256
 		},
-		"res://world/materials/char_shoe_black.tres": {
+		"res://world/materials/char_shirt_white.tres": {
 			"layer": 27,
 			"tier": 256
 		},
-		"res://world/materials/char_shoe_brown.tres": {
+		"res://world/materials/char_shoe_black.tres": {
 			"layer": 28,
 			"tier": 256
 		},
-		"res://world/materials/char_silk_ivory.tres": {
+		"res://world/materials/char_shoe_brown.tres": {
 			"layer": 29,
+			"tier": 256
+		},
+		"res://world/materials/char_silk_ivory.tres": {
+			"layer": 30,
 			"tier": 256
 		},
 		"res://world/materials/char_skin_1.tres": {
@@ -202,27 +206,31 @@
 			"tier": 512
 		},
 		"res://world/materials/char_sneaker_white.tres": {
-			"layer": 30,
-			"tier": 256
-		},
-		"res://world/materials/char_suit_dark.tres": {
 			"layer": 31,
 			"tier": 256
 		},
-		"res://world/materials/char_tac_charcoal.tres": {
+		"res://world/materials/char_suit_dark.tres": {
 			"layer": 32,
 			"tier": 256
 		},
-		"res://world/materials/char_tie_black.tres": {
+		"res://world/materials/char_tac_charcoal.tres": {
 			"layer": 33,
 			"tier": 256
 		},
-		"res://world/materials/char_trousers_black.tres": {
+		"res://world/materials/char_tie_black.tres": {
 			"layer": 34,
 			"tier": 256
 		},
-		"res://world/materials/char_tux_black.tres": {
+		"res://world/materials/char_trousers_black.tres": {
 			"layer": 35,
+			"tier": 256
+		},
+		"res://world/materials/char_tux_black.tres": {
+			"layer": 36,
+			"tier": 256
+		},
+		"res://world/materials/char_velvet_midnight.tres": {
+			"layer": 37,
 			"tier": 256
 		},
 		"res://world/materials/chrome.tres": {
@@ -236,8 +244,8 @@
 	},
 	"tiers": {
 		"256": {
-			"columns": 12,
-			"layers": 36,
+			"columns": 13,
+			"layers": 38,
 			"materials": [
 				"res://world/materials/char_apron_leather.tres",
 				"res://world/materials/char_button_dark.tres",
@@ -264,6 +272,7 @@
 				"res://world/materials/char_metal_silver.tres",
 				"res://world/materials/char_nylon_black.tres",
 				"res://world/materials/char_polo_teal.tres",
+				"res://world/materials/char_satin_black.tres",
 				"res://world/materials/char_shirt_black.tres",
 				"res://world/materials/char_shirt_white.tres",
 				"res://world/materials/char_shoe_black.tres",
@@ -274,10 +283,11 @@
 				"res://world/materials/char_tac_charcoal.tres",
 				"res://world/materials/char_tie_black.tres",
 				"res://world/materials/char_trousers_black.tres",
-				"res://world/materials/char_tux_black.tres"
+				"res://world/materials/char_tux_black.tres",
+				"res://world/materials/char_velvet_midnight.tres"
 			],
 			"rows": 3,
-			"slices": 36
+			"slices": 39
 		},
 		"512": {
 			"columns": 11,
