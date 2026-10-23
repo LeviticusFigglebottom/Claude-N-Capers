@@ -245,12 +245,14 @@ const ALWAYS: Dictionary = {
 	"Gameplay/Loot": [
 		[
 			"prefab", "safe", "OfficeSafe", [33.5, 4.2, 20.35], 0.0,
-			{"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe"}, [33.5, 4.2, 19.2],
-			{}, "prop_safe_large",
-		],
-		[
-			"prefab", "drill_point", "SafeDrill", [33.5, 4.25, 19.6], 0.0, {"objective_tag": "safe_drill", "@target": "OfficeSafe"},
-			[33.5, 4.2, 19.2], {}, "",
+			{
+				"size": "enum:LARGE",
+				"methods": ["code", "drill"],
+				"code_group": "office",
+				"objective_tag": "safe",
+				"@contents": [["drill_point", "SafeDrill", [0.2, 1.0, -0.36], {"objective_tag": "safe_drill", "target": ".."}, 180.0]],
+			},
+			[33.5, 4.2, 19.2], {}, "prop_safe_large",
 		],
 		[
 			"prefab", "safe", "DropSafe", [28.0, 0.0, 27.45], 0.0,
@@ -307,7 +309,22 @@ const ALWAYS: Dictionary = {
 	],
 	"Gameplay/Markers": [
 		["marker", "CasingFoyer", [16.0, 0.0, 24.5], 0.0, "casing", "casing objective marker: the foyer"],
-		["marker", "SafeLoot", [33.5, 4.5, 20.35], 0.0, "safe_loot", "safe_bags x loot.cash_bricks (+1 on count_done)"],
+		[
+			"marker", "SafeLoot1", [33.35, 4.5, 20.35], 0.0, "safe_loot",
+			"safe_bags x loot.cash_bricks (+1 on count_done): A's spawn_loot cycles the 2 x 2 (the LARGE safe's interior is 0.66 m wide, 2 shelves)",
+		],
+		[
+			"marker", "SafeLoot2", [33.65, 4.5, 20.35], 0.0, "safe_loot",
+			"safe_bags x loot.cash_bricks (+1 on count_done): A's spawn_loot cycles the 2 x 2 (the LARGE safe's interior is 0.66 m wide, 2 shelves)",
+		],
+		[
+			"marker", "SafeLoot3", [33.35, 5.05, 20.35], 0.0, "safe_loot",
+			"safe_bags x loot.cash_bricks (+1 on count_done): A's spawn_loot cycles the 2 x 2 (the LARGE safe's interior is 0.66 m wide, 2 shelves)",
+		],
+		[
+			"marker", "SafeLoot4", [33.65, 5.05, 20.35], 0.0, "safe_loot",
+			"safe_bags x loot.cash_bricks (+1 on count_done): A's spawn_loot cycles the 2 x 2 (the LARGE safe's interior is 0.66 m wide, 2 shelves)",
+		],
 		["marker", "DJStage", [15.5, 1.3, 8.2], 0.0, "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"],
 		["marker", "HoldoutH1", [31.0, 4.2, 18.0], 0.0, "holdout_h1", "doc Loud holdout H1"],
 		["marker", "HoldoutH2", [13.0, 4.2, 20.0], 0.0, "holdout_h2", "doc Loud holdout H2"],

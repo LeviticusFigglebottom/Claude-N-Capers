@@ -1,0 +1,8 @@
+asset: prop_thermal_drill_down
+script: tools/blender/props/equipment.py
+params: {"cat": {"fx": {"tip": [0.0, 0.0, 0.01]}, "kind": "thermal_drill", "prefab": "drill", "surface": "metal"}, "down": true, "floor": 0.0, "fn": "thermal_drill"}
+seed: 2771314242  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_thermal_drill_down
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

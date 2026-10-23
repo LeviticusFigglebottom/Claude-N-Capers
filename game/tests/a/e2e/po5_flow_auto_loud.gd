@@ -545,6 +545,9 @@ func _fetch_bag() -> bool:
 		_note_once(&"_nobag", "secure is the only marked objective but no bag source is usable")
 		return false
 	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
+	if not p.crew.is_carrying_bag() and is_instance_valid(best) \
+			and (await _open_gate_toward(p._use_stand(best)) or await _open_lock_near(best.global_position, true)):
+		return true  # AH prod_stock (C): the parcels sit in the padlocked stock cage: the padlock first, then the bags
 	_mark_if_unreached(best)
 	if not p.crew.is_carrying_bag() and is_instance_valid(best) and best.kind == &"pick_bag":
 		var key: int = best.get_instance_id()

@@ -129,6 +129,8 @@ func _content(host: Node3D, c: Array) -> void:
 	var inst: Node3D = ps.instantiate() as Node3D
 	inst.name = String(c[1])
 	inst.position = v3(c[2])
+	if c.size() > 4:   # optional yaw in the host's frame (a drill spot on the door face turns into it, GH's pattern)
+		inst.basis = yaw_basis(float(c[4]))
 	for k: Variant in (c[3] as Dictionary):
 		set_prop(inst, String(k), c[3][k])
 	inst.set_meta(&"kind", String(c[0]))

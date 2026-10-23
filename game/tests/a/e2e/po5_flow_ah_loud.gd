@@ -38,6 +38,9 @@ func play(driver: Node) -> int:
 	var seed_v: int = rt.run_seed
 	driver.call(&"note", "ah_loud: civilian start %s, gear_drop %s" % [(rt.crew_controller(0) as CrewController).civilian,
 		rt.mission.call(&"gear_line")])
+	var guards: int = rt.npcs(&"guard").size()
+	driver.call(&"note", "DONECHECK D-140 guards at load %d, pager cap %d (margin %d)" % [guards,
+		rt.mission.pager_cap(), guards - rt.mission.pager_cap()])
 	var loud: RefCounted = (load(AUTO_LOUD) as GDScript).new()
 	var rc: int = await loud.call(&"play", driver)
 	EventBus.objective_updated.disconnect(on_obj)

@@ -1359,6 +1359,9 @@ fix or that pane made frosted, not a revert. The OF checks assume see-through.
 4. Mode label stays "Stealth or loud"; the loadout's civilian-start notice (B5-05) carries the civilian start.
 5. `asset.intel_safe_code` / `asset.intel_product` are AH-only: assets gain a per-heist allow-list (`heists: []`, empty =
    every heist), B's library field, so no other heist's def needs a `disable`.
+6. (Clarification 2026-10-23, LEAD; A's AH harness) "Exactly 4 guards" counts the door + rope + 2 rovers only. The security-room
+   camera operator (sec_staffed, rolls from Tense per afterhours.md) is a separate role, as in GH/OF, and stays: on Hazardous+ that
+   makes 5 pagered NPCs against a pager cap of 3, which is the D-140 lever doing its job (the club can't be cleared by killing everyone).
 
 ## D-144: one new heist at a time (2026-10-17, LEAD; product owner)
 PO: "ensure they're fully finished before moving on to new ones." Ostrander Federal is the only heist in build until it

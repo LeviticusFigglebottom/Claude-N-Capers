@@ -3,23 +3,23 @@ ambience beds and three one-shot / event cues. Built by tools/audiogen/build.py 
 
 The club loop is WORLD audio (D-075): ClubSound's six AudioStreamPlayer3Ds play it on the Ambience bus, so it is a
 mono 3D loop, not a music stem. It shares the score's instruments and bassline (music_afterhours.CLUB_BASS) so the
-alarm cut (124 BPM club -> 128 BPM assault) reads as the same record driven harder.
+alarm cut (120 BPM club -> 128 BPM assault) reads as the same record driven harder.
 
 Club music (mono, 3D, Ambience):
-  amb_afterhours_club_music  124 BPM four-on-the-floor deep house in F# minor, 16 bars (30.97 s, bar-aligned seamless
+  amb_afterhours_club_music  120 BPM four-on-the-floor deep house in F# minor, 16 bars (32.0 s, bar-aligned seamless
                              loop): kick on every beat, offbeat open hats, claps on 2 and 4, 16th closed hats from bar
                              4, the rolling offbeat bassline, organ chord stabs, a breathy "ooh" pad and chops from
                              bar 8. Progression F#m9 F#m9 Dmaj7 Dmaj7 F#m9 F#m9 Bm7 C#7sus4.
-Beds (stereo, 2D, Ambience, loop, "bed" loudness, seamless via make_loop; 124 BPM-aligned lengths so the bleed thumps
+Beds (stereo, 2D, Ambience, loop, "bed" loudness, seamless via make_loop; 120 BPM-aligned lengths so the bleed thumps
 keep the beat across the seam):
   amb_afterhours_club     the hall around the speakers: crowd walla (formant babble 250-3000 Hz, 10 voices a side),
-                          glass clinks (3-7 kHz pings), bass bleed (kick + bass below 110 Hz at 124 BPM), HVAC. 31 s.
+                          glass clinks (3-7 kHz pings), bass bleed (kick + bass below 110 Hz at 120 BPM), HVAC. 32 s.
   amb_afterhours_boh      back of house: cold-room fridge hum (50 Hz + harmonics), the keg compressor cycling (a
                           29 Hz motor rattle, on ~60 % of the loop, start / stop clunks), the kick drum muffled
-                          through walls (< 90 Hz at 124 BPM), fluorescent buzz. 31 s.
+                          through walls (< 90 Hz at 120 BPM), fluorescent buzz. 32 s.
   amb_street_wet_night    Tolley St at 00:40 after rain: tyres hissing on wet asphalt (car passes, 1.8-6 kHz spray),
                           two distant sirens (wail, low-passed, far), the queue's chatter (near walla, a laugh), a
-                          faint club thump from the doors. 31 s.
+                          faint club thump from the doors. 32 s.
 Event cues (mono, 3D):
   club_power_down         ClubSound.cut(): a needle drag, the record dragging to a stop (the club groove time-warped
                           to zero), the amp's power-down whine (900 -> 50 Hz) with a relay clunk, then the crowd's gasp
@@ -40,11 +40,11 @@ from cues import CueSpec, click, make_loop
 from synth import env, filters, fx, noise, osc, seq
 from synth.core import SR, midi_hz, nsamp, place
 
-CLUB_BPM = 124.0
+CLUB_BPM = 120.0   # LEAD r305: one beat for the club (D's dance_a/b/c and dj_mix: DANCE_BPM 120, 16-beat loops)
 CLUB_BARS = 16
 CLUB_PROG = ["F#m9", "F#m9", "Dmaj7", "Dmaj7", "F#m9", "F#m9", "Bm7", "C#7sus4"]
 BEAT_S = 60.0 / CLUB_BPM
-LOOP_S = BEAT_S * 4 * CLUB_BARS   # 30.97 s: every 124 BPM bed is this long, so beat-locked layers loop cleanly
+LOOP_S = BEAT_S * 4 * CLUB_BARS   # 32.0 s: every 120 BPM bed is this long, so beat-locked layers loop cleanly
 
 # vowel formant banks (F1, F2, F3) for the babble
 _VOWELS = ((800, 1150, 2900), (400, 1700, 2600), (300, 2200, 3000), (450, 800, 2830), (325, 700, 2530),
@@ -97,7 +97,7 @@ def _clink(rng: np.random.Generator, f0: float, dur: float = 0.5) -> np.ndarray:
 
 
 def _beat_layer(d: float, rng: np.random.Generator, cut: float, bass: bool) -> np.ndarray:
-    """The club's low end heard through a wall (mono): the kick on every 124 BPM beat (and the bass root on the
+    """The club's low end heard through a wall (mono): the kick on every 120 BPM beat (and the bass root on the
     offbeats when `bass`), low-passed hard. Beat-locked so a LOOP_S-long bed keeps the pulse across its seam."""
     n = nsamp(d)
     y = np.zeros(n)
@@ -160,7 +160,7 @@ def _scream(rng: np.random.Generator) -> np.ndarray:
 
 
 def amb_afterhours_club_music(rng: np.random.Generator, v: int) -> np.ndarray:
-    """The Velvet's house loop (see the module docstring). Mono, 16 bars at 124 BPM, seamless (the sequencer
+    """The Velvet's house loop (see the module docstring). Mono, 16 bars at 120 BPM, seamless (the sequencer
     folds every tail past bar 16 back onto bar 1)."""
     s = me.song(CLUB_BPM, CLUB_BARS, 4.0)
     hits = me.part_kick(s, rng, range(CLUB_BARS), "x...x...x...x...", 1.0)
@@ -356,7 +356,7 @@ def dj_mic_feedback(rng: np.random.Generator, v: int) -> np.ndarray:
 CUES: list[CueSpec] = [
     CueSpec("amb_afterhours_club_music", amb_afterhours_club_music, bus="Ambience", positional=True, loop=True,
             volume_db=-4.0, max_distance=30.0, norm="bed",
-            note="Afterhours ClubSound loop: 124 BPM house, 16 bars, played by the hall speakers (world audio, D-075)"),
+            note="Afterhours ClubSound loop: 120 BPM house, 16 bars, played by the hall speakers (world audio, D-075)"),
     CueSpec("amb_afterhours_club", amb_afterhours_club, bus="Ambience", positional=False, loop=True,
             volume_db=-14.0, norm="bed", note="Afterhours hall bed: walla, glass, bass bleed, HVAC (CueEmitter map loop)"),
     CueSpec("amb_afterhours_boh", amb_afterhours_boh, bus="Ambience", positional=False, loop=True,
