@@ -136,7 +136,8 @@ const PARAMS: Dictionary = {
 		&"perk.throwable": {"item_id": &"throwable.pocket_ecm"},
 	},
 	&"perk.inkwork": {  # D-162: A's perk.yakuza
-		&"perk.yakuza": {"low_health_threshold": 0.5, "armor_regen_max_add": 0.6, "move_speed_max_add": 0.2},
+		&"perk.yakuza": {"low_health_threshold": 0.5, "armor_regen_max_add": 0.6, "move_speed_max_add": 0.2,
+			"blocks_regen": true},
 	},
 	&"perk.road_crew": {  # D-162: A's perk.biker
 		&"perk.biker": {"heal": 5.0, "armor": 5.0, "max_procs": 4, "window_s": 4.0, "armor_per_missing_health": 1.0,

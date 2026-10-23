@@ -15,7 +15,8 @@ cards = Array[Dictionary]([{
 &"perk.yakuza": {
 "low_health_threshold": 0.25,
 "armor_regen_max_add": 0.2,
-"move_speed_max_add": 0.0
+"move_speed_max_add": 0.0,
+"blocks_regen": true
 }
 }
 }, {
@@ -33,7 +34,8 @@ cards = Array[Dictionary]([{
 &"perk.yakuza": {
 "low_health_threshold": 0.25,
 "armor_regen_max_add": 0.2,
-"move_speed_max_add": 0.2
+"move_speed_max_add": 0.2,
+"blocks_regen": true
 }
 }
 }, {
@@ -53,7 +55,8 @@ cards = Array[Dictionary]([{
 &"perk.yakuza": {
 "low_health_threshold": 0.25,
 "armor_regen_max_add": 0.4,
-"move_speed_max_add": 0.2
+"move_speed_max_add": 0.2,
+"blocks_regen": true
 }
 }
 }, {
@@ -72,7 +75,8 @@ cards = Array[Dictionary]([{
 &"perk.yakuza": {
 "low_health_threshold": 0.25,
 "armor_regen_max_add": 0.6,
-"move_speed_max_add": 0.2
+"move_speed_max_add": 0.2,
+"blocks_regen": true
 }
 }
 }, {
@@ -92,7 +96,8 @@ cards = Array[Dictionary]([{
 &"perk.yakuza": {
 "low_health_threshold": 0.5,
 "armor_regen_max_add": 0.6,
-"move_speed_max_add": 0.2
+"move_speed_max_add": 0.2,
+"blocks_regen": true
 }
 }
 }])

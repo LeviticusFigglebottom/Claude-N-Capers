@@ -279,6 +279,7 @@ Card 1 also grants `perk.throwable {item_id: &"throwable.pocket_ecm"}`.
 | low_health_threshold | float | fraction | 0.25 → 0.5 | 1, 9 | Health fraction where the bonuses peak. |
 | armor_regen_max_add | float | fraction | 0.2 / 0.4 / 0.6 | 1, 5, 7 | Armor recovery rate +add × s: the regen delay counts down (1 + add × s) times as fast (rule 3). |
 | move_speed_max_add | float | fraction | 0.0 → 0.2 | 3 | Movement speed × (1 + add × s). |
+| blocks_regen | bool | flag | true | 1 | While s > 0, other health regeneration (`defense.health_regen_per_sec`) is off (PD2 Koi: "negates third party regeneration"). |
 
 ### `perk.biker` (Road Crew, D-162)
 Any crew kill (the holder's or a teammate's) is a proc: +heal health and +armor armor (PD2 display units),
