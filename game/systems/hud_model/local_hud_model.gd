@@ -91,6 +91,8 @@ signal dominate_prompt_changed()
 signal objective_markers_changed(markers: Array[Dictionary])
 ## PO6-03 (ui_hud v1.9): placed timed devices (drills, thermal drills, saws, hack terminals).
 signal devices_changed()
+## ui_hud v1.20 (D-161): pocket_ecm
+signal pocket_ecm_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -132,6 +134,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"dominate_target": &"dominate_prompt_changed", &"dominate_window_s": &"dominate_prompt_changed",
 	&"objective_markers": &"objective_markers_changed",
 	&"devices": &"devices_changed",
+	&"pocket_ecm": &"pocket_ecm_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase", &"local_net_id"]
@@ -223,6 +226,9 @@ var pagers_max: int = 4
 # --- timers_changed
 ## Longest running ECM, seconds; < 0 = none.
 var ecm_time_left_s: float = -1.0
+# --- pocket_ecm_changed (ui_hud v1.20, D-161)
+## EcmSystem.pocket_state(tracked slot): {"charges", "max", "recharge_left", "active_left", "mode"}; {} = none.
+var pocket_ecm: Dictionary = {}
 ## Unstoppable camera alarm countdown (S3.5); < 0 = inactive.
 var camera_alarm_s: float = -1.0
 # --- objectives_changed
@@ -481,7 +487,12 @@ func _poll_weapons(c: CrewController) -> void:
 	_poll_reload(w)
 	var lo: Loadout = c.loadout if c != null else null
 	_assign(&"deployable_id", StringName(_read(w, &"deployable_id", lo.deployable if lo != null else &"")))
-	_assign(&"throwable_id", StringName(_read(w, &"throwable_id", lo.throwable if lo != null else &"")))
+	# ui_hud v1.20: a deck throwable (flask, injector, pocket ECM) replaces the loadout's (PerkHooks.throwable_id).
+	var deck_item: StringName = PerkHooks.throwable_id(c) if c != null else &""
+	_assign(&"throwable_id", deck_item if deck_item != &"" else StringName(_read(w, &"throwable_id",
+		lo.throwable if lo != null else &"")))
+	var ecm: EcmSystem = _rt_service(c, EcmSystem.SERVICE) as EcmSystem
+	_assign(&"pocket_ecm", ecm.pocket_state(c.slot).duplicate() if ecm != null and c != null else {})
 	_assign(&"deployable_count", int(_read(w, &"deployable_count", 0)))
 	_assign(&"throwable_count", int(_read(w, &"throwable_count", 0)))
 	_assign(&"weapon_charge", snappedf(float(_read(w, &"charge", 0.0)), 0.01))
@@ -1272,6 +1283,11 @@ func _listen(sig: Signal, c: Callable) -> void:
 
 
 ## Assign a NEW value to a HUD property; marks its group signal dirty only on a real change.
+func _rt_service(c: Node, service_name: StringName) -> Node:
+	var rt: HeistRuntime = HeistRuntime.of(c) if c != null else null
+	return rt.service(service_name) if rt != null else null
+
+
 func _assign(prop: StringName, value: Variant) -> bool:
 	var old: Variant = get(prop)
 	if typeof(old) == typeof(value) and old == value:

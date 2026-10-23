@@ -137,6 +137,8 @@ static func stamina_mult(crew: CrewController) -> float:
 ## The deck throwable replacing the equipped one (&"" = none: use Loadout.throwable).
 static func throwable_id(crew: CrewController) -> StringName:
 	var perks: CrewPerks = of(crew)
+	if perks != null:
+		perks.refresh()  # ui_hud v1.20: also on a client, where no server tick refreshes the components
 	var t: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable if perks != null else null
 	return t.item_id() if t != null else &""
 
