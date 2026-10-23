@@ -961,6 +961,42 @@ perk.hacker.card7.name,Workaround
 perk.hacker.card7.desc,"A kill while the pocket ECM jams or stuns gives you 20 more dodge for 30 s."
 perk.hacker.card9.name,Crowd Network
 perk.hacker.card9.desc,"Your crew's kills while your stun is active heal them 10 health. Your dodge rises another 15%."
+perk.inkwork.name,Inkwork
+perk.inkwork.desc,"The worse you look, the harder you are to stop. Lower health brings your armor back faster and moves you faster."
+perk.inkwork.card1.name,First Line
+perk.inkwork.card1.desc,"The lower your health, the faster your armor recovers: up to 20% faster below 25% health. It scales with health."
+perk.inkwork.card3.name,Second Skin
+perk.inkwork.card3.desc,"The lower your health, the faster you move: up to 20% faster below 25% health."
+perk.inkwork.card5.name,Old Scars
+perk.inkwork.card5.desc,"Low health speeds your armor recovery by up to another 20% (40% in total)."
+perk.inkwork.card7.name,Deep Ink
+perk.inkwork.card7.desc,"Low health speeds your armor recovery by up to another 20% (60% in total)."
+perk.inkwork.card9.name,Full Sleeve
+perk.inkwork.card9.desc,"Every effect in this deck reaches its full strength at 50% health instead of 25%."
+perk.road_crew.name,Road Crew
+perk.road_crew.desc,"Every kill your crew makes patches you up. The more beaten up you are, the more each kill gives back."
+perk.road_crew.card1.name,Patch Job
+perk.road_crew.card1.desc,"Each kill by you or your crew gives you 5 health and 5 armor, up to 4 times every 4 s."
+perk.road_crew.card3.name,Tail Rider
+perk.road_crew.card3.desc,"Each 10% of health you are missing adds 1 armor to every kill bonus."
+perk.road_crew.card5.name,Short Fuse
+perk.road_crew.card5.desc,"Each 10% of health you are missing cuts the 4 s kill-bonus window by 0.1 s."
+perk.road_crew.card7.name,Field Dressing
+perk.road_crew.card7.desc,"Each 10% of armor you are missing adds 1 health to every kill bonus."
+perk.road_crew.card9.name,Club President
+perk.road_crew.card9.desc,"Each 10% of armor you are missing cuts the 4 s kill-bonus window by another 0.1 s."
+perk.frenzy.name,Frenzy
+perk.frenzy.desc,"The damage you deal builds Frenzy, and Frenzy soaks up the damage you take. Keep shooting to keep it up."
+perk.frenzy.card1.name,Wound Up
+perk.frenzy.card1.desc,"Your damage builds Frenzy: up to 240 every 4 s, 600 at most. Every 30 Frenzy absorbs 1 damage from each hit. Frenzy fades by 80% + 120 every 8 s."
+perk.frenzy.card3.name,Contagion
+perk.frenzy.card3.desc,"Your crew also gets your Frenzy absorption. Only the strongest Frenzy in the crew counts."
+perk.frenzy.card5.name,Slow Burn
+perk.frenzy.card5.desc,"Frenzy fades more slowly: 60% + 40 every 8 s."
+perk.frenzy.card7.name,Red Mist
+perk.frenzy.card7.desc,"Every 25 Frenzy absorbs 1 damage, for you and your crew."
+perk.frenzy.card9.name,Unhinged
+perk.frenzy.card9.desc,"Your own Frenzy absorption is doubled."
 ui.skills.title,Skills
 ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic

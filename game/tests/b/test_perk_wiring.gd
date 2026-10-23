@@ -73,6 +73,9 @@ const GENERIC: Dictionary = {
 	&"perk.long_odds": [[&"defense.health_mult", &"", "mult", 1.4]],
 	&"perk.overlord": [[&"defense.health_mult", &"", "mult", 1.8]],
 	&"perk.hacker": [[&"defense.health_mult", &"", "mult", 1.2], [&"defense.dodge_add", &"", "add", 0.3]],
+	&"perk.inkwork": [],
+	&"perk.road_crew": [],
+	&"perk.frenzy": [],
 }
 
 const ARMOR_IDS: Array = [&"armor.tailored_suit", &"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest",
@@ -132,6 +135,18 @@ const PARAMS: Dictionary = {
 			"kill_heal": 20.0, "kill_dodge_add": 0.2, "kill_dodge_s": 30.0, "crew_kill_heal": 10.0},
 		&"perk.throwable": {"item_id": &"throwable.pocket_ecm"},
 	},
+	&"perk.inkwork": {  # D-162: A's perk.yakuza
+		&"perk.yakuza": {"low_health_threshold": 0.5, "armor_regen_max_add": 0.6, "move_speed_max_add": 0.2},
+	},
+	&"perk.road_crew": {  # D-162: A's perk.biker
+		&"perk.biker": {"heal": 5.0, "armor": 5.0, "max_procs": 4, "window_s": 4.0, "armor_per_missing_health": 1.0,
+			"window_cut_per_missing_health": 0.1, "heal_per_missing_armor": 1.0, "window_cut_per_missing_armor": 0.1},
+	},
+	&"perk.frenzy": {  # D-162: A's perk.maniac
+		&"perk.maniac": {"conversion": 1.0, "gain_cap": 240.0, "gain_window_s": 4.0, "max_stacks": 600.0,
+			"stacks_per_absorb": 25.0, "decay_fraction": 0.6, "decay_flat": 40.0, "decay_interval_s": 8.0, "team": true,
+			"self_absorb_mult": 2.0},
+	},
 }
 
 ## Hook coverage (perk_decks.md "Hook coverage"): base key -> file that reads it with
@@ -180,8 +195,8 @@ const HOOKED: Dictionary = {
 	&"perk.rogue_dodge_stack": "res://systems/combat/perks/perk_rogue.gd",
 }
 ## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). stealth.pocket_ecm: the Hacker deck's
-## Pocket ECM (D-161), ENV A's hook; drop it here the round that lands.
-const MISSING: Array = [&"stealth.pocket_ecm"]
+## Pocket ECM (D-161); perk.yakuza / perk.biker / perk.maniac: D-162. ENV A's hooks; drop each the round it lands.
+const MISSING: Array = [&"stealth.pocket_ecm", &"perk.yakuza", &"perk.biker", &"perk.maniac"]
 
 
 func before_all() -> void:
@@ -267,7 +282,7 @@ func _same_array(a: Array, b: Array) -> bool:
 # --- Full deck through the real path ---------------------------------------------------------------
 
 func test_every_deck_at_nine_cards_reaches_modifiers() -> void:
-	assert_eq(GENERIC.size(), 15, "expectations cover 15 decks")
+	assert_eq(GENERIC.size(), 18, "expectations cover 18 decks")
 	for deck_id: StringName in GENERIC:
 		assert_true(_deck(deck_id) != null, "%s exists" % deck_id)
 		Modifiers.clear_all()
