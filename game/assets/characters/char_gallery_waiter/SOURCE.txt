@@ -15,5 +15,5 @@ look: Gala waiter: white shirt, black bow tie, Halberd-wine waistcoat with gold 
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 30164
-tris_by_mesh: {"Body": 8980, "Gear": 980, "Hair": 1856, "Outfit": 18348}
+tris: 30368
+tris_by_mesh: {"Body": 8980, "Gear": 1024, "Hair": 1856, "Outfit": 18508}

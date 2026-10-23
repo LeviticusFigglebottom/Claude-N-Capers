@@ -9,13 +9,13 @@ const FROM_ESCORT_DOWN: StringName = &"escort_down"
 
 static var _cached: RtTweak = null
 
-## D-158 truck window: the first assault's BUILD waits truck_window_s from the stop (FROM_STOP, today), or from the last
-## convoy unit's death (FROM_ESCORT_DOWN), never past stop + escort_down_max_s.
+## D-158 truck window: the first assault's BUILD waits truck_window_s from the stop (FROM_STOP), or from the last
+## convoy unit's death (FROM_ESCORT_DOWN, shipped: amendment 8), never past stop + escort_down_max_s.
 @export var truck_window_from: StringName = FROM_STOP
 @export var truck_window_s: float = 30.0
 @export var escort_down_max_s: float = 60.0
 ## Units kept out of the first assault (AssaultDirector.wave1_exclude: unit ids or bare names, e.g. &"stinger") at
-## wave1_exclude_min_difficulty and above. [] = today.
+## wave1_exclude_min_difficulty and above (shipped: stinger, phantom; amendment 8).
 @export var wave1_exclude: Array[StringName] = []
 @export var wave1_exclude_min_difficulty: Enums.Difficulty = Enums.Difficulty.HAZARDOUS
 ## The escort fight (P's verdicts / A's A/B: the pilot down 8-13 s after the stop): convoy units hold fire this long

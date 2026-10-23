@@ -16,5 +16,5 @@ look: Retiree customer (OF-D1): long heather wool coat (below the knee) over a n
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27832
-tris_by_mesh: {"Body": 9088, "Gear": 348, "Hair": 1856, "Headwear": 1642, "Outfit": 14898}
+tris: 27884
+tris_by_mesh: {"Body": 9088, "Gear": 400, "Hair": 1856, "Headwear": 1642, "Outfit": 14898}

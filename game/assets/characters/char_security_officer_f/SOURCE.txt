@@ -15,5 +15,5 @@ hat: peaked cap (Headwear), crown top z 1.899 m
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 33151
-tris_by_mesh: {"Body": 8984, "Gear": 2372, "Hair": 1728, "Headwear": 2172, "Outfit": 17895}
+tris: 33279
+tris_by_mesh: {"Body": 8984, "Gear": 2500, "Hair": 1728, "Headwear": 2172, "Outfit": 17895}

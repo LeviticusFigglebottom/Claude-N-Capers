@@ -16,5 +16,5 @@ look: Cloakroom waitstaff (woman, 50s): short Halberd-wine waiter's jacket with 
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27586
-tris_by_mesh: {"Body": 8996, "Gear": 632, "Hair": 1856, "Headwear": 1584, "Outfit": 14518}
+tris: 27930
+tris_by_mesh: {"Body": 8996, "Gear": 976, "Hair": 1856, "Headwear": 1584, "Outfit": 14518}

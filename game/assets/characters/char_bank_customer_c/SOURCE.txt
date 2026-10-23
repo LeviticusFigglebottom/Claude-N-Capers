@@ -16,5 +16,5 @@ look: Office worker customer (OF-D1): navy knee pencil skirt, white blouse, open
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26860
-tris_by_mesh: {"Body": 10878, "Gear": 548, "Hair": 2088, "Outfit": 13346}
+tris: 28948
+tris_by_mesh: {"Body": 10878, "Gear": 2636, "Hair": 2088, "Outfit": 13346}

@@ -5,7 +5,7 @@ seed: 3738367270  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_bank_customer_i
 edit policy: generated file, never edit by hand; change the script and rebuild
-attach_Back: bone chest, local [0.0000, 0.0878, 0.1042] (model [0.0000, 1.2781, 0.1224], Godot axes, rest pose)
+attach_Back: bone chest, local [0.0000, 0.0880, 0.1079] (model [0.0000, 1.2781, 0.1261], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0796, -0.0872] (model [0.0000, 1.6379, -0.0754], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1831, 0.0500, 0.0350] (model [0.1831, 0.9871, 0.0374], Godot axes, rest pose)
 body_faces_culled: 4836
@@ -15,5 +15,5 @@ look: Parent customer (OF-D1): maroon crew knit, khaki chinos, grey trainers, wa
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 24804
-tris_by_mesh: {"Body": 9072, "Gear": 300, "Hair": 1728, "Outfit": 13704}
+tris: 25178
+tris_by_mesh: {"Body": 9072, "Gear": 476, "Hair": 1728, "Outfit": 13902}

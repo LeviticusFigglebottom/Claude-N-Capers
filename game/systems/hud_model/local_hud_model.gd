@@ -93,6 +93,8 @@ signal objective_markers_changed(markers: Array[Dictionary])
 signal devices_changed()
 ## ui_hud v1.20 (D-161): pocket_ecm
 signal pocket_ecm_changed()
+## ui_hud v1.21 (D-163): perk_item
+signal perk_item_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -135,6 +137,7 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"objective_markers": &"objective_markers_changed",
 	&"devices": &"devices_changed",
 	&"pocket_ecm": &"pocket_ecm_changed",
+	&"perk_item": &"perk_item_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase", &"local_net_id"]
@@ -229,6 +232,12 @@ var ecm_time_left_s: float = -1.0
 # --- pocket_ecm_changed (ui_hud v1.20, D-161)
 ## EcmSystem.pocket_state(tracked slot): {"charges", "max", "recharge_left", "active_left", "mode"}; {} = none.
 var pocket_ecm: Dictionary = {}
+# --- perk_item_changed (ui_hud v1.21, D-163)
+## The deck throwable's state, any deck: {"kind": StringName (ThrowableDef.kind), "charges": int, "max": int,
+## "cooldown_left": s, "active_left": s, "partner_slot": int (-1 = none), "mode": StringName (&"" | &"jam" |
+## &"feedback"), v1.22 "segments": {"count", "size"} while a Leech ampule runs}; {} = no deck item. pocket_ecm stays one
+## round as an alias (the pocket ECM shows here too).
+var perk_item: Dictionary = {}
 ## Unstoppable camera alarm countdown (S3.5); < 0 = inactive.
 var camera_alarm_s: float = -1.0
 # --- objectives_changed
@@ -492,7 +501,14 @@ func _poll_weapons(c: CrewController) -> void:
 	_assign(&"throwable_id", deck_item if deck_item != &"" else StringName(_read(w, &"throwable_id",
 		lo.throwable if lo != null else &"")))
 	var ecm: EcmSystem = _rt_service(c, EcmSystem.SERVICE) as EcmSystem
-	_assign(&"pocket_ecm", ecm.pocket_state(c.slot).duplicate() if ecm != null and c != null else {})
+	var pocket: Dictionary = ecm.pocket_state(c.slot).duplicate() if ecm != null and c != null else {}
+	_assign(&"pocket_ecm", pocket)
+	var items: PerkItems = _rt_service(c, PerkItems.SERVICE) as PerkItems
+	var item: Dictionary = items.state(c.slot).duplicate() if items != null and c != null else {}
+	if item.is_empty() and not pocket.is_empty():
+		item = PerkItems.entry(PerkPocketEcm.KIND, int(pocket["charges"]), int(pocket["max"]),
+			float(pocket["recharge_left"]), float(pocket["active_left"]), -1, StringName(pocket["mode"]))
+	_assign(&"perk_item", item)
 	_assign(&"deployable_count", int(_read(w, &"deployable_count", 0)))
 	_assign(&"throwable_count", int(_read(w, &"throwable_count", 0)))
 	_assign(&"weapon_charge", snappedf(float(_read(w, &"charge", 0.0)), 0.01))

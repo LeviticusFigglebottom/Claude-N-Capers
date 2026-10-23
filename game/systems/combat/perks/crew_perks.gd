@@ -35,7 +35,8 @@ static func scripts() -> Dictionary[StringName, GDScript]:
 		PerkStoic.KEY: PerkStoic, PerkAnarchist.KEY: PerkAnarchist, PerkExPresident.KEY: PerkExPresident,
 		PerkGambler.KEY: PerkGambler, PerkKingpin.KEY: PerkKingpin, PerkThrowable.KEY: PerkThrowable,
 		PerkPocketEcm.KEY: PerkPocketEcm, PerkYakuza.KEY: PerkYakuza, PerkBiker.KEY: PerkBiker,
-		PerkManiac.KEY: PerkManiac,
+		PerkManiac.KEY: PerkManiac, PerkSicario.KEY: PerkSicario, PerkTagTeam.KEY: PerkTagTeam,
+		PerkLeech.KEY: PerkLeech, PerkCopycat.KEY: PerkCopycat,
 	}
 
 
@@ -47,7 +48,8 @@ func refresh() -> void:
 	for k: StringName in all:
 		var p: Dictionary = Modifiers.params(crew.slot, k)
 		if p.is_empty():
-			components.erase(k)
+			if components.erase(k) and Net.is_authority():
+				PerkItems.clear_key(HeistRuntime.of(crew), crew.slot, k)  # D-163: its HUD item goes with it
 			continue
 		if components.has(k):
 			components[k].params = p
@@ -147,8 +149,19 @@ func on_ammo_picked(amount: int) -> void:
 		c.on_ammo_picked(amount)
 
 
-func use_throwable(kind: StringName) -> bool:
+## D-164 (LEAD): deck-item cooldowns keep running while the holder is down (CrewHealth, through
+## PerkHooks.tick_downed): only components with tick_item_cooldown(delta), only that timer.
+func tick_item_cooldowns(delta: float) -> void:
 	for c: PerkComponent in components.values():
+		if c.has_method(&"tick_item_cooldown"):
+			c.call(&"tick_item_cooldown", delta)
+
+
+func use_throwable(kind: StringName) -> bool:
+	var up: bool = crew == null or crew.crew_state in [Enums.CrewState.NORMAL, Enums.CrewState.SWAN_SONG]
+	for c: PerkComponent in components.values():
+		if not up and not (c.has_method(&"usable_while_down") and bool(c.call(&"usable_while_down"))):
+			continue  # D-164: while down only a perk that allows it (Leech)
 		if c.use_throwable(kind):
 			return true
 	return false

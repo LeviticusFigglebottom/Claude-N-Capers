@@ -102,6 +102,7 @@ def coat(kit: Kit) -> None:
     waist = fit.ring_centre("waist").z
     belt = gk.Belt(fit, Hull(fit, [jk], body_regions=set()), waist, height=0.04, thick=0.004, drop=0.0)
     kit.add_soft(belt.mesh("char_coat_camel"))
+    n.watch(kit, "L", strap="leather_dark", case="brass")                      # OF-G3
 
 
 def gilet(kit: Kit) -> None:
@@ -117,6 +118,7 @@ def gilet(kit: Kit) -> None:
     soft, zipm = g.gilet(fit, kit.hull(), "char_gilet_navy", hips_z - 0.035 * k)
     kit.add_soft(soft)
     kit.add_gear(zipm)
+    n.watch(kit, "L", strap="char_nylon_black", case="chrome")                 # OF-G3
 
 
 def dress(kit: Kit) -> None:

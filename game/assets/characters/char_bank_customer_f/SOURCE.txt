@@ -16,5 +16,5 @@ look: Office worker customer (OF-D1): belted double-breasted stone trench coat t
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28372
-tris_by_mesh: {"Body": 8952, "Gear": 836, "Hair": 1856, "Headwear": 498, "Outfit": 16230}
+tris: 28416
+tris_by_mesh: {"Body": 8952, "Gear": 880, "Hair": 1856, "Headwear": 498, "Outfit": 16230}

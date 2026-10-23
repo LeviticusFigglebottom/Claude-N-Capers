@@ -100,8 +100,9 @@ func _release() -> void:
 	spawn(_crew, def, throws)
 
 
-## Server: spawn `def` thrown by `crew` along its aim (tests call it directly).
-static func spawn(crew: CrewController, def: ThrowableDef, seq: int = 0) -> ThrownItem:
+## Server: spawn `def` thrown by `crew` along its aim (tests call it directly). `extra` adds item params (a deck
+## throwable's mechanic numbers, D-163) before the item enters the tree, so they replicate with its spawn.
+static func spawn(crew: CrewController, def: ThrowableDef, seq: int = 0, extra: Dictionary = {}) -> ThrownItem:
 	var rt: HeistRuntime = HeistRuntime.of(crew)
 	var parent: Node = rt.dynamic_root if rt != null and rt.dynamic_root != null else crew.get_parent()
 	if parent == null:
@@ -117,6 +118,7 @@ static func spawn(crew: CrewController, def: ThrowableDef, seq: int = 0) -> Thro
 		"radius_m": def.radius_m, "fuse_s": def.fuse_s, "attacker": crew.net_id, "owner_slot": crew.slot,
 		"throwable_id": def.id,
 	}
+	item.params.merge(extra, true)
 	parent.add_child(item, true)
 	item.global_position = crew.eye_position() + aim * 0.4
 	NetIds.claim(item)

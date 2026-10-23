@@ -315,7 +315,8 @@ func placement_for(crew: CrewController) -> Dictionary:
 	return {"transform": Transform3D(basis, hit["position"]), "reader": reader}
 
 
-## S8.5: a keycard reader in front of the crew eye (only for an ECM with stealth.ecm_opens_doors).
+## S8.5: a keycard reader or an ATM spot (A2-03, DrillPoint.ecm_atm) in front of the crew eye (only for an ECM with
+## stealth.ecm_opens_doors).
 func _aimed_reader(crew: CrewController) -> Node:
 	var def: DeployableDef = def_for(deployable_id(crew.slot))
 	if def == null or def.kind != &"ecm" or not Modifiers.flag(crew.slot, &"stealth.ecm_opens_doors"):
@@ -329,8 +330,12 @@ func _aimed_reader(crew: CrewController) -> Node:
 		var comp: InteractableComponent = n as InteractableComponent
 		if comp == null:
 			continue
-		var reader: KeycardReader = comp.owner_node() as KeycardReader
-		if reader == null or reader.used or not reader.is_inside_tree():
+		var reader: Node3D = comp.owner_node() as Node3D
+		var kr: KeycardReader = reader as KeycardReader
+		var atm: DrillPoint = reader as DrillPoint  # A2-03: an ATM spot (ecm_atm)
+		if (kr == null or kr.used) and (atm == null or not atm.ecm_openable()):
+			continue
+		if not reader.is_inside_tree():
 			continue
 		var to: Vector3 = reader.global_position - eye
 		var d: float = to.length()

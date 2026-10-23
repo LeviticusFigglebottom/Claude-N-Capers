@@ -99,6 +99,10 @@ signal audio_cue_requested(cue_id: StringName, position: Vector3, source_net_id:
 signal shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: StringName, weapon_class: StringName,
 		shooter_net_id: int, flags: int)
 signal explosion_fx(position: Vector3, radius: float, kind: StringName)
+## D-163: a Sicario smoke cloud started (every peer; presentation only, C's VfxDirector).
+signal smoke_cloud_fx(position: Vector3, radius: float, duration_s: float)
+## D-163: a Tag Team pair formed (active = true) or ended (every peer; presentation only).
+signal crew_tether_fx(a_slot: int, b_slot: int, active: bool)
 ## D-113 blood FX (FX-only, [R]): flesh hit after damage_applied (crew: health hits only, not armour).
 signal blood_hit(victim_net_id: int, point: Vector3, direction: Vector3, normal: Vector3, strength: float, headshot: bool,
 		exit_point: Vector3, victim_kind: StringName)
