@@ -65,6 +65,11 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | PO-18 | all (loud) | A (D) | PO: police have body armor too early | open: D-145.3 (armor from Hazardous) |
 | PO-19 | all | B + A | PO: bots need regen + per-slot buyable weapon/armor loadout | open: D-145.4 |
 | PO-20 | all | P | PO: run too wobbly, gun bob odd | open: D-145.5 |
+| PO-21 | OF (all?) | P (+ owner) | PO 2026-10-23: can't move the cursor / look around in Ostrander | open: P reproducing with real mouse through the real menus, top priority |
+| PO-22 | all | P + B | PO: crosshair still shows while ADS (PD2 hides it) | open: P (ADS state) + B (HUD widget) |
+| PO-23 | safehouse | P → C/A | PO: safehouse 'press F' station buttons don't work | open: P reproducing, routes to the owner |
+| PO-24 | menus | B | PO: main-menu buttons to the Board / heist select / hub screens without walking the safehouse | open: B |
+| PO-25 | OF (all heists' drills) | A (C/D) | PO: the drill is visible before it's grabbed (stealth too) and stands upright instead of mounting into its target | open: A |
 
 ## D-115 assessment at the D-135 close (2026-10-17 11:45, LEAD)
 All five envs reported QUEUE CLEAR (A 9a7df142, B da559160, C e8ec593d, D 6316e628, P 8774a733), merged in rounds 240a/240b.
