@@ -307,6 +307,9 @@ CLIPS = {
     # VARIANT_GROUPS, SOURCE `idle_alert_variants`)
     "idle_alert_b": {"frames": 150, "loop": True, "speed": 0.0, "priority": 2, "events": {"watch": 57}},
     "idle_alert_c": {"frames": 174, "loop": True, "speed": 0.0, "priority": 2, "events": {"radio": 44}},
+    # D polish #2 (calm posts): idle variety; frame 0 IS idle frame 0 (A: VARIANT_GROUPS, SOURCE `idle_variants`)
+    "idle_b": {"frames": 162, "loop": True, "speed": 0.0, "priority": 1, "events": {"watch": 70}},
+    "idle_c": {"frames": 198, "loop": True, "speed": 0.0, "priority": 1, "events": {"stretch": 65}},
 }
 # characters v1.36 locomotion reversals (_anim_reverse, SOURCE `loco_reverse`): fixed facing, run <-> run_b and walk <->
 # walk_back through a plant and push (_l = the left foot brakes); frame 0 IS the source loop at u_in, the last frame IS
