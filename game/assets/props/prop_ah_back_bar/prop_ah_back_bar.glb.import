@@ -51,10 +51,10 @@ _subresources={
 "use_external/fallback_path": "res://world/props/materials/pr_art_rust.tres",
 "use_external/path": "res://world/props/materials/pr_art_rust.tres"
 },
-"M_pr_emit_neon_magenta": {
+"M_pr_emit_neon_magenta_sign": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_emit_neon_magenta.tres",
-"use_external/path": "res://world/props/materials/pr_emit_neon_magenta.tres"
+"use_external/fallback_path": "res://world/props/materials/pr_emit_neon_magenta_sign.tres",
+"use_external/path": "res://world/props/materials/pr_emit_neon_magenta_sign.tres"
 },
 "M_pr_emit_warm": {
 "use_external/enabled": true,

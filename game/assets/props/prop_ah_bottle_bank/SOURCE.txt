@@ -1,0 +1,8 @@
+asset: prop_ah_bottle_bank
+script: tools/blender/props/club_hero.py
+params: {"cat": {"group": "afterhours", "kind": "bin", "pin_only": true, "place": "floor", "surface": "plastic"}, "fn": "bottle_bank"}
+seed: 804141149  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ah_bottle_bank
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

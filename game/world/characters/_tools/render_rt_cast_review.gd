@@ -22,7 +22,8 @@ var _convoy: bool = true
 var _only: StringName = &""
 ## --crash: the signals are not rigged, so the convoy runs into the crash stop (Reyes rams it); --skip-cast: convoy only
 var _crash: bool = false
-## --cab: a seated character (with --only) shot from fixed views through its vehicle's door window and windscreen
+## --cab: a seated character (with --only) shot from fixed views through its vehicle's door window and windscreen; in
+## the convoy phase (with --skip-cast) every visible seated escort the same way
 var _cab: bool = false
 var _skip_cast: bool = false
 var _cam: Camera3D = null
@@ -124,7 +125,10 @@ func _convoy_phase(rt: HeistRuntime) -> void:
 			_say("convoy %02d %s HIDDEN (cab) look %s tags %s at %s" % [j, npc.name, NpcVisuals.character_id(npc),
 				npc.spawn_info.get("tags"), npc.global_position])
 			continue
-		await _npc_shot("convoy_%02d" % j, npc, 3.4)
+		if _cab:
+			await _cab_shots("convoy_%02d" % j, npc)  # --cab: the seated escorts through their glazing
+		else:
+			await _npc_shot("convoy_%02d" % j, npc, 3.4)
 	var first: NpcBase = null
 	for u: Variant in seated:
 		if u is NpcBase and is_instance_valid(u) and (u as NpcBase).visible:
