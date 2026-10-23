@@ -40,7 +40,7 @@ const CREW_SLOTS: int = 3
 ## Crew loadout entry fields -> [kind, default] ("" / [] = the bot's default).
 const CREW_FIELDS: Dictionary = {
 	"weapon": [SHORT_ID, ""], "mods": [ID_LIST, []], "armor": [SHORT_ID, ""], "mask": [SHORT_ID, ""],
-	"outfit": [SHORT_ID, ""],
+	"outfit": [SHORT_ID, ""], "ability": [SHORT_ID, ""], "boost": [SHORT_ID, ""],
 }
 ## Career sections whose values are counter maps (the others are counters directly).
 const CAREER_NESTED: Array[String] = ["heists", "difficulties"]

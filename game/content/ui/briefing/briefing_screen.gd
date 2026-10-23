@@ -243,6 +243,8 @@ func refresh() -> void:
 	_show_blueprint()
 	difficulty_label.text = UiText.t(&"ui.briefing.difficulty", {"name": UiText.t(UiText.difficulty_key(difficulty))})
 	mode_label.text = UiText.t(&"ui.briefing.mode", {"mode": UiText.t(StringName(model["mode_key"]))})
+	if bool(model.get("civilian_start", false)):  # B5-05 / S1.3: the job starts without gear
+		mode_label.text += "   ·   " + UiText.t(&"ui.briefing.civilian_start")
 	pay_label.text = UiText.t(&"ui.briefing.contract_pay", {"amount": UiText.money(int(model["contract_pay"]))})
 	var contact: ContactDef = model["contact"] as ContactDef
 	portrait.set_contact(contact)

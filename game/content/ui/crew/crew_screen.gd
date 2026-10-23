@@ -105,13 +105,13 @@ func refresh() -> void:
 	for i: int in range(summary_labels.size()):
 		var n: Dictionary = CrewLoadouts.names(CrewLoadouts.validate(profile, CrewLoadouts.entry(profile, i)))
 		summary_labels[i].text = UiText.t(&"ui.crew.card", {"n": i + 1, "weapon": n["weapon"], "armor": n["armor"],
-			"mask": n["mask"], "outfit": n["outfit"]})
+			"mask": n["mask"], "outfit": n["outfit"], "ability": n["ability"], "boost": n["boost"]})
 	if is_node_ready():
 		_wire_focus()
 
 
-## Choose `id` on editor row `row` ("weapon", "armor", "mask", "outfit", "mod.<ModType>"; &"" = default / stock) and
-## save. False when the row or id is not on offer.
+## Choose `id` on editor row `row` ("weapon", "armor", "mask", "outfit", "ability", "boost", "mod.<ModType>"; &"" =
+## default / stock / none) and save. False when the row or id is not on offer.
 func pick(row: String, id: StringName) -> bool:
 	var o: ItemSlot = rows.get(row) as ItemSlot
 	if o == null or not LoadoutScreen._select_id(o, id):
@@ -169,6 +169,17 @@ func _rebuild_editor() -> void:
 		if not CrewLoadouts.is_suit(id):
 			of.set_item_accent(of.item_count - 1, Heisters.accent(id))
 	_finish_row(of, e["outfit"])
+	# L6.2: one ability (the bot itself) and one boost (the whole crew while the bot is in play).
+	var ab: ItemSlot = _row("ability", &"ui.crew.row.ability", &"crew")
+	LoadoutScreen._add_item(ab, UiText.t(&"ui.crew.none"), &"")
+	for id: StringName in CrewLoadouts.abilities():
+		LoadoutScreen._add_item(ab, UiText.t(UiText.item_key(id)), id)
+	_finish_row(ab, e["ability"])
+	var bo: ItemSlot = _row("boost", &"ui.crew.row.boost", &"crew")
+	LoadoutScreen._add_item(bo, UiText.t(&"ui.crew.none"), &"")
+	for id: StringName in CrewLoadouts.boosts():
+		LoadoutScreen._add_item(bo, UiText.t(UiText.item_key(id)), id)
+	_finish_row(bo, e["boost"])
 
 
 func _row(key: String, caption: StringName, glyph: StringName) -> ItemSlot:
