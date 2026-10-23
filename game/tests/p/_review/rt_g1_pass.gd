@@ -150,6 +150,15 @@ const LULL_S: float = 2.0
 const HAZ_PRIMARY: StringName = &"weapon.corsair_ar"
 const HAZ_ARMOR: StringName = &"armor.heavy_vest"
 const HAZ_DEPLOYABLE: StringName = &"deployable.doctor_bag"
+const HAZ_BAGS_S: float = 300.0
+## PD2-style loud rifle tank (Enforcer/Mastermind): armor (Juggernaut), revives / Inspire (Field Medic), rifle aim
+## (Marksman), down insurance (Undying); every skill aced, the skill-point budget not checked; deck Ironclad 9/9.
+const LOUD_SKILLS: Dictionary = {&"skill.juggernaut.thick_skin": 2, &"skill.juggernaut.hold_the_line": 2,
+	&"skill.juggernaut.shoulder_check": 2, &"skill.juggernaut.plated": 2, &"skill.field_medic.triage": 2,
+	&"skill.field_medic.bedside_manner": 2, &"skill.field_medic.rally_cry": 2, &"skill.marksman.steady_aim": 2,
+	&"skill.marksman.snap_shot": 2, &"skill.marksman.deliberate_fire": 2, &"skill.undying.cats_luck": 2,
+	&"skill.undying.second_lease": 2}
+const LOUD_PERK_DECK: StringName = &"perk.ironclad"
 
 var _rows: PackedStringArray = PackedStringArray()
 var _straight_on: bool = false
@@ -1413,14 +1422,43 @@ func _hazard_run(clean: bool) -> bool:
 			await _hold_cover(func() -> bool: return t.opened or comp.kind == &"fix_drill", 6.0)
 		opened = t.opened
 		t_open = rt.heist_time_s
-	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f; kit corsair_ar + kestrel_p9 + heavy_vest + doctor bag, no skills"
+	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f; %s"
 	_row("%s: a truck opened (T1 saw, Hazardous, AI crew)" % tag, "PASS" if opened else "FAIL", open_fmt % [
-		opened, t_open, _downs_text(), _hp_min], "-" if opened else "balance (D-154)")
+		opened, t_open, _downs_text(), _hp_min, _kit_text()], "-" if opened else "balance (D-154)")
+	if opened and not trucks.is_empty():
+		var secured: int = await _haz_bags(trucks[0])
+		_row("%s: bags secured at E1 under fire" % tag, "PASS" if secured > 0 else "FAIL", "%d bag(s) by t=%.1f, %s" % [
+			secured, rt.heist_time_s, _downs_text()], "-" if secured > 0 else "balance (D-154)")
 	_danger_rows(tag)
 	if clean:
 		_peaks_table()
 	await shot("%s_end" % tag)
 	return opened
+
+
+## Carry T1's cargo to E1 one bag at a time in combat (Po5Pilot fights on the way) until custody or HAZ_BAGS_S.
+func _haz_bags(t: ArmoredTruck) -> int:
+	var zone: SecureZone = _secure_zone_near(E1_AT)
+	var secured: int = 0
+	var t_end: float = rt.heist_time_s + HAZ_BAGS_S
+	while rt.heist_time_s < t_end and not _in_custody() and zone != null:
+		if pilot.crew.crew_state != Enums.CrewState.NORMAL:
+			await wait_s(1.0)
+			continue
+		var lb: LootBag = _bag_near(_truck_use(t), 4.0)
+		if lb == null:
+			break
+		if not await pilot.use(_comp(lb), 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			continue
+		var id: int = (pilot.crew.carried_bag as LootBag).net_id
+		if await _go(pilot.stand_point(zone.global_position), 1.5, 240.0) and pilot.crew.is_carrying_bag():
+			await pilot.face(zone.global_position + Vector3.UP * 0.5, 0.05, 1.0)
+			await pilot.inp.tap(&"drop_bag")
+			await wait_until(func() -> bool: return _secured_ids.has(id), 3.0)
+		if _secured_ids.has(id):
+			secured += 1
+			note("bag %d secured at E1 (t=%.1f)" % [secured, rt.heist_time_s])
+	return secured
 
 
 ## Crouched in cover; every 0.5 s peek (stand) at the nearest visible enemy within BLOWN_PEEK_M and engage 1.5 s.
@@ -1450,7 +1488,26 @@ func _hazard_loadout() -> Loadout:
 	lo.secondary = CombatTweak.data().default_secondary
 	lo.armor = HAZ_ARMOR
 	lo.deployable = HAZ_DEPLOYABLE
+	if _build() == "loud":
+		lo.skills = LOUD_SKILLS.duplicate()
+		lo.perk_deck = LOUD_PERK_DECK
+		lo.perk_deck_cards = 9
 	return CrewWeapons.build_loadout(lo)
+
+
+## --build=loud: the PD2 loud build below (LoadoutModifiers pushes its grants at heist start); else none.
+func _build() -> String:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--build="):
+			return a.trim_prefix("--build=")
+	return ""
+
+
+func _kit_text() -> String:
+	var kit: String = "kit corsair_ar + kestrel_p9 + heavy_vest + doctor bag"
+	if _build() == "loud":
+		return kit + ", PD2 loud build: %s aced, deck %s 9/9" % [", ".join(LOUD_SKILLS.keys()), LOUD_PERK_DECK]
+	return kit + ", no skills"
 
 
 ## Leave cover only in a lull: no visible enemy within BLOWN_PEEK_M for LULL_S running (fighting meanwhile).
