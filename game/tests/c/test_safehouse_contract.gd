@@ -7,7 +7,7 @@
 extends TestCase
 
 ## build_safehouse.gd SCENE_PATH (staged off hub_map's path until B's 2D-hub tests are pinned).
-const SCENE: String = "res://world/hub/safehouse/safehouse_g1.tscn"
+const SCENE: String = "res://world/hub/safehouse/safehouse.tscn"
 const IDS: Array[StringName] = [&"board", &"planning", &"armory", &"masks", &"jukebox", &"notoriety", &"range",
 	&"crew", &"profile"]
 

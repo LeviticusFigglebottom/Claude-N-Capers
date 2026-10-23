@@ -1,6 +1,6 @@
 asset: char_armored_car_crew
 script: tools/blender/characters/char_p5_convoy.py
-params: {"age": 0.45, "beard_shadow": 0.7, "build": 0.8, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.84, "look": "crew", "skin": 2}
+params: {"age": 0.45, "beard_shadow": 0.7, "build": 0.8, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.84, "look": "crew", "role": "driver", "skin": 2}
 seed: 2280136932  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_armored_car_crew
@@ -8,7 +8,7 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0938, 0.1462] (model [0.0000, 1.3438, 0.1654], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0837, -0.0917] (model [0.0000, 1.7222, -0.0793], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.2402, 0.0658, 0.0427] (model [0.2402, 1.0508, 0.0460], Godot axes, rest pose)
-body_faces_culled: 4124
+body_faces_culled: 4751
 body_params: {"age": 0.45, "beard_shadow": 0.7, "build": 0.8, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.84, "lip": "auto", "skin": 2}
 bones: 52
 faces_hidden_by_vest: 946
@@ -17,5 +17,5 @@ look: Vaultline Armored Transport crew: sand short-sleeved shirt, brown trousers
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 30756
-tris_by_mesh: {"Body": 10496, "Gear": 2388, "Hair": 1200, "Headwear": 832, "Outfit": 15840}
+tris: 34370
+tris_by_mesh: {"Body": 9246, "Gear": 2732, "Hair": 1200, "Headwear": 832, "Outfit": 20360}

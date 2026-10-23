@@ -374,8 +374,10 @@ def carrier_vest(kit: Kit, mat: str, bottom_z: float, strap_mat: str = "polymer_
     gear = Mesh()
     for sx in (-1.0, 1.0):
         for zz in (1.10, 1.21):
-            mtx, loc = o.surface_frame(hull, Vector((sx * 0.4, box.get("cy", cy), zz * k)), Vector((sx, 0, 0)),
-                                       up=o.UP)
+            # G3: cast from just outside the torso (it cast from 0.7 m out and hit the bind-pose arm first, so the
+            # straps rode the upper arm / forearm)
+            mtx, loc = o.surface_frame(hull, Vector((sx * 0.12 * k, box.get("cy", cy), zz * k)), Vector((sx, 0, 0)),
+                                       up=o.UP, reach=0.10 * k)
             gp = o.Gear()
             gp.box((-0.050 * k, -0.020 * k, -0.002 * k), (0.050 * k, 0.020 * k, 0.005 * k), strap_mat)
             gp.box((-0.015 * k, -0.024 * k, 0.003 * k), (0.015 * k, 0.024 * k, 0.012 * k), strap_mat)

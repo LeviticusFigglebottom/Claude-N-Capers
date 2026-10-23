@@ -27,6 +27,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | hide_los | skipped | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
+| metal_reflection | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
 | viewmodel_lit | PASS | 0 | 0 |
@@ -49,12 +50,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 160 props checked
+- 159 props checked
 
 
 ## clipping: Nothing clips
 
-- 160 props, 0 doors checked
+- 159 props, 0 doors checked
 
 
 ## orientation: Flush and oriented
@@ -77,25 +78,25 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 119 x 83 columns (0.25 m), 16630 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 119 x 83 columns (0.25 m), 16549 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 458 polygons, cell 0.10/0.10 m
+- navmesh: 474 polygons, cell 0.10/0.10 m
 - 16 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomLB` | 112 | 112 | 100% |
-| `Rooms/RoomH1` | 485 | 485 | 100% |
-| `Rooms/RoomLG` | 173 | 173 | 100% |
-| `Rooms/RoomWS` | 109 | 109 | 100% |
-| `Rooms/RoomMK` | 80 | 80 | 100% |
+| `Rooms/RoomH1` | 497 | 497 | 100% |
+| `Rooms/RoomLG` | 174 | 174 | 100% |
+| `Rooms/RoomWS` | 110 | 110 | 100% |
+| `Rooms/RoomMK` | 72 | 72 | 100% |
 | `Rooms/RoomCO` | 56 | 56 | 100% |
 | `Rooms/RoomWC` | 19 | 19 | 100% |
 | `Rooms/RoomST` | 35 | 35 | 100% |
-| `Rooms/RoomBK` | 18 | 18 | 100% |
-| `Rooms/RoomRV` | 24 | 24 | 100% |
+| `Rooms/RoomBK` | 30 | 30 | 100% |
+| `Rooms/RoomRV` | 30 | 30 | 100% |
 | `Rooms/RoomKS` | 82 | 80 | 98% |
 
 
@@ -111,17 +112,23 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 863 surfaces checked
+- 922 surfaces checked
+
+
+## metal_reflection: Metal surfaces have a reflection source
+
+- environment reflections: on; 10 probe(s), 1 baked VoxelGI
+- 74 metal surface(s); 73 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
 
-- 84243 triangles checked
+- 101675 triangles checked
 
 
 ## lights: Lighting is deliberate
 
-- 26 lights, 29 fixture meshes
+- 26 lights, 30 fixture meshes
 
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
@@ -136,7 +143,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomLB` | loading_bay | 16 | 64.0 | 0.25 |
 | `Rooms/RoomH1` | safehouse_hall | 29 | 168.0 | 0.17 |
 | `Rooms/RoomLG` | safehouse_lounge | 30 | 80.0 | 0.38 |
-| `Rooms/RoomWS` | armory_workshop | 14 | 42.0 | 0.33 |
+| `Rooms/RoomWS` | armory_workshop | 13 | 42.0 | 0.31 |
 | `Rooms/RoomMK` | mask_room | 9 | 30.0 | 0.30 |
 | `Rooms/RoomCO` | corridor_service | 12 | 21.8 | 0.55 |
 | `Rooms/RoomWC` | restroom_single | 10 | 11.2 | 0.89 |
@@ -164,7 +171,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 29 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 215 eye samples, 17415 rays, sky yes, 0 void ray(s)
+- 223 eye samples, 18063 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
@@ -173,20 +180,20 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` (plan, exempt) | 703 | 249 | 1087 | 0 | 2039 | 123100 | 5 | TablePendantE 354, PressPendant 352, TablePendantW 326, LbWorkLight 45, WsBenchLamp 10 |
-| `SpawnView` | 515 | 226 | 844 | 0 | 1585 | 76316 | 5 | TablePendantE 325, TablePendantW 264, PressPendant 218, LbWorkLight 27, WsBenchLamp 10 |
-| `HallWideSW` | 395 | 225 | 812 | 0 | 1432 | 61662 | 5 | TablePendantE 334, TablePendantW 255, PressPendant 185, LbWorkLight 28, WsBenchLamp 10 |
-| `BoardClose` | 27 | 30 | 315 | 0 | 372 | 8720 | 3 | TablePendantE 150, TablePendantW 141, LbWorkLight 24 |
-| `PlanningTable` | 224 | 117 | 473 | 0 | 814 | 45842 | 4 | TablePendantW 170, PressPendant 148, TablePendantE 110, LbWorkLight 45 |
-| `OldPress` | 263 | 106 | 605 | 0 | 974 | 46402 | 4 | PressPendant 237, TablePendantW 172, TablePendantE 167, LbWorkLight 29 |
-| `LoungeFromHall` | 188 | 40 | 372 | 0 | 600 | 41304 | 3 | TablePendantW 177, PressPendant 164, LbWorkLight 31 |
-| `LoungeKitchen` | 106 | 0 | 195 | 0 | 301 | 19876 | 1 | PressPendant 195 |
-| `ArmoryBench` | 63 | 0 | 10 | 0 | 73 | 7480 | 1 | WsBenchLamp 10 |
-| `MaskRoom` | 102 | 0 | 10 | 0 | 112 | 17064 | 1 | WsBenchLamp 10 |
-| `CorridorToRange` | 212 | 32 | 618 | 0 | 862 | 29468 | 3 | PressPendant 232, TablePendantE 197, TablePendantW 189 |
-| `RangeVestibule` | 90 | 0 | 0 | 0 | 90 | 12376 | 0 |  |
-| `BunkRoom` | 166 | 0 | 226 | 0 | 392 | 24962 | 1 | PressPendant 226 |
-| `KitStore` | 75 | 0 | 0 | 0 | 75 | 13120 | 0 |  |
+| `TopDownPlan` (plan, exempt) | 764 | 273 | 1150 | 0 | 2187 | 164080 | 5 | TablePendantE 385, PressPendant 372, TablePendantW 338, LbWorkLight 45, WsBenchLamp 10 |
+| `SpawnView` | 556 | 248 | 903 | 0 | 1707 | 107116 | 5 | TablePendantE 355, TablePendantW 274, PressPendant 237, LbWorkLight 27, WsBenchLamp 10 |
+| `HallWideSW` | 437 | 249 | 872 | 0 | 1558 | 86480 | 5 | TablePendantE 365, TablePendantW 267, PressPendant 202, LbWorkLight 28, WsBenchLamp 10 |
+| `BoardClose` | 44 | 34 | 327 | 0 | 405 | 13194 | 3 | TablePendantE 160, TablePendantW 143, LbWorkLight 24 |
+| `PlanningTable` | 258 | 137 | 506 | 0 | 901 | 69690 | 4 | TablePendantW 180, PressPendant 161, TablePendantE 120, LbWorkLight 45 |
+| `OldPress` | 291 | 126 | 642 | 0 | 1059 | 70192 | 4 | PressPendant 254, TablePendantW 182, TablePendantE 177, LbWorkLight 29 |
+| `LoungeFromHall` | 197 | 40 | 380 | 0 | 617 | 47574 | 3 | TablePendantW 185, PressPendant 164, LbWorkLight 31 |
+| `LoungeKitchen` | 106 | 0 | 207 | 0 | 313 | 19876 | 1 | PressPendant 207 |
+| `ArmoryBench` | 52 | 0 | 10 | 0 | 62 | 6092 | 1 | WsBenchLamp 10 |
+| `MaskRoom` | 97 | 0 | 10 | 0 | 107 | 11814 | 1 | WsBenchLamp 10 |
+| `CorridorToRange` | 220 | 32 | 657 | 0 | 909 | 39428 | 3 | PressPendant 247, TablePendantE 211, TablePendantW 199 |
+| `RangeVestibule` | 95 | 0 | 0 | 0 | 95 | 20916 | 0 |  |
+| `BunkRoom` | 174 | 0 | 245 | 0 | 419 | 34922 | 1 | PressPendant 245 |
+| `KitStore` | 67 | 0 | 0 | 0 | 67 | 11908 | 0 |  |
 | `RooflightUpA` | 42 | 58 | 337 | 0 | 437 | 6264 | 3 | TablePendantW 119, TablePendantE 109, PressPendant 109 |
 | `RooflightUpB` | 46 | 65 | 347 | 0 | 458 | 6270 | 3 | TablePendantW 125, TablePendantE 112, PressPendant 110 |
 
@@ -208,7 +215,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: chair 4, counter 1, table 1, low_table 1, wall_unit 9, lounge_seat 2
+- classified: chair 4, counter 1, table 1, low_table 1, wall_unit 7, lounge_seat 2
 - 6 seats, 3 tables/desks/counters, 0 doors checked
 
 - WARN `Props/Dress/H1/Crate_2` @ (10.70, 0.00, 11.59): overlap: bounds interpenetrate `Stations/notoriety` by 0.60 m (not a stack or a tucked seat)
