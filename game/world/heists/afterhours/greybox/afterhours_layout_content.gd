@@ -348,7 +348,7 @@ const FIXED_SPAWNS: Array = [
 	],
 	["spawn", "Courier1", "GUARD", [33.6, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "", "Courier", ""],
 	["spawn", "Courier2", "GUARD", [36.4, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "", "Courier", ""],
-	["spawn", "OffDutyCop", "CIVILIAN", [20.0, 4.2, 19.6], 180.0, ["civ_offduty"], "sit", "", ""],
+	["spawn", "OffDutyCop", "POLICE", [20.0, 4.2, 19.6], 180.0, ["civ_offduty", "scripted"], "sit", "", ""],
 	["spawn", "PatronMainBar1", "CIVILIAN", [3.0, 0.0, 11.5], -90.0, ["civ_patron"], "walk_text", "Patrons", ""],
 	["spawn", "PatronMainBar2", "CIVILIAN", [3.0, 0.0, 15.0], -90.0, ["civ_patron"], "walk_text", "Patrons", ""],
 	["spawn", "PatronEastBar1", "CIVILIAN", [22.8, 0.0, 9.5], 90.0, ["civ_patron"], "walk_text", "Patrons", ""],

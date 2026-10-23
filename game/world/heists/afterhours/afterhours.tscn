@@ -5852,8 +5852,8 @@ patrol_graph = NodePath("../../Patrols/Courier")
 [node name="OffDutyCop" type="Marker3D" parent="Spawns" unique_id=101043]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 20, 4.2, 19.6)
 script = ExtResource("18_ah")
-kind = 2
-tags = Array[StringName]([&"civ_offduty"])
+kind = 3
+tags = Array[StringName]([&"civ_offduty", &"scripted"])
 idle_activity = &"sit"
 
 [node name="PatronMainBar1" type="Marker3D" parent="Spawns" unique_id=101044]

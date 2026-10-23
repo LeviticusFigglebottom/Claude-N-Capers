@@ -345,8 +345,9 @@ def fixed_spawns() -> List[list]:
     for i, x in enumerate([33.6, 36.4]):
         out.append(S("Courier%d" % (i + 1), "GUARD", [x, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "",
                      "Courier"))
-    # rare off_duty_cop: a patron in a U1 booth (A spawns enemy.patrol_officer here)
-    out.append(S("OffDutyCop", "CIVILIAN", [20.0, U, 19.6], 180.0, ["civ_offduty"], "sit"))
+    # rare off_duty_cop: a U1 booth; A's mission spawns enemy.patrol_officer here (A cef43029: POLICE + scripted, so
+    # nothing spawns at load; the plain-clothes look comes off the civ_offduty tag)
+    out.append(S("OffDutyCop", "POLICE", [20.0, U, 19.6], 180.0, ["civ_offduty", "scripted"], "sit"))
     for nm, pos, yaw, idle in PATRONS:
         out.append(S(nm, "CIVILIAN", pos, yaw, ["civ_patron"], idle, "Patrons"))
     for c, (cx, cz) in enumerate(CLUSTERS):
