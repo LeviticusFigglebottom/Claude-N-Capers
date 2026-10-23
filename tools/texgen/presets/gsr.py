@@ -302,6 +302,18 @@ PRESET = {
         # Rolling Thunder (rolling_thunder.md §Audio/lighting, RT-C2): 16:50, the low autumn sun down Tannery: warm amber
         # highlights, teal-green shadows under the Skyway, the blacks held.
         # (the LEAD's r277 review: no lifted blacks, so no offset lift and contrast 1.0 round the pivot)
+        # Afterhours (afterhours.md §Audio/lighting, AH-C2): 00:40 in a club: deep violet shadows, magenta-pink
+        # highlights, warm skin protected (a mild slope, the tints only at the ends of the range); blacks held.
+        "afterhours": {
+            "slope": (1.0, 0.985, 1.02),
+            "offset": (0.0, 0.0, 0.004),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (0.006, -0.004, 0.016),
+            "highlight_tint": (0.02, -0.004, 0.012),
+            "contrast": 1.04,
+            "pivot": 0.45,
+            "saturation": 1.04,
+        },
         "rolling_thunder": {
             "slope": (1.03, 1.0, 0.955),
             "offset": (0.0, 0.002, 0.002),

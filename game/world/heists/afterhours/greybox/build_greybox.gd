@@ -11,8 +11,10 @@
 ## the grade, neighbours, closures, landmarks, RoomVolumes, PUBLIC / RESTRICTED / OUT_OF_BOUNDS zones, player /
 ## police spawns, doors, the contract nodes, review cameras, VariantSlots for the 14 slot groups (the 4 scalars and 6
 ## rare events are table rows), preplan points, patrol graphs, tactical points, assault markers (none at G1), the
-## navmesh (door_nav_clearance). Lighting: a greybox night environment (no sun; a dim moon) and `Lighting/ClubLights`
-## (club / house states). Audio: `Audio` (CuePlayer, MusicDirector, the BOH / street beds) and `Audio/ClubSound`.
+## navmesh (door_nav_clearance). G2 (AH-C2, reuse-first): ah_dress.gd (map-built art, kit rooms, direct props),
+## ah_finish.gd (library finishes), ah_gi.gd (the night environment + lut_afterhours, VoxelGI, probes, occluders, the
+## render policy) and `Lighting/ClubLights` (the hall rig's club / house states, CLUB_LIGHT_ROWS). Audio: `Audio`
+## (CuePlayer, MusicDirector, the BOH / street beds) and `Audio/ClubSound`.
 extends "res://world/heists/afterhours/greybox/ah_gameplay.gd"
 
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
@@ -22,6 +24,7 @@ const AUDIO_BUILDER: String = "res://world/audio/map_audio_builder.gd"
 const CUE_EMITTER: String = "res://world/audio/cue_emitter.gd"
 const CLUB_SOUND: String = "res://world/heists/afterhours/club_sound.gd"
 const CLUB_LIGHTS: String = "res://world/heists/afterhours/club_lights.gd"
+const AH_GI: GDScript = preload("res://world/heists/afterhours/greybox/ah_gi.gd")
 const ENV_SCRIPT: String = "res://world/lighting/heist_world_environment.gd"
 ## The hall (G6): ClubSound's position (the emitters sit on it).
 const HALL_SOUND_POS: Vector3 = Vector3(13.0, 2.0, 13.0)
@@ -44,14 +47,30 @@ const CLUB_EMITTERS: Array = [
 ## ClubLights' children: [name, position, colour, energy, range] (club_lights.gd: `Club*` the club state, `Work*` the
 ## house state). Club: violet / magenta / amber / UV blue over the dance floor and the stage (never the interactable
 ## cyan, doc §Audio/lighting), low energy; house: 4000 K work lights on the truss line.
+## The hall rig (afterhours.md §Audio/lighting; AH-C2): [name, "spot" | "omni", position, aim (spots), colour,
+## energy, range, spot angle, shadow]. `Club*` = the club state (stealth), `Work*` = the house state (loud), others in
+## both. Shadows only on the key lights that read (LEAD r307): the DJ's amber key, the main and VIP bar backs, the four
+## house work lights (club state 3 shadowed, house 6: <= 8, §Budgets). The washes hang from the stage-front truss
+## (y 7.25, its underside) onto the dance floor; violet, magenta, UV blue (never the interactable cyan).
 const CLUB_LIGHT_ROWS: Array = [
-	["ClubFloorW", Vector3(10.5, 6.5, 13.5), Color(0.55, 0.25, 0.85), 0.6, 9.0],
-	["ClubFloorC", Vector3(14.0, 6.5, 14.5), Color(0.97, 0.42, 0.83), 0.6, 9.0],
-	["ClubFloorE", Vector3(17.5, 6.5, 13.5), Color(0.36, 0.29, 1.0), 0.6, 9.0],
-	["ClubStage", Vector3(13.0, 5.0, 8.8), Color(1.0, 0.62, 0.25), 0.7, 8.0],
-	["WorkW", Vector3(7.0, 7.4, 13.0), Color(1.0, 0.95, 0.88), 2.0, 16.0],
-	["WorkC", Vector3(13.0, 7.4, 11.0), Color(1.0, 0.95, 0.88), 2.0, 16.0],
-	["WorkE", Vector3(19.0, 7.4, 13.0), Color(1.0, 0.95, 0.88), 2.0, 16.0],
+	["ClubWashW", "spot", Vector3(10.8, 7.2, 10.6), Vector3(10.5, 0.0, 14.0), Color(0.55, 0.25, 0.85), 9.0, 12.0, 32.0,
+		false],
+	["ClubWashC", "spot", Vector3(14.0, 7.2, 10.6), Vector3(14.0, 0.0, 14.5), Color(0.97, 0.42, 0.83), 9.0, 12.0, 32.0,
+		false],
+	["ClubWashE", "spot", Vector3(17.2, 7.2, 10.6), Vector3(17.5, 0.0, 14.0), Color(0.36, 0.29, 1.0), 9.0, 12.0, 32.0,
+		false],
+	["ClubKeyDJ", "spot", Vector3(15.0, 7.2, 10.6), Vector3(15.5, 1.5, 8.2), Color(1.0, 0.62, 0.25), 7.0, 10.0, 18.0,
+		true],
+	["ClubMirrorBall", "spot", Vector3(4.0, 7.6, 18.0), Vector3(14.0, 7.6, 12.5), Color(1.0, 0.95, 0.9), 4.0, 14.0, 4.0,
+		false],
+	["BarBackMain", "omni", Vector3(1.2, 2.2, 13.5), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
+	["BarBackVIP", "omni", Vector3(16.0, 6.4, 27.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
+	["BarBackEast", "omni", Vector3(25.0, 2.2, 11.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.2, 4.0, 0.0, false],
+	["WorkNW", "spot", Vector3(6.0, 7.9, 9.5), Vector3(6.0, 0.0, 10.5), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0, true],
+	["WorkNE", "spot", Vector3(20.0, 7.9, 9.5), Vector3(20.0, 0.0, 10.5), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0, true],
+	["WorkSW", "spot", Vector3(8.0, 7.9, 13.5), Vector3(8.0, 0.0, 14.0), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0, true],
+	["WorkSE", "spot", Vector3(19.0, 7.9, 13.5), Vector3(19.0, 0.0, 14.0), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0,
+		true],
 ]
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the closures' barriers and gates).
 const THIN_GROUPS: Array[String] = ["Closures"]
@@ -123,6 +142,7 @@ func _build() -> void:
 	_build_environment(n("Lighting"))
 	preload("res://world/heists/afterhours/greybox/ah_finish.gd").new(self).call(&"build")  # AH-C2 finishes (G2)
 	_build_club_lights(n("Lighting"))
+	AH_GI.new(self).call(&"build")  # AH-C2 lighting lane: shadowed fixtures, VoxelGI, probes, occluders, policy
 	_build_audio()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
@@ -174,39 +194,9 @@ func _fail(msg: String) -> void:
 	quit(1)
 
 
-## G1 greybox night (doc: 00:40, no sun or moon, an overcast sky lit orange from below): a flat dark sky colour, a
-## dim cool ambient so the greybox reads, AgX, light SSAO and a dim shadowless moon fill (the one DirectionalLight3D).
+## The night environment + LUT (AH-C2 lighting lane: ah_gi.gd environment(); no sun or moon at 00:40).
 func _build_environment(lighting: Node3D) -> void:
-	var we: WorldEnvironment = WorldEnvironment.new()
-	we.set_script(load(ENV_SCRIPT))  # brightness option (B5-01)
-	we.name = "WorldEnvironment"
-	var env: Environment = Environment.new()
-	env.resource_name = "env_afterhours_greybox"
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.09, 0.06, 0.05)
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.55, 0.52, 0.62)
-	env.ambient_light_energy = 0.45
-	env.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
-	env.tonemap_mode = Environment.TONE_MAPPER_AGX
-	env.tonemap_exposure = 1.1
-	env.ssao_enabled = true
-	env.fog_enabled = true
-	env.fog_light_color = Color(0.35, 0.22, 0.14)
-	env.fog_density = 0.004
-	env.glow_enabled = true
-	env.glow_intensity = 0.4
-	we.environment = env
-	add(lighting, we)
-	var moon: DirectionalLight3D = DirectionalLight3D.new()
-	moon.name = "Moon"
-	moon.basis = Basis.looking_at(Vector3(0.3, -0.8, 0.5).normalized(), Vector3.UP)
-	moon.position = Vector3(22.0, 30.0, 16.0)
-	moon.light_color = Color(0.7, 0.75, 0.95)
-	moon.light_energy = 0.15
-	moon.shadow_enabled = false
-	moon.layers = 1 | VIEWMODEL_LIT_LAYER  # D-095 like every map light
-	add(lighting, moon)
+	AH_GI.new(self).call(&"environment", lighting)
 
 
 ## `Lighting/ClubLights` (club_lights.gd): the club state's coloured lights (visible) and the house state's work lights
@@ -216,15 +206,29 @@ func _build_club_lights(lighting: Node3D) -> void:
 	cl.set_script(load(CLUB_LIGHTS))
 	add(lighting, cl)
 	for r: Array in CLUB_LIGHT_ROWS:
-		var l: OmniLight3D = OmniLight3D.new()
+		var l: Light3D = null
+		if String(r[1]) == "spot":
+			var sp: SpotLight3D = SpotLight3D.new()
+			sp.spot_range = float(r[6])
+			sp.spot_angle = float(r[7])
+			sp.spot_attenuation = 1.2
+			l = sp
+		else:
+			var om: OmniLight3D = OmniLight3D.new()
+			om.omni_range = float(r[6])
+			om.omni_attenuation = 1.2
+			l = om
 		l.name = String(r[0])
-		l.position = r[1]
-		l.light_color = r[2]
-		l.light_energy = float(r[3])
-		l.omni_range = float(r[4])
-		l.shadow_enabled = false
+		l.position = r[2]
+		if String(r[1]) == "spot":
+			var aim: Vector3 = ((r[3] as Vector3) - (r[2] as Vector3)).normalized()
+			l.basis = Basis.looking_at(aim, Vector3.UP if absf(aim.y) < 0.99 else Vector3.FORWARD)
+		l.light_color = r[4]
+		l.light_energy = float(r[5])
+		l.shadow_enabled = bool(r[8])
+		l.light_bake_mode = Light3D.BAKE_DYNAMIC  # doc GI: the house switch re-lights GI without a re-bake
 		l.layers = 1 | VIEWMODEL_LIT_LAYER
-		l.visible = String(r[0]).begins_with("Club")   # the default state is club
+		l.visible = not String(r[0]).begins_with("Work")   # the default state is club
 		add(cl, l)
 
 
