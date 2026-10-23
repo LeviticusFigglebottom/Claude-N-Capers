@@ -27,13 +27,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | hide_los | skipped | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
+| metal_reflection | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
 | viewmodel_lit | PASS | 0 | 0 |
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 13 |
+| perf | PASS | 0 | 11 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -134,7 +135,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2464 polygons, cell 0.10/0.10 m
+- navmesh: 2462 polygons, cell 0.10/0.10 m
 - 205 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -176,7 +177,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 39 variant configuration(s), 118170 spawn->target path queries
+- 39 variant configuration(s), 0 convoy layout(s), 118170 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -198,6 +199,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## materials: Materials and texel density
 
 - 3204 surfaces checked
+
+
+## metal_reflection: Metal surfaces have a reflection source
+
+- environment reflections: on; 26 probe(s), 0 baked VoxelGI
+- 224 metal surface(s); 178 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
@@ -288,8 +295,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownSite` | 2178 | 442 | 4840 | 0 | 7460 | 353406 | 8 | LightFixture_5 1689, LightFixture_5 1046, MastQuayMid 574, LightFixture_2 356, LightFixture_5 354, MastYardGate 311, MastYardE 304, MastFerroW 206 |
-| `TopDownBuilding` | 1635 | 318 | 3852 | 0 | 5805 | 269100 | 5 | LightFixture_5 1636, LightFixture_5 977, MastQuayMid 537, LightFixture_2 356, LightFixture_5 346 |
+| `TopDownSite` (plan, exempt) | 2178 | 442 | 4840 | 0 | 7460 | 353406 | 8 | LightFixture_5 1689, LightFixture_5 1046, MastQuayMid 574, LightFixture_2 356, LightFixture_5 354, MastYardGate 311, MastYardE 304, MastFerroW 206 |
+| `TopDownBuilding` (plan, exempt) | 1635 | 318 | 3852 | 0 | 5805 | 269100 | 5 | LightFixture_5 1636, LightFixture_5 977, MastQuayMid 537, LightFixture_2 356, LightFixture_5 346 |
 | `ExtGate` | 2129 | 443 | 4654 | 0 | 7226 | 362904 | 8 | LightFixture_5 1688, LightFixture_5 1041, MastQuayMid 569, LightFixture_2 356, LightFixture_5 354, MastYardGate 273, MastYardE 256, MastFerroW 117 |
 | `ExtYardEast` | 223 | 3 | 333 | 0 | 559 | 25584 | 3 | LightFixture_5 188, MastYardE 107, MastYardGate 38 |
 | `ExtQuay` | 2436 | 538 | 4658 | 0 | 7632 | 428532 | 8 | LightFixture_5 1624, LightFixture_5 969, MastQuayMid 549, LightFixture_5 354, LightFixture_2 341, MastYardGate 311, MastYardE 304, MastFerroW 206 |
@@ -325,8 +332,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - WARN `ReviewCameras/HallFloor` @ (46.40, 1.70, 7.60): 5519 draw calls in view (main 1853 + lit 320 + shadow 3346 + cast 0) > 4000
 - WARN `ReviewCameras/SniperCrane` @ (76.05, 23.80, -1.30): 6999 draw calls in view (main 2035 + lit 473 + shadow 4491 + cast 0) > 4000
 - WARN `ReviewCameras/Strongroom` @ (19.00, 1.70, 31.20): 4922 draw calls in view (main 1342 + lit 499 + shadow 3081 + cast 0) > 4000
-- WARN `ReviewCameras/TopDownBuilding` @ (24.00, 70.00, 16.00): 5805 draw calls in view (main 1635 + lit 318 + shadow 3852 + cast 0) > 4000
-- WARN `ReviewCameras/TopDownSite` @ (38.00, 140.00, 2.00): 7460 draw calls in view (main 2178 + lit 442 + shadow 4840 + cast 0) > 4000
 - WARN `ReviewCameras/Workshop` @ (10.80, 2.20, 8.80): 4391 draw calls in view (main 1193 + lit 428 + shadow 2770 + cast 0) > 4000
 - WARN `ReviewCameras/YardWest` @ (17.50, 2.20, -32.50): 5385 draw calls in view (main 1641 + lit 354 + shadow 3390 + cast 0) > 4000
 
@@ -348,6 +353,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 7, chair 9, desk 2, table 1, wall_unit 9, monitor 1
+- classified: chair 9, counter 7, desk 2, table 1, wall_unit 9, monitor 1
 - 9 seats, 10 tables/desks/counters, 50 doors checked
 

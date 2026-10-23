@@ -207,6 +207,21 @@ const DIRECT_PROPS: Array = [
 	["RoofLampW1", "prop_street_lamp", Vector3(17.2, 7.0, -28.0), -90.0, {}],
 	["RoofLampN", "prop_street_lamp", Vector3(30.0, 7.0, -43.3), 180.0, {}],
 	["RoofLampS", "prop_street_lamp", Vector3(20.0, 7.0, -21.0), 0.0, {}],
+	# STA / HHA (stair A, the car park's escape stair; LEAD r309: near black): a caged bulkhead over every landing,
+	# hung from the soffit above it (the floor landings' south end, x 17.5 clear of the divider wall): the deck-2
+	# landing's underside (3.2) over the ground landing, half landing 1's (4.95) over half landing 0, the roof
+	# landing's (6.7) over the deck-2 landing, the head-house ceiling (9.7) over half landing 1 and the roof landing
+	["StairABulkhead0", "prop_bulkhead_caged", Vector3(17.5, 3.2, -44.9), 0.0, {}],
+	["StairABulkhead1", "prop_bulkhead_caged", Vector3(17.5, 4.95, -49.0), 0.0, {}],
+	["StairABulkhead2", "prop_bulkhead_caged", Vector3(17.5, 6.7, -44.9), 0.0, {}],
+	["StairABulkhead3", "prop_bulkhead_caged", Vector3(17.5, 9.7, -49.0), 0.0, {}],
+	["StairABulkhead4", "prop_bulkhead_caged", Vector3(17.5, 9.7, -44.9), 0.0, {}],
+	# SB / HHB (stair B, the same U-stair mirrored: floor landings at the north end, the divider at x 50.4-50.6)
+	["StairBBulkhead0", "prop_bulkhead_caged", Vector3(50.5, 3.2, -19.1), 0.0, {}],
+	["StairBBulkhead1", "prop_bulkhead_caged", Vector3(50.5, 4.95, -15.0), 0.0, {}],
+	["StairBBulkhead2", "prop_bulkhead_caged", Vector3(50.5, 6.7, -19.1), 0.0, {}],
+	["StairBBulkhead3", "prop_bulkhead_caged", Vector3(50.5, 9.7, -15.0), 0.0, {}],
+	["StairBBulkhead4", "prop_bulkhead_caged", Vector3(50.5, 9.7, -19.1), 0.0, {}],
 	# FG (site_frame_ground): the forklift between the columns, pallets in pairs, cones; clear of the guards' loop
 	# (FrameNW - FrameSW at x -46, FrameNE - FrameSE at x -27)
 	["FrameForklift", "prop_forklift", Vector3(-41.0, 0.0, -46.5), 0.0, {}],

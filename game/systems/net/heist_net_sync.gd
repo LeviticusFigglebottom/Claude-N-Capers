@@ -47,6 +47,13 @@ const SYNC_HZ: float = 15.0
 ## unreliable and only when changed, so one lost packet, or one that reached a client still building its replica,
 ## leaves a now-still NPC stale for good. Every XFORM_KEYFRAME_S the full transform set is resent once.
 const XFORM_KEYFRAME_S: float = 2.0
+## D-168 (AH soak: 56 civilians made one 4.3 kB unreliable transform packet, 3x the ENet MTU of 1392, so one lost
+## fragment dropped the whole update): `_rpc_xforms` goes out in chunks of at most this many encoded bytes (payload;
+## the RPC header and ENet framing fit in the rest of the MTU).
+const XFORM_PACKET_BYTES: int = 1100
+## D-168: a calm civilian farther than this from every crew member sends its transform every CIV_SLOW_DIV-th tick.
+const CIV_FAR_M: float = 25.0
+const CIV_SLOW_DIV: int = 3
 const SVC_INTERACTION: String = "isys"
 const SVC_CODES: String = "codes"
 const SVC_CUSTODY: String = "custody"
@@ -74,6 +81,13 @@ const SVC_PERK_ITEMS: String = "perk_items"
 ## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
 const KIND_CLOSED: StringName = &"heist_closed"
 const KIND_LEFT: StringName = &"heist_left"
+## D-168 (AH soak: 14 "Node not found: HeistRuntime/NetSync" per run while a client was still loading the map): client
+## -> host {"token"} once its replica runtime is built; only then does the host replicate to that peer.
+const KIND_READY: StringName = &"heist_ready"
+## D-168: reliable messages held for one peer that is still building its replica (cap; overflow is logged).
+const PENDING_MAX: int = 4096
+## D-168: methods queued for a loading peer (presentation fx and transforms are not: the keyframe resends those).
+const QUEUED_METHODS: Array[StringName] = [&"_rpc_spawn", &"_rpc_despawn", &"_rpc_state"]
 
 ## Client: counters for tests and diagnostics.
 var spawns_applied: int = 0
@@ -86,6 +100,9 @@ var host_closed_heist: bool = false
 ## C11: this heist's id on the session, keying KIND_CLOSED / KIND_LEFT. Server: unique per runtime (set in
 ## _ready); client: the bring-up's "token" (HeistRuntime._start_replica). 0 = unknown.
 var token: int = 0
+## Server: diagnostics for tests: the chunk count and largest payload (bytes) of the last _send_xforms.
+var last_xform_chunks: int = 0
+var last_xform_max_bytes: int = 0
 
 var _runtime: HeistRuntime = null
 var _begun: bool = false
@@ -98,12 +115,16 @@ var _last_xform: Dictionary[int, Variant] = {}
 var _last_services: Dictionary = {}
 var _accum: float = 0.0
 var _keyframe_left: float = XFORM_KEYFRAME_S
+## Server: transform sends so far (staggers the slow far-civilian rate by net id).
+var _xform_tick: int = 0
 ## Client: last replicated captain state (see captain_state()).
 var _captain: Dictionary = {"present": false, "resistance": 0.0}
 ## Server: peers holding a replica of this heist, the only ones replicated to: the peers connected at begin(),
 ## a drop-in once its late_bring_up() went out (QB-B6-DROPIN: nothing reaches it before its replica exists),
 ## minus a peer that tore its replica down (C11, KIND_LEFT).
 var _members: Dictionary[int, bool] = {}
+## Server (D-168): peers sent a bring-up but not yet KIND_READY -> their queued [method, args] (QUEUED_METHODS).
+var _pending: Dictionary[int, Array] = {}
 
 
 ## False while `node`'s networked heist has not sent its bring-up yet: clients have no replica of
@@ -164,12 +185,15 @@ func notify_teardown() -> void:
 
 
 func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> void:
-	if kind != KIND_CLOSED and kind != KIND_LEFT:
+	if kind != KIND_CLOSED and kind != KIND_LEFT and kind != KIND_READY:
 		return
 	if token == 0 or int(data.get("token", 0)) != token or from_peer == Net.local_peer_id():
 		return
-	if kind == KIND_LEFT and Net.is_authority():
+	if kind == KIND_READY and Net.is_authority():
+		_on_peer_ready(from_peer)
+	elif kind == KIND_LEFT and Net.is_authority():
 		_members.erase(from_peer)
+		_pending.erase(from_peer)
 	elif kind == KIND_CLOSED and not Net.is_authority() and from_peer == 1 and not host_closed_heist:
 		host_closed_heist = true
 		if _runtime != null and is_instance_valid(_runtime):
@@ -218,7 +242,7 @@ func begin() -> Dictionary:
 	_last_services = services_state()
 	snap["services"] = _last_services
 	for p: int in multiplayer.get_peers():
-		_members[p] = true
+		_pending[p] = []  # D-168: replicated to once its replica reports ready (KIND_READY)
 	_begun = true
 	return snap
 
@@ -248,7 +272,8 @@ func bring_up() -> Dictionary:
 ## diff baselines of the clients already in (their later diffs re-apply harmlessly on the newcomer).
 func late_bring_up(peer_id: int) -> Dictionary:
 	var rt: HeistRuntime = _runtime
-	_members[peer_id] = true  # its bring-up goes out right after: later RPCs are ordered behind it
+	_members.erase(peer_id)
+	_pending[peer_id] = []  # D-168: queued until its replica reports ready (KIND_READY)
 	var states: Dictionary = {}
 	var map_ids: Dictionary = map_id_table()
 	var spawns: Array = describe_dynamic()
@@ -482,7 +507,15 @@ func _send_state() -> void:
 
 
 func _send_xforms() -> void:
+	_xform_tick += 1
+	last_xform_chunks = 0
+	last_xform_max_bytes = 0
+	var keyframe: bool = _last_xform.is_empty()
+	var crew_pos: Array[Vector3] = []
+	for c: CrewController in _runtime.crew_members():
+		crew_pos.append(c.global_position)
 	var out: Dictionary = {}
+	var bytes: int = 0
 	for id: int in _tracked:
 		var n: Node = Ids.lookup(id)
 		if n == null:
@@ -492,24 +525,80 @@ func _send_xforms() -> void:
 			continue
 		if _last_xform.has(id) and _last_xform[id] == x:
 			continue
+		if not keyframe and (_xform_tick + id) % CIV_SLOW_DIV != 0 and _slow_civilian(n, crew_pos):
+			continue  # sent on a later tick (its _last_xform stays old, so the move is not lost)
 		_last_xform[id] = x
+		var size: int = var_to_bytes(x).size() + 8  # + the int key
+		if bytes > 0 and bytes + size > XFORM_PACKET_BYTES:
+			_flush_xforms(out, bytes)
+			out = {}
+			bytes = 0
 		out[id] = x
+		bytes += size
 	if not out.is_empty():
-		_send(&"_rpc_xforms", [out])
+		_flush_xforms(out, bytes)
+
+
+func _flush_xforms(out: Dictionary, bytes: int) -> void:
+	last_xform_chunks += 1
+	last_xform_max_bytes = maxi(last_xform_max_bytes, bytes)
+	_send(&"_rpc_xforms", [out])
+
+
+## D-168: a calm civilian far from every crew member (sent at 1 / CIV_SLOW_DIV of the transform rate).
+static func _slow_civilian(n: Node, crew_pos: Array[Vector3]) -> bool:
+	var npc: NpcBase = n as NpcBase
+	if npc == null or npc.role != &"civilian" or npc.alert_state != Enums.AlertState.CALM:
+		return false
+	for p: Vector3 in crew_pos:
+		if p.distance_squared_to(npc.global_position) < CIV_FAR_M * CIV_FAR_M:
+			return false
+	return true
 
 
 ## Server: an RPC of this node to every peer holding the replica (_members; a broadcast when that is everyone).
+## A peer still building its replica (_pending) gets the QUEUED_METHODS later, in order (D-168).
 func _send(method: StringName, args: Array) -> void:
 	var peers: PackedInt32Array = multiplayer.get_peers()
 	var targets: Array[int] = []
 	for p: int in peers:
 		if _members.has(p):
 			targets.append(p)
+		elif _pending.has(p) and QUEUED_METHODS.has(method):
+			var q: Array = _pending[p]
+			if q.size() < PENDING_MAX:
+				q.append([method, args.duplicate(true)])
+			elif q.size() == PENDING_MAX:
+				q.append([&"", []])  # overflow marker: logged once on ready
 	if targets.size() == peers.size():
 		callv(&"rpc", [method] + args)
 		return
 	for p: int in targets:
 		callv(&"rpc_id", [p, method] + args)
+
+
+## Server (D-168): `peer_id`'s replica is built: send what it missed while loading, in order, then replicate to it.
+func _on_peer_ready(peer_id: int) -> void:
+	if not _pending.has(peer_id):
+		return
+	var q: Array = _pending[peer_id]
+	_pending.erase(peer_id)
+	for e: Variant in q:
+		var m: StringName = (e as Array)[0]
+		if m == &"":
+			Log.warn(&"net", "peer %d: more than %d messages while loading; the rest were dropped" % [peer_id, PENDING_MAX])
+			continue
+		callv(&"rpc_id", [peer_id, m] + ((e as Array)[1] as Array))
+	_members[peer_id] = true
+	_last_xform.clear()  # the next transform send is a keyframe for everyone
+	Log.info(&"net", "peer %d ready: %d queued messages sent" % [peer_id, q.size()])
+
+
+## Client (D-168): the replica runtime is built (HeistRuntime._start_replica): the host may replicate to us now.
+func notify_ready() -> void:
+	if Net.is_authority() or token == 0 or not is_inside_tree() or not multiplayer.has_multiplayer_peer():
+		return
+	Net.lobby_send(KIND_READY, {"token": token})
 
 
 # --- Client --------------------------------------------------------------------------------------

@@ -27,13 +27,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | hide_los | skipped | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
+| metal_reflection | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
 | viewmodel_lit | PASS | 0 | 0 |
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 17 |
+| perf | PASS | 0 | 16 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -157,7 +158,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2870 polygons, cell 0.10/0.10 m
+- navmesh: 2881 polygons, cell 0.10/0.10 m
 - 291 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -218,7 +219,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 52 variant configuration(s), 189060 spawn->target path queries
+- 52 variant configuration(s), 0 convoy layout(s), 189060 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -265,6 +266,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## materials: Materials and texel density
 
 - 3836 surfaces checked
+
+
+## metal_reflection: Metal surfaces have a reflection source
+
+- environment reflections: on; 46 probe(s), 1 baked VoxelGI
+- 607 metal surface(s); 567 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
@@ -373,8 +380,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 130 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 274 eye samples, 22194 rays, sky yes, 0 void ray(s)
+- 128 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 276 eye samples, 22356 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
@@ -383,8 +390,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` | 1856 | 589 | 4526 | 0 | 6971 | 427860 | 6 | ChandelierW 2100, LightFixture_10 725, LightFixture_10 602, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
-| `rc_ext_parade` | 2432 | 712 | 4491 | 0 | 7635 | 623364 | 6 | ChandelierW 2084, LightFixture_10 725, LightFixture_10 588, LightFixture_5 432, LightFixture_15 377, LightFixture_6 285 |
+| `TopDownPlan` (plan, exempt) | 1856 | 589 | 4526 | 0 | 6971 | 427860 | 6 | ChandelierW 2100, LightFixture_10 725, LightFixture_10 602, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
+| `rc_ext_parade` | 2431 | 712 | 4491 | 0 | 7634 | 623352 | 6 | ChandelierW 2084, LightFixture_10 725, LightFixture_10 588, LightFixture_5 432, LightFixture_15 377, LightFixture_6 285 |
 | `rc_ext_wexley` | 2082 | 643 | 4482 | 0 | 7207 | 504936 | 6 | ChandelierW 2083, LightFixture_10 721, LightFixture_10 579, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
 | `rc_ext_mews` | 1777 | 589 | 4526 | 0 | 6892 | 419228 | 6 | ChandelierW 2100, LightFixture_10 725, LightFixture_10 602, LightFixture_5 432, LightFixture_15 382, LightFixture_6 285 |
 | `rc_ext_court` | 1383 | 639 | 3402 | 0 | 5424 | 380830 | 6 | ChandelierW 1530, LightFixture_10 501, LightFixture_10 395, LightFixture_5 388, LightFixture_15 317, LightFixture_6 271 |
@@ -403,7 +410,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_calloway` | 908 | 350 | 1639 | 0 | 2897 | 208704 | 3 | ChandelierW 1104, LightFixture_5 340, LightFixture_6 195 |
 | `rc_sallow` | 1047 | 368 | 1839 | 0 | 3254 | 258966 | 3 | ChandelierW 1257, LightFixture_5 340, LightFixture_6 242 |
 | `rc_maritime` | 1010 | 79 | 1522 | 0 | 2611 | 226560 | 2 | ChandelierW 1393, LightFixture_15 129 |
-| `rc_treasury` | 260 | 0 | 0 | 0 | 260 | 64850 | 0 |  |
+| `rc_treasury` | 259 | 0 | 0 | 0 | 259 | 64838 | 0 |  |
 | `rc_upper_corridor` | 2115 | 503 | 2634 | 0 | 5252 | 526318 | 4 | ChandelierW 1658, LightFixture_5 425, LightFixture_6 285, LightFixture_15 266 |
 | `rc_curator` | 299 | 0 | 0 | 0 | 299 | 74294 | 0 |  |
 | `rc_conservation` | 1713 | 593 | 3305 | 0 | 5611 | 459572 | 6 | ChandelierW 1481, LightFixture_10 499, LightFixture_10 438, LightFixture_5 342, LightFixture_15 290, LightFixture_6 255 |
@@ -411,7 +418,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_plant` | 707 | 293 | 1840 | 0 | 2840 | 169658 | 3 | ChandelierW 1294, LightFixture_5 302, LightFixture_6 244 |
 | `rc_roof_deck` | 1968 | 499 | 3224 | 0 | 5691 | 466388 | 5 | ChandelierW 1523, LightFixture_10 670, LightFixture_10 558, LightFixture_5 246, LightFixture_15 227 |
 
-- WARN `ReviewCameras/TopDownPlan` @ (9.00, 120.00, 20.00): 6971 draw calls in view (main 1856 + lit 589 + shadow 4526 + cast 0) > 4000
 - WARN `ReviewCameras/rc_art_store` @ (31.00, -2.50, 19.00): 6076 draw calls in view (main 2201 + lit 620 + shadow 3255 + cast 0) > 4000
 - WARN `ReviewCameras/rc_back_corridor` @ (3.60, 1.70, 7.00): 6836 draw calls in view (main 2449 + lit 636 + shadow 3751 + cast 0) > 4000
 - WARN `ReviewCameras/rc_balcony` @ (13.50, 7.10, 17.00): 4554 draw calls in view (main 1728 + lit 308 + shadow 2518 + cast 0) > 4000
@@ -420,7 +426,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - WARN `ReviewCameras/rc_conservation` @ (43.00, 7.10, 11.00): 5611 draw calls in view (main 1713 + lit 593 + shadow 3305 + cast 0) > 4000
 - WARN `ReviewCameras/rc_ext_court` @ (-8.00, 1.70, 29.00): 5424 draw calls in view (main 1383 + lit 639 + shadow 3402 + cast 0) > 4000
 - WARN `ReviewCameras/rc_ext_mews` @ (-30.00, 1.70, -4.00): 6892 draw calls in view (main 1777 + lit 589 + shadow 4526 + cast 0) > 4000
-- WARN `ReviewCameras/rc_ext_parade` @ (22.00, 1.70, 41.00): 7635 draw calls in view (main 2432 + lit 712 + shadow 4491 + cast 0) > 4000
+- WARN `ReviewCameras/rc_ext_parade` @ (22.00, 1.70, 41.00): 7634 draw calls in view (main 2431 + lit 712 + shadow 4491 + cast 0) > 4000
 - WARN `ReviewCameras/rc_ext_wexley` @ (56.00, 1.70, 10.00): 7207 draw calls in view (main 2082 + lit 643 + shadow 4482 + cast 0) > 4000
 - WARN `ReviewCameras/rc_hall_entry` @ (22.00, 1.70, 29.00): 2527 main-pass draw calls in view > 2500
 - WARN `ReviewCameras/rc_hall_entry` @ (22.00, 1.70, 29.00): 7185 draw calls in view (main 2527 + lit 752 + shadow 3906 + cast 0) > 4000
@@ -447,7 +453,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 4, chair 4, desk 12, table 2, wall_unit 29, desk_chair 8, monitor 6
+- classified: chair 4, counter 4, desk 12, table 2, wall_unit 29, desk_chair 8, monitor 6
 - 12 seats, 18 tables/desks/counters, 48 doors checked
 
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)
