@@ -49,6 +49,11 @@ var escape_label: Label
 var subtitle_label: Label
 ## Holds subtitle_label: a long line scrolls here instead of growing the page.
 var subtitle_scroll: ScrollContainer
+## The intel column (the job, objectives, known security): scrolls when it is taller than the page (720p).
+var intel_scroll: ScrollContainer
+## LEAD r307 (720p: KNOWN SECURITY cut mid-line): a fade over the column's foot while more lies below, with the
+## column's scroll bar shown; hidden at the end of the column or when it all fits.
+var intel_fade: TextureRect
 var play_button: Button
 var continue_button: Button
 var back_button: Button
@@ -161,11 +166,48 @@ func _build_contact_column(body: HBoxContainer) -> void:
 
 
 func _build_intel_column(body: HBoxContainer) -> void:
+	var wrap: Control = Control.new()  # the scroll plus the fade over its foot
+	wrap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	wrap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	body.add_child(wrap)
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(scroll)
+	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	wrap.add_child(scroll)
+	intel_scroll = scroll
+	intel_fade = TextureRect.new()
+	var grad: Gradient = Gradient.new()
+	grad.set_color(0, Color(UiTokens.INK_0, 0.0))
+	grad.set_color(1, Color(UiTokens.INK_0, 0.92))
+	var tex: GradientTexture2D = GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill_from = Vector2(0.5, 0.0)
+	tex.fill_to = Vector2(0.5, 1.0)
+	intel_fade.texture = tex
+	intel_fade.stretch_mode = TextureRect.STRETCH_SCALE
+	intel_fade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	intel_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	intel_fade.anchor_left = 0.0
+	intel_fade.anchor_right = 1.0
+	intel_fade.anchor_top = 1.0
+	intel_fade.anchor_bottom = 1.0
+	intel_fade.offset_top = -float(UiTokens.S7)
+	intel_fade.offset_right = -float(UiTokens.S3)  # leave the scroll bar uncovered
+	intel_fade.visible = false
+	wrap.add_child(intel_fade)
+	var more: Label = UiBuild.caption(&"ui.briefing.more_below")
+	more.name = "MoreBelow"
+	more.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	more.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+	more.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	more.offset_top = -float(UiTokens.S4)
+	more.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	intel_fade.add_child(more)
+	var vbar: VScrollBar = scroll.get_v_scroll_bar()
+	vbar.value_changed.connect(func(_v: float) -> void: _update_intel_fade())
+	vbar.changed.connect(_update_intel_fade)
+	scroll.resized.connect(_update_intel_fade)
 	var col: VBoxContainer = UiBuild.vbox(12)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(col)
@@ -182,6 +224,20 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	security_box = UiBuild.vbox(UiTokens.S1)
 	security_box.name = "KnownSecurity"
 	col.add_child(security_box)
+
+
+## The fade shows while the intel column has more below its visible part (see intel_fade).
+func _update_intel_fade() -> void:
+	if intel_scroll == null:
+		return
+	var bar: VScrollBar = intel_scroll.get_v_scroll_bar()
+	intel_fade.visible = bar.max_value - bar.page > float(intel_scroll.scroll_vertical) + 2.0
+
+
+## True when the intel column is taller than its view (it scrolls; the fade / scroll bar say so).
+func intel_overflows() -> bool:
+	var bar: VScrollBar = intel_scroll.get_v_scroll_bar()
+	return bar.max_value - bar.page > 2.0
 
 
 ## PO-4 section head: a brass caption (style.md §4).
