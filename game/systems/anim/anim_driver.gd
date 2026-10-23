@@ -691,9 +691,13 @@ func choose_clip() -> StringName:
 
 
 ## The body's idle / idle_alert variant (VARIANT_GROUPS) for the plain stands only: after the shield remap (a raised
-## shield keeps its shield idle), never the armed idle_alert_<kind> holds.
+## shield keeps its shield idle), never the armed idle_alert_<kind> holds nor a body showing a weapon.
 func _idle_variant(c: StringName) -> StringName:
-	return pose_variant(c) if c == &"idle" or c == &"idle_alert" else c
+	if c != &"idle" and c != &"idle_alert":
+		return c
+	if weapon_visual != null and is_instance_valid(weapon_visual) and weapon_shown(c):
+		return c  # D 7a1f91d3 (couriers): an armed body never stretches / checks the watch with the pistol in hand
+	return pose_variant(c)
 
 
 ## A4-02: choose_clip() at most once per tick unless a one-shot started since (TurnInPlace asks first; the tick reuses
