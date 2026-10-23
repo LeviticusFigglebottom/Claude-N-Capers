@@ -383,9 +383,14 @@ def bandana(kit: Kit) -> None:
         o.tube(knot, tail, lambda t: (0.011 - 0.006 * t) * k, BANDANA, sides=6, weights=lambda p, t: sg.HEAD_W)
     kit.add_head(knot)
     kit.notes["hat"] = "rust bandana tied on the head, knot at the nape (Headwear)"
-    for x in (-0.030, 0.030):                                                         # DB-G3: sunglasses hung
-        n.front_item(kit, x, 1.395, (0.048, 0.036, 0.004), "char_button_dark", lift=0.003)  # at the collar
-    n.front_item(kit, 0.0, 1.408, (0.014, 0.005, 0.003), "char_button_dark", lift=0.003)
+    # DB-G3: sunglasses hooked on the right chest (clear of the sling) by one temple arm, hanging at an angle (not a
+    # centred "bow tie")
+    tilt = Vector((-0.55, 0.0, 1.0))
+    for x, z in ((0.100, 1.300), (0.070, 1.322)):
+        n.front_item(kit, x, z, (0.044, 0.034, 0.004), "char_button_dark", lift=0.003, up=tilt)
+    n.front_item(kit, 0.085, 1.318, (0.012, 0.005, 0.003), "char_button_dark", lift=0.004, up=tilt)
+    n.front_item(kit, 0.058, 1.370, (0.005, 0.070, 0.003), "char_button_dark", lift=0.004,
+                 up=Vector((-0.25, 0.0, 1.0)))                                         # the temple arm
     kit.notes["look"] = ("bandana: rust head bandana, concrete-grey fleece pull-over, drab cargos, green rubber "
                          "boots, fingerless gloves; sling across the chest")
 
