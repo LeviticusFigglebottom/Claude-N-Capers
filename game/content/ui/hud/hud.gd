@@ -82,7 +82,8 @@ var status: StatusPanel
 var custody: CustodyPanel
 var captain: CaptainPanel
 var stamina: StaminaBar
-## The crosshair: hidden while casing / civilian, fades in once masked (lead ruling, PD2).
+## The crosshair: hidden while casing / civilian, fades in once masked (lead ruling, PD2), and out while aiming down
+## sights (PO-22, ui_hud v1.23: alpha x (1 - LocalHudModel.ads_blend)).
 var crosshair: Label
 ## PO-1 mask-up progress ring around the crosshair while mask up is held.
 var mask_ring: MaskProgress
@@ -100,6 +101,8 @@ var onboarding: OnboardingCard
 var scoreboard: ScoreboardOverlay
 var toast_label: Label
 var secured_bags: int = 0
+## The crosshair's masked / casing fade before the ADS factor (PO-22).
+var _crosshair_base: float = 0.0
 var _subtitles: WeakRef = null
 var _subtitle_seek: int = 0
 var _lookup_t: float = 0.0
@@ -621,9 +624,12 @@ func _update_crosshair(delta: float) -> void:
 		mode = &"masked" if bool(model.get(&"masked")) else &"casing"
 	var target: float = 1.0 if mode == &"masked" or model == null else 0.0
 	if not UiTokens.motion_ok():
-		crosshair.modulate.a = target
+		_crosshair_base = target
 	else:
-		crosshair.modulate.a = move_toward(crosshair.modulate.a, target, delta / UiTokens.T_SLOW)
+		_crosshair_base = move_toward(_crosshair_base, target, delta / UiTokens.T_SLOW)
+	# PO-22 (PD2 hides it in ADS): P writes ads_blend (0 hip .. 1 ADS, already smoothed); hip bloom is untouched.
+	var ads: Variant = model.get(&"ads_blend") if model != null else null
+	crosshair.modulate.a = _crosshair_base * (1.0 - clampf(float(ads), 0.0, 1.0) if ads != null else 1.0)
 
 
 ## Bind the local HUD model found through group G.LOCAL_HUD_MODEL. Returns it (or null).
