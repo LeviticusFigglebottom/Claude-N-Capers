@@ -128,3 +128,4 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimicable = false

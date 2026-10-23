@@ -101,3 +101,12 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"perk.yakuza": {
+"low_health_threshold": 0.25,
+"armor_regen_max_add": 0.2,
+"move_speed_max_add": 0.2,
+"blocks_regen": true
+}
+}
+mimicable = true

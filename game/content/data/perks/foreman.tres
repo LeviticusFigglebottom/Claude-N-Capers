@@ -103,3 +103,20 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"team.damage_reduction_hostage": {
+"absorb_per_hostage": 5.0,
+"max_hostages": 4
+},
+&"perk.crew_chief": {
+"team_dr": 0.0,
+"self_low_health_threshold": 0.5,
+"self_low_health_dr_mult": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.0,
+"hostage_health_per": 0.06,
+"hostage_stamina_per": 0.12,
+"hostage_max_count": 4
+}
+}
+mimicable = true

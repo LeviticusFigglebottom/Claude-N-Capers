@@ -1041,6 +1041,44 @@ perk.lifeline.card7.name,Tough Stock
 perk.lifeline.card7.desc,You get another 20% more health (40% in total).
 perk.lifeline.card9.name,Bloodbond
 perk.lifeline.card9.desc,"You can use the ampule while downed: it gets you up until it ends, and reviving a teammate or using a doctor bag before then keeps you up. Its slices shrink to 10%."
+ui.perks.choice,"BONUS: {name}. {desc} Press to change."
+ui.perks.mimic,"COPIES {name}: {desc} Press to change."
+ui.perks.mimic_none,Press to choose a deck to copy.
+perk.understudy.name,Understudy
+perk.understudy.desc,"Build your own deck: pick a bonus on every deck card, and finish by copying another deck's last card."
+perk.understudy.card1.name,Second Draw
+perk.understudy.card1.desc,"10 kills with one weapon reload the other one. Swapping to it within 3 s is near instant."
+perk.understudy.card3.name,Head Games
+perk.understudy.card3.desc,"Each headshot heals you 10 health, at most once every 2 s."
+perk.understudy.card5.name,Return to Sender
+perk.understudy.card5.desc,"Bullets you dodge fly back at the shooter."
+perk.understudy.card7.name,Grace Period
+perk.understudy.card7.desc,"When your health drops below 50% you take no health damage for 2 s, at most once every 15 s."
+perk.understudy.card9.name,Copy Cat
+perk.understudy.card9.desc,"Copy the last card of another deck you choose."
+perk.understudy.choice.health.name,Thick Skin
+perk.understudy.choice.health.desc,You get 20% more health.
+perk.understudy.choice.armor.name,Plated
+perk.understudy.choice.armor.desc,You get 5% more armor.
+perk.understudy.choice.dodge.name,Quick Step
+perk.understudy.choice.dodge.desc,You get 5% more dodge.
+perk.understudy.choice.speed.name,Low Rider
+perk.understudy.choice.speed.desc,You move 10% faster while crouched or carrying a bag.
+perk.hustler.mimic.desc,Your armor recovers 10% faster.
+perk.ironclad.mimic.desc,"You get 5% more armor, and your crew's armor recovers 10% faster."
+perk.slipper.mimic.desc,"Your shots pierce 25% more armor, and you swap weapons 80% faster."
+perk.prowler.mimic.desc,"You move 10% faster while crouched. Standing still, your armor recovers 20% faster."
+perk.bulk.mimic.desc,"You get 60% more health and regenerate 3% of it every 5 s."
+perk.clean_sweep.mimic.desc,"Your armor recovers faster, and after it breaks it comes back within 1.5 s."
+perk.foreman.mimic.desc,"Each hostage (up to 4) gives you and your crew 6% more health and 12% more stamina, and the crew absorbs 5 damage per hit per hostage."
+perk.knuckles.mimic.desc,"Each melee hit heals you 20% of your health, at most once every 10 s."
+perk.incumbent.mimic.desc,"Kills while your armor is down speed up its recovery."
+perk.long_odds.mimic.desc,Picking up ammo heals you 16 health (every 3 s at most).
+perk.overclock.mimic.desc,"Dealing damage gives you 30 armor, at most once every 1.5 s."
+perk.bloodletter.mimic.desc,"In the suit or light vest, damaging an enemy heals you over 4.2 s. Your shots pierce 10% more armor."
+perk.frenzy.mimic.desc,"Your damage builds Frenzy; every 30 absorbs 1 damage per hit, for you and your crew. It fades by 60% + 80 every 8 s."
+perk.inkwork.mimic.desc,"Below full health your armor recovers up to 20% faster and you move up to 20% faster, peaking at 25% health."
+perk.road_crew.mimic.desc,"Each kill by you or your crew gives you 5 health and 5 armor, up to 4 times every 4 s."
 ui.skills.title,Skills
 ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic

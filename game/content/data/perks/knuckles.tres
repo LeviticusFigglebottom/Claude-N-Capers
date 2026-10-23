@@ -118,3 +118,17 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"perk.infiltrator": {
+"surrounded_min_enemies": 3,
+"surrounded_radius_m": 6.0,
+"surrounded_dr": 0.0,
+"melee_chain_mult": 1.0,
+"melee_chain_window_s": 7.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.0,
+"melee_hit_heal_fraction": 0.2,
+"melee_hit_heal_cooldown_s": 10.0
+}
+}
+mimicable = true

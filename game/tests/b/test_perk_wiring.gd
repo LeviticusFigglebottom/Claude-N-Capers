@@ -79,6 +79,8 @@ const GENERIC: Dictionary = {
 	&"perk.veil": [[&"defense.dodge_add", &"", "add", 0.15]],
 	&"perk.buddy_system": [[&"defense.health_mult", &"", "mult", 1.4]],
 	&"perk.lifeline": [[&"defense.health_mult", &"", "mult", 1.4]],
+	# D-164: default choice 0 (+20% health) on cards 1/3/5/7 stacks additively to +80%.
+	&"perk.understudy": [[&"defense.health_mult", &"", "mult", 1.8]],
 }
 
 const ARMOR_IDS: Array = [&"armor.tailored_suit", &"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest",
@@ -170,6 +172,11 @@ const PARAMS: Dictionary = {
 			"usable_while_downed": true},
 		&"perk.throwable": {"item_id": &"throwable.leech_ampule"},
 	},
+	&"perk.understudy": {  # D-164: A's perk.copycat
+		&"perk.copycat": {"tactical_reload_kills": 10, "quick_swap_window_s": 3.0, "headshot_heal": 10.0,
+			"headshot_heal_cooldown_s": 2.0, "dodge_ricochet": true, "ricochet_cooldown_s": 0.45, "grace_health_threshold": 0.5,
+			"grace_immunity_s": 2.0, "grace_cooldown_s": 15.0},
+	},
 }
 
 ## Hook coverage (perk_decks.md "Hook coverage"): base key -> file that reads it with
@@ -223,6 +230,7 @@ const HOOKED: Dictionary = {
 	&"perk.sicario": "res://systems/combat/perks/perk_sicario.gd",  # D-163 (A 36df6d56)
 	&"perk.tag_team": "res://systems/combat/perks/perk_tag_team.gd",
 	&"perk.leech": "res://systems/combat/perks/perk_leech.gd",  # D-164 (A 9c4622d6)
+	&"perk.copycat": "res://systems/combat/perks/perk_copycat.gd",  # D-164 (A 5b85146c)
 }
 ## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-164.
 const MISSING: Array = []
@@ -311,7 +319,7 @@ func _same_array(a: Array, b: Array) -> bool:
 # --- Full deck through the real path ---------------------------------------------------------------
 
 func test_every_deck_at_nine_cards_reaches_modifiers() -> void:
-	assert_eq(GENERIC.size(), 21, "expectations cover 21 decks")
+	assert_eq(GENERIC.size(), 22, "expectations cover 22 decks")
 	for deck_id: StringName in GENERIC:
 		assert_true(_deck(deck_id) != null, "%s exists" % deck_id)
 		Modifiers.clear_all()

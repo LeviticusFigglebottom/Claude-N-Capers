@@ -49,7 +49,7 @@ func _points_for(cards: int, deck_id: StringName) -> int:
 
 func test_lists_14_decks_and_9_cards() -> void:
 	var s: PerkDeckScreen = await _make(0)
-	assert_eq(s.deck_buttons.size(), 21)
+	assert_eq(s.deck_buttons.size(), 22)
 	assert_eq(PerkProgress.decks(_tw)[0].id, _tw.deck_order[0], "data order")
 	s.preview(BULK)
 	var visible: int = 0

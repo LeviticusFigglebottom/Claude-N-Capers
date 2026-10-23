@@ -86,6 +86,7 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 | Veil (D-163) | Sicario | `perk.sicario`, `perk.throwable` (`throwable.smoke_bomb`) | `defense.dodge_add` 0.15 |
 | Buddy System (D-163) | Tag Team | `perk.tag_team`, `perk.throwable` (`throwable.gas_dispenser`) | `defense.health_mult` → 1.4 |
 | Lifeline (D-164) | Leech | `perk.leech`, `perk.throwable` (`throwable.leech_ampule`) | `defense.health_mult` → 1.4 |
+| Understudy (D-164) | Copycat | `perk.copycat` + a chosen option per card + the mimicked deck's `mimic_grants` | per choice (default: `defense.health_mult` → 1.8) |
 
 Notes on PD2 deviations:
 * **Clean Sweep** merges Hitman and Sociopath (fidelity table). Its cards are: Sociopath Tension
@@ -347,6 +348,29 @@ Card 1 also grants `perk.throwable {item_id: &"throwable.gas_dispenser"}`; cards
 
 Card 1 also grants `perk.throwable {item_id: &"throwable.leech_ampule"}`; cards 3 / 7 are `defense.health_mult` 1.2 / 1.1666667.
 
+### `perk.copycat` (Understudy, D-164)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| tactical_reload_kills / quick_swap_window_s | int / float | kills / s | 10 / 3.0 | 1 | This many kills with the equipped weapon refill the holstered one's magazine (from reserve ◇); swapping to it within the window is near instant. |
+| headshot_heal / headshot_heal_cooldown_s | float | HP / s | 0 → 10.0 / 2.0 | 3 | Any headshot hit heals, at most once per cooldown. |
+| dodge_ricochet / ricochet_cooldown_s | bool / float | flag / s | false → true / 0.45 | 5 | A dodged bullet hits its shooter for its damage (◇), at most once per cooldown (0.35 s on the top difficulties, A's tweak). |
+| grace_health_threshold / grace_immunity_s / grace_cooldown_s | float | fraction / s / s | 0.5 / 0 → 2.0 / 15.0 | 7 | Dropping below the threshold gives this long without health damage, at most once per cooldown. |
+
+**Choices (cards 1/3/5/7, D-164).** Each of these cards also carries `"choices"`; the player picks one per card
+(`Loadout.perk_choices`, card index → option; default 0): Thick Skin `defense.health_mult` 1.2, Plated
+`defense.armor_mult` 1.05, Quick Step `defense.dodge_add` 0.05, Low Rider `movement.crouch_speed_mult` 1.1 +
+`loot.carry_speed_penalty_mult` 0.9. The same MULT picked on several cards stacks additively like PD2: LoadoutResolver
+grants the n-th pick the cumulative ratio (rule 2 at resolve time), so four health picks give 1.8.
+
+**Mimic (card 9, D-164).** Card 9 carries `"mimic": true` and grants `Loadout.perk_mimic_deck`'s
+`PerkDeckDef.mimic_grants`: that deck's card 9 as standalone keys. A PARAMS mimic sets every field the card 9 did not
+change to its neutral value, so only that card's effect runs. Mimicable (15): Hustler, Ironclad, Slipper, Prowler,
+Bulk (the card's own +60% health and regen), Clean Sweep, Foreman, Knuckles, Incumbent, Long Odds, Overclock
+(`tick_by_armor` {} = keep normal armor regen; A), Bloodletter (the whole card-9 grinder, since its card-9 change is
+only a duration), and the standalone variants Frenzy (PD2's Hysteria Stacks mimic), Inkwork ◇ and Road Crew ◇.
+Not mimicable (their card 9 needs the deck's own item, as in PD2): Composure, Overlord, Hacker, Veil, Buddy System,
+Lifeline, and Understudy itself. `perk.<deck>.mimic.desc` describes each mimic for the deck screen.
+
 ### `perk.throwable` (Composure, Overlord)
 | Field | Type | Semantics |
 |---|---|---|
@@ -396,7 +420,7 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 are hooked under the field names of the schema tables above.
 D-163: `perk.sicario` and `perk.tag_team` (A `perk_sicario.gd` / `perk_tag_team.gd`) likewise.
 
-D-164: `perk.leech` (A `perk_leech.gd`) likewise.
+D-164: `perk.leech` and `perk.copycat` (A `perk_leech.gd` / `perk_copycat.gd`) likewise.
 
 **Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's
