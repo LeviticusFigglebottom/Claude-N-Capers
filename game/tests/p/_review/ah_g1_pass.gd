@@ -124,8 +124,8 @@ func _ah_launch(loud_kit: bool = false) -> bool:
 	# gear_cloak (the foyer, across the counter): reachable with no door, so the gear never decides the result.
 	var opts: Dictionary = {"preplan": {"force_variants": {&"gear_drop": [&"gear_cloak"]}}}
 	if loud_kit:
-		if not Net.is_authority():
-			Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no session
+		if Net.crew.is_empty():
+			Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
 	if not await _launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, _ah_diff(), opts, false):
 		return false
@@ -144,8 +144,8 @@ func _ah_launch_bots(loud_kit: bool) -> bool:
 	var opts: Dictionary = {"preplan": {"force_variants": {&"gear_drop": [&"gear_cloak"]}}, "ai_teammates": 3,
 		"crew_ai": true}
 	if loud_kit:
-		if not Net.is_authority():
-			Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no session
+		if Net.crew.is_empty():
+			Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
 	rt = await HeistLauncher.launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, _ah_diff(), self, opts)
 	if rt == null:

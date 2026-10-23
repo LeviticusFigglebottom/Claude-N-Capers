@@ -95,8 +95,8 @@ func _deck_launch(deck: StringName) -> bool:
 		await wait_s(0.5)
 	_kills = 0
 	_heal_events.clear()
-	if not Net.is_authority():
-		Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no session
+	if Net.crew.is_empty():
+		Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
 	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, Enums.Difficulty.ROUTINE, self,
 		{"skip_casing": true, "ai_teammates": 3, "crew_ai": true, "loadouts": {Net.local_slot(): _deck_loadout(deck)}})
 	if rt == null:
@@ -111,6 +111,10 @@ func _deck_launch(deck: StringName) -> bool:
 	if not EventBus.npc_killed.is_connected(_on_kill):
 		EventBus.npc_killed.connect(_on_kill)
 	note("launched %s deck %s, spawn %s" % [GH_HEIST, deck, Po5Pilot._v(c.global_position)])
+	var eff: Loadout = rt.crew_loadouts.get(c.slot) as Loadout
+	note("deck check: local_slot %d, crew.slot %d, effective deck %s, perks %s, perk.throwable %s" % [Net.local_slot(),
+		c.slot, eff.perk_deck if eff != null else &"-", PerkHooks.of(c).components.keys(),
+		Modifiers.params(c.slot, &"perk.throwable")])
 	if not await _mask():
 		return await _fail("mask")
 	if _fast:
