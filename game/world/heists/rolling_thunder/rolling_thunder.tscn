@@ -24274,6 +24274,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 20.5
 script = ExtResource("278_rt")
 targets = Array[NodePath]([NodePath("GoodsLiftLanding2"), NodePath("GoodsLiftLandingR")])
 car_size_m = Vector3(2.6, 2.4, 2.7)
+send_prompt_keys = Array[StringName]([&"ui.prompt.send_lift_ground", &"ui.prompt.send_lift_deck2", &"ui.prompt.send_lift_roof"])
 door_fold = true
 visual_scene = ExtResource("279_rt")
 objective_tag = &"goods_lift"

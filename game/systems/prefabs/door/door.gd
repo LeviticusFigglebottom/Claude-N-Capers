@@ -114,6 +114,9 @@ const LEAF_GLASS_KEYWORDS: PackedStringArray = ["glass"]
 @export var stealth_only: bool = false
 @export var loud_only: bool = false
 @export var casing_allowed: bool = false
+## S1.3 (D-075 guest doors): a civilian player (no gear yet) may open this door. False = a staff door: a civilian is
+## refused (ui.blocked.civilian), locked or not.
+@export var civilian_allowed: bool = false
 @export var noise: StringName = &"silent"
 
 var is_open: bool = false
@@ -664,6 +667,7 @@ func _apply_lock_interaction() -> void:
 	if interactable == null:
 		return
 	interactable.casing_allowed = casing_allowed
+	interactable.civilian_allowed = civilian_allowed
 	interactable.speed_modifier_key = &""
 	interactable.consumes_item = false
 	interactable.interaction_time_s = _default_interaction_time() if interaction_time_s < 0.0 else interaction_time_s
