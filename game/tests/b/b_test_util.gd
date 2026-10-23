@@ -9,6 +9,12 @@ static func profile_root() -> String:
 	return "user://test_profiles_%d" % OS.get_process_id()
 
 
+## Pins MenuFlow.show_hub() to the 2D HubMenu (SafehouseHost.menu_hub_only) for tests that drive the station menu,
+## so they pass whether or not ENV C's 3D safehouse sits at the contract path. Call with false in after_all.
+static func pin_menu_hub(on: bool) -> void:
+	SafehouseHost.menu_hub_only = on
+
+
 ## Per-process GameSettings root (B5-01): settings tests never touch the real user://settings.cfg.
 static func settings_root() -> String:
 	return "user://test_settings_%d" % OS.get_process_id()

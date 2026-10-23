@@ -21,6 +21,7 @@ class FakeCrew:
 
 
 func before_all() -> void:
+	BTestUtil.pin_menu_hub(true)  # C\'s 3D safehouse at the contract path: these drive the 2D hub
 	SaveService.root_dir = BTestUtil.profile_root()
 	GameSettings.root_dir = BTestUtil.settings_root()
 	_prev = GameSettings.current()
@@ -33,6 +34,7 @@ func after_each() -> void:
 
 
 func after_all() -> void:
+	BTestUtil.pin_menu_hub(false)
 	SaveService.delete_profile(0)
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
 	if FileAccess.file_exists(GameSettings.file_path()):
