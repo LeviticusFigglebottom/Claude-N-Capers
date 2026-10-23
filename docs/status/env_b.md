@@ -4,6 +4,27 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### AH VO run coverage (LEAD r306: a stealth pass + forced rare events; scratch tree = env/b-content + trunk + A 871fc204 + C)
+Runs, all PASS:
+- loud seed 1234 Routine;
+- stealth seed 1234 + seeds 2-9;
+- loud with every bad rare event + extra_product forced (scratch-only chance 1.0, min_difficulty dropped), seed 1234 Routine, CREW_DMG 0.25 (1225 s);
+- a Brutal forced run FAILED: the pilot went to custody at 108 s, which is harness survival, not content.
+
+Stealth VO was captured with a scratch-only voice_line_requested logger in po5_flow_ah_stealth (reverted). 0 missing string keys in every log.
+Said in the runs: **26 of 43** AH lines. The 17 never said:
+
+| Lines | Why | Owner / fix |
+|---|---|---|
+| vo.mercer.afterhours_gear_{wc,cloak,booth,van} (4; cloak only via the harness note) | **BUG: `AfterhoursMission.gear_line()` is never called by the mission** (only A's tests call it). Mercer never names the gear spot. The seeds rolled all 4 slots (cloak x5, wc x2, booth, van) and no line played. vo_coverage counts them as said through the `%s` builder inside the dead function (a false positive) | **A**: `say(gear_line())` after the intro / contact intro |
+| vo.mercer.afterhours_intro, vo.accountant.afterhours_contact_intro | said in _on_mission_start, before the harness logger attaches (A's test_ah_a1_mission asserts both) | harness gap: A could log from runtime start |
+| vo.{accountant,mercer}.briefing_afterhours_* (5) | played by the briefing's Play Briefing, never in a heist run; test_briefing + vo_coverage's briefing builder cover them | none |
+| vo.mercer.afterhours_couriers, _off_duty_cop | both events forced active, but the couriers (14:00) and the cop's spotting are stealth-phase; the loud pilot is loud from 9 s and the stealth route ends at 24 s heist time | A: a stealth flow that waits to 14:00 / passes the cop |
+| vo.mercer.afterhours_lasers, _last_pager | the stealth route skips the U12 laser room and answers no pager (detection shortcut) | A: route variant (prod_private) / a pager step |
+| vo.dj.afterhours_shoutout_1..3 | every 3-5 min of the set; the stealth route is 24 s, and loud cuts the music at 9 s | A: a long stealth soak, or the mission's shoutout timer in a unit test |
+
+Surprise strings (ui.briefing.sec.event.afterhours.*) are briefing UI, not run-log text: test_briefing_intel shows all 4 at Brutal (off_duty from Hazardous, co_op from Brutal).
+
 ### AH done-check, B slice (LEAD r305, early; D-115 style)
 Tree: env/b-content + trunk r304 + env/a-core + env/c-worlds, with the local AH un-hide applied (`hidden` dropped in
 heist_list), after --import.
