@@ -145,20 +145,6 @@ def _key_fob(kit: Kit, card_z: float) -> None:
     kit.add_gear(key.to_mesh(mtx, anchor=loc))
 
 
-def _bead_necklace(kit: Kit, mat: str) -> None:
-    """OF-G3: a single strand of beads lying round the base of the neck, dipping at the front."""
-    fit, k = kit.fit, kit.k
-    nk = g.Neck(fit)
-    hull = kit.hull()
-    gear = Mesh()
-    for i in range(18):
-        a = math.tau * i / 18
-        t = 0.0 if abs(math.cos(a)) < 0.3 else -0.25 * max(0.0, math.cos(a))
-        p = o.push_out(nk.point(a, t, 0.006 * k), hull, 0.004 * k)
-        gear.extend(gk.button(hull, p, mat, r=0.0045, toward=nk.radial(a), k=k, thick=0.004))
-    kit.add_gear(gear)
-
-
 def _pencil_ear(kit: Kit, side: float = 1.0) -> None:
     """OF-G3: a carpenter's pencil tucked behind the ear (``side`` +1 = +x)."""
     fit, k = kit.fit, kit.k
@@ -355,7 +341,7 @@ def office_skirt(kit: Kit) -> None:
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.18)
     n.watch(kit, "L", strap="brass", case="brass")
-    _bead_necklace(kit, "char_shirt_white")                                     # OF-G3
+    n.bead_necklace(kit, "char_shirt_white")                                     # OF-G3
     kit.notes["look"] = ("Office worker customer (OF-D1): navy knee pencil skirt, white blouse, open mustard cardigan, "
                          "black low heels, blue office lanyard + card, gold watch")
 

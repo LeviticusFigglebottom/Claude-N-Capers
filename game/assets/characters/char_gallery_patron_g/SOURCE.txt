@@ -12,8 +12,8 @@ body_faces_culled: 2792
 body_params: {"age": 0.5, "beard_shadow": 0.0, "build": 0.5, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.71, "lip": "char_lip_rose", "skin": 5}
 bones: 52
 look: Gala guest (woman, 40s): amethyst satin dress with short sleeves, wide black satin belt, gold earrings, dark chignon
-meshes: Body,Hair,Headwear,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25568
-tris_by_mesh: {"Body": 13160, "Hair": 1856, "Headwear": 1584, "Outfit": 8968}
+tris: 25656
+tris_by_mesh: {"Body": 13160, "Gear": 88, "Hair": 1856, "Headwear": 1584, "Outfit": 8968}
