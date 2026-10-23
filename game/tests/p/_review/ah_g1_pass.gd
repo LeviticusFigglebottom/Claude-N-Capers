@@ -454,16 +454,20 @@ func _safe() -> Safe:
 
 ## Keypad (the code read) or the drill (placed, jams fixed); true once open.
 func _open_safe(safe: Safe, have_code: bool) -> bool:
-	var comp: InteractableComponent = _comp(safe)
+	# Not the keypad (no code read, or loud: lockdown): the drill goes on the DrillPoint that targets the safe (AH:
+	# Gameplay/Loot/SafeDrill), not on the safe's own interactable (r305: "place_drill -> OK in 0.0 s", never drilled).
+	var dp: DrillPoint = _drill_point_for(safe) if not have_code or rt.went_loud else null
+	var comp: InteractableComponent = _comp(dp) if dp != null else _comp(safe)
 	if comp == null:
 		_row("safe", "FAIL", "no interactable", "A safe / C map")
 		return false
-	if not await _go_reach(safe.global_position, 0.6, 60.0):
-		_row("safe", "FAIL", "not reached", _owner_for(safe.global_position))
+	var at: Vector3 = dp.global_position if dp != null else safe.global_position
+	if not await _go_reach(at, 0.6, 60.0):
+		_row("safe", "FAIL", "not reached", _owner_for(at))
 		return false
 	var t0: float = rt.heist_time_s
 	var k0: StringName = comp.kind
-	var method: StringName = safe.method_for(pilot.crew)
+	var method: StringName = &"drill" if dp != null else safe.method_for(pilot.crew)
 	await pilot.use(comp, 30.0, func() -> bool: return safe.opened or comp.kind != k0)
 	var jams: int = 0
 	if not safe.opened:
@@ -502,6 +506,15 @@ func _active_escape(max_s: float) -> EscapeZone:
 
 
 ## Bag the safe's cash (its contents' LootSpawns) and carry each to the secure zone at `esc` (G at the zone).
+## The DrillPoint whose `target` is `safe` (null when the map has none: the safe's own interactable then).
+func _drill_point_for(safe: Safe) -> DrillPoint:
+	for n: Node in rt.find_children("*", "DrillPoint", true, false):
+		var d: DrillPoint = n as DrillPoint
+		if d.target != NodePath("") and d.get_node_or_null(d.target) == safe:
+			return d
+	return null
+
+
 ## Unsecured loot.cash_bricks bags within SAFE_CASH_M of the safe, nearest first.
 func _safe_cash(safe: Safe) -> Array[LootBag]:
 	var out: Array[LootBag] = []
