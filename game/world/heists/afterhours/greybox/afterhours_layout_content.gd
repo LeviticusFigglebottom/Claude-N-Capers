@@ -37,7 +37,7 @@ const PREPLAN: Array = [
 	["pp_spawn_vip", "spawn", 1, [16.0, 4.2, 24.0], {"spawn_tag": "preplan_spawn_vip"}],
 	["pp_spawn_alley", "spawn", 0, [22.0, 0.0, -3.6], {"spawn_tag": "preplan_spawn_alley"}],
 	["pp_gear_wc", "insider", 0, [4.5, 0.0, 26.5], {"variant_group": "gear_drop", "slot": "gear_wc"}],
-	["pp_gear_cloak", "insider", 0, [22.9, 0.0, 25.5], {"variant_group": "gear_drop", "slot": "gear_cloak"}],
+	["pp_gear_cloak", "insider", 0, [21.5, 0.0, 25.5], {"variant_group": "gear_drop", "slot": "gear_cloak"}],
 	["pp_gear_booth", "insider", 0, [24.6, 0.0, 19.3], {"variant_group": "gear_drop", "slot": "gear_booth"}],
 	["pp_gear_van", "insider", 0, [27.4, 0.0, -4.0], {"variant_group": "gear_drop", "slot": "gear_van"}],
 	["pp_insider_keycard", "insider", 0, [19.0, 0.0, 1.5], {"variant_group": "keycard", "slot": "kc_staff_room"}],
@@ -484,7 +484,7 @@ const SLOT_ITEMS: Dictionary = {
 	],
 	"gear_cloak": [
 		[
-			"prefab", "gear_pickup", "GearBag", [22.4, 1.05, 25.5], 90.0, {"objective_tag": "gear"}, [23.3, 0.0, 25.5], {},
+			"prefab", "gear_pickup", "GearBag", [22.4, 1.05, 25.5], 90.0, {"objective_tag": "gear"}, [21.5, 0.0, 25.5], {},
 			"prop_bag_floor",
 		],
 	],

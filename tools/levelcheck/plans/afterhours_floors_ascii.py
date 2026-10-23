@@ -113,6 +113,7 @@ OPENINGS: List[Opening] = [
     Opening("G", "dd_main_w", 15, 28, "x", DOUBLE, True, "entrance, Marlin Ave"),
     Opening("G", "dd_main_e", 18, 28, "x", DOUBLE, True, "entrance, Marlin Ave"),
     # Balcony
+    Opening("G", "h_cloak", 22, 25.5, "z", 2.0, False, "the cloakroom hatch over the counter (gear_cloak, from G1)"),
     Opening("U", "w_u10_roof", 30, 7, "x", 1.2, False, "count-room window onto the BOH roof (open_window)"),
     Opening("U", "d_u10", 30, 14, "x", PERSONNEL, True), Opening("U", "d_u7", 34, 14, "x", PERSONNEL, True),
     Opening("U", "o_u6_u6b", 27, 16, "x", 2.0, True, "the L corridor"),

@@ -33,6 +33,7 @@ DOOR_HEAD = 2.2
 OPEN_HEAD = 2.4            # open passages (o_*): the G20 / U6b corridor mouths, the stair foot
 WIDE_HEAD = 2.6            # the balcony-to-VIP openings
 ROLLER_HEAD = 3.0
+HATCH = (1.05, 2.0)        # the cloakroom hatch (h_*): sill at the counter top, head
 WINDOW = (0.0, 2.1)        # sill, head above the floor (the count-room window onto the BOH roof: a full-height
                            # casement, the catalog window is h210)
 LADDER_GAP = (29.4, 30.6)  # the BOH roof parapet's gap at the drop-ladder hoops (x 30)
@@ -108,7 +109,7 @@ def _kind(key: str, a: str, b: str) -> Optional[Tuple[float, float, float, str]]
 def door_kit(op) -> Optional[Tuple[str, float, float]]:
     """(kind, hole half width, leaf width) of the door in a plan opening (rolling_thunder_geometry.kit); None for the
     open passages (o_*), windows (w_*) and the roller door (a closed shutter box at G1)."""
-    if op.name.startswith(("o_", "w_")) or op.name == "roller":
+    if op.name.startswith(("o_", "w_", "h_")) or op.name == "roller":
         return None
     if op.width is None or op.width <= 1.25:
         return ("service", 0.6, 1.1)
@@ -130,6 +131,8 @@ def _holes(key: str) -> List[Tuple[str, float, float, float, float, float]]:
         fixed = op.z if op.along == "x" else op.x
         if op.name.startswith("w_"):
             y0, y1 = ffl + WINDOW[0], ffl + WINDOW[1]
+        elif op.name.startswith("h_"):
+            y0, y1 = ffl + HATCH[0], ffl + HATCH[1]
         elif op.name == "roller":
             y0, y1 = ffl, ffl + ROLLER_HEAD
         elif op.name.startswith("o_u1"):
