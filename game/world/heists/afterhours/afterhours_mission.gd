@@ -69,6 +69,8 @@ var couriers: Array[NpcBase] = []
 var off_duty_cop: NpcBase = null
 var lockdown: bool = false
 var escape_open: bool = false
+## The safe's cash bags secured ([secure]: REQUIRED_BAGS of LOOT_SAFE; other loot does not count).
+var safe_secured: int = 0
 var _van_fade: bool = false
 var _secure_wait_done: bool = false
 var _first_bag_t: float = -1.0
@@ -96,7 +98,6 @@ func _on_mission_start() -> void:
 		{"marker_tags": [TAG_SAFE_LOOT]})
 	add_objective(&"secure", &"objective.afterhours.secure", Enums.ObjectiveState.ACTIVE,
 		{"bags": REQUIRED_BAGS, "count": 0, "total": REQUIRED_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
-	require_loot(&"secure", REQUIRED_BAGS)
 	add_objective(&"product", &"objective.afterhours.product", Enums.ObjectiveState.ACTIVE,
 		{"optional": true, "side": true, "marker_tags": [TAG_PRODUCT]})
 	var counting: bool = _slot_active(&"count_room", &"count_running")
@@ -233,15 +234,23 @@ func _on_loot_picked(bag_net_id: int, _crew_slot: int) -> void:
 		say(&"vo.mercer.afterhours_count_room")
 
 
-func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
+## [secure] counts the safe's cash only (afterhours.md §Required loot: 3 loot.cash_bricks; the product and the count's
+## cash are optional extras: the loud pilot's first three bags were parcels and count cash and closed it at t=201).
+func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void:
+	if loot_id != LOOT_SAFE:
+		return
+	safe_secured += 1
 	if _first_bag_t < 0.0:
 		_first_bag_t = elapsed_s
 		if went_loud:
 			start_timer(&"secure_wait", SECURE_WAIT_S, _on_secure_wait)
-	update_objective_data(&"secure", {"count": bags_secured, "total": REQUIRED_BAGS})
-	if bags_secured >= REQUIRED_BAGS and not _required_said:
-		_required_said = true
-		say(&"vo.mercer.afterhours_required_secured")
+	update_objective_data(&"secure", {"count": safe_secured, "total": REQUIRED_BAGS})
+	if safe_secured >= REQUIRED_BAGS:
+		if objective_state(&"secure") == Enums.ObjectiveState.ACTIVE:
+			complete(&"secure")
+		if not _required_said:
+			_required_said = true
+			say(&"vo.mercer.afterhours_required_secured")
 	_try_escape()
 
 
@@ -294,7 +303,7 @@ func _on_assault_phase_changed(assault_phase: int, _wave_index: int) -> void:
 
 
 func _try_escape() -> void:
-	if escape_open or bags_secured < REQUIRED_BAGS:
+	if escape_open or safe_secured < REQUIRED_BAGS:
 		return
 	if went_loud and not (_van_fade and _secure_wait_done):
 		if objective_state(&"escape_wait") == Enums.ObjectiveState.ACTIVE:

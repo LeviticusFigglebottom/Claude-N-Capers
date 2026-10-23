@@ -137,6 +137,12 @@ func test_stealth_line_gear_to_escape() -> void:
 	EventBus.interaction_completed.emit(_id(&"office_reader"), 0, &"keycard_reader")
 	assert_eq(m.state(&"office"), m.DONE, "the reader opens the office")
 	assert_true(_lines.has(&"vo.mercer.afterhours_office_open"), &"vo.mercer.afterhours_office_open")
+	var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	for b: LootBag in lm.bags().filter(func(x: LootBag) -> bool: return x.loot_id == &"loot.parcels").slice(0, 3):
+		lm._secure(b)
+	await wait_physics_frames(1)
+	assert_eq(m.state(&"secure"), m.ACTIVE, "3 parcels secured: [secure] wants the safe's cash (doc §Required loot)")
+	assert_eq(m.state(&"escape"), m.HIDDEN, "no escape on the product alone")
 	EventBus.item_picked_up.emit(&"item.code_note", 0)
 	assert_eq(m.state(&"safe_code"), m.DONE, "the code note")
 	m.mission.open_safe(&"code")

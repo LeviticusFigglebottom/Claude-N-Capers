@@ -4,6 +4,18 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-58) AH [secure] counts the safe cash only; OF drill visuals; auto_loud padlock-first (2026-10-23)
+- BUG (found by the AH loud runs on C's 2c3cbe99): `[secure]` used require_loot (any bag), so parcels + count cash
+  closed it at t=201 and seed 2 escaped with 4 parcels and the safe shut (heist_ended success). Now `[secure]` counts
+  only `loot.cash_bricks` (`safe_secured`, afterhours.md §Required loot); the secure_wait starts on the first cash bag.
+  a/test_ah_a1_mission 6/6 (3 parcels secured: [secure] stays ACTIVE, no escape), on C's head a/test_ah_mission_map 4/4,
+  a/test_x4_ah_stealth 3/3.
+- PO drill report (f80c19d4, 3a3fbba1): DrillPoint shows device art set as `visual_scene` only once placed (OF LidDrill
+  stood in the bank); audit: every targeted drill spot on 8 maps faces its target. OF LidDrill's drill-DOWN intent
+  needs a drill-down thermal variant + the spot facing down: routed to C (asset owner).
+- PO-5 auto_loud (e088b5d1): a bag with no path behind a padlocked gate / cage gets the padlock worked first (AH
+  StockCageGate: sawn, 2 jams fixed, open at t=97, the parcels then taken).
+
 ### (-57) AH safe cash spawns when the safe opens; ui_hud v1.23 ads_blend (2026-10-23)
 - `afterhours_mission.gd`: the safe's bags (safe_bags, +1 count_done) spawn at the safe_loot markers in `open_safe`
   (code / drill / left_open), not at the heist start: nothing in a shut safe (PD2), and what P's route 1 expected.
