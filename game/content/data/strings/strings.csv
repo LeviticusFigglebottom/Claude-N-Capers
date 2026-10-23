@@ -2996,6 +2996,11 @@ ui.kick.confirm,Kick {name} from the crew?
 ui.kick.yes,Kick
 ui.kick.no,Cancel
 ui.lobby.error.kicked,The host removed you from the lobby.
+ui.lobby.lan.title,Games on your network
+ui.lobby.lan.empty,"No games on your network. Ask the host for their lobby code, or join by address."
+ui.lobby.lan.busy,Another copy of the game on this computer is already listing network games.
+ui.lobby.lan.row,{name} · {job} · {players}/{max} players
+ui.lobby.lan.no_job,No job picked yet
 ui.lobby.code.title,Lobby code
 ui.lobby.code.value,{code}
 ui.lobby.code.copy,Copy

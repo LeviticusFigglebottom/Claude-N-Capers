@@ -11,7 +11,9 @@
 ## Lobby codes (B6-05, LobbyCode): the host sees its code (LAN IPv4 from IP.get_local_addresses() + the hosted
 ## port) in the header with Copy (DisplayServer.clipboard_set) and a hint that internet play needs the public
 ## address and a forwarded port; the Join panel has a code field (join_by_code() decodes it into the address /
-## port fields and runs the normal join()). No LAN host list: Net has no discovery API.
+## port fields and runs the normal join()). LAN host list (B6-05, ENV A's LanDiscovery): while the connect panel shows,
+## the Join panel lists the lobbies hosting on this network (name, job, players); pressing one fills the address /
+## port and joins. The host side (the beacon) is LobbySession's.
 ## Drop-in (B6-04): "Drop in to a running heist" next to Join (drop_in(): the address / port fields, or the code
 ## field when the address is empty) emits dropin_requested(address, port); MenuFlow opens DropInJoinScreen
 ## through DropInFlow (compact loadout pick -> connect -> HeistDropIn.request_join -> progress / cancel).
@@ -55,6 +57,10 @@ var loopback_button: Button
 ## Join by lobby code (B6-05).
 var code_edit: LineEdit
 var code_join_button: Button
+## B6-05 LAN list: one button per host row (LanDiscovery.hosts()), and the note shown when there is none.
+var lan_list: VBoxContainer
+var lan_note: Label
+var lan_buttons: Array[Button] = []
 var back_button: Button
 var error_label: Label
 ## Lobby mode widgets.
@@ -93,6 +99,8 @@ var block_label: Label
 var slot_widgets: Array[Dictionary] = []
 ## True while the default focus had to fall back to Leave (nothing else enabled yet).
 var _focus_parked: bool = false
+var _lan: LanDiscovery = null
+var _lan_listening: bool = false
 
 
 ## MenuFlow: the shared session and the profile being advertised (before or after entering the tree).
@@ -207,6 +215,12 @@ func _build_connect() -> VBoxContainer:
 	var dropin_hint: Label = UiBuild.label(&"ui.lobby.dropin_join.hint", UiBuild.DIM)
 	dropin_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	join_v.add_child(dropin_hint)
+	join_v.add_child(UiBuild.caption(&"ui.lobby.lan.title"))
+	lan_list = UiBuild.vbox(UiTokens.S1)
+	lan_list.name = "LanList"
+	join_v.add_child(lan_list)
+	lan_note = UiBuild.label(&"ui.lobby.lan.empty", UiBuild.DIM)
+	join_v.add_child(lan_note)
 	loopback_button = UiBuild.button(&"ui.lobby.loopback", {"address": tweak.loopback_address})
 	loopback_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	loopback_button.pressed.connect(join_loopback)
@@ -468,6 +482,61 @@ func join() -> Error:
 	return err
 
 
+## B6-05: join the LAN host row `host` (LanDiscovery.hosts()): its address / port into the fields, then join().
+func join_lan(host: Dictionary) -> Error:
+	join_address_edit.text = String(host.get("address", ""))
+	join_port_edit.text = str(int(host.get("port", 0)))
+	return join()
+
+
+## Listen for LAN hosts while the connect panel shows; stop in the lobby and when the screen leaves the tree.
+func _set_lan_listening(on: bool) -> void:
+	if on == _lan_listening:
+		return
+	if _lan == null:
+		_lan = LanDiscovery.ensure(get_tree())
+		_lan.hosts_changed.connect(_refresh_lan)
+	_lan_listening = on
+	if on:
+		if not _lan.start_listening():
+			lan_note.text = UiText.t(&"ui.lobby.lan.busy")  # another browser on this machine holds the port
+			lan_note.visible = true
+			return
+		_refresh_lan(_lan.hosts())
+	else:
+		_lan.stop_listening()
+
+
+func _refresh_lan(hosts: Array) -> void:
+	if lan_list == null:
+		return
+	for b: Button in lan_buttons:
+		lan_list.remove_child(b)
+		b.queue_free()
+	lan_buttons.clear()
+	for h: Variant in hosts:
+		var row: Dictionary = h as Dictionary
+		var heist: StringName = StringName(row.get("heist", &""))
+		var b: Button = UiBuild.ghost(Button.new())
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.text = UiText.t(&"ui.lobby.lan.row", {"name": String(row.get("name", "")),
+				"job": UiText.t(StringName("heist.%s.name" % heist)) if heist != &"" else UiText.t(&"ui.lobby.lan.no_job"),
+				"players": int(row.get("players", 0)), "max": int(row.get("max_players", LobbyState.MAX_CREW))})
+		b.pressed.connect(join_lan.bind(row))
+		lan_list.add_child(b)
+		lan_buttons.append(b)
+	lan_note.text = UiText.t(&"ui.lobby.lan.empty")
+	lan_note.visible = hosts.is_empty()
+	if connect_box != null and connect_box.visible:
+		_rebuild_focus()
+
+
+func _exit_tree() -> void:
+	if _lan != null and is_instance_valid(_lan) and _lan_listening:
+		_lan.stop_listening()
+	_lan_listening = false
+
+
 ## Join by the code field (LobbyCode): fills the address / port fields and runs join(). A bad code shows
 ## `ui.lobby.code.error.<reason>` and returns ERR_INVALID_DATA.
 func join_by_code() -> Error:
@@ -623,6 +692,7 @@ func refresh() -> void:
 	var was_lobby: bool = lobby_box.visible
 	connect_box.visible = not active
 	lobby_box.visible = active
+	_set_lan_listening(not active and is_inside_tree())
 	if active:
 		error_label.text = ""
 	status_label.text = _status_text()
@@ -814,8 +884,9 @@ func _rebuild_focus() -> void:
 	focus_chain.clear()
 	var cands: Array[Control] = []
 	if connect_box.visible:
-		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, dropin_button, loopback_button,
-				code_edit, code_join_button, back_button]
+		cands = [host_port_edit, host_button, join_address_edit, join_port_edit, join_button, dropin_button]
+		cands.append_array(lan_buttons)
+		cands.append_array([loopback_button, code_edit, code_join_button, back_button] as Array[Control])
 	else:
 		cands = [board_button, planning_button, briefing_button, loadout_button, music_picker.option, dropin_option, ready_button,
 				start_button, leave_button]
