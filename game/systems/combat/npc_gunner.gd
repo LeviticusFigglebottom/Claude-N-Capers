@@ -395,7 +395,8 @@ func _held(delta: float) -> bool:
 
 
 func _timed_hit_mult() -> float:
-	return hit_chance_mult if hit_chance_mult_left > 0.0 else 1.0
+	var m: float = hit_chance_mult if hit_chance_mult_left > 0.0 else 1.0
+	return m * SmokeZones.npc_accuracy_mult(_npc)  # D-163: shooting from inside a smoke cloud
 
 
 func _use_round(weapon_id: StringName) -> void:

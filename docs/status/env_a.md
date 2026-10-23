@@ -4,6 +4,43 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-44) D-164 generic Leech hooks (2026-10-23)
+- PerkHooks.veto_down: CrewHealth.take_hit asks it before a down; a component's veto_down() sets the health and keeps
+  the holder up.
+- PerkHooks.tick_downed: the deck throwable can be used while DOWNED, but only by a component whose
+  usable_while_down() is true. CrewPerks.use_throwable skips every other component while down.
+- Tests: test_d163_systems 9/9. Regression all green: l2_survival 14, l2_12 9, l2_8 6, skills_b1 8, skills_b3 5,
+  c4_last_breath 3, d163_decks 5, d161 5, perk_combat 5, l4_3 9.
+- Next: PerkLeech on B's names.
+
+### (-43) D-163 presentation hooks for C (2026-10-23)
+- EventBus smoke_cloud_fx(position, radius, duration_s): ThrownItem emits it on every peer when a smoke cloud starts,
+  with the cloud's real radius and time left.
+- crew_tether_fx(a_slot, b_slot, active): TagPairs emits it on pair form / end, on the server and on clients through
+  apply_net_state.
+- Both are emitted only when EventBus.has_signal, so the LEAD declares them in event_bus.gd.
+- Tests: test_d163_systems 7/7, test_d163_decks 5/5.
+
+### (-42) D-163 decks on B's names, ui_hud v1.21 (2026-10-23)
+- perk.sicario (PerkSicario): the smoke bomb (kind smoke_bomb) cloud carries B's params; the cooldown starts when the
+  cloud ends, and kills cut it. Twitch, dodge_restores_armor (full refill ◇), in_smoke_effect_mult (Twitch + the
+  deck's generic dodge), ally_in_smoke_dodge_add (via the new PerkComponent.ally_dodge_add_for).
+- perk.tag_team (PerkTagTeam on TagPairs): kill heals 15 / 7.5, kill_extend_s on holder kills, the Synergy absorb pool
+  (until the item is off cooldown), tagged_kill_cooldown_cut_s.
+- PerkItems service (SVC_PERK_ITEMS) -> LocalHudModel.perk_item + perk_item_changed (ui_hud v1.21). The pocket ECM
+  maps into it; pocket_ecm stays as an alias.
+- Contract rows perk.sicario and perk.tag_team (phase 5); perk_tweak defaults.
+- Tests: test_d163_decks 5/5, test_ui_hud_v1_21 2/2, plus the regressions in the push report.
+
+### (-41) D-163 name-independent systems (2026-10-23)
+- ThrownItem KIND_SMOKE (no fuse; a cloud of radius_m for smoke_s) and SmokeZones: crew inside avoid a bullet at
+  crew_bullet_avoid (a dodge), enemies inside hit at ×npc_accuracy_mult. No LOS blocking.
+- PerkHooks.on_dodge, plus the generic pooled absorb (the best offer per pool, pools add). Maniac now runs on it.
+- TagPairs service: aim-line tag, duration / extend, cooldown / cut, paired_holders, replicated as SVC_TAG_PAIRS.
+- Tests: test_d163_systems 6/6. Regression: d162 5/5, d161 5/5, d158 12/12, a3_12 4/4, perk_armor 6/6,
+  perk_combat 5/5, l3_6 4/4.
+- Next: PerkSicario and PerkTagTeam on B's names, and ui_hud v1.21.
+
 ### (-40) Round 290/291 lane: escort knobs on, probe warm-up, pocket ECM, D-162, bot revive A/B (2026-10-23)
 - **e26cd387:** D-158 amendment 6, RT escort knobs on (1.5 s engage delay, ×0.7 accuracy for 10 s).
 - **788bd236:** ReflectionProbe load warm-up (HeistLauncher host and replica) and the safehouse.tscn path.
