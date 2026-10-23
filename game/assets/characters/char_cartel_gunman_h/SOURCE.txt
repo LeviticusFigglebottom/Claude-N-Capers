@@ -17,5 +17,5 @@ look: flare_beanie: flare-orange beanie, charcoal canvas work jacket with a cord
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28596
-tris_by_mesh: {"Body": 8168, "Gear": 566, "Hair": 2088, "Headwear": 608, "Outfit": 17166}
+tris: 28684
+tris_by_mesh: {"Body": 8168, "Gear": 654, "Hair": 2088, "Headwear": 608, "Outfit": 17166}

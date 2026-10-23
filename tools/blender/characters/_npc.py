@@ -910,3 +910,17 @@ def bead_necklace(kit: Kit, mat: str, beads: int = 18, r: float = 0.0045) -> Non
         p = o.push_out(nk.point(a, t, 0.006 * k), hull, 0.004 * k)
         gear.extend(gk.button(hull, p, mat, r=r, toward=nk.radial(a), k=k, thick=0.004))
     kit.add_gear(gear)
+
+
+def ear_item(kit: Kit, side: float = 1.0, mat: str = "char_rubber_yellow", length: float = 0.10,
+             r: float = 0.0038) -> None:
+    """G3: a pencil (or a cigarette) tucked behind the ear (``side`` +1 = +x), ``length`` m along the head."""
+    fit, k = kit.fit, kit.k
+    eye = fit.eye_centre()
+    c = Vector((side * 0.082 * k, eye.y - 0.085 * k, eye.z + 0.012 * k))
+    h = length / 2
+    a, b = c + Vector((0.0, h * k, -0.012 * k * h / 0.05)), c + Vector((0.0, -h * k, 0.012 * k * h / 0.05))
+    m = Mesh()
+    o.tube(m, [a, b], r * k, mat, sides=6)
+    kit.add_head(m)
+

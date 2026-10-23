@@ -156,6 +156,8 @@ def dockhand(kit: Kit) -> None:
     _gun_note(kit, cg.slung_gun(kit, loop, 1.24, WOOD, GUNMETAL))
     kit.add_head(cg.beanie(fit, KNIT_DARK))
     kit.notes["hat"] = "knit watch-cap beanie (Headwear)"
+    n.front_item(kit, -0.095, 1.300, (0.055, 0.085, 0.020), "char_medic_white", lift=0.002)  # DB-G3: a cigarette
+    n.front_item(kit, -0.095, 1.335, (0.056, 0.020, 0.021), "char_tie_burgundy", lift=0.002)  # pack, red top
     kit.notes["look"] = ("dockhand: rust waxed dock jacket, graphite beanie, flare-orange bandana gaiter, drab "
                          "cargos, green rubber boots, fingerless gloves; sling + shell loops, slung pump-gun")
 
@@ -191,6 +193,7 @@ def hood(kit: Kit) -> None:
     kit.add_head(cg.gaiter_up(fit, KNIT_DARK))
     kit.add_head(cg.hood_up(fit, HOODIE, cord_mat="char_knit_cream"))
     kit.notes["hat"] = "hood up + gaiter pulled over the nose (Headwear)"
+    n.front_item(kit, 0.090, 1.290, (0.070, 0.135, 0.009), "polymer_black", lift=0.002)   # DB-G3: a phone
     kit.notes["look"] = ("hood: grey hoodie with the hood up, gaiter over the nose, black puffer vest, belt with "
                          "holster + pouch, black cargos, brown work boots, fingerless gloves; sling across the chest")
 
@@ -213,6 +216,7 @@ def deckhand(kit: Kit) -> None:
     _gun_note(kit, cg.slung_gun(kit, loop, 1.22, WOOD, GUNMETAL, stand_off=0.032))
     kit.add_head(contact.moustache(fit, "char_hair_grey"))
     kit.notes["hat"] = "bare head (grey buzz cut); moustache (Headwear)"
+    n.watch(kit, "L", strap="char_satin_gold", case="char_satin_gold")                # DB-G3: a gold watch
     kit.notes["look"] = ("deckhand: cream fisherman roll-neck, flare-orange oilskin bib overalls, green rubber "
                          "boots, bare head + moustache; sling and shell bandolier crossed, slung pump-gun")
 
@@ -242,6 +246,7 @@ def deck_woman(kit: Kit) -> None:
     loop.build(kit, WEBBING, 0.019, 0.004)
     kit.add_head(contact.chignon(fit, "char_hair_dark", size=0.8))
     kit.notes["hat"] = "bare head, dark hair in a bun (Headwear)"
+    kit.add_head(contact.earrings(fit, "char_satin_gold"))                            # DB-G3: gold hoops
     kit.notes["look"] = ("deck_woman: cream roll-neck under a black puffer vest, flare-orange gaiter, drab cargos, "
                          "green rubber boots, fingerless gloves; sling across the chest")
 
@@ -258,6 +263,8 @@ def smock(kit: Kit) -> None:
     _gun_note(kit, cg.slung_gun(kit, loop, 1.24, WOOD, GUNMETAL))
     kit.add_head(cg.beanie(fit, KNIT_CREAM))
     kit.notes["hat"] = "cream knit watch-cap beanie (Headwear)"
+    n.front_item(kit, 0.085, 1.290, (0.058, 0.110, 0.034), "polymer_black", lift=0.002)   # DB-G3: a walkie-talkie
+    n.front_item(kit, 0.100, 1.370, (0.008, 0.070, 0.008), "polymer_black", lift=0.020)   # and its antenna
     kit.notes["look"] = ("smock: flare-orange oilskin work jacket, cream beanie, drab cargos, green rubber boots, "
                          "fingerless gloves; sling + shell loops, slung pump-gun")
 
@@ -280,6 +287,8 @@ def balaclava(kit: Kit) -> None:
     kit.add_head(cg.gaiter_up(fit, KNIT_DARK))
     kit.add_head(cg.beanie(fit, KNIT_DARK))
     kit.notes["hat"] = "graphite beanie + gaiter pulled over the nose: a balaclava read (Headwear)"
+    for i, x in enumerate((0.110, 0.122)):                                            # DB-G3: zip ties
+        n.front_item(kit, x, 1.020 - 0.008 * i, (0.006, 0.130, 0.003), "char_medic_white", lift=0.003)
     kit.notes["look"] = ("balaclava: graphite beanie and gaiter over the nose, graphite knit pull-over, black puffer "
                          "vest, black cargos, brown work boots, fingerless gloves; sling across the chest")
 
@@ -312,6 +321,7 @@ def navy_hood(kit: Kit) -> None:
     _gun_note(kit, cg.slung_gun(kit, loop, 1.24, WOOD, GUNMETAL))
     kit.add_head(cg.hood_up(fit, KNIT_NAVY, cord_mat=KNIT_CREAM))
     kit.notes["hat"] = "navy hood up, face bare (Headwear)"
+    kit.add_head(gk.glasses(fit, "char_button_dark"))                                # DB-G3: dark glasses
     kit.notes["look"] = ("navy_hood: navy hoodie with the hood up (face bare), drab cargos, green rubber boots, "
                          "fingerless gloves; sling over the right shoulder, slung pump-gun")
 
@@ -326,6 +336,8 @@ def flare_beanie(kit: Kit) -> None:
     loop.build(kit, WEBBING, 0.019, 0.004)
     kit.add_head(cg.beanie(fit, FLARE))
     kit.notes["hat"] = "flare-orange knit watch-cap beanie over a dark bob (Headwear)"
+    n.front_item(kit, 0.120, 0.985, (0.020, 0.032, 0.006), "char_satin_gold", lift=0.003)  # DB-G3: a carabiner
+    n.front_item(kit, 0.118, 0.950, (0.012, 0.040, 0.003), "char_metal_silver", lift=0.004)  # of keys
     kit.notes["look"] = ("flare_beanie: flare-orange beanie, charcoal canvas work jacket with a corduroy collar, "
                          "black cargos, brown work boots, fingerless gloves; sling across the chest")
 
@@ -345,6 +357,7 @@ def drab_bib(kit: Kit) -> None:
     cg.shell_row(kit, bstrap, band.front, 0.18, 0.80, 12, 0.005, SHELL)
     _gun_note(kit, cg.slung_gun(kit, loop, 1.22, WOOD, GUNMETAL, stand_off=0.032))
     kit.notes["hat"] = "bare head (grey short hair, grey beard shadow)"
+    n.ear_item(kit, 1.0)                                                             # DB-G3: a tally pencil
     kit.notes["look"] = ("drab_bib: slate roll-neck under drab canvas bib overalls, green rubber boots, bare grey "
                          "head; sling and shell bandolier crossed, slung pump-gun")
 
@@ -370,6 +383,9 @@ def bandana(kit: Kit) -> None:
         o.tube(knot, tail, lambda t: (0.011 - 0.006 * t) * k, BANDANA, sides=6, weights=lambda p, t: sg.HEAD_W)
     kit.add_head(knot)
     kit.notes["hat"] = "rust bandana tied on the head, knot at the nape (Headwear)"
+    for x in (-0.030, 0.030):                                                         # DB-G3: sunglasses hung
+        n.front_item(kit, x, 1.395, (0.048, 0.036, 0.004), "char_button_dark", lift=0.003)  # at the collar
+    n.front_item(kit, 0.0, 1.408, (0.014, 0.005, 0.003), "char_button_dark", lift=0.003)
     kit.notes["look"] = ("bandana: rust head bandana, concrete-grey fleece pull-over, drab cargos, green rubber "
                          "boots, fingerless gloves; sling across the chest")
 
@@ -386,6 +402,8 @@ def olive_jacket(kit: Kit) -> None:
     cg.shell_row(kit, strap, loop.front, 0.40, 0.72, 8, 0.004, SHELL)
     _gun_note(kit, cg.slung_gun(kit, loop, 1.24, WOOD, GUNMETAL))
     kit.notes["hat"] = "bare head (short blond hair)"
+    n.front_item(kit, -0.105, 1.255, (0.014, 0.075, 0.006), "polymer_black", lift=0.002)  # DB-G3: a pocket-knife
+    n.front_item(kit, -0.105, 1.285, (0.008, 0.030, 0.003), "char_metal_silver", lift=0.006)  # clip
     kit.notes["look"] = ("olive_jacket: olive nylon work jacket, graphite neck gaiter, bare blond head, drab cargos, "
                          "green rubber boots, fingerless gloves; sling + shell loops (right shoulder), slung pump-gun")
 
@@ -399,6 +417,7 @@ def cream_hoodie(kit: Kit) -> None:
     loop = cg.StrapLoop(kit, -1.0, fit.ring_centre("waist").z - 0.01 * k)
     loop.build(kit, WEBBING, 0.019, 0.004)
     kit.notes["hat"] = "bare shaved head"
+    n.bead_necklace(kit, "char_satin_gold", beads=20, r=0.0034)                       # DB-G3: a gold chain
     kit.notes["look"] = ("cream_hoodie: cream pull-over hoodie (hood down), shaved head, black cargos, brown work "
                          "boots, fingerless gloves; sling across the chest")
 
