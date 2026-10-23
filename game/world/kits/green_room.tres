@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"green_room"
+purpose = &"staff_room"
+required_items = Array[StringName]([&"mirror", &"coat_rail", &"light_fixture"])
+optional_items = {
+&"bench": 0.5,
+&"plant": 0.3,
+&"side_table": 0.5
+}
+clutter_groups = {}
+min_density = 0.4
+max_density = 2.5
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"coat_rail", &"mirror"])
+seed_salt = 327
+seed_id = &"dressing_room"
+counts = {}
+assets = {
+&"coat_rail": PackedStringArray("prop_coat_rail"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"mirror": PackedStringArray("prop_ah_bulb_mirror")
+}
+ceiling = {"prop_downlight": 1.6}
+notes = "Afterhours (staff_room), from dressing_room: AH G11 green room: the DJs' bulb mirror and coat rail; the sofa and the flight cases are the map's (GreenRoomSofa, FlightCases)."

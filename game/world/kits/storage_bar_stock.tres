@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"storage_bar_stock"
+purpose = &"storage"
+required_items = Array[StringName]([&"shelving", &"crate", &"box", &"light_fixture"])
+optional_items = {
+&"box": 1.5,
+&"crate": 1,
+&"pallet": 0.6
+}
+clutter_groups = {
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"corner"]),
+"count": Vector2i(1, 2),
+"items": {&"archive_box": 1, &"bin": 1, &"box": 3},
+"radius": 1
+}
+}
+min_density = 0.3
+max_density = 1.6
+min_props = 6
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 43
+seed_id = &"storage_supplies"
+counts = {
+&"shelving": Vector2i(3, 4)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"crate": PackedStringArray("prop_ah_crates"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet_loaded"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "Afterhours (storage), from storage_supplies: AH G10 bar stock room: bottle crates, boxed stock on shelving; the stock cage is the map's."

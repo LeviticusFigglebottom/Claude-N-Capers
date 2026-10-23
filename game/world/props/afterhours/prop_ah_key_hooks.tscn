@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_ah_key_hooks/prop_ah_key_hooks.glb" id="1_model"]
+
+[node name="PropAhKeyHooks" type="Node3D"]
+metadata/kind = &"key_cabinet"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" parent="Model"]
+visibility_range_end = 25
+visibility_range_end_margin = 2.5
+visibility_range_fade_mode = 1
+
+[editable path="Model"]

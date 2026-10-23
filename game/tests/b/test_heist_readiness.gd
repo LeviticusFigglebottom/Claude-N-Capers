@@ -36,7 +36,9 @@ func test_hidden_switch() -> void:
 	var have: Callable = func(_p: String) -> bool: return true
 	assert_false(HeistCatalog.heist_list().is_hidden(OF), "OF offered (OF-A6, round 245)")
 	assert_true(HeistCatalog.is_ready(OF, have), "OF ready with map + mission")
-	for h: StringName in [&"rolling_thunder", &"afterhours"]:
+	assert_false(HeistCatalog.heist_list().is_hidden(&"rolling_thunder"), "RT offered (D-160 flip)")
+	assert_true(HeistCatalog.is_ready(&"rolling_thunder", have), "RT ready with map + mission")
+	for h: StringName in [&"afterhours"]:
 		assert_true(HeistCatalog.heist_list().is_hidden(h), "%s hidden" % h)
 		assert_false(HeistCatalog.is_ready(h, have), "%s: hidden even with map + mission present" % h)
 		assert_false(HeistCatalog.ids().has(h))

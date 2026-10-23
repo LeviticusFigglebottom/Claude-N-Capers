@@ -138,7 +138,10 @@
   "pr_paint_greige": "wood",
   "pr_paint_ivory": "wood",
   "pr_paint_sage": "wood",
-  "pr_paint_slate": "wood"
+  "pr_paint_slate": "wood",
+  "velvet_plum": "fabric",
+  "carpet_plum": "fabric",
+  "plaster_gilded": "plaster"
  },
  "keywords": [
   [

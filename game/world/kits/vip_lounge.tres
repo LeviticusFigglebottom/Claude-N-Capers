@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"vip_lounge"
+purpose = &"bar"
+required_items = Array[StringName]([&"armchair", &"side_table", &"floor_lamp", &"plant"])
+optional_items = {
+&"armchair": 1,
+&"picture": 1,
+&"plant": 1
+}
+clutter_groups = {}
+min_density = 0.04
+max_density = 1
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"armchair", &"side_table", &"floor_lamp", &"plant", &"picture"])
+seed_salt = 4806
+counts = {}
+assets = {
+&"armchair": PackedStringArray("prop_armchair_club"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b", "prop_wall_art_c"),
+&"plant": PackedStringArray("prop_plant_tall")
+}
+ceiling = {"prop_downlight": 2.5}
+notes = "AH U2 the VIP lounge: club armchairs, side tables, lamps, palms; the VIP bar, the sofa and its coffee table are the map's (D's prop_ah_vip_sofa / prop_ah_vip_coffee_table)."
