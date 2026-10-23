@@ -159,7 +159,8 @@ func test_v10_crew_loadouts_migrate_repair_and_round_trip() -> void:
 	var m: Dictionary = SaveService.migrate(_fixture("v9"))
 	assert_eq(int(m["version"]), 10)
 	assert_eq((m["crew_loadouts"] as Array).size(), ProfileSchema.CREW_SLOTS, "9 -> 10: one empty entry per bot slot")
-	assert_eq((m["crew_loadouts"] as Array)[0], {"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": ""})
+	assert_eq((m["crew_loadouts"] as Array)[0], {"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": "", "ability": "",
+			"boost": ""}, "L6.2: ability / boost default to none")
 	Log.capture = true
 	var q: PlayerProfile = SaveService.profile_from_save(_fixture("v10_crew_damaged"))
 	assert_eq(q.crew_loadouts.size(), ProfileSchema.CREW_SLOTS, "the 4th entry is dropped")

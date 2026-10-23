@@ -6,7 +6,7 @@
 set -uo pipefail
 source "$(dirname "$0")/_common.sh"
 GEN="res://world/hub/safehouse/greybox/build_safehouse.gd"
-COMMITTED="$ROOT/game/world/hub/safehouse/safehouse_g1.tscn"
+COMMITTED="$ROOT/game/world/hub/safehouse/safehouse.tscn"
 rc=0
 tmp="$(mktemp -d)"
 for run in a b; do

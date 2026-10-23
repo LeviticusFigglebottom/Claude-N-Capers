@@ -4,6 +4,16 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-39) RT levers as knobs + A/B data (2026-10-23)
+- **Knobs, defaults = today** (d046e039, 140c1831), test_d158_rt_fairness 12/12:
+  - RtTweak: truck_window_from (stop | escort_down, max 60 s), wave1_exclude (with a minimum difficulty),
+    escort_engage_delay_s, escort_accuracy_mult and its window.
+  - CrewAiTweak.cover_prefer_behind_leader_m (the LEAD ruled it stays at 0).
+  - Generic NpcGunner fields: engage_hold_left, timed hit_chance_mult.
+  - HeistMission._on_dismounted hook.
+- **A/B** (Po5RtAb, headless, RT Hazardous, seeds 1001–1003, crash and clean stops):
+  - The window, wave-1 and cover knobs never engaged: the escort decides each run within ~20 s; cover 4.0 hurt.
+  - Escort knobs (1.5 s, ×0.7): escort survived in 4/6 runs vs 2/6, crew lasts ~2× longer, seed 1001 lethal either way.
 ### (-38) Last Breath, P4 ratchet emptied, LanDiscovery (2026-10-23)
 - **Last Breath / One Down (6d8b88bc):** CrewHealth.max_downs is 1 (+ defense.downs_extra) with the "last_breath"
   option. test_c4_last_breath 3/3.

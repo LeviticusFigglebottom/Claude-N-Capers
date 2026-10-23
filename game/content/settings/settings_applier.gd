@@ -15,6 +15,9 @@ extends RefCounted
 const MSAA: Dictionary = {
 	"off": Viewport.MSAA_DISABLED, "2x": Viewport.MSAA_2X, "4x": Viewport.MSAA_4X, "8x": Viewport.MSAA_8X,
 }
+## video/shadow_quality -> shadow atlas size (px) for the directional and the positional (omni / spot) shadows.
+## "high" = Godot's defaults (what the heists were lit with).
+const SHADOW_ATLAS: Dictionary = {"low": 1024, "medium": 2048, "high": 4096}
 const WINDOW_MODES: Dictionary = {
 	"windowed": DisplayServer.WINDOW_MODE_WINDOWED,
 	"fullscreen": DisplayServer.WINDOW_MODE_FULLSCREEN,
@@ -63,6 +66,9 @@ static func apply_video(s: GameSettings, viewport: Viewport = null) -> void:
 		var mode: int = int(WINDOW_MODES.get(String(s.get_value(GameSettings.VIDEO, &"window_mode")), DisplayServer.WINDOW_MODE_WINDOWED))
 		if DisplayServer.window_get_mode() != mode:
 			DisplayServer.window_set_mode(mode as DisplayServer.WindowMode)
+		var res: Vector2i = s.resolution()
+		if mode == DisplayServer.WINDOW_MODE_WINDOWED and res != Vector2i.ZERO:
+			apply_window_size(res)
 		var vsync: bool = bool(s.get_value(GameSettings.VIDEO, &"vsync"))
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if vsync else DisplayServer.VSYNC_DISABLED)
 	var vp: Viewport = viewport
@@ -74,6 +80,19 @@ static func apply_video(s: GameSettings, viewport: Viewport = null) -> void:
 	vp.scaling_3d_scale = float(s.get_value(GameSettings.VIDEO, &"render_scale"))
 	vp.msaa_3d = int(MSAA.get(String(s.get_value(GameSettings.VIDEO, &"msaa")), Viewport.MSAA_DISABLED)) as Viewport.MSAA
 	vp.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if bool(s.get_value(GameSettings.VIDEO, &"fxaa")) else Viewport.SCREEN_SPACE_AA_DISABLED
+	var atlas: int = int(SHADOW_ATLAS.get(String(s.get_value(GameSettings.VIDEO, &"shadow_quality")), 4096))
+	vp.positional_shadow_atlas_size = atlas
+	RenderingServer.directional_shadow_atlas_set_size(atlas, true)
+
+
+## Windowed mode: resizes the window to `size` (never beyond the screen's usable area) and centres it.
+static func apply_window_size(size: Vector2i) -> void:
+	var screen: int = DisplayServer.window_get_current_screen()
+	var usable: Rect2i = DisplayServer.screen_get_usable_rect(screen)
+	var fit: Vector2i = Vector2i(mini(size.x, usable.size.x), mini(size.y, usable.size.y)) if usable.size != Vector2i.ZERO else size
+	if DisplayServer.window_get_size() != fit:
+		DisplayServer.window_set_size(fit)
+		DisplayServer.window_set_position(usable.position + (usable.size - fit) / 2)
 
 
 ## Brightness helper for the heist map's Environment (ENV C / A call it; B does not own the map):

@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="DeployableDef" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="DeployableDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://contracts/data/deployable_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://assets/equipment/eqp_sentry/eqp_sentry.tscn" id="2_model"]
 
 [resource]
 script = ExtResource("1")
@@ -20,4 +21,5 @@ params = {
 "spread_deg": 3.0,
 "turn_speed_deg": 160.0
 }
+model = ExtResource("2_model")
 anim_set = &"deploy_sentry"

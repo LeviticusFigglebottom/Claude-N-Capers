@@ -77,6 +77,9 @@ func refresh() -> void:
 	if not visible:
 		return
 	var args: Dictionary = (it.get("args", {}) as Dictionary).duplicate()
+	for a: Variant in args:  # D-157: a StringName strings key as an argument (the sentry's {mode}) is shown translated
+		if args[a] is StringName and String(args[a]).begins_with("ui."):
+			args[a] = UiText.t(args[a] as StringName)
 	if not args.has("key"):
 		args["key"] = action_key_text(action_for(key))
 	if not args.has("mask_key"):

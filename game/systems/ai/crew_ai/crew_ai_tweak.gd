@@ -66,6 +66,10 @@ extends Resource
 @export var cover_taken_m: float = 1.0
 ## Reached the cover point within this distance (m).
 @export var cover_arrive_m: float = 0.6
+## LEAD r286 (RT lever, P's D-158 verdict: bots went down beside the pilot): > 0 = a cover point "behind" the leader
+## (farther from the nearest threat than the leader, or on the leader's far side from it) counts this many metres
+## nearer in the cover pick. 0 = nearest free point (the shipped behaviour).
+@export var cover_prefer_behind_leader_m: float = 0.0
 
 @export_group("Revive (L6.1, L2.7)")
 ## Get this close (horizontal, m) to a downed crew member before holding interact.

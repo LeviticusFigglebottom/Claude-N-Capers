@@ -1616,3 +1616,28 @@ PO: "skip the GPU render / any steps that'd need something you can't do yourself
 Heist done checks no longer wait on PO actions (GPU re-renders, PO playthroughs). Windowed opengl3 evidence from the envs
 (reviewed by the LEAD) stands in. Rolling Thunder's done path is now:
 P's D-158 real-input verdict → the LEAD's D-115-style done check → B flips the un-hide flag → Afterhours starts (D-144).
+6. (Amendment 2026-10-23, LEAD) A's bot A/B (seeds 1001-1003, 6 runs each way): the window / wave-1 Stinger / cover knobs never
+   engage, because the convoy escort decides the run in the first ~20 s after the stop. Cover-behind-leader was HARMFUL (bots held
+   back while the leader lay downed at the front), so it stays 0. The escort knobs act on the right phase: escort_engage_delay_s 1.5
+   + escort_accuracy_mult 0.7 for 10 s took the escort phase from 2/6 to 4/6 survived, and downs before BUILD from 13 to 8, without
+   touching the later heist. **Ruling: escort knobs ON (1.5 s / ×0.7 / 10 s).** The truck window and the wave-1 exclusion stay
+   available but OFF unless P's human runs show the crew dies in the first assault. P's remaining verdicts run with the escort knobs on.
+
+## D-161: Hacker perk deck (pocket ECM) is the 15th deck; B's economy pin now (2026-10-23, LEAD; D-151 judgement)
+The B audit (c2ebc7a0) closes every B roadmap row, and A's P4/P6 audit closes A's, so capacity is free while RT finishes.
+pd2_fidelity lists Hacker as the first "further deck" (S8.7 pocket ECM, P4 row). It is built now:
+1. **B:** `perk.hacker` deck data (9 cards, PD2 shape: Pocket ECM unlock on card 1; on kill while a pocket ECM is active, heal / dodge
+   per PD2; the deck's standard cards). The throwable slot shows Pocket ECM when equipped (replaces the throwable, PD2). Strings, picker.
+2. **A:** `stealth.pocket_ecm`: 6 s jam, 2 charges, 100 s recharge per charge (−6 s per kill), charges recharge one after another;
+   it jams like the ECM (pagers, cameras, phones) but cannot open doors / ATMs; in loud it does feedback per PD2. Replicated,
+   behaviour-tested; this removes the last UNHOOKED ratchet key.
+3. **B (now):** S10.6: pin the D-120 bag-value table and the bag share of a full clear in a test (golden values).
+
+## D-162: Further perk decks, batch 1: Yakuza, Biker, Maniac (2026-10-23, LEAD; B sizing)
+B's sizing ranked the pd2_fidelity "further decks" by new A behaviour. Batch 1 = the three cheapest:
+- **Yakuza** (S): one per-tick health-scaled scaler (armor regen and move speed rise as health falls below the threshold; card 9 moves the threshold to 50%).
+- **Biker** (S-M): kill → health + armor, at most N per window, scaled by missing health/armor. Needs a shared **crew-kill event**
+  (any teammate's kill), which also serves Hacker card 9 (crew_kill_heal).
+- **Maniac** (M): Hysteria stacks from damage dealt → flat absorb, with decay; the crew shares the best holder's; replicated.
+B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac hooks + the crew-kill event. Values per PD2
+(docs/research/pd2_research.md). Next candidates: Sicario, Tag Team; then Leech, Copycat.

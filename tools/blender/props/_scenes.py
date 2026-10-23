@@ -274,8 +274,19 @@ def _light_node(light: dict) -> list[str]:
     return lines
 
 
+# D-159: D builds the safehouse hero props, C keeps their catalogue and placement. C's placement hints over D's `cat`:
+# the cabinets, type cases and bunks stand backed to a wall; the PPE rack hangs at 1.5 m.
+CAT_OVERRIDES = {
+    "prop_sh_bunk_bed": {"place": "wall"},
+    "prop_sh_gun_cabinet": {"place": "wall"},
+    "prop_sh_type_case": {"place": "wall"},
+    "prop_sh_ppe_rack": {"z": 1.5},
+}
+
+
 def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
     cat = dict(spec.params.get("cat", {}))
+    cat.update(CAT_OVERRIDES.get(spec.asset_id, {}))
     aid = spec.asset_id
     glb = GAME / "assets" / spec.category / aid / f"{aid}.glb"
     if not glb.exists():

@@ -81,6 +81,9 @@ var start_delay_s: float = 0.0:
 var first_build_hold_s: float = 0.0:
 	set(v):
 		first_build_hold_s = maxf(v, 0.0)
+## LEAD r286 (RT lever): units kept out of the FIRST assault (unit ids like &"enemy.stinger" or bare names like
+## &"stinger"); a mission sets it (RtTweak). Later waves and the CONTROL phases' specials are unaffected.
+var wave1_exclude: Array[StringName] = []
 ## Units spawned by the director (alive or not), in order.
 var spawned_total: int = 0
 ## PO-5.4: units spawned in the current assault's BUILD/SUSTAIN (_force_pool() spending).
@@ -667,7 +670,7 @@ func _assault_specials() -> Array[StringName]:
 func _special_can_spawn(g: SpawnGroupDef) -> bool:
 	for id: StringName in g.unit_ids:
 		var def: EnemyDef = _enemy_def(id)
-		if def == null or not def.is_special or not roster.can_spawn_special(def):
+		if def == null or not def.is_special or not roster.can_spawn_special(def) or _wave1_excluded(id):
 			continue
 		if _perch_only(def) and SpecialSpawner.free_perch(_runtime, _centroid(_active_crew()), null) == null:
 			continue
@@ -721,7 +724,7 @@ func _pick_group(phase: int, groups: Array[SpawnGroupDef] = []) -> SpawnGroupDef
 func _group_spawnable(g: SpawnGroupDef) -> bool:
 	for id: StringName in g.unit_ids:
 		var def: EnemyDef = _enemy_def(id)
-		if def == null or not roster.can_spawn_special(def):
+		if def == null or not roster.can_spawn_special(def) or _wave1_excluded(id):
 			continue
 		if _perch_only(def) and SpecialSpawner.free_perch(_runtime, _centroid(_active_crew()), null) == null:
 			continue
@@ -762,7 +765,7 @@ func _tick_queue(delta: float) -> void:
 func _spawn_next() -> void:
 	var id: StringName = _queue[_queue_index]
 	var def: EnemyDef = _enemy_def(id)
-	if def == null or not roster.can_spawn_special(def):
+	if def == null or not roster.can_spawn_special(def) or _wave1_excluded(id):
 		_queue_index += 1
 	elif _perch_only(def):
 		_queue_index += 1
@@ -794,6 +797,13 @@ func _spawn_unit(enemy_id: StringName, point: Node3D) -> NpcBase:
 	if k > 0 and is_spawn_valid(xf.origin + offset, crew):
 		xf.origin += offset
 	return spawn_enemy(def, xf, point)
+
+
+## wave1_exclude: `id` (a group's unit id) is held out of the first assault.
+func _wave1_excluded(id: StringName) -> bool:
+	if wave1_exclude.is_empty() or wave_index > 1:
+		return false
+	return wave1_exclude.has(id) or wave1_exclude.has(StringName(String(id).trim_prefix("enemy.")))
 
 
 func _enemy_def(enemy_id: StringName) -> EnemyDef:

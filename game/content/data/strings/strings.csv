@@ -1402,6 +1402,7 @@ contact.role.handler,Handler on comms
 ui.briefing.title,Briefing
 ui.briefing.difficulty,Difficulty: {name}
 ui.briefing.mode,Approach: {mode}
+ui.briefing.civilian_start,Civilian start: no gear until you pick it up on site
 ui.briefing.intel,The Job
 ui.briefing.objectives,Objectives
 ui.briefing.objective_line,{index}. {text}
@@ -2449,6 +2450,19 @@ ui.options.video.window_mode,Window Mode
 ui.options.video.window_mode.windowed,Windowed
 ui.options.video.window_mode.fullscreen,Borderless Fullscreen
 ui.options.video.window_mode.exclusive_fullscreen,Exclusive Fullscreen
+ui.options.video.resolution,Resolution (windowed)
+ui.options.video.resolution.auto,Window default
+ui.options.video.resolution.1280x720,1280 × 720
+ui.options.video.resolution.1600x900,1600 × 900
+ui.options.video.resolution.1920x1080,1920 × 1080
+ui.options.video.resolution.2560x1440,2560 × 1440
+ui.options.video.resolution.3840x2160,3840 × 2160
+ui.options.video.quality_preset,Quality Preset
+ui.options.video.quality_preset.low,Low
+ui.options.video.quality_preset.medium,Medium
+ui.options.video.quality_preset.high,High
+ui.options.video.quality_preset.ultra,Ultra
+ui.options.video.quality_preset.custom,Custom
 ui.options.video.vsync,V-Sync
 ui.options.video.max_fps,Frame Rate Limit
 ui.options.video.max_fps.unlimited,Unlimited
@@ -2466,6 +2480,10 @@ ui.options.video.effects_quality,Effects Quality
 ui.options.video.effects_quality.low,Low
 ui.options.video.effects_quality.medium,Medium
 ui.options.video.effects_quality.high,High
+ui.options.video.shadow_quality,Shadow Quality
+ui.options.video.shadow_quality.low,Low
+ui.options.video.shadow_quality.medium,Medium
+ui.options.video.shadow_quality.high,High
 ui.options.controls.mouse_sensitivity_x,Mouse Sensitivity (Horizontal)
 ui.options.controls.mouse_sensitivity_y,Mouse Sensitivity (Vertical)
 ui.options.controls.ads_sensitivity,Aiming Sensitivity
@@ -2475,6 +2493,7 @@ ui.options.controls.pad_deadzone,Gamepad Deadzone
 ui.options.controls.aim_mode,Aim Down Sights
 ui.options.controls.crouch_mode,Crouch
 ui.options.controls.sprint_mode,Sprint
+ui.options.controls.interact_mode,Interact
 ui.options.mode.hold,Hold
 ui.options.mode.toggle,Toggle
 ui.options.controls.action,Action
@@ -2648,6 +2667,7 @@ item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by 
 item.mask.last_word.name,The Last Word
 item.mask.last_word.desc,"Carbon and ember for the crew that has nothing left to prove. Notoriety XXV only."
 ui.hud.civilian,Civilian
+ui.hud.last_breath,Last Breath
 ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or equipment until you pick up your gear on site. Your loadout waits there."
 heist.dockside_burn.name,Dockside Burn
 heist.dockside_burn.subtitle,Ortega Cold Storage
@@ -2978,6 +2998,11 @@ ui.kick.confirm,Kick {name} from the crew?
 ui.kick.yes,Kick
 ui.kick.no,Cancel
 ui.lobby.error.kicked,The host removed you from the lobby.
+ui.lobby.lan.title,Games on your network
+ui.lobby.lan.empty,"No games on your network. Ask the host for their lobby code, or join by address."
+ui.lobby.lan.busy,Another copy of the game on this computer is already listing network games.
+ui.lobby.lan.row,{name} · {job} · {players}/{max} players
+ui.lobby.lan.no_job,No job picked yet
 ui.lobby.code.title,Lobby code
 ui.lobby.code.value,{code}
 ui.lobby.code.copy,Copy
@@ -3836,17 +3861,23 @@ ui.crew.outfit.suit_charcoal,"Classic Suit, Charcoal"
 ui.crew.outfit.suit_navy,"Classic Suit, Navy"
 ui.crew.crumb,Safehouse / Bot Crew
 ui.crew.title,Bot Crew
-ui.crew.subtitle,"Gear your three crew bots from your armory: a primary with its mods, armor, a mask and an outfit. Changes save at once."
+ui.crew.subtitle,"Gear your three crew bots from your armory: a primary with its mods, armor, a mask and an outfit, plus an ability and a crew boost. Changes save at once."
 ui.crew.bot,Bot {n}
 ui.crew.summary,Your crew
 ui.crew.card,"Bot {n}: {weapon}, {armor}
-{mask} · {outfit}"
+{mask} · {outfit}
+{ability} · {boost}"
 ui.crew.workshop_hint,Buy more weapons and mods in the Workshop; armor unlocks with your level.
 ui.crew.reset,Reset bot
 ui.crew.row.weapon,Primary
 ui.crew.row.armor,Armor
 ui.crew.row.mask,Mask
 ui.crew.row.outfit,Outfit
+ui.crew.row.ability,Ability
+ui.crew.row.boost,Crew Boost
+ui.crew.none,None
+ui.crew.no_ability,No ability
+ui.crew.no_boost,No boost
 ui.hub.crew,Bot Crew
 ui.hud.device.time,{mm}:{ss}
 ui.hud.device.jammed,JAMMED

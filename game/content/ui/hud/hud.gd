@@ -43,6 +43,9 @@ const SCOPE_MIN_MARGIN: float = 220.0
 ## Heist being played (MenuFlow sets it before adding the HUD): accents the objectives panel
 ## (UiAccent.for_heist, B4-07). Empty = no accent.
 @export var heist_id: StringName = &""
+## L1.7: the running heist's Enums.Difficulty (assault-banner skulls; -1 = none) and C4 Last Breath (MenuFlow sets both).
+@export var difficulty: int = -1
+@export var last_breath: bool = false
 
 ## PO-4: slot -> heister id (MenuFlow at launch); teammate rows show the heister's name and colour.
 var crew_heisters: Dictionary = {}
@@ -182,6 +185,8 @@ func _build() -> void:
 		objectives.set_accent(UiAccent.for_heist(heist_id))
 	device_timers.objective_suffix_changed.connect(objectives.set_device_suffix)
 	assault = _place(AssaultBanner.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 40), Vector2(520, 56)) as AssaultBanner
+	assault.difficulty = difficulty
+	assault.last_breath = last_breath
 	hostages = _place(HostageStrip.new(), Control.PRESET_CENTER_TOP, Vector2(280, 40), Vector2(220, 80)) as HostageStrip
 	pager = _place(PagerPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-200, 110), Vector2(400, 200)) as PagerPanel
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel

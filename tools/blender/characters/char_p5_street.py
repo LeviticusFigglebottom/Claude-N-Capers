@@ -12,6 +12,10 @@ sand/brown/amber.
 * ``char_diner_cook`` (``staff_diner``): a heavy-set man in his 50s with stubble: cook's whites (a white band-collar
   jacket, double row of buttons, sleeves rolled), a long cream bib apron, black trousers and shoes, a white knit skull
   cap.
+* G3 (RT character polish, the diner is a casing hub): the waitress gains a white Peter Pan collar and white sleeve
+  cuffs, white buttons down the bodice, an order pad and a pencil in the apron pocket; the cook a folded white paper
+  cook's cap (in place of the knit skull cap), a red neckerchief knotted at the throat and a striped side towel tucked
+  in the apron string at the right hip.
 * ``char_carpark_attendant`` (``staff_booth``): a man about 60, deep skin, short grey hair: a teal polo under a dark
   espresso fleece gilet (zipped), the staff lanyard and white card, grey slacks, black shoes, a watch.
 * ``char_street_pedestrian`` (a): a commuter, a woman in her 30s, mid skin, dark bob: a belted double-breasted cherry
@@ -36,15 +40,18 @@ Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headw
 No blend shapes (baked at the params below).
 """
 
-import _cartel_gear as cgr
+import math
+
 import _contact_gear as cg
 import _crew_heisters as crew
 import _gear_kit as gk
 import _npc as n
 import _outfit_garments as g
+import _outfit as o
 import _p5 as p5
-from _outfit import Hull, Mesh, Vector
+from _outfit import Gear, Hull, Mesh, Vector, smoothstep
 from _outfit_build import Kit, build_character
+from mathutils import Matrix
 
 TRI_BUDGET = 35000
 EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "remove_armature": True}
@@ -123,8 +130,10 @@ def waitress(kit: Kit) -> None:
     kit.add_gear(gk.name_tag(kit.hull(), Vector((0.085 * k, 0.2, 1.33 * k)), k=k))
     kit.add_head(cg.chignon(fit, "char_hair_dark", size=0.9))
     kit.add_head(cg.earrings(fit, "chrome", drop=False))
+    _waitress_g3(kit, waist)
     kit.notes["look"] = ("Diner waitress (RT-D1 staff_diner): 1950s-style pale rose short-sleeved uniform dress to the "
-                         "knee, short cream bistro apron tied at the waist, brass name badge, black flats, dark bun")
+                         "knee, short cream bistro apron tied at the waist, brass name badge, black flats, dark bun; G3: white "
+                         "collar and cuffs, bodice buttons, order pad and pencil in the apron pocket")
 
 
 def cook(kit: Kit) -> None:
@@ -142,9 +151,132 @@ def cook(kit: Kit) -> None:
                                   thick=0.004))
     kit.add_gear(gear)
     kit.add_soft(g.apron(fit, kit.hull(), APRON, 1.30 * k, 0.50 * k, strap_mat=APRON))
-    kit.add_head(cgr.beanie(fit, "char_shirt_white", front_el=16.0, back_el=-6.0, cuff=0.10, slouch=0.004))
+    kit.add_head(_paper_cap(fit, "char_shirt_white"))
+    _cook_g3(kit)
     kit.notes["look"] = ("Diner cook (RT-D1 staff_diner): cook's whites (white band-collar jacket, double row of "
-                         "buttons, sleeves rolled), long cream bib apron, black trousers and shoes, white skull cap")
+                         "buttons, sleeves rolled), long cream bib apron, black trousers and shoes, white paper cook's cap, "
+                         "red neckerchief, side towel")
+
+
+def _arm_ring(kit: Kit, side: str, t: float, out: float = 0.003) -> list[Vector]:
+    """A closed ring of points on the outer surface round the arm at arm parameter ``t`` (0 shoulder, 1 elbow)."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    sh, el = Vector(fit.J[f"shoulder.{side}"]), Vector(fit.J[f"elbow.{side}"])
+    axis = (el - sh).normalized()
+    c = sh.lerp(el, t)
+    ref = Vector((0.0, 1.0, 0.0))
+    u = (ref - axis * ref.dot(axis)).normalized()
+    v = axis.cross(u)
+    ring = []
+    for i in range(20):
+        a = math.tau * i / 20
+        d = u * math.cos(a) + v * math.sin(a)
+        hit = hull.cast(c + d * 0.12 * k, -d, 0.12 * k)
+        ring.append((hit[0] if hit[0] is not None else c + d * 0.05 * k) + d * out * k)
+    return ring
+
+
+def _waitress_g3(kit: Kit, waist: float) -> None:
+    """G3: the white Peter Pan collar, sleeve cuffs and bodice buttons; the order pad and pencil in the apron pocket."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    nk = g.Neck(fit)
+    neck_z = nk.point(0.0, 0.0).z
+    cy = fit.ring_centre("chest").y
+    det = Mesh()
+    for sx in (-1.0, 1.0):                                                     # collar: two rounded lobes
+        path = []
+        for i in range(8):
+            x = sx * (0.006 + 0.095 * i / 7) * k
+            edge = neck_z - 0.045 * k * smoothstep(0.09 * k, 0.0, abs(x))
+            path.append(o.push_out(p5._front_hit(hull, x, edge - 0.014 * k, cy + 0.1 * k), hull, 0.002 * k))
+        o.strip(det, hull, path, 0.016 * k, 0.0025 * k, "char_shirt_white", segs_across=2, chamfer=0.002 * k)
+    for side in ("L", "R"):                                                    # cuffs at the sleeve hem
+        o.strip(det, hull, _arm_ring(kit, side, 0.27), 0.011 * k, 0.003 * k, "char_shirt_white", segs_across=1,
+                chamfer=0.001 * k, closed=True)
+    kit.add_soft(det)
+    hull = kit.hull()
+    gear = Mesh()
+    for i in range(4):                                                         # bodice buttons
+        z = neck_z - (0.075 + 0.045 * i) * k
+        gear.extend(gk.button(hull, p5._front_hit(hull, 0.0, z, cy + 0.1 * k), "char_shirt_white", r=0.006, k=k))
+    pocket = p5._front_hit(hull, -0.07 * k, waist - 0.09 * k, cy + 0.15 * k)     # apron pocket, wearer's left
+    fwd = Vector((0.0, 1.0, 0.0))
+    gear.extend(gk.bar(hull, pocket + Vector((0.0, 0.0, 0.030 * k)), fwd, 0.075, 0.050, 0.004, "char_prop_paper",
+                       k=k))                                                   # the pad, standing out of it
+    gear.extend(gk.bar(hull, pocket, fwd, 0.095, 0.070, 0.006, ROSE, k=k))       # the pocket (rose, as the dress)
+    pen = Gear()
+    pen.cyl(0.0035 * k, 0.12 * k, centre=(0.0, 0.0, 0.0), axis="Y", segs=6, mat="char_rubber_yellow")
+    pen.cyl(0.0036 * k, 0.012 * k, centre=(0.0, 0.065 * k, 0.0), axis="Y", segs=6, mat="char_bank_red")
+    mtx, loc = o.surface_frame(hull, pocket + Vector((0.035 * k, 0.0, 0.04 * k)), fwd, lift=0.008 * k)
+    gear.extend(pen.to_mesh(mtx, anchor=loc))
+    kit.add_gear(gear)
+
+
+def _paper_cap(fit, mat: str) -> Mesh:
+    """A folded white paper cook's cap: walls round the head from the brow line, pinched to a crest along the crown
+    (front-back), the ends flat. Sized from the head and hair: the wall clears them by 6 mm, the crest the crown."""
+    k = fit.k
+    c = fit.head_centre()
+    eye = fit.eye_centre()
+    hh = gk.HeadHull(fit)
+    z0 = eye.z + 0.040 * k
+    top = fit.head_top() + 0.020 * k
+    half_w = 0.0
+    for dz in (0.0, 0.03, 0.06):
+        for sx in (-1.0, 1.0):
+            hit = hh.cast(Vector((c.x + sx * 0.3, c.y, z0 + dz * k)), Vector((-sx, 0.0, 0.0)), 0.6)
+            if hit[0] is not None:
+                half_w = max(half_w, abs(hit[0].x - c.x))
+    half_w = (half_w or 0.075 * k) + 0.006 * k
+    h = top - z0
+    wall = 0.30 * h
+    outline = [(-half_w, 0.0), (half_w, 0.0), (half_w, wall)]
+    for i in range(1, 6):                                                      # the arch to the crest
+        t = i / 6
+        outline.append((half_w * (1.0 - t) ** 1.4, wall + (h - wall) * math.sin(t * math.pi / 2)))
+    outline.append((0.0, h))
+    for x, z in reversed(outline[3:-1]):
+        outline.append((-x, z))
+    outline.append((-half_w, wall))
+    front = c.y + 0.095 * k
+    back = c.y - 0.085 * k
+    cap = Gear()
+    cap.prism(outline, 0.0, front - back, mat)
+    cap.bevel(0.002 * k, 1, 30.0)
+    # local X = world X, local Y = up, local Z = backwards from the front edge (a rotation: a mirror flips the faces)
+    mtx = Matrix(((1.0, 0.0, 0.0, c.x), (0.0, 0.0, -1.0, front), (0.0, 1.0, 0.0, z0), (0.0, 0.0, 0.0, 1.0)))
+    return cap.to_mesh(mtx, anchor=c)
+
+
+def _cook_g3(kit: Kit) -> None:
+    """G3: the red neckerchief knotted at the throat and the striped side towel at the right hip."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    nk = g.Neck(fit)
+    det = Mesh()
+    ring = [nk.point(math.tau * i / 20, 0.25, 0.010 * k) for i in range(20)]
+    o.strip(det, hull, ring, 0.013 * k, 0.004 * k, "char_bank_red", segs_across=2, chamfer=0.002 * k, closed=True)
+    kit.add_soft(det)
+    hull = kit.hull()
+    gear = Mesh()
+    knot = nk.point(0.0, 0.15, 0.022 * k)
+    gear.extend(gk.bar(hull, knot, Vector((0.0, 1.0, 0.0)), 0.030, 0.026, 0.012, "char_bank_red", k=k, bevel=0.003))
+    for sx, dz in ((-0.008, -0.04), (0.010, -0.035)):                          # the knot's ends
+        gear.extend(gk.bar(hull, knot + Vector((sx * k, 0.006 * k, dz * k)), Vector((0.0, 1.0, 0.0)), 0.018, 0.045,
+                           0.004, "char_bank_red", k=k))
+    hips = fit.ring_centre("hips")
+    fwd = Vector((0.0, 1.0, 0.0))
+    towel_top = p5._front_hit(hull, 0.12 * k, hips.z + 0.06 * k, hips.y + 0.15 * k)    # wearer's right, on the apron
+    mtx, loc = o.surface_frame(hull, towel_top, fwd, lift=0.004 * k)
+    tw = Gear()
+    tw.box((-0.07 * k, -0.24 * k, 0.0), (0.07 * k, 0.0, 0.006 * k), "char_shirt_white")
+    for zz in (-0.20, -0.17):                                                  # woven stripes near the hem
+        tw.box((-0.071 * k, (zz - 0.008) * k, 0.006 * k), (0.071 * k, (zz + 0.008) * k, 0.0075 * k), "char_knit_navy")
+    tw.bevel(0.0015 * k, 1, 30.0)
+    gear.extend(tw.to_mesh(mtx, anchor=loc))
+    kit.add_gear(gear)
 
 
 def attendant(kit: Kit) -> None:
