@@ -51,5 +51,18 @@ cap itself.
 On llvmpipe, frame time barely moves with the draw count, so draw calls aren't the bottleneck there. D1 lands
 only if a real GPU shows that they are (D-132 addendum 2).
 
+## Afterhours dance floor (D-165, `--preset=ah50`, llvmpipe 1280x720, `--frames=30`)
+
+50 club looks (30 dancers, 14 patrons, 6 staff) on dance_a/b/c, 5-18 m, no hold layer:
+
+| Case | draws | prims (incl. shadow pass) |
+|---|---|---|
+| ah50 LOD on | 1440 | 1.07 M |
+| ah50 `--lod=off` | 2317 | 1.47 M |
+
+`render_ah_dance_review.gd` renders the same floor under the club's neon light and prints the visible triangles and
+draws per view (player eye: 225 k tris / 1100 draws, 12 of 50 at LOD2; DJ booth: 325 k / 3238 draws, 8 at LOD2), plus
+an LOD0-vs-LOD2 lineup of every AH look through dance_a/b/c (`_review/ah_cast/ah_dance_lod_*.png`).
+
 Other modes: `-- --stats --ids=a,b` prints per-character surfaces, triangles per LOD and bones. `-- --ids=… --n=…`
 with `--lod=off` / `--switch=m` runs custom cases. The full flag list is in `bench_crowd.gd`'s header.
