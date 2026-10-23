@@ -81,10 +81,27 @@ func test_gear_pickup_ends_civilian_mode_and_only_civilian_allowed() -> void:
 	assert_eq(c.player_mode, &"casing")
 	assert_has(picked, [GearPickup.ITEM, 0], "item_picked_up(item.gear, slot) [R]")
 	assert_true(is_instance_valid(gear) and gear.is_inside_tree(), "the bag stays for the others")
-	assert_eq(gear.interactable.availability(c), InteractableComponent.BLOCK_STATE, "...but not for whoever has gear")
+	assert_ne(gear.interactable.availability(c), InteractableComponent.BLOCK_NONE, "...but not for whoever has gear")
 	var mate: CrewController = _rt.crew_controller(1) as CrewController
 	assert_true(mate.is_ai, "slot 1 is an AI teammate")
 	assert_false(mate.civilian, "D-065 P5: AI teammates gear up with the first human")
+	# B r308 HUD pass: the used bag kept prompting "Hold F to pick up your gear" in red for the rest of the heist.
+	assert_false(gear.interactable.aim_filter.call(c), "a geared player never targets the bag (no prompt)")
+	assert_false(gear.interactable.enabled, "nobody in the crew still needs gear: the bag is off for everyone")
+
+
+## B r308: per player while someone still needs gear (co-op: the other humans take theirs from the same bag).
+func test_gear_bag_targets_only_crew_without_gear() -> void:
+	var c: CrewController = await _launch({"start_mode": &"civilian"})
+	var gear: GearPickup = ATestMaps.add_prefab(_rt, "gear_pickup", Vector3(0, 0, -2)) as GearPickup
+	await wait_physics_frames(2)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, gear.global_position + Vector3(0, 0.05, 0.9)))
+	await wait_physics_frames(2)
+	assert_true(gear.interactable.aim_filter.call(c), "a civilian targets the bag")
+	c.civilian = false
+	assert_false(gear.interactable.aim_filter.call(c), "geared: filtered out")
+	assert_true(_rt.interaction.aimed_component(c) != gear.interactable, "and the aim never resolves to it")
+	assert_true(gear.interactable.enabled, "still on while the bag was never used (another human may need it)")
 
 
 func test_alarm_masks_civilians() -> void:
