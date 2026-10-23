@@ -77,16 +77,16 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 119 x 83 columns (0.25 m), 16624 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 119 x 83 columns (0.25 m), 16630 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 453 polygons, cell 0.10/0.10 m
+- navmesh: 458 polygons, cell 0.10/0.10 m
 - 16 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomLB` | 111 | 111 | 100% |
+| `Rooms/RoomLB` | 112 | 112 | 100% |
 | `Rooms/RoomH1` | 485 | 485 | 100% |
 | `Rooms/RoomLG` | 173 | 173 | 100% |
 | `Rooms/RoomWS` | 109 | 109 | 100% |
@@ -111,12 +111,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 841 surfaces checked
+- 863 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 79904 triangles checked
+- 84243 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -164,7 +164,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 29 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 212 eye samples, 17172 rays, sky yes, 0 void ray(s)
+- 215 eye samples, 17415 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
@@ -173,22 +173,22 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` (plan, exempt) | 681 | 304 | 1355 | 0 | 2340 | 113610 | 5 | PressPendant 357, LbWorkLight 344, TablePendantE 336, TablePendantW 308, WsBenchLamp 10 |
-| `SpawnView` | 509 | 242 | 923 | 0 | 1674 | 77150 | 5 | TablePendantE 307, TablePendantW 246, PressPendant 215, LbWorkLight 145, WsBenchLamp 10 |
-| `HallWideSW` | 389 | 243 | 846 | 0 | 1478 | 62496 | 5 | TablePendantE 316, TablePendantW 237, PressPendant 175, LbWorkLight 108, WsBenchLamp 10 |
-| `BoardClose` | 27 | 31 | 344 | 0 | 402 | 8720 | 3 | TablePendantE 145, TablePendantW 138, LbWorkLight 61 |
-| `PlanningTable` | 202 | 142 | 551 | 0 | 895 | 35070 | 4 | LbWorkLight 163, TablePendantW 154, PressPendant 139, TablePendantE 95 |
-| `OldPress` | 259 | 146 | 817 | 0 | 1222 | 45676 | 4 | LbWorkLight 252, PressPendant 241, TablePendantW 165, TablePendantE 159 |
-| `LoungeFromHall` | 181 | 66 | 495 | 0 | 742 | 31804 | 3 | PressPendant 171, TablePendantW 169, LbWorkLight 155 |
-| `LoungeKitchen` | 106 | 10 | 347 | 0 | 463 | 19876 | 2 | PressPendant 194, LbWorkLight 153 |
+| `TopDownPlan` (plan, exempt) | 703 | 249 | 1087 | 0 | 2039 | 123100 | 5 | TablePendantE 354, PressPendant 352, TablePendantW 326, LbWorkLight 45, WsBenchLamp 10 |
+| `SpawnView` | 515 | 226 | 844 | 0 | 1585 | 76316 | 5 | TablePendantE 325, TablePendantW 264, PressPendant 218, LbWorkLight 27, WsBenchLamp 10 |
+| `HallWideSW` | 395 | 225 | 812 | 0 | 1432 | 61662 | 5 | TablePendantE 334, TablePendantW 255, PressPendant 185, LbWorkLight 28, WsBenchLamp 10 |
+| `BoardClose` | 27 | 30 | 315 | 0 | 372 | 8720 | 3 | TablePendantE 150, TablePendantW 141, LbWorkLight 24 |
+| `PlanningTable` | 224 | 117 | 473 | 0 | 814 | 45842 | 4 | TablePendantW 170, PressPendant 148, TablePendantE 110, LbWorkLight 45 |
+| `OldPress` | 263 | 106 | 605 | 0 | 974 | 46402 | 4 | PressPendant 237, TablePendantW 172, TablePendantE 167, LbWorkLight 29 |
+| `LoungeFromHall` | 188 | 40 | 372 | 0 | 600 | 41304 | 3 | TablePendantW 177, PressPendant 164, LbWorkLight 31 |
+| `LoungeKitchen` | 106 | 0 | 195 | 0 | 301 | 19876 | 1 | PressPendant 195 |
 | `ArmoryBench` | 63 | 0 | 10 | 0 | 73 | 7480 | 1 | WsBenchLamp 10 |
 | `MaskRoom` | 102 | 0 | 10 | 0 | 112 | 17064 | 1 | WsBenchLamp 10 |
-| `CorridorToRange` | 212 | 32 | 608 | 0 | 852 | 29468 | 3 | PressPendant 240, TablePendantE 189, TablePendantW 179 |
+| `CorridorToRange` | 212 | 32 | 618 | 0 | 862 | 29468 | 3 | PressPendant 232, TablePendantE 197, TablePendantW 189 |
 | `RangeVestibule` | 90 | 0 | 0 | 0 | 90 | 12376 | 0 |  |
-| `BunkRoom` | 166 | 0 | 228 | 0 | 394 | 24962 | 1 | PressPendant 228 |
+| `BunkRoom` | 166 | 0 | 226 | 0 | 392 | 24962 | 1 | PressPendant 226 |
 | `KitStore` | 75 | 0 | 0 | 0 | 75 | 13120 | 0 |  |
-| `RooflightUpA` | 38 | 62 | 294 | 0 | 394 | 6820 | 4 | TablePendantW 103, TablePendantE 93, PressPendant 86, LbWorkLight 12 |
-| `RooflightUpB` | 42 | 75 | 316 | 0 | 433 | 6826 | 4 | TablePendantW 110, PressPendant 102, TablePendantE 90, LbWorkLight 14 |
+| `RooflightUpA` | 42 | 58 | 337 | 0 | 437 | 6264 | 3 | TablePendantW 119, TablePendantE 109, PressPendant 109 |
+| `RooflightUpB` | 46 | 65 | 347 | 0 | 458 | 6270 | 3 | TablePendantW 125, TablePendantE 112, PressPendant 110 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)

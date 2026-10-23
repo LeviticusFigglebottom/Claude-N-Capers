@@ -627,8 +627,10 @@ def _van(k: Kit, p: dict) -> None:
     trim.bx((-0.25, -yr - 0.12, clear + 0.06), (0.25, -yr - 0.1, clear + 0.17), "plastic_white")
     body.build()
     # rear doors (hinged at the outer edges, closed = flush with the rear)
+    # `doors_open_deg` (the safehouse's crew van, rear doors open): each leaf turned out about its hinge
+    open_r = math.radians(float(p.get("doors_open_deg", 0.0)))
     for name, sx in (("DoorL", -1), ("DoorR", 1)):
-        piv = k.empty(name, (sx * (w / 2 - 0.04), yr, clear + 0.1))
+        piv = k.empty(name, (sx * (w / 2 - 0.04), yr, clear + 0.1), (0.0, 0.0, -sx * open_r))
         dm = k.obj(name + "Mesh", parent=piv)
         dp = dm.part(bevel=0.02, segments=2)
         dt = dm.part(bevel=0.003)
