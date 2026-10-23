@@ -4,6 +4,16 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-64) D-168 net + threat term, balance guard, r309 blocker, door bouncer, cuff log + grace (2026-10-23)
+- D-168: MTU-sized _rpc_xforms chunks (<= 1100 B), far calm civilians at 1/3 rate, per-peer KIND_READY gate (82093e6b);
+  AH soak re-check: 0 NetSync-not-found (was 14), 0 MTU warnings. Threat term + stickiness in PoliceBrain._pick_target
+  (6f0bda6f). Balance guard: RT Routine 4/4, AH Routine 4/5 (+6501 A/B re-run PASS with and without the term: variance);
+  pilot intake 0.71 -> 0.71 dmg/s mean.
+- r309 blocker test_gn_mission (pre-existing since r306: observer behind C's CourtWallN), test fix 24d9a68f.
+- AH door bouncer holds his post (af2f689f, D confirmed windowed). Police-cuff release logged on [combat] (cd3d2dd7);
+  an uncuff restarts the D-108 grace (d1865217).
+- AH perf stampede (slowed time): hall views 133-314 draws with 39-45 civs; calm max 539. Shadows: after C's lit G2.
+
 ### (-63) D-167, AH safe cash, camera station, AH soak (2026-10-23)
 - D-167: PoliceBrain.may_cuff (no special / Aegis / Brandt cuffs), cuffed is not custody for the solo fail, tested
   (397e8bc2). AH safe cash frozen on its shelves + aimable through the open safe (ef468abe; the bags were pushed out of
