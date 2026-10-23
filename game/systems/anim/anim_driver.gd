@@ -207,7 +207,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle", &"turn_l_45": &"turn_l", &"turn_r_45": &"turn_r",
 	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
 	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
-	&"bartender_pour": &"browse", &"bouncer_idle": &"idle", &"dj_mix": &"browse", &"teller_count": &"desk_type", &"dance_a": &"idle",
+	&"bartender_pour": &"browse", &"teller_count": &"desk_type", &"dance_a": &"idle",
 	&"dance_b": &"idle", &"dance_c": &"idle",
 	# v1.10: 8-way, hit reacts, death variety (each falls back to the v1.3 set).
 	&"walk_fl": &"walk", &"walk_fr": &"walk", &"walk_bl": &"walk_back", &"walk_br": &"walk_back",
