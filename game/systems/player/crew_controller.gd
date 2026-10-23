@@ -141,6 +141,8 @@ var _bob_phase: float = 0.0
 var _bob_w: float = 0.0
 ## D-102: effective carry speed mult this tick (after perks) and the raw PD2 move_speed_modifier for the bob.
 var _carry_mult: float = 1.0
+## A4-04: last tick's sprint request (a fresh press cancels a reload, PD2 _start_action_running).
+var _sprint_req_prev: bool = false
 var _carry_bob_mult: float = 1.0
 ## PO-4: melee-hit camera punch (pitch, roll; radians): current value, peak amplitude, seconds since the hit.
 var _punch: Vector2 = Vector2.ZERO
@@ -484,10 +486,15 @@ func _simulate(delta: float) -> void:
 	# A4-04 movement.sprint_any_direction (Free Running aced): any move direction sprints, not only forward.
 	var sprint_dir: bool = i.move.y > 0.1 or (i.move.length() > 0.1 and Modifiers.flag(slot, &"movement.sprint_any_direction"))
 	var can_sprint: bool = not casing and not crouched and mobile and sprint_dir
-	# A4-04 movement.reload_while_sprinting: a reload ends the sprint (PD2 _start_action_reload) and no sprint starts
-	# while reloading (◇: PD2's sprint cancels the reload instead; CrewWeapons has no cancel).
+	# A4-04 movement.reload_while_sprinting, else PD2: a reload ends the sprint (_start_action_reload) and holding sprint
+	# does not bring it back; a fresh sprint press cancels the reload (_start_action_running, CrewWeapons.cancel_reload).
+	var sprint_press: bool = i.sprint and not _sprint_req_prev
+	_sprint_req_prev = i.sprint
 	if weapons != null and weapons.reloading and not Modifiers.flag(slot, &"movement.reload_while_sprinting"):
-		can_sprint = false
+		if sprint_press and can_sprint and stamina.can_sprint(false):
+			weapons.cancel_reload()
+		else:
+			can_sprint = false
 	if bag_w >= 0:
 		can_sprint = can_sprint and (tw.bag_can_sprint[bag_w] or Modifiers.flag(slot, &"loot.can_sprint_with_heavy"))
 	var armor_def: ArmorDef = _armor_def()

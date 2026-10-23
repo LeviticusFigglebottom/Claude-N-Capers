@@ -16,5 +16,5 @@ look: Admin clerk (upstairs office): oatmeal knit cardigan over a white shirt, n
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26532
-tris_by_mesh: {"Body": 8932, "Gear": 548, "Hair": 1728, "Headwear": 498, "Outfit": 14826}
+tris: 26576
+tris_by_mesh: {"Body": 8932, "Gear": 592, "Hair": 1728, "Headwear": 498, "Outfit": 14826}
