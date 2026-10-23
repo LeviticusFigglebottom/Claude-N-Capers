@@ -1,0 +1,2 @@
+[DKF] ROW hacker | loud by a burst | PASS | loud true | -
+[DKF] ROW hacker | pocket ECM: feedback in loud | FAIL | mode -, active 0.0 s, charges -, 0 of 2 near enemies stunned 1.5 s after G | A EcmSystem
