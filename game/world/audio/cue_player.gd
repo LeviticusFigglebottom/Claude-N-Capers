@@ -60,6 +60,12 @@ const LOOP_STOP_OWNERS: Dictionary[StringName, String] = {
 	&"cue.amb_ballast_buzz": "CueEmitter (map bed)",
 	&"cue.amb_drip": "CueEmitter (map bed)",
 	&"cue.amb_range_extractor": "CueEmitter (map bed)",
+	# AH-C1 Afterhours: the map beds (ClubSound owns the club loop + crowd bed: cut() stops them on the alarm)
+	&"cue.amb_afterhours_club_music": "CueEmitter (map bed)",
+	&"cue.amb_afterhours_club": "CueEmitter (map bed)",
+	&"cue.amb_afterhours_boh": "CueEmitter (map bed)",
+	&"cue.amb_street_wet_night": "CueEmitter (map bed)",
+	&"cue.crowd_stampede": "CueEmitter (Audio/ClubSound, started by cut(); freed with the map); cap",
 	&"cue.throwable_incendiary_fire": "CueEmitter (fire pool, freed with the pool)",
 	&"cue.assault_van_engine": "assault_event_ended (A: assault events) / heist_ended; cap",
 	&"cue.assault_heli_rotor": "assault_event_ended (A: assault events) / heist_ended; cap",
