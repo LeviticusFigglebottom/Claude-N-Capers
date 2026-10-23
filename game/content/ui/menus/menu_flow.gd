@@ -95,6 +95,9 @@ var preplan: Dictionary = {}
 ## The chosen contract is a pro job (Board pin flagged pro). Heist select, the broker and direct
 ## launch are never pro. Goes to options["is_pro"] and PaydayScreen.is_pro.
 var is_pro: bool = false
+## C4 Last Breath (PD2 One Down) for the chosen contract: the planning table's toggle, or the lobby host's contract.
+## Goes to options["last_breath"] (ENV A: one down before custody) and PaydayScreen.last_breath.
+var last_breath: bool = false
 ## Pro jobs have no restart (QB-BRD1, D-049): BoardContracts.contract_key() -> expires_at for every
 ## failed pro Board contract. Shared with the Board, which locks those pins for the rest of their
 ## rotation (they can't be taken again, so the briefing can't relaunch them). Persisted in the profile
@@ -387,6 +390,7 @@ func _connect_loadout_subscreens(ls: LoadoutScreen) -> void:
 
 ## Board contract taken (or bought from the broker) -> briefing; Back from the briefing returns to the Board.
 func _on_contract_chosen(heist_id: StringName, difficulty: int, pro: bool) -> void:
+	last_breath = false  # Board contracts carry no Last Breath (the planning table and the lobby do)
 	_start_contract(heist_id, difficulty, pro, board_screen)
 	_board_contract = board_screen.selected_contract() if pro else {}
 
@@ -405,13 +409,14 @@ func _show_stub(message_key: StringName, sample_payday: bool) -> void:
 
 ## Planning table (heist select) -> briefing; never a pro job.
 func _on_heist_chosen(heist_id: StringName, difficulty: int) -> void:
+	last_breath = heist_select.last_breath
 	_start_contract(heist_id, difficulty, false, heist_select)
 
 
 ## A fresh contract path: drops any older pre-planning / loadout screens and shows the briefing.
 func _start_contract(heist_id: StringName, difficulty: int, pro: bool, back_to: Control) -> void:
 	if is_coop() and lobby.state.is_host:
-		lobby.set_contract(heist_id, difficulty, pro)  # B4-11: the lobby runs the host's contract
+		lobby.set_contract(heist_id, difficulty, pro, last_breath)  # B4-11: the lobby runs the host's contract
 	is_pro = pro
 	_board_contract = {}
 	_briefing_back = back_to
@@ -635,7 +640,7 @@ func launch_options_for(loadout: Loadout) -> Dictionary:
 	var resolved: Loadout = LoadoutResolver.resolve(loadout)
 	WeaponFinishes.stamp(resolved, _menu_profile())  # B7-04: Loadout.weapon_finishes
 	return build_launch_options(ai, Net.local_slot(), resolved, preplan, is_pro,
-			MusicCatalog.resolve_choice(_menu_profile()), _menu_profile())
+			MusicCatalog.resolve_choice(_menu_profile()), _menu_profile(), last_breath)
 
 
 ## Direct launch (D-024): `args` from LaunchArgs.parse(). Skips the menus and launches `heist_id`
@@ -656,6 +661,7 @@ func direct_launch(args: Dictionary) -> bool:
 		return false
 	_heist_id = heist_id
 	is_pro = false
+	last_breath = false
 	_board_contract = {}
 	_difficulty = int(args.get("difficulty", Enums.Difficulty.ROUTINE))
 	var run_seed: int = int(args["seed"]) if bool(args.get("has_seed", false)) else _time_seed()
@@ -686,7 +692,7 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	Net.start_solo(profile.profile_name, ai)
 	CrewLoadouts.source = profile  # PO-19: A's runtime reads the bots' loadouts through CrewLoadouts.for_slot
 	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan, pro,
-			MusicCatalog.resolve_choice(profile), profile)
+			MusicCatalog.resolve_choice(profile), profile, last_breath)
 	visible = false
 	_spawn_in_heist_ui()
 	_hand_heisters(options)
@@ -727,7 +733,8 @@ func _show_loading(heist_id: StringName, difficulty: int) -> CanvasLayer:
 ## PO-19: `crew` = the player's profile: the bots carry its crew loadouts (CrewLoadouts; outfit picks first, then
 ## each AI slot's primary / armor / mask); null keeps A's default bots.
 static func build_launch_options(ai_teammates: int, local_slot: int, resolved: Loadout,
-		plan: Dictionary = {}, pro: bool = false, music: StringName = &"", crew: PlayerProfile = null) -> Dictionary:
+		plan: Dictionary = {}, pro: bool = false, music: StringName = &"", crew: PlayerProfile = null,
+		last_breath_on: bool = false) -> Dictionary:
 	var loadouts: Dictionary = {local_slot: resolved}
 	if resolved != null:
 		var ai_slots: Array[int] = Heisters.solo_ai_slots(local_slot, ai_teammates)
@@ -741,6 +748,8 @@ static func build_launch_options(ai_teammates: int, local_slot: int, resolved: L
 		options["preplan"] = plan
 	if pro:
 		options["is_pro"] = true
+	if last_breath_on:
+		options["last_breath"] = true  # C4 One Down (ENV A: one down before custody)
 	return options
 
 
@@ -791,6 +800,7 @@ func _spawn_in_heist_ui() -> void:
 	pd.listen_heist_ended = true
 	pd.start_fact_log()  # D-115: before the launch, so the mission's first objective facts are seen
 	pd.is_pro = is_pro
+	pd.last_breath = last_breath
 	pd.profile_slot = profile_slot
 	pd.visible = false
 	pd.continue_pressed.connect(_on_heist_payday_continue)
@@ -843,6 +853,7 @@ func _retry_at_routine() -> void:
 	var heist: StringName = _heist_id
 	_leave_heist()
 	is_pro = false
+	last_breath = false
 	_board_contract = {}
 	launch(heist, Enums.Difficulty.ROUTINE, SaveService.load_profile(profile_slot).loadout, _time_seed())
 
@@ -854,6 +865,7 @@ func _quick_play() -> void:
 	if job.is_empty():
 		return
 	is_pro = false
+	last_breath = false
 	_board_contract = {}
 	launch(StringName(job["heist_id"]), int(job["difficulty"]), p.loadout, _time_seed())
 
@@ -997,6 +1009,7 @@ func _on_lobby_briefing() -> void:
 	if c.is_empty():
 		return
 	refund_preplan()
+	last_breath = bool(c.get("last_breath", false))
 	_start_contract(c["heist"], int(c["difficulty"]), bool(c["is_pro"]), lobby_screen)
 
 
@@ -1057,6 +1070,7 @@ func _begin_client_heist(info: Dictionary) -> void:
 	_heist_id = StringName(info["heist"])
 	_difficulty = int(info["difficulty"])
 	is_pro = bool(info["is_pro"])
+	last_breath = bool(info.get("last_breath", false))
 	visible = false
 	_spawn_in_heist_ui()
 	# Co-op pass: the client's rows read "Host / AI 2"; the lobby's assignment is the host's (same summaries).
@@ -1147,9 +1161,11 @@ func launch_coop(info: Dictionary) -> void:
 	_heist_id = info["heist"]
 	_difficulty = int(info["difficulty"])
 	is_pro = bool(info["is_pro"])
+	last_breath = bool(info.get("last_breath", false))
 	CrewLoadouts.source = _menu_profile()  # PO-19: the host's crew loadouts arm the bots
 	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro,
-			MusicCatalog.resolve_choice(_menu_profile()), Heisters.ai_loadouts(lobby.state.ai_heisters(), _menu_profile()))
+			MusicCatalog.resolve_choice(_menu_profile()), Heisters.ai_loadouts(lobby.state.ai_heisters(), _menu_profile()),
+			last_breath)
 	DropInFlow.apply_host_policy(get_tree(), lobby.state.dropin_policy)  # B6-04: A's service decides drop-ins
 	visible = false
 	_spawn_in_heist_ui()
@@ -1168,7 +1184,7 @@ func launch_coop(info: Dictionary) -> void:
 ## D-073: `ai_loadouts` = {slot: Loadout} for the AI seats (Heisters.ai_loadouts(LobbyState.ai_heisters()): the
 ## default AI loadout with a heister left over), merged into `loadouts`; `ai_teammates` counts the seats humans leave.
 static func build_coop_launch_options(loadouts: Dictionary, plan: Dictionary = {}, pro: bool = false,
-		music: StringName = &"", ai_loadouts: Dictionary = {}) -> Dictionary:
+		music: StringName = &"", ai_loadouts: Dictionary = {}, last_breath_on: bool = false) -> Dictionary:
 	var all: Dictionary = loadouts.duplicate()
 	all.merge(ai_loadouts)
 	var options: Dictionary = {"ai_teammates": maxi(LobbyState.MAX_CREW - loadouts.size(), 0), "loadouts": all,
@@ -1177,6 +1193,8 @@ static func build_coop_launch_options(loadouts: Dictionary, plan: Dictionary = {
 		options["preplan"] = plan
 	if pro:
 		options["is_pro"] = true
+	if last_breath_on:
+		options["last_breath"] = true
 	return options
 
 

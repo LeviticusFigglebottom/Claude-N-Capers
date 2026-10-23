@@ -200,6 +200,11 @@ ui.prompt.use_doctor_bag,Hold {key} to use the doctor bag
 ui.prompt.use_ammo_bag,Hold {key} to refill ammo
 ui.prompt.take_body_bag,Hold {key} to take a body bag
 ui.prompt.deploy,Hold {key} to deploy {item}
+ui.prompt.sentry_pickup,Hold {key} to pick up the sentry
+ui.prompt.sentry_mode,Hold {key} to switch the sentry to {mode} mode
+ui.sentry.mode.normal,standard
+ui.sentry.mode.quiet,quiet
+ui.sentry.mode.ap,armor-piercing
 ui.prompt.trade_hostage,Hold {key} to trade the hostage
 ui.prompt.convert,Hold {key} to convert
 ui.prompt.send_lift,Hold {key} to send the lift
@@ -387,6 +392,26 @@ item.deployable.fak.name,First Aid Kit
 item.deployable.fak.desc,"Four small kits; each heals one heister once."
 item.deployable.trip_mine.name,Trip Mine
 item.deployable.trip_mine.desc,"Three mines that blow when someone crosses the beam."
+item.deployable.sentry.name,Sentry Gun
+item.deployable.sentry.desc,"An automatic turret that fires at anyone hostile in its arc. Deploying it costs 40% of your ammo."
+item.bot_ability.inspire.name,Rally
+item.bot_ability.inspire.desc,"The bot revives a downed teammate it can see from up to 9 m away by shouting, at most once every 30 seconds."
+item.bot_ability.quick.name,Quick Hands
+item.bot_ability.quick.desc,"The bot interacts 30% faster: bags, doors and revives."
+item.bot_ability.pied_piper.name,Loud Voice
+item.bot_ability.pied_piper.desc,"The bot's shouts carry 50% further when it controls civilians and guards."
+item.bot_ability.resilient.name,Hardened
+item.bot_ability.resilient.desc,"The bot takes 20% less damage."
+item.bot_boost.ammo.name,Spare Mags
+item.bot_boost.ammo.desc,"While the bot is in play, the whole crew carries 25% more ammo."
+item.bot_boost.health.name,Tough Crew
+item.bot_boost.health.desc,"While the bot is in play, the whole crew has 10% more health."
+item.bot_boost.stamina.name,Endurance
+item.bot_boost.stamina.desc,"While the bot is in play, the whole crew has 25% more stamina."
+item.bot_boost.revive.name,Field Medic
+item.bot_boost.revive.desc,"While the bot is in play, the whole crew revives 20% faster."
+item.bot_boost.carry.name,Strong Backs
+item.bot_boost.carry.desc,"While the bot is in play, bags slow the whole crew 25% less."
 item.loot.jewelry.name,Jewelry
 item.loot.jewelry.desc,"Rings, necklaces and watches in a padded bag."
 item.loot.cash.name,Cash

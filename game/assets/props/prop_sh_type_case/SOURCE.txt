@@ -1,0 +1,8 @@
+asset: prop_sh_type_case
+script: tools/blender/props/safehouse_hero.py
+params: {"cat": {"group": "safehouse", "kind": "type_case", "pin_only": true, "place": "floor", "surface": "wood"}, "fn": "type_case"}
+seed: 2674708437  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sh_type_case
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

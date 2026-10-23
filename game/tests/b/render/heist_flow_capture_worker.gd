@@ -45,6 +45,9 @@ func _run() -> void:
 		if n.has_method(&"select_heist_id"):
 			n.call(&"select_heist_id", _heist)
 	await _shot("heist_select")
+	_flow.heist_select.set_last_breath(true)  # C4: the Last Breath toggle on
+	await _shot("heist_select_last_breath")
+	_flow.heist_select.set_last_breath(false)
 	_flow.call(&"_on_heist_chosen", _heist, Enums.Difficulty.ROUTINE)
 	await _shot("briefing")
 	_flow.call(&"_on_briefing_continue", _heist, Enums.Difficulty.ROUTINE)
