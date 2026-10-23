@@ -11,7 +11,7 @@
 ## Each: the alarm by a burst (real input), the deck's moment with ONE shot (HUD + FP pose), FIGHT_S of fighting, rows
 ## with numbers and a PD2 judgement line. Stated shortcuts: direct HeistLauncher.launch (seed, Routine), the
 ## hazard kit (corsair_ar + kestrel + heavy vest + doctor bag), the alarm by gunfire.
-##     --out=/abs/dir [--seed=N] [--open (advance on the nearest enemy, no holding at the spawn)]
+##     --out=/abs/dir [--seed=N] [--open (advance on the nearest enemy)] [--diff=hazardous]
 ## Output: "[DKF ...]" notes and "[DKF] ROW <deck> | <item> | PASS|FAIL|NOTE | <detail> | <owner>"; "[DKF] RESULT".
 ## Owner: ENV P.
 extends "res://tests/p/_review/rt_g1_pass.gd"
@@ -92,6 +92,15 @@ func _deck_loadout(deck: StringName) -> Loadout:
 	return CrewWeapons.build_loadout(lo)
 
 
+## --diff=hazardous etc. (default Routine): Routine armor regen out-heals the incoming fire, so the defensive decks
+## need a harder difficulty to be exercised.
+func _dk_diff() -> Enums.Difficulty:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--diff="):
+			return Enums.Difficulty.get(a.trim_prefix("--diff=").to_upper(), Enums.Difficulty.ROUTINE) as Enums.Difficulty
+	return Enums.Difficulty.ROUTINE
+
+
 ## Glasshouse with the deck, 3 AI bots ON, masked, then the alarm by a burst (real input). True once loud.
 func _deck_launch(deck: StringName) -> bool:
 	if rt != null and is_instance_valid(rt):
@@ -102,7 +111,7 @@ func _deck_launch(deck: StringName) -> bool:
 	_heal_events.clear()
 	if Net.crew.is_empty():
 		Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
-	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, Enums.Difficulty.ROUTINE, self,
+	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, _dk_diff(), self,
 		{"skip_casing": true, "ai_teammates": 3, "crew_ai": true, "loadouts": {Net.local_slot(): _deck_loadout(deck)}})
 	if rt == null:
 		return await _fail("launch")
@@ -123,7 +132,8 @@ func _deck_launch(deck: StringName) -> bool:
 			_crew_ids[NetIds.of(cc)] = s
 	if not EventBus.damage_applied.is_connected(_on_blown_hit):
 		EventBus.damage_applied.connect(_on_blown_hit)
-	note("launched %s deck %s, spawn %s" % [GH_HEIST, deck, Po5Pilot._v(c.global_position)])
+	note("launched %s (%s) deck %s, spawn %s" % [GH_HEIST, Enums.Difficulty.keys()[_dk_diff()], deck,
+		Po5Pilot._v(c.global_position)])
 	var eff: Loadout = rt.crew_loadouts.get(c.slot) as Loadout
 	note("deck check: local_slot %d, crew.slot %d, effective deck %s, perks %s, perk.throwable %s" % [Net.local_slot(),
 		c.slot, eff.perk_deck if eff != null else &"-", PerkHooks.of(c).components.keys(),
