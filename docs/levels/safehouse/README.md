@@ -55,6 +55,6 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
 * **Black faces: solved (2026-10-23).** Library ORM materials carry `metallic = 1`, so ORM.b decides metalness and a
   bare metal (`steel_bare`) has no diffuse. With the environment's reflections disabled it showed only its
   ReflectionProbe, which (UPDATE_ONCE) renders ~14-20 frames after a camera first sees it: until then it read black.
-  Fixes: the planning table is `gunmetal` (painted, dielectric), the environment reflects the dim night sky, the Old
+  Fixes: the steel planning-table stand-in became painted, then D's hero table; the environment reflects the dim night sky, the Old
   Press is D's art, `review_shots` warms every UPDATE_ONCE probe first, and levelcheck `metal_reflection` (final)
   fails a metal with no reflection source.
