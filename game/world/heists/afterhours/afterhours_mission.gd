@@ -121,6 +121,7 @@ func _on_mission_start() -> void:
 	on_event(&"loot_secured", _on_bag_secured)
 	on_event(&"loot_picked", _on_loot_picked)
 	on_event(&"assault_phase_changed", _on_assault_phase_changed)
+	on_event(&"captain_arrived", func(_id: int) -> void: _try_escape())
 	_spawn_loot()
 	_rare_start()
 	if variant(&"dj_set") is Array and _slot_active(&"dj_set", &"dj_on"):
@@ -309,10 +310,18 @@ func _on_assault_phase_changed(assault_phase: int, _wave_index: int) -> void:
 		_try_escape()
 
 
+## D-166: a captain holds the assault (AssaultDirector.captain_active()): the van does not wait for its FADE.
+func captain_waiver() -> bool:
+	var d: AssaultDirector = _runtime.service(G.SVC_DIRECTOR) as AssaultDirector if _runtime != null else null
+	return d != null and d.captain_active()
+
+
 func _try_escape() -> void:
 	if escape_open or safe_secured < REQUIRED_BAGS:
 		return
-	if went_loud and not (_van_fade and _secure_wait_done):
+	# D-166: the 2nd FADE or SECURE_WAIT_S after the first cash bag, whichever is later; a captain (Brandt) holding the
+	# assault in SUSTAIN waives the FADE once the wait is over (it would never come: the done-check's soft lock).
+	if went_loud and not ((_van_fade or captain_waiver()) and _secure_wait_done):
 		if objective_state(&"escape_wait") == Enums.ObjectiveState.ACTIVE:
 			say(&"vo.mercer.afterhours_van_eta")
 		return
