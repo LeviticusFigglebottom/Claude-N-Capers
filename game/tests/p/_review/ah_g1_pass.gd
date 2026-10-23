@@ -97,6 +97,9 @@ func _run() -> void:
 	RenderingServer.render_loop_enabled = true
 	print("[AHP] RESULT %s (%s)" % ["PASS" if ok else "FAIL", ", ".join(_results)])
 	get_tree().quit(0 if ok else 1)
+	# Finished runs sometimes hang in shutdown under llvmpipe (3 GB held, the queue blocked): force the exit.
+	await get_tree().create_timer(10.0, true, false, true).timeout
+	OS.kill(OS.get_process_id())
 
 
 func _row(item: String, verdict: String, detail: String, owner: String = "-") -> void:
