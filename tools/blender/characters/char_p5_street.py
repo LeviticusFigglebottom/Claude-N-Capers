@@ -366,7 +366,8 @@ def commuter(kit: Kit) -> None:
     cb = gk.Belt(fit, Hull(fit, [coat], body_regions=set()), waist, height=0.038, thick=0.004, drop=0.0)
     kit.add_soft(cb.mesh("char_mac_cherry"))
     _neck_scarf(kit, "char_knit_teal")                                          # G3
-    n.messenger_bag(kit, "char_leather_black", "char_leather_black", a_deg=-115.0, z=1.00, w=0.17, h=0.13, d=0.06)
+    # on the hip, ahead of the side seam: no back depth (cower walls, chair backs; test_cower_offsets)
+    n.messenger_bag(kit, "char_leather_black", "char_leather_black", a_deg=-75.0, z=1.00, w=0.17, h=0.13, d=0.06)
     kit.notes["look"] = ("Commuter (RT-D1): belted double-breasted cherry mac above the knee over a grey roll-neck, "
                          "black trousers, black flats, dark bob")
 
