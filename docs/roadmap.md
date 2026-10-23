@@ -74,10 +74,10 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A4-01 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Fidelity audit: every pd2_fidelity row owned by ENV A with phase ≤ P5 → test coverage table (row, test, status); implement any row found missing (as L3.9 melee was) | all A rows |
 | A4-02 | ✅ DONE (26509c96 + 2ceafc4d, env_a.md -35/-47; test_a4_02_dockside_perf). Performance: frame/physics/AI/net budgets instrumented (Perf monitors + a headless perf scene: Dockside, 4 crew, enemy cap reached), CI perf test with thresholds; fix the worst offenders | P6 gate |
 | A4-03 | ✅ DONE (env_a.md -37). 4-client soak harness: host + 3 loopback clients with bot crew for a long loud run; checks desync (state hashes), memory growth, error log; feeds the lead's P6 gate | P6 gate |
-| A4-04 | Hook the modifier keys that do nothing: the lead's P4 gate (test_p4_progression.gd) found 69 keys ≤ P4 with no runtime hook (mostly the D-031 skill keys, e.g. weapon.fire_rate_mult, weapon.ads_speed_mult, defense.swan_song, interaction.speed_mult) and 31 hooked keys with no behaviour test. Hook each one and add a behaviour test, then shrink the gate's allowlist. Hooks in ENV P's files (player/viewmodel, e.g. ADS speed, movement) go through ENV P. Next after A4-01 (D-076 playability) | P4 gate |
-| A5-01 | `armored_truck` prefab (Rolling Thunder QC-80): vehicle-shaped LARGE safe — saw target, `charges_required`, lockdown state (saw ×1.5), roof-hatch thermite | P5 rolling_thunder |
-| A5-02 | `convoy_vehicle` mover (QC-82): path-following vehicles with stop/crash states, escort cars, replicated | P5 rolling_thunder |
-| A5-03 | C4 item + shaped charges (QC-84 / S9.5): carried charge count, `charges_required` doors/safes/trucks, placement interaction, detonation | S9.5, P5 |
+| A4-04 | ✅ DONE (A audit, env_a.md -48). Hook the modifier keys that do nothing: the lead's P4 gate (test_p4_progression.gd) found 69 keys ≤ P4 with no runtime hook (mostly the D-031 skill keys, e.g. weapon.fire_rate_mult, weapon.ads_speed_mult, defense.swan_song, interaction.speed_mult) and 31 hooked keys with no behaviour test. Hook each one and add a behaviour test, then shrink the gate's allowlist. Hooks in ENV P's files (player/viewmodel, e.g. ADS speed, movement) go through ENV P. Next after A4-01 (D-076 playability) | P4 gate |
+| A5-01 | ✅ DONE (A audit, env_a.md -48). `armored_truck` prefab (Rolling Thunder QC-80): vehicle-shaped LARGE safe — saw target, `charges_required`, lockdown state (saw ×1.5), roof-hatch thermite | P5 rolling_thunder |
+| A5-02 | ✅ DONE (A audit, env_a.md -48). `convoy_vehicle` mover (QC-82): path-following vehicles with stop/crash states, escort cars, replicated | P5 rolling_thunder |
+| A5-03 | ✅ DONE (A audit, env_a.md -48). C4 item + shaped charges (QC-84 / S9.5): carried charge count, `charges_required` doors/safes/trucks, placement interaction, detonation | S9.5, P5 |
 | D3-01 | P5 cast (casting per heist; reuse bodies/outfits via variants): Gallery Night (curator, gallery attendants, guards, patrons in evening wear), Ostrander Federal (tellers, bank manager, bank guards, customers), Rolling Thunder (armoured-car crew, convoy escort), Afterhours (bouncers, bartenders, DJ, club patrons); names/roles from ENV C's G0 docs as they land | P5 |
 | D3-02 | P5 NPC ambient animations: club dance loops ×3, bartender wipe/pour, bouncer arms-crossed idle, teller counting at a counter, curator inspecting a painting, walking-while-texting, seated/standing cower variants | P5 |
 | D3-03 | Mask bases batch 3: +12 original base shapes through `_mask_base` (face-envelope fit), for ENV B's unlock sources (payday cards, Notoriety, achievements) | P8 |
@@ -92,14 +92,14 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 
 | Id | Task | Fidelity rows |
 |---|---|---|
-| A2-01 | Doors on the nav graph: NPC/AI teammates open unlocked doors on their path; guards use keycard doors they're authorised for; nav links toggle with door state | (QA-11) |
-| A2-02 | Cameras complete: security room + `camera_station` operator (kill/dominate → all cameras off), operator dispatches a guard to investigate a broken camera, Titan cameras (Lethal+) | S8.1, S8.2 |
-| A2-03 | ECM jammer runtime: deploy, chaining, cameras/phones jam, doors/ATM open with skill, feedback stun, pager-delay skill | S8.4–S8.6, S5.6 |
-| A2-04 | Keypads + code notes, safes with methods and time locks, saws, laser grids, zipline | S9.4, S9.7, S9.8, S9.10, S9.11 |
-| A2-05 | Guard cuff flow (yell, pause, cuff, 4 min cooldown, 60 s self-free), body-shot misfire, marking + Sixth Sense | S3.2, S3.7, S2.9 |
-| A2-06 | Deployables runtime: doctor bag, FAK, ammo bag, body bag case, ECM; dodge rolls | L2.11, L2.4, S6.2 |
-| A2-08 | Glasshouse feedback from ENV C (D-037): VariantResolver conditional forcing (`force_if`), per-slot `requires`, `min_difficulty` on rare events, per-difficulty scalar weights; window prefab glass sized from the visual's `Glass` AABB; safe KEYCARD method (reader-bound); one-way push-bar door (fire exits); security_camera collision kept in front of its wall-mount pivot | (QC-7) |
-| A2-07 | Restrained/hostage stimuli, stealth-only heist mode (alarm = fail), pre-planning asset hooks (spawn choice, asset drops, modifier assets) | S6.4, S11.3, C3 |
+| A2-01 | ✅ DONE (A audit, env_a.md -48). Doors on the nav graph: NPC/AI teammates open unlocked doors on their path; guards use keycard doors they're authorised for; nav links toggle with door state | (QA-11) |
+| A2-02 | ✅ DONE (A audit, env_a.md -48). Cameras complete: security room + `camera_station` operator (kill/dominate → all cameras off), operator dispatches a guard to investigate a broken camera, Titan cameras (Lethal+) | S8.1, S8.2 |
+| A2-03 | GAP: S8.5 ATM-by-ECM only (A fixing, env_a.md -48). ECM jammer runtime: deploy, chaining, cameras/phones jam, doors/ATM open with skill, feedback stun, pager-delay skill | S8.4–S8.6, S5.6 |
+| A2-04 | ✅ DONE (A audit, env_a.md -48). Keypads + code notes, safes with methods and time locks, saws, laser grids, zipline | S9.4, S9.7, S9.8, S9.10, S9.11 |
+| A2-05 | ✅ DONE (A audit, env_a.md -48). Guard cuff flow (yell, pause, cuff, 4 min cooldown, 60 s self-free), body-shot misfire, marking + Sixth Sense | S3.2, S3.7, S2.9 |
+| A2-06 | ✅ DONE (A audit, env_a.md -48). Deployables runtime: doctor bag, FAK, ammo bag, body bag case, ECM; dodge rolls | L2.11, L2.4, S6.2 |
+| A2-08 | ✅ DONE (A audit, env_a.md -48). Glasshouse feedback from ENV C (D-037): VariantResolver conditional forcing (`force_if`), per-slot `requires`, `min_difficulty` on rare events, per-difficulty scalar weights; window prefab glass sized from the visual's `Glass` AABB; safe KEYCARD method (reader-bound); one-way push-bar door (fire exits); security_camera collision kept in front of its wall-mount pivot | (QC-7) |
+| A2-07 | ✅ DONE (A audit, env_a.md -48). Restrained/hostage stimuli, stealth-only heist mode (alarm = fail), pre-planning asset hooks (spawn choice, asset drops, modifier assets) | S6.4, S11.3, C3 |
 
 | B2-01 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Pre-planning + assets UI: HeistDef.preplanning, favors budget, location choice on the map blueprint, asset purchase, plan vote stub | C3 |
 | B2-02 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Briefing screen: contact portrait slot, objectives, loot, escape options | C2 |
@@ -118,18 +118,18 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 ### ENV A: Core Systems & AI
 | Id | Task | Depends |
 |---|---|---|
-| A1-01 | `HeistLauncher` / `HeistRuntime`: load map, seed, `VariantResolver`, services, phase machine (LOADING→CASING→STEALTH→LOUD→ESCAPE→ENDED), `HeistMission` base, **test hooks** (contracts/test_hooks.md) | — |
-| A1-02 | Crew: `CrewController` (first-person CharacterBody3D, walk/sprint/crouch/jump, casing restrictions, mask-up), `player_input.gd` → CrewIntent, camera/viewmodel placeholder, net replication skeleton | A1-01 |
-| A1-03 | Interaction framework + P1 prefabs: door (none/lockpick/keycard), display_case, small_loot, loot_spawn, keycard_pickup/reader, drill_point (drill + jams + fix), window, secure_zone, escape_zone, body_container, ladder (placeholder visuals with contract node names) | A1-02 |
-| A1-04 | Stealth: detection (S2.1–S2.6, S2.8), stimuli core set, NoiseEvent, NPC alert states, alarm (S3.x), phase transition | A1-01 |
-| A1-05 | Security Officer AI: patrol generation from PatrolGraph, pauses, investigate, radio alarm, combat, one-shot rule | A1-04 |
-| A1-06 | Civilians: idle activities, panic → call/alarm button, intimidate (shout), re-shout timer, cable ties | A1-04 |
-| A1-07 | Pagers (S5.2–S5.5 incl. juggling), body bagging, loot bags (carry/weights/throw/secure), small loot | A1-03, A1-05 |
-| A1-08 | Combat: weapon runtime from resolved WeaponStats (hitscan, spread, recoil, falloff, headshot, reload, ammo), hit claims, health/armor gating/regen, bleedout/downs/revive | A1-02 |
-| A1-09 | `AssaultDirector` single-wave cycle, spawn groups, Patrol Officer + TAC Light AI (nav, cover-lite, shoot, flank-lite) | A1-08 |
-| A1-10 | AI teammates (loud): follow nearest human, engage, revive; stealth: wait at van | A1-08 |
-| A1-11 | `LocalHudModel` (ui_hud.md) | A1-02.. |
-| A1-12 | Modifier hooks for all phase-1 keys + tests | A1-03..08 |
+| A1-01 | ✅ DONE (A audit, env_a.md -48). `HeistLauncher` / `HeistRuntime`: load map, seed, `VariantResolver`, services, phase machine (LOADING→CASING→STEALTH→LOUD→ESCAPE→ENDED), `HeistMission` base, **test hooks** (contracts/test_hooks.md) | — |
+| A1-02 | ✅ DONE (A audit, env_a.md -48). Crew: `CrewController` (first-person CharacterBody3D, walk/sprint/crouch/jump, casing restrictions, mask-up), `player_input.gd` → CrewIntent, camera/viewmodel placeholder, net replication skeleton | A1-01 |
+| A1-03 | ✅ DONE (A audit, env_a.md -48). Interaction framework + P1 prefabs: door (none/lockpick/keycard), display_case, small_loot, loot_spawn, keycard_pickup/reader, drill_point (drill + jams + fix), window, secure_zone, escape_zone, body_container, ladder (placeholder visuals with contract node names) | A1-02 |
+| A1-04 | ✅ DONE (A audit, env_a.md -48). Stealth: detection (S2.1–S2.6, S2.8), stimuli core set, NoiseEvent, NPC alert states, alarm (S3.x), phase transition | A1-01 |
+| A1-05 | ✅ DONE (A audit, env_a.md -48). Security Officer AI: patrol generation from PatrolGraph, pauses, investigate, radio alarm, combat, one-shot rule | A1-04 |
+| A1-06 | ✅ DONE (A audit, env_a.md -48). Civilians: idle activities, panic → call/alarm button, intimidate (shout), re-shout timer, cable ties | A1-04 |
+| A1-07 | ✅ DONE (A audit, env_a.md -48). Pagers (S5.2–S5.5 incl. juggling), body bagging, loot bags (carry/weights/throw/secure), small loot | A1-03, A1-05 |
+| A1-08 | ✅ DONE (A audit, env_a.md -48). Combat: weapon runtime from resolved WeaponStats (hitscan, spread, recoil, falloff, headshot, reload, ammo), hit claims, health/armor gating/regen, bleedout/downs/revive | A1-02 |
+| A1-09 | ✅ DONE (A audit, env_a.md -48). `AssaultDirector` single-wave cycle, spawn groups, Patrol Officer + TAC Light AI (nav, cover-lite, shoot, flank-lite) | A1-08 |
+| A1-10 | ✅ DONE (A audit, env_a.md -48). AI teammates (loud): follow nearest human, engage, revive; stealth: wait at van | A1-08 |
+| A1-11 | ✅ DONE (A audit, env_a.md -48). `LocalHudModel` (ui_hud.md) | A1-02.. |
+| A1-12 | ✅ DONE (A audit, env_a.md -48). Modifier hooks for all phase-1 keys + tests | A1-03..08 |
 
 ### ENV B: Content & Progression
 | Id | Task | Depends |
