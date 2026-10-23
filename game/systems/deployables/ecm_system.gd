@@ -19,6 +19,13 @@
 ##   pager_delay_active() -> bool       S5.6: the active jam's owner has stealth.ecm_pager_delay
 ##   add_jammer(ecm) / attach_to_reader(ecm, reader) / trigger_feedback(ecm, by_slot)
 ##   static phones_jammed() -> bool     convenience for phones / civilians
+## D-161 pocket ECM (Hacker deck, stealth.pocket_ecm; PerkPocketEcm forwards the throwable key): per holder slot
+## `charges` uses, each recharging in cooldown_s ONE AFTER ANOTHER (minus kill_cooldown_reduction_s per kill of the
+## holder). Used in stealth it JAMS for duration_s (cameras, phones and pagers: is_jamming / pager_delay_active; never
+## doors, ATMs or readers); used loud it is FEEDBACK for duration_s: every POCKET_PULSE_S a stun pulse around the
+## holder (ecm_feedback_radius_m, POCKET_STUN_CHANCE per enemy ◇, the placed ECM's immunity rules). crew_kill_heal
+## (Botnet): a teammate's kill during the holder's feedback heals that teammate. Replicated per slot
+## (HeistNetSync SVC_POCKET_ECM: pocket_state(slot) on every peer, for the HUD).
 ## Events: ecm_started(ecm_net_id, duration) [R] when a jam actually starts (a queued ECM emits it
 ## when its turn comes), ecm_ended(ecm_net_id) [R], ecm_feedback_triggered(ecm_net_id) [R].
 class_name EcmSystem
@@ -27,6 +34,16 @@ extends Node
 const SERVICE: StringName = &"ecm"
 ## SecurityCamera.set_suppressed source id while jamming.
 const SUPPRESS_SOURCE: StringName = &"ecm"
+const MODE_JAM: StringName = &"jam"
+const MODE_FEEDBACK: StringName = &"feedback"
+## D-161 pocket ECM feedback ◇ (PD2: a stun chance per enemy every pulse while the feedback lasts).
+const POCKET_PULSE_S: float = 1.5
+const POCKET_STUN_CHANCE: float = 0.6
+const POCKET_RNG: StringName = &"pocket_ecm"
+
+## D-161 pocket ECM per holder slot: {"charges", "max", "recharge_left", "cooldown_s", "active_left", "mode"
+## (&"" / MODE_JAM / MODE_FEEDBACK), "pulse_left", "params"}. Server state; clients hold the replicated mirror.
+var pocket: Dictionary[int, Dictionary] = {}
 
 var _runtime: HeistRuntime = null
 var _active: DeployablePrefab = null
@@ -52,19 +69,21 @@ static func phones_jammed() -> bool:
 
 
 func is_jamming() -> bool:
-	return _active != null and is_instance_valid(_active)
+	return (_active != null and is_instance_valid(_active)) or _pocket_jam_left() > 0.0
 
 
 func time_left() -> float:
-	return _active.jam_left if is_jamming() else -1.0
+	var placed: float = _active.jam_left if _active != null and is_instance_valid(_active) else -1.0
+	var pocket_left: float = _pocket_jam_left()
+	return maxf(placed, pocket_left) if is_jamming() else -1.0
 
 
 func is_flashing() -> bool:
-	return is_jamming() and _active.flashing
+	return _active != null and is_instance_valid(_active) and _active.flashing
 
 
 func active_ecm_net_id() -> int:
-	return _active.net_id if is_jamming() else 0
+	return _active.net_id if _active != null and is_instance_valid(_active) else 0
 
 
 func queued_count() -> int:
@@ -73,7 +92,9 @@ func queued_count() -> int:
 
 ## S5.6: true while the active jam belongs to a crew member with stealth.ecm_pager_delay.
 func pager_delay_active() -> bool:
-	return is_jamming() and Modifiers.flag(_active.owner_slot, &"stealth.ecm_pager_delay")
+	if _pocket_jam_left() > 0.0:
+		return true  # D-161: the pocket ECM jams pagers too
+	return _active != null and is_instance_valid(_active) and Modifiers.flag(_active.owner_slot, &"stealth.ecm_pager_delay")
 
 
 ## S8.4 jam duration for an ECM placed by `slot` (def params.duration or ecm_jam_s, x modifier).
@@ -92,7 +113,7 @@ func add_jammer(ecm: DeployablePrefab) -> void:
 		return
 	ecm.jam_duration = jam_duration_for(ecm.owner_slot, DeployableSystem.def_for(ecm.deployable_id))
 	ecm.jam_left = ecm.jam_duration
-	if is_jamming():
+	if _active != null and is_instance_valid(_active):  # chains behind a placed ECM only (a pocket jam runs beside it)
 		ecm.ecm_state = DeployablePrefab.EcmState.QUEUED
 		_queue.append(ecm)
 		Log.info(&"ecm", "ECM %d queued (%d waiting)" % [ecm.net_id, _queue.size()])
@@ -139,6 +160,7 @@ func _physics_process(delta: float) -> void:
 			_active.flashing = _active.jam_left <= DeployableTweak.data().ecm_flash_last_s
 			if _active.jam_left <= 0.0:
 				_end_active()
+	_tick_pocket(delta)
 	_apply_camera_jam(is_jamming())
 	_tick_doors(delta)
 	_tick_feedback(delta)
@@ -259,6 +281,139 @@ func _tick_feedback(delta: float) -> void:
 		ecm.feedback_recharge_left = maxf(ecm.feedback_recharge_left - delta, 0.0)
 		if ecm.feedback_recharge_left <= 0.0:
 			_recharging.remove_at(i)
+
+
+# --- D-161 pocket ECM ------------------------------------------------------------------------------
+
+## Server: holder `slot` uses a pocket ECM charge with stealth.pocket_ecm params `p`. False when no charge is ready
+## or its effect is still running.
+func use_pocket(slot: int, p: Dictionary) -> bool:
+	if not Net.is_authority():
+		return false
+	var e: Dictionary = _pocket_entry(slot, p)
+	if int(e["charges"]) <= 0 or float(e["active_left"]) > 0.0:
+		return false
+	e["charges"] = int(e["charges"]) - 1
+	if float(e["recharge_left"]) <= 0.0:
+		e["recharge_left"] = float(e["cooldown_s"])
+	var st: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
+	e["mode"] = MODE_JAM if st != null and st.is_stealth() else MODE_FEEDBACK
+	e["active_left"] = float(p.get("duration_s", 6.0))
+	e["pulse_left"] = 0.0
+	e["params"] = p.duplicate()
+	var c: Node3D = _runtime.crew_controller(slot) as Node3D if _runtime != null else null
+	var pos: Vector3 = c.global_position if c != null else Vector3.ZERO
+	Log.info(&"ecm", "slot %d pocket ECM: %s for %.1f s (%d left)" % [slot, e["mode"], e["active_left"], e["charges"]])
+	_emit(&"audio_cue_requested", [&"cue.ecm_active" if e["mode"] == MODE_JAM else &"cue.ecm_feedback", pos, 0])
+	return true
+
+
+## Server: a kill by holder `slot` shortens the charge being recharged.
+func pocket_kill(slot: int) -> void:
+	var e: Dictionary = pocket.get(slot, {})
+	if e.is_empty() or float(e["recharge_left"]) <= 0.0:
+		return
+	var cut: float = float((e.get("params", {}) as Dictionary).get("kill_cooldown_reduction_s", 0.0))
+	e["recharge_left"] = maxf(float(e["recharge_left"]) - cut, 0.001)  # the tick grants the charge
+
+
+## The pocket ECM state of `slot` on any peer ({} = never used): charges, max, recharge_left, active_left, mode.
+func pocket_state(slot: int) -> Dictionary:
+	return pocket.get(slot, {})
+
+
+## HeistNetSync SVC_POCKET_ECM: {slot: [charges, max, recharge_left, active_left, mode]}.
+func net_state() -> Dictionary:
+	var out: Dictionary = {}
+	for slot: int in pocket:
+		var e: Dictionary = pocket[slot]
+		out[slot] = [int(e["charges"]), int(e["max"]), snappedf(float(e["recharge_left"]), 0.1),
+			snappedf(float(e["active_left"]), 0.1), String(e["mode"])]
+	return out
+
+
+func apply_net_state(d: Dictionary) -> void:
+	for k: Variant in d:
+		var a: Array = d[k] as Array
+		pocket[int(k)] = {"charges": int(a[0]), "max": int(a[1]), "recharge_left": float(a[2]),
+			"active_left": float(a[3]), "mode": StringName(a[4]), "cooldown_s": 0.0, "pulse_left": 0.0, "params": {}}
+
+
+func _pocket_entry(slot: int, p: Dictionary) -> Dictionary:
+	if not pocket.has(slot):
+		var n: int = int(p.get("charges", 2))
+		pocket[slot] = {"charges": n, "max": n, "recharge_left": 0.0, "active_left": 0.0, "mode": &"",
+			"pulse_left": 0.0, "params": {}}
+		var feed: CrewKillFeed = CrewKillFeed.of(_runtime)
+		if feed != null and not feed.crew_kill.is_connected(_on_pocket_crew_kill):
+			feed.crew_kill.connect(_on_pocket_crew_kill)
+	var e: Dictionary = pocket[slot]
+	e["cooldown_s"] = float(p.get("cooldown_s", 100.0))
+	e["max"] = int(p.get("charges", e["max"]))
+	return e
+
+
+func _pocket_jam_left() -> float:
+	var best: float = 0.0
+	for slot: int in pocket:
+		var e: Dictionary = pocket[slot]
+		if e["mode"] == MODE_JAM:
+			best = maxf(best, float(e["active_left"]))
+	return best
+
+
+func _tick_pocket(delta: float) -> void:
+	for slot: int in pocket:
+		var e: Dictionary = pocket[slot]
+		if float(e["recharge_left"]) > 0.0:
+			e["recharge_left"] = float(e["recharge_left"]) - delta
+			if float(e["recharge_left"]) <= 0.0:
+				e["charges"] = mini(int(e["charges"]) + 1, int(e["max"]))
+				e["recharge_left"] = float(e["cooldown_s"]) if int(e["charges"]) < int(e["max"]) else 0.0
+		if float(e["active_left"]) <= 0.0:
+			continue
+		e["active_left"] = maxf(float(e["active_left"]) - delta, 0.0)
+		if e["mode"] == MODE_FEEDBACK:
+			e["pulse_left"] = float(e["pulse_left"]) - delta
+			if float(e["pulse_left"]) <= 0.0:
+				e["pulse_left"] = POCKET_PULSE_S
+				_pocket_pulse(slot)
+		if float(e["active_left"]) <= 0.0:
+			e["mode"] = &""
+
+
+## One feedback pulse around holder `slot`: each non-immune enemy in ecm_feedback_radius_m is stunned (chance).
+func _pocket_pulse(slot: int) -> int:
+	var c: Node3D = _runtime.crew_controller(slot) as Node3D if _runtime != null else null
+	if c == null:
+		return 0
+	var tw: DeployableTweak = DeployableTweak.data()
+	var count: int = 0
+	for n: Node in _runtime.npcs():
+		var npc: NpcBase = n as NpcBase
+		if npc == null or not npc.alive or not npc.is_in_group(G.ENEMY) or _immune(npc):
+			continue
+		if npc.global_position.distance_to(c.global_position) > tw.ecm_feedback_radius_m:
+			continue
+		if GameRng.stream(POCKET_RNG).randf() >= POCKET_STUN_CHANCE:
+			continue
+		npc.stun(POCKET_PULSE_S + 0.25)
+		if not _stunned.has(npc):
+			_stunned.append(npc)
+		count += 1
+	return count
+
+
+## Botnet (crew_kill_heal, the shared crew-kill event): a teammate's kill during a holder's feedback heals that teammate.
+func _on_pocket_crew_kill(killer_slot: int, _victim: int, _info: Dictionary) -> void:
+	var k: CrewController = _runtime.crew_controller(killer_slot) as CrewController if _runtime != null else null
+	if k == null or k.health == null:
+		return
+	for slot: int in pocket:
+		var e: Dictionary = pocket[slot]
+		var heal: float = float((e.get("params", {}) as Dictionary).get("crew_kill_heal", 0.0))
+		if slot != k.slot and e["mode"] == MODE_FEEDBACK and heal > 0.0:
+			k.health.heal(heal)
 
 
 func _emit(sig: StringName, args: Array) -> void:

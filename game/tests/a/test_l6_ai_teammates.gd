@@ -385,3 +385,38 @@ func test_p3_ai_shoots_the_tasing_stinger_first() -> void:
 	await wait_seconds(1.0)
 	assert_eq(brain.target_enemy, stinger, "the Stinger tasing a crew member is the target (L4.4)")
 	sb.tase_victim = null
+
+
+class FakeCuffBrain extends Node:
+	var mode: StringName = &"cuff"
+
+
+## LEAD r288 (RT done path: downs -> cuffs -> custody): a cop going for the cuffs on a downed teammate (PoliceBrain mode
+## &"cuff") is the bot's first target even when another cop stands nearer (cuffer_score_mult), and near the patient it
+## is cleared first even in a last stand (the bleed-out guard of revive_clear does not let a cuffer finish).
+func test_r288_bots_shoot_the_cuffing_cop_first() -> void:
+	await _go_loud()
+	var bot: CrewController = _crew(_ai_slots()[0])
+	var b: CrewAiBrain = CrewAiBrain.of(bot)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(6, 0.05, -6)))
+	_rt.teleport_crew(bot.slot, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	var near: NpcBase = ATestMaps.add_npc_observer(_rt, &"police", Vector3(0, 0.05, -5), Vector3.BACK)
+	var cuffer: NpcBase = ATestMaps.add_npc_observer(_rt, &"police", Vector3(6.6, 0.05, -6.4), Vector3.LEFT)
+	for n: NpcBase in [near, cuffer]:
+		n.max_health = 1.0e9
+		n.health = n.max_health
+		n.set_alert_state(Enums.AlertState.COMBAT)
+	await wait_physics_frames(2)
+	b._scan_left = 0.0
+	b._tick_scan(0.1)
+	assert_eq(b.target_enemy, near, "no cuffer: the nearest cop")
+	var fake: FakeCuffBrain = FakeCuffBrain.new()
+	fake.name = "Brain"
+	cuffer.add_child(fake)
+	b._scan_left = 0.0
+	b._tick_scan(0.1)
+	assert_eq(b.target_enemy, cuffer, "the cop going for the cuffs, before the nearer one")
+	var c: CrewController = _crew(0)
+	c.health.go_down()
+	c.health.bleedout_left = 1.0  # last stand: revive_clear would skip an ordinary cop
+	assert_eq(b._revive_threat(c, 0.1), cuffer, "a cuffer at the patient is cleared even in a last stand")

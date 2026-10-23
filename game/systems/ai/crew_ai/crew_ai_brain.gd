@@ -440,6 +440,12 @@ func _revive_threat(c: CrewController, delta: float) -> NpcBase:
 	if c.net_id != _clear_for_net_id:
 		_clear_for_net_id = c.net_id
 		_clear_spent_s = 0.0
+	for role: StringName in HOSTILE_ROLES if tweak.cuffer_score_mult < 1.0 else []:  # LEAD r288: a cuffer first
+		for n: Node in _rt.npcs(role):
+			var cop: NpcBase = n as NpcBase
+			if cop != null and _is_hostile(cop) and _is_cuffing(cop) \
+					and cop.global_position.distance_to(c.global_position) <= tweak.revive_clear_m:
+				return cop
 	if _clear_spent_s >= tweak.revive_clear_s or c.health == null or c.health.bleedout_left < tweak.revive_clear_min_bleed_s:
 		return null
 	for role: StringName in HOSTILE_ROLES:
@@ -1203,6 +1209,8 @@ func _tick_scan(delta: float) -> void:
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
 			if _is_arresting_crew(npc):  # L2.12: the officer camping a cuffed teammate is shot first
 				score *= tweak.arrester_score_mult
+			elif _is_cuffing(npc):  # LEAD r288: the cop moving in to cuff a downed teammate, first of all
+				score *= tweak.cuffer_score_mult
 			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc) \
 					or _civilian_in_line(eye, p):
 				continue
@@ -1239,6 +1247,12 @@ func _is_arresting_crew(npc: NpcBase) -> bool:
 		if _arrester_of(c) == npc:
 			return true
 	return false
+
+
+## LEAD r288: `npc` is going for / applying the cuffs on a downed crew member (PoliceBrain mode &"cuff").
+static func _is_cuffing(npc: NpcBase) -> bool:
+	var b: Node = npc.get_node_or_null(^"Brain")
+	return b != null and b.get(&"mode") == &"cuff"
 
 
 ## L2.12: the alive officer who cuffed `c` (CUFFED), else null.
