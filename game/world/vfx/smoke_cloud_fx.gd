@@ -1,23 +1,25 @@
 ## Smoke clouds (D-163, Sicario's smoke bomb; `EventBus.smoke_cloud_fx(position, radius, duration_s)`). Owner: ENV C.
 ## Child of VfxDirector. Presentation only: the cloud's gameplay (vision / AI) is ENV A's, on the same numbers.
 ## Cheap on Compatibility: no particles, a fixed set of large billboarded puff quads per cloud (PUFFS, scaled by
-## quality) laid out in a flattened hemisphere of the radius, one shared material per cloud whose alpha follows
+## quality) laid out in a dome about one radius tall and wide (_layout), one shared material per cloud whose alpha follows
 ## fade-in (FADE_IN_S) / hold / fade-out (FADE_OUT_S) inside the duration; the puffs swell and drift slowly.
 ## Pool: VfxSettings.SMOKE_CAP clouds, the oldest reused.
 class_name SmokeCloudFx
 extends Node3D
 
-const PUFFS: int = 26
+const PUFFS: int = 36
+## Never fewer, at any quality: the cloud hides what is in it (gameplay-readable, like tracers).
+const MIN_PUFFS: int = 24
 const FADE_IN_S: float = 1.0
 const FADE_OUT_S: float = 2.0
 const COLOR: Color = Color(0.7, 0.7, 0.68)
 ## Peak opacity of one puff (they overlap, so the cloud's core reads near-opaque).
-const ALPHA: float = 0.85
+const ALPHA: float = 1.0
 ## Puff diameter as a fraction of the radius (min, max), and the swell over the cloud's life.
-const PUFF_SIZE: Vector2 = Vector2(0.75, 1.15)
+const PUFF_SIZE: Vector2 = Vector2(0.7, 1.0)
 const SWELL: float = 0.25
-## The hemisphere is flattened: the cloud stands this high relative to its radius.
-const HEIGHT_FRAC: float = 0.8
+## Puff layers in turn: (centre height, horizontal spread) as fractions of the radius: ground, body, crown.
+const LAYERS: Array[Vector2] = [Vector2(0.2, 0.8), Vector2(0.5, 0.7), Vector2(0.8, 0.45)]
 const DRIFT_M_PER_S: float = 0.08
 
 ## Clouds fired (tests).
@@ -116,24 +118,21 @@ func _apply(i: int) -> void:
 
 
 ## Deterministic puff layout for this radius (same cloud every time: presentation only).
+## Deterministic puff layout for this radius (same cloud every time: presentation only). Three layers, in turn: a
+## ground layer that engulfs whatever stands in the cloud, a body layer and a crown, so the dome stands about one radius
+## tall (>= 2.5 m at a 4 m radius: it hides a standing crew member).
 func _layout(s: Node3D, radius: float) -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = 0x5A0C
 	var n: int = 0
 	for c: Node in s.get_children():
 		var q: MeshInstance3D = c as MeshInstance3D
+		var layer: Vector2 = LAYERS[n % LAYERS.size()]   # (centre height, spread) as fractions of the radius
 		var a: float = rng.randf() * TAU
-		var r: float = sqrt(rng.randf()) * radius * 0.85
-		var h: float = (0.15 + rng.randf() * 0.85) * radius * HEIGHT_FRAC * (1.0 - 0.4 * r / radius)
+		var r: float = 0.0 if n == 0 else sqrt(rng.randf()) * radius * layer.y
 		var size: float = rng.randf_range(PUFF_SIZE.x, PUFF_SIZE.y) * radius
-		if n % 2 == 0:   # every other puff sits on the ground, so the cloud's base engulfs what stands in it
-			h = size * 0.12
-		if n == 0:   # and the first fills the centre
-			r = 0.0
-			size = PUFF_SIZE.y * radius
-			h = size * 0.12
 		n += 1
-		q.set_meta(&"home", Vector3(cos(a) * r, h, sin(a) * r))
+		q.set_meta(&"home", Vector3(cos(a) * r, radius * layer.x * (0.85 + 0.3 * rng.randf()), sin(a) * r))
 		q.set_meta(&"drift", Vector3(cos(a), 0.3, sin(a)).normalized())
 		q.set_meta(&"size", size)
 
@@ -166,7 +165,7 @@ func _build_cloud() -> Node3D:
 	var quad: QuadMesh = QuadMesh.new()
 	quad.size = Vector2.ONE
 	quad.material = mat
-	for p: int in range(VfxSettings.scaled_count(PUFFS)):
+	for p: int in range(maxi(MIN_PUFFS, VfxSettings.scaled_count(PUFFS))):
 		var q: MeshInstance3D = MeshInstance3D.new()
 		q.name = "Puff%d" % p
 		q.mesh = quad

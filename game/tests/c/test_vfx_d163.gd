@@ -52,6 +52,20 @@ func test_smoke_cloud_lives_its_duration() -> void:
 	assert_eq(int(_d.stats()["smoke_clouds"]), 0)
 
 
+func test_smoke_dome_hides_a_standing_crew_member() -> void:
+	_d.on_smoke_cloud_fx(Vector3.ZERO, 4.0, 10.0)
+	var cloud: Node3D = _d.smoke.get_child(0) as Node3D
+	var top: float = 0.0
+	var low: int = 0
+	for c: Node in cloud.get_children():
+		var q: Node3D = c as Node3D
+		top = maxf(top, q.position.y)
+		if q.position.y < 1.2:
+			low += 1
+	assert_true(top >= 2.5, "the crown stands >= 2.5 m at radius 4 (%.2f)" % top)
+	assert_true(low >= cloud.get_child_count() / 4, "a ground layer engulfs the base (%d low puffs)" % low)
+
+
 func test_smoke_pool_capped_and_prewarmed() -> void:
 	_d.prewarm()
 	var cap: int = _d.smoke.cap()
@@ -81,6 +95,14 @@ func test_tether_follows_bodies_and_pulses() -> void:
 	_d.advance(0.01)
 	var line: Node3D = link.get_node("Line") as Node3D
 	assert_near(line.global_position.z, 3.0, 0.01, "the line follows the moved body")
+	var reach: float = (line.global_transform * Vector3(0, 0, 0.5) - line.global_transform * Vector3(0, 0, -0.5)).length()
+	assert_near(reach, 6.0, 0.01, "the ribbon spans body to body (the unit box stretched along its own axis)")
+	b.position = Vector3(5, 0, 0)
+	_d.advance(0.01)
+	var ends: Array[Vector3] = [line.global_transform * Vector3(0, 0, 0.5), line.global_transform * Vector3(0, 0, -0.5)]
+	var want: Array[Vector3] = [Vector3(0, TetherFx.CHEST_Y_M, 0), Vector3(5, TetherFx.CHEST_Y_M, 0)]
+	for w: Vector3 in want:
+		assert_true(ends[0].distance_to(w) < 0.01 or ends[1].distance_to(w) < 0.01, "an end at %s (%s)" % [w, ends])
 	b.free()
 	_d.advance(0.01)
 	assert_eq(_d.tethers.active_count(), 0, "a freed body unlinks")

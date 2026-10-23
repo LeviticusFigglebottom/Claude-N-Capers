@@ -1,5 +1,6 @@
 ## D-163 VFX review (ENV C): Sicario's smoke cloud and the Tag Team tether in a plain test yard, three frames
-## (0.5 s fade-in, 4 s hold, 9 s fade-out). Windowed only:
+## (0.5 s fade-in, 4 s hold, 9 s fade-out): the two outer capsules are the paired crew (the tether runs between
+## them), red crates and a capsule stand inside the cloud. Windowed only:
 ##   xvfb-run -a /opt/godot/godot --path game [--rendering-driver opengl3] res://world/tools/vfx_d163_review.tscn \
 ##     -- --out=<path prefix> [--radius=4]
 extends Node3D
@@ -12,6 +13,7 @@ func _ready() -> void:
 func _run() -> void:
 	var args: Dictionary = preload("res://world/tools/validate_level.gd").parse_args(OS.get_cmdline_user_args())
 	var radius: float = float(args.get("radius", "4"))
+	VfxSettings.reset()   # HIGH quality, as GameSettings would sync it in game
 	var root: Node3D = Node3D.new()
 	add_child(root)
 	var we: WorldEnvironment = WorldEnvironment.new()
@@ -58,6 +60,10 @@ func _run() -> void:
 		cap.mesh = CapsuleMesh.new()
 		cap.position = Vector3(0, 0.9, 0)
 		n.add_child(cap)
+	var inside: MeshInstance3D = MeshInstance3D.new()   # a crew member standing inside the cloud
+	inside.mesh = CapsuleMesh.new()
+	inside.position = Vector3(1.0, 0.9, -1.5)
+	root.add_child(inside)
 	var cam: Camera3D = Camera3D.new()
 	cam.position = Vector3(0, 1.8, 11)
 	root.add_child(cam)
