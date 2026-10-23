@@ -357,9 +357,11 @@ def fixed_spawns() -> List[list]:
     out.append(S("OffDutyCop", "POLICE", [20.0, U, 19.6], 180.0, ["civ_offduty", "scripted"], "sit"))
     # rare vip_party: +6 guests in the VIP lounge (U2), tag civ_vip (+ scripted: A's mission spawns them with the event,
     # D's club_vip a-f looks); clear of the sofa, the coffee table, the bar and the regular VIP patrons
-    for i, (x, z, yaw) in enumerate([(12.0, 22.5, 90.0), (12.5, 24.2, 90.0), (19.5, 22.5, -90.0), (19.0, 24.3, -90.0),
-                                     (14.2, 24.6, 180.0), (17.8, 24.6, 180.0)]):
-        out.append(S("VIPGuest%d" % (i + 1), "CIVILIAN", [x, U, z], yaw, ["civ_vip", "scripted"], "walk_text"))
+    # a party, not six phones (LEAD r308): standing about with drinks, looking round the lounge, one on the phone
+    for i, (x, z, yaw, act) in enumerate([(12.0, 22.5, 90.0, "mug"), (12.5, 24.2, 90.0, "idle"),
+                                          (19.5, 22.5, -90.0, "look"), (19.0, 24.3, -90.0, "mug"),
+                                          (14.2, 24.6, 180.0, "phone"), (17.8, 24.6, 180.0, "idle")]):
+        out.append(S("VIPGuest%d" % (i + 1), "CIVILIAN", [x, U, z], yaw, ["civ_vip", "scripted"], act))
     for nm, pos, yaw, idle in PATRONS:
         out.append(S(nm, "CIVILIAN", pos, yaw, ["civ_patron"], idle, "Patrons"))
     for c, (cx, cz) in enumerate(CLUSTERS):
