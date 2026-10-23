@@ -3,7 +3,8 @@
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_club_patron_i/char_club_patron_i.glb" id="1_glb"]
 [ext_resource type="ArrayMesh" path="res://world/characters/club_patron_i/club_patron_i_lod.res" id="3_lod"]
-[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_s3suc"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_proxy"]
+[ext_resource type="ArrayMesh" path="res://world/characters/club_patron_i/club_patron_i_Body.res" id="4_Body"]
 
 [sub_resource type="Skin" id="skin_lod"]
 resource_name = "Skin"
@@ -215,6 +216,8 @@ height = 0.4645
 [node name="Body" parent="Skeleton3D" index="0" unique_id=530968474]
 visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Body")
+metadata/source_materials = Array[String](["res://world/materials/char_skin_3.tres", "res://world/materials/char_lip_rose.tres", "res://world/materials/char_eye.tres", "res://world/materials/char_eye_iris.tres", "res://world/materials/char_lash.tres", "res://world/materials/char_hair_dark.tres"])
 
 [node name="Hair" parent="Skeleton3D" index="1" unique_id=531169008]
 visibility_range_end = 15.0
@@ -271,7 +274,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
-script = ExtResource("3_s3suc")
+script = ExtResource("3_proxy")
 
 [node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="9" unique_id=739226705]
 active = false

@@ -53,16 +53,27 @@ only if a real GPU shows that they are (D-132 addendum 2).
 
 ## Afterhours dance floor (D-165, `--preset=ah50`, llvmpipe 1280x720, `--frames=30`)
 
-50 club looks (30 dancers, 14 patrons, 6 staff) on dance_a/b/c, 5-18 m, no hold layer:
+50 club looks (30 dancers, 14 patrons, 6 staff) on dance_a/b/c, 5-18 m, no hold layer. D1 (the per-node surface
+merge, char_layers.gd) is on for the Afterhours looks only (`_layers/d1_exclude.json` "only"; parked for every other
+cast, D-132 addendum 2): surfaces per look 12-25 → 6-11.
 
-| Case | draws | prims (incl. shadow pass) |
-|---|---|---|
-| ah50 LOD on | 1440 | 1.07 M |
-| ah50 `--lod=off` | 2317 | 1.47 M |
+| Case | draws | prims (incl. shadow pass) | frame ms (llvmpipe) | video MB |
+|---|---|---|---|---|
+| ah50 LOD on, before D1 | 1440 | 1.07 M | 2354 | 188 |
+| ah50 LOD on, D1 | **745 (-48 %)** | 1.07 M | 2171 | 206 |
+| ah50 `--lod=off`, before D1 | 2317 | 1.47 M | 2693 | 188 |
+| ah50 `--lod=off`, D1 | 1208 | 1.47 M | 2630 | 206 |
 
 `render_ah_dance_review.gd` renders the same floor under the club's neon light and prints the visible triangles and
-draws per view (player eye: 225 k tris / 1100 draws, 12 of 50 at LOD2; DJ booth: 325 k / 3238 draws, 8 at LOD2), plus
-an LOD0-vs-LOD2 lineup of every AH look through dance_a/b/c (`_review/ah_cast/ah_dance_lod_*.png`).
+draws per view, plus an LOD0-vs-LOD2 lineup of every AH look through dance_a/b/c (`_review/ah_cast/ah_dance_lod_*.png`):
+
+| View | tris | draws before D1 | draws with D1 | at LOD2 |
+|---|---|---|---|---|
+| player eye 1.65 m | 225 k | 1100 | **571** | 12 / 50 |
+| DJ booth 2.6 m | 325 k | 3238 | **1708** (budget 2200) | 8 / 50 |
+
+With D1 the `--stats` "tris1" of a merged look is its merged mesh's first LOD (the sources' first thresholds kept,
+so it reads higher than the per-surface sum; primitives per frame are unchanged, see the tables).
 
 Other modes: `-- --stats --ids=a,b` prints per-character surfaces, triangles per LOD and bones. `-- --ids=… --n=…`
 with `--lod=off` / `--switch=m` runs custom cases. The full flag list is in `bench_crowd.gd`'s header.

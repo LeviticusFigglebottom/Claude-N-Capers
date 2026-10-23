@@ -10,6 +10,7 @@
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 
 const GUNMEN: Array[String] = [
 	"char_cartel_gunman", "char_cartel_gunman_b", "char_cartel_gunman_c", "char_cartel_gunman_d", "char_cartel_gunman_e",
@@ -83,8 +84,9 @@ func _height(root: Node3D) -> float:
 func _material_ids(root: Node3D) -> Array[String]:
 	var ids: Array[String] = []
 	for mi: MeshInstance3D in _meshes(root):
-		for s: int in range(mi.mesh.get_surface_count()):
-			var m: Material = mi.get_active_material(s)
+		var look: Array[Material] = Layers.look_materials(mi)
+		for s: int in range(look.size()):
+			var m: Material = look[s]
 			if m == null:
 				continue
 			var id: String = m.resource_path.get_file().get_basename()
@@ -146,8 +148,9 @@ func test_materials_resolve_to_the_library() -> void:
 		if root == null:
 			continue
 		for mi: MeshInstance3D in _meshes(root):
-			for s: int in range(mi.mesh.get_surface_count()):
-				var m: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var m: Material = look[s]
 				assert_true(m != null, "%s/%s surface %d: material" % [id, mi.name, s])
 				if m == null:
 					continue
@@ -189,14 +192,10 @@ func test_sling_and_slung_gun() -> void:
 				continue
 			var top: float = -INF
 			var back_z: float = -INF
-			for s: int in range(gear.mesh.get_surface_count()):
-				var mat: Material = gear.get_active_material(s)
-				if mat == null or mat.resource_path.get_file().get_basename() != SLUNG_GUN:
-					continue
-				for v: Vector3 in gear.mesh.surface_get_arrays(s)[Mesh.ARRAY_VERTEX] as PackedVector3Array:
-					var p: Vector3 = gear.transform * v
-					top = maxf(top, p.y)
-					back_z = maxf(back_z, p.z)
+			for v: Vector3 in Layers.material_vertices(gear, MAT_DIR + SLUNG_GUN + ".tres"):
+				var p: Vector3 = gear.transform * v
+				top = maxf(top, p.y)
+				back_z = maxf(back_z, p.z)
 			var h: float = _height(root)
 			assert_true(top > 0.84 * h, "%s: gun barrel above the shoulders (%.3f of %.3f m)" % [id, top, h])
 			assert_true(back_z > 0.1, "%s: slung gun on the back (+Z, %.3f)" % [id, back_z])
