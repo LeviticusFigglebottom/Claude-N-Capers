@@ -4,7 +4,8 @@
 ## pre-planning Confirm -> loadout Launch -> about a minute in the heist. Every press is a real mouse click
 ## (InputEventMouseButton at the control's centre); a control that a click does not trigger is a FAIL row (no emit
 ## fallback). Stated shortcut: when no Rolling Thunder pin is on the Board this hour, the Board's broker buys it
-## (the broker's heist / difficulty pickers are set by index; the Buy press is a real click).
+## (the broker's heist / difficulty pickers are set by index; the Buy press is a real click; the test profile's stash is
+## funded first, since a fresh profile has $0).
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --resolution 960x540 --path game \
 ##     res://tests/p/_review/rt_menu_smoke.tscn -- --out=/abs/dir
 ## Rows: "[RTM] ROW <step> | PASS|FAIL|NOTE | <detail>"; "[RTM] RESULT". Owner: ENV P.
@@ -13,6 +14,7 @@ extends Node
 const FLOW_SCENE: PackedScene = preload("res://content/ui/menus/menu_flow.tscn")
 const RT_ID: StringName = &"rolling_thunder"
 const IN_HEIST_S: float = 60.0
+const STASH_FOR_BROKER: int = 50000
 
 var _out: String = "user://rt_menu_smoke"
 var _ok: bool = true
@@ -88,6 +90,15 @@ func _press(step: String, b: Button) -> bool:
 
 func _run() -> void:
 	MouseCapture.reset()
+	# Stated shortcut: a fresh profile has $0, and the broker (used when no RT pin is up this hour) is paid from the
+	# stash; fund the stash so the Buy press can go through. Nothing else in the profile changes.
+	var prof: PlayerProfile = SaveService.load_profile(0)
+	if prof == null:
+		prof = PlayerProfile.new_default()
+	if prof.stash < STASH_FOR_BROKER:
+		prof.stash = STASH_FOR_BROKER
+		SaveService.save_profile(prof, 0)
+	_row("profile stash for the broker (stated shortcut)", true, "stash $%d" % prof.stash, true)
 	var f: MenuFlow = FLOW_SCENE.instantiate() as MenuFlow
 	add_child(f)
 	await _frames(10)
