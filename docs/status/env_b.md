@@ -4,6 +4,9 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 19:40)
+### D-169: Rolling Thunder un-hidden (LEAD r311)
+heist_list.tres drops RT's `hidden`. test_heist_readiness asserts RT offered and ready; the music lists include RT's track. The AH un-hide is held for its done check.
+
 ### LEAD r309 gamepad-only pass (RT + AH un-hidden on the scratch tree, 720p)
 Tool: tests/b/render/pad_flow_capture.gd -- <out> <heist>. It uses real joypad events only: d-pad, A, B, the right stick, and the pad interact / mask buttons. Shots are in content/ui/_review/r309_pad/.
 - **AH:** the full loop is clean (0 issues). Main menu > Board (pin, Take) > B > Planning Table > select > briefing (RS scroll) > pre-planning > loadout > heist (gear X-hold, Y mask-up, prompts) > payday > card pick (A) > Continue > main menu.
