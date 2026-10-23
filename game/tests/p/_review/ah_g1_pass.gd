@@ -254,9 +254,12 @@ func _ah_stealth() -> bool:
 	var opened: bool = await _open_safe(safe, have_code)
 	if not opened:
 		return false
+	# afterhours.md Escape: [secure] (3 bags at the van's SECURE zone) activates the escape: bags first, then the van.
+	var bags: int = await _safe_bags_to(safe, _van_secure())
 	var esc: EscapeZone = await _active_escape(60.0)
-	var bags: int = await _safe_bags_to(safe, esc)
-	var escaped: bool = bags >= SAFE_BAGS and await _escape(esc)
+	_row("escape active after [secure]", "PASS" if esc != null else "FAIL", "escape %s, %d bags" % [esc, bags],
+		"-" if esc != null else "A mission (escape on secure)")
+	var escaped: bool = bags >= SAFE_BAGS and esc != null and await _escape(esc)
 	_peaks_table()
 	_row("stealth: no alarm", "PASS" if not rt.went_loud else "FAIL", "alarm '%s', peak %.2f over %d observers" % [
 		_alarm, _worst_peak(), _peaks.size()], "-" if not rt.went_loud else "C patrols / P route")
@@ -446,10 +449,15 @@ func _active_escape(max_s: float) -> EscapeZone:
 
 
 ## Bag the safe's cash (its contents' LootSpawns) and carry each to the secure zone at `esc` (G at the zone).
-func _safe_bags_to(safe: Safe, esc: EscapeZone) -> int:
-	var zone: SecureZone = _secure_zone_near(esc.global_position) if esc != null else null
+## The rolled van's SECURE zone (the escape group keeps only the rolled slot: SecureAlley / SecureTolley).
+func _van_secure() -> SecureZone:
+	var found: Array[Node] = rt.find_children("*", "SecureZone", true, false)
+	return found[0] as SecureZone if not found.is_empty() else null
+
+
+func _safe_bags_to(safe: Safe, zone: SecureZone) -> int:
 	if zone == null:
-		_row("van secure zone", "FAIL", "escape %s, no SecureZone near it" % esc, "A escape / C map")
+		_row("van secure zone", "FAIL", "no SecureZone in the map", "C map (escape slot)")
 		return 0
 	var n: int = 0
 	for prefab: GameplayPrefab in safe.contents():
@@ -471,7 +479,7 @@ func _safe_bags_to(safe: Safe, esc: EscapeZone) -> int:
 		var sec: bool = _secured_ids.has(id)
 		var stuck: int = pilot.stuck_spots.size() - s0
 		n += 1 if sec else 0
-		_row("bag %d: safe -> van (%s)" % [n, esc.name], "PASS" if sec and stuck == 0 else ("STUCK" if sec else "FAIL"),
+		_row("bag %d: safe -> van (%s)" % [n, zone.name], "PASS" if sec and stuck == 0 else ("STUCK" if sec else "FAIL"),
 			"bagged in %.0f s, carried in %.0f s, %d STUCK row(s), secured %s" % [t1 - t0, rt.heist_time_s - t1, stuck,
 			sec], "-" if sec and stuck == 0 else ("C map" if stuck > 0 else "A secure zone"))
 	return n
@@ -517,10 +525,10 @@ func _ah_loud() -> bool:
 	if safe == null or not await _office() or not await _open_safe(safe, false):
 		_danger_rows("loud")
 		return false
+	var bags: int = await _safe_bags_to(safe, _van_secure())
 	var esc: EscapeZone = await _active_escape(VAN_MAX_S)
-	_row("van back (2nd FADE or 300 s)", "PASS" if esc != null else "FAIL", "escape %s at t=%.0f" % [esc,
-		rt.heist_time_s], "-" if esc != null else "A mission (escape_wait)")
-	var bags: int = await _safe_bags_to(safe, esc) if esc != null else 0
-	var out: bool = bags >= SAFE_BAGS and await _escape(esc)
+	_row("van back (2nd FADE or 300 s after the first bag)", "PASS" if esc != null else "FAIL", "escape %s at t=%.0f" % [
+		esc, rt.heist_time_s], "-" if esc != null else "A mission (escape_wait)")
+	var out: bool = bags >= SAFE_BAGS and esc != null and await _escape(esc)
 	_danger_rows("loud")
 	return out
