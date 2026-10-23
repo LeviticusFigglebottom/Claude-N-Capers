@@ -37,7 +37,7 @@ func _physics_process(delta: float) -> void:
 
 
 func sample() -> void:
-	if rt == null or not is_instance_valid(rt) or rt.map == null:
+	if rt == null or not is_instance_valid(rt) or not rt.is_inside_tree() or rt.map == null:
 		return
 	var now: int = Time.get_ticks_msec()
 	history.append([now, PROBE.of_state(rt)])
