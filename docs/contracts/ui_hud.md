@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.21)
+# Contract: HUD data (v1.22)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -203,4 +203,9 @@ state only on change (P saw `cartel -> ACTIVE` re-emitted on every data update).
   from the replicated PerkItems service; signal `perk_item_changed`. Kinds today: &"pocket_ecm", &"smoke_bomb", &"gas_dispenser".
 - `pocket_ecm` (v1.20) stays as an alias for one round, then B migrates to perk_item and the alias is removed.
 - B: the throwable chip shows the item's glyph, charges and cooldown; Tag Team marks the partner's teammate panel "tagged".
+
+## v1.22: perk item segments + mode (D-164; A 9c4622d6)
+- `perk_item.segments: {count: int, size: float (fraction of max health)}`, present only while a Leech ampule window is active.
+- `perk_item.mode: StringName` (&"" | &"jam" | &"feedback"), so the pocket ECM no longer needs the v1.20 `pocket_ecm` alias;
+  B drops the alias in its next HUD push (v1.20's field is then removed).
 
