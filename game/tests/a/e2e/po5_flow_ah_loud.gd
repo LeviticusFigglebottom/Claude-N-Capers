@@ -41,6 +41,14 @@ func play(driver: Node) -> int:
 	var guards: int = rt.npcs(&"guard").size()
 	driver.call(&"note", "DONECHECK D-140 guards at load %d, pager cap %d (margin %d)" % [guards,
 		rt.mission.pager_cap(), guards - rt.mission.pager_cap()])
+	if OS.get_environment("PO5_FORCE_CAPTAIN") == "1":
+		# D-166 end-to-end (LEAD): harness only, Brandt always comes at his first eligible wave (captain_min_wave), so the
+		# waiver path (secure done, SUSTAIN locked) runs; the shared tweak resource is not touched.
+		var dir: AssaultDirector = rt.service(G.SVC_DIRECTOR) as AssaultDirector
+		if dir != null:
+			dir.tweak = dir.tweak.duplicate() as DirectorTweak
+			dir.tweak.captain_chance = 1.0
+			driver.call(&"note", "harness: PO5_FORCE_CAPTAIN, captain_chance 1.0 from wave %d" % dir.tweak.captain_min_wave)
 	var loud: RefCounted = (load(AUTO_LOUD) as GDScript).new()
 	var rc: int = await loud.call(&"play", driver)
 	EventBus.objective_updated.disconnect(on_obj)
