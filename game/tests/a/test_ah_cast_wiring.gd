@@ -80,3 +80,25 @@ func test_spawn_units_passes_the_spawn_activity_and_facing() -> void:
 	var brain: Node = cop.get_node(^"Brain")
 	assert_eq(brain.get(&"anim_hint"), CivilianBrain.seated_or_standing(cop, &"sit"),
 		"calm: his activity (seated on a seat, standing without one), not idle_alert")
+
+
+## (4) vip_party: HeistMission.spawn_civilians spawns the civilians of the CIVILIAN SpawnPoints carrying a tag, with
+## that point's tags and activity (the runtime skips `scripted` ones at load; the AH map test checks that part).
+func test_spawn_civilians_by_tag() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 1308, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0, "crew_ai": false, "skip_casing": true})
+	await wait_physics_frames(2)
+	for i: int in 2:
+		var sp: SpawnPoint = SpawnPoint.new()
+		sp.kind = SpawnPoint.Kind.CIVILIAN
+		sp.tags = [&"civ_vip", &"scripted"] as Array[StringName]
+		sp.idle_activity = &"walk_text"
+		_rt.map.add_child(sp)
+		sp.global_position = Vector3(2.0 * i, 0.05, -6)
+	var before: int = _rt.npcs(&"civilian").size()
+	var vips: Array[NpcBase] = _rt.mission.spawn_civilians(&"civ_vip")
+	assert_eq(vips.size(), 2, "one civilian per civ_vip spawn")
+	assert_eq(_rt.npcs(&"civilian").size(), before + 2, "on the map")
+	if not vips.is_empty():
+		assert_true((vips[0].spawn_info.get("tags", []) as Array).has(&"civ_vip"), "the point's tags (the club_vip look)")
+		assert_eq(StringName(vips[0].spawn_info.get("idle_activity", &"")), &"walk_text", "and its activity")

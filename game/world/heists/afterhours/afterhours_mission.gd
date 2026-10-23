@@ -11,8 +11,8 @@
 ## calls the alarm; escape_wait: the van returns at the second assault's FADE or SECURE_WAIT_S after the first
 ## secured bag, whichever is later.
 ## Rare events: count_left_open (the safe starts open), extra_product (+2 parcels), off_duty_cop (a police observer in a
-## VIP booth), co_op_pickup (two couriers at 14:00, stealth), rooftop_watch (the perch opens loud); vip_party is data
-## (the variant table's slot effects).
+## VIP booth), co_op_pickup (two couriers at 14:00, stealth), rooftop_watch (the perch opens loud); vip_party (+6 VIP guests on the
+## civ_vip spawns; its other slot effects are data).
 extends HeistMission
 
 const REQUIRED_BAGS: int = 3
@@ -45,6 +45,7 @@ const RNG_STREAM: StringName = &"afterhours"
 
 ## Objective tags on C's map (agreed contract).
 const TAG_GEAR: StringName = &"gear"
+const TAG_VIP: StringName = &"civ_vip"
 const TAG_KEYCARD: StringName = &"keycard"
 const TAG_OFFICE_DOOR: StringName = &"office_door"
 const TAG_OFFICE_READER: StringName = &"office_reader"
@@ -73,6 +74,8 @@ var couriers: Array[NpcBase] = []
 var off_duty_cop: NpcBase = null
 var lockdown: bool = false
 var escape_open: bool = false
+## vip_party (rare): the VIP guests spawned at the start (civilians on the civ_vip SpawnPoints).
+var vip_guests: Array[NpcBase] = []
 ## The safe's cash bags secured ([secure]: REQUIRED_BAGS of LOOT_SAFE; other loot does not count).
 var safe_secured: int = 0
 var _van_fade: bool = false
@@ -369,6 +372,8 @@ func _rare_start() -> void:
 			say(&"vo.mercer.afterhours_off_duty_cop")
 	if _rare(&"co_op_pickup"):
 		schedule_at(COURIER_TIME_S, &"couriers", _couriers_arrive)
+	if _rare(&"vip_party"):
+		vip_guests = spawn_civilians(TAG_VIP)  # +6 VIP patrons in U2 (C's VIPGuest1..6, D's club_vip looks)
 
 
 ## co_op_pickup: the couriers walk in as calm guards on their patrol route (the SpawnPoints tagged TAG_COURIER and their
