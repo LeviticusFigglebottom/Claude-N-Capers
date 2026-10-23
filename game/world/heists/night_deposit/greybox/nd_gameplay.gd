@@ -335,7 +335,7 @@ func _build_atms(gp: Node3D) -> void:
 		var loot: Node3D = prefab(atm, "small_loot", "AtmCash%d" % i, Vector3(p.x, 0.9, front_z + 0.05), 0.0,
 			{"loot_id": &"loot.cash", "value": 1500, "objective_tag": &"atm_cash", "visual_scene": load(VIS_EMPTY)}, use)
 		var drill: Node3D = prefab(atm, "drill_point", "AtmSaw%d" % i, Vector3(p.x - 0.12, 0.62, front_z + 0.02), 0.0,
-			{"device": "enum:SAW", "duration_s": SAW_ATM_S, "objective_tag": &"atm"}, use + Vector3(0.0, 0.0, 0.15))
+			{"device": "enum:SAW", "duration_s": SAW_ATM_S, "objective_tag": &"atm", "ecm_atm": true}, use + Vector3(0.0, 0.0, 0.15))
 		if drill != null and loot != null:
 			drill.set(&"target", drill.get_path_to(loot))
 

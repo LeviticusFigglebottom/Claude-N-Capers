@@ -183,16 +183,18 @@ func _apply_camera_jam(on: bool) -> void:
 # --- Doors (S8.5) --------------------------------------------------------------------------------
 
 ## Server: an ECM placed on a keycard reader (stealth.ecm_opens_doors): consumed, doors open after
-## ecm_door_open_s. Does not jam.
+## ecm_door_open_s; on an ATM spot (A2-03, DrillPoint.ecm_atm) it opens the ATM after ecm_atm_open_s. Does not jam.
 func attach_to_reader(ecm: DeployablePrefab, reader: Node) -> void:
 	if not Net.is_authority() or ecm == null or reader == null:
 		return
 	ecm.ecm_state = DeployablePrefab.EcmState.DOOR
 	if ecm.interactable != null:
 		ecm.interactable.enabled = false
-	_door_jobs.append({"ecm": ecm, "reader": reader, "left": DeployableTweak.data().ecm_door_open_s})
-	Log.info(&"ecm", "ECM %d on keycard reader %s: opening in %.1f s" % [ecm.net_id, reader.name,
-		DeployableTweak.data().ecm_door_open_s])
+	# A2-03: an ATM spot (DrillPoint.ecm_atm) sets its own time (ecm_atm_open_s); a reader takes ecm_door_open_s.
+	var t: float = float(reader.call(&"ecm_open_s")) if reader.has_method(&"ecm_open_s") \
+		else DeployableTweak.data().ecm_door_open_s
+	_door_jobs.append({"ecm": ecm, "reader": reader, "left": t})
+	Log.info(&"ecm", "ECM %d on %s: opening in %.1f s" % [ecm.net_id, reader.name, t])
 
 
 func _tick_doors(delta: float) -> void:

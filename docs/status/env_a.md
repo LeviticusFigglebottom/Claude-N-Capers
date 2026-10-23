@@ -4,6 +4,45 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-48) A roadmap audit: the rows with no ✅ (LEAD r291) (2026-10-23)
+Evidence: the tests under game/tests/a (all green at the time of their entries) and the spec-row audit
+docs/status/env_a_fidelity.md (103 rows: S8.7 and L6.2 since built, D-161 5f09d31a and c6e78cb0).
+
+| Row | Verdict | Evidence / what is missing |
+|---|---|---|
+| A1-01 | DONE | test_a1_01_heist_runtime; test hooks (contracts/test_hooks.md) used by every heist test. |
+| A1-02 | DONE | test_a1_02_crew_controller, test_pp_a1_player_input_driver, test_s1_casing_detection (casing rules), net: test_a3_07_coop_loopback. |
+| A1-03 | DONE | test_a1_03_prefab_shapes (all P1 prefabs), test_po6_01_drill_place_once, test_po6_02_jam_schedule, test_s10_1b_ladder_bag. |
+| A1-04 | DONE | test_s2_detection_meter, test_d128_detection_pd2, test_s4_stimuli_noise, S2/S3 rows covered (fidelity). |
+| A1-05 | DONE | test_a1_05_security_officer, test_s5_1_patrol_routes, test_s3_3_guard_radio, test_s3_4_guard_investigate, test_s3_6_guard_one_shot. |
+| A1-06 | DONE | test_a1_06_civilians, test_s3_1_civilian_panic, test_s7_shout_and_ties. |
+| A1-07 | DONE | test_s5_pagers (juggling), test_po6_08_pager_freeze, test_s6_body_bags, test_s10_loot_bags. |
+| A1-08 | DONE | test_l3_weapons, test_a1_08_range_crew, test_l2_survival, test_l3_3_pellet_headshot. |
+| A1-09 | DONE | test_l1_assault_director, test_a1_09_police_ai, test_po5_police_assault_push. |
+| A1-10 | DONE | test_a1_10_crew_ai, test_l6_ai_teammates, test_l6_1_stealth_bots_wait, test_r288_bot_revive. |
+| A1-11 | DONE | test_a1_11_local_hud_model, ui_hud v1.20-v1.22 tests. |
+| A1-12 | DONE | test_a1_12_modifier_hooks; the P4 gate's ratchet is empty (UNHOOKED and UNTESTED both {}). |
+| A2-01 | DONE | test_a2_01_doors_nav (authorised keycard guard, nav link follows door), test_gn_staff_doors. |
+| A2-02 | DONE | test_s8_2_camera_operator (kill / dominate -> cameras off, dispatch to a broken camera), test_s8_1_cameras (Titan). |
+| A2-03 | GAP (small) | S8.5 ATM half: "ATMs open in 8 s (consumes the ECM)". DeployableTweak.ecm_atm_open_s exists but nothing reads it; only keycard readers take an ECM. Rest: test_s8_4_ecm, test_s8_6_ecm_feedback, test_s5_6_ecm_pager_delay. |
+| A2-04 | DONE | test_s9_7_keypads_codes, test_s9_8_safes (time locks), test_s9_4_saws, test_s9_10_lasers, test_s9_11_zipline_ladder. |
+| A2-05 | DONE | test_s3_2_guard_cuffs (cooldown, self-free), test_s3_7_misfire, test_s2_9_marking (Sixth Sense). |
+| A2-06 | DONE | test_l2_11_deployables, test_s6_2_body_bag_case, test_s8_4_ecm, test_l2_4_dodge. |
+| A2-07 | DONE | test_s6_4_hostage_stimuli, test_s11_3_stealth_only, test_c3_preplanning (spawn, drops, modifier sources). |
+| A2-08 | DONE | test_a2_08_variant_rules (force_if, requires, min_difficulty, weights), test_a2_08_prefabs (glass AABB, keycard safe, push-bar door, camera collision). |
+| A4-04 | DONE | test_a4_04_ratchet_batch1/2, test_a4_keys_phase24; the gate's UNHOOKED / UNTESTED lists are empty. |
+| A5-01 | DONE | test_a5_01_armored_truck (saw, lockdown ×1.5, cargo, QC-81 roof burn point). |
+| A5-02 | DONE | test_a5_02_convoy (path, brake / stop, layouts), test_rt_a5_ambush; replicated via HeistNetSync. |
+| A5-03 | DONE | test_a5_03_c4_item, test_s9_5_door_charges. |
+
+GAP fix order (LEAD): A2-03's ATM half is the only gap, and it is off every shipped heist's critical path (ND's ATMs
+are saw targets).
+- **Fixed in this push:** DrillPoint.ecm_atm (ecm_openable / ecm_open_s / open_by_ecm). DeployableSystem's ECM aim
+  now also takes an ATM spot; EcmSystem uses the target's own open time (ecm_atm_open_s 8 s); ND's AtmSaw1/2 are
+  flagged (generator and tscn).
+- Tests: test_s8_4_ecm 8/8 (new: test_s8_5_ecm_on_atm_spot_opens_it). Regressions green: x4_nd_stealth, po5_nd ×2,
+  nd_teller, s9_4_saws, po6_01, l2_11, s8_6, d161, qc37.
+
 ### (-47) A4-02 re-measure + anim_driver profile (2026-10-23)
 - A4-02 was delivered in 26509c96 (entry -35). Re-measured on 5b85146c, Dockside, 4 crew, cap 24 enemies, headless:
   - Frame: avg 7.4 ms, p95 12.2 ms. Process: avg 9.6 ms. Saturated: 4.84 ms per physics tick.
