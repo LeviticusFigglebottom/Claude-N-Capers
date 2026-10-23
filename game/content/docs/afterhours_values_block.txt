@@ -41,6 +41,9 @@ static func make_def() -> HeistDef:
 	d.loot = [&"loot.cash_bricks", &"loot.parcels", &"loot.cash", &"loot.small_valuables"] as Array[StringName]
 	d.objectives = [&"casing", &"gear", &"keycard", &"office", &"safe_code", &"safe", &"safe_loot", &"secure",
 		&"product", &"count_room", &"escape_wait", &"escape"] as Array[StringName]
+	# r299 B: the briefing's step list (OF / RT pattern; ui.briefing.step.afterhours.* are ENV B strings).
+	d.briefing_objectives = [&"casing", &"gear", &"keycard", &"ui.briefing.step.afterhours.safe", &"secure",
+		&"ui.briefing.step.afterhours.bonus", &"escape"] as Array[StringName]
 	d.escape_options = [&"van"] as Array[StringName]  # D-143 (no walk-out)
 	d.music_track = &"afterhours"  # music.afterhours.name "Velvet Rope" (ENV B string)
 	d.preplanning = {

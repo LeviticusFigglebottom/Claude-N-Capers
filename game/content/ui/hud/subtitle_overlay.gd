@@ -13,6 +13,8 @@ extends Control
 
 const SOURCE_BRIEFING: StringName = &"briefing"
 const SPEAKER_KEY: StringName = &"ui.subtitle.speaker"
+## A non-contact, non-heister speaker's display name (ui.subtitle.name.dj = "DJ"); absent = the capitalised id.
+const NAME_KEY_FMT: String = "ui.subtitle.name.%s"
 
 ## Settings followed (null = GameSettings.current(); tests set their own before _ready).
 ## Group the overlay joins so the HUD can keep objective markers clear of its box (Hud._subtitle_rect).
@@ -141,13 +143,17 @@ func apply_settings() -> void:
 		(r["text"] as Label).add_theme_color_override(&"font_color", _text_color)
 
 
-## Display name and accent colour of `speaker` (contacts, then heisters, then a capitalised id).
+## Display name and accent colour of `speaker` (contacts, then heisters, then ui.subtitle.name.<id> (Afterhours'
+## "DJ"), then a capitalised id).
 func speaker_style(speaker: StringName) -> Array:
 	var c: ContactDef = _contacts.get(speaker) as ContactDef
 	if c != null:
 		return [StringTable.text(c.display_name_key), c.accent_color]
 	if Heisters.is_known(speaker):
 		return [Heisters.display_name(speaker), Heisters.accent(speaker)]
+	var key: StringName = StringName(NAME_KEY_FMT % speaker)
+	if StringTable.has(key):
+		return [StringTable.text(key), _text_color]
 	return [String(speaker).capitalize(), _text_color]
 
 

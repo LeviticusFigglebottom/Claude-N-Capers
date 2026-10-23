@@ -21,7 +21,8 @@ extends Resource
 ## D-148 (PO, option D): base success XP by heist size (PD2: a bigger job pays more XP); heists not listed use
 ## base_xp_success. Failure XP scales from the same base. See content/docs/progression_pace.md.
 @export var base_xp_by_heist: Dictionary = {&"glasshouse": 1500, &"night_deposit": 2000, &"shadow_ledger": 2500,
-	&"dockside_burn": 2000, &"gallery_night": 2500, &"ostrander_federal": 3000, &"rolling_thunder": 2500}
+	&"dockside_burn": 2000, &"gallery_night": 2500, &"ostrander_federal": 3000, &"rolling_thunder": 2500,
+	&"afterhours": 2500}
 ## ◇ Base XP on failure = base_xp_success x this. No loot XP on failure.
 @export var base_xp_failure_fraction: float = 0.25
 

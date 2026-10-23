@@ -7,7 +7,7 @@ extends TestCase
 const PAYDAY_SCENE: PackedScene = preload("res://content/ui/results/payday.tscn")
 const SLOT: int = 0
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
-	&"ostrander_federal", &"rolling_thunder"]
+	&"ostrander_federal", &"rolling_thunder", &"afterhours"]
 const DONE: int = Enums.ObjectiveState.COMPLETED
 const ACTIVE: int = Enums.ObjectiveState.ACTIVE
 const LANTERN: StringName = &"loot.painting_lantern_bearer"
@@ -459,6 +459,30 @@ func _cases() -> Dictionary:
 	}
 	out[&"achievement.rt_quick"] = _speed_case(rt, 840.0, 960.0, false)
 	out[&"achievement.rt_cataclysm"] = _top_case(rt, false)
+	# --- Afterhours (AH-B1, LEAD r299 pick + the r244 dead-air parity row; staged in heist_list until the un-hide)
+	var ah: StringName = &"afterhours"
+	out[&"achievement.ah_no_witnesses"] = _quiet_case(ah)
+	out[&"achievement.ah_dead_air"] = _dead_air_case(ah)
+	out[&"achievement.ah_just_looking"] = {
+		"pass": _run(_res(ah, true), _facts([], {&"casing": DONE, &"safe_code": DONE}), "cased, opened by code"),
+		"miss": [
+			_run(_res(ah, true), _facts([], {&"casing": DONE, &"safe_code": [DONE, true]}), "drilled (code skipped)"),
+			_run(_res(ah, true), _facts([], {&"casing": ACTIVE, &"safe_code": DONE}), "never cased"),
+			_run(_res(ah, false), _facts([], {&"casing": DONE, &"safe_code": DONE}), "loud"),
+		],
+	}
+	out[&"achievement.ah_bottle_service"] = {
+		"pass": _run(_res(ah, true, {"loot": _bags(&"loot.parcels", 3) + _bags(&"loot.cash_bricks", 3)}),
+				_facts([], {&"count_room": DONE}), "product and the count"),
+		"miss": [
+			_run(_res(ah, true, {"loot": _bags(&"loot.parcels", 2) + _bags(&"loot.cash_bricks", 3)}),
+					_facts([], {&"count_room": DONE}), "2 parcels"),
+			_run(_res(ah, true, {"loot": _bags(&"loot.parcels", 3) + _bags(&"loot.cash_bricks", 3)}),
+					_facts([], {&"count_room": ACTIVE}), "count room left"),
+		],
+	}
+	out[&"achievement.ah_closing_time"] = _speed_case(ah, 700.0, 780.0, false)
+	out[&"achievement.ah_cataclysm"] = _top_case(ah, false)  # any mode (LEAD r244)
 	return out
 
 
