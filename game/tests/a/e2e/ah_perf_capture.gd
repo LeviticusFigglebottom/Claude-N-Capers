@@ -5,7 +5,9 @@
 ## CPU process / physics ms (llvmpipe: the GPU time is not meaningful here), NPCs alive, FrameProf's top systems.
 ## PNG per view to --cap-out. Owner: ENV A.
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --path game --resolution 1920x1080 \
-##     res://tests/a/e2e/ah_perf_capture.tscn -- --cap-out=/abs/dir [--seed=1] [--diff=2]
+##     res://tests/a/e2e/ah_perf_capture.tscn -- --cap-out=/abs/dir [--seed=1] [--diff=2] [--samples=60]
+## (draw counts do not depend on the resolution: a lit map under llvmpipe takes ~20 s a frame at 1080p, so run the
+## budget pass at a low --resolution with a few --samples; the PNGs are for review only)
 extends Node3D
 
 const SAMPLE_FRAMES: int = 60
@@ -17,6 +19,7 @@ const FLOOR_CENTRE: Vector3 = Vector3(15.5, 1.7, 14.0)
 var _out: String = ""
 var _seed: int = 1
 var _diff: int = Enums.Difficulty.HAZARDOUS
+var _samples: int = SAMPLE_FRAMES
 var _cam: Camera3D = null
 var _over: Array[String] = []
 
@@ -29,6 +32,8 @@ func _ready() -> void:
 			_seed = int(a.trim_prefix("--seed="))
 		elif a.begins_with("--diff="):
 			_diff = int(a.trim_prefix("--diff="))
+		elif a.begins_with("--samples="):
+			_samples = maxi(int(a.trim_prefix("--samples=")), 1)
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/ah_perf"
 	DirAccess.make_dir_recursive_absolute(_out)
@@ -97,7 +102,7 @@ func _view(rt: HeistRuntime, label: String, eye: Vector3, at: Vector3) -> void:
 	var prims: Array[int] = []
 	var proc_ms: Array[float] = []
 	var phys_ms: Array[float] = []
-	for i: int in SAMPLE_FRAMES:
+	for i: int in _samples:
 		await RenderingServer.frame_post_draw
 		main_d.append(vp.get_render_info(Viewport.RENDER_INFO_TYPE_VISIBLE, Viewport.RENDER_INFO_DRAW_CALLS_IN_FRAME))
 		shadow_d.append(vp.get_render_info(Viewport.RENDER_INFO_TYPE_SHADOW, Viewport.RENDER_INFO_DRAW_CALLS_IN_FRAME))
