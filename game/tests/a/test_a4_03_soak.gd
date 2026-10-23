@@ -185,7 +185,8 @@ func _pos_diff(k: String, hd: Dictionary, cd: Dictionary, tol: float, with_id: b
 		var hp: Vector3 = (hd[id][1] if with_id else hd[id]) as Vector3
 		var cp: Vector3 = (cd[id][1] if with_id else cd[id]) as Vector3
 		if hp.distance_to(cp) > tol:
-			out.append("%s %s %.1f m apart" % [k, id, hp.distance_to(cp)])
+			var n: Node = Ids.lookup(int(id))
+			out.append("%s %s (%s) host %s client %s (%.1f m)" % [k, id, n.name if n != null else "?", hp, cp, hp.distance_to(cp)])
 	for id: Variant in cd:
 		if not hd.has(id):
 			out.append("%s %s only on the client" % [k, id])
