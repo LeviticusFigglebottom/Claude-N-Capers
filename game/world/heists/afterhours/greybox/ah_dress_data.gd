@@ -80,12 +80,50 @@ const KEEP_OUT: Dictionary = {}
 ## Rooms without the kit's ceiling grid: the hall and the bars under the lacquer (their light is the club rig).
 const NO_CEILING_GRID: Array[String] = ["G6"]
 
-## Street furniture rows: [room, name, from, to, yaw, [[asset, first, step, count, side offset], ...]].
-const ROWS: Array = []
+## Street furniture rows: [room, name, from, to, yaw, [[asset, first, step, count, side offset], ...]]. A slot meeting a
+## keep-out (the queue, the parked cars, spawns, doors) is skipped. Lamps stand at the kerb with the arm over the road
+## (yaw: the road's side): Marlin Ave south of the club's front (z 32.2), Tolley St east of the club (x 38.0; the doc's
+## 4000 K LED street).
+const ROWS: Array = [
+	["X2", "MarlinN", [-14.0, 0.0, 32.2], [36.0, 0.0, 32.2], 180.0, [
+		["prop_street_lamp", 4.0, 16.0, 3, 0.0], ["prop_bin_street", 4.7, 32.0, 2, 0.0]]],
+	["X2", "TolleyW", [38.0, 0.0, -10.0], [38.0, 0.0, 26.0], -90.0, [
+		["prop_street_lamp", 2.0, 12.0, 3, 0.0]]],
+]
 
 ## Directly placed props: [name, asset, position, yaw, metas]. Wall mounts sit on the face at `position` (centred);
 ## ceiling mounts hang from it.
 const DIRECT_PROPS: Array = [
+	# the bars' stools on the customer side facing the counter, 0.8 m apart (a slot on a patron / bartender spawn is
+	# skipped): the main bar (counter x 2.2, customers east), the east bar (x 23.9, customers west), the VIP bar (z 25.9,
+	# customers north)
+	["StoolMain0", "prop_stool_teller", Vector3(3.0, 0.0, 10.5), 90.0, {}],
+	["StoolMain1", "prop_stool_teller", Vector3(3.0, 0.0, 11.3), 90.0, {}],
+	["StoolMain2", "prop_stool_teller", Vector3(3.0, 0.0, 12.1), 90.0, {}],
+	["StoolMain3", "prop_stool_teller", Vector3(3.0, 0.0, 12.9), 90.0, {}],
+	["StoolMain4", "prop_stool_teller", Vector3(3.0, 0.0, 13.7), 90.0, {}],
+	["StoolMain5", "prop_stool_teller", Vector3(3.0, 0.0, 14.5), 90.0, {}],
+	["StoolMain6", "prop_stool_teller", Vector3(3.0, 0.0, 15.3), 90.0, {}],
+	["StoolMain7", "prop_stool_teller", Vector3(3.0, 0.0, 16.1), 90.0, {}],
+	["StoolEast0", "prop_stool_teller", Vector3(23.0, 0.0, 8.6), -90.0, {}],
+	["StoolEast1", "prop_stool_teller", Vector3(23.0, 0.0, 9.4), -90.0, {}],
+	["StoolEast2", "prop_stool_teller", Vector3(23.0, 0.0, 10.2), -90.0, {}],
+	["StoolEast3", "prop_stool_teller", Vector3(23.0, 0.0, 11.0), -90.0, {}],
+	["StoolEast4", "prop_stool_teller", Vector3(23.0, 0.0, 11.8), -90.0, {}],
+	["StoolEast5", "prop_stool_teller", Vector3(23.0, 0.0, 12.6), -90.0, {}],
+	["StoolEast6", "prop_stool_teller", Vector3(23.0, 0.0, 13.4), -90.0, {}],
+	["StoolVIP0", "prop_stool_teller", Vector3(12.5, 4.2, 25.0), 180.0, {}],
+	["StoolVIP1", "prop_stool_teller", Vector3(13.3, 4.2, 25.0), 180.0, {}],
+	["StoolVIP2", "prop_stool_teller", Vector3(14.1, 4.2, 25.0), 180.0, {}],
+	["StoolVIP3", "prop_stool_teller", Vector3(14.9, 4.2, 25.0), 180.0, {}],
+	["StoolVIP4", "prop_stool_teller", Vector3(15.7, 4.2, 25.0), 180.0, {}],
+	["StoolVIP5", "prop_stool_teller", Vector3(16.5, 4.2, 25.0), 180.0, {}],
+	["StoolVIP6", "prop_stool_teller", Vector3(17.3, 4.2, 25.0), 180.0, {}],
+	["StoolVIP7", "prop_stool_teller", Vector3(18.1, 4.2, 25.0), 180.0, {}],
+	["StoolVIP8", "prop_stool_teller", Vector3(18.9, 4.2, 25.0), 180.0, {}],
+	["StoolVIP9", "prop_stool_teller", Vector3(19.7, 4.2, 25.0), 180.0, {}],
+	# the alley: a sodium lamp over the loading door (the north facade's outer face, z -0.2; the roller x 29.5-32.5)
+	["AlleyLamp", "prop_wall_lamp_sodium", Vector3(33.4, 3.4, -0.2), 0.0, {}],
 	# G6: the mirror ball over the dance floor and the truss along the stage front, from the hall roof (8.0); the 2.01 m
 	# units on a 2.12 m pitch (placed footprints keep 5 cm apart, _place_ext)
 	["MirrorBall", "prop_ah_mirror_ball", Vector3(14.0, 8.0, 12.5), 0.0, {}],
