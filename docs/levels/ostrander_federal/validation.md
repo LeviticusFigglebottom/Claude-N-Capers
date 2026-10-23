@@ -10,7 +10,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | contract_nodes | PASS | 0 | 0 |
 | cameras | PASS | 0 | 0 |
 | secure_zones | PASS | 0 | 0 |
-| floating | PASS | 0 | 2 |
+| floating | PASS | 0 | 3 |
 | clipping | PASS | 0 | 1 |
 | orientation | PASS | 0 | 11 |
 | scale | PASS | 0 | 0 |
@@ -38,7 +38,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 7 |
+| furniture_logic | PASS | 0 | 5 |
 
 ## contract_nodes: Contract nodes
 
@@ -55,14 +55,15 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 1990 props checked
+- 1989 props checked
 
+- WARN `Gameplay/Devices/LidDrill` @ (24.00, 0.00, 14.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 1991 props, 94 doors checked
+- 1990 props, 94 doors checked
 
 - WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
@@ -377,18 +378,18 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 10248 surfaces checked
+- 10235 surfaces checked
 
 
 ## metal_reflection: Metal surfaces have a reflection source
 
 - environment reflections: on; 60 probe(s), 3 baked VoxelGI
-- 899 metal surface(s); 826 covered only by UPDATE_ONCE probes (black until the probe first renders)
+- 896 metal surface(s); 823 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
 
-- 1363737 triangles checked
+- 1360710 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -426,7 +427,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomMO` | copy_room_of | 16 | 49.0 | 0.33 |
 | `Rooms/RoomBC` | corridor_service | 24 | 76.0 | 0.32 |
 | `Rooms/RoomLO` | office_loan | 34 | 80.0 | 0.42 |
-| `Rooms/RoomTW` | teller_line_of | 94 | 256.0 | 0.37 |
+| `Rooms/RoomTW` | teller_line_of | 93 | 256.0 | 0.36 |
 | `Rooms/RoomPC` | lounge_client | 30 | 80.0 | 0.38 |
 | `Rooms/RoomCN1` | meeting_small | 15 | 40.0 | 0.38 |
 | `Rooms/RoomCN2` | meeting_small | 17 | 40.0 | 0.42 |
@@ -535,21 +536,21 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` (plan, exempt) | 1679 | 0 | 936 | 0 | 2615 | 673058 | 1 | Sun 936 |
-| `rc_ext_plaza` | 1727 | 0 | 330 | 0 | 2057 | 659564 | 1 | Sun 330 |
-| `rc_ext_lane` | 2056 | 0 | 475 | 0 | 2531 | 796988 | 1 | Sun 475 |
-| `rc_ext_tannery` | 1766 | 0 | 825 | 0 | 2591 | 650120 | 1 | Sun 825 |
+| `TopDownPlan` (plan, exempt) | 1666 | 0 | 936 | 0 | 2602 | 669226 | 1 | Sun 936 |
+| `rc_ext_plaza` | 1714 | 0 | 330 | 0 | 2044 | 655732 | 1 | Sun 330 |
+| `rc_ext_lane` | 2043 | 0 | 475 | 0 | 2518 | 793156 | 1 | Sun 475 |
+| `rc_ext_tannery` | 1753 | 0 | 825 | 0 | 2578 | 646288 | 1 | Sun 825 |
 | `rc_terrace` | 1343 | 263 | 1150 | 0 | 2756 | 482620 | 2 | PendantS2 608, Sun 542 |
-| `rc_hall_entrance` | 2218 | 389 | 1374 | 0 | 3981 | 1256446 | 2 | Sun 833, PendantS2 541 |
-| `rc_hall_counter` | 2015 | 0 | 876 | 0 | 2891 | 896808 | 1 | Sun 876 |
+| `rc_hall_entrance` | 2205 | 389 | 1374 | 0 | 3968 | 1252614 | 2 | Sun 833, PendantS2 541 |
+| `rc_hall_counter` | 2002 | 0 | 876 | 0 | 2878 | 892976 | 1 | Sun 876 |
 | `rc_hall_from_gallery` | 624 | 335 | 1021 | 0 | 1980 | 216552 | 2 | PendantS2 566, Sun 455 |
-| `rc_vestibule` | 1386 | 488 | 1381 | 0 | 3255 | 714798 | 2 | Sun 705, PendantS2 676 |
+| `rc_vestibule` | 1376 | 488 | 1381 | 0 | 3245 | 711218 | 2 | Sun 705, PendantS2 676 |
 | `rc_atm` | 172 | 34 | 473 | 0 | 679 | 49770 | 2 | PendantS2 344, Sun 129 |
-| `rc_teller_workroom` | 2465 | 0 | 801 | 0 | 3266 | 1013810 | 1 | Sun 801 |
+| `rc_teller_workroom` | 2452 | 0 | 801 | 0 | 3253 | 1009978 | 1 | Sun 801 |
 | `rc_client_lounge` | 978 | 0 | 1048 | 0 | 2026 | 307538 | 1 | Sun 1048 |
 | `rc_manager_office` | 444 | 0 | 353 | 0 | 797 | 138786 | 1 | Sun 353 |
 | `rc_loan_office` | 977 | 37 | 766 | 0 | 1780 | 385472 | 2 | PendantS2 445, Sun 321 |
-| `rc_back_corridor` | 2452 | 0 | 881 | 0 | 3333 | 975392 | 1 | Sun 881 |
+| `rc_back_corridor` | 2439 | 0 | 881 | 0 | 3320 | 971560 | 1 | Sun 881 |
 | `rc_security_room` | 610 | 0 | 495 | 0 | 1105 | 204856 | 1 | Sun 495 |
 | `rc_loading_dock` | 392 | 0 | 285 | 0 | 677 | 150670 | 1 | Sun 285 |
 | `rc_break_room` | 443 | 0 | 243 | 0 | 686 | 159352 | 1 | Sun 243 |
@@ -560,16 +561,16 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_president` | 1238 | 0 | 485 | 0 | 1723 | 424912 | 1 | Sun 485 |
 | `rc_exec_lounge` | 977 | 0 | 418 | 0 | 1395 | 328406 | 1 | Sun 418 |
 | `rc_boardroom` | 359 | 0 | 192 | 0 | 551 | 83316 | 1 | Sun 192 |
-| `rc_basement_corridor` | 1996 | 0 | 969 | 0 | 2965 | 844440 | 1 | Sun 969 |
-| `rc_concourse` | 1989 | 0 | 904 | 0 | 2893 | 863488 | 1 | Sun 904 |
-| `rc_vault` | 1116 | 0 | 520 | 0 | 1636 | 663298 | 1 | Sun 520 |
-| `rc_vault_hole` | 2057 | 138 | 1345 | 0 | 3540 | 886136 | 2 | Sun 841, PendantS2 504 |
+| `rc_basement_corridor` | 1983 | 0 | 969 | 0 | 2952 | 840608 | 1 | Sun 969 |
+| `rc_concourse` | 1976 | 0 | 904 | 0 | 2880 | 859656 | 1 | Sun 904 |
+| `rc_vault` | 1106 | 0 | 520 | 0 | 1626 | 659718 | 1 | Sun 520 |
+| `rc_vault_hole` | 2044 | 138 | 1345 | 0 | 3527 | 882304 | 2 | Sun 841, PendantS2 504 |
 | `rc_deposit_hall` | 1360 | 0 | 1163 | 0 | 2523 | 641970 | 1 | Sun 1163 |
 | `rc_count_room` | 1019 | 0 | 587 | 0 | 1606 | 402328 | 1 | Sun 587 |
 | `rc_records` | 1489 | 171 | 959 | 0 | 2619 | 813926 | 2 | Sun 512, PendantS2 447 |
 | `rc_roof` | 570 | 0 | 267 | 0 | 837 | 150506 | 1 | Sun 267 |
-| `rc_sniper_assay` | 1744 | 0 | 299 | 0 | 2043 | 669908 | 1 | Sun 299 |
-| `rc_burn_close` | 1147 | 63 | 1669 | 0 | 2879 | 555696 | 2 | Sun 1295, PendantS2 374 |
+| `rc_sniper_assay` | 1731 | 0 | 299 | 0 | 2030 | 666076 | 1 | Sun 299 |
+| `rc_burn_close` | 1134 | 63 | 1669 | 0 | 2866 | 551864 | 2 | Sun 1295, PendantS2 374 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -593,8 +594,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - classified: chair 14, counter 23, desk 29, table 15, low_table 1, wall_unit 104, lounge_seat 2, visitor_chair 16, desk_chair 55, stool 1, monitor 18
 - 88 seats, 68 tables/desks/counters, 94 doors checked
 
-- WARN `Gameplay/Devices/LidDrill` @ (23.75, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.96 m (gameplay prefab / variant content: review)
-- WARN `Gameplay/Devices/LidDrill` @ (23.75, 1.00, 14.60): overlap: bounds interpenetrate `Gameplay/Lifts/Hoist/Rig/HoleGuardW` by 0.41 m (not a stack or a tucked seat)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.87 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.77 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/LandingPanelVisual1` @ (24.67, 1.10, 15.33): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.33 m (gameplay prefab / variant content: review)

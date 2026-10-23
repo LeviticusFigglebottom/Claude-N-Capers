@@ -1,0 +1,10 @@
+[HUB] ROW board | natural y | aimed y | F y | comp y 1.60, dist 1.07, screen 'board'
+[HUB] ROW planning | natural y | aimed y | F y | comp y 1.10, dist 1.37, screen 'planning'
+[HUB] ROW armory | natural y | aimed y | F y | comp y 1.60, dist 1.30, screen 'armory'
+[HUB] ROW masks | natural y | aimed y | F y | comp y 1.50, dist 1.11, screen 'masks'
+[HUB] ROW jukebox | natural y | aimed y | F y | comp y 1.35, dist 0.63, screen 'jukebox'
+[HUB] ROW notoriety | natural y | aimed y | F y | comp y 1.50, dist 0.76, screen 'notoriety'
+[HUB] ROW crew | natural y | aimed y | F y | comp y 1.40, dist 0.74, screen 'crew'
+[HUB] ROW profile | natural y | aimed y | F y | comp y 1.40, dist 1.03, screen 'profile'
+[HUB] ROW range | natural y | aimed y | F y | comp y 1.40, dist 0.93, screen '' (left for the range)
+[HUB] RESULT PASS

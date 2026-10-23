@@ -448,6 +448,9 @@ func set_prop(inst: Node, prop: String, value: Variant) -> void:
 	if value is String and String(value).begins_with("enum:"):
 		inst.set(prop, _enum_value(inst, String(value).substr(5)))
 		return
+	if value is String and prop.ends_with("_scene"):   # a PackedScene export by catalog id (DrillPoint.device_scene)
+		inst.set(prop, catalog_scene(String(value)))
+		return
 	match typeof(cur):
 		TYPE_STRING_NAME:
 			inst.set(prop, StringName(String(value)))

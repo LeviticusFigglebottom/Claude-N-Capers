@@ -53,8 +53,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer1` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 16.0 | 40.0 | 2.50 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Loot/OfficeSafe` | objective | 20.4 | 46.1 | 2.26 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 20.4 | 46.1 | 2.26 | ok |
-| `Spawns/PlayerFoyer1` | `Gameplay/Loot/SafeDrill` | objective | 20.4 | 46.1 | 2.26 | ok |
-| `Spawns/PlayerFoyer1` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 20.4 | 46.1 | 2.26 | ok |
+| `Spawns/PlayerFoyer1` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 20.4 | 46.1 | 2.26 | ok |
+| `Spawns/PlayerFoyer1` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 20.4 | 46.1 | 2.26 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 13.0 | 15.5 | 1.20 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 13.0 | 15.5 | 1.20 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 13.0 | 15.5 | 1.20 | ok |
@@ -127,8 +127,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer2` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 14.6 | 42.0 | 2.89 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Loot/OfficeSafe` | objective | 18.6 | 48.1 | 2.59 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 18.6 | 48.1 | 2.59 | ok |
-| `Spawns/PlayerFoyer2` | `Gameplay/Loot/SafeDrill` | objective | 18.6 | 48.1 | 2.59 | ok |
-| `Spawns/PlayerFoyer2` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 18.6 | 48.1 | 2.59 | ok |
+| `Spawns/PlayerFoyer2` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 18.6 | 48.1 | 2.59 | ok |
+| `Spawns/PlayerFoyer2` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 18.6 | 48.1 | 2.59 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 11.0 | 13.5 | 1.23 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 11.0 | 13.5 | 1.23 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 11.0 | 13.5 | 1.23 | ok |
@@ -201,8 +201,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer3` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 13.2 | 44.0 | 3.33 | detour (whitelisted) |
 | `Spawns/PlayerFoyer3` | `Gameplay/Loot/OfficeSafe` | objective | 16.8 | 50.1 | 2.98 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 16.8 | 50.1 | 2.98 | ok |
-| `Spawns/PlayerFoyer3` | `Gameplay/Loot/SafeDrill` | objective | 16.8 | 50.1 | 2.98 | ok |
-| `Spawns/PlayerFoyer3` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 16.8 | 50.1 | 2.98 | ok |
+| `Spawns/PlayerFoyer3` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 16.8 | 50.1 | 2.98 | ok |
+| `Spawns/PlayerFoyer3` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 16.8 | 50.1 | 2.98 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 9.0 | 11.6 | 1.28 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 9.0 | 11.6 | 1.28 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 9.0 | 11.6 | 1.28 | ok |
@@ -275,8 +275,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer4` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 12.1 | 44.7 | 3.70 | detour (whitelisted) |
 | `Spawns/PlayerFoyer4` | `Gameplay/Loot/OfficeSafe` | objective | 15.1 | 51.8 | 3.42 | detour (whitelisted) |
 | `Spawns/PlayerFoyer4` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 15.1 | 51.8 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerFoyer4` | `Gameplay/Loot/SafeDrill` | objective | 15.1 | 51.8 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerFoyer4` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 15.1 | 51.8 | 3.42 | detour (whitelisted) |
+| `Spawns/PlayerFoyer4` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 15.1 | 51.8 | 3.42 | detour (whitelisted) |
+| `Spawns/PlayerFoyer4` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 15.1 | 51.8 | 3.42 | detour (whitelisted) |
 | `Spawns/PlayerFoyer4` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 7.0 | 9.7 | 1.39 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 7.0 | 9.7 | 1.39 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 7.0 | 9.7 | 1.39 | ok |
@@ -349,8 +349,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP1` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 15.8 | 17.3 | 1.09 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Loot/OfficeSafe` | objective | 21.1 | 23.4 | 1.11 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 21.1 | 23.4 | 1.11 | ok |
-| `Spawns/PlayerVIP1` | `Gameplay/Loot/SafeDrill` | objective | 21.1 | 23.4 | 1.11 | ok |
-| `Spawns/PlayerVIP1` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 21.1 | 23.4 | 1.11 | ok |
+| `Spawns/PlayerVIP1` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 21.1 | 23.4 | 1.11 | ok |
+| `Spawns/PlayerVIP1` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 21.1 | 23.4 | 1.11 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 15.8 | 38.3 | 2.43 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 15.8 | 38.3 | 2.43 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 15.8 | 38.3 | 2.43 | ok |
@@ -423,8 +423,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP2` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 14.5 | 17.2 | 1.18 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Loot/OfficeSafe` | objective | 19.6 | 23.2 | 1.18 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 19.6 | 23.2 | 1.18 | ok |
-| `Spawns/PlayerVIP2` | `Gameplay/Loot/SafeDrill` | objective | 19.6 | 23.2 | 1.18 | ok |
-| `Spawns/PlayerVIP2` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 19.6 | 23.2 | 1.18 | ok |
+| `Spawns/PlayerVIP2` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 19.6 | 23.2 | 1.18 | ok |
+| `Spawns/PlayerVIP2` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 19.6 | 23.2 | 1.18 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 14.4 | 39.5 | 2.75 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 14.4 | 39.5 | 2.75 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 14.4 | 39.5 | 2.75 | ok |
@@ -497,8 +497,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP3` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 11.9 | 13.6 | 1.14 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Loot/OfficeSafe` | objective | 16.7 | 19.6 | 1.18 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 16.7 | 19.6 | 1.18 | ok |
-| `Spawns/PlayerVIP3` | `Gameplay/Loot/SafeDrill` | objective | 16.7 | 19.6 | 1.18 | ok |
-| `Spawns/PlayerVIP3` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 16.7 | 19.6 | 1.18 | ok |
+| `Spawns/PlayerVIP3` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 16.7 | 19.6 | 1.18 | ok |
+| `Spawns/PlayerVIP3` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 16.7 | 19.6 | 1.18 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 11.6 | 42.4 | 3.66 | detour (whitelisted) |
 | `Spawns/PlayerVIP3` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 11.6 | 42.4 | 3.66 | detour (whitelisted) |
 | `Spawns/PlayerVIP3` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 11.6 | 42.4 | 3.66 | detour (whitelisted) |
@@ -571,8 +571,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP4` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 10.7 | 13.5 | 1.26 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Loot/OfficeSafe` | objective | 15.3 | 19.6 | 1.28 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 15.3 | 19.6 | 1.28 | ok |
-| `Spawns/PlayerVIP4` | `Gameplay/Loot/SafeDrill` | objective | 15.3 | 19.6 | 1.28 | ok |
-| `Spawns/PlayerVIP4` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 15.3 | 19.6 | 1.28 | ok |
+| `Spawns/PlayerVIP4` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 15.3 | 19.6 | 1.28 | ok |
+| `Spawns/PlayerVIP4` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 15.3 | 19.6 | 1.28 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 10.2 | 43.9 | 4.28 | detour (whitelisted) |
 | `Spawns/PlayerVIP4` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 10.2 | 43.9 | 4.28 | detour (whitelisted) |
 | `Spawns/PlayerVIP4` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 10.2 | 43.9 | 4.28 | detour (whitelisted) |
@@ -645,8 +645,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley1` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 22.4 | 33.2 | 1.48 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Loot/OfficeSafe` | objective | 26.8 | 40.3 | 1.50 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 26.8 | 40.3 | 1.50 | ok |
-| `Spawns/PlayerAlley1` | `Gameplay/Loot/SafeDrill` | objective | 26.8 | 40.3 | 1.50 | ok |
-| `Spawns/PlayerAlley1` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 26.8 | 40.3 | 1.50 | ok |
+| `Spawns/PlayerAlley1` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 26.8 | 40.3 | 1.50 | ok |
+| `Spawns/PlayerAlley1` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 26.8 | 40.3 | 1.50 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 31.1 | 46.8 | 1.50 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 31.1 | 46.8 | 1.50 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 31.1 | 46.8 | 1.50 | ok |
@@ -719,8 +719,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley2` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 22.0 | 31.8 | 1.44 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Loot/OfficeSafe` | objective | 26.1 | 38.8 | 1.49 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 26.1 | 38.8 | 1.49 | ok |
-| `Spawns/PlayerAlley2` | `Gameplay/Loot/SafeDrill` | objective | 26.1 | 38.8 | 1.49 | ok |
-| `Spawns/PlayerAlley2` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 26.1 | 38.8 | 1.49 | ok |
+| `Spawns/PlayerAlley2` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 26.1 | 38.8 | 1.49 | ok |
+| `Spawns/PlayerAlley2` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 26.1 | 38.8 | 1.49 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 30.8 | 45.3 | 1.47 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 30.8 | 45.3 | 1.47 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 30.8 | 45.3 | 1.47 | ok |
@@ -793,8 +793,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley3` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 21.7 | 30.3 | 1.40 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Loot/OfficeSafe` | objective | 25.5 | 37.4 | 1.47 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 25.5 | 37.4 | 1.47 | ok |
-| `Spawns/PlayerAlley3` | `Gameplay/Loot/SafeDrill` | objective | 25.5 | 37.4 | 1.47 | ok |
-| `Spawns/PlayerAlley3` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 25.5 | 37.4 | 1.47 | ok |
+| `Spawns/PlayerAlley3` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 25.5 | 37.4 | 1.47 | ok |
+| `Spawns/PlayerAlley3` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 25.5 | 37.4 | 1.47 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 30.5 | 43.8 | 1.44 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 30.5 | 43.8 | 1.44 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 30.5 | 43.8 | 1.44 | ok |
@@ -867,8 +867,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley4` | `Gameplay/Devices/OfficeReader/UsePoint` | use_point | 21.4 | 29.0 | 1.35 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Loot/OfficeSafe` | objective | 24.9 | 36.0 | 1.45 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Loot/OfficeSafe/UsePoint` | use_point | 24.9 | 36.0 | 1.45 | ok |
-| `Spawns/PlayerAlley4` | `Gameplay/Loot/SafeDrill` | objective | 24.9 | 36.0 | 1.45 | ok |
-| `Spawns/PlayerAlley4` | `Gameplay/Loot/SafeDrill/UsePoint` | use_point | 24.9 | 36.0 | 1.45 | ok |
+| `Spawns/PlayerAlley4` | `Gameplay/Loot/OfficeSafe/SafeDrill` | objective | 24.9 | 36.0 | 1.45 | ok |
+| `Spawns/PlayerAlley4` | `Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint` | use_point | 24.9 | 36.0 | 1.45 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Loot/DropSafe/UsePoint` | use_point | 30.3 | 42.4 | 1.40 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint` | use_point | 30.3 | 42.4 | 1.40 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint` | use_point | 30.3 | 42.4 | 1.40 | ok |

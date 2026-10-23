@@ -43,6 +43,7 @@ const OUT_DIRS: Dictionary = {
 	"ah_staff": "res://assets/characters/_review/ah_cast/",
 	"ah_patrons": "res://assets/characters/_review/ah_cast/",
 	"ah_dancers": "res://assets/characters/_review/ah_cast/",
+	"ah_special": "res://assets/characters/_review/ah_cast/",
 	"db_workers": "res://assets/characters/_review/db_g3_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
@@ -150,6 +151,11 @@ const POOLS: Dictionary = {
 		"char_club_bouncer", "char_club_bouncer_b", "char_club_bouncer_c", "char_club_bouncer_d",
 		"char_club_bouncer_e", "char_club_bouncer_f", "char_club_bartender", "char_club_bartender_b",
 		"char_club_bartender_c", "char_club_bartender_d", "char_club_dj",
+	],
+	# D-165 AH special roles: the off-duty cop, the vip_party pool and the two courier looks most often drawn
+	"ah_special": [
+		"char_club_offduty_cop", "char_club_vip", "char_club_vip_b", "char_club_vip_c", "char_club_vip_d",
+		"char_club_vip_e", "char_club_vip_f", "char_cartel_gunman", "char_cartel_gunman_h",
 	],
 	# DB-G3: Dockside's cartel crews and the dock / packing-wing workers
 	"db_cartel": [

@@ -113,8 +113,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 34.5 | 74.7 | 2.17 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/CashCageKeypad` | objective | 27.8 | 79.0 | 2.84 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.8 | 79.0 | 2.84 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill` | objective | 29.7 | 30.8 | 1.04 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.7 | 30.8 | 1.04 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill` | objective | 30.3 | 31.4 | 1.04 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 30.3 | 31.4 | 1.04 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.3 | 53.4 | 1.24 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 33.2 | 37.6 | 1.13 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.6 | 77.5 | 2.17 | ok |
@@ -384,8 +384,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 34.0 | 74.6 | 2.19 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/CashCageKeypad` | objective | 27.7 | 78.9 | 2.85 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.7 | 78.9 | 2.85 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill` | objective | 29.5 | 30.7 | 1.04 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.5 | 30.7 | 1.04 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill` | objective | 30.1 | 31.3 | 1.04 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 30.1 | 31.3 | 1.04 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.4 | 53.4 | 1.23 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 32.1 | 37.6 | 1.17 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.1 | 77.4 | 2.20 | ok |
@@ -655,8 +655,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 33.6 | 74.4 | 2.22 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/CashCageKeypad` | objective | 27.6 | 79.4 | 2.88 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.6 | 79.4 | 2.88 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill` | objective | 29.4 | 31.2 | 1.06 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.4 | 31.2 | 1.06 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill` | objective | 30.0 | 31.8 | 1.06 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 30.0 | 31.8 | 1.06 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.6 | 53.8 | 1.23 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 31.0 | 36.8 | 1.19 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.6 | 76.0 | 2.19 | ok |
@@ -926,8 +926,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 33.3 | 74.5 | 2.24 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/CashCageKeypad` | objective | 27.6 | 78.5 | 2.84 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.6 | 78.5 | 2.84 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill` | objective | 29.4 | 30.3 | 1.03 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.4 | 30.3 | 1.03 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill` | objective | 30.0 | 30.9 | 1.03 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 30.0 | 30.9 | 1.03 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.9 | 52.9 | 1.21 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 30.0 | 36.9 | 1.23 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.2 | 76.0 | 2.22 | ok |
@@ -1197,8 +1197,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 21.7 | 50.9 | 2.35 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/CashCageKeypad` | objective | 23.3 | 54.9 | 2.35 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.3 | 54.9 | 2.35 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill` | objective | 21.1 | 41.2 | 1.95 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 21.1 | 41.2 | 1.95 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill` | objective | 20.5 | 40.8 | 1.98 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.5 | 40.8 | 1.98 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 7.4 | 39.0 | 5.24 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 38.6 | 65.7 | 1.70 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 22.3 | 41.6 | 1.87 | ok |
@@ -1468,8 +1468,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 20.9 | 49.6 | 2.38 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/CashCageKeypad` | objective | 23.1 | 53.6 | 2.32 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.1 | 53.6 | 2.32 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill` | objective | 20.8 | 42.8 | 2.05 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.8 | 42.8 | 2.05 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill` | objective | 20.3 | 42.3 | 2.09 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.3 | 42.3 | 2.09 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 8.1 | 40.6 | 5.00 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 37.6 | 67.3 | 1.79 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 21.4 | 40.3 | 1.89 | ok |
@@ -1739,8 +1739,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 20.2 | 48.4 | 2.40 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/CashCageKeypad` | objective | 23.0 | 52.4 | 2.28 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.0 | 52.4 | 2.28 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill` | objective | 20.7 | 44.2 | 2.14 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.7 | 44.2 | 2.14 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill` | objective | 20.1 | 43.8 | 2.18 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.1 | 43.8 | 2.18 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 9.0 | 42.1 | 4.67 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 36.7 | 62.0 | 1.69 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 20.5 | 39.1 | 1.90 | ok |
@@ -2010,8 +2010,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 19.5 | 47.2 | 2.42 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/CashCageKeypad` | objective | 23.0 | 51.2 | 2.23 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.0 | 51.2 | 2.23 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill` | objective | 20.6 | 45.4 | 2.20 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.6 | 45.4 | 2.20 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill` | objective | 20.0 | 45.0 | 2.25 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.0 | 45.0 | 2.25 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 10.0 | 43.2 | 4.30 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 35.8 | 60.6 | 1.69 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 19.8 | 37.9 | 1.92 | ok |
@@ -2281,8 +2281,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 25.7 | 76.3 | 2.96 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/CashCageKeypad` | objective | 32.2 | 80.3 | 2.50 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 32.2 | 80.3 | 2.50 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill` | objective | 31.9 | 39.8 | 1.25 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.9 | 39.8 | 1.25 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill` | objective | 31.9 | 39.6 | 1.24 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.9 | 39.6 | 1.24 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.2 | 51.1 | 1.18 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.2 | 43.3 | 4.24 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.3 | 43.0 | 1.77 | ok |
@@ -2552,8 +2552,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 26.3 | 77.7 | 2.96 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/CashCageKeypad` | objective | 32.4 | 81.7 | 2.52 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 32.4 | 81.7 | 2.52 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill` | objective | 32.1 | 41.2 | 1.28 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.1 | 41.2 | 1.28 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill` | objective | 32.2 | 41.0 | 1.27 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.2 | 41.0 | 1.27 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.9 | 52.4 | 1.19 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.0 | 44.6 | 4.48 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.9 | 44.4 | 1.78 | ok |
@@ -2823,8 +2823,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 26.9 | 79.1 | 2.94 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/CashCageKeypad` | objective | 32.6 | 83.1 | 2.54 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 32.6 | 83.1 | 2.54 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill` | objective | 32.5 | 42.6 | 1.31 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.5 | 42.6 | 1.31 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill` | objective | 32.6 | 42.4 | 1.30 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.6 | 42.4 | 1.30 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 44.7 | 53.8 | 1.21 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 9.9 | 46.0 | 4.64 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 25.6 | 45.8 | 1.79 | ok |
@@ -3094,8 +3094,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 27.5 | 80.5 | 2.92 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/CashCageKeypad` | objective | 33.0 | 84.5 | 2.56 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 33.0 | 84.5 | 2.56 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill` | objective | 32.9 | 44.0 | 1.34 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.9 | 44.0 | 1.34 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill` | objective | 33.0 | 43.8 | 1.33 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 33.0 | 43.8 | 1.33 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 45.4 | 55.2 | 1.22 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.1 | 47.4 | 4.70 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 26.3 | 47.2 | 1.80 | ok |

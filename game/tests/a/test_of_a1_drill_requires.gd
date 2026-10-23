@@ -90,6 +90,7 @@ func test_spawn_loot_cycles_markers_and_respawns_parts() -> void:
 	assert_near((bags[1] as LootBag).global_position.x, -4.0, 0.01, "second bag at the second marker")
 	assert_near((bags[2] as LootBag).global_position.y, b0.global_position.y + 0.4, 0.01, "third cycles, stacked")
 	assert_eq(b0.weight, Enums.LootWeight.HEAVY, "the LootDef's weight")
+	assert_false(b0.moved, "S4.1: placed loot, no guard / camera reacts until first picked up (AH seed 2)")
 	var loot: LootManager = _rt.service(G.SVC_LOOT) as LootManager
 	# Consumed by a device: gone for good.
 	LootManager.consume_bag(bags[2] as LootBag)

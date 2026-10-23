@@ -93,7 +93,8 @@ const ROLES: Dictionary = {
 		"gallery_patron", "gallery_waitstaff", "gallery_inspector", "gallery_vaultline"],
 	"ostrander_federal": ["bank_teller", "bank_manager", "bank_officer", "bank_guard", "bank_customer"],
 	"rolling_thunder": ["armored_car_crew", "convoy_escort"],
-	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron"],
+	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron", "club_dancer", "club_offduty", "club_vip",
+		"club_courier"],
 }
 ## D-115: the pre-P5 heists whose roster is read from docs/design/heists/<heist>.md, section
 ## "### ... roster (spawn data)": every spawn tag in its "Spawn tags" column is a cast role.
