@@ -73,7 +73,9 @@
     "tools/blender/style_samples/officer.py",
     "tools/blender/style_samples/head.py",
     "tools/blender/equipment/**",
-    "game/assets/equipment/**"
+    "game/assets/equipment/**",
+    "tools/blender/props/safehouse_hero.py",
+    "game/assets/props/prop_sh_*/**"
    ]
   },
   "d": {
@@ -91,7 +93,9 @@
     "tools/blender/style_samples/officer.py",
     "tools/blender/style_samples/head.py",
     "tools/blender/equipment/**",
-    "game/assets/equipment/**"
+    "game/assets/equipment/**",
+    "tools/blender/props/safehouse_hero.py",
+    "game/assets/props/prop_sh_*/**"
    ]
   }
  },

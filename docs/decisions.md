@@ -1605,3 +1605,8 @@ Phantom kick and a Stinger, before anyone reached a truck across 25 m of open ro
    and bullets where it is solid.
 5. Re-judge: P reruns the Hazardous pair on the round with 1-3, once with no skills and once with a PD2 loud build. RT is done
    only when the clean stop is fair (≥ 1 truck reachable by a competent human) and the blown run is at worst "hard but fair".
+
+## D-159: Safehouse hero props are D's (2026-10-23, LEAD; C proposal)
+D builds the 8 safehouse hero props (Old Press, jukebox, Board map, bunk, gun cabinet, PPE rack, drying line, type case).
+`owners.json`: `tools/blender/props/safehouse_hero.py` + `game/assets/props/prop_sh_*/**` go to D, excluded from C.
+C keeps the safehouse catalogue, placement and the stand-in → hero swaps (C4-03/G3). Pendants, work light and van stay C's.
