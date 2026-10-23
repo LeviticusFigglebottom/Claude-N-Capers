@@ -21,6 +21,8 @@ const BP_MAX_BYTES: int = 1000000
 const PROBE_WARM_FRAMES: int = 24
 ## A --cameras run warms only the UPDATE_ONCE probes whose box (grown by this) holds a chosen camera.
 const PROBE_NEAR_M: float = 8.0
+## The main view's 3D render scale while the probes warm (their cube maps keep their own resolution).
+const WARM_SCALE: float = 0.1
 const BP_GROUND: Color = Color(0.09, 0.22, 0.42)
 const BP_FLOOR: Color = Color(0.13, 0.29, 0.52)
 const BP_LINE: Color = Color(0.93, 0.96, 1.0)
@@ -143,11 +145,17 @@ func _warm_probes(frames: int, filt: PackedStringArray = PackedStringArray()) ->
 		var rp: ReflectionProbe = n as ReflectionProbe
 		if rp.visible and rp.update_mode == ReflectionProbe.UPDATE_ONCE and _probe_near(rp, eyes):
 			probes.append(rp)
+	# the probes render their own cube faces: the main view can draw at a tenth of the resolution meanwhile (lavapipe:
+	# a 1080p frame is ~10 s, so a large map's warm-up took hours)
+	var vp: Viewport = get_viewport()
+	var scale_was: float = vp.scaling_3d_scale
+	vp.scaling_3d_scale = WARM_SCALE
 	for rp: ReflectionProbe in probes:
 		_cam.projection = Camera3D.PROJECTION_PERSPECTIVE
 		_cam.global_transform = Transform3D(Basis.IDENTITY, rp.global_position)
 		for i: int in range(frames):
 			await get_tree().process_frame
+	vp.scaling_3d_scale = scale_was
 	if not probes.is_empty():
 		print("  warmed %d reflection probe(s), %d frames each" % [probes.size(), frames])
 
