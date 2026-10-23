@@ -28,3 +28,22 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
   their UsePoints are on the floor below.
 * **Lighting** is the environment only at G1 (no Light3D). Fixtures, GI, the LUT, the audio bed and emitters and the
   positional jukebox are C4-03.
+
+## C4-03 G2 art pass (validate --hub final PASS)
+* **Lighting** (`sh_lighting.gd`): the night environment and `lut_safehouse` (texgen gsr preset), 24 catalog fixtures
+  at the G0's colour temperatures (2700-3000 K crew corner, 4000-5000 K work areas, the red mask-room safelight; the
+  hall's south high-bays modelled but off), the LIVE FIRE lamp and the jukebox glow. 5 shadow casters (two table
+  pendants, the press pendant, the LB work light, the armory bench lamp). One interior VoxelGI
+  (`bake_safehouse_gi.gd`, needs xvfb + Vulkan), 10 reflection probes, 42 occluders.
+* **Finishes** (`sh_finish.gd`): sealed concrete (hall, LB, workshop, store), bare brick (LB, workshop, kit store),
+  limewashed walls elsewhere, oak boards (lounge, bunks), terrazzo and tile (WC), green-enamel doors, frosted windows.
+  The stations and the van are library-material stand-ins until their art lands.
+* **Dressing** (`sh_dress.gd`, KitPlacer): 125 props from 9 new kits (`tools/blender/props/_kits_safehouse.py`) and
+  the shared corridor and restroom kits; every station body, UsePoint approach, spawn, review-camera standpoint and
+  circulation lane is kept clear (walkthrough 63/63).
+* **Audio**: the jukebox plays positionally at the cabinet (`MusicDirector.positional_parent`, 4 m unit size, 30 m);
+  the interior bed and 5 point emitters (`tools/audiogen/cues_safehouse.py`). `SafehouseMap.start_ambience()` plays
+  only registered cues, so they are silent until B's cue rows land.
+* **Waits (new assets, D):** the bunk bed (queen beds stand in), the gun cabinets (lockers), the ear-defender rack and
+  drying line (coat rails), the old type cases (plan chests), the work light on its stand (a second high-bay), the van,
+  the Old Press, the jukebox cabinet, the Board's painted map, the green-enamel pendants (brass pendants stand in).
