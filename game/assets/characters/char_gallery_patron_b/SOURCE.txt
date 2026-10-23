@@ -15,5 +15,5 @@ look: Gala guest: midnight-blue velvet dinner jacket, black satin shawl lapels, 
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31978
-tris_by_mesh: {"Body": 8940, "Gear": 300, "Hair": 1856, "Outfit": 20882}
+tris: 32066
+tris_by_mesh: {"Body": 8940, "Gear": 388, "Hair": 1856, "Outfit": 20882}

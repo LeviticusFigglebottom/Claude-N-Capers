@@ -115,7 +115,7 @@ def _pencil_in_bun(kit: Kit) -> None:
     c = fit.head_centre()
     top = fit.head_top()
     p = Vector((c.x, c.y - 0.085 * k, top - 0.045 * k))
-    a, b = p + Vector((-0.07 * k, 0.0, 0.025 * k)), p + Vector((0.075 * k, 0.0, -0.02 * k))
+    a, b = p + Vector((-0.091 * k, 0.0, 0.0325 * k)), p + Vector((0.0975 * k, 0.0, -0.026 * k))  # LEAD: +30 %
     m = o.Mesh()
     o.tube(m, [a, b], 0.0035 * k, "char_rubber_yellow", sides=6)
     o.tube(m, [b, b + (b - a).normalized() * 0.012 * k], 0.0036 * k, "char_bank_red", sides=6)
