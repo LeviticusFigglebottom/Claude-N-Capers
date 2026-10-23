@@ -10,60 +10,27 @@ contact = &"contact.accountant"
 briefing = "heist.afterhours.briefing"
 map_scene = "res://world/heists/afterhours/afterhours.tscn"
 base_payout = 40000
-stealth_bonus_mult = 1.15
-loot = Array[StringName]([&"loot.cash_bricks", &"loot.parcels", &"loot.cash"])
+loot = Array[StringName]([&"loot.cash_bricks", &"loot.parcels", &"loot.cash", &"loot.small_valuables"])
 objectives = Array[StringName]([&"casing", &"gear", &"keycard", &"office", &"safe_code", &"safe", &"safe_loot", &"secure", &"product", &"count_room", &"escape_wait", &"escape"])
 briefing_objectives = Array[StringName]([&"casing", &"gear", &"keycard", &"ui.briefing.step.afterhours.safe", &"secure", &"ui.briefing.step.afterhours.bonus", &"escape"])
 preplanning = {
 "assets": {
-&"asset.alternate_entry": {
-"point_categories": [&"spawn"],
-"point_ids": [&"pp_spawn_vip", &"pp_spawn_alley"]
-},
 &"asset.ammo_bag_drop": {
 "point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]
 },
 &"asset.body_bag_case_drop": {
 "point_ids": [&"pp_drop_alley", &"pp_drop_tolley"]
 },
-&"asset.count_window": {
-"point_ids": [&"pp_count_window"]
-},
 &"asset.doctor_bag_drop": {
 "point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]
-},
-&"asset.escape_position": {
-"force_variants": {},
-"point_categories": [&"escape"]
-},
-&"asset.extra_cable_ties": {},
-&"asset.gear_drop": {
-"point_ids": [&"pp_gear_wc", &"pp_gear_cloak", &"pp_gear_booth", &"pp_gear_van"]
 },
 &"asset.inside_keycard": {
 "point_ids": [&"pp_insider_keycard"]
 },
-&"asset.intel_cameras": {
-"reveals": [&"camera"]
-},
-&"asset.intel_guard_posts": {
-"reveals": [&"guard_post"]
-},
-&"asset.intel_keycards": {
-"reveals": [&"keycard"]
-},
-&"asset.intel_product": {
-"reveals": [&"product_location"]
-},
-&"asset.intel_safe_code": {
-"reveals": [&"code_note"]
-},
 &"asset.propped_door": {
 "point_ids": [&"pp_back_door"]
+}
 },
-&"asset.spare_body_bags": {}
-},
-"disable": [],
 "favors": 5
 }
 escape_options = Array[StringName]([&"van"])

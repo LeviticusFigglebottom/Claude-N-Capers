@@ -33,7 +33,8 @@ DOOR_HEAD = 2.2
 OPEN_HEAD = 2.4            # open passages (o_*): the G20 / U6b corridor mouths, the stair foot
 WIDE_HEAD = 2.6            # the balcony-to-VIP openings
 ROLLER_HEAD = 3.0
-WINDOW = (0.9, 2.1)        # sill, head above the floor (the count-room window onto the BOH roof)
+WINDOW = (0.0, 2.1)        # sill, head above the floor (the count-room window onto the BOH roof: a full-height
+                           # casement, the catalog window is h210)
 LADDER_GAP = (29.4, 30.6)  # the BOH roof parapet's gap at the drop-ladder hoops (x 30)
 CEIL_T = 0.05
 HALL_ROOMS = ("G6", "G7")
@@ -90,7 +91,7 @@ def _kind(key: str, a: str, b: str) -> Optional[Tuple[float, float, float, str]]
     if "ROOF" in s:
         other = (s - {"ROOF"}).pop()
         if other == OUT:
-            return (EXT, 4.2, BOH_PARAPET, "wall_ext")
+            return (EXT, 4.2, BOH_PARAPET, "rail")   # the BOH roof parapet: not standable (D-104 slopes)
         if other == "VOID":
             return (HALL_T, 4.2, HALL_PARAPET, "wall_ext")
         return (EXT, 4.2, BLOCK_PARAPET, "wall_ext")
@@ -226,6 +227,20 @@ def stairs() -> Tuple[List[list], List[list]]:
 def shell_boxes() -> List[list]:
     return [
         ["Stage", "Riser", [7.0, 0.0, 7.2], [19.0, 0.3, 10.0], "floor"],
+        # the U-stairs' spine walls: the well between the two flights is closed floor to floor (scale: guards)
+        ["Stairs", "G8Spine", [r3(G8_CLEAR[0] + 1.5), 0.0, r3(26.0 - RUN)], [r3(G8_CLEAR[2] - 1.5), 4.2, 26.0], "wall"],
+        ["Stairs", "G22Spine", [r3(G22_CLEAR[0] + 1.2), 0.0, r3(12.0 - RUN)], [r3(G22_CLEAR[2] - 1.2), 4.2, 12.0],
+         "wall"],
+        # the G10 stock cage (mesh to the 3.0 m ceiling) and its gate's head; the gate (StockCageGate) is a door
+        ["Cage", "StockCageW", [1.0, 0.0, 0.2], [1.1, 3.0, 2.5], "mesh"],
+        ["Cage", "StockCageE", [4.9, 0.0, 0.2], [5.0, 3.0, 2.5], "mesh"],
+        ["Cage", "StockCageFrontW", [1.0, 0.0, 2.5], [2.5, 3.0, 2.6], "mesh"],
+        ["Cage", "StockCageFrontE", [3.5, 0.0, 2.5], [5.0, 3.0, 2.6], "mesh"],
+        ["Cage", "StockCageHead", [2.5, 2.2, 2.5], [3.5, 3.0, 2.6], "mesh"],
+        # the smokers' passage north gate: posts and head between the Hallam wall and the Velvet (hole x -2.6 .. -0.6)
+        ["PassageGate", "PostW", [-3.0, 0.0, -0.1], [-2.6, 2.6, 0.1], "frame"],
+        ["PassageGate", "PostE", [-0.6, 0.0, -0.1], [-0.2, 2.6, 0.1], "frame"],
+        ["PassageGate", "Head", [-2.6, 2.2, -0.1], [-0.6, 2.6, 0.1], "frame"],
         ["Guards", "BalconyFront", [0.2, 4.2, 14.95], [25.8, 5.25, 15.05], "rail"],
         ["Guards", "G8Well", [r3(G8_CLEAR[0] + 1.5), 4.2, 25.95], [G8_CLEAR[2], 5.25, 26.05], "rail"],
         ["Guards", "G22Well", [r3(G22_CLEAR[0] + 1.2), 4.2, 11.95], [G22_CLEAR[2], 5.25, 12.05], "rail"],

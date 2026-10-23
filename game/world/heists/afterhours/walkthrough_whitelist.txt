@@ -1,0 +1,116 @@
+# Walkthrough detour whitelist for Afterhours (tools/levelcheck/README.md "walkthrough").
+# Format: <spawn name|path|*> <target name|path|*>. Owner: ENV C (AH-C1, G1). Every entry is a > 3x path/straight
+# ratio that follows from the approved plan (docs/design/heists/afterhours.md; tools/levelcheck/plans/
+# afterhours_floors_ascii.py), not from a navigation fault: every target is reachable (validate_level `reachability`
+# PASS) and the path is the shortest legal walk.
+#
+# The Velvet has two storeys joined only by the two U-stair cores: G8 (the patrons' stair, west of the foyer) and G22
+# (the staff stair, east wing). Targets one storey up or down from a spawn (the foyer and alley spawns at grade, the VIP
+# spawn in U2 at +4.2) are a walk round through a core while the straight line passes through the balcony slab: the U9
+# office, its reader / safe / drill, the U5 security room, U10, U12 and U13 from below; the G1 / G2 / G26 front block,
+# the hall doors, the back corridor rooms and the G24 door team from the VIP lounge. The staff wing's doors are reached
+# only through G22 (doc Stealth routes 1-2: the front of house never opens onto the staff side upstairs).
+PlayerAlley1 Gameplay/Doors/BackstageDoor/UsePoint
+PlayerAlley1 Gameplay/Doors/GreenRoomDoor/UsePoint
+PlayerAlley1 Gameplay/Doors/LockerRoomDoor/UsePoint
+PlayerAlley1 Gameplay/Doors/StaffRoomDoor/UsePoint
+PlayerAlley2 Gameplay/Doors/LockerRoomDoor/UsePoint
+PlayerAlley2 Gameplay/Doors/StaffRoomDoor/UsePoint
+PlayerAlley3 Gameplay/Doors/ElectricalDoor/UsePoint
+PlayerAlley3 Gameplay/Doors/LockerRoomDoor/UsePoint
+PlayerAlley3 Gameplay/Doors/StaffRoomDoor/UsePoint
+PlayerAlley4 Gameplay/Doors/ElectricalDoor/UsePoint
+PlayerFoyer1 Gameplay/Doors/SecurityRoomDoor/UsePoint
+PlayerFoyer1 Gameplay/Doors/StaffWCDoor/UsePoint
+PlayerFoyer1 Gameplay/Loot/BottleServiceU2/UsePoint
+PlayerFoyer1 Gameplay/Loot/TillVIPBar/UsePoint
+PlayerFoyer1 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
+PlayerFoyer2 Gameplay/Doors/SecurityRoomDoor/UsePoint
+PlayerFoyer2 Gameplay/Doors/StaffWCDoor/UsePoint
+PlayerFoyer2 Gameplay/Doors/VIPStaffDoor/UsePoint
+PlayerFoyer2 Gameplay/Loot/BottleServiceU2/UsePoint
+PlayerFoyer2 Gameplay/Loot/TillVIPBar/UsePoint
+PlayerFoyer2 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
+PlayerFoyer3 Gameplay/Devices/OfficeReader
+PlayerFoyer3 Gameplay/Devices/OfficeReader/UsePoint
+PlayerFoyer3 Gameplay/Doors/OfficeDoor
+PlayerFoyer3 Gameplay/Doors/OfficeDoor/UsePoint
+PlayerFoyer3 Gameplay/Doors/PrivateRoomDoor/UsePoint
+PlayerFoyer3 Gameplay/Doors/SecurityRoomDoor/UsePoint
+PlayerFoyer3 Gameplay/Doors/StaffWCDoor/UsePoint
+PlayerFoyer3 Gameplay/Doors/VIPStaffDoor/UsePoint
+PlayerFoyer3 Gameplay/Loot/BottleServiceU2/UsePoint
+PlayerFoyer3 Gameplay/Loot/DeskDrawerU9/UsePoint
+PlayerFoyer3 Gameplay/Loot/TillVIPBar/UsePoint
+PlayerFoyer3 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
+PlayerFoyer4 Gameplay/Devices/OfficeReader
+PlayerFoyer4 Gameplay/Devices/OfficeReader/UsePoint
+PlayerFoyer4 Gameplay/Doors/OfficeDoor
+PlayerFoyer4 Gameplay/Doors/OfficeDoor/UsePoint
+PlayerFoyer4 Gameplay/Doors/PrivateRoomDoor/UsePoint
+PlayerFoyer4 Gameplay/Doors/SecurityRoomDoor/UsePoint
+PlayerFoyer4 Gameplay/Doors/StaffWCDoor/UsePoint
+PlayerFoyer4 Gameplay/Doors/VIPStaffDoor/UsePoint
+PlayerFoyer4 Gameplay/Loot/BottleServiceU2/UsePoint
+PlayerFoyer4 Gameplay/Loot/DeskDrawerU9/UsePoint
+PlayerFoyer4 Gameplay/Loot/OfficeSafe
+PlayerFoyer4 Gameplay/Loot/OfficeSafe/UsePoint
+PlayerFoyer4 Gameplay/Loot/SafeDrill
+PlayerFoyer4 Gameplay/Loot/SafeDrill/UsePoint
+PlayerFoyer4 Gameplay/Loot/TillVIPBar/UsePoint
+PlayerFoyer4 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
+PlayerVIP1 Gameplay/Doors/HallDoorsE/UsePoint
+PlayerVIP1 Gameplay/Doors/HallDoorsW/UsePoint
+PlayerVIP1 Gameplay/Doors/MainDoorsE/UsePoint
+PlayerVIP1 Gameplay/Doors/MainDoorsW/UsePoint
+PlayerVIP1 Gameplay/Doors/WCDoorG3b/UsePoint
+PlayerVIP1 Gameplay/Loot/TillBoxOffice/UsePoint
+PlayerVIP2 Gameplay/Doors/BoxOfficeFlap/UsePoint
+PlayerVIP2 Gameplay/Doors/DoorOfficeDoorW/UsePoint
+PlayerVIP2 Gameplay/Doors/HallDoorsE/UsePoint
+PlayerVIP2 Gameplay/Doors/HallDoorsW/UsePoint
+PlayerVIP2 Gameplay/Doors/MainDoorsE/UsePoint
+PlayerVIP2 Gameplay/Doors/MainDoorsW/UsePoint
+PlayerVIP2 Gameplay/Loot/TillBoxOffice/UsePoint
+PlayerVIP2 Gameplay/Loot/TipJarCloak/UsePoint
+PlayerVIP3 Gameplay/Doors/BoxOfficeFlap/UsePoint
+PlayerVIP3 Gameplay/Doors/DoorOfficeDoorN/UsePoint
+PlayerVIP3 Gameplay/Doors/DoorOfficeDoorW/UsePoint
+PlayerVIP3 Gameplay/Doors/HallDoorsE/UsePoint
+PlayerVIP3 Gameplay/Doors/HallDoorsW/UsePoint
+PlayerVIP3 Gameplay/Doors/MainDoorsE/UsePoint
+PlayerVIP3 Gameplay/Doors/MainDoorsW/UsePoint
+PlayerVIP3 Gameplay/Doors/StaffEntranceDoor/UsePoint
+PlayerVIP3 Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint
+PlayerVIP3 Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint
+PlayerVIP3 Gameplay/Loot/DropSafe/DropSafeTake3/UsePoint
+PlayerVIP3 Gameplay/Loot/DropSafe/UsePoint
+PlayerVIP3 Gameplay/Loot/TillBoxOffice/UsePoint
+PlayerVIP3 Gameplay/Loot/TipJarCloak/UsePoint
+PlayerVIP3 Variants/Group_code_note/Slot_code_bouncer_log/SafeCode
+PlayerVIP3 Variants/Group_code_note/Slot_code_bouncer_log/SafeCode/UsePoint
+PlayerVIP3 Variants/Group_gear_drop/Slot_gear_booth/GearBag
+PlayerVIP3 Variants/Group_gear_drop/Slot_gear_booth/GearBag/UsePoint
+PlayerVIP3 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
+PlayerVIP4 Gameplay/Doors/BoxOfficeFlap/UsePoint
+PlayerVIP4 Gameplay/Doors/DoorOfficeDoorN/UsePoint
+PlayerVIP4 Gameplay/Doors/DoorOfficeDoorW/UsePoint
+PlayerVIP4 Gameplay/Doors/EastBarServiceDoor/UsePoint
+PlayerVIP4 Gameplay/Doors/HallDoorsE/UsePoint
+PlayerVIP4 Gameplay/Doors/HallDoorsW/UsePoint
+PlayerVIP4 Gameplay/Doors/MainDoorsE/UsePoint
+PlayerVIP4 Gameplay/Doors/MainDoorsW/UsePoint
+PlayerVIP4 Gameplay/Doors/StaffEntranceDoor/UsePoint
+PlayerVIP4 Gameplay/Loot/DropSafe/DropSafeTake1/UsePoint
+PlayerVIP4 Gameplay/Loot/DropSafe/DropSafeTake2/UsePoint
+PlayerVIP4 Gameplay/Loot/DropSafe/DropSafeTake3/UsePoint
+PlayerVIP4 Gameplay/Loot/DropSafe/UsePoint
+PlayerVIP4 Gameplay/Loot/TillBoxOffice/UsePoint
+PlayerVIP4 Gameplay/Loot/TipJarCloak/UsePoint
+PlayerVIP4 Variants/Group_code_note/Slot_code_bouncer_log/SafeCode
+PlayerVIP4 Variants/Group_code_note/Slot_code_bouncer_log/SafeCode/UsePoint
+PlayerVIP4 Variants/Group_gear_drop/Slot_gear_booth/GearBag
+PlayerVIP4 Variants/Group_gear_drop/Slot_gear_booth/GearBag/UsePoint
+PlayerVIP4 Variants/Group_keycard/Slot_kc_bouncer_board/Keycard
+PlayerVIP4 Variants/Group_keycard/Slot_kc_bouncer_board/Keycard/UsePoint
+PlayerVIP4 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
