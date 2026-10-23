@@ -34,6 +34,7 @@ No blend shapes (baked at the params below).
 import math
 
 import _contact_gear as cg
+import _crew_heisters as crew
 import _gear_kit as gk
 import _npc as n
 import _outfit as o
@@ -68,6 +69,28 @@ VARIANTS = {
                             "beard_shadow": 0.5, "hair": "short", "hair_color": "dark", "look": "clerk"},
 }
 PLUM = "char_suit_plum"
+
+
+def _wrist_keys(kit: Kit, side: str = "R") -> None:
+    """GH-G3: the display-case keys on a spiral wrist coil: a burgundy coil round the wrist and a small gold key
+    cluster lying on the back of the wrist."""
+    fit, k = kit.fit, kit.k
+    n.arm_band(kit, side, 1.86, 0.010, "char_tie_burgundy", height=0.004)
+    hull = kit.hull()
+    el, wr = Vector(fit.J[f"elbow.{side}"]), Vector(fit.J[f"wrist.{side}"])
+    axis = (wr - el).normalized()
+    c = el.lerp(wr, 0.845)
+    out = Vector((1.0 if side == "R" else -1.0, 0.0, 0.0))
+    out = (out - axis * out.dot(axis)).normalized()
+    hit = hull.cast(c + out * 0.08 * k, -out, 0.12 * k)
+    if hit[0] is not None:
+        kit.add_gear(gk.bar(hull, hit[0] + out * 0.003 * k, out, 0.010, 0.026, 0.003, "char_satin_gold", k=k, up=axis))
+
+
+def _brooch(kit: Kit, x: float, z: float, mat: str, gem: str) -> None:
+    """GH-G3: a jewelled brooch (a setting with a stone at its centre) on the left breast / lapel."""
+    n.front_item(kit, x, z, (0.022, 0.022, 0.003), mat, lift=0.0)
+    n.front_item(kit, x, z, (0.009, 0.009, 0.003), gem, lift=0.003)
 
 
 def _trousers(kit: Kit, mat: str, shoes: Mesh, top_z: float, hem_r: float = 0.058) -> Mesh:
@@ -132,6 +155,7 @@ def dress(kit: Kit) -> None:
     kit.add_soft(belt.mesh("char_leather_black"))
     kit.add_gear(gk.buckle(belt, "brass", w=0.028, h=0.024))
     kit.add_gear(gk.name_tag(kit.hull(), Vector((0.085 * k, 0.2, 1.33 * k)), k=k))
+    _wrist_keys(kit, "R")                                                           # GH-G3: display-case keys
 
 
 def apron(kit: Kit) -> None:
@@ -173,6 +197,8 @@ def apron(kit: Kit) -> None:
             cast_dir=Vector((0, -1, 0)), rings=2, chamfer=0.003 * k)
     kit.add_soft(pk)
     kit.add_head(gk.glasses(fit, "brass", loupe=True))
+    n.front_item(kit, 0.060, 1.300, (0.008, 0.075, 0.007), "polymer_black", lift=0.002)    # GH-G3: a pen and
+    n.front_item(kit, 0.075, 1.295, (0.005, 0.085, 0.003), "char_satin_gold", lift=0.002)  # gold tweezers at the bib
 
 
 def blazer(kit: Kit) -> None:
@@ -254,6 +280,7 @@ def vossberg(kit: Kit) -> None:
     kit.add_head(cg.chignon(fit, "char_hair_grey", size=0.9))
     kit.add_head(cg.earrings(fit, "brass", drop=False))
     kit.add_head(_glasses_up(fit, "brass"))
+    _brooch(kit, -0.088, 1.355, "char_satin_gold", "char_tie_burgundy")              # GH-G3: a garnet brooch
     kit.notes["look"] = ("Greta Vossberg (owner-manager): deep-plum trouser suit with brass buttons, cream silk "
                          "blouse open at the collar, gold chain + pendant, gold studs, gold reading glasses pushed "
                          "up on silver hair (chignon), gold watch, black low heels")
@@ -274,6 +301,7 @@ def sales_b(kit: Kit) -> None:
     kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.335 * k)), k=k))
     kit.add_gear(cg.lapel_pin(hull, Vector((-0.095 * k, 0.3, 1.36 * k)), "brass", k=k))
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    crew._pocket_square(kit, "char_silk_ivory", Hull(kit.fit, [jk]))                  # GH-G3: an ivory pocket square
     kit.notes["look"] = ("Sales associate B: fitted near-black suit, black shirt open at the collar (no tie), brass "
                          "name badge and lapel pin (the boutique's brass), black shoes, watch")
 
@@ -292,6 +320,7 @@ def clerk(kit: Kit) -> None:
     n.lanyard(kit, "char_dress_black", "char_medic_white", card_z=1.17, band_mat="brass")
     n.watch(kit, "L", strap="leather_dark", case="chrome")
     kit.add_head(gk.glasses(fit, "char_button_dark"))
+    n.front_item(kit, -0.092, 1.290, (0.008, 0.070, 0.007), "char_denim", lift=0.003)      # GH-G3: a blue pen
     kit.notes["look"] = ("Admin clerk (upstairs office): oatmeal knit cardigan over a white shirt, navy chinos, brown "
                          "shoes, black glasses, watch, staff lanyard (black strap, brass band, white ID card)")
 
