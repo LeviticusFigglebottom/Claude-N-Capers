@@ -76,6 +76,11 @@ _subresources={
 "use_external/fallback_path": "res://world/props/materials/pr_metal_dark.tres",
 "use_external/path": "res://world/props/materials/pr_metal_dark.tres"
 },
+"M_pr_metal_grey": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_grey.tres",
+"use_external/path": "res://world/props/materials/pr_metal_grey.tres"
+},
 "M_pr_metal_red": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_metal_red.tres",

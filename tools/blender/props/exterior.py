@@ -202,7 +202,8 @@ def _car(k: Kit, p: dict) -> None:
     for wy in (-hl + 0.85, hl - 0.95):
         for sx in (-1, 1):
             run.cyl(0.33, 0.22, (sx * (w / 2 - 0.12), wy, 0.33), "rubber", axis="X", segs=28)
-            run.cyl(0.2, 0.225, (sx * (w / 2 - 0.12), wy, 0.33), "steel", axis="X", segs=20)
+            # painted steel wheel (LEAD r309: the untextured metallic steel mirrored the warm street as wood-brown)
+            run.cyl(0.2, 0.225, (sx * (w / 2 - 0.12), wy, 0.33), "metal_grey", axis="X", segs=20)
             run.cyl(0.07, 0.23, (sx * (w / 2 - 0.12), wy, 0.33), "chrome", axis="X", segs=12)
     if escort:
         trim.bx((-0.55, -0.2, 1.44), (0.55, 0.05, 1.52), "plastic_black")  # light bar
