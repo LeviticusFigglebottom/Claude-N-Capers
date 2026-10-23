@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"safehouse_plant"
+purpose = &"electrical"
+required_items = Array[StringName]([&"breaker_panel", &"it_rack", &"shelving", &"archive_box"])
+optional_items = {
+&"box": 1,
+&"fire_extinguisher": 1,
+&"tank": 0.6
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 1.2
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"breaker_panel", &"it_rack", &"shelving", &"tank"])
+seed_salt = 4809
+counts = {}
+assets = {
+&"shelving": PackedStringArray("prop_shelving_archive")
+}
+ceiling = {}
+notes = "Safehouse ST store (3.5 x 4.5 m; the G0's electrical_closet + storage_archive): the breaker panel, Mercer's router / NAS rack, shelving with print-works archive boxes, the water heater (tank) where it fits."

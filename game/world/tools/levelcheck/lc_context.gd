@@ -10,7 +10,8 @@ const PROXY_LAYER: int = 1 << 19
 const QUERY_MASK: int = 0xFFFFFFFF & ~(1 << 9) & ~PROXY_LAYER
 const CONTAINERS: Array[StringName] = [&"Geometry", &"Props", &"Lighting", &"Gameplay", &"Variants"]
 ## Folders whose geometry-carrying content roots are props too (prefabs, fixtures, slot content).
-const CONTENT_FOLDERS: Array[StringName] = [&"Lighting", &"Gameplay", &"Variants"]
+## (`Stations`: the safehouse hub's station prefabs, hub_map.md.)
+const CONTENT_FOLDERS: Array[StringName] = [&"Lighting", &"Gameplay", &"Variants", &"Stations"]
 const PROP_METAS: Array[StringName] = [&"kind", &"mount", &"support", &"prop", &"fixture"]
 ## A node inside a prop root that the checks treat as a prop of its own (OF-P1: the hoist rig's bodies).
 const SUBPROP_META: StringName = &"lc_subprop"
@@ -25,6 +26,8 @@ var map: HeistMap
 var heist_id: String = ""
 var stage: String = "greybox"
 var variants_all: bool = false
+## "" (a heist) or "hub" (hub_map.md: the safehouse; validate_level --profile=hub).
+var profile: String = ""
 var kit_dirs: PackedStringArray = PackedStringArray(["res://world/kits"])
 ## Absolute path for walkthrough.md ("" = do not write).
 var walkthrough_report: String = ""

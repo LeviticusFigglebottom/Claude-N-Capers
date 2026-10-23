@@ -1,5 +1,5 @@
 """Melee for ``rig_arms`` (D2-04): the gun ``bash`` (PD2 quick melee with the weapon out) and the
-melee-weapon sets ``melee_knife`` / ``melee_blunt`` / ``melee_blade``. Private helper of ``_arms_clips``
+melee-weapon sets ``melee_knife`` / ``melee_blunt`` / ``melee_blade`` / ``melee_heavy``. Private helper of ``_arms_clips``
 / ``_arms_items``; pure numpy.
 
 Gun bash (every gun set, ``bash``): the set's own idle (frame 0) moved as one rigid block in camera space
@@ -18,6 +18,11 @@ Clips: ``idle*``, ``sprint*``, ``draw`` (ready), ``holster`` (gone), ``swing`` (
 ``hit``, recover; ``done`` = back at idle), ``charge_start`` (idle -> the wind-up, held; its length =
 MeleeDef.charge_time_s, ``charged`` at the end), ``charge*`` (the held wind-up, trembling; frame 0 ==
 charge_start's last frame) and ``charge_swing`` (from the held wind-up: ``hit``, recover to idle).
+
+``melee_heavy`` (characters v1.38: sledgehammer, fire axe) is two-handed: the same clips and item frame, the right
+hand at the item origin and the LEFT hand closed round the same handle ``HEAVY_LEFT_Z`` m further down (item
+(0, 0, -0.28)), riding the weapon frame (``"w"``) in every clip, so it never lets go; overhead strikes through the
+centre of the view, the head about ``HEAVY_HEAD_Z`` m up the handle.
 """
 
 from __future__ import annotations
@@ -115,6 +120,21 @@ def item_frame(pos, blade, edge) -> tuple[np.ndarray, np.ndarray]:
     return np.column_stack([np.cross(y, z), y, z]), np.asarray(pos, float).copy()
 
 
+#: melee_heavy: the left hand's grip pivot on the handle (item z, m below the right hand) and the head (item z)
+HEAVY_LEFT_Z = -0.28
+HEAVY_HEAD_Z = 0.55
+
+
+def item_hand_left(sk: Skeleton, d=(0.0, 0.0, HEAVY_LEFT_Z), pole=(-0.6, -0.4, -0.7)) -> Hand:
+    """The LEFT hand closed round the same handle (item Z) as ``item_hand``, its grip pivot ``d`` (item space),
+    thumb toward the head: the left hand's weapon-grip offset (``_anim.grip_offset``) turned by the grip rake."""
+    R_off, t_off = A.grip_offset(sk, "L")
+    axes = R_off.T.copy()
+    Q = rxd(A.GRIP_RAKE_DEG)
+    shp = dataclasses.replace(hand_shape("grip", 1.0), thumb=MELEE_THUMB, thumb_opp=MELEE_THUMB_OPP)
+    return Hand("w", np.asarray(d, float) + Q @ (-axes @ t_off), Q @ axes, unit(np.asarray(pole, float)), shp, 0.6)
+
+
 def item_hand(sk: Skeleton, shape: str = "grip", amount: float = 1.0, d=(0.0, 0.0, 0.0), pole=(0.7, -0.3, -0.65)) -> Hand:
     """The right hand closed round a handle running along the item frame's Z (the weapon grip offset
     turned by the grip rake), the grip pivot ``d`` (item space) from the item origin."""
@@ -129,12 +149,14 @@ MELEE_POSES = {
         "idle": ((0.140, 0.320, -0.170), (-0.30, 0.55, 0.78), (0.10, 0.80, -0.55)),
         "sprint": ((0.165, 0.240, -0.255), (-0.15, 0.75, 0.62), (0.05, 0.62, -0.78)),
         "low": ((0.170, 0.120, -0.500), (0.10, 0.95, 0.25), (0.0, 0.25, -0.95)),
-        "wind": ((0.250, 0.270, -0.120), (0.55, 0.10, 0.83), (-0.70, 0.55, -0.20)),
+        # B's range report (PD2: the weapon stays in view through the wind-up, raised at the right of the screen):
+        # the wind and charged grips 0.30 m out, inside the viewmodel frame (they sat 0.25 m right at 0.26 m out)
+        "wind": ((0.210, 0.300, -0.100), (0.55, 0.10, 0.83), (-0.70, 0.55, -0.20)),
         # D-116 FP audit: the hit higher and the blade across the view (it pointed away and hid behind the fist),
         # the follow-through ends at the lower left edge instead of 40 deg below the eye (out of frame)
         "hit": ((0.040, 0.350, -0.145), (-0.80, 0.55, 0.20), (-0.55, -0.40, -0.70)),
         "follow": ((-0.100, 0.330, -0.150), (-0.75, 0.55, -0.35), (-0.45, -0.60, 0.65)),
-        "charged": ((0.230, 0.260, -0.090), (0.35, -0.10, 0.93), (-0.30, 0.90, 0.10)),
+        "charged": ((0.210, 0.300, -0.060), (0.35, -0.10, 0.93), (-0.30, 0.90, 0.10)),
         "c_hit": ((0.050, 0.380, -0.140), (-0.10, 0.99, 0.05), (0.0, 0.10, -0.99)),
         "c_follow": ((0.020, 0.360, -0.200), (-0.15, 0.95, -0.25), (0.0, 0.25, -0.97)),
     },
@@ -142,11 +164,13 @@ MELEE_POSES = {
         "idle": ((0.150, 0.310, -0.190), (-0.25, 0.45, 0.86), (0.05, 0.88, -0.45)),
         "sprint": ((0.175, 0.230, -0.270), (-0.10, 0.35, 0.93), (0.0, 0.93, -0.35)),
         "low": ((0.170, 0.120, -0.520), (0.10, 0.70, 0.70), (0.0, 0.70, -0.70)),
-        "wind": ((0.210, 0.090, 0.010), (0.15, -0.65, 0.75), (0.0, 0.75, 0.65)),
+        # B's range report: wind and charged 0.31 m out, the shaft rising past the right edge (half of it in view; they
+        # were 7-9 cm in front of the eye with the head behind it: no arm or item in frame through the whole charge)
+        "wind": ((0.190, 0.310, -0.070), (0.30, -0.05, 0.95), (0.0, 1.0, 0.05)),
         # D-116 FP audit: hit and follow-through in frame (they were 33 / 44 deg below the eye; the frame edge is 26)
         "hit": ((0.090, 0.360, -0.150), (-0.10, 0.75, -0.65), (0.0, -0.65, -0.75)),
         "follow": ((0.050, 0.325, -0.160), (-0.10, 0.25, -0.96), (0.0, -0.96, -0.25)),
-        "charged": ((0.215, 0.070, 0.030), (0.18, -0.75, 0.64), (0.0, 0.64, 0.75)),
+        "charged": ((0.180, 0.320, -0.080), (0.35, 0.0, 0.94), (0.0, 1.0, 0.0)),
         "c_hit": ((0.085, 0.330, -0.150), (-0.08, 0.70, -0.70), (0.0, -0.70, -0.70)),
         "c_follow": ((0.050, 0.320, -0.160), (-0.08, 0.20, -0.97), (0.0, -0.97, -0.20)),
     },
@@ -154,13 +178,29 @@ MELEE_POSES = {
         "idle": ((0.150, 0.315, -0.180), (-0.35, 0.55, 0.75), (0.10, 0.82, -0.56)),
         "sprint": ((0.170, 0.240, -0.265), (-0.15, 0.55, 0.82), (0.0, 0.82, -0.55)),
         "low": ((0.170, 0.120, -0.510), (0.10, 0.90, 0.40), (0.0, 0.40, -0.90)),
-        "wind": ((0.260, 0.160, -0.100), (0.85, -0.20, 0.48), (-0.40, 0.25, 0.88)),
+        # B's range report: wind and charged 0.31 m out at the right of the view, the blade raised past the right edge
+        # (they were 64 deg off the view axis)
+        "wind": ((0.180, 0.310, -0.060), (0.80, -0.15, 0.58), (-0.40, 0.25, 0.88)),
         "hit": ((0.060, 0.330, -0.150), (-0.30, 0.95, -0.05), (-0.95, -0.30, 0.0)),
         # D-116 FP audit: the follow-throughs end at the lower left edge, in frame (they were 44 deg below the eye)
         "follow": ((-0.060, 0.265, -0.125), (-0.95, -0.15, -0.25), (0.15, -0.99, 0.0)),
-        "charged": ((0.265, 0.130, -0.080), (0.80, -0.35, 0.50), (-0.45, 0.20, 0.87)),
+        "charged": ((0.150, 0.320, -0.080), (0.60, -0.10, 0.79), (-0.62, 0.30, 0.51)),
         "c_hit": ((0.060, 0.330, -0.150), (-0.25, 0.97, -0.05), (-0.97, -0.25, 0.0)),
         "c_follow": ((-0.060, 0.265, -0.125), (-0.95, -0.20, -0.25), (0.20, -0.98, 0.0)),
+    },
+    # characters v1.38 two-handed (sledgehammer, fire axe): the right hand at the item origin, the left on the
+    # handle 0.28 m below it; the head (item z 0.55) over the right shoulder at rest, overhead strikes down through
+    # the centre of the view
+    "melee_heavy": {
+        "idle": ((0.050, 0.392, -0.100), (0.622, 0.628, 0.467), (0.10, 0.99, 0.05)),
+        "sprint": ((0.050, 0.399, -0.150), (0.679, 0.607, 0.413), (0.0, 1.0, 0.0)),
+        "low": ((0.150, 0.220, -0.480), (0.30, 0.60, 0.74), (0.0, 0.75, -0.60)),
+        "wind": ((0.180, 0.200, -0.040), (0.30, -0.60, 0.74), (0.05, 0.78, 0.62)),
+        "hit": ((0.200, 0.286, -0.200), (-0.508, 0.857, -0.084), (0.043, -0.072, -0.996)),
+        "follow": ((0.100, 0.204, -0.150), (-0.696, 0.683, -0.219), (0.156, -0.154, -0.976)),
+        "charged": ((0.150, 0.170, 0.070), (0.10, -0.70, 0.71), (0.0, 0.71, 0.70)),
+        "c_hit": ((0.200, 0.286, -0.200), (-0.508, 0.857, -0.084), (0.043, -0.072, -0.996)),
+        "c_follow": ((0.100, 0.204, -0.150), (-0.696, 0.683, -0.219), (0.156, -0.154, -0.976)),
     },
 }
 
@@ -183,6 +223,9 @@ class MeleeKit:
                             (-0.5, -0.6, -0.4), hand_shape("loose_fist", 0.8))
         self.guard = hand_at(sk, "L", "c", (-0.17, 0.20, -0.40), (0.30, 0.65, -0.70), (0.90, -0.10, 0.40),
                              (-0.6, -0.5, -0.6), hand_shape("loose_fist", 0.9))
+        self.two_handed = s.name == "melee_heavy"
+        if self.two_handed:   # v1.38: the left hand rides the handle in every clip (weapon space), never free
+            self.down = self.guard = item_hand_left(sk)
 
     def wf(self, key: str, dp=(0.0, 0.0, 0.0)) -> tuple:
         p, b, e = self.P[key]
@@ -226,8 +269,9 @@ def melee_fns(sk: Skeleton, s: FPSet) -> dict:
                 side = math.sin(TAU * ph)
                 R, o = st.wf
                 st.wf = (rzd(4.0 * side) @ R @ rxd(4.0 * bob), o + v3(0.014 * side, 0.006 * bob, 0.016 * bob))
-                sw = math.sin(TAU * ph + 0.3 + math.pi)
-                st.L = st.L.moved(v3(0.02 * sw, 0.10 * sw, 0.03 * abs(sw)))       # the free arm pumps
+                if not mk.two_handed:
+                    sw = math.sin(TAU * ph + 0.3 + math.pi)
+                    st.L = st.L.moved(v3(0.02 * sw, 0.10 * sw, 0.03 * abs(sw)))   # the free arm pumps
             fn = Choreo([mk.key(0, "sprint", mk.down)], post=post)
         elif clip in ("draw", "holster"):
             a, b = ("low", "idle") if clip == "draw" else ("idle", "low")

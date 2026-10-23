@@ -299,8 +299,13 @@ def _wheels(run, w: float, ys: list[float], dual: list[bool]) -> None:
             run.cyl(0.09, 0.3, (sx * (w / 2 - 0.2), wy, WHEEL_R), "chrome", axis="X", segs=8)
 
 
-def _cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str) -> None:
-    """A forward-control cab from yf to yf + cab, roof at ch: shell, raked screen, side windows, grille, lamps."""
+def _cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str,
+         glass_key: str = "glass_tinted", hollow: bool = False) -> None:
+    """A forward-control cab from yf to yf + cab, roof at ch: shell, raked screen, side windows, grille, lamps.
+    ``hollow``: a cab you can see into (_hollow_cab) instead of the solid block with glass on its skin."""
+    if hollow:
+        _hollow_cab(k, body, w, yf, cab, ch, paint, glass_key)
+        return
     shell = body.part(bevel=0.04, segments=2)
     trim = body.part(bevel=0.004)
     glass = body.part(bevel=0.0)
@@ -320,12 +325,12 @@ def _cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str) -
         ],
         -w / 2 + 0.1,
         w / 2 - 0.1,
-        "glass_tinted",
+        glass_key,
     )
     for sx in (-1, 1):
         g0, g1 = sorted((sx * (w / 2 + 0.004), sx * (w / 2 + 0.012)))
         glass.profile_x(
-            [(yf + 0.35, 1.8), (yf + 1.2, 1.8), (yf + 1.2, ch - 0.25), (yf + 0.45, ch - 0.25)], g0, g1, "glass_tinted"
+            [(yf + 0.35, 1.8), (yf + 1.2, 1.8), (yf + 1.2, ch - 0.25), (yf + 0.45, ch - 0.25)], g0, g1, glass_key
         )
         m0, m1 = sorted((sx * (w / 2 + 0.03), sx * (w / 2 + 0.25)))
         trim.bx((m0, yf + 0.3, 1.9), (m1, yf + 0.36, 2.35), "plastic_black")  # mirror
@@ -341,6 +346,58 @@ def _cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str) -
     trim.bx((-w / 2 + 0.03, yf - 0.12, 0.45), (w / 2 - 0.03, yf + 0.1, 0.72), "plastic_black")  # bumper
 
 
+# the hollow cab's window band (D / the LEAD, r284: the driver's chest to head, cab floor + 0.45..1.40)
+CAB_GLASS_Z0 = 1.6
+
+
+def _hollow_cab(k: Kit, body, w: float, yf: float, cab: float, ch: float, paint: str, glass_key: str) -> None:
+    """The RT mixer's cab (D's Reyes shots, r284: from outside the driver sat behind solid panels with a dark strip of
+    "glass" painted on the block): solid only up to the cab floor; above it thin skins, A-pillars, the roof and the back
+    wall round an interior (a dash under the screen, two seats with backrests at the Seat markers); the windscreen and
+    both door windows are real panes from CAB_GLASS_Z0 to under the roof (the driver's chest to head), inset 5 mm from
+    the frames (no coplanar faces). Grille, lamps, mirrors, steps as the solid cab."""
+    yb = yf + cab
+    hw = w / 2
+    sk = 0.04                 # skin thickness
+    top = ch - 0.12           # roof underside
+    seat_y = yf + 1.0         # _cab_markers
+    shell = body.part(bevel=0.02, segments=2)
+    skin = body.part(bevel=0.004)
+    trim = body.part(bevel=0.004)
+    glass = body.part(bevel=0.0)
+    shell.profile_x([(yf + 0.02, 0.7), (yf, CAB_FLOOR), (yb, CAB_FLOOR), (yb, 0.7)], -hw, hw, paint)
+    skin.bx((-hw, yf, CAB_FLOOR), (hw, yf + 0.06, CAB_GLASS_Z0), paint)                    # front below the screen
+    skin.bx((-hw, yf, top), (hw, yb, ch), paint)                                           # roof
+    skin.bx((-hw, yb - 0.06, CAB_FLOOR), (hw, yb, top), paint)                             # back wall
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * hw, sx * (hw - sk)))
+        skin.bx((x0, yf, CAB_FLOOR), (x1, yb - 0.06, CAB_GLASS_Z0), paint)                 # side below the window
+        skin.bx((x0, yf + 1.2, CAB_GLASS_Z0), (x1, yb - 0.06, top), paint)                 # side behind the door
+        a0, a1 = sorted((sx * hw, sx * (hw - 0.08)))
+        skin.bx((a0, yf, CAB_GLASS_Z0), (a1, yf + 0.15, top), paint)                       # A-pillar
+        p0, p1 = sorted((sx * (hw - sk + 0.015), sx * (hw - sk + 0.025)))
+        glass.bx((p0, yf + 0.16, CAB_GLASS_Z0 + 0.01), (p1, yf + 1.19, top - 0.01), glass_key)   # door window
+        # the seat (cushion 0.35 m over the floor) and its backrest at the Seat marker
+        cx = sx * (hw - 0.6)
+        trim.bx((cx - 0.25, seat_y - 0.02, CAB_FLOOR), (cx + 0.25, seat_y + 0.42, CAB_FLOOR + 0.35), "fabric_charcoal")
+        trim.bx((cx - 0.25, seat_y + 0.42, CAB_FLOOR + 0.35), (cx + 0.25, seat_y + 0.52, CAB_FLOOR + 1.05),
+                "fabric_charcoal")
+        m0, m1 = sorted((sx * (hw + 0.03), sx * (hw + 0.25)))
+        trim.bx((m0, yf + 0.3, 1.9), (m1, yf + 0.36, 2.35), "plastic_black")  # mirror
+        l0, l1 = sorted((sx * (hw - 0.45), sx * (hw - 0.08)))
+        trim.bx((l0, yf - 0.03, 0.85), (l1, yf + 0.01, 1.0), "emit_cool")  # headlamp
+        s0, s1 = sorted((sx * (hw + 0.004), sx * (hw + 0.012)))
+        trim.bx((s0, yf + 0.3, 0.75), (s1, yf + 0.32, CAB_GLASS_Z0), "plastic_black")  # door seams
+        trim.bx((s0, yf + 1.3, 0.75), (s1, yf + 1.32, CAB_GLASS_Z0), "plastic_black")
+        st0, st1 = sorted((sx * (hw - 0.05), sx * (hw + 0.06)))
+        trim.bx((st0, yf + 0.45, 0.45), (st1, yf + 1.15, 0.5), "steel")  # cab steps
+        trim.bx((st0, yf + 0.45, 0.85), (st1, yf + 1.15, 0.9), "steel")
+    glass.bx((-(hw - 0.085), yf + 0.03, CAB_GLASS_Z0 + 0.01), (hw - 0.085, yf + 0.04, top - 0.01), glass_key)  # screen
+    trim.bx((-(hw - sk - 0.005), yf + 0.06, 1.5), (hw - sk - 0.005, yf + 0.3, 1.62), "plastic_black")  # dash
+    trim.bx((-0.7, yf - 0.025, 1.05), (0.7, yf + 0.01, 1.45), "plastic_black")  # grille
+    trim.bx((-hw + 0.03, yf - 0.12, 0.45), (hw - 0.03, yf + 0.1, 0.72), "plastic_black")  # bumper
+
+
 def _cab_markers(k: Kit, w: float, yf: float) -> None:
     """D's driver / passenger clip numbers (SEAT_REQ): seats on the cab floor, the wheel, the cab doors (closed)."""
     seat_y = yf + 1.0
@@ -348,7 +405,19 @@ def _cab_markers(k: Kit, w: float, yf: float) -> None:
     # (the LEAD, round 275: one hand of drive across the convoy)
     for name, sx in (("Seat0", 1), ("Seat1", -1)):
         k.empty(name, (sx * (w / 2 - 0.6), seat_y, CAB_FLOOR), rotation=(0.0, 0.0, math.pi))  # root on the floor, facing the front
-    k.empty("WheelCentre", (w / 2 - 0.6, seat_y - 0.40, CAB_FLOOR + 0.76))
+    wc = (w / 2 - 0.6, seat_y - 0.40, CAB_FLOOR + 0.76)
+    k.empty("WheelCentre", wc)
+    # the steering wheel (D's sit_vehicle_drive fit, r280: rim 0.18 m round WheelCentre, its face tilted 30 deg toward
+    # the driver, the hands at 10 and 2) on its column down to the dash
+    sw = k.obj("SteeringWheel")
+    sp = sw.part(bevel=0.0)
+    t = math.radians(30.0)
+    v = (0.0, -math.sin(t), math.cos(t))   # the wheel's "up" in its plane, leaning toward the front
+    rim = [(wc[0] + 0.18 * math.cos(a), wc[1] + 0.18 * math.sin(a) * v[1], wc[2] + 0.18 * math.sin(a) * v[2])
+           for a in (2.0 * math.pi * i / 16 for i in range(17))]
+    sp.tube(rim, 0.016, "plastic_black", segs=6)
+    sp.rod(wc, (wc[0], wc[1] - 0.32, wc[2] - 0.2), 0.03, "plastic_black", segs=8)   # the column
+    sw.build()
     for name, sx in (("CabDoorL", -1), ("CabDoorR", 1)):
         piv = k.empty(name, (sx * (w / 2 + 0.014), seat_y - 0.65, CAB_FLOOR + 0.2))
         dm = k.obj(name + "Mesh", parent=piv)
@@ -431,7 +500,8 @@ def _armored(k: Kit, p: dict, body, w: float, ln: float, h: float, yf: float, yr
 
 def _mixer(k: Kit, body, w: float, ln: float, h: float, yf: float, yr: float) -> None:
     cab = 2.2
-    _cab(k, body, w, yf, cab, 2.95, "metal_white")
+    # D's mixer cab fit (r280 / r284): Reyes at the wheel must read from outside: a hollow cab, light clear glass
+    _cab(k, body, w, yf, cab, 2.95, "metal_white", glass_key="glass_cab", hollow=True)
     trim = body.part(bevel=0.004)
     trim.bx((-0.5, yf + cab, 0.55), (0.5, yr - 0.2, 0.95), "metal_dark")  # chassis
     trim.bx((-w / 2 + 0.1, yf + cab, 0.95), (w / 2 - 0.1, yr - 0.5, 1.05), "metal_dark")  # subframe

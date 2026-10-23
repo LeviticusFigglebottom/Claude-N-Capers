@@ -482,7 +482,7 @@ func _on_progression(request: Signal) -> void:
 func _fill_options() -> void:
 	_fill_weapons()
 	weapon_option.item_selected.connect(_on_weapon_changed)
-	_fill_from(melee_option, ContentDB.all_melees(), profile.loadout.melee, false)
+	_fill_melees()
 	_fill_from(armor_option, ContentDB.all_armors(), profile.loadout.armor, false)
 	_fill_from(deployable_option, ContentDB.all_deployables(), profile.loadout.deployable, true)
 	_fill_from(throwable_option, ThrowableGate.pickable(), profile.loadout.throwable, true)
@@ -649,6 +649,22 @@ func close_workshop(refocus: bool = true) -> void:
 	_on_weapon_changed(weapon_option.selected)
 	if refocus:
 		workshop_button.grab_focus.call_deferred()
+
+
+## D-155: every melee is listed; one the player's level has not reached is disabled with the level that unlocks it.
+## A saved pick that is locked shows the starter knife instead (MeleeGate.usable).
+func _fill_melees() -> void:
+	melee_option.clear()
+	for r: Variant in ContentDB.all_melees():
+		var d: MeleeDef = r as MeleeDef
+		var text: String = UiText.t(UiText.item_key(d.id))
+		var locked: bool = not MeleeGate.is_unlocked(profile, d)
+		if locked:
+			text = UiText.t(&"ui.loadout.melee_locked", {"name": text, "level": d.unlock_level})
+		_add_item(melee_option, text, d.id)
+		melee_option.set_item_disabled(melee_option.item_count - 1, locked)
+	if not _select_id(melee_option, MeleeGate.usable(profile, profile.loadout.melee)) and melee_option.item_count > 0:
+		melee_option.select(0)
 
 
 ## D-126: every secondary (pistols, SMGs, shotguns, then the rest; WorkshopModel order). Owned ones can be picked; the

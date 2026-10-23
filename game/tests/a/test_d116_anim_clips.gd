@@ -458,6 +458,35 @@ func test_v126a_npc_hold_layer_on_the_move() -> void:
 	assert_near(d.hold_layer.influence, 0.0, 0.001, "unarmed: no hold layer")
 
 
+## characters.md v1.39 (D d2a2e3fd, LEAD: TAC port arms): a running police rifle NPC (not aiming) holds
+## hold_rifle_port_run, gait-locked like hold_rifle_run; any other NPC (and the crew, whose branch is separate) keeps
+## hold_rifle_run.
+func test_v139_police_run_at_port_arms() -> void:
+	for role: StringName in [&"police", &"guard"]:
+		var npc: NpcBase = _npc(role, true, 71700 if role == &"police" else 71701)
+		var d: AnimDriver = AnimDriver.of(npc)
+		var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
+		for c: StringName in [&"hold_rifle", &"hold_rifle_run", &"hold_rifle_port_run"]:
+			if not lib.has_animation(c):
+				var a: Animation = Animation.new()
+				a.length = 1.0
+				a.loop_mode = Animation.LOOP_LINEAR
+				lib.add_animation(c, a)
+		d.weapon_kind = &"rifle"
+		var gun: Node3D = Node3D.new()
+		npc.add_child(gun)
+		d.weapon_visual = gun
+		_brain(npc).anim_hint = &"idle"
+		npc.alert_state = Enums.AlertState.COMBAT
+		npc.velocity = Vector3(0, 0, -3.5)
+		for _i: int in 20:
+			d.tick(0.033)
+		var want: StringName = &"hold_rifle_port_run" if role == &"police" else &"hold_rifle_run"
+		assert_eq([d.clip, d.hold_layer.clip], [&"run", want], "%s running with a rifle: %s" % [role, want])
+		if role == &"police":
+			assert_near(d.hold_layer.time, d.player.current_animation_position, 0.0001, "gait-locked to the run")
+
+
 func _add_loops(d: AnimDriver, names: Array, frames: int) -> void:
 	var lib: AnimationLibrary = d.player.get_animation_library(AnimDriver.LIBRARY)
 	for c: StringName in names:

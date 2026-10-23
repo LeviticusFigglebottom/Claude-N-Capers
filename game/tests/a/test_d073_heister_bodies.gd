@@ -34,7 +34,10 @@ func test_bodies_by_heister() -> void:
 	var mate_body: Node = mate.get_node(^"Visual").get_child(0)
 	assert_true(mate_body.scene_file_path.contains("crew_sable"), "Sable's body (%s)" % mate_body.scene_file_path)
 	assert_true(AnimDriver.of(mate) != null, "an animated teammate")
-	assert_true(generic.get_node_or_null(^"Visual/Placeholder") != null, "generic crew: capsule placeholder")
+	# LEAD r281: an AI slot launched without a heister wears the first unworn one (no capsule placeholder)
+	assert_true(generic.get_node_or_null(^"Visual/Placeholder") == null, "a bot without a pick: no capsule")
+	assert_true(generic.heister != &"" and generic.heister != &"rook" and generic.heister != &"sable",
+		"it wears an unworn heister (%s)" % generic.heister)
 	var my_body: Node = me.get_node(^"Visual").get_child(0)
 	assert_true(my_body.scene_file_path.contains("crew_rook"), "Rook's body")
 	for g: Node in my_body.find_children("*", "VisualInstance3D", true, false):

@@ -35,6 +35,10 @@ signal downed(downs_used: int)
 signal revived(by_slot: int)
 signal custody()
 
+## C4 Last Breath (PD2 One Down): the launch option and its down limit.
+const LAST_BREATH_OPTION: String = "last_breath"
+const LAST_BREATH_DOWNS: int = 1
+
 ## D-145 §4a: the bots' CrewAiTweak (regen tunables), loaded once.
 static var _crew_ai_tweak: CrewAiTweak = null
 
@@ -63,6 +67,8 @@ var regen_delay_left: float = 0.0
 var since_damage_s: float = 0.0
 ## PO6-17b: seconds of breach / flash blindness left (replicated; the HUD whites out while > 0).
 var flashed_left: float = 0.0
+## B1 defense.swan_song (PD2 Swan Song): seconds left standing at zero health before the down.
+var swan_left: float = 0.0
 ## Downs left before the next zero-health hit means custody (HUD).
 var downs_left: int:
 	get:
@@ -117,8 +123,14 @@ func _regen_delay(tw: CrewTweak) -> float:
 		&"team.armor_regen_delay_mult")
 
 
+## L2.6; C4 Last Breath (PD2 One Down, B's launch option "last_breath", the host's on a replica): LAST_BREATH_DOWNS
+## instead of downs_before_custody, still + defense.downs_extra (Nine Lives aced: 2).
 func max_downs() -> int:
-	return Tweak.crew().downs_before_custody + int(Modifiers.add(_slot(), &"defense.downs_extra"))
+	var rt: HeistRuntime = HeistRuntime.of(_crew) if _crew != null else null
+	var base: int = Tweak.crew().downs_before_custody
+	if rt != null and bool(rt.launch_options.get(LAST_BREATH_OPTION, false)):
+		base = LAST_BREATH_DOWNS
+	return base + int(Modifiers.add(_slot(), &"defense.downs_extra"))
 
 
 ## Full health and armor, downs reset (spawn, custody release, doctor bag P2).
@@ -142,7 +154,8 @@ func dodge_chance() -> float:
 		var def: ArmorDef = ContentDB.armor(l.armor)
 		if def != null:
 			base = def.dodge
-	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add") + PerkHooks.dodge_add(self), 0.0, 1.0)  # perk hook
+	return clampf(base + Modifiers.add(_slot(), &"defense.dodge_add") + PerkHooks.dodge_add(self)  # perk hook
+		+ SkillTriggers.dodge_add(_crew), 0.0, 1.0)  # B2 concealment / sprint dodge
 
 
 ## A2-06 (L2.11): heal `amount` (clamped to max health); `reset_downs` (doctor bag) also restores
@@ -176,7 +189,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		out["amount"] = 0.0
 		return out
 	var st: int = _crew.crew_state
-	if st == Enums.CrewState.CUSTODY:
+	if st == Enums.CrewState.CUSTODY or st == Enums.CrewState.SWAN_SONG:  # B1: Swan Song takes no damage
 		out["amount"] = 0.0
 		return out
 	var tw: CrewTweak = Tweak.crew()
@@ -185,6 +198,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 		dmg *= Modifiers.mult(_slot(), &"defense.melee_damage_taken_mult")  # A3-13: enemy melee
 	if _interacting():
 		dmg *= Modifiers.mult(_slot(), &"defense.interact_damage_taken_mult")  # Hold the Line ACED (D-134: holds go on)
+	dmg *= SkillTriggers.reviving_mult(_crew)  # B3 Triage: reviving and linger_s after
 	dmg = TeamModifiers.hostage_reduced(_slot(), dmg, TeamModifiers.hostage_count(_crew))  # QB-60
 	if st == Enums.CrewState.DOWNED or _is_cuffed_while_down():
 		bleedout_health -= dmg
@@ -225,8 +239,11 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 			invuln_left = _gate_invuln(tw)  # L2.2 armor gate: the overflow is discarded
 	else:
 		armor_dmg = dmg
+	var had_armor: bool = armor > 0.0
 	armor -= armor_dmg
 	health = maxf(health - health_dmg, 0.0)
+	if had_armor and armor <= 0.0:
+		SkillTriggers.armor_broke(_crew)  # B2 Second Wind
 	regen_delay_left = _regen_delay(tw)
 	if armor_dmg + health_dmg > 0.0:
 		since_damage_s = 0.0
@@ -242,7 +259,7 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if health <= 0.0:
 		out["killed"] = true
 	_publish(out, attacker_net_id)
-	if health <= 0.0:
+	if health <= 0.0 and not _swan_song():
 		go_down()
 	return out
 
@@ -278,6 +295,44 @@ func _gate_invuln(tw: CrewTweak) -> float:
 
 
 # --- State changes (server) ------------------------------------------------------------------------
+
+## B1 `defense.swan_song` {duration, speed_penalty, infinite_ammo} (PD2 Swan Song, Last Stand): zero health from
+## NORMAL keeps the member up for `duration` s in SWAN_SONG (no damage taken, move x (1 - speed_penalty), and with
+## infinite_ammo no rounds used: CrewBuffs "swan_song"), then the down. Every down gets its own. False: no Swan Song.
+func _swan_song() -> bool:
+	var p: Dictionary = Modifiers.params(_slot(), &"defense.swan_song")
+	var dur: float = float(p.get("duration", 0.0))
+	if dur <= 0.0 or _crew.crew_state != Enums.CrewState.NORMAL:  # PD2: the last down too (custody after)
+		return false
+	health = 0.0
+	swan_left = dur
+	invuln_left = 0.0
+	_crew.set_crew_state(Enums.CrewState.SWAN_SONG)
+	var tags: Array = [CrewBuffs.TAG_FREE_AMMO] if bool(p.get("infinite_ammo", false)) else []
+	var buffs: CrewBuffs = CrewBuffs.of(HeistRuntime.of(_crew))
+	if buffs != null:
+		buffs.grant(_slot(), &"swan_song",
+			{&"movement.speed_mult": clampf(1.0 - float(p.get("speed_penalty", 0.0)), 0.05, 1.0)}, dur, tags)
+	Log.info(&"combat", "slot %d swan song (%.1f s)" % [_slot(), dur])
+	return true
+
+
+## True while in SWAN_SONG (no regen, no perk tick); its end is the down it held off.
+func _tick_swan_song(delta: float) -> bool:
+	if _crew.crew_state != Enums.CrewState.SWAN_SONG:
+		swan_left = 0.0
+		return false
+	swan_left -= delta
+	if swan_left > 0.0:
+		return true
+	swan_left = 0.0
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	var buffs: CrewBuffs = rt.service(CrewBuffs.SERVICE) as CrewBuffs if rt != null else null
+	if buffs != null:
+		buffs.end(_slot(), &"swan_song")
+	go_down()
+	return true
+
 
 ## Zero health: DOWNED (L2.5) or, with no downs left, CUSTODY (L2.6).
 func go_down() -> void:
@@ -344,6 +399,8 @@ func revive(by_slot: int) -> void:
 	max_health = compute_max_health()
 	max_armor = compute_max_armor()
 	health = max_health * frac * Modifiers.mult(_slot(), &"defense.revived_health_mult")
+	if by_slot != _slot():
+		health *= Modifiers.mult(by_slot, &"ability.revive_target_health_mult")  # B3 Triage Aced (the reviver's)
 	health = clampf(health, 1.0, max_health)
 	armor = max_armor * CombatTweak.data().revive_armor_frac
 	bleedout_left = 0.0
@@ -354,6 +411,7 @@ func revive(by_slot: int) -> void:
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.NORMAL)
 	BloodFx.bleed(_crew.net_id, false, _crew.global_position, 0.0)  # D-113
+	SkillTriggers.on_revived(_crew, by_slot)  # B3 Numbing Agent, Back on Your Feet, Second Lease
 	revived.emit(by_slot)
 	EventBus.crew_revived.emit(_crew.slot, by_slot)
 	Net.replicate_event(&"crew_revived", [_crew.slot, by_slot])
@@ -468,7 +526,9 @@ func _tick_down_states(delta: float) -> bool:
 	# revives in time, else custody). Stealth cuffs (guards, S3.2) carry no bleed-out: not a down.
 	if st == Enums.CrewState.DOWNED or st == Enums.CrewState.CLOAKER_DOWNED \
 			or (st == Enums.CrewState.CUFFED and bleedout_left > 0.0):
-		bleedout_left -= delta
+		if not (st == Enums.CrewState.DOWNED and Modifiers.flag(_slot(), &"defense.bleedout_pause_unseen")
+				and not SkillTriggers.seen_by_enemy(_crew)):  # B3 Playing Possum: paused while unseen
+			bleedout_left -= delta
 		down_s += delta
 		if bleedout_left <= 0.0:
 			bleedout_left = 0.0
@@ -489,6 +549,7 @@ func _tick_down_states(delta: float) -> bool:
 func flash(seconds: float) -> void:
 	if _crew == null or not Net.is_authority() or seconds <= 0.0 or _crew.crew_state != Enums.CrewState.NORMAL:
 		return
+	seconds *= Modifiers.mult(_slot(), &"defense.flashbang_duration_mult")  # B4b Thick Skin
 	flashed_left = maxf(flashed_left, seconds)
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.interaction != null:
@@ -502,7 +563,7 @@ func server_tick(delta: float) -> void:
 	_refresh_max()
 	if flashed_left > 0.0:
 		flashed_left = maxf(flashed_left - delta, 0.0)
-	if _tick_down_states(delta):
+	if _tick_swan_song(delta) or _tick_down_states(delta):
 		return
 	_tick_health_regen(delta)  # L2.1
 	if invuln_left > 0.0:

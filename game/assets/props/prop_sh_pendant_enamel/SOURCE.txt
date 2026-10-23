@@ -1,0 +1,8 @@
+asset: prop_sh_pendant_enamel
+script: tools/blender/props/safehouse.py
+params: {"cat": {"fixture": true, "group": "safehouse", "kind": "light_fixture", "light": {"color": "#FFA95E", "energy": 2.0, "pos": [0.0, -2.43, 0.0], "range": 6.0, "type": "omni"}, "pin_only": true, "place": "ceiling"}, "fn": "pendant_enamel"}
+seed: 261203518  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sh_pendant_enamel
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

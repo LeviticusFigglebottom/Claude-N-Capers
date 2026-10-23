@@ -42,7 +42,7 @@ def notes() -> dict:
                     "pistol: fire_auto, fire_auto_ads; akimbo: fire_l, fire_ads_l; bow: draw_string, hold*, release, nock; "
                     "flamethrower: fire_start, fire_hold*, fire_end; saw: rev, cut_hold*, cut_end; minigun: spin_up, "
                     "fire_hold*, spin_down; shotgun_box: the common clips only (mag swap reloads); every gun set: bash "
-                    "(D2-04 quick melee); non-gun sets (D2-04): melee_knife / melee_blunt / melee_blade: idle*, sprint*, "
+                    "(D2-04 quick melee); non-gun sets (D2-04): melee_knife / melee_blunt / melee_blade / melee_heavy: idle*, sprint*, "
                     "draw, holster, swing, charge_start, charge*, charge_swing; throwable: idle*, sprint*, draw, holster, "
                     "throw, throw_low; deploy_bag / deploy_small / deploy_sentry: idle*, draw, holster, place",
         "fp.camera": "review camera = crew camera: 75 deg vertical FOV (crew_member.tscn), root = eye",
@@ -192,7 +192,11 @@ def notes() -> dict:
                      "weapon bone is not identity under hand.R in these sets. Tap: swing (hit@ contact, done@ back at "
                      "idle). Hold: charge_start (idle -> the wind-up; length = MeleeDef.charge_time_s, charged@ its end) -> "
                      "charge* (held wind-up, trembling; frame 0 = charge_start's last frame) -> charge_swing on release "
-                     "(hit@, done@). draw ready@, holster gone@ (defaults: no equip time in MeleeDef)"),
+                     "(hit@, done@). draw ready@, holster gone@ (defaults: no equip time in MeleeDef). melee_heavy "
+                     "(characters v1.38, MeleeDef.anim_set = melee_heavy: sledgehammer, fire axe) is TWO-HANDED: the same "
+                     "clips, events and item frame, the right hand at the origin and the left hand closed round the same "
+                     "handle 0.28 m lower (Godot item (0, -0.28, 0)) in every clip; the head about 0.55 m up the handle "
+                     "(+Y); overhead strikes down through the centre of the view"),
         "fp.throwable": ("throwable (ThrowableDef kinds frag / concussion / incendiary; proposal: ThrowableDef.anim_set): "
                          "the grenade hangs identity on the weapon bone = its centre (Godot +Y up the fuse, -Z forward) in "
                          "the right fist; draw: pin_pull@ (the left hand pulls the ring on the grenade's left: hide the "

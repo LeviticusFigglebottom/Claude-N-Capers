@@ -158,6 +158,7 @@ TINTED: dict[str, dict] = {
     "rt_laminate_cream": {"source": "plastic_matte", "color": "#D8CDB2", "roughness": 0.4},
     "rt_laminate_red": {"source": "plastic_matte", "color": "#9C2F2A", "roughness": 0.4},
     "rt_enamel_red": {"source": "metal_painted", "color": "#9C2F2A", "roughness": 0.35},
+    "sh_enamel_green": {"source": "metal_painted", "color": "#2F4A3E", "roughness": 0.35},  # safehouse print-works enamel
     # Shadow Ledger G2 (SL-1, shadow_ledger.md palette: graphite #2E3136 honed stone / carpet / BOH paint, glass teal
     # #5D8C8F, walnut and leather inside GSR saturation)
     "stone_graphite": {"source": "marble_cream", "color": "#3A3D41", "roughness": 0.55},
@@ -234,6 +235,8 @@ GLASS: dict[str, dict] = {
     "glass_frosted": {"source": "glass_frosted", "color": "#FFFFFF", "alpha": 1.0},
     "glass_tinted": {"source": "glass_clear", "color": "#3A4044", "alpha": 0.9},
     "glass_teal": {"source": "glass_clear", "color": "#5D8C8F", "alpha": 0.6},
+    # RT mixer cab (D / the LEAD, r284: Reyes must read through the windscreen and door glass): a light teal, mostly clear
+    "glass_cab": {"source": "glass_clear", "color": "#C4DCDA", "alpha": 0.3},
 }
 
 # Prop ids (Godot) are prefixed so they can never collide with a library id.

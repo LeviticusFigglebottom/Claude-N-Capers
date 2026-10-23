@@ -3,7 +3,7 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-22 23:00)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 01:30)
 ### RT un-hide checklist (LEAD r276 #2). Goal: lifting RT onto the Board is ONE flag flip
 The flag: `game/content/data/ui/heist_list.tres` -> `rolling_thunder` -> delete `"hidden": true`. HeistCatalog.is_ready
 gates the menus on that flag, the map and the mission script, and only the menus read HeistRegistry.ids().
@@ -21,12 +21,33 @@ gates the menus on that flag, the map and the mission script, and only the menus
 | 10 | Music track name `music.rolling_thunder.name` ("Red Signal") | B (string) / C (track) | string done; track on env/c-worlds (held) |
 | 11 | Cues + ambience beds in `cues.tres` | C (73ec9b55, LEAD waiver) / B (train) | accepted (LEAD ruling a); B adds `cue.freight_train_pass` when C's stream exists |
 | 12 | Achievements screen / payday hide a hidden heist's set (`Achievements.shown()`) | B | done; flips with the flag |
+-37. **Round 285 items (2026-10-23).**
+     - 274a5f53: the last 19 blocked_on_keys markers dropped; blocked_on_keys is empty.
+     - ab9f637c: test_ui_payday fixed. A mask card can be a whole payday preset (mask.night_circuit).
+     - ba2fc327: sentry cues (placeholder streams reused from SMG fire, dry fire, keycard beep, assault turret) plus
+       C's 6 safehouse ambience rows.
+     - D-155 melee unlocks: MeleeGate (level >= MeleeDef.unlock_level, nothing saved). The picker lists locked melees
+       disabled with "(level N)"; a locked saved pick shows and equips the knife. Levels: knife and baton 0, shank 5,
+       claw hammer 10, dagger 15, pipe 20, cleaver 25, crowbar 30, machete 40, bat 50, fire axe 70, sledgehammer 80.
+       Needs the LEAD's melee_def.gd contract (price -> unlock_level). Test: `test_melee_unlocks` 4.
+     - FP melee "vanishing swing": not my models. A blunt def with NO model is just as empty during charge and swing.
+       D's melee_blunt / melee_blade charge and swing poses leave the frame; the knife set stays in view. Sent to D.
+-36. **P5 melee models: all 12 melees ship a model.** `tools/blender/weapons/melee_roster.py` (one script, 11
+     VARIANTS; 240-1342 tris each; deterministic, checked on 2). Same item contract as the folding knife: origin in the
+     fist, head along +Y, edge / face toward -Z. Nodes `Handle` (+ `Grip`) and `Head` (+ `Hardware`).
+     - Test: `test_melee_models` 2 (materials, budget, contract, reach vs length).
+     - Captures: `tests/b/render/melee_models_capture.gd` (lineup), `melee_fp_capture.gd` (FP charge / swing in the
+       range).
+     - **RT fail walk (walk5) done:** menus -> launch -> abort -> fail payday (HEIST FAILED, $0, "what you lost"
+       $85,800, Hard Lessons) all fine. The harness then crashed reading the freed payday screen (a failed run has no
+       cards stage, so Continue frees it). Fixed in `rt_menu_walk_worker.gd`; the hub return after a fail is not
+       re-walked.
 -35. **P5 melee roster (LEAD r280 queue (2), data + picker): 12 melees.** 11 new MeleeDefs: knives combat_dagger,
      prison_shank; blunt telescopic_baton, aluminium_bat, claw_hammer, lead_pipe, crowbar, sledgehammer; blades machete,
      fire_axe, meat_cleaver.
      - Trade-offs: blunt has the highest knockdown, knives keep concealment 30, heavy picks cost concealment (sledge 20).
      - Every def has `anim_set` and charge 1.0 s (D's charge_start clips). Each id names its set's MELEE_MATCH fragment.
-     - No models yet (`model` null: the FP set plays empty-handed). Models come next via tools/blender/weapons.
+     - Models: see -36.
      - Loadout: a melee card (name, damage / charged, knockdown, reach, concealment, blurb) shows while the melee picker
        previews.
      - Melee is not gated by ownership (no `owned_melees`; `price` is set but unused). LEAD: gate it, or keep it free?

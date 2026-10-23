@@ -214,7 +214,7 @@ GATES: List[list] = [
         "N",
         "BARRED",
         {"opens_with": "mixer_move", "tag": "tannery_gate", "visual": "prop_door_site_gate_w400_h240", "width": 4.0,
-         "kind": "industrial_door"},
+         "kind": "industrial_door", "height": 2.4},
     ],
 ]
 
@@ -1241,19 +1241,29 @@ def _path(route: str, start: tuple) -> List[list]:
 MIXER_START = [-33.5, 0.0, -16.6]
 MIXER_SIZE = [8.0, 3.5, 2.5]          # [length, height (the drum), width] (rolling_thunder.py veh_mixer_truck)
 _OUT = [[-33.5, 0.0, -16.6], [0.0, 0.0, 0.0], [0.0, 0.0, 2.0]]       # out of the gate, south
-_GATE = [[-33.5, 0.0, -9.5], [0.0, 0.0, -2.0], [0.0, 0.0, 3.0]]
+
+
+def _arc_out(lane_z: float, r: float, exit_h: float = 3.0) -> List[list]:
+    """The mixer's turn out of the Tannery gate (heading south, x -33.5) onto Tannery heading east in the lane at
+    `lane_z`: a quarter circle of radius `r` (Bezier handles 0.5523 r), the turn starting r before the lane (the LEAD's
+    r283 capture review: the first paths turned within ~5 m and the 8 m truck pivoted almost on the spot)."""
+    k = r3(0.5523 * r)
+    return [[[-33.5, 0.0, r3(lane_z - r)], [0.0, 0.0, -2.0], [0.0, 0.0, k]],
+            [[r3(-33.5 + r), 0.0, lane_z], [-k, 0.0, 0.0], [exit_h, 0.0, 0.0]]]
+
+
 MIXER = {  # layout key: [stop pivot, Godot yaw, path rows [[point, in handle, out handle]] (world)]
-    # (north clean: on the road round the NW corner kerbs (Orchard x -10.5, Tannery z -8.5), nosed in diagonally, NE)
-    "north_clean": [[-5.5, 0.0, -12.0], 135.0, [_OUT, _GATE, [[-27.5, 0.0, -4.5], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
-                                                [[-14.0, 0.0, -4.5], [-3.0, 0.0, 0.0], [4.0, 0.0, 0.0]],
-                                                [[-5.5, 0.0, -12.0], [-2.8, 0.0, 2.8], [0.0, 0.0, 0.0]]]],
-    "north_crash": [[-7.9, 0.0, 2.8], 90.0, [_OUT, _GATE, [[-28.0, 0.0, 2.8], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
-                                             [[-7.9, 0.0, 2.8], [-3.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]],
-    "east_clean": [[12.5, 0.0, -3.6], 180.0, [_OUT, _GATE, [[-28.0, 0.0, 3.0], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
-                                              [[4.5, 0.0, 3.0], [-3.0, 0.0, 0.0], [4.4, 0.0, 0.0]],
-                                              [[12.5, 0.0, -3.6], [0.0, 0.0, 4.0], [0.0, 0.0, 0.0]]]],
-    "east_crash": [[-2.2, 0.0, 1.2], 90.0, [_OUT, _GATE, [[-28.0, 0.0, 2.0], [-3.0, 0.0, 0.0], [3.0, 0.0, 0.0]],
-                                            [[-2.2, 0.0, 1.2], [-4.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]],
+    # (north clean: out along Tannery's south lane like the others, then one long left sweep (>= 8 m radius) across the
+    # junction onto the NE stop, nosed in diagonally across the lead car's front, 2.3 m clear of SignalNW's pole)
+    "north_clean": [[-4.6, 0.0, -12.4], 135.0, [_OUT] + _arc_out(3.0, 9.0, 14.0) + [
+        [[-4.6, 0.0, -12.4], [-7.0, 0.0, 7.0], [0.0, 0.0, 0.0]]]],
+    "north_crash": [[-7.9, 0.0, 2.8], 90.0, [_OUT] + _arc_out(2.8, 9.0) + [
+        [[-7.9, 0.0, 2.8], [-3.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]],
+    "east_clean": [[12.5, 0.0, -3.6], 180.0, [_OUT] + _arc_out(3.0, 9.0) + [
+        [[4.5, 0.0, 3.0], [-3.0, 0.0, 0.0], [4.4, 0.0, 0.0]],
+        [[12.5, 0.0, -3.6], [0.0, 0.0, 4.0], [0.0, 0.0, 0.0]]]],
+    "east_crash": [[-2.2, 0.0, 1.2], 90.0, [_OUT] + _arc_out(2.0, 9.0) + [
+        [[-2.2, 0.0, 1.2], [-4.0, 0.0, 0.0], [0.0, 0.0, 0.0]]]],
 }
 
 

@@ -1,0 +1,70 @@
+t=0.1 cop_look_1 on Npc_guard2 (security_officer_j) clip run_bl layer hold_pistol_run at (3.780624, 0.0, -1.439267)
+cop_look_1 f0 run_bl | hold_pistol_run @0.05 | 3.5 m/s
+cop_look_1 f1 run_bl | hold_pistol_run @0.17 | 3.5 m/s
+cop_look_1 f2 run_fl | hold_pistol_run @0.21 | 3.5 m/s
+cop_look_1 f3 run_fl | hold_pistol_run @0.33 | 3.5 m/s
+cop_look_1 f4 run_fl | hold_pistol_run @0.45 | 3.5 m/s
+cop_look_1 f5 run | hold_pistol_run @0.56 | 3.5 m/s
+cop_look_1 f6 run | hold_pistol_run @0.68 | 3.5 m/s
+cop_look_1 f7 run | hold_pistol_run @0.10 | 3.5 m/s
+cop_look_1 f8 run | hold_pistol_run @0.21 | 3.5 m/s
+cop_look_1 f9 run | hold_pistol_run @0.33 | 3.5 m/s
+cop_look_1 f10 run | hold_pistol_run @0.45 | 3.5 m/s
+cop_look_1 f11 run | hold_pistol_run @0.56 | 3.5 m/s
+t=0.2 cop_look_2 on Npc_police (patrol_officer) clip run layer hold_pistol_run at (19.76065, 0.001, 7.282502)
+cop_look_2 f0 run | hold_pistol_run @0.10 | 3.5 m/s
+cop_look_2 f1 run | hold_pistol_run @0.26 | 3.5 m/s
+cop_look_2 f2 run | hold_pistol_run @0.38 | 3.5 m/s
+cop_look_2 f3 run | hold_pistol_run @0.50 | 3.5 m/s
+cop_look_2 f4 run | hold_pistol_run @0.61 | 3.5 m/s
+cop_look_2 f5 run | hold_pistol_run @0.03 | 3.5 m/s
+cop_look_2 f6 run | hold_pistol_run @0.15 | 3.5 m/s
+cop_look_2 f7 run | hold_pistol_run @0.26 | 3.5 m/s
+cop_look_2 f8 run | hold_pistol_run @0.38 | 3.5 m/s
+cop_look_2 f9 run | hold_pistol_run @0.50 | 3.5 m/s
+cop_look_2 f10 run | hold_pistol_run @0.61 | 3.5 m/s
+cop_look_2 f11 run | hold_pistol_run @0.03 | 3.5 m/s
+t=0.3 cop_look_3 on Npc_guard (security_officer_i) clip run_fl layer hold_pistol_run at (10.79259, 0.0, 11.03679)
+cop_look_3 f0 run_fl | hold_pistol_run @0.07 | 3.5 m/s
+cop_look_3 f1 run_start | hold_pistol_run_start @0.03 | 3.5 m/s
+cop_look_3 f2 run_start | hold_pistol_run_start @0.15 | 3.5 m/s
+cop_look_3 f3 run_start | hold_pistol_run_start @0.27 | 3.5 m/s
+cop_look_3 f4 run_start | hold_pistol_run_start @0.38 | 3.5 m/s
+cop_look_3 f5 run_start | hold_pistol_run_start @0.50 | 3.5 m/s
+cop_look_3 f6 run | hold_pistol_run @0.00 | 3.5 m/s
+cop_look_3 f7 run | hold_pistol_run @0.10 | 3.5 m/s
+cop_look_3 f8 run | hold_pistol_run @0.22 | 3.5 m/s
+cop_look_3 f9 run | aim_pistol_run @0.33 | 3.5 m/s
+cop_look_3 f10 run_reverse_l | aim_pistol_run @0.08 | 3.5 m/s
+cop_look_3 f11 run_reverse_l | aim_pistol_run @0.21 | 3.5 m/s
+t=6 lead to (3.0, 0.2, 2.4)
+diag t=10 Crew0 no AnimDriver
+diag t=10 Crew1 ai true clip run_b layer reload_rifle active true speed 3.5 state 0
+diag t=10 Crew2 ai true clip run_bl layer aim_rifle_run active true speed 3.5 state 0
+t=12 lead to (3.0, 0.2, 14.4)
+t=18 lead to (14.95398, 0.2, 13.35001)
+diag t=20 Crew0 no AnimDriver
+diag t=20 Crew1 ai true clip walk_stop layer aim_rifle active true speed 0.0 state 0
+diag t=20 Crew2 ai true clip reload_rifle layer reload_rifle active true speed 0.0 state 0
+t=24 lead to (3.0, 0.2, 14.4)
+diag t=30 Crew0 no AnimDriver
+diag t=30 Crew1 ai true clip idle_alert_rifle layer hold_rifle_walk_stop active false speed 0.0 state 0
+diag t=30 Crew2 ai true clip idle_alert_rifle layer hold_rifle_walk_stop active false speed 0.0 state 0
+t=30 lead to (5.091926, -0.0, 26.21625)
+t=36 lead to (3.0, 0.2, 14.4)
+diag t=40 Crew0 no AnimDriver
+diag t=40 Crew1 ai true clip idle_alert_rifle layer hold_rifle_walk_stop active false speed 0.0 state 0
+diag t=40 Crew2 ai true clip idle_alert_rifle layer hold_rifle_walk_stop active false speed 0.0 state 0
+t=40.2 cop_look_4 on Npc_police5 (tac_light_frd) clip run_br layer hold_rifle_run at (19.25963, 0.0, 7.980743)
+cop_look_4 f0 run_br | hold_rifle_run @0.00 | 4.0 m/s
+cop_look_4 f1 run_br | hold_rifle_run @0.11 | 4.0 m/s
+cop_look_4 f2 run_fr | hold_rifle_run @0.18 | 4.0 m/s
+cop_look_4 f3 run_fr | hold_rifle_run @0.31 | 4.0 m/s
+cop_look_4 f4 run_fr | hold_rifle_run @0.44 | 4.0 m/s
+cop_look_4 f5 run | hold_rifle_run @0.58 | 4.0 m/s
+cop_look_4 f6 run | hold_rifle_run @0.01 | 4.0 m/s
+cop_look_4 f7 run | hold_rifle_run @0.14 | 4.0 m/s
+cop_look_4 f8 run | hold_rifle_run @0.28 | 4.0 m/s
+cop_look_4 f9 run | hold_rifle_run @0.41 | 4.0 m/s
+cop_look_4 f10 run | hold_rifle_run @0.54 | 4.0 m/s
+cop_look_4 f11 run | hold_rifle_run @0.67 | 4.0 m/s

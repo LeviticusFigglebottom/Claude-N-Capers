@@ -225,3 +225,22 @@ func test_p3_police_cannot_breach_barred_or_in_stealth() -> void:
 	assert_true(lp.can_npc_open(npc), "LOCKPICK: breachable once loud")
 	var guard: NpcBase = await _walker(Vector3(3, 0.05, -4))
 	assert_false(lp.can_npc_open(guard), "guards never breach")
+
+
+## D-158 (C's RT hoarding check): `height_m` sizes the leaf collision like width_m (0 = Door.HEIGHT_M), so a 2.4 m
+## leaf leaves no see- / shoot-through slot above it.
+func test_d158_door_height_m_sizes_the_leaf_collision() -> void:
+	await _launch()
+	var d: Door = await _door(Door.Lock.NONE)
+	var cs: CollisionShape3D = d._leaf_bodies[0].get_node(^"Collision") as CollisionShape3D
+	assert_near((cs.shape as BoxShape3D).size.y, Door.HEIGHT_M, 0.001, "default: the 2.1 m contract leaf")
+	var tall: Door = ATestMaps.add_prefab(_rt, "door", Vector3(8, 0, 0), func(p: GameplayPrefab) -> void:
+		(p as Door).height_m = 2.4) as Door
+	await wait_physics_frames(2)
+	assert_near(tall.effective_height(), 2.4, 0.001, "effective_height")
+	var tcs: CollisionShape3D = tall._leaf_bodies[0].get_node(^"Collision") as CollisionShape3D
+	assert_near((tcs.shape as BoxShape3D).size.y, 2.4, 0.001, "the leaf collision is 2.4 m tall")
+	assert_near(tcs.position.y, 1.2, 0.001, "standing on the floor (0 .. 2.4 m)")
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(Vector3(8.2, 2.3, 3), Vector3(8.2, 2.3, -3))
+	q.collision_mask = Door.LAYER_WORLD_DYNAMIC
+	assert_false(_rt.map.get_world_3d().direct_space_state.intersect_ray(q).is_empty(), "a shot at 2.3 m hits the leaf")

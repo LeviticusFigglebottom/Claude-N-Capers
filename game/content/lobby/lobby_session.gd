@@ -23,7 +23,7 @@ extends Node
 
 signal changed()
 signal contract_changed(contract: Dictionary)
-## The host's MSG_START was accepted: {"heist": StringName, "difficulty", "is_pro", "seed"}.
+## The host's MSG_START was accepted: {"heist": StringName, "difficulty", "is_pro", "last_breath", "seed"}.
 signal started(info: Dictionary)
 ## A join could not connect (unreachable), never got a crew slot (timeout), or the host went away.
 signal connection_failed(reason: StringName)
@@ -191,10 +191,10 @@ static func now() -> float:
 
 
 ## Host: set the lobby's contract (from the host's Board or planning table).
-func set_contract(heist_id: StringName, difficulty: int, is_pro: bool) -> bool:
+func set_contract(heist_id: StringName, difficulty: int, is_pro: bool, last_breath: bool = false) -> bool:
 	if not _active or not state.is_host:
 		return false
-	net.call(&"lobby_send", LobbyState.MSG_CONTRACT, LobbyState.contract_data(heist_id, difficulty, is_pro))
+	net.call(&"lobby_send", LobbyState.MSG_CONTRACT, LobbyState.contract_data(heist_id, difficulty, is_pro, last_breath))
 	return true
 
 
@@ -247,7 +247,7 @@ func _resend() -> void:
 		set_drop_in_policy(state.dropin_policy)
 	if state.is_host and not state.contract.is_empty():
 		var c: Dictionary = state.contract
-		set_contract(c["heist"], int(c["difficulty"]), bool(c["is_pro"]))
+		set_contract(c["heist"], int(c["difficulty"]), bool(c["is_pro"]), bool(c.get("last_breath", false)))
 
 
 func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> void:
