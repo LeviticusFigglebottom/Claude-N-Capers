@@ -279,6 +279,7 @@ ui.blocked.no_space,No room to place it here
 ui.blocked.push_bar_outside,Opens from the other side
 ui.blocked.lift_full,The lift is full
 ui.blocked.after_breach,Breach the floor first
+ui.blocked.cameras_down,The cameras are down
 ui.results.title,Payday
 ui.results.title_heist,Payday: {heist}
 ui.results.success,Heist complete
@@ -1862,6 +1863,7 @@ ui.board.crumb,Safehouse / Contracts
 ui.crumb.safehouse,Safehouse
 ui.crumb.main_menu,Main menu
 ui.briefing.more_below,More below ▾
+ui.briefing.more_below_pad,"More below ▾  {key} to scroll"
 ui.board.subtitle,Contracts from your contacts. Each stays up for {minutes} minutes; new ones land all the time.
 ui.board.level_caption,Level
 ui.board.stash_caption,Stash

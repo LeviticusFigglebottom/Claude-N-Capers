@@ -43,6 +43,14 @@ var avoid: Rect2 = Rect2():
 ## Canvas rect of the subtitle box while it shows (Hud sets it; empty = none). LEAD r230 (gh_camera_02): the box sat
 ## over an on-screen marker ("8 m"); a marker that would land under it is lifted above the box.
 var subtitle_band: Rect2 = Rect2()
+## LEAD r308 (AH gear prompt: "Get the gear the insider left" printed under "Hold F to pick up your gear"): the
+## interaction prompt's canvas rect while it shows (Hud sets it; empty = none). A marker label there is not drawn; the
+## badge and its distance stay.
+var prompt_band: Rect2 = Rect2():
+	set(v):
+		if v != prompt_band:
+			prompt_band = v
+			queue_redraw()
 ## GPU-19: the top-centre banner stack (assault banner + boss panel; global rect, Hud sets it): badges under it step
 ## below it (below_band).
 var top_band: Rect2 = Rect2()
@@ -279,14 +287,21 @@ static func label_x(center_x: float, w: float, width: float, margin: float = 6.0
 	return clampf(center_x - w * 0.5, margin, maxf(margin, width - w - margin))
 
 
+## Lane 2 audit: over the Tab sheet a label crossed its text (LOOT SECURED); LEAD r308: the same under the interaction
+## prompt. A label box that meets any band (local rects; empty = none) is not drawn, only the badge.
+static func label_hidden_by(box: Rect2, bands: Array[Rect2]) -> bool:
+	for band: Rect2 in bands:
+		if band.has_area() and band.intersects(box):
+			return true
+	return false
+
+
 func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 	var w: float = _font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	var at: Vector2 = Vector2(label_x(center.x, w, size.x, UiBuild.LABEL_SCRIM_PAD.x + 2.0), center.y)
-	if avoid.has_area():
-		# Lane 2 audit: over the Tab sheet a label crossed its text (LOOT SECURED); there only the badge shows.
-		var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * avoid
-		if local.intersects(Rect2(at - Vector2(0, fs), Vector2(w, fs + 4))):
-			return
+	var inv: Transform2D = get_global_transform_with_canvas().affine_inverse()
+	if label_hidden_by(Rect2(at - Vector2(0, fs), Vector2(w, fs + 4)), [inv * avoid, inv * prompt_band] as Array[Rect2]):
+		return
 	# r249 contrast ruling: a rounded scrim behind the label (2.0:1 fill vs the OF stone without it).
 	var asc: float = _font.get_ascent(fs)
 	var pad: Vector2 = UiBuild.LABEL_SCRIM_PAD
