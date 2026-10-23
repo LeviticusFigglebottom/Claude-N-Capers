@@ -54,6 +54,16 @@ func test_marker_label_yields_to_the_prompt() -> void:
 	model.interaction = {"text_key": &"ui.prompt.interact", "args": {}, "progress": 0.0}
 	await wait_frames(3)
 	assert_true(hud.objective_markers.prompt_band.has_area(), "a prompt shows: its band reaches the markers")
+	# LEAD r309: the open onboarding card is a band too (a label ran under the Stay quiet card).
+	assert_false(hud.objective_markers.card_band.has_area(), "no card: no band")
+	hud.onboarding.show_delay_s = 0.0
+	OnboardingTips.persist = false
+	OnboardingTips.reset()
+	model.player_mode = &"masked"
+	await wait_frames(3)
+	assert_true(hud.onboarding.visible)
+	assert_eq(hud.objective_markers.card_band.size, hud.onboarding.panel.get_global_rect().size,
+			"the card's rect reaches the markers (it slides in: the size, not the spot)")
 	hud.queue_free()
 	model.queue_free()
 	await wait_frames(1)

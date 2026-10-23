@@ -607,6 +607,9 @@ func _process(delta: float) -> void:
 		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible and not MouseCapture.is_released(&"pause") \
 				and not (toast_label != null and toast_label.visible) \
 				and not (downed != null and downed.active)  # lane 2 audit: the card sat over the downed screen
+	if objective_markers != null and onboarding != null:
+		objective_markers.card_band = onboarding.panel.get_global_rect() \
+				if onboarding.visible and onboarding.panel != null else Rect2()
 	if hint != null and onboarding != null:
 		hint.yield_to_card = onboarding.visible and onboarding.shown == &"casing"  # the card shows the mask row
 		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # any card already says it
