@@ -4,6 +4,14 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-49) B's mimic dicts checked (2026-10-23)
+- perk.anarchist: an empty tick_by_armor ({}) now means CrewHealth's normal delayed regen (handles_armor_regen
+  false, no ticks). It used to fall back to anarchist_fallback_tick. A missing field still takes the default table.
+- perk.ex_president (store_per_kill 0), perk.gambler (flat heal_bonus), perk.crew_chief (team_dr 0): these were
+  already off.
+- Test: test_d164_copycat 6/6 (new test_b_mimic_dicts_read_as_off). Regression: perk_armor 6, perk_combat 5,
+  perk_team 5, b/test_perk_behaviour 8 (1 skip).
+
 ### (-48) A roadmap audit: the rows with no ✅ (LEAD r291) (2026-10-23)
 Evidence: the tests under game/tests/a (all green at the time of their entries) and the spec-row audit
 docs/status/env_a_fidelity.md (103 rows: S8.7 and L6.2 since built, D-161 5f09d31a and c6e78cb0).
