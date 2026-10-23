@@ -14,8 +14,8 @@ bones: 52
 hat: white hygiene cap over the hair (Headwear)
 insignia: none (civilian work wear; no police/cartel material ids)
 look: packer (D-116): processing whites: white smock, yellow rubber bib apron and long gloves, charcoal work trousers, white boots, white hygiene cap (packing wing, no hi-vis)
-meshes: Body,Hair,Headwear,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27776
-tris_by_mesh: {"Body": 7152, "Hair": 1728, "Headwear": 608, "Outfit": 18288}
+tris: 27864
+tris_by_mesh: {"Body": 7152, "Gear": 88, "Hair": 1728, "Headwear": 608, "Outfit": 18288}

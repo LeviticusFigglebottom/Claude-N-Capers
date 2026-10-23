@@ -17,5 +17,5 @@ look: balaclava: graphite beanie and gaiter over the nose, graphite knit pull-ov
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 30338
-tris_by_mesh: {"Body": 7744, "Gear": 190, "Hair": 1200, "Headwear": 1280, "Outfit": 19924}
+tris: 30426
+tris_by_mesh: {"Body": 7744, "Gear": 278, "Hair": 1200, "Headwear": 1280, "Outfit": 19924}
