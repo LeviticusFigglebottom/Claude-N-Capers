@@ -234,7 +234,10 @@ func _use_deck_item() -> void:
 	pilot.inp.release(&"throw_item")
 	await wait_s(0.4)  # the FP use pose is up (FpViewmodelDeck)
 	note("G: intent.throw_item on %d of 3 ticks, deck_item_used %s" % [edges, used])
-	if used.is_empty():
+	if used.is_empty() and c.crew_state != Enums.CrewState.NORMAL:
+		_row("G uses the deck item (real input)", "NOTE", "pressed while %s: not usable (harness timing)" %
+			Enums.CrewState.keys()[c.crew_state], "-")
+	elif used.is_empty():
 		_row("G uses the deck item (real input)", "FAIL", "intent edges %d, no deck_item_used; direct PerkHooks.use_throwable %s"
 			% [edges, PerkHooks.use_throwable(c)], "P input / A perk.throwable")
 		await wait_s(0.4)
@@ -305,6 +308,8 @@ func _dk_veil() -> bool:
 	var t0: float = rt.heist_time_s
 	await _fight(VEIL_WINDOW_S)
 	var out_dps: float = (_pilot_damage() - d0) / maxf(rt.heist_time_s - t0, 0.1)
+	# A deck item is not usable while downed (PD2: the smoke bomb too): wait for the revive before G.
+	await wait_until(func() -> bool: return pilot.crew.crew_state == Enums.CrewState.NORMAL or _in_custody(), 90.0)
 	await pilot.face(pilot.crew.global_position + pilot.crew.global_transform.basis.z * -1.5 + Vector3.DOWN * 1.2, 0.05, 1.5)
 	await _use_deck_item()
 	await wait_s(1.5)
