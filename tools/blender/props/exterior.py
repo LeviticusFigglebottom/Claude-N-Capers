@@ -152,6 +152,17 @@ def _car(k: Kit, p: dict) -> None:
         trim.bx((-0.78, hl - 1.34, 0.96), (0.78, hl - 1.22, 1.07), "plastic_black")
         for sx, sy in ((-1, 0.25), (1, 0.25), (-1, -0.95), (1, -0.95)):
             trim.bx((sx * 0.4 - 0.23, sy - 0.4, 0.96), (sx * 0.4 + 0.23, sy - 0.3, 1.3), "fabric_graphite")
+        # the driver's wheel (Seat0, D's sit_vehicle_drive grip: _anim_rt.py WHEEL_C / WHEEL_R / WHEEL_TILT from the
+        # seat root): rim face toward the driver and up, two spokes, the column forward-down into the dash
+        ta = math.radians(30.0)
+        wc = (-0.4, 0.25 + 0.40, 0.18 + 0.76)
+        up = (0.0, math.sin(ta), math.cos(ta))
+        rim = [(wc[0] + 0.18 * math.sin(math.tau * i / 24), wc[1] + 0.18 * math.cos(math.tau * i / 24) * up[1],
+                wc[2] + 0.18 * math.cos(math.tau * i / 24) * up[2]) for i in range(24)]
+        trim.tube(rim, 0.016, "rubber", segs=6, closed=True)
+        for s in (-1, 1):
+            trim.rod(wc, (wc[0] + s * 0.17, wc[1] - 0.03 * up[1], wc[2] - 0.03 * up[2]), 0.012, "plastic_black", segs=6)
+        trim.rod((wc[0], wc[1] - 0.01, wc[2] + 0.006), (wc[0], wc[1] + 0.36, wc[2] - 0.2), 0.03, "plastic_black", segs=8)
     else:
         body.profile_x(cab, -w / 2 + 0.1, w / 2 - 0.1, paint)
     # side glass + dark B pillar, beltline chrome, door seams and handles
