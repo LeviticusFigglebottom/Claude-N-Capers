@@ -582,7 +582,7 @@ const SLOT_ITEMS: Dictionary = {
 	"count_done": [],
 	"prod_stock": [["marker", "ProductStock", [3.0, 0.1, 1.0], 0.0, "product", "the stock cage (padlocked gate)"]],
 	"prod_green": [["marker", "ProductGreen", [12.5, 1.0, 1.0], 0.0, "product", "on the DJs' flight cases"]],
-	"prod_private": [["marker", "ProductPrivate", [35.4, 4.3, 23.0], 0.0, "product", "the shelving behind the lasers"]],
+	"prod_private": [["marker", "ProductPrivate", [34.75, 4.3, 23.0], 0.0, "product", "in front of the shelving, behind the lasers"]],
 	"lz_static": [
 		[
 			"prefab", "laser_grid", "PrivateLasers", [34.3, 4.2, 22.5], 90.0,

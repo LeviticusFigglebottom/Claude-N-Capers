@@ -114,3 +114,5 @@ PlayerVIP4 Variants/Group_gear_drop/Slot_gear_booth/GearBag/UsePoint
 PlayerVIP4 Variants/Group_keycard/Slot_kc_bouncer_board/Keycard
 PlayerVIP4 Variants/Group_keycard/Slot_kc_bouncer_board/Keycard/UsePoint
 PlayerVIP4 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
+PlayerVIP2 Variants/Group_gear_drop/Slot_gear_booth/GearBag
+PlayerVIP2 Variants/Group_gear_drop/Slot_gear_booth/GearBag/UsePoint

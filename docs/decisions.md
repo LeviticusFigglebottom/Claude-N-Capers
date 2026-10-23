@@ -1697,3 +1697,16 @@ slice; cast done; ghost gate n/a, loud-forced). That review is a single pending 
 - Lanes: A the mission + logic; C the def, map (G1 greybox → G2) and music; D the club cast build + wiring; B items 8-10 as C's
   def/map land (items 1-7 + achievements merge now); P the first real-input pass once C's greybox is playable, its RT
   follow-ups until then.
+
+## D-166: Afterhours van: a captain-held assault does not block the escape (2026-10-23, LEAD; A done-check)
+A's AH done-check table (env_a.md -60): loud Hazardous seeds 1 and 4242 soft-locked. Safe open and 3 bags secured, then no
+end in 2400 s. Brandt (captain, wave 2) holds SUSTAIN (`AssaultDirector._tick_sustain` while `captain_active()`), so the 2nd
+FADE never comes, and the AH van waits on it. In PD2 a Winters-held assault delays the next break, not the escape vehicle.
+Ruling, both parts:
+- **Product (A, `afterhours_mission.gd`; C amends afterhours.md Loud step 4):** the van rule is "at the second assault's FADE or
+  300 s after `[secure]`'s first bag, whichever is later; **if a captain is active when the 300 s runs out, the van comes
+  then**" (also if the captain arrives after the 300 s ran out: on `captain_arrived` the van comes then). Waiting for the 2nd FADE stays the normal case. A captain lock only waives it. The director is unchanged
+  (the captain still holds the assault).
+- **Harness (A):** once the required loot is secured, the pilot targets an active captain. This tests the human answer too.
+- Re-run seeds 1 and 4242 on loud Hazardous with both parts. The other Hazardous losses (2 and 7: wave-1 wipes; 6501:
+  old-map parcels) are bot skill, read the same as RT. Re-run 6501 on the fixed map. Routine and stealth are already PASS.

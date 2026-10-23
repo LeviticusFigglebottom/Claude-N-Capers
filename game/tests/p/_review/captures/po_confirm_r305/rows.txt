@@ -1,0 +1,7 @@
+[POC] ROW in the 3D safehouse | PASS | active true
+[POC] ROW PO-21: no MouseCapture release held in the heist | PASS | held []
+[POC] ROW PO-21: wants_capture (gameplay owner, no release) | PASS | wants true, OS mode 2
+[POC] ROW PO-21: real mouse motion turns the camera | PASS | yaw 0.000 -> -0.320
+[POC] ROW PO-22: crosshair shown at the hip (masked) | PASS | alpha 1.00
+[POC] ROW PO-22: crosshair hidden while aiming down sights | FAIL | alpha 1.00, model ads_blend <null>
+[POC] RESULT FAIL

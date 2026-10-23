@@ -18,6 +18,7 @@ import rolling_thunder_check as CHK  # noqa: E402
 import rolling_thunder_content as C  # noqa: E402
 import rolling_thunder_floors_ascii as P  # noqa: E402
 import rolling_thunder_geometry as GM  # noqa: E402
+import rolling_thunder_markings as MK  # noqa: E402
 import rolling_thunder_slots as SL  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
@@ -366,6 +367,8 @@ def emit() -> tuple:
         "z1], y0, height] (no navmesh islands on neighbour roofs, the rail bank, closure vehicles).",
     )
     s += const("OOB", GM.oob(), doc="OUT_OF_BOUNDS curtains (D-040): [name, [x0, y0, z0, x1, y1, z1]].")
+    s += const("MARKINGS", MK.markings(), doc="Road markings (rolling_thunder_markings.py, LEAD r305 G3): [feature, [quad, "
+               "...]], a quad = 4 corners x, y, z; visual only (rt_markings.gd, paint_white).")
     shell_text = s
     s = hdr.replace("layout data. GENERATED", "layout data, content half. GENERATED")
     s += const(
