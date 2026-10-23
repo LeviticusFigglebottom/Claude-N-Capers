@@ -8,13 +8,16 @@
 ## (A's CombatTweak default primary / armor, no mask, any free heister), so a save never breaks a launch.
 ## Bot slot i = the i-th AI seat in slot order (Heisters.ai_loadouts, LobbyState.heister_assignment).
 ## ENV A's runtime: for_slot(i) (defs) or the bot's launch Loadout (bot_loadout, via HeistLauncher options.loadouts).
+## L6.2 (PD2 Crew Management): each bot also carries one ability and one boost (BotCrewDef ids, ContentDB kind bot_crew;
+## &"" = none), written to Loadout.bot_ability / bot_boost for ENV A's BotCrew. They are free picks (PD2 sells them for
+## Continental Coins; we have no second currency).
 class_name CrewLoadouts
 extends RefCounted
 
 const SLOTS: int = ProfileSchema.CREW_SLOTS
 ## CrewTweak.body_scenes keys that are generic heist suits (D's crew_body / crew_body_b), wearable by any number of bots.
 const SUIT_PREFIX: String = "suit_"
-const FIELDS: Array[String] = ["weapon", "mods", "armor", "mask", "outfit"]
+const FIELDS: Array[String] = ["weapon", "mods", "armor", "mask", "outfit", "ability", "boost"]
 
 ## The profile the bots read when a caller passes none (MenuFlow sets it to the host's profile before a launch).
 static var source: PlayerProfile = null
@@ -22,7 +25,8 @@ static var source: PlayerProfile = null
 
 ## An empty entry: every field the bot's default.
 static func empty_entry() -> Dictionary:
-	return {"weapon": &"", "mods": [] as Array[StringName], "armor": &"", "mask": &"", "outfit": &""}
+	return {"weapon": &"", "mods": [] as Array[StringName], "armor": &"", "mask": &"", "outfit": &"", "ability": &"",
+		"boost": &""}
 
 
 ## Bot slot `i`'s saved entry (empty when `profile` is null or `i` is out of range). A copy.
@@ -31,7 +35,7 @@ static func entry(profile: PlayerProfile, i: int) -> Dictionary:
 		return empty_entry()
 	var e: Dictionary = profile.crew_loadouts[i]
 	var out: Dictionary = empty_entry()
-	for f: String in ["weapon", "armor", "mask", "outfit"]:
+	for f: String in ["weapon", "armor", "mask", "outfit", "ability", "boost"]:
 		out[f] = StringName(e.get(f, &""))
 	var typed: Array[StringName] = []
 	for m: Variant in e.get("mods", []) as Array:
@@ -71,6 +75,26 @@ static func validate(profile: PlayerProfile, e: Dictionary) -> Dictionary:
 		out["mask"] = StringName(e["mask"])
 	if outfits(profile).has(StringName(e.get("outfit", &""))):
 		out["outfit"] = StringName(e["outfit"])
+	if abilities().has(StringName(e.get("ability", &""))):
+		out["ability"] = StringName(e["ability"])
+	if boosts().has(StringName(e.get("boost", &""))):
+		out["boost"] = StringName(e["boost"])
+	return out
+
+
+## L6.2: every bot ability id (picker order), and every boost id.
+static func abilities() -> Array[StringName]:
+	return _bot_crew_ids(BotCrewDef.ABILITY)
+
+
+static func boosts() -> Array[StringName]:
+	return _bot_crew_ids(BotCrewDef.BOOST)
+
+
+static func _bot_crew_ids(kind: String) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for d: BotCrewDef in ContentDB.bot_crew(kind):
+		out.append(d.id)
 	return out
 
 
@@ -179,6 +203,8 @@ static func bot_loadout(i: int, profile: PlayerProfile, heister: StringName) -> 
 		l.mask = e["mask"]
 	l = LoadoutResolver.resolve(l, profile)
 	l.heister = heister
+	l.bot_ability = e["ability"]
+	l.bot_boost = e["boost"]
 	return l
 
 
@@ -203,11 +229,12 @@ static func summary(profile: PlayerProfile) -> Array:
 		for m: StringName in e["mods"] as Array[StringName]:
 			mods_s.append(String(m))
 		out.append({"weapon": String(e["weapon"]), "mods": mods_s, "armor": String(e["armor"]), "mask": String(e["mask"]),
-			"outfit": String(e["outfit"])})
+			"outfit": String(e["outfit"]), "ability": String(e["ability"]), "boost": String(e["boost"])})
 	return out
 
 
-## Display names for an entry ({"weapon", "armor", "mask", "outfit"}; the default's own label when empty).
+## Display names for an entry ({"weapon", "armor", "mask", "outfit", "ability", "boost"}; the default's own label when
+## empty).
 static func names(e: Dictionary) -> Dictionary:
 	var w: StringName = StringName(e.get("weapon", &""))
 	var a: StringName = StringName(e.get("armor", &""))
@@ -218,7 +245,13 @@ static func names(e: Dictionary) -> Dictionary:
 		"armor": UiText.t(UiText.item_key(a)) if a != &"" else default_armor_name(),
 		"mask": MaskCatalog.display_name(m) if m != &"" else UiText.t(&"ui.crew.no_mask"),
 		"outfit": outfit_name(o),
+		"ability": _bot_crew_name(StringName(e.get("ability", &"")), &"ui.crew.no_ability"),
+		"boost": _bot_crew_name(StringName(e.get("boost", &"")), &"ui.crew.no_boost"),
 	}
+
+
+static func _bot_crew_name(id: StringName, none_key: StringName) -> String:
+	return UiText.t(UiText.item_key(id)) if id != &"" else UiText.t(none_key)
 
 
 ## r246: the default's label names what an unequipped bot carries (A's CombatTweak.bot_default_primary /

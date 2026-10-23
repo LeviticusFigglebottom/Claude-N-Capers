@@ -3836,17 +3836,23 @@ ui.crew.outfit.suit_charcoal,"Classic Suit, Charcoal"
 ui.crew.outfit.suit_navy,"Classic Suit, Navy"
 ui.crew.crumb,Safehouse / Bot Crew
 ui.crew.title,Bot Crew
-ui.crew.subtitle,"Gear your three crew bots from your armory: a primary with its mods, armor, a mask and an outfit. Changes save at once."
+ui.crew.subtitle,"Gear your three crew bots from your armory: a primary with its mods, armor, a mask and an outfit, plus an ability and a crew boost. Changes save at once."
 ui.crew.bot,Bot {n}
 ui.crew.summary,Your crew
 ui.crew.card,"Bot {n}: {weapon}, {armor}
-{mask} · {outfit}"
+{mask} · {outfit}
+{ability} · {boost}"
 ui.crew.workshop_hint,Buy more weapons and mods in the Workshop; armor unlocks with your level.
 ui.crew.reset,Reset bot
 ui.crew.row.weapon,Primary
 ui.crew.row.armor,Armor
 ui.crew.row.mask,Mask
 ui.crew.row.outfit,Outfit
+ui.crew.row.ability,Ability
+ui.crew.row.boost,Crew Boost
+ui.crew.none,None
+ui.crew.no_ability,No ability
+ui.crew.no_boost,No boost
 ui.hub.crew,Bot Crew
 ui.hud.device.time,{mm}:{ss}
 ui.hud.device.jammed,JAMMED
