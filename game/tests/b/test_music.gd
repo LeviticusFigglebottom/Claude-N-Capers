@@ -11,9 +11,9 @@ const PREPLAN_SCENE: PackedScene = preload("res://content/ui/preplanning/preplan
 const SLOT: int = 0
 const STUB_IDS: Array[StringName] = [
 	&"dockside_burn", &"glasshouse", &"last_call", &"long_con", &"night_deposit", &"shadow_ledger", &"vault_hymn"]
-## OF's track joins once OF is offered (round 245: hidden switch off).
+## OF's track joins once OF is offered (round 245: hidden switch off); RT's with the D-160 flip.
 const BASE_IDS: Array[StringName] = [&"dockside_burn", &"gallery_night", &"glasshouse", &"night_deposit",
-	&"ostrander_federal", &"shadow_ledger"]
+	&"ostrander_federal", &"rolling_thunder", &"shadow_ledger"]
 const NET_SCRIPT: Script = preload("res://core/net.gd")
 
 
@@ -130,7 +130,7 @@ func test_unlock_filtering_and_notoriety_ranks() -> void:
 	assert_true(MusicCatalog.is_unlocked(fresh, &"night_deposit"))
 	var vet: PlayerProfile = _unlocked([&"vault_hymn", &"last_call"])
 	var want: Array[StringName] = [&"dockside_burn", &"gallery_night", &"glasshouse", &"last_call", &"night_deposit",
-		&"ostrander_federal", &"shadow_ledger", &"vault_hymn"]  # LEAD
+		&"ostrander_federal", &"rolling_thunder", &"shadow_ledger", &"vault_hymn"]  # LEAD
 	assert_eq(MusicCatalog.available(vet), want)
 	assert_eq(MusicCatalog.unlock_rank(&"vault_hymn"), 7)
 	assert_eq(MusicCatalog.unlock_rank(&"long_con"), 13)

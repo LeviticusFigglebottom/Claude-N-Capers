@@ -54,6 +54,8 @@ var detail_label: Label
 var reason_label: Label
 var plan_label: Label
 var vote_label: Label
+## The foot caption ("... {key} returns from a list to the blueprint."): the Back key of the device used last (r309).
+var hint_label: Label
 var placeholder_label: Label
 ## Heist accent strip beside the title (UiAccent, B4-07).
 var accent_strip: ColorRect
@@ -417,7 +419,9 @@ func _build_bottom() -> HBoxContainer:
 		music_picker.save_on_change = save_on_confirm
 		music_picker.setup(profile, heist_id)
 		bottom.add_child(music_picker)
-	var hint: Label = UiBuild.label(&"ui.preplan.hint", UiBuild.DIM)
+	var hint: Label = UiBuild.label(&"", UiBuild.DIM)
+	hint_label = hint
+	_update_hint()
 	hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -425,6 +429,17 @@ func _build_bottom() -> HBoxContainer:
 	bottom.add_child(hint)
 	bottom.add_child(confirm_button)  # the one commit action, bottom right
 	return bottom
+
+
+## UiScreen rebuilds the hint strip on a device switch; the foot caption names the same Back key.
+func refresh_control_hints() -> void:
+	super.refresh_control_hints()
+	_update_hint()
+
+
+func _update_hint() -> void:
+	if hint_label != null:
+		hint_label.text = UiText.t(&"ui.preplan.hint", {"key": InteractionPanel.action_key_text(&"ui_cancel")})
 
 
 func _fill_list(ids: Array[StringName]) -> void:
