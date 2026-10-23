@@ -56,7 +56,7 @@ heist_tag_characters = {
 &"staff_dj": [&"club_dj"],
 &"staff_front": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
 &"staff_upper": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
-&"vip_party": [&"club_vip", &"club_vip_b", &"club_vip_c", &"club_vip_d", &"club_vip_e", &"club_vip_f"]
+&"civ_vip": [&"club_vip", &"club_vip_b", &"club_vip_c", &"club_vip_d", &"club_vip_e", &"club_vip_f"]
 },
 &"gallery_night": {
 &"civ_admin": [&"gallery_admin"],
@@ -185,7 +185,7 @@ heist_tag_pools = {
 &"staff_bar": &"ah_staff",
 &"staff_front": &"ah_staff",
 &"staff_upper": &"ah_staff",
-&"vip_party": &"ah_vip"
+&"civ_vip": &"ah_vip"
 },
 &"glasshouse": {
 &"guard_alley_smoker": &"gh_guards",

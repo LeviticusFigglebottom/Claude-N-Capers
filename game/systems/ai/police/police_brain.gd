@@ -129,6 +129,8 @@ func _physics_step(delta: float) -> void:
 		return
 	if not _active:
 		if _runtime == null or not _runtime.went_loud or not ACTIVE_STATES.has(_npc.alert_state):
+			if _npc.alert_state == Enums.AlertState.CALM and _npc.spawn_info.get("idle_activity", &"") != &"":
+				anim_hint = _calm_activity()  # D (AH cast): the off-duty cop sits in his booth before the alarm
 			return
 		_activate()
 	if not ACTIVE_STATES.has(_npc.alert_state):
@@ -242,6 +244,13 @@ func _choose_position() -> void:
 			cp.set_meta(CLAIM_META, _npc.get_instance_id())
 
 
+## D (AH cast): a CALM unit placed at a SpawnPoint with an idle activity (the off-duty cop's `sit` in his booth) plays
+## it (standing when there is no seat under him, PO6-06); otherwise the alert stand.
+func _calm_activity() -> StringName:
+	var act: StringName = StringName(_npc.spawn_info.get("idle_activity", &""))
+	return CivilianBrain.seated_or_standing(_npc, act) if act != &"" else &"idle_alert"
+
+
 func _tick_move(delta: float) -> void:
 	var t: Node3D = combat_target as Node3D
 	if has_order():
@@ -257,7 +266,7 @@ func _tick_move(delta: float) -> void:
 	if t == null:
 		_motor.stop()
 		mode = &"idle"
-		anim_hint = &"idle_alert"
+		anim_hint = _calm_activity() if _npc.alert_state == Enums.AlertState.CALM else &"idle_alert"
 		return
 	var tpos: Vector3 = t.global_position
 	if _tick_cuff(t):

@@ -2,7 +2,7 @@
 ## CAMERA_OPERATOR SpawnPoint on C's map (and the mission's scripted ones: the off-duty cop, the couriers) carries a tag
 ## that NpcVisualTweak.heist_tag_characters[afterhours] maps, so none falls back to the shared guard / civilian looks;
 ## the looks are club_ ids (the couriers: the Co-op gunmen without face cover, p5_cast club_courier). The off-duty
-## cop is plain clothes (club_offduty_cop, not frd_agent). vip_party maps to the club_vip pool. SKIPs without the map.
+## cop is plain clothes (club_offduty_cop, not frd_agent). the vip_party guests (civ_vip) map to the club_vip pool. SKIPs without the map.
 extends TestCase
 
 const MAP_PATH: String = "res://world/heists/afterhours/afterhours.tscn"
@@ -31,7 +31,7 @@ func _club_ids(tag: StringName) -> bool:
 
 func test_special_roles_map_to_their_pools() -> void:
 	assert_eq(_ah().get(&"civ_offduty"), [&"club_offduty_cop"], "the off-duty cop is plain clothes (D-165 ruling)")
-	assert_eq((_ah().get(&"vip_party", []) as Array).size(), 6, "vip_party: club_vip a-f")
+	assert_eq((_ah().get(&"civ_vip", []) as Array).size(), 6, "vip_party guests (civ_vip): club_vip a-f")
 	var couriers: Array = _ah().get(&"cartel_courier", [])
 	assert_false(couriers.is_empty(), "cartel_courier mapped")
 	for face: StringName in [&"cartel_gunman_b", &"cartel_gunman_f", &"cartel_gunman_g"]:

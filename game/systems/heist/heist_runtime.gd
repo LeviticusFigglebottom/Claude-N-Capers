@@ -28,7 +28,8 @@ const FAIL_STEALTH_ONLY_ALARM: StringName = &"stealth_only_alarm"
 const FAIL_ALL_CUSTODY: StringName = &"all_custody"
 const FAIL_ABORT: StringName = &"abort"
 ## A3-09: GUARD SpawnPoints carrying this tag are not spawned at load; HeistMission.spawn_guards()
-## spawns them later (timed mission events, e.g. the armoured car's guards).
+## spawns them later (timed mission events, e.g. the armoured car's guards). CIVILIAN ones likewise
+## (HeistMission.spawn_civilians: AH's vip_party guests).
 const SCRIPTED_SPAWN_TAG: StringName = &"scripted"
 ## S1.3 start modes (HeistDef.start_mode / options["start_mode"]).
 const START_CASING: StringName = &"casing"
@@ -535,7 +536,10 @@ func _spawn_npcs() -> void:
 			continue
 		_spawn_npc_at(&"guard", gsp)
 	for sp_node: Node in map.get_slots(G.CIVILIAN_SPAWN):
-		_spawn_npc_at(&"civilian", sp_node as SpawnPoint)
+		var csp: SpawnPoint = sp_node as SpawnPoint
+		if csp != null and csp.tags.has(SCRIPTED_SPAWN_TAG):
+			continue  # AH vip_party guests: spawned by the mission (HeistMission.spawn_civilians)
+		_spawn_npc_at(&"civilian", csp)
 
 
 ## Server: spawn an NPC of `role` at a SpawnPoint (or a transform). Returns the NPC.

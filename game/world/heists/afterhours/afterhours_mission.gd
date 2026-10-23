@@ -11,8 +11,8 @@
 ## calls the alarm; escape_wait: the van returns at the second assault's FADE or SECURE_WAIT_S after the first
 ## secured bag, whichever is later.
 ## Rare events: count_left_open (the safe starts open), extra_product (+2 parcels), off_duty_cop (a police observer in a
-## VIP booth), co_op_pickup (two couriers at 14:00, stealth), rooftop_watch (the perch opens loud); vip_party is data
-## (the variant table's slot effects).
+## VIP booth), co_op_pickup (two couriers at 14:00, stealth), rooftop_watch (the perch opens loud); vip_party (+6 VIP guests on the
+## civ_vip spawns; its other slot effects are data).
 extends HeistMission
 
 const REQUIRED_BAGS: int = 3
@@ -45,6 +45,7 @@ const RNG_STREAM: StringName = &"afterhours"
 
 ## Objective tags on C's map (agreed contract).
 const TAG_GEAR: StringName = &"gear"
+const TAG_VIP: StringName = &"civ_vip"
 const TAG_KEYCARD: StringName = &"keycard"
 const TAG_OFFICE_DOOR: StringName = &"office_door"
 const TAG_OFFICE_READER: StringName = &"office_reader"
@@ -73,6 +74,8 @@ var couriers: Array[NpcBase] = []
 var off_duty_cop: NpcBase = null
 var lockdown: bool = false
 var escape_open: bool = false
+## vip_party (rare): the VIP guests spawned at the start (civilians on the civ_vip SpawnPoints).
+var vip_guests: Array[NpcBase] = []
 ## The safe's cash bags secured ([secure]: REQUIRED_BAGS of LOOT_SAFE; other loot does not count).
 var safe_secured: int = 0
 var _van_fade: bool = false
@@ -121,6 +124,7 @@ func _on_mission_start() -> void:
 	on_event(&"loot_secured", _on_bag_secured)
 	on_event(&"loot_picked", _on_loot_picked)
 	on_event(&"assault_phase_changed", _on_assault_phase_changed)
+	on_event(&"captain_arrived", func(_id: int) -> void: _try_escape())
 	_spawn_loot()
 	_rare_start()
 	if variant(&"dj_set") is Array and _slot_active(&"dj_set", &"dj_on"):
@@ -309,10 +313,18 @@ func _on_assault_phase_changed(assault_phase: int, _wave_index: int) -> void:
 		_try_escape()
 
 
+## D-166: a captain holds the assault (AssaultDirector.captain_active()): the van does not wait for its FADE.
+func captain_waiver() -> bool:
+	var d: AssaultDirector = _runtime.service(G.SVC_DIRECTOR) as AssaultDirector if _runtime != null else null
+	return d != null and d.captain_active()
+
+
 func _try_escape() -> void:
 	if escape_open or safe_secured < REQUIRED_BAGS:
 		return
-	if went_loud and not (_van_fade and _secure_wait_done):
+	# D-166: the 2nd FADE or SECURE_WAIT_S after the first cash bag, whichever is later; a captain (Brandt) holding the
+	# assault in SUSTAIN waives the FADE once the wait is over (it would never come: the done-check's soft lock).
+	if went_loud and not ((_van_fade or captain_waiver()) and _secure_wait_done):
 		if objective_state(&"escape_wait") == Enums.ObjectiveState.ACTIVE:
 			say(&"vo.mercer.afterhours_van_eta")
 		return
@@ -360,6 +372,8 @@ func _rare_start() -> void:
 			say(&"vo.mercer.afterhours_off_duty_cop")
 	if _rare(&"co_op_pickup"):
 		schedule_at(COURIER_TIME_S, &"couriers", _couriers_arrive)
+	if _rare(&"vip_party"):
+		vip_guests = spawn_civilians(TAG_VIP)  # +6 VIP patrons in U2 (C's VIPGuest1..6, D's club_vip looks)
 
 
 ## co_op_pickup: the couriers walk in as calm guards on their patrol route (the SpawnPoints tagged TAG_COURIER and their

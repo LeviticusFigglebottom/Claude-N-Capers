@@ -40,4 +40,8 @@ static func ambient_hint(npc: NpcBase, combat: CombatClips, h: StringName) -> St
 	if (h == &"" or h == &"idle") and bool(npc.spawn_info.get("no_patrol", false)) and npc.role == &"guard" \
 			and npc.alert_state == Enums.AlertState.CALM:
 		return &"sit_chair_watch"  # S8.2 camera operator at his station
+	var act: StringName = StringName(npc.spawn_info.get("idle_activity", &""))
+	if (h == &"" or h == &"idle") and npc.role == &"guard" and npc.alert_state == Enums.AlertState.CALM \
+			and act != &"" and AnimDriver.HINT_CLIPS.has(act):
+		return act  # D (AH cast): the door / rope bouncers stand at their post in bouncer_idle, not idle_b
 	return h
