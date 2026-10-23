@@ -4,6 +4,9 @@
 ## contract. Run after `godot --import`.
 extends TestCase
 
+## Named hero props (style guide §5: the 20k budget): set pieces a level is built around (LEAD r308: the Old Press is
+## the safehouse centrepiece).
+const HERO_PROPS: Array[StringName] = [&"prop_chandelier_ring", &"prop_sh_old_press"]
 const PREFAB_NODES: Dictionary = {
 	"door": ["Frame", "Leaf", "Handle"],
 	"display_case": ["Body", "Glass", "LootAnchor"],
@@ -205,7 +208,7 @@ func test_triangle_budgets() -> void:
 			for i: int in range(mesh.get_surface_count()):
 				var idx: PackedInt32Array = mesh.surface_get_arrays(i)[Mesh.ARRAY_INDEX]
 				tris += idx.size() / 3
-		var hero: bool = String(id).begins_with("prop_display_case") or String(id).begins_with("veh_") or String(id) == "prop_chandelier_ring"
+		var hero: bool = String(id).begins_with("prop_display_case") or String(id).begins_with("veh_") or StringName(id) in HERO_PROPS
 		assert_true(tris >= 12 and tris <= (20000 if hero else 8000), "%s: %d triangles within style guide §5" % [id, tris])
 		n.free()
 
