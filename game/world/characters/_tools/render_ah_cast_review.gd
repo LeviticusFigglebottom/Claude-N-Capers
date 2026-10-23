@@ -5,7 +5,8 @@
 ## logs every NPC with its look, clip, spawn tags and position. PNGs, sheet and log go to --out.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy --fixed-fps 60 \
 ##     --resolution 960x540 \
-##     --path game res://world/characters/_tools/render_ah_cast_review.tscn -- --out=/abs/dir [--seed=1] [--difficulty=0]
+##     --path game res://world/characters/_tools/render_ah_cast_review.tscn -- --out=/abs/dir [--seed=1] [--difficulty=0] \
+##     [--rares=off_duty_cop,vip_party]
 ## Owner: ENV D.
 extends Node3D
 
@@ -17,10 +18,13 @@ const EYE_H: float = 1.45
 const PER_TAG: int = 2
 ## the booth view: this high above the DJ booth's origin, looking at the dancers' centroid
 const BOOTH_EYE_H: float = 2.6
+const VARIANTS: String = "res://world/heists/afterhours/afterhours_variants.tres"
 
 var _out: String = ""
 var _seed: int = 1
 var _difficulty: int = Enums.Difficulty.ROUTINE
+## --rares=a,b: those rare events forced on (chance 1 in a copy of the map's variant table), e.g. off_duty_cop,vip_party
+var _rares: PackedStringArray = []
 var _cam: Camera3D = null
 var _label: Label = null
 var _log: PackedStringArray = []
@@ -38,6 +42,8 @@ func _ready() -> void:
 			_seed = int(a.trim_prefix("--seed="))
 		elif a.begins_with("--difficulty="):
 			_difficulty = int(a.trim_prefix("--difficulty="))
+		elif a.begins_with("--rares="):
+			_rares = a.trim_prefix("--rares=").split(",", false)
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/ah_cast"
 	RenderingServer.render_loop_enabled = false  # frames only for the shots (llvmpipe draws this map slowly)
@@ -46,8 +52,15 @@ func _ready() -> void:
 
 
 func _run() -> void:
-	var rt: HeistRuntime = await HeistLauncher.launch(&"afterhours", _seed, _difficulty, self,
-		{"crew_ai": false, "ai_teammates": 0})
+	var opts: Dictionary = {"crew_ai": false, "ai_teammates": 0, "probe_prewarm": false}
+	if not _rares.is_empty():
+		var vt: HeistVariantTable = (load(VARIANTS) as HeistVariantTable).duplicate(true) as HeistVariantTable
+		for ev: Dictionary in vt.rare_events:
+			if _rares.has(String(ev.get("id", ""))):
+				ev["chance"] = 1.0
+				ev.erase("min_difficulty")
+		opts["variant_table"] = vt
+	var rt: HeistRuntime = await HeistLauncher.launch(&"afterhours", _seed, _difficulty, self, opts)
 	if rt == null:
 		push_error("[AHCAST] launch failed")
 		get_tree().quit(1)
