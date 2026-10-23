@@ -212,10 +212,11 @@ const HOOKED: Dictionary = {
 	&"perk.yakuza": "res://systems/combat/perks/perk_yakuza.gd",  # D-162 (A 3668b28c)
 	&"perk.biker": "res://systems/combat/perks/perk_biker.gd",
 	&"perk.maniac": "res://systems/combat/perks/perk_maniac.gd",
+	&"perk.sicario": "res://systems/combat/perks/perk_sicario.gd",  # D-163 (A 36df6d56)
+	&"perk.tag_team": "res://systems/combat/perks/perk_tag_team.gd",
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). perk.sicario / perk.tag_team: D-163,
-## ENV A's hooks; drop each the round it lands.
-const MISSING: Array = [&"perk.sicario", &"perk.tag_team"]
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-163.
+const MISSING: Array = []
 
 
 func before_all() -> void:

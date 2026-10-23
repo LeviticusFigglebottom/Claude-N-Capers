@@ -379,9 +379,7 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 **D-161 / D-162:** `stealth.pocket_ecm` (A `perk_pocket_ecm.gd` + EcmSystem), `perk.yakuza`, `perk.biker` and
 `perk.maniac` (A `perk_<name>.gd`, PerkTweak defaults = card-1 values; Road Crew and Hacker card 9 via CrewKillFeed)
 are hooked under the field names of the schema tables above.
-
-**Held (D-163):** `perk.sicario` (Veil) and `perk.tag_team` (Buddy System) wait on ENV A's hooks; they are the
-test's `MISSING` list until those land.
+D-163: `perk.sicario` and `perk.tag_team` (A `perk_sicario.gd` / `perk_tag_team.gd`) likewise.
 
 **Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's
