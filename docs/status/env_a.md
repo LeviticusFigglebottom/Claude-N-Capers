@@ -4,6 +4,28 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-56) AH e2e: gear step, ah_loud flow, the stealth route + mission-placed loot no longer alarms (2026-10-23)
+- Lift strings blocker (LEAD r305): bag_lift.gd lists `ui.prompt.send_lift_to_0..3` whole (5203144d); b/test_strings
+  23/0 with B's 16c4ef81, a/test_a3_09_bag_lift 9/0. Built `ui.*` keys never pass the scan (only `vo.*_%s`).
+- RT roof release: not reproducible server-side (P retracted: their harness stood outside the shaft); guard
+  a/test_rt_lift_roof_release 1/1 (57dbbc29).
+- PO-5: auto_loud `_gear_up` (civilian start: the rolled GearPickup before the mask, dd006c14); `po5_flow_ah_loud.gd`
+  (gear before mask, loud order gear -> office -> safe -> secure -> escape, lockdown, loud win). Headless seed 1 on C's
+  map: geared t=15, keycard t=136, office t=190; map findings sent to C (navmesh through the latched CountWindow, the
+  parcels behind StockCageE).
+- X4 route `afterhours` (x4_stealth_routes.gd): gear -> mask -> keycard -> office reader -> code note (if rolled) ->
+  safe by code, else the drill with its jams fixed -> 3 safe bags (the upper ones of the stack reached from the safe's
+  UsePoint) -> the rolled van. New a/test_x4_ah_stealth: seeds 1/2/3 PASS on C's map (fb0bea19 + civilian_allowed,
+  scratch tree); SKIPs here until the map is on trunk.
+- Fix (game): `HeistMission.spawn_loot` bags are now pre-placed style (`LootBag.moved = false`, S4.1): no guard or
+  camera reacts to placed loot until a crew member first picks it up. AH seed 2 (count_running + cam_a): CameraC8 saw
+  the count room's two cash bags and raised the alarm 2 s into the heist with nobody near. Affects OF drill parts and
+  RT truck cargo the same way (PD2: level loot is not suspicious). Tests: a/test_of_a1_drill_requires 2/2 (asserts it),
+  test_ah_a1_mission 6/6, test_s4_stimuli_noise 4/4, test_of_mission_loud 6/6, test_rt_a6_mission 14/14,
+  test_a3_09_out_of_bounds 4/4, test_x4_of_stealth 5/5.
+- Finding for C: AH has ONE `safe_loot` marker, so 5-7 bags stack 0.4 m apart inside the safe (top ones ~1.3 m up).
+  More markers inside the safe would read better.
+
 ### (-55) Door.civilian_allowed for AH guest doors (LEAD r305, P G1 casing blocker) (2026-10-23)
 - `door.gd`: `@export var civilian_allowed: bool = false` (Interaction group), passed to the interactable in
   `_apply_lock_interaction` (so `relock()` keeps it). Default false = staff door (`ui.blocked.civilian`). C sets it on
