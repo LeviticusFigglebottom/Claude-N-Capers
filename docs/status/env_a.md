@@ -4,6 +4,14 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-55) Door.civilian_allowed for AH guest doors (LEAD r305, P G1 casing blocker) (2026-10-23)
+- `door.gd`: `@export var civilian_allowed: bool = false` (Interaction group), passed to the interactable in
+  `_apply_lock_interaction` (so `relock()` keeps it). Default false = staff door (`ui.blocked.civilian`). C sets it on
+  the guest doors (c6589729).
+- Tests: new a/test_ah_door_civilian 2/2 (civilian opens a guest door, staff door refused; relock keeps the flag);
+  a/test_s1_3_civilian_mode 5/5, a/test_gn_staff_doors 2/2, a/test_a2_01_doors_nav 11/11, a/test_gn_door_relock 4/4,
+  a/test_d116_door_breach 2/2, a/test_a1_03_prefab_shapes 7/7. gdlint, ownership, banned clean.
+
 ### (-54) BagLift: a send to every other landing on 3+ landing lifts (LEAD r304) (2026-10-23)
 - `bag_lift.gd`: with 3+ landings each landing gets one `send_lift` button per other landing (`LandingSend<i>_<j>`,
   stacked above its panel, in `send_buttons[i][j]`), enabled only while the car stands there; the landing panel then
