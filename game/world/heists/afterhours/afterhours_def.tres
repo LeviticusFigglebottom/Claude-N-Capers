@@ -15,6 +15,10 @@ objectives = Array[StringName]([&"casing", &"gear", &"keycard", &"office", &"saf
 briefing_objectives = Array[StringName]([&"casing", &"gear", &"keycard", &"ui.briefing.step.afterhours.safe", &"secure", &"ui.briefing.step.afterhours.bonus", &"escape"])
 preplanning = {
 "assets": {
+&"asset.alternate_entry": {
+"point_categories": [&"spawn"],
+"point_ids": [&"pp_spawn_vip", &"pp_spawn_alley"]
+},
 &"asset.ammo_bag_drop": {
 "point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]
 },
@@ -23,6 +27,10 @@ preplanning = {
 },
 &"asset.doctor_bag_drop": {
 "point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]
+},
+&"asset.escape_position": {
+"force_variants": {},
+"point_categories": [&"escape"]
 },
 &"asset.inside_keycard": {
 "point_ids": [&"pp_insider_keycard"]

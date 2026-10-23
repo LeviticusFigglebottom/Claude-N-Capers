@@ -46,6 +46,9 @@ static func make_def() -> HeistDef:
 			&"asset.doctor_bag_drop": {"point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]},
 			&"asset.inside_keycard": {"point_ids": [&"pp_insider_keycard"]},  # forces kc_staff_room
 			&"asset.propped_door": {"point_ids": [&"pp_back_door"]},  # forces rear_propped
+			# B 00e1a1e9: listed explicitly (the library's alternate_entry would also offer the free pp_spawn_foyer)
+			&"asset.alternate_entry": {"point_categories": [&"spawn"], "point_ids": [&"pp_spawn_vip", &"pp_spawn_alley"]},
+			&"asset.escape_position": {"force_variants": {}, "point_categories": [&"escape"]},
 			# asset.gear_drop, asset.count_window (point-limited) and asset.intel_safe_code / asset.intel_product
 			# (library, allow-listed to afterhours, D-143) come from the library: no entry needed here.
 		},
