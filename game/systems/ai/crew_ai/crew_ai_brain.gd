@@ -440,6 +440,11 @@ func _revive_threat(c: CrewController, delta: float) -> NpcBase:
 	if c.net_id != _clear_for_net_id:
 		_clear_for_net_id = c.net_id
 		_clear_spent_s = 0.0
+	for n: Node in _rt.npcs(&"special"):  # PD2 parity: the Phantom camping this patient first, whatever the clear budget
+		var ph: NpcBase = n as NpcBase
+		if ph != null and _is_hostile(ph) and _is_pinning_downed(ph) \
+				and (ph.get_node("Brain") as PhantomBrain).victim == c:
+			return ph
 	for role: StringName in HOSTILE_ROLES if tweak.cuffer_clear_first and tweak.cuffer_score_mult < 1.0 else []:
 		for n: Node in _rt.npcs(role):
 			var cop: NpcBase = n as NpcBase
@@ -1207,6 +1212,8 @@ func _tick_scan(delta: float) -> void:
 			var d: float = eye.distance_to(p)
 			# L4.4 / P3 gate: a Stinger tasing a crew member is shot first (killing it breaks the tase).
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
+			if _is_tasing_crew(npc) or _is_pinning_downed(npc):
+				score -= tweak.rescue_priority_m  # PD2: free the tased / kicked teammate before anything else
 			if _is_arresting_crew(npc):  # L2.12: the officer camping a cuffed teammate is shot first
 				score *= tweak.arrester_score_mult
 			elif _is_cuffing(npc):  # LEAD r288: the cop moving in to cuff a downed teammate, first of all
@@ -1270,6 +1277,13 @@ static func _arrester_of(c: CrewController) -> NpcBase:
 func _guarded_by_arrester(c: CrewController) -> bool:
 	var npc: NpcBase = _arrester_of(c)
 	return npc != null and npc.global_position.distance_to(c.global_position) <= tweak.arrester_guard_m
+
+
+## A Phantom whose kick victim is down (camping the body, PD2 cloaker on a downed one).
+static func _is_pinning_downed(npc: NpcBase) -> bool:
+	var pb: PhantomBrain = npc.get_node_or_null("Brain") as PhantomBrain
+	return pb != null and pb.victim != null and is_instance_valid(pb.victim) \
+		and pb.victim.crew_state != Enums.CrewState.NORMAL and pb.victim.crew_state != Enums.CrewState.CUSTODY
 
 
 static func _is_tasing_crew(npc: NpcBase) -> bool:

@@ -87,6 +87,9 @@ extends Resource
 ## L4.4 (P3 gate): a Stinger tasing a crew member scores its distance x this when the AI picks a target
 ## (lower = preferred; 0.25 = shot first unless something is 4x closer) ◇.
 @export var tasing_stinger_score_mult: float = 0.25
+## PD2 parity (LEAD, P's AH Hazardous read: tasers chained the crew): a Stinger tasing a crew member and a Phantom on a
+## downed teammate are TOP priority: their score is lowered by this (m), so they beat any other target in sight ◇.
+@export var rescue_priority_m: float = 1000.0
 ## L2.12 / L6.1: the officer who cuffed a downed crew member (CrewCuffs.cuffed_by_net_id) scores its distance x this
 ## when the AI picks a target (shot first, like a tasing Stinger) ◇.
 @export var arrester_score_mult: float = 0.25
