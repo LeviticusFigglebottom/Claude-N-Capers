@@ -398,10 +398,32 @@ func _dk_copycat() -> bool:
 		return false
 	await _fight(30.0)
 	await shot("copycat_fight")
-	await _fight(FIGHT_S)
 	var cc: PerkCopycat = PerkHooks.of(pilot.crew).component(PerkCopycat.KEY) as PerkCopycat
-	_row("Copycat live in a fight", "PASS" if cc != null else "FAIL", "kills %d, heals %s, reload kills %s, grace cd %.1f" % [
-		_kills, ", ".join(_heal_events), cc.reload_kills if cc != null else {}, cc.grace_cd if cc != null else 0.0],
-		"A PerkCopycat")
+	# Grace (sampled each second): every start of grace_left, the health when it started and the lowest health while
+	# it ran (health immunity: it must not drop).
+	var graces: Array[String] = []
+	var held: bool = true
+	var in_grace: bool = false
+	var g_h0: float = 0.0
+	var g_min: float = 0.0
+	var t_end: float = rt.heist_time_s + FIGHT_S * 2.0
+	while rt.heist_time_s < t_end and not _in_custody():
+		await _fight(1.0)
+		var on: bool = cc != null and cc.grace_left > 0.0
+		if on and not in_grace:
+			g_h0 = _health()
+			g_min = g_h0
+		elif on:
+			g_min = minf(g_min, _health())
+		elif in_grace:
+			graces.append("t=%.0f at %.0f/%.0f, min %.0f in grace" % [rt.heist_time_s, g_h0, _max_health(), g_min])
+			held = held and g_min >= g_h0 - 0.5
+		in_grace = on
+	_row("Copycat live in a fight", "PASS" if cc != null else "FAIL", "kills %d, heals %s, reload kills %s" % [
+		_kills, ", ".join(_heal_events), cc.reload_kills if cc != null else {}], "A PerkCopycat")
+	_row("grace: health immunity under fire", ("PASS" if held else "FAIL") if not graces.is_empty() else "NOTE",
+		"%d grace(s): %s" % [graces.size(), "; ".join(graces)] if not graces.is_empty() else
+		"no grace in %.0f s (health stayed above the threshold)" % (FIGHT_S * 2.0), "-" if held or graces.is_empty()
+		else "A PerkCopycat")
 	_danger_rows("copycat")
 	return cc != null
