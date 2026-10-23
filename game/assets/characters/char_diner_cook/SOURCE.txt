@@ -11,9 +11,9 @@ attach_Hip: bone hips, local [0.1896, 0.0507, 0.0340] (model [0.1896, 1.0040, 0.
 body_faces_culled: 4588
 body_params: {"age": 0.55, "beard_shadow": 0.75, "build": 0.8, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "hair_peak": 0.0, "height": 1.78, "lip": "auto", "skin": 2}
 bones: 52
-look: Diner cook (RT-D1 staff_diner): cook's whites (white band-collar jacket, double row of buttons, sleeves rolled), long cream bib apron, black trousers and shoes, white skull cap
+look: Diner cook (RT-D1 staff_diner): cook's whites (white band-collar jacket, double row of buttons, sleeves rolled), long cream bib apron, black trousers and shoes, white paper cook's cap, red neckerchief, side towel
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25212
-tris_by_mesh: {"Body": 9568, "Gear": 464, "Hair": 1200, "Headwear": 608, "Outfit": 13372}
+tris: 25204
+tris_by_mesh: {"Body": 9568, "Gear": 728, "Hair": 1200, "Headwear": 136, "Outfit": 13572}
