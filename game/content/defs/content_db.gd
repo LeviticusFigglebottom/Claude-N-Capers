@@ -20,10 +20,12 @@ const THROWABLES: StringName = &"throwables"
 const ACHIEVEMENTS: StringName = &"achievements"
 ## Weapon finish defs (B7-04, data/finishes/).
 const FINISHES: StringName = &"finishes"
+## Crew bot abilities and boosts (L6.2, data/bot_crew/; BotCrewDef).
+const BOT_CREW: StringName = &"bot_crew"
 ## Every kind folder ContentDB indexes by `id` (difficulty is indexed by its enum value).
 const KINDS: Array[StringName] = [
 	WEAPONS, MODS, MELEE, ARMOR, DEPLOYABLES, LOOT, DIFFICULTY, MASKS, SKILLS, PERKS, THROWABLES, ACHIEVEMENTS,
-	FINISHES,
+	FINISHES, BOT_CREW,
 ]
 const LOG_CHANNEL: StringName = &"content"
 
@@ -121,6 +123,18 @@ static func all_mods() -> Array:
 
 static func all_melees() -> Array:
 	return all_of(MELEE)
+
+
+## L6.2: the bot abilities (`kind` BotCrewDef.ABILITY) or boosts (BOOST), in picker order (order, then id).
+static func bot_crew(kind: String) -> Array[BotCrewDef]:
+	var out: Array[BotCrewDef] = []
+	for r: Variant in all_of(BOT_CREW):
+		var d: BotCrewDef = r as BotCrewDef
+		if d != null and d.kind == kind:
+			out.append(d)
+	out.sort_custom(func(a: BotCrewDef, b: BotCrewDef) -> bool:
+		return a.order < b.order or (a.order == b.order and id_less(a.id, b.id)))
+	return out
 
 
 static func all_armors() -> Array:

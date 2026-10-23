@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BotCrewDef" format=3]
+
+[ext_resource type="Script" path="res://content/defs/bot_crew_def.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+id = &"bot_boost.revive"
+kind = "boost"
+grants = {
+&"interaction.revive_speed_mult": 0.8
+}
+params = {}
+order = 3
