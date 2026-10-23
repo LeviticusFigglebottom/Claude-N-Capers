@@ -459,6 +459,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_club_offduty_cop",
+			"id": "club_offduty_cop",
+			"scene": "res://world/characters/club_offduty_cop/club_offduty_cop.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_club_patron",
 			"id": "club_patron",
 			"scene": "res://world/characters/club_patron/club_patron.tscn",
@@ -528,6 +534,42 @@
 			"asset": "char_club_patron_l",
 			"id": "club_patron_l",
 			"scene": "res://world/characters/club_patron_l/club_patron_l.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip",
+			"id": "club_vip",
+			"scene": "res://world/characters/club_vip/club_vip.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_b",
+			"id": "club_vip_b",
+			"scene": "res://world/characters/club_vip_b/club_vip_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_c",
+			"id": "club_vip_c",
+			"scene": "res://world/characters/club_vip_c/club_vip_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_d",
+			"id": "club_vip_d",
+			"scene": "res://world/characters/club_vip_d/club_vip_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_e",
+			"id": "club_vip_e",
+			"scene": "res://world/characters/club_vip_e/club_vip_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_vip_f",
+			"id": "club_vip_f",
+			"scene": "res://world/characters/club_vip_f/club_vip_f.tscn",
 			"test": false
 		},
 		{

@@ -1,5 +1,5 @@
 {
-	"_doc": "D-132 D1 scope. ids: the per-character fallback, those keep their glb meshes and materials (no surface merge). only: when not empty, just these ids get the merge (D-165: the Afterhours looks; D1 stays parked for every other cast, D-132 addendum 2). Edit, then run build_char_layers.gd, godot --import and assemble_characters.gd (see world/characters/_tools/char_layers.gd).",
+	"_doc": "D-132 D1 scope. ids: the per-character fallback, those keep their glb meshes and materials (no surface merge). only: when not empty, just these ids get the merge (D-165: the Afterhours club_ looks, not the cartel couriers they borrow; D1 stays parked for every other cast, D-132 addendum 2). Edit, then run build_char_layers.gd, godot --import and assemble_characters.gd (see world/characters/_tools/char_layers.gd).",
 	"ids": [],
 	"only": [
 		"club_bartender",
@@ -25,6 +25,7 @@
 		"club_dancer_k",
 		"club_dancer_l",
 		"club_dj",
+		"club_offduty_cop",
 		"club_patron",
 		"club_patron_b",
 		"club_patron_c",
@@ -36,6 +37,12 @@
 		"club_patron_i",
 		"club_patron_j",
 		"club_patron_k",
-		"club_patron_l"
+		"club_patron_l",
+		"club_vip",
+		"club_vip_b",
+		"club_vip_c",
+		"club_vip_d",
+		"club_vip_e",
+		"club_vip_f"
 	]
 }

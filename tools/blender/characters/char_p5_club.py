@@ -118,6 +118,22 @@ VARIANTS = {
                            "hair_color": "dark", "look": "patron_c"},
     "char_club_patron_d": {"height": 1.76, "build": 0.35, "gender": 0.0, "age": 0.2, "skin": 3, "beard_shadow": 0.3,
                            "hair": "short", "hair_color": "brown", "look": "patron_d"},
+    # D-165 AH special roles: the rare off-duty cop (civ_offduty, a police observer in plain clothes) and the
+    # vip_party pool (+6 VIP patrons on U1/U2: a birthday host and five guests, so the party has no twins with the floor)
+    "char_club_offduty_cop": {"height": 1.82, "build": 0.7, "gender": 0.0, "age": 0.6, "skin": 2, "beard_shadow": 0.8,
+                              "hair": "short", "hair_color": "grey", "look": "offduty_cop"},
+    "char_club_vip": {"height": 1.70, "build": 0.35, "gender": 1.0, "age": 0.3, "skin": 4, "hair": "side_part",
+                      "hair_color": "dark", "lip": "char_lip_rose", "look": "vip"},
+    "char_club_vip_b": {"height": 1.84, "build": 0.55, "gender": 0.0, "age": 0.4, "skin": 6, "beard_shadow": 0.7,
+                        "hair": "buzz", "hair_color": "dark", "look": "vip_b"},
+    "char_club_vip_c": {"height": 1.69, "build": 0.4, "gender": 1.0, "age": 0.28, "skin": 1, "hair": "bob",
+                        "hair_color": "blond", "lip": "char_lip_rose", "look": "vip_c"},
+    "char_club_vip_d": {"height": 1.79, "build": 0.65, "gender": 0.0, "age": 0.35, "skin": 3, "beard_shadow": 0.9,
+                        "hair": "side_part", "hair_color": "brown", "look": "vip_d"},
+    "char_club_vip_e": {"height": 1.73, "build": 0.3, "gender": 1.0, "age": 0.25, "skin": 5, "hair": "short",
+                        "hair_color": "dark", "look": "vip_e"},
+    "char_club_vip_f": {"height": 1.86, "build": 0.45, "gender": 0.0, "age": 0.5, "skin": 1, "beard_shadow": 0.4,
+                        "hair": "short", "hair_color": "grey", "look": "vip_f"},
 }
 
 BLACK = "char_shirt_black"
@@ -716,6 +732,144 @@ def dancer_l(kit: Kit) -> None:
     kit.notes["look"] = "Club dancer: black leather waistcoat over a white tee, black jeans, boots, lime sports watch"
 
 
+# ---------------------------------------------------------------------------------------------
+# D-165 AH special roles
+def offduty_cop(kit: Kit) -> None:
+    """The off-duty cop (civ_offduty): a night out in plain clothes, the job showing only at the belt: a black leather
+    jacket hanging open over a grey henley tucked into jeans, the gold shield badge on a belt clip beside the buckle
+    and a holstered pistol on the right hip under the jacket. Bare head (head shots read clear)."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = g.shoes(fit, "char_shoe_brown", "rubber_black", top_z=0.13, base=0.007, boot=True)
+    kit.add_soft(sh)
+    top = g.knit_top(fit, kit.hull(), "char_knit_grey", tuck, neck="crew", base=0.004, rib=0.02)
+    kit.add_soft(top)
+    tr = n.trousers(kit, "char_denim", sh, belt_z + 0.022 * k, hem_r=0.062)
+    b = n.belt(kit, tr, belt_z, buckle="chrome", height=0.036)
+    a_holster = math.radians(100.0)
+    kit.add_gear(gk.holster(b, a_holster))
+    kit.seats["Hip"] = b.point(a_holster, dz=0.0, out=0.05 * k)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_leather_black", belt_z - 0.06 * k, 1.20 * k, buttons=False, lapel_w=0.05,
+                         neck_w=0.08, flare=0.05, open_below=0.10, pockets=False, chest_welt=False)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    _belt_badge(kit, b, math.radians(-30.0))                                         # AH-G3: the tell
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    kit.notes["hip_note"] = "Hip seat = the holster on the belt (right hip), under the open jacket"
+    kit.notes["look"] = ("Off-duty cop: black leather jacket open over a grey henley, jeans, brown boots, gold shield "
+                         "badge on the belt beside the buckle, holstered pistol on the right hip, grey short hair")
+
+
+def _belt_badge(kit: Kit, belt: gk.Belt, a: float) -> None:
+    """A gold shield on a black leather belt clip (char_police belt_badge, in the diffuse satin gold)."""
+    k = kit.k
+    gp = o.Gear()
+    gp.box((-0.026 * k, -0.040 * k, 0.0), (0.026 * k, 0.026 * k, 0.005 * k), "char_leather_black")
+    gp.bevel(0.002 * k, 1, 30.0)
+    gp.prism([(x, y - 0.006 * k) for x, y in o.shield_outline(0.040 * k, 0.050 * k)], 0.0045 * k, 0.0080 * k,
+             "char_satin_gold")
+    gp.prism([(x, y - 0.008 * k) for x, y in o.shield_outline(0.028 * k, 0.036 * k)], 0.0075 * k, 0.0092 * k,
+             "char_satin_gold")
+    kit.add_gear(gp.to_mesh(belt.frame(a, dz=-0.004 * k), anchor=belt.point(a)))
+
+
+def _vip_band(kit: Kit, side: str = "L") -> None:
+    """The party's gold VIP wristband (every vip_party guest wears one: the party reads as a group)."""
+    n.arm_band(kit, side, 1.87, 0.012, "char_satin_gold", height=0.003)
+
+
+def vip(kit: Kit) -> None:
+    """The birthday host: a black satin mini dress, an ivory satin sash over the right shoulder, gold earrings."""
+    fit, k = kit.fit, kit.k
+    n.shoes(kit, heel=True)
+    d = g.dress(fit, "char_club_satin_black", 0.52 * k, sleeve=0.0, scoop=0.065, flare=0.07)
+    kit.add_soft(d)
+    hips_z = fit.ring_centre("hips").z
+    cgear.StrapLoop(kit, 1.0, hips_z - 0.01 * k, shoulder_in=0.11).build(kit, "char_club_satin_ivory", 0.036,
+                                                                          height=0.003)  # AH-G3: the sash
+    kit.add_head(cg.earrings(fit, "char_satin_gold"))
+    _vip_band(kit)
+    kit.notes["look"] = ("VIP party host (birthday): black satin mini dress, ivory satin sash over the right shoulder, "
+                         "heels, gold drop earrings, gold VIP wristband")
+
+
+def vip_b(kit: Kit) -> None:
+    """A guest in an ivory dinner jacket with black satin lapels over a black open-collar shirt."""
+    k = kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, BLACK, tuck, point_len=0.06, spread=0.36)
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.058)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_silk_ivory", 0.70 * k, 1.04 * k, lapel_mat="char_satin_black",
+                         button_mat="char_button_dark", lapel_w=0.06, neck_w=0.08, flare=0.08)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    n.watch(kit, "R", strap="char_satin_gold", case="char_satin_gold")             # AH-G3: a gold watch
+    _vip_band(kit)
+    kit.notes["look"] = ("VIP party guest: ivory dinner jacket with black satin lapels, black open-collar shirt, "
+                         "black trousers, gold watch, gold VIP wristband")
+
+
+def vip_c(kit: Kit) -> None:
+    """A guest in a coral mini dress with a gold bead necklace."""
+    fit, k = kit.fit, kit.k
+    n.shoes(kit, heel=True)
+    d = g.dress(fit, CORAL, 0.53 * k, sleeve=0.0, scoop=0.06, flare=0.09)
+    kit.add_soft(d)
+    n.bead_necklace(kit, "char_satin_gold", beads=22, r=0.0045)                     # AH-G3: gold beads
+    _vip_band(kit)
+    kit.notes["look"] = "VIP party guest: coral mini dress, heels, gold bead necklace, blond bob, gold VIP wristband"
+
+
+def vip_d(kit: Kit) -> None:
+    """A guest in a black satin shirt worn open at the neck with a gold chain, ivory trousers."""
+    k = kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, mat="char_shoe_brown")
+    n.shirt(kit, "char_satin_black", tuck, point_len=0.06, spread=0.38)
+    tr = n.trousers(kit, "char_silk_ivory", sh, belt_z + 0.022 * k, hem_r=0.058)
+    n.belt(kit, tr, belt_z, buckle="char_satin_gold")
+    n.bead_necklace(kit, "char_satin_gold", beads=24, r=0.0034)                     # AH-G3: a gold chain
+    _vip_band(kit, "R")
+    kit.notes["look"] = ("VIP party guest: black satin shirt open at the neck, gold chain, ivory trousers, brown "
+                         "shoes, gold VIP wristband")
+
+
+def vip_e(kit: Kit) -> None:
+    """A guest in a lime knit top and a black satin midi skirt, gold studs."""
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, tuck = _z(kit)
+    n.shoes(kit, heel=True)
+    top = g.knit_top(fit, kit.hull(), LIME, tuck, sleeve=0.0, neck="crew", base=0.004, rib=0.025)
+    kit.add_soft(top)
+    n0 = len(kit.soft.f)
+    sk = n.skirt(kit, "char_club_satin_black", belt_z + 0.02 * k, 0.40 * k, flare=0.06)
+    n.cull_under(kit, n0, sk, "faces_hidden_by_skirt")
+    kit.add_head(cg.earrings(fit, "char_satin_gold", drop=False))                    # AH-G3: gold studs
+    _vip_band(kit)
+    kit.notes["look"] = ("VIP party guest: sleeveless lime knit top, black satin midi skirt, heels, gold studs, "
+                         "short dark hair, gold VIP wristband")
+    del hips_z
+
+
+def vip_f(kit: Kit) -> None:
+    """An older guest: a midnight velvet blazer over a white tee, black trousers, white trainers, a pocket square."""
+    k = kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = _trainers(kit)
+    tee = g.knit_top(kit.fit, kit.hull(), "char_shirt_white", tuck, neck="crew", base=0.004, rib=0.02)
+    kit.add_soft(tee)
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.056)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_velvet_midnight", 0.72 * k, 1.02 * k, button_mat="char_button_dark",
+                         lapel_w=0.055, neck_w=0.08, flare=0.08)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    crew._pocket_square(kit, "char_satin_gold", Hull(kit.fit, [jk]))                # AH-G3: a gold pocket square
+    _vip_band(kit)
+    kit.notes["look"] = ("VIP party guest (older): midnight velvet blazer over a white tee, black trousers, white "
+                         "trainers, gold pocket square, gold VIP wristband")
+
+
 _looks = {"bouncer": bouncer, "bouncer_b": bouncer_b, "bartender": bartender, "bartender_b": bartender_b, "dj": dj,
           "patron": patron, "patron_b": patron_b, "patron_c": patron_c, "patron_d": patron_d,
           "bouncer_c": bouncer_c, "bouncer_d": bouncer_d, "bouncer_e": bouncer_e, "bouncer_f": bouncer_f,
@@ -724,7 +878,9 @@ _looks = {"bouncer": bouncer, "bouncer_b": bouncer_b, "bartender": bartender, "b
           "patron_j": patron_j, "patron_k": patron_k, "patron_l": patron_l,
           "dancer": dancer, "dancer_b": dancer_b, "dancer_c": dancer_c, "dancer_d": dancer_d, "dancer_e": dancer_e,
           "dancer_f": dancer_f, "dancer_g": dancer_g, "dancer_h": dancer_h, "dancer_i": dancer_i, "dancer_j": dancer_j,
-          "dancer_k": dancer_k, "dancer_l": dancer_l}
+          "dancer_k": dancer_k, "dancer_l": dancer_l,
+          "offduty_cop": offduty_cop, "vip": vip, "vip_b": vip_b, "vip_c": vip_c, "vip_d": vip_d, "vip_e": vip_e,
+          "vip_f": vip_f}
 
 
 def recipe(kit: Kit) -> None:
