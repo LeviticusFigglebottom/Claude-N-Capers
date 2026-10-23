@@ -31,8 +31,8 @@ G2 batch 1 (LEAD 2026-10-23, C's FURNITURE boxes):
   mid / high top box (two 10" cones and a horn), brass corner caps, a magenta LED status pip; the grilles face +Y.
 * ``prop_ah_vip_sofa`` (VIPSofa, 3.0 x 0.9, back 0.9): a deco sofa in red velvet, a tufted back, rolled arms, a
   brass plinth band on brass feet. Markers ``Seat0..2`` at the seat front, facing out (+Y).
-* ``prop_ah_vip_coffee_table`` (VIPCoffeeTable, 1.2 x 0.6, 0.45 high): black lacquer with a brass edge and a dark stone
-  top, a brass tray with two coupes.
+* ``prop_ah_vip_coffee_table`` (VIPCoffeeTable, 1.2 x 0.6, top 0.40): a dark stone top on a brass edge band, four slim
+  brass legs (the floor shows under it), a brass tray with two coupes.
 * ``prop_ah_bottle_table`` (VIPTable2, 0.8 x 0.6, 0.75 high): the bottle-service table: a stone top on brass legs, an
   ice bucket with two bottles in it, a sparkler stick on the hottest one, two coupes.
 * ``prop_ah_high_table`` (HighTable1/2, 0.7 round, 1.05 high): a poseur table, dark stone top on a brass column and a
@@ -52,6 +52,24 @@ G2 batch 2 (back of house dressing, C's FURNITURE boxes):
   red with one yellow), the top crates of the shorter columns loaded with empties.
 * ``prop_ah_flight_cases`` (FlightCases, 1.6 x 0.8, 1.0 high): two black road cases with aluminium edges, ball
   corners and butterfly latches, a smaller one stacked on the big one, a VELVET stencil.
+
+G2 batch 3 (C's club list):
+
+* ``prop_ah_bar_counter_2m`` (MainBarCounter / EastBarCounter / VIPBarCounter, modular: 2.0 x 0.6, top 1.05): the
+  customer side (+Y) a black lacquer front with brass deco fins, a warm LED strip under the stone top's lip, a brass
+  footrail on brackets, a recessed brass kick; the bartender side (-Y) open with an under-counter shelf. Tiles end to
+  end along X (C turns it to its bar).
+* ``prop_ah_bar_counter_end`` (0.6 x 0.6, top 1.05): the end cap in the same profile, the footrail returning round it.
+* ``prop_ah_box_office_counter`` (BoxOfficeCounter, 4.4 x 0.6, top 1.05): a walnut front with brass bands and a stone
+  top, a recessed cash tray at the window end (-X), a call bell, a ticket roll, a card reader; the cloakroom hatch end
+  (+X) has a brass coat-check ticket rail.
+* ``prop_ah_marquee`` (the entrance marquee, 12.0 x 2.8): a black canopy with a lit fascia, VELVET in magenta neon on
+  the street side (+Y), rows of lamp bulbs along the fascia, a grid of bulbs on the soffit. Pivot = the wall-side
+  soffit centre (the canopy rises 0.9 above it and reaches 2.8 out along +Y): place it at the soffit height (~4.0).
+* ``prop_ah_ice_bucket`` (small loot BottleServiceU1/U2): an ice bucket with a bottle in it, pivot at its base.
+* ``prop_ah_tip_jar`` (TipJarCloak): a glass jar with folded notes and a plain ivory label.
+* ``prop_ah_till`` (TillMainBar / TillEastBar / TillVIPBar / TillBoxOffice): a POS till: cash drawer, a tilted touch
+  screen on a stalk, a receipt printer; the operator side is -Y.
 """
 
 from __future__ import annotations
@@ -63,6 +81,7 @@ from _pb import Kit, lettering
 TRI_BUDGET = 20000
 _FLOOR = {"place": "floor", "group": "afterhours", "pin_only": True}
 _HUNG = {"place": "ceiling", "group": "afterhours", "pin_only": True}
+_ON = {"place": "on", "group": "afterhours", "pin_only": True}
 VARIANTS = {
     "prop_ah_dj_booth": {"fn": "dj_booth", "cat": dict(_FLOOR, kind="dj_booth", surface="wood")},
     "prop_ah_back_bar": {"fn": "back_bar", "cat": dict(_FLOOR, kind="back_bar", surface="wood")},
@@ -84,6 +103,15 @@ VARIANTS = {
     "prop_ah_bottle_bank": {"fn": "bottle_bank", "cat": dict(_FLOOR, kind="bin", surface="plastic")},
     "prop_ah_crates": {"fn": "crates", "cat": dict(_FLOOR, kind="crate", surface="plastic")},
     "prop_ah_flight_cases": {"fn": "flight_cases", "cat": dict(_FLOOR, kind="crate", surface="wood")},
+    # G2 batch 3
+    "prop_ah_bar_counter_2m": {"fn": "bar_counter", "end": False, "cat": dict(_FLOOR, kind="counter", surface="wood")},
+    "prop_ah_bar_counter_end": {"fn": "bar_counter", "end": True, "cat": dict(_FLOOR, kind="counter", surface="wood")},
+    "prop_ah_box_office_counter": {"fn": "box_office_counter", "cat": dict(_FLOOR, kind="counter", surface="wood")},
+    "prop_ah_marquee": {"fn": "marquee", "cat": {"place": "wall", "group": "afterhours", "pin_only": True,
+                                                 "kind": "sign", "surface": "metal"}},
+    "prop_ah_ice_bucket": {"fn": "ice_bucket", "cat": dict(_ON, kind="loot_visual", surface="metal")},
+    "prop_ah_tip_jar": {"fn": "tip_jar", "cat": dict(_ON, kind="loot_visual", surface="glass")},
+    "prop_ah_till": {"fn": "till", "cat": dict(_ON, kind="loot_visual", surface="plastic")},
 }
 
 LACQUER = "plastic_black"
@@ -358,12 +386,18 @@ def _coupe(t, x: float, y: float, z: float) -> None:
 
 
 def _vip_coffee_table(k: Kit, p: dict) -> None:
-    hx, hy, top = 0.6, 0.3, 0.45
+    """LEAD r-AH-G2: a low table, not a block: a stone top at 0.40 on a brass edge band, four slim brass legs and a
+    recessed brass stretcher, the floor showing under it."""
+    hx, hy, top = 0.6, 0.3, 0.40
     body = k.obj("Body")
-    c = body.part(bevel=0.006)
+    c = body.part(bevel=0.004)
     t = body.part(bevel=0.0015)
-    c.bx((-hx + 0.04, -hy + 0.04, 0.0), (hx - 0.04, hy - 0.04, top - 0.05), LACQUER)       # plinth
-    t.bx((-hx, -hy, top - 0.05), (hx, hy, top - 0.03), "brass")                             # brass edge
+    for x in (-hx + 0.06, hx - 0.06):                                                       # brass legs
+        for y in (-hy + 0.05, hy - 0.05):
+            t.rod((x, y, 0.0), (x, y, top - 0.05), 0.014, "brass", segs=8)
+    for y in (-hy + 0.05, hy - 0.05):                                                       # recessed stretchers
+        t.rod((-hx + 0.06, y, 0.10), (hx - 0.06, y, 0.10), 0.008, "brass", segs=6)
+    t.bx((-hx, -hy, top - 0.05), (hx, hy, top - 0.03), "brass")                             # brass edge band
     c.bx((-hx + 0.01, -hy + 0.01, top - 0.03), (hx - 0.01, hy - 0.01, top), "stone_dark")  # top
     t.cyl(0.17, 0.012, (0.18, 0.02, top + 0.006), "brass", segs=20)                         # tray
     for x in (0.12, 0.25):
@@ -563,6 +597,144 @@ def _flight_cases(k: Kit, p: dict) -> None:
             t.cyl(0.04, 0.03, (x, y, 0.04), "rubber", segs=10, axis="X")
     _flight_case(c, t, -0.62, 0.30, -0.28, 0.28, 0.64, 1.0)                                 # the small one on top
     lettering(t, "VELVET", 0.08, -0.30, 0.392, 0.30, "paint_ivory", stroke=0.012, depth=0.003)
+    body.build()
+
+
+# ------------------------------------------------------------------------------------------- G2 batch 3
+
+def _bar_counter(k: Kit, p: dict) -> None:
+    end = bool(p.get("end", False))
+    hx, hy, top = (0.3 if end else 1.0), 0.3, 1.05
+    fy = hy - 0.06                                                                           # the front panel face
+    body = k.obj("Body")
+    c = body.part(bevel=0.004)
+    t = body.part(bevel=0.0015)
+    c.bx((-hx, -hy + 0.05, 0.12), (hx, fy, top - 0.05), LACQUER)                            # the front body
+    c.bx((-hx, -hy + 0.05, 0.0), (hx, fy - 0.05, 0.12), LACQUER)                            # recessed plinth
+    t.bx((-hx, fy - 0.052, 0.0), (hx, fy - 0.048, 0.06), "brass")                           # kick strip
+    c.bx((-hx, -hy, top - 0.05), (hx, hy - 0.02, top), "stone_dark")                       # top, lip over the front
+    t.bx((-hx, hy - 0.05, top - 0.065), (hx, hy - 0.035, top - 0.05), "emit_warm")         # LED strip under the lip
+    n = 2 if end else 7                                                                      # brass deco fins
+    for i in range(n):
+        x = -hx + (i + 0.5) * (2 * hx / n)
+        t.bx((x - 0.012, fy, 0.18), (x + 0.012, fy + 0.015, top - 0.12), "brass")
+    t.bx((-hx, fy, top - 0.10), (hx, fy + 0.012, top - 0.075), "brass")                    # top band
+    # the footrail on brackets, 0.25 up, inside the footprint
+    ry = hy - 0.025
+    t.rod((-hx, ry, 0.25), (hx, ry, 0.25), 0.022, "brass", segs=10)
+    for x in ((0.0,) if end else (-0.75, 0.0, 0.75)):
+        t.rod((x, fy, 0.25), (x, ry, 0.25), 0.010, "brass", segs=6)
+    # the bartender side: an under-counter shelf with glass racks
+    c.bx((-hx, -hy + 0.05, 0.55), (hx, -hy + 0.30, 0.58), "metal_dark")
+    if not end:
+        for x in (-0.6, 0.0, 0.6):
+            t.bx((x - 0.22, -hy + 0.06, 0.58), (x + 0.22, -hy + 0.28, 0.62), "plastic_black")
+            for gx in range(4):
+                t.cyl(0.03, 0.09, (x - 0.15 + gx * 0.10, -hy + 0.17, 0.665), "glass", segs=8)
+    body.build()
+
+
+def _box_office_counter(k: Kit, p: dict) -> None:
+    hx, hy, top = 2.2, 0.3, 1.05
+    body = k.obj("Body")
+    c = body.part(bevel=0.004)
+    t = body.part(bevel=0.0015)
+    c.bx((-hx, -hy, 0.0), (hx, hy - 0.04, top - 0.05), "walnut")                            # the counter body
+    c.bx((-hx - 0.01, -hy, top - 0.05), (hx + 0.01, hy, top), "stone_dark")                # top
+    for z0, z1 in ((0.0, 0.06), (0.46, 0.49), (top - 0.12, top - 0.09)):                     # brass bands
+        t.bx((-hx, hy - 0.04, z0), (hx, hy - 0.025, z1), "brass")
+    for i in range(8):                                                                       # raised panels
+        x0 = -hx + 0.06 + i * 0.545
+        t.bx((x0, hy - 0.04, 0.10), (x0 + 0.48, hy - 0.03, 0.42), "wood_dark")
+        t.bx((x0, hy - 0.04, 0.53), (x0 + 0.48, hy - 0.03, 0.88), "wood_dark")
+    # the window end (-X): a recessed cash tray, a call bell, a ticket roll, a card reader
+    t.bx((-1.90, -0.10, top - 0.02), (-1.50, 0.18, top + 0.002), "metal_grey")
+    t.cyl(0.04, 0.03, (-1.25, 0.12, top + 0.015), "brass", segs=14)
+    t.sphere(0.03, (-1.25, 0.12, top + 0.035), "brass", segs=10, rings=5)
+    t.cyl(0.045, 0.10, (-1.0, 0.0, top + 0.045), "paint_ivory", segs=12, axis="X")         # ticket roll
+    t.bx((-0.75, -0.04, top), (-0.67, 0.04, top + 0.03), "plastic_black")                   # card reader
+    t.bx((-0.74, -0.03, top + 0.03), (-0.68, 0.0, top + 0.032), "emit_screen")
+    # the hatch end (+X): a brass coat-check ticket rail with hanging tags
+    t.rod((1.3, 0.10, top + 0.14), (2.05, 0.10, top + 0.14), 0.006, "brass", segs=6)
+    for x in (1.3, 2.05):
+        t.rod((x, 0.10, top), (x, 0.10, top + 0.14), 0.006, "brass", segs=6)
+    for i in range(9):
+        x = 1.38 + i * 0.08
+        t.bx((x - 0.02, 0.098, top + 0.06), (x + 0.02, 0.102, top + 0.135), "paint_ivory")
+    body.build()
+
+
+def _marquee(k: Kit, p: dict) -> None:
+    hx, d = 6.0, 2.8
+    z0, z1 = 0.0, 0.9                                                                         # soffit, canopy top
+    body = k.obj("Body")
+    c = body.part(bevel=0.01)
+    t = body.part(bevel=0.0)
+    c.bx((-hx, 0.0, z0 + 0.15), (hx, d - 0.05, z1 - 0.05), LACQUER)                         # the canopy box
+    c.bx((-hx - 0.03, d - 0.08, z0), (hx + 0.03, d, z1), "metal_dark")                      # the street fascia
+    for sx in (-1, 1):                                                                       # side fascias
+        c.bx((sx * hx - 0.04, 0.0, z0), (sx * hx + 0.04, d, z1), "metal_dark")
+    c.bx((-hx, 0.0, z0), (hx, d, z0 + 0.15), "metal_dark")                                  # soffit frame
+    t.bx((-hx + 0.05, 0.05, z0 - 0.002), (hx - 0.05, d - 0.10, z0), "plastic_grey")         # soffit panel
+    t.bx((-hx, d - 0.10, z1), (hx, d, z1 + 0.04), "brass")                                  # top band
+    lettering(t, "VELVET", 0.46, 0.0, d, z0 + 0.22, MAGENTA, stroke=0.05, depth=0.04, round_tube=True)
+    # the lamp bulbs: two rows along the street fascia and the sides, a grid on the soffit
+    for z in (z0 + 0.08, z1 - 0.06):
+        x = -hx + 0.15
+        while x < hx - 0.1:
+            t.cyl(0.025, 0.03, (x, d + 0.015, z), "emit_warm", segs=6, axis="Y")
+            x += 0.30
+        for sx in (-1, 1):
+            y = 0.2
+            while y < d - 0.1:
+                t.cyl(0.025, 0.03, (sx * (hx + 0.055), y, z), "emit_warm", segs=6, axis="X")
+                y += 0.30
+    for xi in range(16):
+        for yi in range(4):
+            t.cyl(0.035, 0.02, (-hx + 0.4 + xi * 0.75, 0.40 + yi * 0.62, z0 - 0.01), "emit_warm", segs=8)
+    body.build()
+    k.empty("Mount", (0.0, 0.0, 0.0))
+
+
+def _ice_bucket(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    t = body.part(bevel=0.0015)
+    t.cyl(0.11, 0.22, (0.0, 0.0, 0.11), "metal_grey", segs=20)
+    t.cyl(0.10, 0.012, (0.0, 0.0, 0.21), "paint_ivory", segs=16)                             # ice
+    t.cyl(0.036, 0.26, (0.02, 0.0, 0.20), "metal_green", segs=10)
+    t.cyl(0.014, 0.10, (0.02, 0.0, 0.38), "metal_green", segs=8)
+    t.cyl(0.016, 0.03, (0.02, 0.0, 0.42), "brass", segs=8)                                    # foil
+    for sx in (-1, 1):                                                                        # ring handles
+        t.rod((sx * 0.11, -0.03, 0.17), (sx * 0.125, 0.03, 0.17), 0.006, "metal_grey", segs=6)
+    body.build()
+
+
+def _tip_jar(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    t = body.part(bevel=0.001)
+    t.cyl(0.06, 0.16, (0.0, 0.0, 0.08), "glass", segs=14)
+    t.cyl(0.05, 0.02, (0.0, 0.0, 0.17), "glass", segs=14)                                     # the neck
+    for i in range(5):                                                                        # folded notes
+        a = i * 1.26
+        t.bx((0.025 * math.cos(a) - 0.02, 0.025 * math.sin(a) - 0.006, 0.01 + i * 0.022),
+             (0.025 * math.cos(a) + 0.02, 0.025 * math.sin(a) + 0.006, 0.04 + i * 0.022), "paint_sage")
+    t.bx((-0.04, 0.058, 0.06), (0.04, 0.062, 0.10), "paint_ivory")                           # label (no lettering:
+    #                                                                                          2 cm text cost 2k tris)
+    body.build()
+
+
+def _till(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    c = body.part(bevel=0.004)
+    t = body.part(bevel=0.0015)
+    c.bx((-0.20, -0.20, 0.0), (0.20, 0.20, 0.10), "plastic_black")                           # cash drawer
+    t.bx((-0.16, -0.205, 0.03), (0.16, -0.20, 0.07), "metal_dark")                           # drawer front (-Y)
+    t.rod((0.0, 0.0, 0.10), (0.0, 0.0, 0.24), 0.02, "metal_dark", segs=8)                   # screen stalk
+    scr = (-0.15, -0.02, 0.22), (0.15, 0.01, 0.42)
+    t.bx(scr[0], scr[1], "plastic_black")                                                     # screen (tilted read)
+    t.bx((-0.13, -0.022, 0.24), (0.13, -0.02, 0.40), "emit_screen")
+    t.bx((0.10, 0.04, 0.10), (0.20, 0.18, 0.18), "plastic_grey")                              # receipt printer
+    t.bx((0.12, 0.06, 0.18), (0.18, 0.062, 0.24), "paint_ivory")                              # receipt
     body.build()
 
 

@@ -41,11 +41,6 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
-"M_pr_plastic_black": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_plastic_black.tres",
-"use_external/path": "res://world/props/materials/pr_plastic_black.tres"
-},
 "M_pr_stone_dark": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_stone_dark.tres",
