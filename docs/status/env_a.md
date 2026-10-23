@@ -4,6 +4,25 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-53) AH-A1..A3 on C's G1, the rappel-link nav fix, the VO-coverage fix (2026-10-23)
+- **AH-A1 (d7f88cf2, 6b24b1dd, f7b40fd8):** AfterhoursMission (world/heists/afterhours/afterhours_mission.gd).
+  - Objectives casing → … → escape, the loud lockdown, escape_wait (2nd FADE + 300 s), rare events, VO hooks on B's ids.
+  - test_ah_a1_mission on a synthetic map.
+  - f7b40fd8: the gear line is built with "%s" so B's vo_coverage scanner sees it.
+- **AH-A2:**
+  - 9a335a1d: the co_op_pickup couriers are calm guards on their route and alarm when the product is gone.
+  - cef43029: off_duty_cop is a calm police observer with no pager.
+  - test_ah_a1_mission 6/6.
+- **AH-A3 (63a1e372):** test_ah_mission_map on C's real map.
+  - Covers markers, D-143 data, 4 guards, the stealth line by facts, and the loud lockdown on ClubLights / ClubSound.
+  - 4/4 on C's env/c-worlds 17b2bf29, after C fixed the courier tags + graph and OffDutyCop POLICE + scripted, both per
+    my contract. SKIPs without the map.
+- **Rappel links (88c955bc):** the runtime RappelLinks (rappel_links.gd) were on nav layer 1, so the crew pathed down
+  skylight drops (OF lantern, 8.6 m).
+  - C traced it. Now on Door.NAV_LAYER_BREACH (police / specials only).
+  - test_qc41_rappel asserts it.
+  - OF auto_loud seed 1: was a timeout with 336 STUCK at the lantern; now PASS at 1250 s, 9 STUCK, none there.
+
 ### (-52) All-shipped-heists harness sweep (LEAD r296..299), Routine, headless, real menus (2026-10-23)
 Code: env/a-core (trunk r294..299 + A). `DIRECT=1 HEADLESS=1 run_po5.sh <flow> <seed> 3000 <out> "<Heist>" Routine`, plus
 the X4 stealth tests.
