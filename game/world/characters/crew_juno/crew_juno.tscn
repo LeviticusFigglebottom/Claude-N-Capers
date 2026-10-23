@@ -1,0 +1,357 @@
+[gd_scene format=3 uid="uid://dahwdk5xquk7o"]
+
+[ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
+[ext_resource type="PackedScene" path="res://assets/characters/char_crew_juno/char_crew_juno.glb" id="1_glb"]
+
+[sub_resource type="BoxShape3D" id="ragdoll_hips"]
+size = Vector3(0.2916, 0.1945, 0.1944)
+
+[sub_resource type="BoxShape3D" id="ragdoll_spine"]
+size = Vector3(0.2721, 0.1558, 0.1847)
+
+[sub_resource type="BoxShape3D" id="ragdoll_chest"]
+size = Vector3(0.3232, 0.24319999, 0.2138)
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_head"]
+radius = 0.0923
+height = 0.243
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_upper_arm_l"]
+radius = 0.0486
+height = 0.2819
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_forearm_l"]
+radius = 0.0408
+height = 0.3353
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_upper_arm_r"]
+radius = 0.0486
+height = 0.2819
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_forearm_r"]
+radius = 0.0408
+height = 0.3353
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_thigh_l"]
+radius = 0.0729
+height = 0.4084
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_shin_l"]
+radius = 0.0535
+height = 0.4672
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_thigh_r"]
+radius = 0.0729
+height = 0.4084
+
+[sub_resource type="CapsuleShape3D" id="ragdoll_shin_r"]
+radius = 0.0535
+height = 0.4672
+
+[node name="CrewJuno" unique_id=350119301 instance=ExtResource("1_glb")]
+
+[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="4" unique_id=627167731]
+transform = Transform3D(1, -1.5543122e-15, 1.01338856e-07, 4.050318e-09, 0.99920094, -0.03996805, -1.01257896e-07, 0.03996805, 0.99920094, -9.285387e-16, 1.1808709, 0.014578665)
+bone_name = "chest"
+bone_idx = 3
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=786825067]
+transform = Transform3D(0.643, 0, 0.766, -0.76539, -0.03997, 0.64248997, 0.03062, -0.9992, -0.0257, 0.0486, 0.0022, 0.4195)
+
+[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=302567785]
+transform = Transform3D(0.073912665, -0.7032335, -0.70710635, 0.073912926, -0.70323277, 0.70710707, -0.99452174, -0.10452846, 2.686648e-07, -0.5436722, 1.0181875, -0.008411638)
+bone_name = "hand.L"
+bone_idx = 9
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/HandL" index="0" unique_id=506478113]
+transform = Transform3D(0, 0.95106, -0.30901998, 0, -0.30901998, -0.95106, -1, 0, 0, 0.0117, 0.07, -0.029199999)
+
+[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=302567791]
+transform = Transform3D(0.07391262, 0.7032335, 0.70710635, -0.073912956, -0.70323294, 0.707107, 0.9945218, -0.10452845, 2.4096306e-07, 0.5436724, 1.0181875, -0.008411644)
+bone_name = "hand.R"
+bone_idx = 28
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/HandR" index="0" unique_id=666581863]
+transform = Transform3D(0, -0.95106, 0.30901998, 0, -0.30901998, -0.95106, 1, 0, 0, -0.0117, 0.07, -0.029199999)
+
+[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=627387636]
+transform = Transform3D(1, -5.3290705e-15, -1.4210855e-14, 1.7763568e-15, 1, -1.4901161e-08, -1.4210855e-14, 1.4901161e-08, 1.0000001, -5.688378e-16, 1.5404778, 0.011662932)
+bone_name = "head"
+bone_idx = 5
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/Head" index="0" unique_id=7786316]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0787, -0.0862)
+
+[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=572151619]
+transform = Transform3D(1, 5.551115e-17, 2.9802326e-08, 1.4882577e-09, 0.99875236, -0.04993764, -2.9765141e-08, 0.04993764, 0.99875236, 0, 0.92817414, 0)
+bone_name = "hips"
+bone_idx = 1
+
+[node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=885615291]
+transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.17199999, 0.049799997, 0.0422)
+
+[node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="9" unique_id=952836775]
+active = false
+
+[node name="Hips" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="0" unique_id=96764650]
+transform = Transform3D(1, 0, 0, 0, 0.99875, -0.049939997, 0, 0.049939997, 0.99875, 0, 0.92829996, 0)
+collision_layer = 1024
+collision_mask = 1027
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0001, 0)
+mass = 12.0
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "hips"
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/Hips" index="0" unique_id=521824234]
+shape = SubResource("ragdoll_hips")
+
+[node name="Spine" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="1" unique_id=1059038773]
+transform = Transform3D(1, 0, 0, 0, 0.99805, -0.062379997, 0, 0.062379997, 0.99805, 0, 1.1031, 0.009699999)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 2
+joint_offset = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, -0.0779, 0)
+joint_rotation = Vector3(0, 0, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0779, 0)
+mass = 9.0
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "spine"
+joint_constraints/swing_span = 30.0
+joint_constraints/twist_span = 30.0
+joint_constraints/bias = 0.3
+joint_constraints/softness = 0.8
+joint_constraints/relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/Spine" index="0" unique_id=877893493]
+shape = SubResource("ragdoll_spine")
+
+[node name="Chest" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="2" unique_id=1039772365]
+transform = Transform3D(1, 0, 0, 0, 0.9992, -0.03997, 0, 0.03997, 0.9992, 0, 1.3024, 0.019399999)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 2
+joint_offset = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, -0.121599995, 0)
+joint_rotation = Vector3(0, 0, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.121599995, 0)
+mass = 15.0
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "chest"
+joint_constraints/swing_span = 30.0
+joint_constraints/twist_span = 30.0
+joint_constraints/bias = 0.3
+joint_constraints/softness = 0.8
+joint_constraints/relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/Chest" index="0" unique_id=204779021]
+shape = SubResource("ragdoll_chest")
+
+[node name="Head" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="3" unique_id=96759784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6036999, 0.0117)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 2
+joint_offset = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, -0.0632, 0)
+joint_rotation = Vector3(0, 0, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0632, 0)
+mass = 5.5
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "head"
+joint_constraints/swing_span = 39.999996
+joint_constraints/twist_span = 45.0
+joint_constraints/bias = 0.3
+joint_constraints/softness = 0.8
+joint_constraints/relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/Head" index="0" unique_id=849582952]
+shape = SubResource("ragdoll_head")
+
+[node name="UpperArmL" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="4" unique_id=638751822]
+transform = Transform3D(-0.70711, -0.70711, 0, 0.70711, -0.70711, 0, 0, 0, 1, -0.2697, 1.2921, 0.0175)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 2
+joint_offset = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, -0.1409, 0)
+joint_rotation = Vector3(0, 0, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1409, 0)
+mass = 2.5
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "upper_arm.L"
+joint_constraints/swing_span = 79.99999
+joint_constraints/twist_span = 45.0
+joint_constraints/bias = 0.3
+joint_constraints/softness = 0.8
+joint_constraints/relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/UpperArmL" index="0" unique_id=833680462]
+shape = SubResource("ragdoll_upper_arm_l")
+
+[node name="ForearmL" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="5" unique_id=32223342]
+transform = Transform3D(-0.70711, -0.70322996, -0.07391, 0.70711, -0.70322996, -0.07391, 0, -0.10453, 0.99451995, -0.48729998, 1.0745, 0)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 3
+joint_offset = Transform3D(0, 0, 1, 1, 0, 0, 0, 1, 0, 0, -0.1677, 0)
+joint_rotation = Vector3(0, 1.5707964, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1677, 0)
+mass = 2.0
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "forearm.L"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 139.99998
+joint_constraints/angular_limit_lower = 0.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/ForearmL" index="0" unique_id=171354222]
+shape = SubResource("ragdoll_forearm_l")
+
+[node name="UpperArmR" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="6" unique_id=638751828]
+transform = Transform3D(-0.70711, 0.70711, 0, -0.70711, -0.70711, 0, 0, 0, 1, 0.2697, 1.2921, 0.0175)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 2
+joint_offset = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, -0.1409, 0)
+joint_rotation = Vector3(0, 0, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1409, 0)
+mass = 2.5
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "upper_arm.R"
+joint_constraints/swing_span = 79.99999
+joint_constraints/twist_span = 45.0
+joint_constraints/bias = 0.3
+joint_constraints/softness = 0.8
+joint_constraints/relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/UpperArmR" index="0" unique_id=1066295508]
+shape = SubResource("ragdoll_upper_arm_r")
+
+[node name="ForearmR" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="7" unique_id=32223348]
+transform = Transform3D(-0.70711, 0.70322996, 0.07391, -0.70711, -0.70322996, -0.07391, 0, -0.10453, 0.99451995, 0.48729998, 1.0745, 0)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 3
+joint_offset = Transform3D(0, 0, 1, 1, 0, 0, 0, 1, 0, 0, -0.1677, 0)
+joint_rotation = Vector3(0, 1.5707964, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1677, 0)
+mass = 2.0
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "forearm.R"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 139.99998
+joint_constraints/angular_limit_lower = 0.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/ForearmR" index="0" unique_id=403969268]
+shape = SubResource("ragdoll_forearm_r")
+
+[node name="ThighL" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="8" unique_id=618181686]
+transform = Transform3D(-0.99992996, -0.011899999, -0.00034, 0.011899999, -0.99952, -0.02856, 0, -0.02856, 0.99959, -0.089899994, 0.6949, -0.0058)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 2
+joint_offset = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, -0.2042, 0)
+joint_rotation = Vector3(0, 0, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2042, 0)
+mass = 10.0
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "thigh.L"
+joint_constraints/swing_span = 69.99999
+joint_constraints/twist_span = 30.0
+joint_constraints/bias = 0.3
+joint_constraints/softness = 0.8
+joint_constraints/relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/ThighL" index="0" unique_id=1025073718]
+shape = SubResource("ragdoll_thigh_l")
+
+[node name="ShinL" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="9" unique_id=1058751252]
+transform = Transform3D(-0.99992996, -0.01188, 0.00068, 0.011899999, -0.99829996, 0.05704, 0, 0.057049997, 0.99837, -0.0951, 0.25759998, 0.0016999999)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 3
+joint_offset = Transform3D(0, 0, -1, 1, 0, 0, 0, -1, 0, 0, -0.23359999, 0)
+joint_rotation = Vector3(0, -1.5707964, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23359999, 0)
+mass = 4.5
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "shin.L"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 139.99998
+joint_constraints/angular_limit_lower = 0.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/ShinL" index="0" unique_id=261037972]
+shape = SubResource("ragdoll_shin_l")
+
+[node name="ThighR" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="10" unique_id=618181692]
+transform = Transform3D(-0.99992996, 0.011899999, 0.00034, -0.011899999, -0.99952, -0.02856, 0, -0.02856, 0.99959, 0.089899994, 0.6949, -0.0058)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 2
+joint_offset = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, -0.2042, 0)
+joint_rotation = Vector3(0, 0, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2042, 0)
+mass = 10.0
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "thigh.R"
+joint_constraints/swing_span = 69.99999
+joint_constraints/twist_span = 30.0
+joint_constraints/bias = 0.3
+joint_constraints/softness = 0.8
+joint_constraints/relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/ThighR" index="0" unique_id=183946940]
+shape = SubResource("ragdoll_thigh_r")
+
+[node name="ShinR" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="11" unique_id=1058751258]
+transform = Transform3D(-0.99992996, 0.01188, -0.00068, -0.011899999, -0.99829996, 0.05704, 0, 0.057049997, 0.99837, 0.0951, 0.25759998, 0.0016999999)
+collision_layer = 1024
+collision_mask = 1027
+joint_type = 3
+joint_offset = Transform3D(0, 0, -1, 1, 0, 0, 0, -1, 0, 0, -0.23359999, 0)
+joint_rotation = Vector3(0, -1.5707964, 1.5707964)
+body_offset = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.23359999, 0)
+mass = 4.5
+friction = 0.9
+linear_damp = 0.4
+angular_damp = 3.0
+bone_name = "shin.R"
+joint_constraints/angular_limit_enabled = true
+joint_constraints/angular_limit_upper = 139.99998
+joint_constraints/angular_limit_lower = 0.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="Shape" type="CollisionShape3D" parent="Skeleton3D/Ragdoll/ShinR" index="0" unique_id=493653018]
+shape = SubResource("ragdoll_shin_r")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="1" unique_id=938780513]
+libraries/humanoid = ExtResource("1_anim")

@@ -10,4 +10,4 @@ fit: crew face envelope (_crew_face_envelope.json), clearance 3.0 mm, max lift 3
 pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
 tri_budget: 8000
 tris_lod0: 4957
-uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.1028 m, z -0.1157..0.1178 m
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.1027 m, z -0.1157..0.1178 m

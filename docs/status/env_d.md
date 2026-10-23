@@ -26,6 +26,18 @@ game/assets/characters/_review, and this file's session entries.
 GAP fix order: D4-03 is the only gap and no shipped heist shows it, so it goes after anything the LEAD queues for a
 shipped heist. Nothing is Afterhours-only parked: that cast and its clips already exist.
 
+**D4-03 fixed (LEAD-approved picks):** `char_crew_juno` (woman, 1.73 m, fair, blond side part: emerald leather
+moto jacket with an asymmetric chrome zip, graphite crew-neck, black jeans, heeled moto boots, grey suede gloves) and
+`char_crew_hale` (man, 1.85 m so Dutch stays the tallest, deep skin, bald, moustache: sand canvas chore jacket, navy
+henley, dark jeans, brown work boots, yellow work gloves). 26.7k / 26.9k tris. New library materials
+char_crew_{juno_jacket,glove_suede,hale_jacket,glove_work}. Hale's moustache joins `Hair` (char_crew.py now joins any
+all-hair Headwear, Dutch unchanged). FP sleeves `char_arms_fp_{juno,hale}`; portraits `portraits/{juno,hale}.png`.
+Crew face envelope regenerated for 8 heisters (front growth <= 1 cm at the mouth from Hale's moustache) and all 36
+masks rebuilt (test_masks, test_crew mask seats green). Review: `_review/crew_lineup.png`, `crew_faces.png`,
+`crew_silhouette_30m.png` (the review script now sizes the lineup / silhouette to the roster), `heister_portraits.png`.
+Found: `char_crew_rook.glb` on trunk is stale against the current tooling (rebuilds to different bytes, same tris);
+left as is.
+
 ## To the LEAD: (2026-10-22, latest first; I read your messages, you read this)
 - **PO "inorganic" follow-up: in-motion strips from a real loud heist** (`_tools/render_motion_strips`, Glasshouse
   Routine seed 7, all-AI crew, trunk 80245b93 incl. A's v1.26(a)): `_review/d_motion/{crew_sprint,crew_strafe,

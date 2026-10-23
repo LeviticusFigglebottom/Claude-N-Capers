@@ -180,8 +180,8 @@ const ROWS: Array = [
 		["prop_bollard_steel", 0.0, 0.7, 3, 0.0]]],
 	# the car-park forecourt west of the car-park entrance (x 37-49 stays clear) and the north lot (X6)
 	["X6", "Forecourt", [17.0, 0.0, -13.4], [36.0, 0.0, -13.4], 180.0, [
-		["prop_bollard_steel", 0.0, 0.7, 3, 0.0], ["prop_street_lamp", 4.0, 10.0, 2, 0.0],
-		["prop_bin_street", 4.55, 10.0, 1, 0.0]]],
+		["prop_bollard_steel", 0.0, 0.7, 3, 0.0], ["prop_street_lamp", 2.5, 10.0, 2, 0.0],
+		["prop_bin_street", 3.05, 10.0, 1, 0.0]]],   # D-158 am. 9: the bin keeps >= 1.2 m off the barrier post (x 22.17)
 	["X6", "NorthLot", [20.0, 0.0, -53.0], [50.0, 0.0, -53.0], 180.0, [
 		["prop_street_lamp", 10.0, 14.0, 1, 0.0], ["prop_bin_street", 10.55, 14.0, 1, 0.0],
 		["prop_bollard_steel", 24.0, 0.7, 3, 0.0]]],

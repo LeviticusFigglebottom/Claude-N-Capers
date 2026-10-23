@@ -12,7 +12,8 @@ and the contacts read as one family. Unmasked, so the face reads (``Heisters.por
 
 written to ``game/assets/characters/portraits/<id>.png``. Each heister has a dark gradient
 backdrop with a glow in their signature colour (Rook oxblood, Sable aubergine, Dutch warm tan,
-Wren mustard against teal, Marten burnt orange against olive, Jay cobalt with a cognac rim), and a pose that carries the personality.
+Wren mustard against teal, Marten burnt orange against olive, Jay cobalt with a cognac rim, Juno emerald with a
+cool rim, Hale warm sand with a work-glove yellow rim), and a pose that carries the personality.
 """
 
 from __future__ import annotations
@@ -155,6 +156,47 @@ HEISTERS: dict[str, dict] = {
         ],
         "ambient": (0.014, 0.016, 0.026),
     },
+    # Juno (D4-03): the point woman, chin up and sure of it, a half-turn to camera; emerald backdrop, a cool
+    # chrome-white rim off the zip side
+    "juno": {
+        "asset": "char_crew_juno",
+        "pose": _ARMS_DOWN + [
+            ("chest", (0, 0, 1), 16.0),           # shoulder toward the camera
+            ("neck", (1, 0, 0), 4.0),             # chin up
+            ("head", (0, 0, 1), -20.0),           # back to the lens
+            ("head", (0, 1, 0), 3.0),
+        ],
+        "camera": {"target_dz": -0.10, "dist": 1.34, "yaw": 24.0, "cam_dz": 0.02, "lens": 85.0},
+        "bg": {"top": (0.006, 0.016, 0.012), "glow": (0.020, 0.075, 0.050), "glow_xy": (0.34, 0.58), "glow_r": 0.58},
+        "lights": [
+            ("key", "AREA", (0.25, 1.45, 1.95), (0.0, 0.0, 1.58), (1.00, 0.96, 0.90), 52.0, 1.3, 0.9),
+            ("fill", "AREA", (1.25, 1.00, 1.50), (0.0, 0.0, 1.52), (0.84, 0.92, 0.90), 12.0, 1.6, 0.3),
+            ("rim", "AREA", (-0.85, -1.10, 1.70), (0.0, 0.0, 1.52), (0.85, 0.95, 1.00), 120.0, 0.5, 2.0),
+            ("rim_far", "AREA", (0.80, -1.15, 1.62), (0.0, 0.0, 1.52), (0.35, 0.85, 0.60), 60.0, 0.5, 1.4),
+            ("hair", "AREA", (0.2, -0.9, 2.3), (0.0, 0.0, 1.62), (0.95, 0.94, 0.90), 12.0, 0.4, 0.5),
+        ],
+        "ambient": (0.012, 0.020, 0.016),
+    },
+    # Hale (D4-03): the big steady one, square-on from a little below, unhurried; warm sand backdrop, a
+    # work-glove yellow rim
+    "hale": {
+        "asset": "char_crew_hale",
+        "pose": _ARMS_DOWN + [
+            ("chest", (0, 0, 1), -6.0),
+            ("neck", (1, 0, 0), -2.0),
+            ("head", (0, 0, 1), 4.0),
+        ],
+        "camera": {"target_dz": -0.12, "dist": 1.46, "yaw": -14.0, "cam_dz": -0.04, "lens": 85.0},
+        "bg": {"top": (0.020, 0.016, 0.010), "glow": (0.100, 0.075, 0.030), "glow_xy": (0.66, 0.58), "glow_r": 0.60},
+        "lights": [
+            ("key", "AREA", (-0.25, 1.45, 1.95), (0.0, 0.0, 1.58), (1.00, 0.95, 0.86), 64.0, 1.4, 1.0),
+            ("fill", "AREA", (-1.25, 1.00, 1.50), (0.0, 0.0, 1.52), (0.90, 0.88, 0.82), 18.0, 1.6, 0.35),
+            ("rim", "AREA", (0.85, -1.10, 1.70), (0.0, 0.0, 1.52), (1.00, 0.80, 0.35), 130.0, 0.5, 2.0),
+            ("rim_far", "AREA", (-0.80, -1.15, 1.62), (0.0, 0.0, 1.52), (0.85, 0.75, 0.55), 60.0, 0.5, 1.4),
+            ("hair", "AREA", (-0.2, -0.9, 2.3), (0.0, 0.0, 1.62), (0.95, 0.92, 0.85), 14.0, 0.4, 0.5),
+        ],
+        "ambient": (0.022, 0.019, 0.014),
+    },
 }
 
 
@@ -168,6 +210,8 @@ GRADE: dict[str, dict] = {
     "wren": {"exposure": -0.5, "hair_mul": 0.85, "look": "AgX - High Contrast"},
     "marten": {"exposure": -0.5, "hair_mul": 0.9, "look": "AgX - High Contrast"},
     "jay": {"exposure": -0.5, "hair_mul": 0.55, "look": "AgX - High Contrast"},
+    "juno": {"exposure": -0.5, "hair_mul": 0.8, "look": "AgX - High Contrast"},
+    "hale": {"exposure": -0.2, "hair_mul": 0.6, "look": "AgX - High Contrast"},
 }
 
 

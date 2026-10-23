@@ -25,6 +25,8 @@ VARIANTS = {
     "char_arms_fp_marten": {"heister": "marten", "skin": 3},
     "char_arms_fp_jay": {"heister": "jay", "skin": 4},
     "char_arms_fp_wren": {"heister": "wren", "skin": 2},
+    "char_arms_fp_juno": {"heister": "juno", "skin": 1},
+    "char_arms_fp_hale": {"heister": "hale", "skin": 6},
 }
 
 
