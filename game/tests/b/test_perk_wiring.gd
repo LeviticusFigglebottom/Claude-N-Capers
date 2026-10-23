@@ -230,10 +230,10 @@ const HOOKED: Dictionary = {
 	&"perk.sicario": "res://systems/combat/perks/perk_sicario.gd",  # D-163 (A 36df6d56)
 	&"perk.tag_team": "res://systems/combat/perks/perk_tag_team.gd",
 	&"perk.leech": "res://systems/combat/perks/perk_leech.gd",  # D-164 (A 9c4622d6)
+	&"perk.copycat": "res://systems/combat/perks/perk_copycat.gd",  # D-164 (A 5b85146c)
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). perk.copycat: D-164, ENV A's hook; drop
-## it the round it lands.
-const MISSING: Array = [&"perk.copycat"]
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-164.
+const MISSING: Array = []
 
 
 func before_all() -> void:

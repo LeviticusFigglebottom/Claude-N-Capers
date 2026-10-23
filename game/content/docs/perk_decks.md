@@ -420,9 +420,7 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 are hooked under the field names of the schema tables above.
 D-163: `perk.sicario` and `perk.tag_team` (A `perk_sicario.gd` / `perk_tag_team.gd`) likewise.
 
-D-164: `perk.leech` (A `perk_leech.gd`) likewise.
-
-**Held (D-164):** `perk.copycat` (Understudy) waits on ENV A's hook; it is the test's `MISSING` list until it lands.
+D-164: `perk.leech` and `perk.copycat` (A `perk_leech.gd` / `perk_copycat.gd`) likewise.
 
 **Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's
