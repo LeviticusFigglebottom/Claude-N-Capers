@@ -144,3 +144,31 @@ func test_audit_heist_device_spots_resolve_a_device() -> void:
 				assert_true(scene != null, "%s %s (%s): resolvable %s device scene" % [h, root.get_path_to(n), spot[2], spot[0]])
 		root.free()
 	assert_true(total > 0, "audited some device spots")
+
+
+## PO report (OF LidDrill): a spot whose map set the device art as its `visual_scene` showed the drill standing there
+## before anyone placed it. The spot shows only its mark at rest; the art becomes the placed device, its bit axis
+## (-Z, tip at the origin) along the spot's -Z into the target.
+func test_device_art_as_a_spot_visual_shows_only_once_placed() -> void:
+	_rt = await HeistLauncher.launch(&"unit_d138_visuals", 1384, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "skip_casing": true, "crew_ai": false, "ai_teammates": 0})
+	Modifiers.set_source(Modifiers.TEAM, &"test_d138v", {&"interaction.device_jam_chance_mult": 0.0})
+	await wait_physics_frames(2)
+	var art: PackedScene = load(G.PROPS_DIR + DrillPoint.DEFAULT_THERMAL) as PackedScene
+	var dp: DrillPoint = ATestMaps.add_prefab(_rt, "drill_point", Vector3(0, 1, -5), func(p: GameplayPrefab) -> void:
+		(p as DrillPoint).device = DrillPoint.Device.THERMAL
+		p.visual_scene = art
+		p.rotation_degrees = Vector3(0, -90, 0)) as DrillPoint
+	await wait_physics_frames(1)
+	assert_true(dp.device_node == null, "no device before placement")
+	assert_true(dp.visual_instance == null or dp.visual_instance.find_child("Model", true, false) == null,
+		"the rest visual is the mark, not the drill art")
+	assert_eq(dp.device_scene, art, "the art becomes the placed device")
+	dp.runner.place(-1, 30.0)
+	await wait_physics_frames(1)
+	assert_true(dp.device_node != null and dp.device_node.is_visible_in_tree(), "shown once placed")
+	if dp.device_node != null:
+		var bit_axis: Vector3 = -dp.device_node.global_basis.z
+		assert_true(bit_axis.dot(-dp.global_basis.z) > 0.999, "the bit points along the spot's -Z (%s)" % bit_axis)
+		assert_true(dp.device_node.global_position.distance_to(dp.global_position) < 0.001, "tip at the spot")
+	dp.runner.abort()
