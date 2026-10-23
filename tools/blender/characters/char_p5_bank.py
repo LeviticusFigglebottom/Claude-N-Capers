@@ -145,17 +145,6 @@ def _key_fob(kit: Kit, card_z: float) -> None:
     kit.add_gear(key.to_mesh(mtx, anchor=loc))
 
 
-def _pencil_ear(kit: Kit, side: float = 1.0) -> None:
-    """OF-G3: a carpenter's pencil tucked behind the ear (``side`` +1 = +x)."""
-    fit, k = kit.fit, kit.k
-    eye = fit.eye_centre()
-    c = Vector((side * 0.082 * k, eye.y - 0.085 * k, eye.z + 0.012 * k))
-    a, b = c + Vector((0.0, 0.05 * k, -0.012 * k)), c + Vector((0.0, -0.05 * k, 0.012 * k))
-    m = Mesh()
-    o.tube(m, [a, b], 0.0038 * k, "char_rubber_yellow", sides=6)
-    kit.add_head(m)
-
-
 def _hip_device(kit: Kit, over: Mesh, z: float, a_deg: float, size: tuple[float, float, float], mat: str) -> None:
     """OF-G3: a small device clipped at the waistband at angle ``a_deg`` (0 front, +90 the +x side)."""
     b = gk.Belt(kit.fit, Hull(kit.fit, [over], body_regions=set()), z, height=0.03, thick=0.004)
@@ -435,7 +424,7 @@ def trades(kit: Kit) -> None:
                          neck_w=0.075, flare=0.07, chest_welt=False, base=0.014)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     n.watch(kit, "L", strap="char_nylon_black", case="chrome")
-    _pencil_ear(kit, 1.0)                                                       # OF-G3
+    n.ear_item(kit, 1.0)                                                         # OF-G3
     kit.notes["look"] = ("Tradesperson customer (OF-D1): tan canvas chore jacket over a grey crew knit, navy work "
                          "trousers, brown work boots, watch")
 
