@@ -1366,6 +1366,9 @@ func _watch_detection() -> void:
 
 
 func _observer_name(net_id: int) -> String:
+	var by_id: Node = Ids.lookup(net_id)  # A: turret vans, sentries, burn points are not NPCs / take_hit nodes
+	if by_id != null:
+		return String(by_id.name)
 	for n: Node in rt.find_children("*", "Node3D", true, false):
 		if (n is NpcBase or n.has_method(&"take_hit")) and NetIds.of(n) == net_id:
 			return String(n.name)
