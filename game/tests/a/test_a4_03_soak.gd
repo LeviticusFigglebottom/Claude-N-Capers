@@ -124,6 +124,7 @@ func test_a4_03_four_peer_soak() -> void:
 	print("PERF soak %s %.0f s, %d peers, %d check rounds, %d NPCs at the end, loud %s" % [_rt.heist_id, soak_s,
 		peers.size() + 1, rounds, npcs, _rt.went_loud])
 	for k: Variant in mem0:
+		assert_true(int(mem0[k]) > 0 and int(mem1.get(k, 0)) > 0, "memory sampled on %s" % k)
 		var grow: float = (float(mem1.get(k, 0)) - float(mem0[k])) / 1048576.0
 		print("PERF soak memory %s: %.1f -> %.1f MB (%+.1f)" % [k, float(mem0[k]) / 1048576.0, float(mem1.get(k, 0)) / 1048576.0,
 			grow])
@@ -137,8 +138,12 @@ func test_a4_03_four_peer_soak() -> void:
 func _memory(peers: Array[int]) -> Dictionary:
 	var out: Dictionary = {"host": OS.get_static_memory_usage()}
 	for p: int in peers:
-		var snap: Dictionary = await _snap(p, {})
-		out["peer %d" % p] = int(snap.get("mem", 0))
+		var mem: int = 0
+		for _i: int in 3:  # a snapshot can time out under load: never count a missing sample as 0 MB
+			mem = int((await _snap(p, {})).get("mem", 0))
+			if mem > 0:
+				break
+		out["peer %d" % p] = mem
 	return out
 
 

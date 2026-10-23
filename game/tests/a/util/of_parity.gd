@@ -111,4 +111,9 @@ func _name(id: int) -> String:
 	var n: Node = Ids.lookup(id)
 	if n == null:
 		return "?"
+	var npc: NpcBase = n as NpcBase
+	if npc != null:  # host-side facts for an NPC diff
+		var b: Node = npc.get_node_or_null(^"Brain")
+		return "%s alive %s alert %d brain %s %s" % [npc.name, npc.alive, int(npc.alert_state),
+			b.get(&"mode") if b != null else "-", b.get(&"anim_hint") if b != null else "-"]
 	return String(rt.map.get_path_to(n)) if rt != null and rt.map != null and rt.map.is_ancestor_of(n) else String(n.name)
