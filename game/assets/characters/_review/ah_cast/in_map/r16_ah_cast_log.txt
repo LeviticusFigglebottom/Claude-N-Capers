@@ -1,5 +1,5 @@
 seed 1 difficulty 0 lights club
-Npc_guard role guard tags [&"guard_door"] activity bouncer_idle look club_bouncer_f clip idle at (15.51, 0.00, 28.59) facing 18
+Npc_guard role guard tags [&"guard_door"] activity bouncer_idle look club_bouncer_f clip bouncer_idle at (16.50, 0.00, 29.60) facing -180
 Npc_guard2 role guard tags [&"guard_rope"] activity bouncer_idle look club_bouncer clip bouncer_idle at (9.20, 4.20, 26.60) facing -90
 Npc_guard3 role guard tags [&"guard", &"guard_boh"] activity  look club_bouncer_b clip idle at (3.00, 0.00, 6.00) facing 0
 Npc_guard4 role guard tags [&"guard", &"guard_alley"] activity  look club_bouncer_c clip idle at (35.00, 0.00, -1.60) facing 0
