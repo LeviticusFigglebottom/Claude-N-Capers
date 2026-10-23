@@ -228,14 +228,46 @@ func _gear() -> bool:
 		_row("gear (gear_drop)", "FAIL", "no GearPickup", "C map")
 		return false
 	var t0: float = rt.heist_time_s
-	if not await _go(pilot.stand_point(gp.global_position), 0.6, 240.0):
-		_row("gear (%s)" % gp.name, "FAIL", "not reached at %s" % Po5Pilot._v(gp.global_position),
+	# gear_cloak is taken ACROSS the counter from the foyer (D-075): stand where a path from the crew actually ends,
+	# within reach of the gear, then press F from there (pilot.use would walk to the navmesh point behind the counter).
+	var stand: Vector3 = _reach_stand(gp.global_position)
+	if stand == Vector3.INF or not await _go(stand, 0.4, 240.0):
+		_row("gear (%s)" % gp.name, "FAIL", "no reachable stand within reach of %s" % Po5Pilot._v(gp.global_position),
 			_owner_for(gp.global_position))
 		return false
-	var got: bool = await pilot.use(_comp(gp), 20.0, func() -> bool: return pilot.crew.player_mode == &"casing")
+	var got: bool = await pilot.use(_comp(gp), 20.0, func() -> bool: return pilot.crew.player_mode == &"casing", false)
 	_row("gear (%s) -> casing" % gp.name, "PASS" if got else "FAIL", "%.0f s from the spawn, mode %s, at %s" % [
 		rt.heist_time_s - t0, pilot.crew.player_mode, Po5Pilot._v(gp.global_position)], "-" if got else "A gear / C slot")
 	return got
+
+
+## A floor point within reach (<= 1.6 m flat) of `target` that the nav path from the crew really ends at: rings of
+## 0.6 / 1.0 / 1.4 m, 16 bearings, the shortest walk wins. Vector3.INF when none.
+func _reach_stand(target: Vector3) -> Vector3:
+	var best: Vector3 = Vector3.INF
+	var best_m: float = INF
+	for r: float in [0.6, 1.0, 1.4]:
+		for k: int in 16:
+			var a: float = TAU * float(k) / 16.0
+			var cand: Vector3 = pilot.stand_point(target + Vector3(cos(a), 0.0, sin(a)) * r)
+			if Po5Pilot.flat_dist(cand, target) > 1.6:
+				continue
+			var p: PackedVector3Array = pilot.nav_path(cand)
+			if p.is_empty() or Po5Pilot.flat_dist(p[p.size() - 1], cand) > 0.3 or absf(p[p.size() - 1].y - cand.y) > 0.5:
+				continue
+			var m: float = 0.0
+			for i: int in range(1, p.size()):
+				m += p[i - 1].distance_to(p[i])
+			if m < best_m:
+				best = cand
+				best_m = m
+	return best
+
+
+## Walk within reach of `target` (_reach_stand; the plain nearest navmesh point when no ring candidate is reachable).
+func _go_reach(target: Vector3, arrive: float = 0.6, timeout: float = 240.0) -> bool:
+	var stand: Vector3 = _reach_stand(target)
+	return await _go(stand if stand != Vector3.INF else pilot.stand_point(target), arrive, timeout)
 
 
 ## Route 1: behind the east bar while the floor bouncer is away, through the service door into G20 (casing).
@@ -270,7 +302,7 @@ func _keycard() -> bool:
 		_row("keycard", "FAIL", "no reachable KeycardPickup", "C map / bake")
 		return false
 	var t0: float = rt.heist_time_s
-	var ok: bool = await _go(pilot.stand_point(best.global_position), 0.6, 180.0) \
+	var ok: bool = await _go_reach(best.global_position, 0.6, 180.0) \
 		and await pilot.use(_comp(best), 20.0, func() -> bool: return pilot.crew.item_count(&"item.keycard") > 0)
 	_row("keycard (%s, %.0f m walk)" % [best.name, best_m], "PASS" if ok else "FAIL", "%.0f s, peak %.2f" % [
 		rt.heist_time_s - t0, _worst_peak()], "-" if ok else "C map / A keycard")
@@ -286,7 +318,7 @@ func _code_note(safe: Safe) -> bool:
 		var cn: CodeNote = n as CodeNote
 		if cn.code_group != safe.code_group or pilot.nav_path(cn.global_position).is_empty():
 			continue
-		var ok: bool = await _go(pilot.stand_point(cn.global_position), 0.6, 180.0) and await pilot.use(_comp(cn), 15.0)
+		var ok: bool = await _go_reach(cn.global_position, 0.6, 180.0) and await pilot.use(_comp(cn), 15.0)
 		_row("safe code (%s)" % cn.name, "PASS" if ok else "FAIL", "read %s, code '%s'" % [ok, cn.code_text()],
 			"-" if ok else "C map / A code note")
 		return ok
@@ -324,7 +356,7 @@ func _open_safe(safe: Safe, have_code: bool) -> bool:
 	if comp == null:
 		_row("safe", "FAIL", "no interactable", "A safe / C map")
 		return false
-	if not await _go(pilot.stand_point(safe.global_position), 0.6, 60.0):
+	if not await _go_reach(safe.global_position, 0.6, 60.0):
 		_row("safe", "FAIL", "not reached", _owner_for(safe.global_position))
 		return false
 	var t0: float = rt.heist_time_s
@@ -374,14 +406,14 @@ func _safe_bags_to(safe: Safe, esc: EscapeZone) -> int:
 		if n >= SAFE_BAGS:
 			break
 		var t0: float = rt.heist_time_s
-		if not await _go(pilot.stand_point(prefab.global_position), 0.6, 300.0):
+		if not await _go_reach(prefab.global_position, 0.6, 300.0):
 			break
 		if not await pilot.use(_comp(prefab), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 			continue
 		var id: int = (pilot.crew.carried_bag as LootBag).net_id
 		var t1: float = rt.heist_time_s
 		var s0: int = pilot.stuck_spots.size()
-		var ok: bool = await _go(pilot.stand_point(zone.global_position), 1.5, 400.0)
+		var ok: bool = await _go_reach(zone.global_position, 1.5, 400.0)
 		if ok:
 			await pilot.face(zone.global_position + Vector3.UP * 0.5, 0.05, 1.5)
 			await pilot.inp.tap(&"drop_bag")
