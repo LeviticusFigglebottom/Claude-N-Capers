@@ -284,3 +284,24 @@ func test_briefing_shows_the_real_blueprint() -> void:
 			assert_eq((b as Control).focus_mode, Control.FOCUS_NONE, "%s: markers are not focus stops" % h)
 		s.queue_free()
 		await wait_frames(1)
+
+
+## B5-05 / S1.3: a civilian-start heist says so in the briefing (no shipped heist starts civilian yet, so the def is
+## flipped in memory for the check).
+func test_civilian_start_flag() -> void:
+	var def: HeistDef = HeistRegistry.get_def(&"glasshouse")
+	assert_true(def != null, "glasshouse def")
+	if def == null:
+		return
+	assert_false(bool(BriefingModel.build(&"glasshouse", Enums.Difficulty.ROUTINE)["civilian_start"]), "casing start: no flag")
+	var was: StringName = def.start_mode
+	def.start_mode = &"civilian"
+	assert_true(bool(BriefingModel.build(&"glasshouse", Enums.Difficulty.ROUTINE)["civilian_start"]))
+	var s: BriefingScreen = (load(SCENE) as PackedScene).instantiate() as BriefingScreen
+	s.setup(&"glasshouse", Enums.Difficulty.ROUTINE)
+	add_child(s)
+	await wait_frames(2)
+	assert_true(s.mode_label.text.contains(UiText.t(&"ui.briefing.civilian_start")), "shown: %s" % s.mode_label.text)
+	def.start_mode = was
+	s.queue_free()
+	await wait_frames(1)

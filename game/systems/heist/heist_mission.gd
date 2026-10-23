@@ -419,6 +419,12 @@ func _dismounted(npc: NpcBase) -> void:
 		_hold_anim(anim, false)
 	if _runtime != null and _runtime.went_loud and npc.alive:
 		npc.set_alert_state(Enums.AlertState.COMBAT)
+	_on_dismounted(npc)
+
+
+## Override: `npc` just got out of its vehicle (QC-83; RT's escort engage delay).
+func _on_dismounted(_npc: NpcBase) -> void:
+	pass
 
 
 ## The current faction has an EnemyDef `enemy_id` (spawn_units would spawn it).

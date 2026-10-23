@@ -16,6 +16,7 @@
 ##                                        value = PayoutCalculator loot line (base x payout_mult)
 ##     "contract_pay": int,               HeistCatalog.contract_preview(base_payout, difficulty)
 ##     "mode": int (Enums.HeistMode), "mode_key": StringName,
+##     "civilian_start": bool             HeistDef.start_mode == &"civilian" (S1.3, D-065: no gear until the pickup)
 ##     "escape_options": [{ "id": StringName, "text": String }],
 ##     "security": Array[Dictionary]     D-115 "Known security": BriefingIntel.lines(heist, difficulty, mode)
 ##                                        (map scan + variant table + StealthTweak; [] without intel data)
@@ -91,6 +92,7 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 		"contract_pay": HeistCatalog.contract_preview(base_payout, difficulty),
 		"mode": mode,
 		"mode_key": HeistCatalog.mode_key(heist_id, mode),
+		"civilian_start": h != null and h.start_mode == &"civilian",
 		"escape_options": escape_lines(escapes),
 		"security": BriefingIntel.lines(heist_id, difficulty, mode),
 		"voice_lines": voice_lines(heist_id, contact),

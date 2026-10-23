@@ -3,7 +3,7 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 01:30)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 03:00)
 ### RT un-hide checklist (LEAD r276 #2). Goal: lifting RT onto the Board is ONE flag flip
 The flag: `game/content/data/ui/heist_list.tres` -> `rolling_thunder` -> delete `"hidden": true`. HeistCatalog.is_ready
 gates the menus on that flag, the map and the mission script, and only the menus read HeistRegistry.ids().
@@ -21,6 +21,29 @@ gates the menus on that flag, the map and the mission script, and only the menus
 | 10 | Music track name `music.rolling_thunder.name` ("Red Signal") | B (string) / C (track) | string done; track on env/c-worlds (held) |
 | 11 | Cues + ambience beds in `cues.tres` | C (73ec9b55, LEAD waiver) / B (train) | accepted (LEAD ruling a); B adds `cue.freight_train_pass` when C's stream exists |
 | 12 | Achievements screen / payday hide a hidden heist's set (`Achievements.shown()`) | B | done; flips with the flag |
+-38. **Round 286 items (2026-10-23).**
+     - 4b75c578: the 19 2D-hub test files pin the menu hub (SafehouseHost.menu_hub_only). Checked against C's scene at the
+       contract path.
+     - 8c2eb0dc / d5cd9d4f, D-157 sentry:
+       - sentry.tres: 1 unit, Battery +1 / +2.
+       - Gated on Mount Up basic (deploy.sentry_cost_mult).
+       - Prompts and cues are in; ui.* prompt args are translated.
+       - **Model link waits for D's eqp_sentry on trunk.**
+     - 391c86fd, Last Breath (One Down):
+       - The heist-select toggle sets options["last_breath"] (A reads it).
+       - The lobby contract carries it (host decides).
+       - Payday chip and Career last_breath_wins.
+     - d03f675c + d142fa4c, L6.2 bot crew:
+       - BotCrewDef kind bot_crew: 4 abilities + 5 boosts (◇ values).
+       - Crew-screen Ability / Crew Boost rows, saved in crew_loadouts.
+       - bot_loadout -> Loadout.bot_ability / bot_boost.
+     - 42443897, Options gaps:
+       - video/resolution, video/quality_preset (+ video/shadow_quality), controls/interact_mode.
+       - ENV P must read is_toggle(&"interact").
+     - Open:
+       - D-160 RT un-hide flip (ready; waits on P's verdict + the LEAD's done check).
+       - Refit the sledgehammer / fire axe to D's melee_heavy grip and switch their anim_set once fb81a04c is on trunk.
+       - LAN host list UI (A's B6-05).
 -37. **Round 285 items (2026-10-23).**
      - 274a5f53: the last 19 blocked_on_keys markers dropped; blocked_on_keys is empty.
      - ab9f637c: test_ui_payday fixed. A mask card can be a whole payday preset (mask.night_circuit).

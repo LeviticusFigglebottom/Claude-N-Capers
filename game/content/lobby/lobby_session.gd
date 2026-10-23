@@ -50,11 +50,15 @@ var tweak: LobbyTweak
 var profile: PlayerProfile = null
 ## Loadout advertised in MSG_PROFILE (null = profile.loadout).
 var loadout: Loadout = null
+## B6-05 LAN listing: while hosting, a beacon (ENV A's LanDiscovery) advertises this lobby to Join screens on the same
+## network (name, port, humans, heist); it stops when the session ends or the heist starts. Tests may turn it off.
+var lan_beacon: bool = true
 var _active: bool = false
 var _join_left_s: float = -1.0
 var _resend_queued: bool = false
 ## Host: peers Net.kick was called for (no second kick while the drop is pending).
 var _kick_pending: Dictionary = {}
+var _beacon_port: int = -1
 
 
 func _ready() -> void:
@@ -93,6 +97,7 @@ func host(port: int) -> Error:
 	_kick_pending.clear()
 	net.call(&"fill_with_ai")  # empty seats show as Crew AI; a joining peer takes an AI seat (Net)
 	_on_crew_changed()
+	_start_beacon(port)
 	return OK
 
 
@@ -238,6 +243,7 @@ func _on_crew_changed() -> void:
 ## Re-advertise this peer's summary + ready flag (and the host's contract) after a crew change.
 func _resend() -> void:
 	_resend_queued = false
+	_update_beacon()
 	if not _active or state.local_slot < 0:
 		return
 	send_profile()
@@ -279,7 +285,10 @@ func _on_lobby_message(from_peer: int, kind: StringName, data: Dictionary) -> vo
 		contract_changed.emit(state.contract)
 	changed.emit()
 	if kind == LobbyState.MSG_START:
+		_stop_beacon()  # a running heist is not listed (drop-in joins go by address / code)
 		started.emit(state.started.duplicate())
+	elif kind == LobbyState.MSG_CONTRACT:
+		_update_beacon()
 
 
 func _on_session_ended() -> void:
@@ -287,6 +296,7 @@ func _on_session_ended() -> void:
 		return
 	_active = false
 	_join_left_s = -1.0
+	_stop_beacon()
 	state.reset(false)
 	session_left.emit()
 	changed.emit()
@@ -356,6 +366,40 @@ func _fail(reason: StringName, leave_net: bool = true) -> void:
 	connection_failed.emit(reason)
 	if leave_net:
 		net.call(&"leave")
+
+
+## The beacon's lobby info: {"name", "port", "players" (humans), "max_players", "heist" (&"" = no job yet)}.
+func beacon_info() -> Dictionary:
+	var p: PlayerProfile = _profile()
+	return {"name": p.profile_name if p.profile_name != "" else "Host", "port": _beacon_port,
+		"players": state.human_slots().size(), "max_players": LobbyState.MAX_CREW,
+		"heist": StringName(state.contract.get("heist", &""))}
+
+
+func _lan() -> LanDiscovery:
+	return LanDiscovery.ensure(get_tree()) if lan_beacon and is_inside_tree() else null
+
+
+func _start_beacon(port: int) -> void:
+	_beacon_port = port
+	var lan: LanDiscovery = _lan()
+	if lan != null and not lan.start_beacon(beacon_info()):
+		Log.warn(LOG_CHANNEL, "LAN beacon not started (the lobby can still be joined by address / code)")
+
+
+func _update_beacon() -> void:
+	var lan: LanDiscovery = _lan()
+	if lan != null and _active and state.is_host and _beacon_port >= 0:
+		lan.update_beacon(beacon_info())
+
+
+func _stop_beacon() -> void:
+	if _beacon_port < 0:
+		return
+	_beacon_port = -1
+	var lan: LanDiscovery = _lan()
+	if lan != null:
+		lan.stop_beacon()
 
 
 func _profile() -> PlayerProfile:

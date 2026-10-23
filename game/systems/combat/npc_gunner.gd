@@ -53,6 +53,11 @@ var melee_cooldown: float = 0.0
 ## D-111: rounds left in the magazine (-1 = not loaded yet) and seconds left in a reload (0 = not reloading).
 var rounds_left: int = -1
 var reload_left: float = 0.0
+## LEAD r287 (RT escort knobs; a mission sets them): seconds this unit neither targets nor fires (its normal aim delay
+## follows), and a hit-chance multiplier for `hit_chance_mult_left` seconds.
+var engage_hold_left: float = 0.0
+var hit_chance_mult: float = 1.0
+var hit_chance_mult_left: float = 0.0
 
 var _spin_idle: float = 0.0
 
@@ -135,7 +140,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _physics_step(delta: float) -> void:
-	if _npc == null or not Net.is_authority():
+	if _npc == null or not Net.is_authority() or _held(delta):
 		return
 	if cooldown > 0.0:
 		cooldown -= delta
@@ -271,7 +276,7 @@ func _tick_sentry(s: SentryGun) -> void:
 	EventBus.weapon_fired.emit(_npc.net_id, weapon_id, false, from)
 	var tw: CombatTweak = CombatTweak.data()
 	var hit: bool = GameRng.stream(&"npc_fire").randf() < tw.npc_hit_chance(from.distance_to(aim), _npc.difficulty) \
-		* NpcSuppression.hit_chance_mult(_npc)
+		* NpcSuppression.hit_chance_mult(_npc) * _timed_hit_mult()
 	ShotFx.npc_shot(_npc, from, aim, hit, s)
 	if hit:
 		s.take_hit(Damage.info(shot_damage(), Enums.DamageType.BULLET, Enums.HitZone.BODY, weapon_id, aim,
@@ -356,7 +361,8 @@ func _fire(c: CrewController) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(_npc)
 	if rt != null:
 		rt.make_noise(from, Tweak.stealth().gunshot_npc_radius_m, &"gunshot", _npc.net_id)
-	var chance: float = tw.npc_hit_chance(dist, _npc.difficulty) * NpcSuppression.hit_chance_mult(_npc)  # A3-06 (L3.5)
+	var chance: float = tw.npc_hit_chance(dist, _npc.difficulty) * NpcSuppression.hit_chance_mult(_npc) \
+		* _timed_hit_mult()  # A3-06 (L3.5); LEAD r287 timed mult
 	var hit: bool = GameRng.stream(&"npc_fire").randf() < chance
 	var pane: Node = _pane_between(from, aim, [_npc, c])
 	if pane != null:  # this round goes into the glass (breaks it); the crew is not hit through an intact pane
@@ -377,6 +383,21 @@ func _fire(c: CrewController) -> void:
 
 
 ## D-111: one round spent; an empty magazine starts a reload (no fire until it ends), heard and seen on every peer.
+## LEAD r287: tick the timed hit mult; true while the engage hold keeps this unit from targeting / firing.
+func _held(delta: float) -> bool:
+	hit_chance_mult_left = maxf(hit_chance_mult_left - delta, 0.0)
+	if engage_hold_left <= 0.0:
+		return false
+	engage_hold_left = maxf(engage_hold_left - delta, 0.0)
+	target = null
+	engaging = false
+	return true
+
+
+func _timed_hit_mult() -> float:
+	return hit_chance_mult if hit_chance_mult_left > 0.0 else 1.0
+
+
 func _use_round(weapon_id: StringName) -> void:
 	var mag: int = mag_size()
 	if mag <= 0:

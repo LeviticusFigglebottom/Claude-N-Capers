@@ -232,6 +232,8 @@ func enter_heist() -> bool:
 		var first: String = String(v.get_child(0).name) if v != null and v.get_child_count() > 0 else "-"
 		looks.append("%d%s:%s:%s" % [c.slot, "(ai)" if c.is_ai else "", c.heister, "capsule" if first == "Placeholder" else first])
 	note("crew looks: %s" % ", ".join(looks))
+	if rt.mission is RollingThunderMission:
+		Po5RtAb.new().start(self, rt, note)  # LEAD r287: RT lever A/B timeline (runs alongside the flow)
 	if rt.options.has("crew_damage_taken_mult"):
 		note("DEV OPTION crew_damage_taken_mult=%.2f (D-133 harness-only; assault events on)" % float(
 			rt.options["crew_damage_taken_mult"]))
