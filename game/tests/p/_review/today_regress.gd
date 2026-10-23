@@ -37,7 +37,8 @@ func _ready() -> void:
 
 
 func _run() -> void:
-	var tests: Array[String] = ["copycat", "roster", "smoke", "tether"] if _test == "all" else [_test]
+	var tests: Array[String] = []
+	tests.assign(["copycat", "roster", "smoke", "tether"] if _test == "all" else [_test])
 	for t: String in tests:
 		print("[TDR] === %s ===" % t)
 		var m: String = "_t_" + t
