@@ -238,3 +238,37 @@ func test_s8_5_ecm_on_keycard_reader_opens_doors() -> void:
 	assert_true(reader.used, "reader opened by the ECM after 4 s")
 	assert_true(_sys().placed(&"ecm").is_empty(), "ECM consumed")
 	assert_true(c != null)
+
+
+## A2-03 (S8.5, the ATM half): an ECM aimed at an ATM spot (DrillPoint.ecm_atm) is consumed and opens it after
+## ecm_atm_open_s; a spot without the flag is not a target.
+func test_s8_5_ecm_on_atm_spot_opens_it() -> void:
+	Modifiers.set_source(0, &"test", {&"stealth.ecm_opens_doors": true})
+	await _launch()
+	var door: Door = ATestMaps.add_prefab(_rt, "door", Vector3(3, 0, -4), func(d: GameplayPrefab) -> void:
+		(d as Door).lock = Door.Lock.KEYCARD) as Door
+	var atm: DrillPoint = ATestMaps.add_prefab(_rt, "drill_point", Vector3(0, 1.2, -1.5), func(p: GameplayPrefab) -> void:
+		p.rotation = Vector3(0, PI, 0)
+		(p as DrillPoint).device = DrillPoint.Device.SAW
+		(p as DrillPoint).ecm_atm = true) as DrillPoint
+	atm.target = atm.get_path_to(door)
+	assert_true(atm.ecm_openable(), "an idle ATM spot takes an ECM")
+	await _stand()
+	var i: CrewIntent = CrewIntent.new()
+	i.look_pitch = -0.1
+	i.deploy = true
+	_rt.set_bot_intent(0, i)
+	await wait_seconds(2.3)
+	_rt.set_bot_intent(0, CrewIntent.new())
+	await wait_physics_frames(2)
+	assert_eq(_sys().deployable_count(0), 0, "ECM used")
+	assert_false(_ecm().is_jamming(), "an ATM ECM does not jam")
+	assert_false(door.is_open, "not yet open")
+	assert_true(atm.interactable.enabled, "the ATM still waits")
+	Engine.time_scale = 4.0
+	var opened: bool = await wait_until(func() -> bool: return not atm.interactable.enabled, 12.0)
+	Engine.time_scale = 1.0
+	assert_true(opened, "opened by the ECM after ecm_atm_open_s (%.1f s)" % DeployableTweak.data().ecm_atm_open_s)
+	assert_false(atm.ecm_openable(), "done: no second ECM")
+	assert_true(_sys().placed(&"ecm").is_empty(), "ECM consumed")
+	assert_true(door.is_open, "its target opened")

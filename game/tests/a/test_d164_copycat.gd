@@ -163,3 +163,54 @@ func test_every_component_tolerates_a_partial_dict() -> void:
 		Modifiers.clear_source(0, &"mimic")
 		perks.refresh()
 		_crew().health.reset_full()
+
+
+## B's four mimic dicts (perk_decks.md "Mimic (card 9, D-164)"): the neutral fields read as off.
+func test_b_mimic_dicts_read_as_off() -> void:
+	var c: CrewController = _crew()
+	var h: CrewHealth = c.health
+	var perks: CrewPerks = PerkHooks.of(c)
+	# 1. Overclock: an empty tick_by_armor keeps the normal delayed regen; only damage_dealt_armor acts.
+	Modifiers.set_source(0, &"mimic", {&"perk.anarchist": {"tick_by_armor": {}, "break_immunity_s": 0.0,
+		"health_to_armor_fraction": 0.0, "health_to_armor_ratio": 0.0, "damage_dealt_armor": 30.0,
+		"damage_dealt_armor_cooldown_s": 1.5}})
+	perks.refresh()
+	var an: PerkAnarchist = perks.component(&"perk.anarchist") as PerkAnarchist
+	assert_false(an.handles_armor_regen(), "Overclock mimic: CrewHealth's own regen")
+	assert_near(an.adjust_max_health(100.0, 50.0), 100.0, 0.001, "no health moved to armor")
+	h.armor = 0.0
+	h.regen_delay_left = 5.0
+	an.tick(1.0)
+	assert_near(h.armor, 0.0, 0.001, "no armor ticks")
+	var npc: NpcBase = _enemy()
+	npc.take_hit(Damage.info(1.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"test", npc.global_position,
+		Vector3.FORWARD), c.net_id)
+	assert_near(h.armor, minf(30.0, h.max_armor), 0.01, "damage dealt: +30 armor")
+	Modifiers.clear_source(0, &"mimic")
+	# 2. Incumbent: nothing banked; the kill speed-up acts.
+	Modifiers.set_source(0, &"mimic", {&"perk.ex_president": {"store_per_kill": 0.0,
+		"kill_regen_speedup_fraction": 0.1}})
+	perks.refresh()
+	var ex: PerkExPresident = perks.component(&"perk.ex_president") as PerkExPresident
+	h.armor = h.max_armor
+	_kill()
+	assert_near(ex.stored, 0.0, 0.001, "Incumbent mimic: nothing banked")
+	h.armor = 0.0
+	h.regen_delay_left = 3.0
+	_kill()
+	assert_true(h.regen_delay_left < 3.0, "the kill cuts the regen delay (%.2f)" % h.regen_delay_left)
+	Modifiers.clear_source(0, &"mimic")
+	# 3. Long Odds: a flat 16 per pickup.
+	Modifiers.set_source(0, &"mimic", {&"perk.gambler": {"heal_min": 0.0, "heal_max": 0.0, "heal_bonus": 16.0,
+		"cooldown_s": 3.0, "team_heal_fraction": 0.0, "team_ammo_share": 0.0, "lowest_health_bonus_per_ally": 0.0}})
+	perks.refresh()
+	h.health = h.max_health - 50.0
+	PerkHooks.on_ammo_picked(c, 10)
+	assert_near(h.health, h.max_health - 34.0, 0.01, "Long Odds mimic: +16")
+	Modifiers.clear_source(0, &"mimic")
+	# 4. Foreman: team_dr 0 -> no DR, whatever self_low_health_dr_mult says.
+	Modifiers.set_source(0, &"mimic", {&"perk.crew_chief": {"team_dr": 0.0, "self_low_health_dr_mult": 2.0,
+		"hostage_health_per": 0.1, "hostage_max_count": 4}})
+	perks.refresh()
+	h.health = h.max_health * 0.2
+	assert_near(PerkCrewChief.team_dr_for(c), 0.0, 0.0001, "Foreman mimic: no team DR")
