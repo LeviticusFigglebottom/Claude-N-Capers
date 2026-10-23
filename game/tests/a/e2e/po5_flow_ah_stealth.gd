@@ -14,6 +14,9 @@ func play(driver: Node) -> int:
 	flow.sink = func(line: String) -> void: driver.call(&"note", line)
 	if not await flow.attach(rt, rt.run_seed):
 		return _fail(driver, flow, "attach to the menu-launched runtime")
+	var guards: int = rt.npcs(&"guard").size()
+	driver.call(&"note", "DONECHECK D-140 guards at load %d, pager cap %d (margin %d)" % [guards,
+		rt.mission.pager_cap(), guards - rt.mission.pager_cap()])
 	var ok: bool = await X4StealthRoutes.play(flow)
 	flow.note("route %s at %.1f s heist; objectives %s; secured %s; laser waits %d" % [
 		"done" if ok else "FAILED", rt.heist_time_s, flow.completed, flow.secured_loot, flow.laser_waits])
