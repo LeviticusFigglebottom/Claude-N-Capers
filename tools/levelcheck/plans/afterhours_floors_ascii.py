@@ -94,7 +94,8 @@ OPENINGS: List[Opening] = [
     Opening("G", "d_backstage", 13, 7, "x", PERSONNEL, True, "stage backstage door"),
     Opening("G", "o_g20_g13", 27, 7, "x", 2.0, True, "open corridor"),
     # the hall and the east wing
-    Opening("G", "fx_hall_n", 0, 8, "z", DOUBLE, True, "fire exit, the passage"),
+    Opening("G", "fx_hall_n", 0, 8.3, "z", DOUBLE, True, "fire exit, the passage (doc (0, 8); 8.3 keeps the 2.0 m "
+            "door hole clear of the 0.4 m hall wall at z 7)"),
     Opening("G", "fx_hall_s", 0, 19, "z", DOUBLE, True, "fire exit, the passage"),
     Opening("G", "d_east_bar", 26, 11, "z", PERSONNEL, True, "east bar service door"),
     Opening("G", "d_g23", 28, 10, "z", PERSONNEL, True),
