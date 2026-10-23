@@ -1024,6 +1024,18 @@ perk.buddy_system.card7.name,Deep Breath
 perk.buddy_system.card7.desc,You get another 20% more health (40% in total).
 perk.buddy_system.card9.name,Ride or Die
 perk.buddy_system.card9.desc,"While you are paired, each kill by your teammate cuts the dispenser's recharge by 2 s."
+perk.lifeline.name,Lifeline
+perk.lifeline.desc,"An ampule that trades your armor for a stubborn will to live. While it runs, hits take whole slices of your health and kills win them back."
+perk.lifeline.card1.name,Second Pulse
+perk.lifeline.card1.desc,"Unlocks the leech ampule (throwable slot): for 6 s it restores 40% of your health and turns off your armor. Your health splits into 20% slices: a hit removes one, 2 kills restore one. Taking damage heals your crew 5%. Recharges in 40 s."
+perk.lifeline.card3.name,Hold the Line
+perk.lifeline.card3.desc,"You get 20% more health. While the ampule runs you can't go down; at 0 health you are slowed by 80% instead."
+perk.lifeline.card5.name,Stay Put
+perk.lifeline.card5.desc,"The ampule lasts 10 s, each kill cuts its recharge by 1 s, and taking damage heals your crew 10%."
+perk.lifeline.card7.name,Tough Stock
+perk.lifeline.card7.desc,You get another 20% more health (40% in total).
+perk.lifeline.card9.name,Bloodbond
+perk.lifeline.card9.desc,"You can use the ampule while downed: it gets you up until it ends, and reviving a teammate or using a doctor bag before then keeps you up. Its slices shrink to 10%."
 ui.skills.title,Skills
 ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic
@@ -1342,6 +1354,8 @@ item.throwable.smoke_bomb.name,Smoke Bomb
 item.throwable.smoke_bomb.desc,"A hand-thrown smoke charge. Granted by the Veil perk deck."
 item.throwable.gas_dispenser.name,Gas Dispenser
 item.throwable.gas_dispenser.desc,"A hand-held inhaler that pairs you with a teammate. Granted by the Buddy System perk deck."
+item.throwable.leech_ampule.name,Leech Ampule
+item.throwable.leech_ampule.desc,"A self-injected ampule. Granted by the Lifeline perk deck."
 item.weapon.warden_45.name,Warden .45
 item.weapon.warden_45.desc,"An all-steel heavy pistol from Marrow & Kell. Eight big rounds, a hard push, and walnut that has seen a few owners."
 item.weapon.hornet_9.name,Hornet 9

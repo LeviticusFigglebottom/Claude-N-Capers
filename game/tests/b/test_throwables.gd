@@ -10,8 +10,8 @@ const KINDS: Dictionary = {
 	&"throwable.frag": &"frag", &"throwable.concussion": &"concussion", &"throwable.incendiary": &"incendiary",
 	&"throwable.throwing_knife": &"throwing_knife",
 }
-const PERK_ITEMS: Array[StringName] = [&"throwable.boss_injector", &"throwable.gas_dispenser", &"throwable.pocket_ecm",
-	&"throwable.smoke_bomb", &"throwable.steady_flask"]
+const PERK_ITEMS: Array[StringName] = [&"throwable.boss_injector", &"throwable.gas_dispenser", &"throwable.leech_ampule",
+	&"throwable.pocket_ecm", &"throwable.smoke_bomb", &"throwable.steady_flask"]
 
 
 func after_all() -> void:

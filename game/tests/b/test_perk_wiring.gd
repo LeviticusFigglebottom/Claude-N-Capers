@@ -78,6 +78,7 @@ const GENERIC: Dictionary = {
 	&"perk.frenzy": [],
 	&"perk.veil": [[&"defense.dodge_add", &"", "add", 0.15]],
 	&"perk.buddy_system": [[&"defense.health_mult", &"", "mult", 1.4]],
+	&"perk.lifeline": [[&"defense.health_mult", &"", "mult", 1.4]],
 }
 
 const ARMOR_IDS: Array = [&"armor.tailored_suit", &"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest",
@@ -162,6 +163,13 @@ const PARAMS: Dictionary = {
 			"tagged_kill_cooldown_cut_s": 2.0},
 		&"perk.throwable": {"item_id": &"throwable.gas_dispenser"},
 	},
+	&"perk.lifeline": {  # D-164: A's perk.leech
+		&"perk.leech": {"duration_s": 10.0, "cooldown_s": 40.0, "kill_cooldown_reduction_s": 1.0,
+			"activate_heal_fraction": 0.4, "armor_off": true, "segment_fraction": 0.1, "kills_per_segment": 2,
+			"team_heal_on_damage_fraction": 0.1, "no_bleedout": true, "zero_health_speed_mult": 0.2,
+			"usable_while_downed": true},
+		&"perk.throwable": {"item_id": &"throwable.leech_ampule"},
+	},
 }
 
 ## Hook coverage (perk_decks.md "Hook coverage"): base key -> file that reads it with
@@ -215,8 +223,9 @@ const HOOKED: Dictionary = {
 	&"perk.sicario": "res://systems/combat/perks/perk_sicario.gd",  # D-163 (A 36df6d56)
 	&"perk.tag_team": "res://systems/combat/perks/perk_tag_team.gd",
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-163.
-const MISSING: Array = []
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). perk.leech: D-164, ENV A's hook; drop it
+## the round it lands.
+const MISSING: Array = [&"perk.leech"]
 
 
 func before_all() -> void:
@@ -302,7 +311,7 @@ func _same_array(a: Array, b: Array) -> bool:
 # --- Full deck through the real path ---------------------------------------------------------------
 
 func test_every_deck_at_nine_cards_reaches_modifiers() -> void:
-	assert_eq(GENERIC.size(), 20, "expectations cover 20 decks")
+	assert_eq(GENERIC.size(), 21, "expectations cover 21 decks")
 	for deck_id: StringName in GENERIC:
 		assert_true(_deck(deck_id) != null, "%s exists" % deck_id)
 		Modifiers.clear_all()

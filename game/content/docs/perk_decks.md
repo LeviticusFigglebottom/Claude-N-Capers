@@ -85,6 +85,7 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 | Frenzy (D-162) | Maniac | `perk.maniac` | none |
 | Veil (D-163) | Sicario | `perk.sicario`, `perk.throwable` (`throwable.smoke_bomb`) | `defense.dodge_add` 0.15 |
 | Buddy System (D-163) | Tag Team | `perk.tag_team`, `perk.throwable` (`throwable.gas_dispenser`) | `defense.health_mult` → 1.4 |
+| Lifeline (D-164) | Leech | `perk.leech`, `perk.throwable` (`throwable.leech_ampule`) | `defense.health_mult` → 1.4 |
 
 Notes on PD2 deviations:
 * **Clean Sweep** merges Hitman and Sociopath (fidelity table). Its cards are: Sociopath Tension
@@ -332,6 +333,20 @@ Card 1 also grants `perk.throwable {item_id: &"throwable.smoke_bomb"}`; card 5 i
 
 Card 1 also grants `perk.throwable {item_id: &"throwable.gas_dispenser"}`; cards 3 / 7 are `defense.health_mult` 1.2 / 1.1666667.
 
+### `perk.leech` (Lifeline, D-164)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| duration_s / cooldown_s | float | s | 6.0 → 10.0 / 40.0 | 1, 5 | The ampule's effect and recharge. |
+| kill_cooldown_reduction_s | float | s | 0 → 1.0 | 5 | Recharge cut per holder kill. |
+| activate_heal_fraction | float | fraction | 0.4 | 1 | On use, heal this share of max health. |
+| armor_off | bool | flag | true | 1 | Armor is disabled while active. |
+| segment_fraction / kills_per_segment | float / int | fraction / kills | 0.2 → 0.1 ◇ / 2 | 1, 9 | While active, health is in slices of this share of max; a hit removes one whole slice; this many kills restore one. |
+| team_heal_on_damage_fraction | float | fraction | 0.05 → 0.1 | 1, 5 | Taking damage while active heals each teammate this share of their max health. |
+| no_bleedout / zero_health_speed_mult | bool / float | flag / mult | false → true / 1.0 → 0.2 | 3 | While active the holder can't go down; at 0 health their speed × this. |
+| usable_while_downed | bool | flag | false → true | 9 | Usable while downed: a temporary revive until it ends; a revive given or a doctor bag used before then keeps the holder up if health > 0. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.leech_ampule"}`; cards 3 / 7 are `defense.health_mult` 1.2 / 1.1666667.
+
 ### `perk.throwable` (Composure, Overlord)
 | Field | Type | Semantics |
 |---|---|---|
@@ -380,6 +395,8 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 `perk.maniac` (A `perk_<name>.gd`, PerkTweak defaults = card-1 values; Road Crew and Hacker card 9 via CrewKillFeed)
 are hooked under the field names of the schema tables above.
 D-163: `perk.sicario` and `perk.tag_team` (A `perk_sicario.gd` / `perk_tag_team.gd`) likewise.
+
+**Held (D-164):** `perk.leech` (Lifeline) waits on ENV A's hook; it is the test's `MISSING` list until it lands.
 
 **Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's
