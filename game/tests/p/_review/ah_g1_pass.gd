@@ -201,6 +201,11 @@ func _ah_stealth() -> bool:
 	var have_code: bool = await _code_note(safe)
 	if not have_card:
 		return false
+	# Upstairs (kc_vip_bar / U-side slots): the nav's shortest line runs through the masked-only VIP staff door, so a
+	# casing player goes back the guest way: grand stair -> foyer -> behind the east bar -> G20.
+	if pilot.crew.global_position.y > 2.0 and not await _leg("back down the guest way to G20 (casing)",
+			[Vector3(8.0, UP, 26.0), Vector3(18.0, 0.0, 25.0), EAST_BAR_BEHIND, G20_IN], 0.8, 180.0):
+		return false
 	if not await _go(G23_MASK, 0.6, 90.0):
 		_row("G23 (mask spot)", "FAIL", "not reached", _owner_for(G23_MASK))
 		return false
