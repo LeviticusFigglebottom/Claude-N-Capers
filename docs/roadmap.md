@@ -78,13 +78,13 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A5-01 | ✅ DONE (A audit, env_a.md -48). `armored_truck` prefab (Rolling Thunder QC-80): vehicle-shaped LARGE safe — saw target, `charges_required`, lockdown state (saw ×1.5), roof-hatch thermite | P5 rolling_thunder |
 | A5-02 | ✅ DONE (A audit, env_a.md -48). `convoy_vehicle` mover (QC-82): path-following vehicles with stop/crash states, escort cars, replicated | P5 rolling_thunder |
 | A5-03 | ✅ DONE (A audit, env_a.md -48). C4 item + shaped charges (QC-84 / S9.5): carried charge count, `charges_required` doors/safes/trucks, placement interaction, detonation | S9.5, P5 |
-| D3-01 | P5 cast (casting per heist; reuse bodies/outfits via variants): Gallery Night (curator, gallery attendants, guards, patrons in evening wear), Ostrander Federal (tellers, bank manager, bank guards, customers), Rolling Thunder (armoured-car crew, convoy escort), Afterhours (bouncers, bartenders, DJ, club patrons); names/roles from ENV C's G0 docs as they land | P5 |
-| D3-02 | P5 NPC ambient animations: club dance loops ×3, bartender wipe/pour, bouncer arms-crossed idle, teller counting at a counter, curator inspecting a painting, walking-while-texting, seated/standing cower variants | P5 |
-| D3-03 | Mask bases batch 3: +12 original base shapes through `_mask_base` (face-envelope fit), for ENV B's unlock sources (payday cards, Notoriety, achievements) | P8 |
-| D3-04 | Animation polish: crew locomotion blend set (start/stop, strafe 8-way), hit-react and death variety (×3 each), downed crawl, a heavy (Wrecker) gait | P6 polish |
-| D4-01 | Character LODs for performance (A4-02): 3 LOD levels per body/outfit (≈ 100 / 45 / 15 %), visibility ranges, crowd-friendly lowest LOD (Afterhours, Gallery Night gala) | A4-02, P5 |
-| D4-02 | Crowd variety: +8 civilian outfits/variants for P5 crowds (club patrons, gala guests, bank customers, commuters), mix-and-match tops/bottoms/hair/colour so no two neighbours match | P5 |
-| D4-03 | Four more heisters (8 total, PD2 grew its roster): bodies, outfits, faces, FP sleeves, portraits, masks-fit envelope regen; ids to ENV B for the picker | P6 |
+| D3-01 | ✅ DONE (D audit 347bf9e3, env_d.md). P5 cast (casting per heist; reuse bodies/outfits via variants): Gallery Night (curator, gallery attendants, guards, patrons in evening wear), Ostrander Federal (tellers, bank manager, bank guards, customers), Rolling Thunder (armoured-car crew, convoy escort), Afterhours (bouncers, bartenders, DJ, club patrons); names/roles from ENV C's G0 docs as they land | P5 |
+| D3-02 | ✅ DONE (D audit 347bf9e3, env_d.md). P5 NPC ambient animations: club dance loops ×3, bartender wipe/pour, bouncer arms-crossed idle, teller counting at a counter, curator inspecting a painting, walking-while-texting, seated/standing cower variants | P5 |
+| D3-03 | ✅ DONE (D audit 347bf9e3, env_d.md). Mask bases batch 3: +12 original base shapes through `_mask_base` (face-envelope fit), for ENV B's unlock sources (payday cards, Notoriety, achievements) | P8 |
+| D3-04 | ✅ DONE (D audit 347bf9e3, env_d.md). Animation polish: crew locomotion blend set (start/stop, strafe 8-way), hit-react and death variety (×3 each), downed crawl, a heavy (Wrecker) gait | P6 polish |
+| D4-01 | ✅ DONE (D audit 347bf9e3, env_d.md). Character LODs for performance (A4-02): 3 LOD levels per body/outfit (≈ 100 / 45 / 15 %), visibility ranges, crowd-friendly lowest LOD (Afterhours, Gallery Night gala) | A4-02, P5 |
+| D4-02 | ✅ DONE (D audit 347bf9e3; deviation accepted: whole-look pools + A per-pool round-robin instead of runtime part mixing). Crowd variety: +8 civilian outfits/variants for P5 crowds (club patrons, gala guests, bank customers, commuters), mix-and-match tops/bottoms/hair/colour so no two neighbours match | P5 |
+| D4-03 | GAP 6/8 heisters (D adding Juno + Hale, D audit 347bf9e3). Four more heisters (8 total, PD2 grew its roster): bodies, outfits, faces, FP sleeves, portraits, masks-fit envelope regen; ids to ENV B for the picker | P6 |
 | A3-11 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
 | C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 
@@ -159,12 +159,12 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 ### ENV D: Characters & Art Production (added by D-027; takes over C1-05 and the officer half of C1-00)
 | Id | Task | Depends |
 |---|---|---|
-| D1-00 | Officer renders for the C1-00 style samples (3 styles), from ENV C's sample scripts, in parallel with C's counter renders | C pushes sample scripts |
-| D1-01 | `rig_humanoid` + parametric body generator (build/height/age variants, shared skeleton) per characters.md | C1-01 lib |
-| D1-02 | Outfits and heads: Security Officer, civilians ×4 variants (customers, sales associate, jeweler, clerk/manager), Patrol Officer, TAC Light, crew body | D1-01 |
-| D1-03 | Procedural animation set (the P1 subset listed in C1-05) + first-person arms rig `rig_arms` with the pistol anim set | D1-01 |
-| D1-04 | Masks: `mask.gilded_heron` mesh (B1-08) + a mask base-shape generator for later masks | C1-01 lib |
-| D1-05 | Character import checks (`game/tests/d/`) + silhouette lineup render | D1-02 |
+| D1-00 | ✅ DONE (D audit 347bf9e3, env_d.md). Officer renders for the C1-00 style samples (3 styles), from ENV C's sample scripts, in parallel with C's counter renders | C pushes sample scripts |
+| D1-01 | ✅ DONE (D audit 347bf9e3, env_d.md). `rig_humanoid` + parametric body generator (build/height/age variants, shared skeleton) per characters.md | C1-01 lib |
+| D1-02 | ✅ DONE (D audit 347bf9e3, env_d.md). Outfits and heads: Security Officer, civilians ×4 variants (customers, sales associate, jeweler, clerk/manager), Patrol Officer, TAC Light, crew body | D1-01 |
+| D1-03 | ✅ DONE (D audit 347bf9e3, env_d.md). Procedural animation set (the P1 subset listed in C1-05) + first-person arms rig `rig_arms` with the pistol anim set | D1-01 |
+| D1-04 | ✅ DONE (D audit 347bf9e3, env_d.md). Masks: `mask.gilded_heron` mesh (B1-08) + a mask base-shape generator for later masks | C1-01 lib |
+| D1-05 | ✅ DONE (D audit 347bf9e3, env_d.md). Character import checks (`game/tests/d/`) + silhouette lineup render | D1-02 |
 
 ### LEAD
 | Id | Task |
