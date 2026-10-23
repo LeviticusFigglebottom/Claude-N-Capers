@@ -1657,3 +1657,13 @@ B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac ho
   Truncated PD2 values (smoke cooldown, tag duration, per-kill extension) are ◇.
 - HUD: `LocalHudModel.tag_team {tagged_slot, left, cooldown}` → ui_hud v1.21 when A lands it. C: smoke-cloud VFX + cue.smoke_bomb;
   D/C: gas-tether look + cue.gas_dispenser_tag.
+
+## D-164: Further perk decks, batch 3 (last): Leech, Copycat (2026-10-23, LEAD; A plan)
+- **Leech:** armor off deck-wide (adjust_max_armor → 0); Ampule window: heal on use, segmented health (a hit costs exactly one
+  segment, then a short invuln), kills restore segments, losing a segment heals teammates; a new PerkHooks.would_go_down veto
+  (once per window) and use-while-downed temporary revive (no down refund ◇). HUD via PerkItems (kind ampule).
+- **Copycat:** a PerkCopycat with PD2's 4 rotating behaviours (B's list) + per-card stat choices (B: choice UI + profile schema),
+  and card 9 = mimic another deck's card 9. **Mimic scheme:** every deck carries a `mimic_grants` (its card-9 delta as standalone
+  keys); Copycat card 9 grants the chosen deck's mimic_grants. A card 9 that only makes sense inside its own deck is marked
+  non-mimicable or gets a standalone variant. Component params default to 0 / off so partial dicts are safe.
+- Order: Leech first (self-contained), then Copycat. B proposes names first, as in D-163.
