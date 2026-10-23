@@ -148,7 +148,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 3807 polygons, cell 0.10/0.10 m
+- navmesh: 3811 polygons, cell 0.10/0.10 m
 - 218 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -188,7 +188,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomFG` | 745 | 745 | 100% |
 | `Rooms/RoomF1` | 832 | 832 | 100% |
 | `Rooms/RoomX4` | 721 | 721 | 100% |
-| `Rooms/RoomX1` | 819 | 819 | 100% |
+| `Rooms/RoomX1` | 818 | 818 | 100% |
 | `Rooms/RoomX2` | 389 | 389 | 100% |
 | `Rooms/RoomX3` | 770 | 770 | 100% |
 | `Rooms/RoomX5` | 779 | 779 | 100% |

@@ -173,8 +173,9 @@ const ROWS: Array = [
 		["prop_street_lamp", 6.0, 20.0, 3, 0.0], ["prop_bin_street", 6.6, 40.0, 2, -0.15]]],
 	["X1", "OrchardE_SKerb", [10.5, 0.0, 14.0], [10.5, 0.0, 62.0], 90.0, [
 		["prop_bollard_steel", 0.0, 0.7, 3, 0.0]]],
+	# (BinStreet0 0.65 m in toward the kerb: P's §7.6 standable FAIL, 0.6 m off the hoarding's SW corner with a 1.0 m top)
 	["X1", "TanneryW_N", [-70.0, 0.0, -10.55], [-14.5, 0.0, -10.55], 180.0, [
-		["prop_street_lamp", 10.0, 25.0, 2, 0.0], ["prop_bin_street", 10.6, 25.0, 1, -0.15]]],
+		["prop_street_lamp", 10.0, 25.0, 2, 0.0], ["prop_bin_street", 10.6, 25.0, 1, -0.65]]],
 	["X1", "TanneryW_NKerb", [-70.0, 0.0, -8.5], [-14.5, 0.0, -8.5], 180.0, [
 		["prop_bollard_steel", 54.0, 0.7, 3, 0.0]]],
 	["X1", "TanneryW_S", [-70.0, 0.0, 8.5], [-14.5, 0.0, 8.5], 0.0, [
