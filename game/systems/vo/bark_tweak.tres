@@ -22,17 +22,17 @@ patterns = {
 &"mercer.heist_success": ["vo.mercer.heist_success_%d"],
 &"mercer.heist_failed": ["vo.mercer.heist_failed_%d"],
 &"mercer.stealth_success": ["vo.mercer.stealth_success_%d"],
-&"crew.pager_started": ["vo.rook.pager_started_%d", "vo.sable.pager_started_%d", "vo.dutch.pager_started_%d", "vo.wren.pager_started_%d", "vo.marten.pager_started_%d", "vo.jay.pager_started_%d"],
-&"crew.device_jammed": ["vo.rook.device_jammed_%d", "vo.sable.device_jammed_%d", "vo.dutch.device_jammed_%d", "vo.wren.device_jammed_%d", "vo.marten.device_jammed_%d", "vo.jay.device_jammed_%d"],
-&"crew.crew_downed": ["vo.rook.crew_downed_%d", "vo.sable.crew_downed_%d", "vo.dutch.crew_downed_%d", "vo.wren.crew_downed_%d", "vo.marten.crew_downed_%d", "vo.jay.crew_downed_%d"],
-&"crew.reloading": ["vo.rook.reloading_%d", "vo.sable.reloading_%d", "vo.dutch.reloading_%d", "vo.wren.reloading_%d", "vo.marten.reloading_%d", "vo.jay.reloading_%d"],
-&"crew.bagging_body": ["vo.rook.bagging_body_%d", "vo.sable.bagging_body_%d", "vo.dutch.bagging_body_%d", "vo.wren.bagging_body_%d", "vo.marten.bagging_body_%d", "vo.jay.bagging_body_%d"],
-&"crew.going_loud": ["vo.rook.going_loud_%d", "vo.sable.going_loud_%d", "vo.dutch.going_loud_%d", "vo.wren.going_loud_%d", "vo.marten.going_loud_%d", "vo.jay.going_loud_%d"],
-&"crew.reviving": ["vo.rook.reviving_%d", "vo.sable.reviving_%d", "vo.dutch.reviving_%d", "vo.wren.reviving_%d", "vo.marten.reviving_%d", "vo.jay.reviving_%d"],
-&"crew.cops_incoming": ["vo.rook.cops_incoming_%d", "vo.sable.cops_incoming_%d", "vo.dutch.cops_incoming_%d", "vo.wren.cops_incoming_%d", "vo.marten.cops_incoming_%d", "vo.jay.cops_incoming_%d"],
-&"crew.loot_secured": ["vo.rook.loot_secured_%d", "vo.sable.loot_secured_%d", "vo.dutch.loot_secured_%d", "vo.wren.loot_secured_%d", "vo.marten.loot_secured_%d", "vo.jay.loot_secured_%d"],
-&"crew.guard_down": ["vo.rook.guard_down_%d", "vo.sable.guard_down_%d", "vo.dutch.guard_down_%d", "vo.wren.guard_down_%d", "vo.marten.guard_down_%d", "vo.jay.guard_down_%d"],
-&"crew.civilian_killed": ["vo.rook.civilian_killed_%d", "vo.sable.civilian_killed_%d", "vo.dutch.civilian_killed_%d", "vo.wren.civilian_killed_%d", "vo.marten.civilian_killed_%d", "vo.jay.civilian_killed_%d"]
+&"crew.pager_started": ["vo.rook.pager_started_%d", "vo.sable.pager_started_%d", "vo.dutch.pager_started_%d", "vo.wren.pager_started_%d", "vo.marten.pager_started_%d", "vo.jay.pager_started_%d", "vo.juno.pager_started_%d", "vo.hale.pager_started_%d"],
+&"crew.device_jammed": ["vo.rook.device_jammed_%d", "vo.sable.device_jammed_%d", "vo.dutch.device_jammed_%d", "vo.wren.device_jammed_%d", "vo.marten.device_jammed_%d", "vo.jay.device_jammed_%d", "vo.juno.device_jammed_%d", "vo.hale.device_jammed_%d"],
+&"crew.crew_downed": ["vo.rook.crew_downed_%d", "vo.sable.crew_downed_%d", "vo.dutch.crew_downed_%d", "vo.wren.crew_downed_%d", "vo.marten.crew_downed_%d", "vo.jay.crew_downed_%d", "vo.juno.crew_downed_%d", "vo.hale.crew_downed_%d"],
+&"crew.reloading": ["vo.rook.reloading_%d", "vo.sable.reloading_%d", "vo.dutch.reloading_%d", "vo.wren.reloading_%d", "vo.marten.reloading_%d", "vo.jay.reloading_%d", "vo.juno.reloading_%d", "vo.hale.reloading_%d"],
+&"crew.bagging_body": ["vo.rook.bagging_body_%d", "vo.sable.bagging_body_%d", "vo.dutch.bagging_body_%d", "vo.wren.bagging_body_%d", "vo.marten.bagging_body_%d", "vo.jay.bagging_body_%d", "vo.juno.bagging_body_%d", "vo.hale.bagging_body_%d"],
+&"crew.going_loud": ["vo.rook.going_loud_%d", "vo.sable.going_loud_%d", "vo.dutch.going_loud_%d", "vo.wren.going_loud_%d", "vo.marten.going_loud_%d", "vo.jay.going_loud_%d", "vo.juno.going_loud_%d", "vo.hale.going_loud_%d"],
+&"crew.reviving": ["vo.rook.reviving_%d", "vo.sable.reviving_%d", "vo.dutch.reviving_%d", "vo.wren.reviving_%d", "vo.marten.reviving_%d", "vo.jay.reviving_%d", "vo.juno.reviving_%d", "vo.hale.reviving_%d"],
+&"crew.cops_incoming": ["vo.rook.cops_incoming_%d", "vo.sable.cops_incoming_%d", "vo.dutch.cops_incoming_%d", "vo.wren.cops_incoming_%d", "vo.marten.cops_incoming_%d", "vo.jay.cops_incoming_%d", "vo.juno.cops_incoming_%d", "vo.hale.cops_incoming_%d"],
+&"crew.loot_secured": ["vo.rook.loot_secured_%d", "vo.sable.loot_secured_%d", "vo.dutch.loot_secured_%d", "vo.wren.loot_secured_%d", "vo.marten.loot_secured_%d", "vo.jay.loot_secured_%d", "vo.juno.loot_secured_%d", "vo.hale.loot_secured_%d"],
+&"crew.guard_down": ["vo.rook.guard_down_%d", "vo.sable.guard_down_%d", "vo.dutch.guard_down_%d", "vo.wren.guard_down_%d", "vo.marten.guard_down_%d", "vo.jay.guard_down_%d", "vo.juno.guard_down_%d", "vo.hale.guard_down_%d"],
+&"crew.civilian_killed": ["vo.rook.civilian_killed_%d", "vo.sable.civilian_killed_%d", "vo.dutch.civilian_killed_%d", "vo.wren.civilian_killed_%d", "vo.marten.civilian_killed_%d", "vo.jay.civilian_killed_%d", "vo.juno.civilian_killed_%d", "vo.hale.civilian_killed_%d"]
 }
 fallback_heisters = Array[StringName]([&"rook", &"sable", &"dutch", &"wren"])
 mercer_settle_s = 0.75
