@@ -998,14 +998,43 @@ func _pick_cover(leader: CrewController) -> Node3D:
 		return cover_point
 	var best: Node3D = null
 	var best_d: float = INF
+	var prefer: float = tweak.cover_prefer_behind_leader_m
+	var threat: Vector3 = _nearest_threat(leader) if prefer > 0.0 else Vector3.INF
 	for n: Node in get_tree().get_nodes_in_group(G.COVER_POINT):
 		var p: Node3D = n as Node3D
 		if p == null or not _rt.is_ancestor_of(p) or not _cover_ok(p, leader):
 			continue
 		var d: float = p.global_position.distance_to(_crew.global_position)
+		if threat != Vector3.INF and _behind_leader(p.global_position, leader.global_position, threat):
+			d -= prefer
 		if d < best_d:
 			best = p
 			best_d = d
+	return best
+
+
+## cover_prefer_behind_leader_m: `p` is farther (flat) from the threat than the leader, or on the leader's far side.
+static func _behind_leader(p: Vector3, leader: Vector3, threat: Vector3) -> bool:
+	var to_threat: Vector3 = Vector3(threat.x - leader.x, 0.0, threat.z - leader.z)
+	var to_p: Vector3 = Vector3(p.x - leader.x, 0.0, p.z - leader.z)
+	return _flat_dist(p, threat) > _flat_dist(leader, threat) or to_p.dot(to_threat) < 0.0
+
+
+## The nearest hostile NPC to `leader` (its position), INF when none is known.
+func _nearest_threat(leader: CrewController) -> Vector3:
+	var best: Vector3 = Vector3.INF
+	var best_d: float = INF
+	for role: StringName in HOSTILE_ROLES:
+		for n: Variant in _rt.npcs(role):
+			if not is_instance_valid(n):
+				continue
+			var npc: NpcBase = n as NpcBase
+			if npc == null or not _is_hostile(npc):
+				continue
+			var d: float = _flat_dist(npc.global_position, leader.global_position)
+			if d < best_d:
+				best_d = d
+				best = npc.global_position
 	return best
 
 

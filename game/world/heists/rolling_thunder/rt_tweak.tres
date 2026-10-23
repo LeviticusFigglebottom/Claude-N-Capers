@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RtTweak" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/heists/rolling_thunder/rt_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+truck_window_from = &"stop"
+truck_window_s = 30.0
+escort_down_max_s = 60.0
+wave1_exclude = Array[StringName]([])
+wave1_exclude_min_difficulty = 2
