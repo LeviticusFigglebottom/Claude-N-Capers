@@ -317,10 +317,15 @@ func _dk_veil() -> bool:
 	await shot("veil_in_cloud")
 	var d1: float = _pilot_damage()
 	var t1: float = rt.heist_time_s
+	var was_open: bool = _open
+	_open = false  # hold in the cloud: --open would walk the pilot out of it
 	await _fight(VEIL_WINDOW_S)
+	_open = was_open
 	var in_dps: float = (_pilot_damage() - d1) / maxf(rt.heist_time_s - t1, 0.1)
-	_row("smoke at the feet: in the cloud", "PASS" if in_cloud else "FAIL", "in smoke %s, damage/s before %.1f, inside %.1f" % [
-		in_cloud, out_dps, in_dps], "A PerkSicario / SmokeZones")
+	var still_in: bool = SmokeZones.in_smoke(pilot.crew)
+	_row("smoke at the feet: in the cloud", "PASS" if in_cloud else "FAIL",
+		"in smoke %s (still at the end %s), damage/s before %.1f, inside %.1f" % [in_cloud, still_in, out_dps, in_dps],
+		"A PerkSicario / SmokeZones")
 	_danger_rows("veil")
 	return in_cloud
 
