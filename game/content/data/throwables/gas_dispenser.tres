@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ThrowableDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/throwable_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"throwable.gas_dispenser"
+display_name = "Gas Dispenser"
+kind = &"gas_dispenser"
+count = 1
+damage = 0.0
+radius_m = 0.0
+fuse_s = 0.0

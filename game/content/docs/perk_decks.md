@@ -83,6 +83,8 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 | Inkwork (D-162) | Yakuza | `perk.yakuza` | none |
 | Road Crew (D-162) | Biker | `perk.biker` | none |
 | Frenzy (D-162) | Maniac | `perk.maniac` | none |
+| Veil (D-163) | Sicario | `perk.sicario`, `perk.throwable` (`throwable.smoke_bomb`) | `defense.dodge_add` 0.15 |
+| Buddy System (D-163) | Tag Team | `perk.tag_team`, `perk.throwable` (`throwable.gas_dispenser`) | `defense.health_mult` → 1.4 |
 
 Notes on PD2 deviations:
 * **Clean Sweep** merges Hitman and Sociopath (fidelity table). Its cards are: Sociopath Tension
@@ -304,6 +306,32 @@ at most `max_procs` within a sliding `window_s`. `missing_h` / `missing_a` = who
 | team | bool | flag | false → true | 3 | Teammates also absorb from the holder's stacks; with several holders, only the best absorb counts. |
 | self_absorb_mult | float | mult | 1.0 → 2.0 | 9 | The holder's own absorb × this (teammates keep ×1). |
 
+### `perk.sicario` (Veil, D-163)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| smoke_duration_s / smoke_radius_m | float | s / m | 10.0 / 4.0 ◇ | 1 | The smoke bomb's cloud. |
+| cooldown_s / kill_cooldown_reduction_s | float | s | 60.0 ◇ / 1.0 ◇ | 1 | Recharge after the cloud ends; cut per holder kill. |
+| in_smoke_dodge_add | float | fraction | 0.5 | 1 | Holder and allies inside the cloud avoid this share of bullets. |
+| enemy_accuracy_mult | float | mult | 0.5 | 1 | Accuracy of enemies inside the cloud. |
+| twitch_dodge_add / twitch_lockout_s | float | fraction / s | 0.0 → 0.2 / 4.0 | 3 | Each hit taken adds this dodge (stacking) until a dodge resets it; then no stacking for the lockout. |
+| dodge_restores_armor | bool | flag | false → true | 7 | A dodge refills the holder's armor (◇ full refill, LEAD D-163). |
+| in_smoke_effect_mult | float | mult | 1.0 → 2.0 | 9 | While the holder is in the cloud, the deck's own effects (twitch, card 5 dodge) × this. |
+| ally_in_smoke_dodge_add | float | fraction | 0.0 → 0.1 | 9 | Extra dodge for allies inside the cloud. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.smoke_bomb"}`; card 5 is the generic `defense.dodge_add` 0.15.
+
+### `perk.tag_team` (Buddy System, D-163)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| tag_range_m | float | m | 18.0 | 1 | The gas dispenser tags the ally under the crosshair within this range with line of sight. |
+| duration_s / cooldown_s | float | s | 11.0 ◇ / 60.0 ◇ | 1 | Pairing time; recharge. |
+| kill_extend_s | float | s | 1.3 ◇ | 1 | Each holder kill extends the pairing. |
+| holder_kill_heal / tagged_kill_heal | float | HP | 15.0 / 7.5 | 1 | Each kill by either partner heals the holder / the tagged ally. |
+| kill_absorb / max_absorb | float | HP | 0 → 2.0 / 0 → 20.0 | 5 | Holder absorb per pair kill, capped, kept until the dispenser has recharged. |
+| tagged_kill_cooldown_cut_s | float | s | 0 → 2.0 | 9 | Each tagged-ally kill while paired cuts the recharge. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.gas_dispenser"}`; cards 3 / 7 are `defense.health_mult` 1.2 / 1.1666667.
+
 ### `perk.throwable` (Composure, Overlord)
 | Field | Type | Semantics |
 |---|---|---|
@@ -351,6 +379,9 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 **D-161 / D-162:** `stealth.pocket_ecm` (A `perk_pocket_ecm.gd` + EcmSystem), `perk.yakuza`, `perk.biker` and
 `perk.maniac` (A `perk_<name>.gd`, PerkTweak defaults = card-1 values; Road Crew and Hacker card 9 via CrewKillFeed)
 are hooked under the field names of the schema tables above.
+
+**Held (D-163):** `perk.sicario` (Veil) and `perk.tag_team` (Buddy System) wait on ENV A's hooks; they are the
+test's `MISSING` list until those land.
 
 **Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's

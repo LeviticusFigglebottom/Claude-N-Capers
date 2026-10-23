@@ -1,4 +1,4 @@
-## B4-02: the 18 perk decks as data (14 + Hacker D-161 + Inkwork / Road Crew / Frenzy D-162)
+## B4-02: the 20 perk decks as data (14 + Hacker D-161 + Inkwork / Road Crew / Frenzy D-162 + Veil / Buddy System D-163)
 ## (pd2_fidelity.md P4 + P-decks table, research §3.2/Appendix B).
 ## 9 cards each, PD2 costs, shared cards 2/4/6/8 identical in every deck, only registry keys,
 ## strings present, each deck grants its signature key, PARAMS re-grants carry the full dict.
@@ -26,6 +26,8 @@ const SIGNATURE: Dictionary = {
 	&"perk.inkwork": &"perk.yakuza",  # D-162 (PD2 Yakuza)
 	&"perk.road_crew": &"perk.biker",  # D-162 (PD2 Biker)
 	&"perk.frenzy": &"perk.maniac",  # D-162 (PD2 Maniac)
+	&"perk.veil": &"perk.sicario",  # D-163 (PD2 Sicario)
+	&"perk.buddy_system": &"perk.tag_team",  # D-163 (PD2 Tag Team)
 }
 ## Shared cards (index = card number - 1): PD2 Helmet Popping, Blending In, Walk-in Closet,
 ## Fast and Furious (the parts that have registry keys).
@@ -60,7 +62,7 @@ func test_fourteen_decks_with_expected_ids() -> void:
 	var ids: Array = []
 	for d: Variant in _decks():
 		ids.append((d as PerkDeckDef).id)
-	assert_eq(ids.size(), 18, "decks: %s" % [ids])
+	assert_eq(ids.size(), 20, "decks: %s" % [ids])
 	var expected: Array = SIGNATURE.keys()
 	ContentDB.sort_ids(expected)
 	assert_eq(ids, expected)

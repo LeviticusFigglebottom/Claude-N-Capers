@@ -76,6 +76,8 @@ const GENERIC: Dictionary = {
 	&"perk.inkwork": [],
 	&"perk.road_crew": [],
 	&"perk.frenzy": [],
+	&"perk.veil": [[&"defense.dodge_add", &"", "add", 0.15]],
+	&"perk.buddy_system": [[&"defense.health_mult", &"", "mult", 1.4]],
 }
 
 const ARMOR_IDS: Array = [&"armor.tailored_suit", &"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest",
@@ -148,6 +150,18 @@ const PARAMS: Dictionary = {
 			"stacks_per_absorb": 25.0, "decay_fraction": 0.6, "decay_flat": 40.0, "decay_interval_s": 8.0, "team": true,
 			"self_absorb_mult": 2.0},
 	},
+	&"perk.veil": {  # D-163: A's perk.sicario
+		&"perk.sicario": {"smoke_duration_s": 10.0, "smoke_radius_m": 4.0, "cooldown_s": 60.0,
+			"kill_cooldown_reduction_s": 1.0, "in_smoke_dodge_add": 0.5, "enemy_accuracy_mult": 0.5, "twitch_dodge_add": 0.2,
+			"twitch_lockout_s": 4.0, "dodge_restores_armor": true, "in_smoke_effect_mult": 2.0, "ally_in_smoke_dodge_add": 0.1},
+		&"perk.throwable": {"item_id": &"throwable.smoke_bomb"},
+	},
+	&"perk.buddy_system": {  # D-163: A's perk.tag_team
+		&"perk.tag_team": {"tag_range_m": 18.0, "duration_s": 11.0, "cooldown_s": 60.0, "kill_extend_s": 1.3,
+			"holder_kill_heal": 15.0, "tagged_kill_heal": 7.5, "kill_absorb": 2.0, "max_absorb": 20.0,
+			"tagged_kill_cooldown_cut_s": 2.0},
+		&"perk.throwable": {"item_id": &"throwable.gas_dispenser"},
+	},
 }
 
 ## Hook coverage (perk_decks.md "Hook coverage"): base key -> file that reads it with
@@ -199,8 +213,9 @@ const HOOKED: Dictionary = {
 	&"perk.biker": "res://systems/combat/perks/perk_biker.gd",
 	&"perk.maniac": "res://systems/combat/perks/perk_maniac.gd",
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty again since D-161 / D-162.
-const MISSING: Array = []
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). perk.sicario / perk.tag_team: D-163,
+## ENV A's hooks; drop each the round it lands.
+const MISSING: Array = [&"perk.sicario", &"perk.tag_team"]
 
 
 func before_all() -> void:
@@ -286,7 +301,7 @@ func _same_array(a: Array, b: Array) -> bool:
 # --- Full deck through the real path ---------------------------------------------------------------
 
 func test_every_deck_at_nine_cards_reaches_modifiers() -> void:
-	assert_eq(GENERIC.size(), 18, "expectations cover 18 decks")
+	assert_eq(GENERIC.size(), 20, "expectations cover 20 decks")
 	for deck_id: StringName in GENERIC:
 		assert_true(_deck(deck_id) != null, "%s exists" % deck_id)
 		Modifiers.clear_all()

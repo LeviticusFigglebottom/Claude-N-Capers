@@ -1,0 +1,111 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.buddy_system"
+display_name = "Buddy System"
+description = "perk.buddy_system.desc"
+cards = Array[Dictionary]([{
+"name": "perk.buddy_system.card1.name",
+"desc": "perk.buddy_system.card1.desc",
+"cost": 200,
+"grants": {
+&"perk.throwable": {
+"item_id": &"throwable.gas_dispenser"
+},
+&"perk.tag_team": {
+"tag_range_m": 18.0,
+"duration_s": 11.0,
+"cooldown_s": 60.0,
+"kill_extend_s": 1.3,
+"holder_kill_heal": 15.0,
+"tagged_kill_heal": 7.5,
+"kill_absorb": 0.0,
+"max_absorb": 0.0,
+"tagged_kill_cooldown_cut_s": 0.0
+}
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.buddy_system.card3.name",
+"desc": "perk.buddy_system.card3.desc",
+"cost": 400,
+"grants": {
+&"defense.health_mult": 1.2
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1,
+&"progression.xp_mult": 1.45,
+&"movement.armor_penalty_mult": 0.85
+}
+}, {
+"name": "perk.buddy_system.card5.name",
+"desc": "perk.buddy_system.card5.desc",
+"cost": 1000,
+"grants": {
+&"perk.tag_team": {
+"tag_range_m": 18.0,
+"duration_s": 11.0,
+"cooldown_s": 60.0,
+"kill_extend_s": 1.3,
+"holder_kill_heal": 15.0,
+"tagged_kill_heal": 7.5,
+"kill_absorb": 2.0,
+"max_absorb": 20.0,
+"tagged_kill_cooldown_cut_s": 0.0
+}
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35,
+&"deploy.armor_bag": true
+}
+}, {
+"name": "perk.buddy_system.card7.name",
+"desc": "perk.buddy_system.card7.desc",
+"cost": 2400,
+"grants": {
+&"defense.health_mult": 1.1666667
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05,
+&"interaction.doctor_bag_speed_mult": 0.8333
+}
+}, {
+"name": "perk.buddy_system.card9.name",
+"desc": "perk.buddy_system.card9.desc",
+"cost": 4000,
+"grants": {
+&"progression.card_drop_quality_add": 0.1,
+&"perk.tag_team": {
+"tag_range_m": 18.0,
+"duration_s": 11.0,
+"cooldown_s": 60.0,
+"kill_extend_s": 1.3,
+"holder_kill_heal": 15.0,
+"tagged_kill_heal": 7.5,
+"kill_absorb": 2.0,
+"max_absorb": 20.0,
+"tagged_kill_cooldown_cut_s": 2.0
+}
+}
+}])

@@ -1000,6 +1000,30 @@ perk.frenzy.card7.name,Red Mist
 perk.frenzy.card7.desc,"Every 25 Frenzy absorbs 1 damage, for you and your crew."
 perk.frenzy.card9.name,Unhinged
 perk.frenzy.card9.desc,"Your own Frenzy absorption is doubled."
+perk.veil.name,Veil
+perk.veil.desc,"A smoke bomb that hides you and your crew. Inside the smoke bullets miss more often, and every miss keeps you in the fight."
+perk.veil.card1.name,Smoke Out
+perk.veil.card1.desc,"Unlocks the smoke bomb (throwable slot): a 10 s cloud. You and your crew inside it dodge 50% of bullets, and enemies inside it shoot 50% less accurately. Recharges in 60 s, 1 s faster per kill."
+perk.veil.card3.name,Flinch
+perk.veil.card3.desc,"Each time you are shot, you gain 20% dodge until you dodge a bullet. Then it stops building for 4 s."
+perk.veil.card5.name,Light Feet
+perk.veil.card5.desc,You get 15% more dodge.
+perk.veil.card7.name,Slip Away
+perk.veil.card7.desc,Dodging a bullet refills your armor.
+perk.veil.card9.name,Ghost in the Smoke
+perk.veil.card9.desc,"In your smoke, this deck's own bonuses are doubled. Your crew gains 10% dodge while they stand in it."
+perk.buddy_system.name,Buddy System
+perk.buddy_system.desc,"Pair up with a teammate. Every kill either of you makes heals you both."
+perk.buddy_system.card1.name,Pair Up
+perk.buddy_system.card1.desc,"Unlocks the gas dispenser (throwable slot): look at a teammate within 18 m and use it to pair up for 11 s. Each kill by either of you heals you 15 health and them 7.5. Your kills add 1.3 s. Recharges in 60 s."
+perk.buddy_system.card3.name,Second Wind
+perk.buddy_system.card3.desc,You get 20% more health.
+perk.buddy_system.card5.name,In Sync
+perk.buddy_system.card5.desc,"Each kill by either of you gives you 2 damage absorption, up to 20, until the dispenser has recharged."
+perk.buddy_system.card7.name,Deep Breath
+perk.buddy_system.card7.desc,You get another 20% more health (40% in total).
+perk.buddy_system.card9.name,Ride or Die
+perk.buddy_system.card9.desc,"While you are paired, each kill by your teammate cuts the dispenser's recharge by 2 s."
 ui.skills.title,Skills
 ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic
@@ -1314,6 +1338,10 @@ item.throwable.boss_injector.name,Boss Injector
 item.throwable.boss_injector.desc,"A single-dose auto-injector. Use it, and every hit you take in the next few seconds patches you up instead."
 item.throwable.pocket_ecm.name,Pocket ECM
 item.throwable.pocket_ecm.desc,"The Hacker deck's handheld jammer: 2 charges of 6 s."
+item.throwable.smoke_bomb.name,Smoke Bomb
+item.throwable.smoke_bomb.desc,"A hand-thrown smoke charge. Granted by the Veil perk deck."
+item.throwable.gas_dispenser.name,Gas Dispenser
+item.throwable.gas_dispenser.desc,"A hand-held inhaler that pairs you with a teammate. Granted by the Buddy System perk deck."
 item.weapon.warden_45.name,Warden .45
 item.weapon.warden_45.desc,"An all-steel heavy pistol from Marrow & Kell. Eight big rounds, a hard push, and walnut that has seen a few owners."
 item.weapon.hornet_9.name,Hornet 9
