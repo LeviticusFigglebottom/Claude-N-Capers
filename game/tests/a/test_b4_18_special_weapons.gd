@@ -295,3 +295,43 @@ func test_d070_string_halves_and_speedloader() -> void:
 	assert_true(sl.visible, "Speedloader shown while reloading")
 	c.weapons.reloading = false
 	vis.queue_free()
+
+
+## A4-04 batch 1 (ratchet UNTESTED): weapon.saw_damage_mult / weapon.saw_wear_mult / weapon.saw_shield_pierce
+## (class-qualified keys: granted as "<key>.all").
+func _saw_tick(params: Dictionary, grants: Dictionary) -> Array:
+	for k: String in grants:
+		Modifiers.set_source(0, &"test.saw", {StringName(k + ".all"): grants[k]})
+	_def(&"weapon.test_saw", [&"auto"], {"saw": params}, 40)
+	await ACombatSpecials.place_crew(_rt, 0, Vector3(0, 0.05, 0))
+	var w: CrewWeapons = await _arm(&"weapon.test_saw")
+	var npc: NpcBase = _npc(Vector3(0, 0.05, -1.2))
+	await wait_physics_frames(3)
+	await _hold(0, CombatSystem.target_center(npc), 2, 2)
+	Modifiers.clear_source(0, &"test.saw")
+	return [_events_for(npc), 40 - w.mag(Enums.WeaponSlot.PRIMARY)]
+
+
+func test_a4_04_saw_damage_mult() -> void:
+	var r: Array = await _saw_tick({"range_m": 1.8}, {"weapon.saw_damage_mult": 2.0})
+	var ev: Array[Dictionary] = r[0]
+	assert_true(not ev.is_empty(), "the saw cut")
+	if not ev.is_empty():
+		assert_near(float(ev[0]["amount"]), 80.0, 0.5, "x2 saw damage (40 base)")
+
+
+func test_a4_04_saw_wear_mult() -> void:
+	var r: Array = await _saw_tick({"range_m": 1.8, "wear_per_tick_npc": 2.0}, {"weapon.saw_wear_mult": 0.5})
+	var ev: Array[Dictionary] = r[0]
+	assert_true(not ev.is_empty(), "the saw cut")
+	assert_eq(int(r[1]), ev.size(), "wear 2 x 0.5 = one round per cutting tick")
+
+
+func test_a4_04_saw_shield_pierce() -> void:
+	var r: Array = await _saw_tick({"range_m": 1.8, "shield_pierce": false}, {})
+	var ev: Array[Dictionary] = r[0]
+	assert_true(not ev.is_empty() and not bool(ev[0].get("shield_pierce", true)), "a blade without shield pierce")
+	_events.clear()
+	var r2: Array = await _saw_tick({"range_m": 1.8, "shield_pierce": false}, {"weapon.saw_shield_pierce": true})
+	var ev2: Array[Dictionary] = r2[0]
+	assert_true(not ev2.is_empty() and bool(ev2[0].get("shield_pierce", false)), "the skill flag pierces shields")
