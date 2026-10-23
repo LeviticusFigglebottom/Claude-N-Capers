@@ -1726,3 +1726,16 @@ Rulings (L2.12 / D-108 / D-145 stand otherwise):
 4. Bot cuffer targeting: the D-158.7 levers measured worse on RT and stay off. Re-measure them only after 1 and 2; no change
    now.
 P re-reads AH Hazardous (#4) after A's fix; that read is the done-check read.
+
+## D-168: enemy target picking gets a threat term (2026-10-23, LEAD; P deck-feel observation, A analysis)
+P saw 0 hits on the human in two Glasshouse legs (a peeking pilot behind cover; all fire on a forward bot). A: there is no bot
+bias. PoliceBrain._pick_target is pure nearest-visible (distance² / PerkHooks.aggro_weight), with no threat term, so a human
+shooting from cover never draws fire while a closer bot is visible. PD2 weighs attention by distance, visibility and threat
+(who is hurting the unit), with stickiness. Ruling:
+- A adds a **threat term**: a crew member who damaged this unit (or its squad) within ~3 s scores distance² × 0.5 (◇), plus a
+  small retarget stickiness (◇). Both live in a tweak, with tests. Perk aggro weights are unchanged and still multiply.
+- Balance guard: re-run the RT and AH Routine loud harness seeds after it lands. Expect at most a small change; if the
+  win rate moves, report before tuning.
+Also from A's AH co-op soak (PASS 3/3, 0 desync): A splits HeistNetSync._send_xforms into ≤ MTU chunks with a lower rate for
+far or calm civilians (the AH crowd sent 4340 B unreliable packets), then gates per-peer NetSync sends until that peer's
+runtime is ready (the join race behind the session-start "Node not found" spam).
