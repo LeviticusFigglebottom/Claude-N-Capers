@@ -1641,3 +1641,7 @@ B's sizing ranked the pd2_fidelity "further decks" by new A behaviour. Batch 1 =
 - **Maniac** (M): Hysteria stacks from damage dealt → flat absorb, with decay; the crew shares the best holder's; replicated.
 B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac hooks + the crew-kill event. Values per PD2
 (docs/research/pd2_research.md). Next candidates: Sicario, Tag Team; then Leech, Copycat.
+7. (Amendment 2026-10-23, LEAD) Bot revive work (A r288 batch): bots already revived first in loud, and bots revive bots (now tested).
+   The two new levers (cuffer_score_mult: shoot the cop moving to cuff first; cuffer_clear_first: clear a cuffer near the patient
+   before kneeling) measured WORSE on rt_clean in every diverging A/B comparison (4/4) and equal elsewhere. Both ship OFF (1.0 / false)
+   and stay as knobs. The cuff-vs-revive race is lost on time, not targeting.
