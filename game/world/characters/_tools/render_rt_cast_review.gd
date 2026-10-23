@@ -57,12 +57,16 @@ func _ready() -> void:
 
 
 func _run() -> void:
+	# no probe prewarm: it waits on drawn frames, and with the render loop off the heist clock ran past the convoy's
+	# ETA during launch (the crash ambush, then the heist failed before the first shot)
 	var rt: HeistRuntime = await HeistLauncher.launch(&"rolling_thunder", _seed, _difficulty, self,
-		{"crew_ai": false, "ai_teammates": 0})
+		{"crew_ai": false, "ai_teammates": 0, "probe_prewarm": false})
 	if rt == null:
 		push_error("[RTCAST] launch failed")
 		get_tree().quit(1)
 		return
+	if not _convoy and rt.mission != null:
+		rt.mission.cancel_timer(&"convoy")  # --no-convoy: the cast in the calm casing phase, no arrival mid-shoot
 	_cam = Camera3D.new()
 	add_child(_cam)
 	_cam.fov = 55.0
