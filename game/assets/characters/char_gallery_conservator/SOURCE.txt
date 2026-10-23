@@ -15,5 +15,5 @@ look: Paintings conservator: pale-blue shirt, grey knit sweater vest, long charc
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31302
-tris_by_mesh: {"Body": 7212, "Gear": 132, "Hair": 1856, "Headwear": 822, "Outfit": 21280}
+tris: 31694
+tris_by_mesh: {"Body": 7212, "Gear": 524, "Hair": 1856, "Headwear": 822, "Outfit": 21280}

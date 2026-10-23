@@ -16,5 +16,5 @@ look: Business-casual customer: unstructured grey blazer, open-collar white shir
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26392
-tris_by_mesh: {"Body": 8972, "Gear": 556, "Hair": 1728, "Outfit": 15136}
+tris: 26436
+tris_by_mesh: {"Body": 8972, "Gear": 600, "Hair": 1728, "Outfit": 15136}

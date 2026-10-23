@@ -16,5 +16,5 @@ look: Gallery attendant: black jacket over a white shirt, black trousers, white 
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27684
-tris_by_mesh: {"Body": 7196, "Gear": 464, "Hair": 1856, "Headwear": 1144, "Outfit": 17024}
+tris: 28026
+tris_by_mesh: {"Body": 7196, "Gear": 806, "Hair": 1856, "Headwear": 1144, "Outfit": 17024}

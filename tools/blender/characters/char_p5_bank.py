@@ -53,6 +53,8 @@ Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headw
 No blend shapes (baked at the params below).
 """
 
+import math
+
 import _contact_gear as cg
 import _crew_heisters as crew
 import _gear_kit as gk
@@ -143,6 +145,38 @@ def _key_fob(kit: Kit, card_z: float) -> None:
     kit.add_gear(key.to_mesh(mtx, anchor=loc))
 
 
+def _bead_necklace(kit: Kit, mat: str) -> None:
+    """OF-G3: a single strand of beads lying round the base of the neck, dipping at the front."""
+    fit, k = kit.fit, kit.k
+    nk = g.Neck(fit)
+    hull = kit.hull()
+    gear = Mesh()
+    for i in range(18):
+        a = math.tau * i / 18
+        t = 0.0 if abs(math.cos(a)) < 0.3 else -0.25 * max(0.0, math.cos(a))
+        p = o.push_out(nk.point(a, t, 0.006 * k), hull, 0.004 * k)
+        gear.extend(gk.button(hull, p, mat, r=0.0045, toward=nk.radial(a), k=k, thick=0.004))
+    kit.add_gear(gear)
+
+
+def _pencil_ear(kit: Kit, side: float = 1.0) -> None:
+    """OF-G3: a carpenter's pencil tucked behind the ear (``side`` +1 = +x)."""
+    fit, k = kit.fit, kit.k
+    eye = fit.eye_centre()
+    c = Vector((side * 0.082 * k, eye.y - 0.085 * k, eye.z + 0.012 * k))
+    a, b = c + Vector((0.0, 0.05 * k, -0.012 * k)), c + Vector((0.0, -0.05 * k, 0.012 * k))
+    m = Mesh()
+    o.tube(m, [a, b], 0.0038 * k, "char_rubber_yellow", sides=6)
+    kit.add_head(m)
+
+
+def _hip_device(kit: Kit, over: Mesh, z: float, a_deg: float, size: tuple[float, float, float], mat: str) -> None:
+    """OF-G3: a small device clipped at the waistband at angle ``a_deg`` (0 front, +90 the +x side)."""
+    b = gk.Belt(kit.fit, Hull(kit.fit, [over], body_regions=set()), z, height=0.03, thick=0.004)
+    w, h, d = size
+    kit.add_gear(gk.pouch(b, math.radians(a_deg), w, h, d, mat))
+
+
 def manager(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     hips_z, belt_z, tuck = _z(kit)
@@ -228,6 +262,7 @@ def business(kit: Kit) -> None:
                          neck_w=0.09, flare=0.06, base=0.010)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     n.watch(kit, "L", strap="leather_dark", case="chrome")
+    n.front_item(kit, -0.105, 1.31, (0.075, 0.035, 0.004), "char_prop_paper")      # OF-G3: a bank envelope
     kit.notes["look"] = ("Business-casual customer: unstructured grey blazer, open-collar white shirt (no tie), navy "
                          "chinos, brown shoes and belt, watch")
 
@@ -245,6 +280,8 @@ def parent(kit: Kit) -> None:
                      neck_w=0.06)
     n.cull_under(kit, n0, jk, "faces_hidden_by_bomber")
     p5.backpack(kit, "char_gilet_navy", "char_tac_gear")
+    n.front_item(kit, 0.11, 1.24, (0.014, 0.05, 0.010), "char_rubber_yellow", lift=0.012)   # OF-G3: carabiner
+    n.front_item(kit, 0.11, 1.20, (0.010, 0.04, 0.006), "char_metal_silver", lift=0.014)    # keys
     kit.notes["look"] = ("Parent customer: olive nylon bomber over a cream crew knit, jeans, white trainers, navy "
                          "daypack on both shoulders")
 
@@ -314,6 +351,7 @@ def office_skirt(kit: Kit) -> None:
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.18)
     n.watch(kit, "L", strap="brass", case="brass")
+    _bead_necklace(kit, "char_shirt_white")                                     # OF-G3
     kit.notes["look"] = ("Office worker customer (OF-D1): navy knee pencil skirt, white blouse, open mustard cardigan, "
                          "black low heels, blue office lanyard + card, gold watch")
 
@@ -329,6 +367,7 @@ def courier(kit: Kit) -> None:
                      neck_w=0.06)
     n.cull_under(kit, n0, jk, "faces_hidden_by_bomber")
     n.messenger_bag(kit, "char_hivis_orange", "char_nylon_black", a_deg=-120.0, z=0.98, w=0.18, h=0.14, d=0.09)
+    _hip_device(kit, kit.soft, hips_z + 0.05 * k, 60.0, (0.06, 0.12, 0.035), "char_rubber_yellow")  # OF-G3 scanner
     cap, _ring = p5.ball_cap(fit, "char_hivis_orange", peak_mat="char_hivis_orange", button_mat="char_nylon_black")
     kit.add_head(cap)
     kit.notes["look"] = ("Bike courier (OF-D1): black nylon bomber over a graphite knit, charcoal work trousers, grey "
@@ -356,6 +395,7 @@ def retiree(kit: Kit) -> None:
     n.cull_under(kit, n0, jk, "faces_hidden_by_coat")
     kit.add_head(cg.chignon(fit, "char_hair_grey", size=0.8))
     kit.add_head(gk.glasses(fit, "char_metal_silver"))
+    n.glasses_cord(kit)                                                          # OF-G3
     kit.notes["look"] = ("Retiree customer (OF-D1): long heather wool coat (below the knee) over a navy knit, cream "
                          "scarf, grey slacks, brown shoes, grey hair in a bun, silver glasses")
 
@@ -375,6 +415,7 @@ def trench(kit: Kit) -> None:
     cb = gk.Belt(fit, Hull(fit, [coat], body_regions=set()), waist, height=0.04, thick=0.004, drop=0.0)
     kit.add_soft(cb.mesh("char_coat_stone"))
     kit.add_head(gk.glasses(fit, "char_button_dark"))
+    n.front_item(kit, 0.14, 0.95, (0.030, 0.16, 0.030), "char_prop_paper", lift=0.010)   # OF-G3: a newspaper
     kit.notes["look"] = ("Office worker customer (OF-D1): belted double-breasted stone trench coat to the knee over a "
                          "pale blue shirt, navy suit trousers, brown shoes and belt, black glasses")
 
@@ -387,6 +428,7 @@ def student(kit: Kit) -> None:
     n.hoodie(kit, "char_hoodie_cream", hips_z - 0.06 * k, string_mat="char_knit_graphite")
     n.messenger_bag(kit, "char_nylon_olive", "char_nylon_olive", a_deg=-120.0, z=0.97)
     p5.headphones_on(kit, "polymer_black", "rubber_black")
+    n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.16)              # OF-G3: a campus ID
     kit.notes["look"] = ("Student customer (OF-D1): cream hoodie (hood down), jeans, white trainers, black over-ear "
                          "headphones on, olive messenger bag")
 
@@ -403,6 +445,7 @@ def trades(kit: Kit) -> None:
                          neck_w=0.075, flare=0.07, chest_welt=False, base=0.014)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     n.watch(kit, "L", strap="char_nylon_black", case="chrome")
+    _pencil_ear(kit, 1.0)                                                       # OF-G3
     kit.notes["look"] = ("Tradesperson customer (OF-D1): tan canvas chore jacket over a grey crew knit, navy work "
                          "trousers, brown work boots, watch")
 
@@ -414,6 +457,8 @@ def parent_knit(kit: Kit) -> None:
     n.trousers(kit, "char_chino_khaki", sh, belt_z + 0.022 * k, hem_r=0.060)
     kit.add_soft(g.knit_top(fit, kit.hull(), "char_fleece_maroon", hips_z - 0.02 * k, neck="crew", base=0.007))
     n.watch(kit, "L", strap="char_nylon_black", case="chrome")
+    n.messenger_bag(kit, "char_canvas_tan", "char_canvas_tan", a_deg=-55.0, z=0.95, w=0.21, h=0.26, d=0.05)   # tote, on
+    # the hip ahead of the side seam (no back depth: cower walls, chair backs; test_cower_offsets)
     kit.notes["look"] = "Parent customer (OF-D1): maroon crew knit, khaki chinos, grey trainers, watch"
 
 
@@ -429,6 +474,8 @@ def rollneck(kit: Kit) -> None:
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     kit.add_head(cg.earrings(fit, "chrome", drop=True))
     kit.add_head(gk.glasses(fit, "char_button_dark"))
+    n.front_item(kit, -0.10, 1.33, (0.022, 0.022, 0.006), "brass")               # OF-G3: a brooch
+    n.watch(kit, "L", strap="leather_dark", case="brass")
     kit.notes["look"] = ("Customer (OF-D1): a woman in her 60s, short grey hair; brown suit jacket over a cream "
                          "roll-neck, black trousers, low heels, silver drop earrings, black glasses")
 
