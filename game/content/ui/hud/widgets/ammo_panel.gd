@@ -10,6 +10,8 @@ extends HudWidget
 
 ## perk_item kinds whose glyph differs from the kind name.
 const ITEM_GLYPHS: Dictionary = {&"injector": &"vial", &"flask": &"vial"}
+## The perk item caption key by kind or mode (ui.hud.perk_item.<kind|mode>); built, so the UI key audit skips it.
+const ITEM_KEY_FMT: String = "ui.hud.perk_item.%s"
 
 var ammo_label: Label
 ## Lead queue (d): one right-aligned row of [glyph count] chips (deployable, throwable, cable ties, body
@@ -133,8 +135,8 @@ func _update_item(item: Dictionary) -> void:
 	var key: StringName = &""
 	if active > 0.0:
 		var mode: StringName = StringName(item.get("mode", &""))
-		var kind_key: StringName = StringName("ui.hud.perk_item." + String(item.get("kind", &"")))
-		key = StringName("ui.hud.perk_item." + String(mode)) if mode != &"" else kind_key
+		var kind_key: StringName = StringName(ITEM_KEY_FMT % String(item.get("kind", &"")))
+		key = StringName(ITEM_KEY_FMT % String(mode)) if mode != &"" else kind_key
 		if not UiText.has(key):
 			key = &"ui.hud.perk_item.active"
 	var text: String = ""
