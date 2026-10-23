@@ -32,9 +32,11 @@ static func apply_levers() -> String:
 	elif mode == "escort":  # LEAD r287: only the escort knobs
 		t.escort_engage_delay_s = ESCORT_DELAY_S
 		t.escort_accuracy_mult = ESCORT_ACCURACY
-	return "levers %s: window_from %s, wave1_exclude %s (>= diff %d), cover_prefer %.1f, escort delay %.1f s acc x%.2f" % [
+	elif mode == "nocuff":  # LEAD r288 A/B baseline: the bots' cuffer priority off (cuffer_score_mult 1.0)
+		ct.cuffer_score_mult = 1.0
+	return "levers %s: window_from %s, wave1_exclude %s (>= diff %d), cover_prefer %.1f, escort delay %.1f s acc x%.2f, cuffer x%.2f" % [
 		mode if mode != "" else "defaults", t.truck_window_from, t.wave1_exclude, t.wave1_exclude_min_difficulty,
-		ct.cover_prefer_behind_leader_m, t.escort_engage_delay_s, t.escort_accuracy_mult]
+		ct.cover_prefer_behind_leader_m, t.escort_engage_delay_s, t.escort_accuracy_mult, ct.cuffer_score_mult]
 
 
 func start(host: Node, rt: HeistRuntime, note: Callable) -> void:
