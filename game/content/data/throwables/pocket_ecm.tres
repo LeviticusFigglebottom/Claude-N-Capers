@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ThrowableDef" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://contracts/data/throwable_def.gd" id="1"]
-[ext_resource type="PackedScene" path="res://world/props/deployable/prop_deploy_ecm.tscn" id="2_model"]
+[ext_resource type="PackedScene" path="res://assets/equipment/eqp_pocket_ecm/eqp_pocket_ecm.glb" id="2_model"]
 
 [resource]
 script = ExtResource("1")
