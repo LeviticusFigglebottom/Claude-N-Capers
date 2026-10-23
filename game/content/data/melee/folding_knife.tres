@@ -14,5 +14,4 @@ range_m = 1.8
 knockdown = 0.2
 concealment = 30
 silent = true
-price = 0
 model = ExtResource("2")
