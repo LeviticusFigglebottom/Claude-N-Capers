@@ -124,20 +124,30 @@ func _soak(clients: int) -> void:
 	var mem0: Dictionary = await _memory(peers)
 	var desyncs: Array[String] = []
 	var rounds: int = 0
+	var released: int = 0
 	var t_end: int = Time.get_ticks_msec() + int(soak_s * 1000.0)
 	while Time.get_ticks_msec() < t_end:
 		await wait_seconds(minf(CHECK_S, maxf(float(t_end - Time.get_ticks_msec()) / 1000.0, 0.5)))
 		rounds += 1
+		released += _release_custody()
 		for p: int in peers:
 			assert_true(multiplayer.get_peers().has(p), "peer %d still connected (round %d)" % [p, rounds])
 			var d: Array[String] = await _compare(p)
+			if p == peers[0]:
+				var snap: Dictionary = await _snap(p, {})
+				var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+				print("PERF soak round %d t=%.0f s: host mem %.1f MB %s | peer mem %.1f MB %s | director %s wave %d, %d NPCs, crew %s" % [
+					rounds, soak_s - float(t_end - Time.get_ticks_msec()) / 1000.0, OS.get_static_memory_usage() / 1048576.0,
+					PROBE.counts(), float(snap.get("mem", 0)) / 1048576.0, snap.get("counts", {}),
+					Enums.AssaultPhase.keys()[dir.assault_phase] if dir != null else "-", dir.wave_index if dir != null else 0,
+					_rt.npcs().size(), _rt.crew_members().map(func(c: CrewController) -> int: return int(c.crew_state))])
 			if not d.is_empty():
 				desyncs.append("round %d peer %d: %s" % [rounds, p, "; ".join(d.slice(0, 4))])
 	var mem1: Dictionary = await _memory(peers)
 	var npcs: int = _rt.npcs().size()
 	var bots: int = _rt.crew_members().filter(func(c: CrewController) -> bool: return c.is_ai).size()
-	print("PERF soak %s %.0f s, %d peers + %d bots, %d check rounds, %d NPCs at the end, loud %s" % [_rt.heist_id, soak_s,
-		peers.size() + 1, bots, rounds, npcs, _rt.went_loud])
+	print("PERF soak %s %.0f s, %d peers + %d bots, %d check rounds, %d NPCs at the end, loud %s, %d custody releases" % [
+		_rt.heist_id, soak_s, peers.size() + 1, bots, rounds, npcs, _rt.went_loud, released])
 	for k: Variant in mem0:
 		assert_true(int(mem0[k]) > 0 and int(mem1.get(k, 0)) > 0, "memory sampled on %s" % k)
 		var grow: float = (float(mem1.get(k, 0)) - float(mem0[k])) / 1048576.0
@@ -147,6 +157,18 @@ func _soak(clients: int) -> void:
 	assert_eq(desyncs, [] as Array[String], "no persistent desync in %d rounds" % rounds)
 	assert_true(_rt.went_loud, "the run stayed loud")
 	_probe.call(&"command", "quit", {})
+
+
+## Damage immunity does not stop cloaker kicks / tasers / cuffs, and nobody revives in a random drive: crew in
+## custody are released every round so every peer keeps driving for the whole soak. Returns how many.
+func _release_custody() -> int:
+	var cs: CustodySystem = CustodySystem.of(_rt)
+	var n: int = 0
+	for c: CrewController in _rt.crew_members():
+		if cs != null and c.crew_state == Enums.CrewState.CUSTODY:
+			cs.release(c.slot)
+			n += 1
+	return n
 
 
 ## Static memory per peer ("host" and each client peer id).

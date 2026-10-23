@@ -27,6 +27,10 @@ const DEPLOY_CLIP: StringName = &"deploy"
 const MODE_NORMAL: StringName = &"normal"
 const MODE_QUIET: StringName = &"quiet"
 const MODE_AP: StringName = &"ap"
+## B's prompts (D-157): pick up, or switch to the next mode when a skill unlocks modes (prompt_args "mode" = the
+## string key ui.sentry.mode.<next id>).
+const PROMPT_PICKUP: StringName = &"ui.prompt.sentry_pickup"
+const PROMPT_MODE: StringName = &"ui.prompt.sentry_mode"
 const FIRE_CONE_DEG: float = 6.0
 const SHIELD_ARC_DEG: float = 70.0
 const RETARGET_S: float = 0.3
@@ -87,6 +91,8 @@ func _ready() -> void:
 	var ap: AnimationPlayer = visual.find_child("AnimationPlayer", true, false) as AnimationPlayer if visual != null else null
 	if ap != null and ap.has_animation(DEPLOY_CLIP):
 		ap.play(DEPLOY_CLIP)  # D's baked deploy (legs out); never touches Yaw / Pitch
+	if Net.is_authority():
+		_cue.call_deferred(&"cue.sentry_deploy")
 
 
 ## Box placeholder following the node contract (the default deployable box hidden).
@@ -238,6 +244,23 @@ func take_hit(info: Dictionary, _attacker_net_id: int = 0) -> Dictionary:
 func _forward() -> Vector3:
 	var basis: Basis = _pitch.global_basis if _pitch != null else global_basis
 	return -basis.z.normalized()
+
+
+## Every peer: the owner's prompt (the HUD reads the aimed component locally).
+func _process(_delta: float) -> void:
+	var comp: InteractableComponent = get_parent().get(&"interactable") as InteractableComponent
+	if comp == null:
+		return
+	var m: Array[StringName] = modes()
+	if m.size() > 1 and ammo > 0 and not destroyed:
+		comp.prompt_key = PROMPT_MODE
+		var key: StringName = StringName("ui.sentry.mode." + String(m[(m.find(mode) + 1) % m.size()]))
+		if StringName(comp.prompt_args.get("mode", &"")) != key:
+			comp.prompt_args = {"mode": key}  # a string key: B's panel resolves it (ui.sentry.mode.<next>)
+	else:
+		comp.prompt_key = PROMPT_PICKUP
+		if not comp.prompt_args.is_empty():
+			comp.prompt_args = {}
 
 
 func _physics_process(delta: float) -> void:

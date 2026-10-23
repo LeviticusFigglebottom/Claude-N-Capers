@@ -9,6 +9,8 @@ signal reported(kind: String, data: Dictionary)
 signal reported_by(peer: int, kind: String, data: Dictionary)
 
 const NODE_NAME: String = "LoopbackProbe"
+## Newest shot / blast FX facts kept (the tests read the last few).
+const FX_KEEP: int = 256
 
 ## Client: highest LocalHudModel interaction progress seen, and its prompt key.
 var hud_max_progress: float = 0.0
@@ -31,10 +33,14 @@ func _on_shot_fx(origin: Vector3, end: Vector3, normal: Vector3, surface: String
 		shooter: int, flags: int) -> void:
 	fx_shots.append({"origin": origin, "end": end, "normal": normal, "surface": surface, "class": weapon_class,
 		"shooter": shooter, "flags": flags})
+	if fx_shots.size() > FX_KEEP:
+		fx_shots = fx_shots.slice(fx_shots.size() - FX_KEEP)  # A4-03: a long soak must not grow the probe itself
 
 
 func _on_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
 	fx_blasts.append({"pos": pos, "radius": radius, "kind": kind})
+	if fx_blasts.size() > FX_KEEP:
+		fx_blasts = fx_blasts.slice(fx_blasts.size() - FX_KEEP)
 
 
 func _physics_process(_delta: float) -> void:
@@ -89,8 +95,16 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 		"soak_drive":  # A4-03: drive this client's crew member with varied intents for `seconds`
 			_soak_drive(float(args.get("seconds", 60.0)), int(args.get("seed", 1)))
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
+		"hub_check":  # C4-03: the real safehouse on this client while the session is up
+			_hub_check(String(args.get("root_dir", "user://a_hub_client")))
 		"quit":
 			get_tree().quit(0)
+
+
+## Client (C4-03): HubCheck on this peer, reported as "hub_check".
+func _hub_check(root_dir: String) -> void:
+	var res: Dictionary = await HubCheck.run(get_tree().root, root_dir)
+	_rpc_report.rpc_id(1, "hub_check", res)
 
 
 ## Client (C11): `await HeistLauncher.launch_client()` again. Its listener is connected before the first
@@ -193,11 +207,20 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 			return "%s:%d" % [o["id"], int(o["state"])]) if rt.hud_model != null else [],
 		"of_state": of_state(rt) if bool(args.get("of_state", false)) else {},
 		"mem": OS.get_static_memory_usage(),  # A4-03 soak: memory growth on this peer
+		"counts": counts(),
 	}
 
 
 ## OF co-op parity (test_of_coop_loopback.gd): the replicated state of a heist, computed the same way on both peers.
 ## Discrete values compare exactly; positions (rounded to 0.1 m) with a tolerance in the test.
+## A4-03 soak: engine object counts of this process (where memory growth comes from).
+static func counts() -> Dictionary:
+	return {"objects": int(Performance.get_monitor(Performance.OBJECT_COUNT)),
+		"nodes": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
+		"resources": int(Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT)),
+		"orphans": int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))}
+
+
 static func of_state(rt: HeistRuntime) -> Dictionary:
 	var prefabs: Dictionary = {}
 	var lifts: Dictionary = {}
