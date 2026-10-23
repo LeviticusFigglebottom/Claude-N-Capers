@@ -182,3 +182,18 @@ func test_d164_weapons_refill_mag_and_headshot_info() -> void:
 	assert_true(PerkHooks.is_headshot({"zone": Enums.HitZone.HEAD}), "headshot")
 	assert_false(PerkHooks.is_headshot({"zone": Enums.HitZone.BODY}))
 	assert_false(PerkHooks.is_headshot({}))
+
+
+## LEAD (B's finding): a deck item fires CrewThrowables.deck_item_used(item_id, kind) for the FP / 3P use pose, and
+## deck_item_def() resolves its ThrowableDef though the deck (not the loadout) supplies it; a refused use emits nothing.
+func test_deck_item_used_signal_and_def() -> void:
+	_grant()
+	var t: CrewThrowables = _crew().get_node(CrewThrowables.NODE_NAME) as CrewThrowables
+	var got: Array = []
+	t.deck_item_used.connect(func(id: StringName, kind: StringName) -> void: got.append([id, kind]))
+	assert_true(t.deck_item_def() != null and t.deck_item_def().id == ITEM, "the deck item's def")
+	assert_true(t.throwable_def() == null, "not a grenade-type throwable")
+	assert_true(PerkHooks.use_throwable(_crew()), "used")
+	assert_eq(got, [[ITEM, PerkLeech.KIND]], "deck_item_used(item_id, kind) once")
+	assert_false(PerkHooks.use_throwable(_crew()), "refused while active")
+	assert_eq(got.size(), 1, "a refused use emits nothing")
