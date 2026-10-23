@@ -1,0 +1,362 @@
+[gd_resource type="Resource" script_class="PreplanBlueprint" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_blueprint.gd" id="1_vcj6r"]
+
+[resource]
+script = ExtResource("1_vcj6r")
+heist_id = &"afterhours"
+bounds = Rect2(-6, -12, 52, 46)
+floor_names = Array[StringName]([&"ui.preplan.floor.ground", &"ui.preplan.floor.balcony"])
+shapes = Array[Dictionary]([{
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.afterhours.x1",
+"rect": Rect2(-6, -6.2, 42.2, 6)
+}, {
+"floor": -1,
+"kind": &"street",
+"label": &"ui.preplan.bp.afterhours.x2",
+"rect": Rect2(-6, 28.2, 52, 5.799999)
+}, {
+"floor": -1,
+"kind": &"street",
+"label": &"",
+"rect": Rect2(36.2, -12, 9.799999, 40.2)
+}, {
+"floor": -1,
+"kind": &"street",
+"label": &"",
+"rect": Rect2(-3, -0.2, 2.8, 28.400002)
+}, {
+"floor": 0,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(-20, -24, 84, 80)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g6",
+"rect": Rect2(0, 7, 26, 8)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g7",
+"rect": Rect2(0, 15, 26, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g1",
+"rect": Rect2(10, 21, 12, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g13",
+"rect": Rect2(0, 5, 36, 2)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g21",
+"rect": Rect2(27, 0, 9, 5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g10",
+"rect": Rect2(0, 0, 8, 5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g27",
+"rect": Rect2(31, 21, 5, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g26",
+"rect": Rect2(26, 21, 5, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g23",
+"rect": Rect2(28, 7, 5, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g24",
+"rect": Rect2(28, 17, 8, 4)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g12",
+"rect": Rect2(14, 0, 6, 5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g11",
+"rect": Rect2(8, 0, 6, 5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g20",
+"rect": Rect2(26, 7, 2, 14)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g8",
+"rect": Rect2(6, 21, 4, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g2",
+"rect": Rect2(22, 21, 4, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g14",
+"rect": Rect2(20, 0, 5, 5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g25",
+"rect": Rect2(28, 14, 8, 3)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g22",
+"rect": Rect2(33, 7, 3, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g3a",
+"rect": Rect2(0, 21, 3, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g3b",
+"rect": Rect2(3, 21, 3, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g15",
+"rect": Rect2(25, 2, 2, 3)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g16",
+"rect": Rect2(25, 0, 2, 2)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(-0.2, -0.2, 36.4, 28.400002)
+}, {
+"floor": 1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.afterhours.x1r",
+"rect": Rect2(-0.2, -0.2, 36.4, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g6",
+"rect": Rect2(0, 7, 26, 8)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u1",
+"rect": Rect2(0, 15, 26, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u2",
+"rect": Rect2(10, 21, 12, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u10",
+"rect": Rect2(26, 7, 7, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u9",
+"rect": Rect2(28, 16, 8, 5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u12",
+"rect": Rect2(28, 21, 8, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g8",
+"rect": Rect2(6, 21, 4, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u5",
+"rect": Rect2(22, 21, 4, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u6b",
+"rect": Rect2(26, 16, 2, 12)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u13",
+"rect": Rect2(28, 25, 8, 3)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.g22",
+"rect": Rect2(33, 7, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u4a",
+"rect": Rect2(0, 21, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u4b",
+"rect": Rect2(3, 21, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.afterhours.u6",
+"rect": Rect2(26, 14, 10, 2)
+}])
+points = Array[Dictionary]([{
+"category": &"spawn",
+"floor": 0,
+"id": &"pp_spawn_foyer",
+"label": &"ui.preplan.point.afterhours.pp_spawn_foyer",
+"params": {},
+"pos": Vector2(18, 26)
+}, {
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_vip",
+"label": &"ui.preplan.point.afterhours.pp_spawn_vip",
+"params": {
+"spawn_tag": &"preplan_spawn_vip"
+},
+"pos": Vector2(16, 24)
+}, {
+"category": &"spawn",
+"floor": 0,
+"id": &"pp_spawn_alley",
+"label": &"ui.preplan.point.afterhours.pp_spawn_alley",
+"params": {
+"spawn_tag": &"preplan_spawn_alley"
+},
+"pos": Vector2(22, -3.6)
+}, {
+"category": &"insider",
+"floor": 0,
+"id": &"pp_gear_wc",
+"label": &"ui.preplan.point.afterhours.pp_gear_wc",
+"params": {
+"slot": &"gear_wc",
+"variant_group": &"gear_drop"
+},
+"pos": Vector2(4.5, 26.5)
+}, {
+"category": &"insider",
+"floor": 0,
+"id": &"pp_gear_cloak",
+"label": &"ui.preplan.point.afterhours.pp_gear_cloak",
+"params": {
+"slot": &"gear_cloak",
+"variant_group": &"gear_drop"
+},
+"pos": Vector2(22.9, 25.5)
+}, {
+"category": &"insider",
+"floor": 0,
+"id": &"pp_gear_booth",
+"label": &"ui.preplan.point.afterhours.pp_gear_booth",
+"params": {
+"slot": &"gear_booth",
+"variant_group": &"gear_drop"
+},
+"pos": Vector2(24.6, 19.3)
+}, {
+"category": &"insider",
+"floor": 0,
+"id": &"pp_gear_van",
+"label": &"ui.preplan.point.afterhours.pp_gear_van",
+"params": {
+"slot": &"gear_van",
+"variant_group": &"gear_drop"
+},
+"pos": Vector2(27.4, -4)
+}, {
+"category": &"insider",
+"floor": 0,
+"id": &"pp_insider_keycard",
+"label": &"ui.preplan.point.afterhours.pp_insider_keycard",
+"params": {
+"slot": &"kc_staff_room",
+"variant_group": &"keycard"
+},
+"pos": Vector2(19, 1.5)
+}, {
+"category": &"insider",
+"floor": 0,
+"id": &"pp_back_door",
+"label": &"ui.preplan.point.afterhours.pp_back_door",
+"params": {
+"slot": &"rear_propped",
+"variant_group": &"rear_door"
+},
+"pos": Vector2(35, -0.8)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_count_window",
+"label": &"ui.preplan.point.afterhours.pp_count_window",
+"params": {
+"slot": &"ow_count_open",
+"variant_group": &"open_window"
+},
+"pos": Vector2(30, 6)
+}, {
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_drop_alley",
+"label": &"ui.preplan.point.afterhours.pp_drop_alley",
+"params": {},
+"pos": Vector2(19, -4.5)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_roof",
+"label": &"ui.preplan.point.afterhours.pp_drop_roof",
+"params": {},
+"pos": Vector2(28.5, 3)
+}, {
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_drop_tolley",
+"label": &"ui.preplan.point.afterhours.pp_drop_tolley",
+"params": {},
+"pos": Vector2(37.3, 13)
+}, {
+"category": &"escape",
+"floor": 0,
+"id": &"pp_escape_alley",
+"label": &"ui.preplan.point.afterhours.pp_escape_alley",
+"params": {
+"slot": &"esc_alley",
+"variant_group": &"escape"
+},
+"pos": Vector2(30.5, -4)
+}, {
+"category": &"escape",
+"floor": 0,
+"id": &"pp_escape_tolley",
+"label": &"ui.preplan.point.afterhours.pp_escape_tolley",
+"params": {
+"slot": &"esc_tolley",
+"variant_group": &"escape"
+},
+"pos": Vector2(40, 17)
+}])

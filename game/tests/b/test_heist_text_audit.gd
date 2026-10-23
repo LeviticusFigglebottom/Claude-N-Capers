@@ -6,7 +6,7 @@
 extends TestCase
 
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
-	&"ostrander_federal", &"rolling_thunder"]  # RT: LEAD's D-115 done check (round 292)
+	&"ostrander_federal", &"rolling_thunder", &"afterhours"]  # RT: LEAD's D-115 done check (round 292); AH-B1 item 10
 const HEIST_DIR: String = "res://world/heists/%s"
 const DEF_PATH: String = "res://world/heists/%s/%s_def.tres"
 const BLUEPRINT_PATH: String = "res://content/data/preplanning/blueprints/%s.tres"

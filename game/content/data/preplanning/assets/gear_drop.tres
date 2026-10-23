@@ -12,3 +12,4 @@ max_count = 1
 point_ids = Array[StringName]([&"pp_gear_wc", &"pp_gear_cloak", &"pp_gear_booth", &"pp_gear_van"])
 tags = Array[StringName]([&"stealth"])
 effect = &"force_variant"
+heists = Array[StringName]([&"afterhours"])

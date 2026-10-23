@@ -12,3 +12,4 @@ max_count = 1
 point_ids = Array[StringName]([&"pp_count_window"])
 tags = Array[StringName]([&"stealth"])
 effect = &"force_variant"
+heists = Array[StringName]([&"afterhours"])
