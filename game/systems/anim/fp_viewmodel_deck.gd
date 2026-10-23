@@ -16,15 +16,17 @@ const DRAW_S: float = 0.25
 const HOLSTER_S: float = 0.2
 ## Share of the hold spent easing the pose in (and again out).
 const EASE_SHARE: float = 0.3
-## kind -> hold_s, off (arms offset, m), rot (deg: pitch, yaw, roll), press (0..1 of the hold) + press_off (m) pulse.
+## kind -> hold_s, off (arms offset, m), rot (deg: pitch, yaw, roll), press (0..1 of the pose) + press_off (m) pulse;
+## optional lead (0..1 of the hold): the item is first shown in the hand at the draw's ready pose (LEAD: PD2 brings
+## the injector into view before the stab), the pose and press run over the rest of the hold.
 const POSES: Dictionary = {
-	&"injector": {"hold_s": 0.4, "off": Vector3(-0.02, -0.07, 0.02), "rot": Vector3(-25.0, 10.0, -15.0),
+	&"injector": {"hold_s": 0.55, "lead": 0.4, "off": Vector3(-0.02, -0.12, 0.02), "rot": Vector3(-30.0, 10.0, -15.0),
 		"press": 0.5, "press_off": Vector3(0.0, -0.03, 0.0)},
-	&"leech_ampule": {"hold_s": 0.45, "off": Vector3(-0.02, -0.07, 0.02), "rot": Vector3(-25.0, 10.0, -15.0),
+	&"leech_ampule": {"hold_s": 0.6, "lead": 0.4, "off": Vector3(-0.02, -0.12, 0.02), "rot": Vector3(-30.0, 10.0, -15.0),
 		"press": 0.4, "press_off": Vector3(0.0, -0.03, 0.0)},
 	&"flask": {"hold_s": 0.5, "off": Vector3(-0.06, 0.03, 0.03), "rot": Vector3(30.0, 15.0, -25.0),
 		"press": -1.0, "press_off": Vector3.ZERO},
-	&"pocket_ecm": {"hold_s": 0.35, "off": Vector3(-0.04, 0.03, 0.03), "rot": Vector3(10.0, 10.0, -10.0),
+	&"pocket_ecm": {"hold_s": 0.35, "off": Vector3(-0.03, -0.02, -0.06), "rot": Vector3(10.0, 10.0, -10.0),
 		"press": 0.45, "press_off": Vector3(0.0, -0.008, -0.01)},
 	&"gas_dispenser": {"hold_s": 0.4, "off": Vector3(-0.05, 0.04, -0.08), "rot": Vector3(5.0, 5.0, 0.0),
 		"press": 0.45, "press_off": Vector3(0.0, 0.0, 0.015)},
@@ -117,36 +119,40 @@ func tick(vm: FpViewmodel, seq_t: float) -> void:
 		return
 	var hold: float = float(_pose["hold_s"])
 	var u: float = clampf((seq_t - _hold_from) / maxf(hold, 0.001), 0.0, 1.0)
-	var w: float = smoothstep(0.0, EASE_SHARE, u) * (1.0 - smoothstep(1.0 - EASE_SHARE, 1.0, u)) \
-		if seq_t >= _hold_from else 0.0
+	var lead: float = float(_pose.get("lead", 0.0))
+	var v: float = clampf((u - lead) / maxf(1.0 - lead, 0.001), 0.0, 1.0)  # the pose's own 0..1 after the lead
+	var w: float = smoothstep(0.0, EASE_SHARE, v) * (1.0 - smoothstep(1.0 - EASE_SHARE, 1.0, v)) \
+		if seq_t >= _hold_from + lead * hold else 0.0
 	offset = (_pose["off"] as Vector3) * w
 	rot_deg = (_pose["rot"] as Vector3) * w
 	var press: float = float(_pose["press"])
 	var pressed: float = 0.0
-	if press >= 0.0 and seq_t >= _hold_from:
-		pressed = clampf(1.0 - absf(u - press) / 0.15, 0.0, 1.0)  # a 0.3-of-the-hold tent pulse at `press`
+	if press >= 0.0 and w > 0.0:
+		pressed = clampf(1.0 - absf(v - press) / 0.15, 0.0, 1.0)  # a 0.3-of-the-pose tent pulse at `press`
 		offset += (_pose["press_off"] as Vector3) * pressed
-	_parts(vm, u if seq_t >= _hold_from else -1.0, press, pressed, seq_t)
+	var started: bool = seq_t >= _hold_from + lead * hold
+	_parts(vm, u if seq_t >= _hold_from else -1.0, v if started else -1.0, press, pressed, seq_t)
 
 
-func _parts(vm: FpViewmodel, u: float, press: float, pressed: float, seq_t: float) -> void:
+## `u`: 0..1 of the hold (-1 before it), `v`: 0..1 of the pose after the lead (-1 before it).
+func _parts(vm: FpViewmodel, u: float, v: float, press: float, pressed: float, seq_t: float) -> void:
 	var cap: Node3D = _part(vm, &"Pin")
 	if cap != null and (kind == &"injector" or kind == &"flask"):
 		cap.visible = u < 0.0  # the cap comes off as the hold starts
 	var serum: Node3D = _part(vm, &"Serum")
 	if serum != null and _rest.has(&"Serum"):
-		var left: float = 1.0 - clampf((u - press) / maxf(1.0 - press, 0.001), 0.0, 1.0) if u >= 0.0 else 1.0
+		var left: float = 1.0 - clampf((v - press) / maxf(1.0 - press, 0.001), 0.0, 1.0) if v >= 0.0 else 1.0
 		var t: Transform3D = _rest[&"Serum"]
 		serum.transform = Transform3D(t.basis.scaled(Vector3(1.0, maxf(left, 0.001), 1.0)), t.origin)
 		serum.visible = left > 0.01
 	var can: Node3D = _part(vm, &"Canister")
 	if can != null and _rest.has(&"Canister"):
-		var down: float = 1.0 if u >= press and u >= 0.0 else 0.0
+		var down: float = 1.0 if v >= press and v >= 0.0 else 0.0
 		var tc: Transform3D = _rest[&"Canister"]
 		can.transform = Transform3D(tc.basis, tc.origin + Vector3(0.0, -CANISTER_TRAVEL_M * maxf(down, pressed), 0.0))
 	var led: Node3D = _part(vm, &"Led")
 	if led != null:
-		led.visible = u < press or u < 0.0 or fmod(seq_t * LED_BLINK_HZ, 1.0) < 0.5
+		led.visible = v < press or v < 0.0 or fmod(seq_t * LED_BLINK_HZ, 1.0) < 0.5
 
 
 func _part(vm: FpViewmodel, part: StringName) -> Node3D:

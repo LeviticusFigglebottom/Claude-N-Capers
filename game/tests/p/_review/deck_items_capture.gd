@@ -1,5 +1,6 @@
 ## LEAD r298 windowed review: the first-person perk-deck item use pose (FpViewmodelDeck), one frame per kind at the
-## middle of its hold (the smoke bomb just before release@) on the dev_sandbox yard, plus the gun drawn back after.
+## middle of its hold (injector / ampule also shown before the stab; the smoke bomb just before release@) on the
+## dev_sandbox yard, plus the gun drawn back after.
 ## Writes <out>/<kind>.png and <out>/deck_items_sheet.png.
 ##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 640x360 --path game res://tests/p/_review/deck_items_capture.tscn -- --out=/abs/dir
@@ -38,11 +39,22 @@ func _run() -> void:
 		var kind: StringName = it[1]
 		CrewThrowables.deck_item_fired(c, it[0], kind)
 		await _ticks(1)
+		var pose: Dictionary = FpViewmodelDeck.POSES.get(kind, {})
+		if float(pose.get("lead", 0.0)) > 0.0:  # the item shown in the hand before the stab
+			var shown: float = FpViewmodelDeck.DRAW_S + float(pose["hold_s"]) * float(pose["lead"]) * 0.6
+			while vm.action == FpViewmodel.Action.DECK and vm._seq_t < shown:
+				await _ticks(1)
+			imgs.append(await _shot("%s_shown" % kind))
 		var at: float = CombatTweak.data().throw_windup_s * 0.9 if kind == &"smoke_bomb" \
-			else FpViewmodelDeck.DRAW_S + float(FpViewmodelDeck.POSES[kind]["hold_s"]) * 0.55
+			else FpViewmodelDeck.DRAW_S + float(pose["hold_s"]) * (0.55 + 0.45 * float(pose.get("lead", 0.0)))
 		while vm.action == FpViewmodel.Action.DECK and vm._seq_t < at:
 			await _ticks(1)
 		print("[DECK] %s action %d t %.2f offset %s rot %s" % [kind, vm.action, vm._seq_t, vm.deck.offset, vm.deck.rot_deg])
+		if vm._item != null:
+			var cam: Camera3D = CrewView.of(c).camera()
+			print("[DECK] %s item scale %s, %.2f m from the camera, hand scale %s" % [kind,
+				vm._item.global_transform.basis.get_scale(), cam.global_position.distance_to(vm._item.global_position),
+				vm.weapon_attach.global_transform.basis.get_scale()])
 		imgs.append(await _shot(String(kind)))
 		while vm.action != FpViewmodel.Action.NONE:
 			await _ticks(1)
