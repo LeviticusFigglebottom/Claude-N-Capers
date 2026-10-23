@@ -23,6 +23,10 @@ var back_button: Button
 var locked_label: Label
 var selected_heist: int = 0
 var selected_difficulty: int = Enums.Difficulty.ROUTINE
+## C4 Last Breath (PD2 One Down): one down before custody. A toggle beside the difficulties; MenuFlow reads it when a
+## job is chosen (and the lobby host's contract carries it).
+var last_breath: bool = false
+var last_breath_button: Button
 var _entries: Array[Dictionary] = []
 
 
@@ -72,6 +76,16 @@ func build_ui() -> void:
 	detail.add_child(gap)
 	detail.add_child(UiBuild.caption(&"ui.heist_select.difficulty"))
 	_build_difficulties(detail)
+	var lb_row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	detail.add_child(lb_row)
+	last_breath_button = UiBuild.tab(UiBuild.button(&"ui.heist_select.last_breath"))
+	last_breath_button.name = "LastBreath"
+	last_breath_button.custom_minimum_size = Vector2(0, 0)
+	last_breath_button.toggled.connect(set_last_breath)
+	lb_row.add_child(last_breath_button)
+	var lb_note: Label = UiBuild.label(&"ui.heist_select.last_breath_desc", UiBuild.DIM)
+	lb_note.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	lb_row.add_child(lb_note)
 	# D-130: what this difficulty changes in the heist's stealth (Titan cameras, the pager cap); hidden when nothing.
 	stealth_label = UiBuild.label(&"", UiBuild.DIM)
 	stealth_label.name = "StealthNote"
@@ -101,6 +115,7 @@ func build_ui() -> void:
 		if not b.disabled:
 			open_difficulties.append(b)
 			focus_chain.append(b)
+	focus_chain.append(last_breath_button)
 	focus_chain.append(next_button)
 	focus_chain.append(back_button)
 	UiNav.chain_horizontal(open_difficulties, false)
@@ -181,6 +196,13 @@ func select_difficulty(d: int) -> void:
 	selected_difficulty = d
 	_press_only(difficulty_buttons, d)
 	_update_preview()
+
+
+## C4: Last Breath on / off (the toggle shows it pressed).
+func set_last_breath(on: bool) -> void:
+	last_breath = on
+	if last_breath_button != null and last_breath_button.button_pressed != on:
+		last_breath_button.set_pressed_no_signal(on)
 
 
 func selected_heist_id() -> StringName:
