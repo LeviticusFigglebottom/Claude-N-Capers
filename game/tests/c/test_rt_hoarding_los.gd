@@ -4,7 +4,7 @@
 ## On the generated map:
 ## * every hoarding box stands >= 2.4 m on the world layer, and none but ManGatePanel is see-through;
 ## * the hoarding lines have no gap: a ray across each line every 0.5 m from 0.3 to 2.35 m meets a solid collider (a
-##   hoarding box or a closed gate leaf), but for PENDING_SLOTS (the Tannery gate's 2.1-2.4 m slot, ENV A's Door);
+##   hoarding box or a closed gate leaf), but for PENDING_SLOTS (none);
 ## * no ground-level site guard post or patrol point has a line of sight (eye 1.6 m) to the crew at the pier's south
 ##   face (bullets and vision both stop at the hoarding);
 ## * the frame slab's east edge does see the pier: the doc's designed H3 / post_site_frame sightline (pinned so a change
@@ -22,10 +22,9 @@ const Z1: float = -11.0
 const PIER_CREW: Array[Vector3] = [Vector3(-0.2, 1.2, -37.2), Vector3(-0.2, 1.6, -37.2)]
 const EYE: float = 1.6
 const MASK: int = 0xFFFFFFFF & ~(1 << 9)
-## D-158 pending on ENV A: a Door's leaf collision is Door.HEIGHT_M (2.1 m) whatever its visual, so over the closed
-## SiteTanneryGate (visual leaves 2.4 m, no head: the mixer drives out through it) a 0.3 m slot stays open to
-## bullets and vision. [axis, fixed, from, to, from height]; drop the row once the Door takes a height_m (as width_m).
-const PENDING_SLOTS: Array = [["x", Z1, -35.6, -31.4, 2.1]]
+## Slots a door's leaf collision leaves open, [axis, fixed, from, to, from height]. D-158: empty since the
+## SiteTanneryGate leaves take Door.height_m 2.4 (A's export, round 286): its leaves were 2.1 m under 2.4 m visuals.
+const PENDING_SLOTS: Array = []
 ## The man-gate stack (sill, mesh panel, head) reaches the hoarding's height together.
 const MAN_GATE_PREFIX: String = "ManGatePanel"
 

@@ -92,9 +92,8 @@ const HEIST_MUSIC: Array[StringName] = [&"glasshouse", &"night_deposit", &"shado
 ## Heist tracks whose map does not place its Audio node yet.
 const HEIST_MUSIC_MAP_PENDING: Array[StringName] = []
 ## C4-03: the safehouse cues whose cues.tres rows ENV B adds (cue rows go to B); generated and committed by C
-## (tools/audiogen/cues_safehouse.py). Empty this once B's rows land.
-const CUE_ROWS_PENDING: Array[StringName] = [&"cue.amb_safehouse_interior", &"cue.amb_fridge_hum",
-	&"cue.amb_wall_clock", &"cue.amb_ballast_buzz", &"cue.amb_drip", &"cue.amb_range_extractor"]
+## (tools/audiogen/cues_safehouse.py). Empty: B's rows landed (env/b-content ba2fc327, round 285).
+const CUE_ROWS_PENDING: Array[StringName] = []
 ## RT-C2 / audio_cues v1.9 (QC-85): the convoy-ambush one-shots and the freight train, 3D on the World bus.
 const RT_CUES: Array[StringName] = [&"cue.convoy_approach", &"cue.convoy_brake", &"cue.mixer_ram",
 		&"cue.signal_click", &"cue.truck_doors_open", &"cue.freight_train_pass"]

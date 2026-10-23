@@ -143,3 +143,154 @@ func test_bots_take_cover_when_the_leader_does() -> void:
 	await wait_physics_frames(3)
 	assert_true(b._leader_takes_cover(leader), "a standing leader at a cover point is in cover")
 	assert_true(b.cover_point != null, "and the bot seeks cover")
+
+
+# --- LEAD r286 levers (tweak knobs, defaults = the shipped behaviour) ----------------------------
+
+func test_rt_tweak_defaults_are_todays_behaviour() -> void:
+	var t: RtTweak = RtTweak.data()
+	assert_eq(t.truck_window_from, RtTweak.FROM_STOP, "the window counts from the stop")
+	assert_near(t.truck_window_s, RollingThunderMission.TRUCK_WINDOW_S, 0.0001, "30 s")
+	assert_eq(t.wave1_exclude, [] as Array[StringName], "no wave-1 exclusion")
+	assert_eq((load(CrewAiBrain.TWEAK_PATH) as CrewAiTweak).cover_prefer_behind_leader_m, 0.0, "nearest cover")
+
+
+func test_truck_window_from_escort_down() -> void:
+	var path: String = HeistLauncher.map_path(RT_HEIST, {})
+	if path == "" or not ResourceLoader.exists(path):
+		skip("rolling_thunder map not on this branch")
+		return
+	var t: RtTweak = RtTweak.data()
+	t.truck_window_from = RtTweak.FROM_ESCORT_DOWN
+	var m: RollingThunderMission = await _rt_stop(false)
+	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	assert_true(dir.first_build_hold_s > t.escort_down_max_s - 3.0, "held up to stop + escort_down_max_s (%.1f)"
+		% dir.first_build_hold_s)
+	for u: NpcBase in m._units:
+		if is_instance_valid(u) and u.alive:
+			u.die()
+	assert_true(await wait_until(func() -> bool: return m.objective_state(&"escort") == Enums.ObjectiveState.COMPLETED,
+		4.0), "the escort is down")
+	t.truck_window_from = RtTweak.FROM_STOP
+	assert_true(dir.first_build_hold_s <= t.truck_window_s + 0.01, "then truck_window_s from the last death (%.1f)"
+		% dir.first_build_hold_s)
+
+
+func test_wave1_exclude_keeps_stingers_out_of_the_first_assault() -> void:
+	await _launch_unit(0)
+	_rt.stealth.raise_alarm(&"test", 0)
+	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	assert_true(await wait_until(func() -> bool: return dir.running, 10.0), "the director runs")
+	var g: SpawnGroupDef = load("res://systems/ai/data/groups/control_stinger.tres") as SpawnGroupDef
+	dir.wave_index = 1
+	assert_false(dir._wave1_excluded(&"enemy.stinger"), "default: nothing excluded")
+	dir.wave1_exclude = [&"stinger"] as Array[StringName]
+	assert_true(dir._wave1_excluded(&"enemy.stinger"), "a bare name matches the unit id")
+	assert_false(dir._group_spawnable(g), "a Stinger-only group cannot spawn in wave 1")
+	dir.wave_index = 2
+	assert_false(dir._wave1_excluded(&"enemy.stinger"), "wave 2: allowed again")
+
+
+func test_rt_sets_wave1_exclude_from_the_tweak_at_hazardous() -> void:
+	var path: String = HeistLauncher.map_path(RT_HEIST, {})
+	if path == "" or not ResourceLoader.exists(path):
+		skip("rolling_thunder map not on this branch")
+		return
+	var t: RtTweak = RtTweak.data()
+	t.wave1_exclude = [&"stinger"] as Array[StringName]
+	await _rt_stop(false)
+	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	t.wave1_exclude = [] as Array[StringName]
+	assert_eq(dir.wave1_exclude, [&"stinger"] as Array[StringName], "Hazardous: the stop hands the list to the director")
+
+
+func test_cover_prefer_behind_leader() -> void:
+	await _launch_unit(1)
+	var leader: CrewController = _rt.crew_controller(0) as CrewController
+	var bot: CrewController = null
+	for c: CrewController in _rt.crew_members():
+		if c.is_ai:
+			bot = c
+	var b: CrewAiBrain = CrewAiBrain.of(bot)
+	leader.set_masked(true)
+	_rt.stealth.raise_alarm(&"test", 0)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	_rt.teleport_crew(bot.slot, Transform3D(Basis.IDENTITY, Vector3(2, 0.05, -1)))
+	var cop: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -15)), {})
+	cop.get_node("Brain").set_physics_process(false)
+	var front: Marker3D = Marker3D.new()
+	front.add_to_group(G.COVER_POINT)
+	_rt.map.add_child(front)
+	front.global_position = Vector3(2, 0.05, -2.5)  # toward the threat, nearest to the bot
+	var back: Marker3D = Marker3D.new()
+	back.add_to_group(G.COVER_POINT)
+	_rt.map.add_child(back)
+	back.global_position = Vector3(2, 0.05, 2.5)  # behind the leader
+	await wait_physics_frames(3)
+	b.cover_point = null
+	assert_eq(b._pick_cover(leader), front, "default: the nearest free point")
+	var tw: CrewAiTweak = b.tweak
+	tw.cover_prefer_behind_leader_m = 4.0
+	b.cover_point = null
+	var picked: Node3D = b._pick_cover(leader)
+	tw.cover_prefer_behind_leader_m = 0.0
+	assert_eq(picked, back, "preferring cover behind the leader")
+
+
+# --- LEAD r287 escort knobs ----------------------------------------------------------------------
+
+func test_escort_knob_defaults_are_today() -> void:
+	var t: RtTweak = RtTweak.data()
+	assert_eq(t.escort_engage_delay_s, 0.0, "no extra engage delay")
+	assert_eq(t.escort_accuracy_mult, 1.0, "full accuracy")
+
+
+func test_gunner_engage_hold_then_fires() -> void:
+	await _launch_unit(0)
+	_rt.stealth.raise_alarm(&"test", 0)
+	var crew: CrewController = _rt.crew_controller(0) as CrewController
+	crew.set_masked(true)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	var cop: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -8)), {})
+	await wait_physics_frames(2)
+	var g: NpcGunner = cop.get_node("Gunner") as NpcGunner
+	var shots: Array[int] = [0]
+	g.shot.connect(func(_t: Object, _h: bool) -> void: shots[0] += 1)
+	g.engage_hold_left = 2.0
+	await wait_seconds(1.5)
+	assert_eq(shots[0], 0, "held: no shot")
+	assert_true(await wait_until(func() -> bool: return shots[0] > 0, 6.0), "fires once the hold is over")
+	g.hit_chance_mult = 0.5
+	g.hit_chance_mult_left = 1.0
+	assert_eq(g._timed_hit_mult(), 0.5, "the timed mult applies")
+	g.hit_chance_mult_left = 0.0
+	assert_eq(g._timed_hit_mult(), 1.0, "and lapses")
+
+
+func test_rt_escort_knobs_reach_the_convoy() -> void:
+	var path: String = HeistLauncher.map_path(RT_HEIST, {})
+	if path == "" or not ResourceLoader.exists(path):
+		skip("rolling_thunder map not on this branch")
+		return
+	var t: RtTweak = RtTweak.data()
+	t.escort_engage_delay_s = 1.5
+	t.escort_accuracy_mult = 0.7
+	var m: RollingThunderMission = await _rt_stop(false)  # crash stop: the escorts get out at once
+	var held_any: bool = await wait_until(func() -> bool:
+		return m._units.any(func(u: NpcBase) -> bool:
+			var gg: NpcGunner = u.get_node_or_null(^"Gunner") as NpcGunner if is_instance_valid(u) else null
+			return gg != null and gg.engage_hold_left > 0.0), 4.0)  # after the exit clip (_dismounted)
+	t.escort_engage_delay_s = 0.0
+	t.escort_accuracy_mult = 1.0
+	var held: int = 0
+	var damped: int = 0
+	for u: NpcBase in m._units:
+		var g: NpcGunner = u.get_node_or_null(^"Gunner") as NpcGunner if is_instance_valid(u) else null
+		if g == null:
+			continue
+		if g.hit_chance_mult_left > 0.0 and is_equal_approx(g.hit_chance_mult, 0.7):
+			damped += 1
+		if g.engage_hold_left > 0.0:
+			held += 1
+	assert_true(damped >= 6, "every convoy unit hits at x0.7 after the stop (%d)" % damped)
+	assert_true(held_any and held >= 1, "the escorts that got out hold fire (%d)" % held)

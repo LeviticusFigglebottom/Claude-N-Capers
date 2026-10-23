@@ -23882,6 +23882,7 @@ script = ExtResource("254_rt")
 lock = 5
 swing = 2
 width_m = 4.0
+height_m = 2.4
 visual_scene = ExtResource("269_rt")
 objective_tag = &"tannery_gate"
 metadata/kind = "industrial_door"
