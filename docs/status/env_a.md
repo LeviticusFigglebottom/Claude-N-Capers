@@ -4,6 +4,18 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-62) P Hazardous items, RT soak, AH cast re-run, AH perf first read (2026-10-23)
+- P Hazardous: bots free a tased / cloaker-pinned teammate first (CrewAiTweak.rescue_priority_m), special spawn / death
+  logged with alive vs cap, caps under churn tested (0585920d). The Stinger cap holds (alive <= 2 over 700 s; P's many
+  taser ids were replacements). AH Hazardous seed 7 headless recheck running.
+- Soak: a/test_a4_03_soak AH civilian-start soak + ah_perf_capture (27486136). RT 600 s: 4 peers 0 desync / 38 rounds
+  (+23 MB host, +40 MB peers); 2 humans + 2 bots 0 desync / 40 rounds (+24 / +55 MB).
+- D r308 cast: door bouncer gives up an unreachable post walk after GuardTweak.post_walk_give_up_s and stands; civ_offduty
+  holstered until ALARMED (HeldVisuals.plain_clothes_holstered) (86f076ee). The off-duty `sit` needs a "Seat" node at
+  VIPBooth3: asked C.
+- AH perf (Xvfb, seed 1 Routine, 56 civs): main draws max 539 (booth_over_floor), hall 193-355; D-146 main <=2500 met.
+  Shadow pass reads 0 in software render (total not measured); stampede sample came after the crowd left (re-time).
+
 ### (-61) D-166 end to end, AH cast batch, gear bag, RT vehicle holster (2026-10-23)
 - **D-166 e2e** (harness PO5_FORCE_CAPTAIN 0bf50ccf + CREW_DMG 0.25, A head + C head, Hazardous): Brandt at wave 2,
   SUSTAIN locked, ONE FADE in each run. Seed 4242: first cash bag t=439 -> escape_wait done / van at t=739 (+300 s) ->
