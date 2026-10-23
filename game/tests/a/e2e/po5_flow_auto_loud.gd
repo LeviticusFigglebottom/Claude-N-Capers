@@ -131,6 +131,8 @@ func play(flow: Node) -> int:
 			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
 	if wait_convoy:
 		await _wait_for_the_convoy()
+	if p.crew.civilian and not await _gear_up():
+		return fail("civilian start: no gear pickup reached (t=%.0f)" % rt.heist_time_s)
 	if not p.crew.masked:  # stores1001: masked, G throws the carried bag (rt_clean hands over masked with the thermite)
 		await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
@@ -161,6 +163,27 @@ func play(flow: Node) -> int:
 	if not _ended:
 		return fail("no heist end within %.0f s; markers %s" % [cap, _marker_summary()])
 	return await f.payday_to_hub()
+
+
+## S1.3 civilian start (AH, D-065): no mask without gear. Walk to the nearest enabled GearPickup this civilian may use
+## (the rolled gear_drop slot) and take the gear; the AI teammates gear up with the pilot. True when no longer civilian.
+func _gear_up() -> bool:
+	var picks: Array[GearPickup] = []
+	for n: Node in rt.find_children("*", "GearPickup", true, false):
+		var g: GearPickup = n as GearPickup
+		if g != null and g.is_enabled() and g.interactable != null and g.interactable.enabled:
+			picks.append(g)
+	var from: Vector3 = p.crew.global_position
+	picks.sort_custom(func(a: GearPickup, b: GearPickup) -> bool:
+		return a.global_position.distance_to(from) < b.global_position.distance_to(from))
+	for g: GearPickup in picks:
+		f.note("civilian start: taking the gear at %s %s (t=%.0f)" % [g.name, g.global_position, rt.heist_time_s])
+		await p.use(g.interactable, 90.0, func() -> bool: return not p.crew.civilian)
+		if not p.crew.civilian:
+			f.note("geared up at %s (t=%.0f)" % [g.name, rt.heist_time_s])
+			return true
+		f.note("civilian start: %s not used (%s)" % [g.name, g.interactable.availability(p.crew)])
+	return not p.crew.civilian
 
 
 ## --po5-wait-convoy: unmasked, in place, until the convoy has stopped (RT _stop_done) or the crash's alarm is up
