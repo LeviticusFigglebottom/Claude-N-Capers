@@ -35,7 +35,7 @@ static func scripts() -> Dictionary[StringName, GDScript]:
 		PerkStoic.KEY: PerkStoic, PerkAnarchist.KEY: PerkAnarchist, PerkExPresident.KEY: PerkExPresident,
 		PerkGambler.KEY: PerkGambler, PerkKingpin.KEY: PerkKingpin, PerkThrowable.KEY: PerkThrowable,
 		PerkPocketEcm.KEY: PerkPocketEcm, PerkYakuza.KEY: PerkYakuza, PerkBiker.KEY: PerkBiker,
-		PerkManiac.KEY: PerkManiac,
+		PerkManiac.KEY: PerkManiac, PerkSicario.KEY: PerkSicario, PerkTagTeam.KEY: PerkTagTeam,
 	}
 
 
@@ -47,7 +47,8 @@ func refresh() -> void:
 	for k: StringName in all:
 		var p: Dictionary = Modifiers.params(crew.slot, k)
 		if p.is_empty():
-			components.erase(k)
+			if components.erase(k) and Net.is_authority():
+				PerkItems.clear_key(HeistRuntime.of(crew), crew.slot, k)  # D-163: its HUD item goes with it
 			continue
 		if components.has(k):
 			components[k].params = p

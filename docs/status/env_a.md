@@ -4,6 +4,17 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-42) D-163 decks on B's names, ui_hud v1.21 (2026-10-23)
+- perk.sicario (PerkSicario): the smoke bomb (kind smoke_bomb) cloud carries B's params; the cooldown starts when the
+  cloud ends, and kills cut it. Twitch, dodge_restores_armor (full refill ◇), in_smoke_effect_mult (Twitch + the
+  deck's generic dodge), ally_in_smoke_dodge_add (via the new PerkComponent.ally_dodge_add_for).
+- perk.tag_team (PerkTagTeam on TagPairs): kill heals 15 / 7.5, kill_extend_s on holder kills, the Synergy absorb pool
+  (until the item is off cooldown), tagged_kill_cooldown_cut_s.
+- PerkItems service (SVC_PERK_ITEMS) -> LocalHudModel.perk_item + perk_item_changed (ui_hud v1.21). The pocket ECM
+  maps into it; pocket_ecm stays as an alias.
+- Contract rows perk.sicario and perk.tag_team (phase 5); perk_tweak defaults.
+- Tests: test_d163_decks 5/5, test_ui_hud_v1_21 2/2, plus the regressions in the push report.
+
 ### (-41) D-163 name-independent systems (2026-10-23)
 - ThrownItem KIND_SMOKE (no fuse; a cloud of radius_m for smoke_s) and SmokeZones: crew inside avoid a bullet at
   crew_bullet_avoid (a dodge), enemies inside hit at ×npc_accuracy_mult. No LOS blocking.

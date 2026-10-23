@@ -133,6 +133,8 @@ const KEYS: Dictionary = {
 	&"perk.yakuza": [Type.PARAMS, 5, "Inkwork (Yakuza): lower health, faster armor regen + move speed."],
 	&"perk.biker": [Type.PARAMS, 5, "Road Crew (Biker): any crew kill gives health + armor, rate-limited."],
 	&"perk.maniac": [Type.PARAMS, 5, "Frenzy (Maniac): damage dealt -> Hysteria stacks -> flat absorb, crew-shared."],
+	&"perk.sicario": [Type.PARAMS, 5, "Veil (Sicario): smoke bomb (bullet avoid, enemy accuracy), Twitch dodge."],
+	&"perk.tag_team": [Type.PARAMS, 5, "Buddy System (Tag Team): tag an ally; kills heal both, absorb, extend."],
 	&"perk.sociopath": [Type.PARAMS, 4, "Clean Sweep: kills near enemies restore armor/health on cooldowns."],
 	&"perk.rogue_dodge_stack": [Type.PARAMS, 4, "Slipper: reduced aggro near crew (dodge/swap/AP via generic keys)."],
 	&"perk.crook": [Type.PARAMS, 4, "Hustler: dodge + armor bonus in Light/Patrol/Heavy vests only."],

@@ -19,7 +19,7 @@ const KIND_FRAG: StringName = &"frag"
 const KIND_CONCUSSION: StringName = &"concussion"
 const KIND_INCENDIARY: StringName = &"incendiary"
 const KIND_KNIFE: StringName = &"throwing_knife"
-const KIND_SMOKE: StringName = &"smoke"
+const KIND_SMOKE: StringName = &"smoke_bomb"  # D-163: B's ThrowableDef kind
 const KINDS: Array[StringName] = [KIND_FRAG, KIND_CONCUSSION, KIND_INCENDIARY, KIND_KNIFE, KIND_SMOKE]
 ## D-163 smoke cloud defaults ◇ (params override: radius_m, smoke_s, crew_bullet_avoid, npc_accuracy_mult).
 const SMOKE_RADIUS_M: float = 6.0

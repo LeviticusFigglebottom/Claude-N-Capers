@@ -95,7 +95,6 @@ func melee_damage_mult() -> float:
 	return 1.0
 
 
-## The deck throwable of `kind` (ThrowableDef.kind) was used; true when this perk consumed it.
 ## D-163: the holder dodged a hit (CrewHealth: dodge roll or smoke avoid).
 func on_dodge() -> void:
 	pass
@@ -107,6 +106,12 @@ func absorb_for(_target: CrewController) -> Dictionary:
 	return {}
 
 
+## D-163 dodge this component adds to teammate `target` (never the holder: that is dodge_add()).
+func ally_dodge_add_for(_target: CrewController) -> float:
+	return 0.0
+
+
+## The deck throwable of `kind` (ThrowableDef.kind) was used; true when this perk consumed it.
 func use_throwable(_kind: StringName) -> bool:
 	return false
 

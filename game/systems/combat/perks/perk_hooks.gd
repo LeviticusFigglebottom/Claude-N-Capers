@@ -67,8 +67,18 @@ static func max_armor(h: CrewHealth, value: float) -> float:
 
 
 static func dodge_add(h: CrewHealth) -> float:
-	var perks: CrewPerks = of(_crew_of(h))
-	return perks.dodge_add() if perks != null else 0.0
+	var crew: CrewController = _crew_of(h)
+	var perks: CrewPerks = of(crew)
+	var total: float = perks.dodge_add() if perks != null else 0.0
+	var rt: HeistRuntime = HeistRuntime.of(crew) if crew != null else null
+	if rt == null:
+		return total
+	for m: CrewController in rt.crew_members():  # D-163: teammates' perks (Sicario card 9: allies in the smoke)
+		var mp: CrewPerks = of(m) if m != crew else null
+		if mp != null:
+			for c: PerkComponent in mp.components.values():
+				total += c.ally_dodge_add_for(crew)
+	return total
 
 
 ## CrewHealth.take_hit (after the dodge roll, before armor): damage reduction (all perks summed,
