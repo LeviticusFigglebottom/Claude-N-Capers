@@ -55,21 +55,34 @@ func _run() -> void:
 		rt.mission.variant(&"crowd")])
 	await _view(rt, "booth_over_floor", BOOTH_EYE, FLOOR_CENTRE + Vector3(0, -0.6, 2.0))
 	await _view(rt, "floor_to_booth", FLOOR_CENTRE + Vector3(0, 0, 4.0), BOOTH_EYE)
-	for yaw: int in [0, 90, 180, 270]:
+	for yaw: int in [0, 180]:
 		await _view(rt, "hall_calm_%d" % yaw, FLOOR_CENTRE, FLOOR_CENTRE + Vector3(0, 0, -6).rotated(Vector3.UP, deg_to_rad(yaw)))
+	for rc: String in ["rc_hall_crowd", "rc_hall_club", "rc_balcony"]:  # C's worst views (afterhours.md perf table)
+		await _view_marker(rt, rc)
 	rt.stealth.raise_alarm(&"perf", 0)
 	for i: int in 120:  # the stampede: civilians_flee, the crowd running for the exits
 		await get_tree().physics_frame
 	# a software-rendered view takes minutes of wall time: slow the game so the crowd is still on the floor when sampled
 	Engine.time_scale = 0.02
-	for yaw: int in [0, 90, 180, 270]:
+	for yaw: int in [0, 180]:
 		await _view(rt, "hall_stampede_%d" % yaw, FLOOR_CENTRE, FLOOR_CENTRE + Vector3(0, 0, -6).rotated(Vector3.UP,
 			deg_to_rad(yaw)))
 	await _view(rt, "booth_stampede", BOOTH_EYE, FLOOR_CENTRE + Vector3(0, -0.6, 2.0))
+	for rc: String in ["rc_hall_house", "rc_hall_crowd", "rc_balcony"]:  # the alarm brought the house lights up
+		await _view_marker(rt, rc, "_loud")
 	Engine.time_scale = 1.0
 	print("[AHPERF] over budget: %s" % [_over])
 	print("[AHPERF] done: %s" % _out)
 	get_tree().quit(0)
+
+
+## C's review camera `marker_name` (ReviewCameras/<name>: eye at the marker, looking down its -Z); skipped when absent.
+func _view_marker(rt: HeistRuntime, marker_name: String, suffix: String = "") -> void:
+	var m: Node3D = rt.map.get_node_or_null(NodePath("ReviewCameras/" + marker_name)) as Node3D
+	if m == null:
+		print("[AHPERF] %s: no such review camera on this map" % marker_name)
+		return
+	await _view(rt, marker_name + suffix, m.global_position, m.global_position - m.global_basis.z)
 
 
 func _view(rt: HeistRuntime, label: String, eye: Vector3, at: Vector3) -> void:
