@@ -4,6 +4,34 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### Afterhours items 1-7 built (LEAD r299 go; on env/b-content only, held off trunk until the RT ruling, D-144)
+| # | Item | Done |
+|---|---|---|
+| 1 | XP | payout.tres + PayoutTweak default `afterhours: 2500` |
+| 2 | small loot | values already in afterhours_values_block.txt for C's prefabs (till $600 x4, drop safe $900 x3, bottle service $800, desk drawer $1,200, tip jar $300); nothing in B data |
+| 3 | VO | 43 lines: Accountant (3 briefing, contact intro, payday, 5 objective-done radio, 3 loot radio), Mercer (2 briefing, 24 mission), DJ (alarm + 3 shoutouts, cooldown 180 s). New speaker `dj` in VoiceLineTable.SPEAKERS, shown as "DJ" in subtitles (ui.subtitle.name.dj). All 43 count as staged ("S") in vo_coverage while AH is hidden |
+| 4 | surprises | ui.briefing.sec.event.afterhours.{vip_party, off_duty_cop, co_op_pickup, rooftop_watch}. count_left_open / extra_product are good events, and BriefingIntel names only bad ones |
+| 5 | tip card | "Guest list", 4 rows (guest start, keycard, code or drill, 3 bags + stampede); 720p / 1080p shots in content/ui/_review/heist_tips |
+| 6 | achievements | proposal below, nothing built until the LEAD picks |
+| 7 | points | 15 ui.preplan.point.afterhours.* labels |
+| + | briefing | 2 steps ui.briefing.step.afterhours.{safe, bonus}, with a proposed `briefing_objectives` line in the values block for C. The briefing text is fixed: the Velvet is on Marlin Avenue, not Keston Row, and the brief asks for Crale's safe, not "its books" |
+
+For A, the mission says these ids:
+- vo.mercer.afterhours_gear_location is 4 lines, `_gear_{wc,cloak,booth,van}`, one per gear_drop slot, so there is no text argument.
+- `_drill_done` is added; the doc's mission notes list it.
+
+Fix: `ammo_panel` built `"ui.hud.perk_item." + kind` literally, and test_ui_strings read it as a missing key. It is now ITEM_KEY_FMT.
+
+Achievement proposal (all on existing condition fields):
+| id | name | condition |
+|---|---|---|
+| ah_no_witnesses | Nobody Saw a Thing | `heist afterhours`, `stealth`, `max_kills 0`, `max_civilian_kills 0` (stealth no-kill) |
+| ah_closing_time | Closing Time | `loud`, `max_time_s 720` (loud speed run: the safe drilled and 3 bags out in 12 min) |
+| ah_bottle_service | Bottle Service | `loot_min {loot.parcels: 3}` plus `objectives_completed [count_room]` (greed: the product and the count room) |
+| ah_just_looking | Just Looking | `stealth`, `objectives_completed [casing, safe_code]`, `max_pagers 0` (civilian start: case the club as a guest, open the safe by code, no pager answered) |
+| ah_cataclysm | Last Dance | `difficulty_min` Cataclysm, any mode |
+| ah_full_count (optional 6th) | Full Count | `all_loot_secured` |
+
 ### Afterhours B gap list (LEAD r299 (b), read-only audit vs docs/design/heists/afterhours.md; nothing built yet)
 Already on trunk:
 - heist_list row (hidden, requires afterhours_mission.gd), city_map entry (contact.accountant, midtown), heist accent.

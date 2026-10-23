@@ -10,6 +10,7 @@ small_loot_scaled_by_difficulty = true
 civilian_penalty_on_failure = false
 base_xp_success = 2000
 base_xp_by_heist = {
+&"afterhours": 2500,
 &"dockside_burn": 2000,
 &"gallery_night": 2500,
 &"glasshouse": 1500,
