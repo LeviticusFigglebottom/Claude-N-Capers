@@ -299,6 +299,8 @@ func test_r309_no_double_cuff_and_the_uncuff_is_an_event() -> void:
 	assert_false(CrewCuffs.can_police_cuff(c), "not cuffable while CUFFED")
 	assert_eq(cuffs.cuffed_by_net_id, 245, "still the first cop's cuffs")
 	cuffs.free_crew(1)
-	assert_true(cuffs.cuff_downed(251), "uncuffed and still down: cuffable again")
+	assert_false(CrewCuffs.can_police_cuff(c), "D-108 (r310): just uncuffed, the grace restarts")
+	cuffs.since_uncuff_s = CustodyTweak.data().police_cuff_grace_s  # the fresh grace ran out
+	assert_true(cuffs.cuff_downed(251), "uncuffed, still down, grace over: cuffable again")
 	var seq: Array = _events.map(func(e: Array) -> Array: return [e[0], e[2]])
 	assert_eq(seq, [[&"cuffed", 245], [&"uncuffed", 1], [&"cuffed", 251]], "cuff, uncuff, cuff: %s" % [seq])
