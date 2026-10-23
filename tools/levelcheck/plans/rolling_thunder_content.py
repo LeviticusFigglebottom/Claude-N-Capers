@@ -32,7 +32,8 @@ LOCKPICK_S = 8.0
 # -X, 180 faces +Z.
 SEAT_FWD = 0.12                     # a catalog chair's Seat is this far ahead of its pivot (prop_chair_task, _office)
 BUS_QUEUE_X = [-38.5, -37.5, -30.5, -29.5]
-BUS_ROOT_Z = 13.32                  # the shelter bench centre (z 13.2) + 0.12
+BUS_ROOT_Z = 13.75                  # standing 0.55 m in front of the bench centre (z 13.2; its front edge 13.45),
+                                    # facing the street (LEAD r305 / D's cast read: the seated roots clipped the bench)
 TABLE_SEATS = [(19.88, 18.0, -90.0), (19.88, 22.0, -90.0), (21.12, 18.0, 90.0), (21.12, 22.0, 90.0),
                (19.88, 24.5, -90.0)]
 # GPU-21: the dining room's booths (centre z, along the west wall's inner face x 14.2) and counter stools (centre z, x
@@ -332,10 +333,8 @@ def furniture() -> List[list]:
         out.append(B(nm, p, [1.9, 1.45, 4.6], yaw, "car", False, "prop", {"cover": "hard"}))
     for i, x in enumerate([-38.0, -30.0, -22.0]):
         out.append(B("BusShelter%d" % i, [x, 0.0, 12.6], [5.0, 2.6, 0.3], 0.0, "bus_shelter", False, "prop"))
-        # the bus queue's seats (ENV D, RT cast check 9252b9ef item 4): roots 0.12 m ahead of the bench centre
-        seats = [[qx - x, 0.45, BUS_ROOT_Z - 13.2] for qx in BUS_QUEUE_X if abs(qx - x) < 1.5]
-        out.append(B("ShelterBench%d" % i, [x, 0.0, 13.2], [3.0, 0.45, 0.5], 0.0, "bench", True, "prop",
-                     {"seats": seats}))
+        # (the bus queue stands in front of the bench since r305: no seats on it)
+        out.append(B("ShelterBench%d" % i, [x, 0.0, 13.2], [3.0, 0.45, 0.5], 0.0, "bench", True, "prop"))
     out.append(B("Newsstand", [-12.0, 0.0, -14.0], [2.4, 2.4, 1.6], 0.0, "kiosk", False, "prop", {"cover": "hard"}))
     out.append(B("ClockPillar", [-26.0, 0.0, 20.0], [0.8, 6.0, 0.8], 0.0, "landmark", False, "trim"))
     for i, (x, z) in enumerate([(-50.0, 18.0), (-44.0, 25.0), (-34.0, 25.0), (-18.0, 26.0)]):
@@ -806,7 +805,7 @@ def fixed_spawns() -> List[list]:
     # the bus queue (2-4) at the shelters, the diner customers (2-5), the diner staff, the attendant
     # ENV D's cast check against the clips (docs/status/env_d.md 9252b9ef, items 1-5, 8): roots in world m
     for i, x in enumerate(BUS_QUEUE_X):
-        out.append(S("BusQueue%d" % i, "CIVILIAN", [x, 0.0, BUS_ROOT_Z], 180.0, ["civ_bus"], "sit"))
+        out.append(S("BusQueue%d" % i, "CIVILIAN", [x, 0.0, BUS_ROOT_Z], 180.0, ["civ_bus"], "queue"))
     # customers 0-3 on the two tables' chairs (sit_eat: table near edge 0.22 m ahead; the chair's Seat is 0.12 m ahead
     # of its pivot (prop_diner_chair, GPU-21: prop_chair_task's Seat, so the roots do not move), so the spawn stands
     # on the pivot and NpcSeatSpawns snaps it onto the Seat = D's root)
