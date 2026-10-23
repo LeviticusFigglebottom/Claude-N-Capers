@@ -100,9 +100,26 @@ static func is_aiming(crew: CrewController) -> bool:
 static func ads_rate(crew: CrewController) -> float:
 	var w: CrewWeapons = crew.weapons if crew != null else null
 	var st: WeaponStats = w.stats(w.equipped_slot) if w != null else null
-	if st != null and st.ads_time_s > 0.0:
-		return 1.0 / st.ads_time_s
-	return FpViewmodelTweak.data().ads_rate
+	var base: float = 1.0 / st.ads_time_s if st != null and st.ads_time_s > 0.0 else FpViewmodelTweak.data().ads_rate
+	if crew == null:
+		return base
+	# A4-04 weapon.ads_speed_mult by class (Snap Shot .all, Pump Action .shotgun, Hushed Hands .suppressed).
+	return base * Modifiers.mult(crew.slot, &"weapon.ads_speed_mult", weapon_qualifiers(crew))
+
+
+## A4-04: Modifiers qualifiers of `crew`'s equipped weapon: its class (Enums.weapon_class_qualifier) and &"suppressed"
+## when it is.
+static func weapon_qualifiers(crew: CrewController) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var w: CrewWeapons = crew.weapons if crew != null else null
+	if w == null:
+		return out
+	var def: WeaponDef = ContentDB.weapon(w.weapon_id(w.equipped_slot))
+	if def != null:
+		out.append(Enums.weapon_class_qualifier(def.weapon_class))
+	if w.is_suppressed():
+		out.append(&"suppressed")
+	return out
 
 
 ## D-084: zoom_factor of the local player's view; 1.0 when there is none.

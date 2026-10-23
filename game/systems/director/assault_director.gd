@@ -76,6 +76,11 @@ var start_delay_s: float = 0.0:
 		if _start_held and start_delay_s <= 0.0:
 			_start_held = false
 			begin()
+## D-158 (RT truck window): seconds until the FIRST assault's BUILD may begin (ticks down from the moment a mission
+## sets it, running or not). ANTICIPATION ending earlier waits for it; a later one is unaffected. Later waves ignore it.
+var first_build_hold_s: float = 0.0:
+	set(v):
+		first_build_hold_s = maxf(v, 0.0)
 ## Units spawned by the director (alive or not), in order.
 var spawned_total: int = 0
 ## PO-5.4: units spawned in the current assault's BUILD/SUSTAIN (_force_pool() spending).
@@ -451,6 +456,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _physics_step(delta: float) -> void:
+	first_build_hold_s -= delta
 	if _start_held and Net.is_authority():
 		start_delay_s -= delta  # the setter begins at 0
 		return
@@ -472,7 +478,7 @@ func _physics_step(delta: float) -> void:
 				_enter(Enums.AssaultPhase.ANTICIPATION, tweak.anticipation_s)
 				_maybe_hostage_bonus()
 		Enums.AssaultPhase.ANTICIPATION:
-			if phase_time_left <= 0.0:
+			if phase_time_left <= 0.0 and (wave_index > 1 or first_build_hold_s <= 0.0):
 				assault_spawned = 0
 				_group_left = 0.0  # PO6-16: the first assault group arrives with BUILD (no CONTROL timer carry-over)
 				_enter(Enums.AssaultPhase.BUILD, tweak.build_s)

@@ -195,7 +195,9 @@ static func play_impact(shooter: Node, from: Vector3, to: Vector3, target_id: in
 	if mode != MODE_SHOT_MISS:
 		var target: Object = Ids.lookup(target_id) if target_id != 0 else null
 		var surface: StringName = surface_of(target) if target != null else SURFACE_FLESH
+		var fp: int = FrameProf.begin()
 		EventBus.shot_fx.emit(origin, to, -dir, surface, cls, sid, flesh_flags(flags, surface, cls))
+		FrameProf.end(&"shot_fx.hit_emit", fp)  # A4-02: VfxDirector (C) + listeners
 		return
 	var tw: CombatTweak = CombatTweak.data()
 	var max_end: Vector3 = from + dir * tw.hitscan_max_range_m
@@ -205,7 +207,12 @@ static func play_impact(shooter: Node, from: Vector3, to: Vector3, target_id: in
 	if co != null:
 		q.exclude = [co.get_rid()]
 	var space: PhysicsDirectSpaceState3D = (shooter as Node3D).get_world_3d().direct_space_state
-	emit_ray(origin, space.intersect_ray(q), max_end, cls, sid, flags)
+	var fp2: int = FrameProf.begin()
+	var hit: Dictionary = space.intersect_ray(q)
+	FrameProf.end(&"shot_fx.miss_ray", fp2)
+	fp2 = FrameProf.begin()
+	emit_ray(origin, hit, max_end, cls, sid, flags)
+	FrameProf.end(&"shot_fx.miss_emit", fp2)  # A4-02: VfxDirector (C) + listeners
 
 
 static func _relay_impact(ctx: Node, shooter_id: int, from: Vector3, to: Vector3, target_id: int, mode: int) -> void:

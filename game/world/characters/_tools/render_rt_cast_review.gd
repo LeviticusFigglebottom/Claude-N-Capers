@@ -5,7 +5,7 @@
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy --fixed-fps 60 \
 ##     --resolution 640x360 \
 ##     --path game res://world/characters/_tools/render_rt_cast_review.tscn \
-##     -- --out=/abs/dir [--seed=1] [--difficulty=0] [--no-convoy] [--only=<spawn tag>] [--crash] [--skip-cast]
+##     -- --out=/abs/dir [--seed=1] [--difficulty=0] [--no-convoy] [--only=<spawn tag>] [--crash] [--skip-cast] [--cab]
 ## Owner: ENV D.
 extends Node3D
 
@@ -22,6 +22,8 @@ var _convoy: bool = true
 var _only: StringName = &""
 ## --crash: the signals are not rigged, so the convoy runs into the crash stop (Reyes rams it); --skip-cast: convoy only
 var _crash: bool = false
+## --cab: a seated character (with --only) shot from fixed views through its vehicle's door window and windscreen
+var _cab: bool = false
 var _skip_cast: bool = false
 var _cam: Camera3D = null
 var _label: Label = null
@@ -39,6 +41,8 @@ func _ready() -> void:
 			_difficulty = int(a.trim_prefix("--difficulty="))
 		elif a == "--no-convoy":
 			_convoy = false
+		elif a == "--cab":
+			_cab = true
 		elif a == "--crash":
 			_crash = true
 		elif a == "--skip-cast":
@@ -82,6 +86,9 @@ func _run() -> void:
 		if _only != &"" and not (npc.spawn_info.get("tags", []) as Array).has(_only):
 			continue
 		i += 1
+		if _cab:
+			await _cab_shots("cab_%02d" % i, npc)
+			continue
 		await _npc_shot("cast_%02d" % i, npc)
 	if _convoy and _only == &"" and rt.mission != null and &"signals_rigged" in rt.mission:
 		await _convoy_phase(rt)
@@ -150,6 +157,22 @@ func _mixer_shot(m: Node) -> void:
 	await _shot("mixer_%s" % ("crash" if _crash else "clean"), eye, at)
 
 
+## Views of a seated character from outside its cab, no collision check (the cab glass is in the way by design): through
+## the door window on its own side, through the windscreen, and a close-up of the hands at the wheel.
+func _cab_shots(name: String, npc: NpcBase) -> void:
+	var b: Basis = npc.global_basis.orthonormalized()
+	var fwd: Vector3 = -b.z
+	var left: Vector3 = -b.x
+	var chest: Vector3 = npc.global_position + Vector3.UP * 0.85
+	_label.text = "%s  %s\n%s" % [name, NpcVisuals.character_id(npc), _clip(npc)]
+	_say("%s %s look %s clip %s at (%.2f, %.2f, %.2f)" % [name, npc.name, NpcVisuals.character_id(npc), _clip(npc),
+		npc.global_position.x, npc.global_position.y, npc.global_position.z])
+	await _shot(name + "_door", chest + left * 1.9 + fwd * 0.6 + Vector3.UP * 0.25, chest)
+	await _shot(name + "_windscreen", chest + fwd * 2.6 + Vector3.UP * 0.35, chest)
+	# from the passenger seat, inside the cab: the hands on the wheel
+	await _shot(name + "_hands", chest - left * 1.0 + fwd * 0.25 + Vector3.UP * 0.35, chest + fwd * 0.35 + Vector3.UP * 0.05)
+
+
 func _npc_shot(name: String, npc: NpcBase, dist: float = EYE_DIST) -> void:
 	var fwd: Vector3 = -npc.global_basis.z
 	fwd.y = 0.0
@@ -211,6 +234,9 @@ func _shot(name: String, eye: Vector3, at: Vector3) -> void:
 	if eye.distance_to(at) < 0.05:
 		eye += Vector3(0.0, 0.5, 1.0)
 	_cam.look_at_from_position(eye, at)
+	for n: Node in get_tree().root.find_children("*", "", true, false):
+		if n is FpViewmodel:
+			(n as Node3D).visible = false  # the player's first-person gun would draw over the review camera
 	RenderingServer.render_loop_enabled = true
 	for _i: int in 2:
 		await get_tree().process_frame

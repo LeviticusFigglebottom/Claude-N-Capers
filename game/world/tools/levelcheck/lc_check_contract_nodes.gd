@@ -14,6 +14,15 @@ const MIN_POLICE_DIRECTIONS: int = 3
 const POLICE_DIRECTION_SEP_DEG: float = 45.0
 const MIN_REVIEW_CAMERAS_FINAL: int = 12
 const MIN_REVIEW_CAMERAS_GREYBOX: int = 1
+## hub_map.md (--profile=hub): the safehouse's nodes, its 9 station ids, its return markers and root API.
+const HUB_REQUIRED: Dictionary = {
+	&"Geometry": "Node3D", &"Props": "Node3D", &"Lighting": "Node3D", &"Navigation": "NavigationRegion3D",
+	&"Rooms": "Node3D", &"Spawns": "Node3D", &"Stations": "Node3D", &"ReviewCameras": "Node3D",
+}
+const HUB_STATIONS: Array[StringName] = [&"board", &"planning", &"armory", &"masks", &"jukebox", &"notoriety",
+	&"range", &"crew", &"profile"]
+const HUB_MARKERS: Array[StringName] = [&"Spawn", &"ReturnHeist", &"ReturnRange"]
+const HUB_METHODS: Array[StringName] = [&"spawn_transform", &"set_jukebox_track"]
 
 
 func _init() -> void:
@@ -22,6 +31,9 @@ func _init() -> void:
 
 
 func run(ctx: LcContext) -> void:
+	if ctx.profile == "hub":
+		_run_hub(ctx)
+		return
 	var m: HeistMap = ctx.map
 	for n: StringName in REQUIRED.keys():
 		var c: Node = m.get_node_or_null(NodePath(String(n)))
@@ -48,6 +60,60 @@ func run(ctx: LcContext) -> void:
 	_check_rooms(ctx)
 	_check_review_cameras(ctx)
 	_check_variants(ctx)
+	if not ctx.has_navmesh():
+		fail(ctx, m, null, "Navigation has no baked navmesh (maps must commit their baked NavigationMesh)")
+
+
+## The hub profile: hub_map.md's node list, no HeistDef / variants / police / zones, the 9 stations (station_id,
+## UsePoint), the return markers and the root API.
+func _run_hub(ctx: LcContext) -> void:
+	var m: HeistMap = ctx.map
+	for n: StringName in HUB_REQUIRED.keys():
+		var c: Node = m.get_node_or_null(NodePath(String(n)))
+		if c == null:
+			fail(ctx, m, null, "missing required hub child `%s` (%s)" % [n, HUB_REQUIRED[n]])
+		elif not c.is_class(HUB_REQUIRED[n]):
+			fail(ctx, c, null, "`%s` must be a %s, is %s" % [n, HUB_REQUIRED[n], c.get_class()])
+	if m.heist_def != null or m.variant_table != null:
+		fail(ctx, m, null, "a hub map has no HeistDef or variant table (hub_map.md: never on the Board)")
+	if not m.has_signal(&"station_requested"):
+		fail(ctx, m, null, "hub root has no `station_requested` signal")
+	for meth: StringName in HUB_METHODS:
+		if not m.has_method(meth):
+			fail(ctx, m, null, "hub root has no `%s()`" % meth)
+	if not (m.get(&"jukebox") is Node):
+		fail(ctx, m, null, "hub root `jukebox` is not set (Audio/Jukebox MusicDirector)")
+	_check_floors(ctx)
+	_check_rooms(ctx)
+	_check_review_cameras(ctx)
+	var players: int = 0
+	for n2: Node in m.find_children("*", "SpawnPoint", true, false):
+		if (n2 as SpawnPoint).kind == SpawnPoint.Kind.PLAYER:
+			players += 1
+		else:
+			fail(ctx, n2, null, "the hub has PLAYER spawns only")
+	if players < MIN_PLAYER_SPAWNS:
+		fail(ctx, m, null, "%d PLAYER spawns, need >= %d" % [players, MIN_PLAYER_SPAWNS])
+	for mk: StringName in HUB_MARKERS:
+		if not (m.get_node_or_null(NodePath("Spawns/%s" % mk)) is Marker3D):
+			fail(ctx, m, null, "missing return marker Spawns/%s" % mk)
+	var holder: Node = m.get_node_or_null(^"Stations")
+	var seen: Dictionary = {}
+	for st: Node in (holder.get_children() if holder != null else []):
+		var sid: StringName = StringName(String(st.get(&"station_id"))) if &"station_id" in st else st.name
+		if sid == &"":
+			sid = st.name
+		if seen.has(sid):
+			fail(ctx, st, null, "duplicate station id `%s`" % sid)
+		seen[sid] = true
+		if not (st.get_node_or_null(^"UsePoint") is Marker3D):
+			fail(ctx, st, null, "station `%s` has no UsePoint Marker3D" % sid)
+		var cam: Node = st.get_node_or_null(^"StationCam")
+		if cam != null and not (cam is Marker3D):
+			fail(ctx, cam, null, "StationCam must be a Marker3D (hub_map.md), is %s" % cam.get_class())
+	for want: StringName in HUB_STATIONS:
+		if not seen.has(want):
+			fail(ctx, m, null, "missing station `%s`" % want)
 	if not ctx.has_navmesh():
 		fail(ctx, m, null, "Navigation has no baked navmesh (maps must commit their baked NavigationMesh)")
 

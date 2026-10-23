@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"kit_store"
+purpose = &"storage"
+required_items = Array[StringName]([&"shelving", &"crate", &"box", &"bag", &"pallet"])
+optional_items = {
+&"box": 1.2,
+&"crate": 1,
+&"gas_cylinders": 0.6
+}
+clutter_groups = {}
+min_density = 0.2
+max_density = 0.8
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"shelving", &"pallet", &"crate"])
+seed_salt = 4808
+counts = {
+&"bag": Vector2i(2, 3),
+&"shelving": Vector2i(2, 3)
+}
+assets = {
+&"bag": PackedStringArray("prop_bag_floor"),
+&"pallet": PackedStringArray("prop_pallet"),
+&"shelving": PackedStringArray("prop_shelving_boxes", "prop_shelving_parts")
+}
+ceiling = {}
+notes = "Safehouse KS kit store (5.5 x 6 m): the equipment cage's shelving, drill and ECM cases (boxes), thermite crates (inert dressing), spare duffels, a pallet. The fire exit is on the south wall."

@@ -4,6 +4,83 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-36) D-158 RT fairness, A4-03 soak (2026-10-23)
+- **D-158 (32a04e1e), test_d158_rt_fairness 4/4:**
+  - Seated vehicle occupants have no detection (NpcBase.can_observe is false while META_SEATED_IN).
+  - RT truck window: AssaultDirector.first_build_hold_s. RT's stop sets TRUCK_WINDOW_S 30 ◇, so the wave-1 BUILD comes
+    at stop + 30 s or later.
+  - Bots take cover, or else crouch at their slot, when the followed human is crouched or at a cover point in combat.
+  - Data: rt_clean ×3 and WAIT_CONVOY ×3 Hazardous (seeds 1001–1003) are running.
+- **A4-03 (5022eb14):** test_a4_03_soak, a host plus 3 client processes.
+  - dev_sandbox PASS (+1.7 MB per peer).
+  - Dockside found the CratesK visibility desync, fixed via the codec "vis" key. One NPC (net id 98) is still
+    5.2 m off on the clients: open.
+  - test_of_coop_loopback fails with or without my change: open.
+### (-35) A4-01 audit, A4-02 perf scene, L6.2 bot crew, cancel_reload, police port arms (2026-10-22)
+- **A4-01 fidelity audit (5aca6ade, 984b124c):** docs/status/env_a_fidelity.md.
+  - 103 A rows at phase ≤ P5: 101 covered, S8.7 held, L6.2 a gap (now built, below).
+  - The S10.5 test was added.
+  - A3-01..A3-13 were all delivered; their 28 test files are green.
+- **A4-02 (26509c96):**
+  - PerfMonitors (caperworks/* custom monitors).
+  - test_a4_02_dockside_perf: Dockside at the enemy cap, 4 crew. Measured: frame p95 11.8 ms, 4.9 ms per physics tick
+    saturated, transforms 25.8 KB/s, full state 6.3 KB. The CI budgets are about 2× those.
+  - A 220 ms first metal impact appears only without the VFX prewarm (headless only).
+- **L6.2 (c6e78cb0):** BotCrew, the bot abilities (inspire, quick, pied_piper, resilient) and boosts (ammo,
+  health, stamina, revive, carry). Pending: the LEAD's Loadout fields and B's defs, pickers and strings.
+- **02dffce7:** CrewWeapons.cancel_reload for P.
+- **e3b29523:** police run at port arms (hold_rifle_port_run, characters v1.39).
+
+### (-34) D-157 crew sentry; 51 skill keys on A's side; AI crew capsules fixed (2026-10-22)
+- **f12e25ba, crew sentry (SentryGun under a DeployablePrefab of kind "sentry"):**
+  - Deploy costs 40% ◇ of the owner's ammo; pickup refunds the unused share and restocks.
+  - Targeting, turn rate, spread and health all scale with the skill keys; frontal shield; quiet / AP modes.
+  - Police target it; NpcGunner shoots it; its state is replicated.
+  - Node contract for D: Visual/Base/Yaw/Pitch with Pitch/Gun, Muzzle and Shield.
+  - DeployableTweak fallback def until B ships sentry.tres. test_d157_sentry 4/4.
+- **The 6 sentry keys are hooked:** 51 of 57 keys on A's side. P has hooked its 5 (67b66fd3). Left: pocket_ecm (held).
+- **0df59c67 + dcc9fa5e:** AI crew launched without a heister wear the first heister nobody else wears, instead of
+  the capsule placeholder.
+  - This only happened with P's direct-launch harness; the menus already hand every bot a heister.
+  - PO-5 now logs a "crew looks" line at heist start.
+
+### (-33) A4-04: 45 of 57 unhooked skill keys hooked (B1-B6); seated units animate (2026-10-22)
+- **Cherry-pick order:** 5e7fd691 (B1), 06962d04 (B2), c8661419 (exit anim), a48b71e7 (B3), 05477b73 (B4), 48608af4
+  (B5 Hot Floor + B6).
+- **Tests:**
+  - test_skills_b1 8, b2 6, b3 5, b4 11, b56 5.
+  - The touched suites are green.
+  - The P4 gate is 9/9 with the LEAD's ratchet edit (45 keys out of UNHOOKED; movement.speed_mult and weapon.spread_mult out
+    of UNTESTED).
+- **Fixed in B4:** a B2 crit no longer adds ×3 on top of NpcBase's D-027 crit (the head multiplier on any zone).
+- **Left (12):**
+  - 5 ADS / sprint keys in P's files (spec sent via the LEAD).
+  - 6 sentry keys: no crew sentry deployable exists; the LEAD decides whether A builds one.
+  - pocket_ecm (held).
+- **Dismount (c8661419):** a seated unit's AnimationPlayer runs while its body is paused, so the exit clip now plays.
+- **Values marked ◇ for the LEAD to tune:**
+  - skill_stagger_s and armor_broken_stagger_s, both 0.5.
+  - Stockholm: 3 s delay, 15 m range.
+  - Mark by aim: 0.5 s.
+  - Captive Audience shout range: ×1.5.
+  - Playing Possum sight range: 60 m.
+
+### (-32) A4-04 B1 skill keys; RT ambush hand-over; Reyes at the wheel; harness hardening (2026-10-22)
+- **A4-04 B1 (5e7fd691), 9 keys hooked and tested:**
+  - Keys: Inspire, Swan Song, Berserker, Overkill, Bulletstorm, Bullseye, Kickstarter, Messiah ×2.
+  - New services: CrewBuffs (timed Modifiers sources plus tags, replicated via SVC_BUFFS) and SkillTriggers.
+  - Tests: test_skills_b1 8/8.
+  - Pending: the LEAD's ratchet edit and B's blocked_on_keys removal go in the same round. Next: B2.
+- **RT Hazardous rt_clean from the ambush spot (2734500b):** 0/3 at full damage, 0/3 at CREW_DMG 0.5.
+  - At half damage, 2 of 3 seeds survive the escort. The bot leaving cover is the limit; P's real-input run judges.
+  - Po5EscortLog (30bace84) is now a permanent tool: all units CALM at the stop, alerts at t+0.6 to t+8.1.
+- **Reyes (603270a8):** visible in the Mixer, plays sit_vehicle_drive; Seat0 drivers of visible vehicles steer.
+- **Harness:**
+  - 655a39a1: DIRECT resolves the heist id from the display name.
+  - 4eac6054: fail fast on an unknown heist or difficulty.
+  - dd3a4477: WAIT_CONVOY waits for the stop itself.
+- **Regression sweep on trunk 78a57794:** 5/5 PASS (GH, DB, GN, OF loud, SL stealth), 0 script errors.
+
 ### (-31) Round 280: mixer test fixed for C's map (2026-10-22)
 - **Round 280 red, now fixed:** a/test_rt_a6 test_phase2_mixer_drives_to_its_stop.
   - Cause: the test added a duplicate Mixer and MixerStop next to C's, and Godot auto-renamed both.

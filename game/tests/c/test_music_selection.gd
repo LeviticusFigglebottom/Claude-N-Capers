@@ -28,6 +28,17 @@ func test_table_entries() -> void:
 			assert_eq(t.find(k).unlock, UNLOCKS[k], "%s unlock id" % k)
 	for h: StringName in HEIST_TRACKS:
 		assert_true(t.load_track(h) != null, "%s stems load through the table (D-117)" % h)
+	# C5-01: the three unlockables have their own stems (every stem and both stingers).
+	for k2: StringName in UNLOCKS:
+		var tr: MusicTrack = t.load_track(k2)
+		assert_true(tr != null, "unlockable %s stems load" % k2)
+		if tr == null:
+			continue
+		for stem: StringName in [MusicTrack.STEM_STEALTH, MusicTrack.STEM_CONTROL, MusicTrack.STEM_ANTICIPATION,
+				MusicTrack.STEM_ASSAULT, MusicTrack.STEM_FADE]:
+			assert_true(tr.stem(stem) != null, "%s has its %s stem" % [k2, stem])
+		for st: StringName in [MusicTrack.STINGER_WIN, MusicTrack.STINGER_LOSE]:
+			assert_true(tr.stingers.has(st), "%s has its %s stinger" % [k2, st])
 
 
 func test_heist_defs_use_table_tracks() -> void:
@@ -66,6 +77,31 @@ func test_preview_in_tree() -> void:
 	assert_eq(m.current_stem, MusicTrack.STEM_ASSAULT)
 	m.stop_preview()
 	assert_eq(m.current_stem, MusicDirector.SILENCE)
+	m.queue_free()
+	await get_tree().process_frame
+
+
+## hub_map.md (C4-02): set_ducked lowers the playing stem by DUCK_DB over DUCK_S and restores it.
+func test_set_ducked_offsets_the_playing_stem() -> void:
+	var m: MusicDirector = MusicDirector.new()
+	m.listen_to_event_bus = false
+	m.track_id = &""
+	get_tree().root.add_child(m)
+	assert_true(m.preview(&"glasshouse", MusicTrack.STEM_STEALTH), "preview the cabinet stem")
+	var fade_s: float = m.crossfade_beats * 60.0 / m.track.bpm
+	await get_tree().create_timer(fade_s + 0.2).timeout
+	var stem: AudioStreamPlayer = m.get_node(^"Stem0") as AudioStreamPlayer
+	var full: float = stem.volume_db
+	assert_near(full, m.track.stem_gain_db(MusicTrack.STEM_STEALTH), 0.05, "faded in to the stem's gain")
+	m.set_ducked(true)
+	assert_true(m.is_ducked())
+	await get_tree().create_timer(MusicDirector.DUCK_S + 0.15).timeout
+	assert_near(stem.volume_db, full + MusicDirector.DUCK_DB, 0.05, "ducked by 6 dB")
+	m.set_ducked(false)
+	await get_tree().create_timer(MusicDirector.DUCK_S + 0.15).timeout
+	assert_false(m.is_ducked())
+	assert_near(stem.volume_db, full, 0.05, "restored")
+	m.stop_preview()
 	m.queue_free()
 	await get_tree().process_frame
 

@@ -10,6 +10,10 @@ extends Resource
 ## the sprint and the gun comes up over this long before it can shoot; sprint stays off until it is pressed again.
 @export var sprint_exit_fire_s: float = 0.4
 @export var crouch_speed: float = 2.25
+## A4-04 (PD2 movement STEELSIGHT_MAX 185 / STANDARD_MAX 350): aiming down sights caps the move speed at this share of
+## walk_speed (it overrides crouch, as PD2's _get_max_walk_speed). movement.ads_speed_penalty_mult scales the penalty
+## (Snap Shot 0.0 = none).
+@export var ads_speed_mult: float = 0.53
 @export var jump_velocity: float = 4.6
 @export var gravity: float = 9.8
 @export var acceleration: float = 30.0

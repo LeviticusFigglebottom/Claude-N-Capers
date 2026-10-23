@@ -10,7 +10,8 @@ extends Resource
 @export var knockdown: float = 0.0
 @export var concealment: int = 30
 @export var silent: bool = true
-@export var price: int = 0
+## D-155: the player level that unlocks this melee (PD2: melee is never sold; free once unlocked). 0 = from the start.
+@export var unlock_level: int = 0
 @export var model: PackedScene
 ## D-069: first-person AnimationLibrary (characters.md v1.7): &"melee_knife" | &"melee_blunt" | &"melee_blade".
 @export var anim_set: StringName = &"melee_knife"

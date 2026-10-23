@@ -22,6 +22,8 @@ const ARMOURED_VEHICLES: Array[StringName] = [&"truck", &"van"]
 const UNIT_SIDE_M: float = 1.9
 ## The seated pose (RT-D1 clip, AnimDriver hint) a unit holds in its vehicle.
 const SEATED_HINT: StringName = &"sit_vehicle"
+## D (r280): the driver's pose (hands on the wheel) for Seat0 of a vehicle whose occupants are seen.
+const DRIVER_HINT: StringName = &"sit_vehicle_drive"
 ## QC-60 / §3b.9: spawn_loot(respawn = true) bags are checked this often (s) for having fallen off the map.
 const LOOT_WATCH_TIMER: StringName = &"_loot_respawn_watch"
 const LOOT_WATCH_S: float = 1.0
@@ -334,7 +336,7 @@ func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated
 		npc.set_meta(AssaultDirector.META_SHARES_CAP, true)
 		if seated and vehicle is ConvoyVehicle:
 			npc.global_transform = p.global_transform
-			_seat(npc, vehicle)
+			_seat(npc, vehicle, p == points[0])
 		out.append(npc)
 	return out
 
@@ -409,12 +411,12 @@ func _dismounted(npc: NpcBase) -> void:
 		return
 	npc.visible = true
 	var brain: Node = npc.get_node_or_null(^"Brain")
-	if brain != null and &"anim_hint" in brain and brain.get(&"anim_hint") == SEATED_HINT:
+	if brain != null and &"anim_hint" in brain and brain.get(&"anim_hint") in [SEATED_HINT, DRIVER_HINT]:
 		brain.set(&"anim_hint", &"")
 	npc.process_mode = Node.PROCESS_MODE_INHERIT
 	var anim: AnimDriver = AnimDriver.of(npc)
 	if anim != null:
-		anim.process_mode = Node.PROCESS_MODE_INHERIT
+		_hold_anim(anim, false)
 	if _runtime != null and _runtime.went_loud and npc.alive:
 		npc.set_alert_state(Enums.AlertState.COMBAT)
 
@@ -426,20 +428,30 @@ func has_enemy(enemy_id: StringName) -> bool:
 
 
 ## A unit on its seat (D's RT convoy fit): facing the vehicle's front (+Z; the NPC faces its -Z), in the sit_vehicle
-## pose, paused (no brain, motor or collision) with only its AnimDriver still running so the pose holds; hidden in an
-## armoured cab.
-func _seat(npc: NpcBase, vehicle: Node3D) -> void:
+## pose (the `driver` in sit_vehicle_drive), paused (no brain, motor or collision) with only its AnimDriver still running
+## so the pose holds; hidden in an armoured cab unless `shown` (D r280: Reyes at the Mixer's wheel, a "truck").
+func _seat(npc: NpcBase, vehicle: Node3D, driver: bool = false, shown: bool = false) -> void:
 	npc.set_meta(META_SEATED_IN, NetIds.of(vehicle))
 	npc.global_transform = Transform3D(vehicle.global_basis.orthonormalized() * Basis(Vector3.UP, PI), npc.global_position)
 	var kind: StringName = StringName(vehicle.get(&"vehicle_kind")) if &"vehicle_kind" in vehicle else &"car"
-	npc.visible = not ARMOURED_VEHICLES.has(kind)
+	npc.visible = shown or not ARMOURED_VEHICLES.has(kind)
 	var brain: Node = npc.get_node_or_null(^"Brain")
 	if brain != null and &"anim_hint" in brain:
-		brain.set(&"anim_hint", SEATED_HINT)
+		brain.set(&"anim_hint", DRIVER_HINT if driver and npc.visible else SEATED_HINT)
 	npc.process_mode = Node.PROCESS_MODE_DISABLED  # no brain, motor or collision until it gets out
 	var anim: AnimDriver = AnimDriver.of(npc)
 	if anim != null and npc.visible:
-		anim.process_mode = Node.PROCESS_MODE_ALWAYS  # holds sit_vehicle while the body is paused
+		_hold_anim(anim, true)  # sit_vehicle, then the exit clip, animate while the body is paused (D r283)
+
+
+## D r283: keep `anim` animating while its body is paused (a seated unit is PROCESS_MODE_DISABLED). The AnimationPlayer
+## sits in the body's visual subtree and inherits DISABLED, so it goes ALWAYS with the driver (the sit loop and the
+## vehicle_exit clip advance); off: both inherit again.
+static func _hold_anim(anim: AnimDriver, on: bool) -> void:
+	var mode: Node.ProcessMode = Node.PROCESS_MODE_ALWAYS if on else Node.PROCESS_MODE_INHERIT
+	anim.process_mode = mode
+	if anim.player != null:
+		anim.player.process_mode = mode
 
 
 func _unit_points(spawn_tag: StringName, vehicle: Node3D) -> Array[Node3D]:

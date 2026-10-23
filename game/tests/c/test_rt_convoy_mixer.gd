@@ -12,6 +12,9 @@ const SIZE: Vector3 = Vector3(8.0, 3.5, 2.5)
 const LIFT_M: float = 0.25
 const STEP_M: float = 0.5
 const GAP_M: float = 0.15
+## The tightest turn the 8 m truck may follow (the LEAD's r283 capture review: a 5 m turn out of the gate pivoted it
+## almost on the spot): heading change per STEP_M <= STEP_M / MIN_TURN_R_M.
+const MIN_TURN_R_M: float = 5.5
 ## Vehicle stop footprints [length, width] (rt_gameplay CONVOY_LEN / CONVOY_WIDTH).
 const STOP_SIZE: Dictionary = {"car": Vector2(5.0, 2.0), "cash": Vector2(7.5, 2.5), "bullion": Vector2(9.0, 2.5)}
 
@@ -56,11 +59,31 @@ func test_mixer_drives_from_the_site_to_each_layout_stop() -> void:
 			assert_true(p1.distance_to(stop.global_position) < 0.05, "%s path ends on MixerStop" % lid)
 			var tail: Vector3 = (p1 - path.global_transform * curve.sample_baked(len - 0.5)).normalized()
 			assert_true(tail.dot(stop.global_basis.z) > 0.98, "%s arrives along the stop's +Z" % lid)
+			var tightest: float = _tightest_turn(path)
+			assert_true(tightest >= MIN_TURN_R_M, "%s turns on a %.1f m radius (< %.1f m)" % [lid, tightest,
+				MIN_TURN_R_M])
 			_check_clear_of_stops(l, stop, lid)
 			var hits: PackedStringArray = _sweep(path, exclude)
 			assert_true(hits.is_empty(), "%s drive meets static colliders: %s" % [lid, ", ".join(hits)])
 			n += 1
 	assert_eq(n, 4, "the four layouts checked")
+
+
+## The tightest turning radius along `path` (top view; the heading change between 0.5 m chords).
+func _tightest_turn(path: Path3D) -> float:
+	var curve: Curve3D = path.curve
+	var len: float = curve.get_baked_length()
+	var best: float = INF
+	var d: float = STEP_M
+	while d + STEP_M <= len:
+		var a: Vector3 = curve.sample_baked(d - STEP_M) - curve.sample_baked(d - 2.0 * STEP_M if d >= 2.0 * STEP_M
+			else 0.0)
+		var b: Vector3 = curve.sample_baked(d + STEP_M) - curve.sample_baked(d)
+		var turn: float = absf(Vector2(a.x, a.z).angle_to(Vector2(b.x, b.z)))
+		if turn > 0.0001:
+			best = minf(best, 2.0 * STEP_M / turn)   # the two chords' centres are 2 STEP_M apart
+		d += STEP_M
+	return best
 
 
 func _check_clear_of_stops(l: Node, stop: Node3D, lid: String) -> void:

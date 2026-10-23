@@ -136,8 +136,10 @@ func observer_kind() -> int:
 	return Enums.ObserverKind.GUARD
 
 
+## D-158: a unit still seated in its vehicle neither sees nor hears (StealthDirector meters and noise) until it
+## dismounts (HeistMission: the ambush, or a non-seated escort's alert).
 func can_observe() -> bool:
-	return alive and not BLIND_STATES.has(alert_state) and stun_left <= 0.0
+	return alive and not BLIND_STATES.has(alert_state) and stun_left <= 0.0 and not has_meta(HeistMission.META_SEATED_IN)
 
 
 ## A2-03 (S8.6): stun for `seconds` (keeps the longer of the current and new stun). Server.
@@ -208,6 +210,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	var head_armored: bool = bool(out.get("head_armored", false))
 	if int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD and not head_armored:
 		amount *= zone_mult * float(info.get("headshot_bonus", 1.0))  # L3.3
+	elif info.has("body_expertise"):  # B4b Anatomy: a body shot gets `frac` of the headshot multiplier
+		amount *= lerpf(1.0, zone_mult * float(info.get("headshot_bonus", 1.0)), float(info["body_expertise"]))
 	if bool(info.get("crit", false)):
 		if head_armored:
 			out["crit"] = false  # plates / armored head: no crit

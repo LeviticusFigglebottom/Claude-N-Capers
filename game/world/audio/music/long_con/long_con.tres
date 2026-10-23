@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="MusicTrack" format=3]
+
+[ext_resource type="Script" path="res://world/audio/music_track.gd" id="1_trk"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/long_con/mus_long_con_stealth.ogg" id="m_stealth"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/long_con/mus_long_con_control.ogg" id="m_control"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/long_con/mus_long_con_anticipation.ogg" id="m_anticipation"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/long_con/mus_long_con_assault.ogg" id="m_assault"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/long_con/mus_long_con_fade.ogg" id="m_fade"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/long_con/mus_long_con_win.ogg" id="m_win"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/long_con/mus_long_con_lose.ogg" id="m_lose"]
+
+[resource]
+script = ExtResource("1_trk")
+id = &"long_con"
+bpm = 120.0
+beats_per_bar = 4
+stems = Dictionary[StringName, AudioStream]({&"stealth": ExtResource("m_stealth"), &"control": ExtResource("m_control"), &"anticipation": ExtResource("m_anticipation"), &"assault": ExtResource("m_assault"), &"fade": ExtResource("m_fade")})
+stingers = Dictionary[StringName, AudioStream]({&"win": ExtResource("m_win"), &"lose": ExtResource("m_lose")})
+gain_db = Dictionary[StringName, float]({&"stealth": -6.0, &"control": -3.0, &"anticipation": -2.0, &"assault": 0.0, &"fade": -3.0, &"win": -2.0, &"lose": -2.0})
+loop_bars = Dictionary[StringName, int]({&"stealth": 32, &"control": 16, &"anticipation": 16, &"assault": 16, &"fade": 16})

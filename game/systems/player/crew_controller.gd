@@ -300,6 +300,11 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	return health.take_hit(info, attacker_net_id)
 
 
+## A4-04: aiming down sights this tick (CrewView's ADS rule: aim held, not casing, not sprinting).
+func _aiming_down_sights(i: CrewIntent) -> bool:
+	return i != null and i.aim and not is_casing() and not sprinting
+
+
 ## Casing mode = unmasked (S1.1).
 func is_casing() -> bool:
 	return not masked
@@ -473,7 +478,13 @@ func _simulate(delta: float) -> void:
 	if want_crouch != crouched:
 		_apply_stance(want_crouch)
 	var bag_w: int = _bag_weight()
-	var can_sprint: bool = not casing and not crouched and mobile and i.move.y > 0.1
+	# A4-04 movement.sprint_any_direction (Free Running aced): any move direction sprints, not only forward.
+	var sprint_dir: bool = i.move.y > 0.1 or (i.move.length() > 0.1 and Modifiers.flag(slot, &"movement.sprint_any_direction"))
+	var can_sprint: bool = not casing and not crouched and mobile and sprint_dir
+	# A4-04 movement.reload_while_sprinting: a reload ends the sprint (PD2 _start_action_reload) and no sprint starts
+	# while reloading (◇: PD2's sprint cancels the reload instead; CrewWeapons has no cancel).
+	if weapons != null and weapons.reloading and not Modifiers.flag(slot, &"movement.reload_while_sprinting"):
+		can_sprint = false
 	if bag_w >= 0:
 		can_sprint = can_sprint and (tw.bag_can_sprint[bag_w] or Modifiers.flag(slot, &"loot.can_sprint_with_heavy"))
 	var armor_def: ArmorDef = _armor_def()
@@ -484,6 +495,10 @@ func _simulate(delta: float) -> void:
 		speed = tw.crouch_speed * Modifiers.mult(slot, &"movement.crouch_speed_mult")
 	elif sprinting:
 		speed = tw.sprint_speed * Modifiers.mult(slot, &"movement.sprint_speed_mult")
+	# A4-04: the ADS cap (PD2 steelsight; humans only, bots keep their pace); movement.ads_speed_penalty_mult scales it.
+	if not is_ai and _aiming_down_sights(i):
+		var ads: float = 1.0 - (1.0 - tw.ads_speed_mult) * Modifiers.mult(slot, &"movement.ads_speed_penalty_mult")
+		speed = minf(speed, tw.walk_speed * clampf(ads, 0.0, 1.0))
 	speed *= Modifiers.mult(slot, &"movement.speed_mult")
 	if weapons != null:  # B4-18: minigun spinning (SpecialWeapons params.spin.move_speed_mult)
 		speed *= weapons.move_speed_mult

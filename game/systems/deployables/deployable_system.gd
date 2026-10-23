@@ -183,6 +183,19 @@ func give(slot: int, id: StringName, count: int = -1) -> void:
 	_sync(slot)
 
 
+## Server, D-157: one `id` back into `slot`'s inventory (a picked-up sentry).
+func restock(slot: int, id: StringName) -> void:
+	for r: Dictionary in _inv.get(slot, []):
+		if StringName(r["id"]) == id:
+			r["count"] = int(r["count"]) + 1
+			_sync(slot)
+			return
+	if not _inv.has(slot):
+		_inv[slot] = []
+	(_inv[slot] as Array).append({"id": id, "count": 1})
+	_sync(slot)
+
+
 func _current_row(slot: int) -> Dictionary:
 	var rows: Array = _inv.get(slot, [])
 	for r: Dictionary in rows:
@@ -358,6 +371,8 @@ func place(crew: CrewController, id: StringName = &"") -> Node:
 	else:
 		p.transform = spot["transform"]
 	_runtime.dynamic_root.add_child(p, true)
+	if def.kind == &"sentry" and SentryGun.of(p) != null:
+		SentryGun.of(p).pay_deploy_cost(crew)  # D-157: the owner's ammo
 	_sync(slot)
 	if def.kind == &"ecm":
 		var ecm: EcmSystem = _runtime.service(EcmSystem.SERVICE) as EcmSystem

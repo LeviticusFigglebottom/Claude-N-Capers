@@ -1,0 +1,23 @@
+00_before layout  mixer (-33.5, 0.0, -16.6) gate open false
+01_t01.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+02_t02.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+03_t03.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+04_t04.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+05_t05.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+06_t06.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+07_t07.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+08_t08.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+09_t09.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+10_t10.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+11_t11.0 layout east_clean mixer (-33.5, 0.0, -16.6) gate open false
+12_t12.0 layout east_clean mixer (-33.5, 0.0, -15.98) gate open true
+13_t13.0 layout east_clean mixer (-33.5, 0.0, -12.47) gate open true
+14_t14.0 layout east_clean mixer (-32.98, 0.0, -5.91) gate open true
+15_t15.0 layout east_clean mixer (-29.46, 0.0, 2.27) gate open true
+16_t16.0 layout east_clean mixer (-20.53, 0.0, 3.0) gate open true
+17_t17.0 layout east_clean mixer (-11.38, 0.0, 3.0) gate open true
+18_t18.0 layout east_clean mixer (-2.23, 0.0, 3.0) gate open true
+19_t19.0 layout east_clean mixer (6.88, 0.0, 2.73) gate open true
+20_t20.0 layout east_clean mixer (12.0, 0.0, -1.16) gate open true
+21_t21.0 layout east_clean mixer (12.5, 0.0, -3.59) gate open true
+22_t22.0 layout east_clean mixer (12.5, 0.0, -3.6) gate open true

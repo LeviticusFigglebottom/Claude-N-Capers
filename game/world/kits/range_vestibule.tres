@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"range_vestibule"
+purpose = &"corridor"
+required_items = Array[StringName]([&"bench", &"crate", &"coat_rail", &"fire_extinguisher"])
+optional_items = {
+&"box": 0.8
+}
+clutter_groups = {}
+min_density = 0.1
+max_density = 0.8
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"bench", &"crate", &"coat_rail", &"fire_extinguisher"])
+seed_salt = 4807
+counts = {
+&"crate": Vector2i(2, 3)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_locker")
+}
+ceiling = {}
+notes = "Safehouse RV range vestibule (3.5 x 4.5 m): the ear-defender and eye-protection rack (a coat rail stands in), ammo crates, a bench. The range door (station 7) and its LIVE FIRE lamp are the map's."

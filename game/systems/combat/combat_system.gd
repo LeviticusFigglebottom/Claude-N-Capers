@@ -122,6 +122,12 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	var info: Dictionary = Damage.info(amount, Enums.DamageType.BULLET,
 		int(hit.get("zone", Enums.HitZone.BODY)), weapon_id, pos, (pos - origin).normalized(), shooter.net_id)
 	info["headshot_bonus"] = w.headshot_bonus(ws)
+	if SkillTriggers.roll_crit(shooter):  # B2: crit chance (skills, Unseen Strike); the target applies it (QB-29)
+		info["crit"] = true
+	info["amount"] = float(info["amount"]) * mark_damage_mult(target as Node, dist)  # B6 Price Tag
+	var be: float = body_expertise_frac(shooter.slot, weapon_id, int(info["zone"]))  # B4b Anatomy: NpcBase applies it
+	if be > 0.0:
+		info["body_expertise"] = be
 	info["pierced_armor"] = roll_armor_pierce(float(prof["armor_pierce"]))
 	info["shield_pierce"] = bool(prof["shield_pierce"])
 	info["blocked"] = false
@@ -148,6 +154,33 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 		if float(res.get("amount", 0.0)) > 0.0:
 			NpcSuppression.add_threat(npc, float(prof["suppression"]) * tw.threat_per_suppression_hit, origin)
 	return res
+
+
+## B6: the crew's damage multiplier on `target` at `dist` m from its marker's skills (StealthDirector marks):
+## stealth.mark_damage_bonus_mult (Price Tag) x stealth.mark_far_damage_mult {min_distance, mult} beyond min_distance
+## (Aced). 1 when unmarked.
+static func mark_damage_mult(target: Node, dist: float) -> float:
+	var rt: HeistRuntime = HeistRuntime.of(target) if target != null else null
+	if rt == null or rt.stealth == null or not rt.stealth.is_marked(target):
+		return 1.0
+	var by: int = int((rt.stealth._marks.get(NetIds.of(target), {}) as Dictionary).get("by_slot", -1))
+	var mult: float = Modifiers.mult(by, &"stealth.mark_damage_bonus_mult")
+	var far: Dictionary = Modifiers.params(by, &"stealth.mark_far_damage_mult")
+	if not far.is_empty() and dist >= float(far.get("min_distance", 0.0)):
+		mult *= float(far.get("mult", 1.0))
+	return mult
+
+
+## B4b `weapon.body_expertise` {frac, auto_only, classes} (Anatomy): the share of the target's headshot multiplier a
+## BODY hit from `slot`'s `weapon_id` gets (0: none); auto_only = weapons with a full-auto mode.
+static func body_expertise_frac(slot: int, weapon_id: StringName, zone: int) -> float:
+	var p: Dictionary = Modifiers.params(slot, &"weapon.body_expertise")
+	var def: WeaponDef = ContentDB.weapon(weapon_id) if not p.is_empty() and ContentDB.has(ContentDB.WEAPONS, weapon_id) else null
+	if p.is_empty() or def == null or zone != Enums.HitZone.BODY \
+			or not (p.get("classes", []) as Array).has(String(Enums.weapon_class_qualifier(def.weapon_class))) \
+			or (bool(p.get("auto_only", false)) and not def.fire_modes.has(&"auto")):
+		return 0.0
+	return float(p.get("frac", 0.0))
 
 
 ## D-118 HE pellet: Explosion.apply at the hit point (the blast replaces the bullet hit). Returns the

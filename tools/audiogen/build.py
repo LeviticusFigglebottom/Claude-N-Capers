@@ -26,13 +26,17 @@ import cues_ambience  # noqa: E402
 import cues_impact  # noqa: E402
 import cues_ostrander  # noqa: E402
 import cues_rolling_thunder  # noqa: E402
+import cues_safehouse  # noqa: E402
 import music_dockside_burn  # noqa: E402
 import music_gallery_night  # noqa: E402
 import music_glasshouse  # noqa: E402
+import music_last_call  # noqa: E402
+import music_long_con  # noqa: E402
 import music_night_deposit  # noqa: E402
 import music_ostrander_federal  # noqa: E402
 import music_rolling_thunder  # noqa: E402
 import music_shadow_ledger  # noqa: E402
+import music_vault_hymn  # noqa: E402
 import registry  # noqa: E402
 from synth import loudness, wavio  # noqa: E402
 from synth.core import seed_for  # noqa: E402
@@ -42,7 +46,8 @@ SFX_DIR = Path("game/assets/audio/sfx")
 CUE_TRES = Path("game/world/audio/cues.tres")
 # every heist music track (D-117): one module per track, all on the music_engine.py parts
 TRACKS = {m.TRACK: m for m in (music_glasshouse, music_night_deposit, music_shadow_ledger, music_dockside_burn,
-                               music_gallery_night, music_ostrander_federal, music_rolling_thunder)}
+                               music_gallery_night, music_ostrander_federal, music_rolling_thunder,
+                               music_vault_hymn, music_long_con, music_last_call)}
 
 
 def mus_dir(track: str) -> Path:
@@ -66,7 +71,7 @@ def stem_aliases(track: str) -> dict[str, str]:
 REPORT_DIR = Path("docs/levels/_audio")
 # every SFX cue: the main table plus the grouped tables (impact_fx.md: cue.impact_<surface>; D-117 heist beds)
 ALL_CUES: list[cues.CueSpec] = (cues.CUES + cues_impact.CUES + cues_ambience.CUES + cues_ostrander.CUES
-                                + cues_rolling_thunder.CUES)
+                                + cues_rolling_thunder.CUES + cues_safehouse.CUES)
 
 # Loudness classes (style guide §9). ceiling = true-peak dBTP.
 TARGETS = {

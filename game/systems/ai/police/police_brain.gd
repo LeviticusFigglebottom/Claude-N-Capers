@@ -184,7 +184,7 @@ func _pick_target() -> void:
 		return
 	var best: float = INF
 	var best_any: float = INF
-	var any: CrewController = null
+	var any: Node3D = null
 	for c: CrewController in _runtime.crew_members():
 		if c.crew_state == Enums.CrewState.CUSTODY:
 			continue
@@ -198,6 +198,17 @@ func _pick_target() -> void:
 		if d < best and _can_see(c):
 			best = d
 			combat_target = c
+	for n: Node in _npc.get_tree().get_nodes_in_group(SentryGun.GROUP):  # D-157: crew sentries draw fire (PD2)
+		var sg: SentryGun = n as SentryGun
+		if sg == null or not sg.alive() or HeistRuntime.of(sg) != _runtime:
+			continue
+		var ds: float = sg.global_position.distance_squared_to(_npc.global_position) / sg.threat_mult()
+		if ds < best_any:
+			best_any = ds
+			any = sg
+		if ds < best and CombatSystem.has_npc_los(_npc, _npc.eye_position(), sg.aim_point(), [_npc, sg]):
+			best = ds
+			combat_target = sg
 	if combat_target != null:
 		_target_visible = true
 	else:

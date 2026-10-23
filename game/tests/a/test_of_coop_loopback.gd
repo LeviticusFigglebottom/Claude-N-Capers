@@ -30,6 +30,7 @@ var _flow: X4StealthFlow = null
 var _reports: Dictionary = {}
 var _deadline_ms: int = 0
 var _checked: Array[String] = []
+var _parity: OfParity = null
 
 
 func after_each() -> void:
@@ -72,6 +73,7 @@ func test_of_host_client_parity_loud_line() -> void:
 	assert_true(bool(snap.get("launch_client", false)), "the client built its replica (%s)" % [snap.keys()])
 	if not bool(snap.get("launch_client", false)):
 		return
+	_parity = OfParity.attach(_flow.rt, get_tree().root)
 	await wait_seconds(3.0)  # guards walk their (hub) loops: positions must track on the client
 	await _compare("stealth start (hub-loop guards walking)")
 	var loud: X4OfLoud = X4OfLoud.new(_flow)
@@ -112,61 +114,20 @@ func _door_breaches() -> void:
 	await _compare("Breach_3 / Breach_4 door blasts")
 
 
-## Client vs host `of_state`, re-checked up to RETRIES times while a discrete value differs.
+## Client vs host `of_state` (OfParity: against the host's samples since the request - its lag), re-checked up to
+## RETRIES times while something differs.
 func _compare(label: String) -> void:
 	var diffs: Array[String] = []
 	for i: int in range(RETRIES):
+		var t_req: int = Time.get_ticks_msec()
 		var snap: Dictionary = await _snapshot({"of_state": true})
-		var c: Dictionary = snap.get("of_state", {}) as Dictionary
-		var h: Dictionary = PROBE.of_state(_flow.rt)
-		diffs = _diff(h, c)
+		diffs = _parity.diff(snap.get("of_state", {}) as Dictionary, t_req, {"npcs": NPC_TOL_M, "bags": BAG_TOL_M,
+			"lifts": LIFT_TOL_M})
 		if diffs.is_empty():
 			break
 		await wait_seconds(0.5)
 	_checked.append(label)
 	assert_eq(diffs, [] as Array[String], "%s: client matches the host" % label)
-
-
-func _diff(h: Dictionary, c: Dictionary) -> Array[String]:
-	var out: Array[String] = []
-	if c.is_empty():
-		return ["no client snapshot"]
-	for k: String in ["phase", "went_loud", "objectives", "reveals", "items"]:
-		if str(h[k]) != str(c.get(k)):
-			out.append("%s host %s client %s" % [k, h[k], c.get(k)])
-	for k: String in ["prefabs", "doors"]:
-		var hd: Dictionary = h[k]
-		var cd: Dictionary = c.get(k, {})
-		for id: Variant in hd:
-			if str(hd[id]) != str(cd.get(id)):
-				out.append("%s %s (%s) host %s client %s" % [k, id, _name(int(id)), hd[id], cd.get(id)])
-	out.append_array(_pos_diff("lifts", h["lifts"], c.get("lifts", {}), LIFT_TOL_M, false))
-	out.append_array(_pos_diff("bags", h["bags"], c.get("bags", {}), BAG_TOL_M, true))
-	out.append_array(_pos_diff("npcs", h["npcs"], c.get("npcs", {}), NPC_TOL_M, false))
-	return out
-
-
-func _pos_diff(k: String, hd: Dictionary, cd: Dictionary, tol: float, with_id: bool) -> Array[String]:
-	var out: Array[String] = []
-	for id: Variant in hd:
-		if not cd.has(id):
-			out.append("%s %s (%s) missing on the client" % [k, id, _name(int(id))])
-			continue
-		var hp: Vector3 = (hd[id][1] if with_id else hd[id]) as Vector3
-		var cp: Vector3 = (cd[id][1] if with_id else cd[id]) as Vector3
-		if with_id and StringName(hd[id][0]) != StringName(cd[id][0]):
-			out.append("%s %s loot host %s client %s" % [k, id, hd[id][0], cd[id][0]])
-		if hp.distance_to(cp) > tol:
-			out.append("%s %s (%s) host %s client %s (%.1f m)" % [k, id, _name(int(id)), hp, cp, hp.distance_to(cp)])
-	for id: Variant in cd:
-		if not hd.has(id):
-			out.append("%s %s only on the client" % [k, id])
-	return out
-
-
-func _name(id: int) -> String:
-	var n: Node = Ids.lookup(id)
-	return String(n.name) if n != null else "?"
 
 
 func _host() -> int:
@@ -197,6 +158,9 @@ func _cleanup() -> void:
 	if _pid > 0 and OS.is_process_running(_pid):
 		OS.kill(_pid)
 	_pid = -1
+	if _parity != null and is_instance_valid(_parity):
+		_parity.queue_free()
+	_parity = null
 	if _flow != null:
 		await _flow.teardown()
 	_flow = null

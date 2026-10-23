@@ -37,6 +37,9 @@ const CONVOY_EARLY_S: float = 45.0
 const MIXER_MOVE_S: float = 3.0
 const WINDOW_S: float = 8.0
 const DISMOUNT_DELAY_S: float = 4.0
+## D-158 truck window ◇: the first assault's BUILD begins no sooner than this many seconds after the stop (crash or
+## clean, any difficulty), so the crew gets at the trucks before wave 1 lands (later alarm-based anticipation still rules).
+const TRUCK_WINDOW_S: float = 30.0
 const POLL_S: float = 1.0
 ## Convoy layout node and its pieces (C's G1 / RT-C2): `<route slot>/Convoy/<Clean|Crash>` (meta convoy_layout
 ## "<route>_<clean|crash>"), movers at `<route slot>/Convoy/Movers/<Veh>` with `<Veh>Stop` markers in each layout.
@@ -296,7 +299,7 @@ func _seat_reyes() -> void:
 		var npc: NpcBase = n as NpcBase
 		if _has_spawn_tag(npc, [TAG_REYES]):
 			npc.global_transform = seats[0].global_transform
-			_seat(npc, mixer)
+			_seat(npc, mixer, true, true)  # D r280: seen at the wheel, though the Mixer's kind is "truck"
 			return
 
 
@@ -510,6 +513,9 @@ func _mover_stopped() -> void:
 ## Every vehicle is on its stop marker: swap the layout in, units, trucks, then the window (clean) or the impact (crash).
 func _stopped() -> void:
 	_stop_done = true
+	var dir: AssaultDirector = _director()
+	if dir != null:
+		dir.first_build_hold_s = TRUCK_WINDOW_S
 	set_layout(layout_id)
 	if _slot_active(&"truck_count", &"trucks_2"):
 		_drop_vehicle("T3")
