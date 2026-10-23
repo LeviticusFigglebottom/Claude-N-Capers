@@ -27,6 +27,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | hide_los | skipped | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
+| metal_reflection | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
 | viewmodel_lit | PASS | 0 | 0 |
@@ -103,7 +104,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1552 polygons, cell 0.10/0.10 m
+- navmesh: 1551 polygons, cell 0.10/0.10 m
 - 140 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -137,7 +138,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 46 variant configuration(s), 70620 spawn->target path queries
+- 46 variant configuration(s), 0 convoy layout(s), 70620 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -160,6 +161,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## materials: Materials and texel density
 
 - 2099 surfaces checked
+
+
+## metal_reflection: Metal surfaces have a reflection source
+
+- environment reflections: on; 18 probe(s), 1 baked VoxelGI
+- 280 metal surface(s); 224 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
@@ -234,8 +241,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownSite` | 1393 | 175 | 1367 | 0 | 2935 | 433452 | 2 | Sun 1247, LightFixture_6 120 |
-| `TopDownBuilding` | 1237 | 175 | 1274 | 0 | 2686 | 389768 | 2 | Sun 1154, LightFixture_6 120 |
+| `TopDownSite` (plan, exempt) | 1393 | 175 | 1367 | 0 | 2935 | 433452 | 2 | Sun 1247, LightFixture_6 120 |
+| `TopDownBuilding` (plan, exempt) | 1237 | 175 | 1274 | 0 | 2686 | 389768 | 2 | Sun 1154, LightFixture_6 120 |
 | `ExtHarlowCorner` | 1408 | 175 | 1258 | 0 | 2841 | 461908 | 2 | Sun 1138, LightFixture_6 120 |
 | `ExtShopfront` | 1953 | 188 | 1316 | 0 | 3457 | 580620 | 2 | Sun 1196, LightFixture_6 120 |
 | `ExtAlleyWest` | 1800 | 188 | 1179 | 0 | 3167 | 514106 | 2 | Sun 1059, LightFixture_6 120 |
@@ -278,6 +285,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 2, chair 5, desk 9, table 3, low_table 1, wall_unit 19, lounge_seat 1, visitor_chair 2, desk_chair 5, stool 1, monitor 4
+- classified: chair 5, counter 2, desk 9, table 3, low_table 1, wall_unit 19, lounge_seat 1, visitor_chair 2, desk_chair 5, stool 1, monitor 4
 - 14 seats, 15 tables/desks/counters, 23 doors checked
 

@@ -1155,3 +1155,17 @@ PlayerMews1 Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint
 PlayerMews1 Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint
 PlayerMews2 Gameplay/Loot/StudyUG1b/UsePoint
 PlayerRoof1 Gameplay/Doors/BreakRoomDoor/UsePoint
+# Door-clearance carve depth from the frame (f5349e97, t40 frames carve +/-0.6): roof deck -> the plant door and
+# StudyWG2 via Stair SS (B7) moved from 2.9x to 3.0x (45.1 / 15.0 m, 50.0 / 16.7 m). Same legal walk.
+PlayerRoof1 Gameplay/Doors/PlantDoor/UsePoint
+PlayerRoof2 Gameplay/Doors/PlantDoor/UsePoint
+PlayerRoof3 Gameplay/Doors/PlantDoor/UsePoint
+PlayerRoof4 Gameplay/Doors/PlantDoor/UsePoint
+PlayerRoof1 Gameplay/Loot/StudyWG2
+PlayerRoof2 Gameplay/Loot/StudyWG2
+PlayerRoof3 Gameplay/Loot/StudyWG2
+PlayerRoof4 Gameplay/Loot/StudyWG2
+PlayerRoof1 Gameplay/Loot/StudyWG2/UsePoint
+PlayerRoof2 Gameplay/Loot/StudyWG2/UsePoint
+PlayerRoof3 Gameplay/Loot/StudyWG2/UsePoint
+PlayerRoof4 Gameplay/Loot/StudyWG2/UsePoint
