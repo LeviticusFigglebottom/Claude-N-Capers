@@ -34,6 +34,10 @@ const LIGHT_CAP: int = 4
 const SHELL_CAP: int = 64
 ## Explosion sets (flash, fireball, smoke, debris ring).
 const EXPLOSION_CAP: int = 4
+## Smoke clouds alive at once (D-163, Sicario's smoke bomb; oldest reused).
+const SMOKE_CAP: int = 3
+## Tag Team gas tethers (D-163; 4 crew -> at most 4 pairs).
+const TETHER_CAP: int = 4
 ## Impact audio cues started per second (rest are dropped; CuePlayer pools 32 3D voices). Also at most
 ## VfxDirector.MAX_IMPACT_CUES_PER_FRAME (4) per frame, nearest to the camera first.
 const IMPACT_CUES_PER_S: float = 24.0
