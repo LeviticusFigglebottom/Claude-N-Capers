@@ -196,6 +196,12 @@ static func _perk_cards(p: PlayerProfile, notes: Array[String]) -> void:
 	var deck: PerkDeckDef = PerkProgress.deck(p.loadout.perk_deck)
 	if deck != null:
 		p.loadout.perk_deck_cards = clampi(p.loadout.perk_deck_cards, 0, deck.cards.size())
+	# D-164: a mimic pick must name a mimicable deck (an unknown, own or throwable-deck pick is dropped).
+	if p.loadout.perk_mimic_deck != &"":
+		var m: PerkDeckDef = PerkProgress.deck(p.loadout.perk_mimic_deck)
+		if m == null or not m.mimicable or m.id == p.loadout.perk_deck:
+			notes.append("loadout.perk_mimic_deck %s is not mimicable: dropped" % p.loadout.perk_mimic_deck)
+			p.loadout.perk_mimic_deck = &""
 
 
 static func _skill_sets(p: PlayerProfile, notes: Array[String]) -> void:

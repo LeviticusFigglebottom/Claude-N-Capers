@@ -67,8 +67,18 @@ static func max_armor(h: CrewHealth, value: float) -> float:
 
 
 static func dodge_add(h: CrewHealth) -> float:
-	var perks: CrewPerks = of(_crew_of(h))
-	return perks.dodge_add() if perks != null else 0.0
+	var crew: CrewController = _crew_of(h)
+	var perks: CrewPerks = of(crew)
+	var total: float = perks.dodge_add() if perks != null else 0.0
+	var rt: HeistRuntime = HeistRuntime.of(crew) if crew != null else null
+	if rt == null:
+		return total
+	for m: CrewController in rt.crew_members():  # D-163: teammates' perks (Sicario card 9: allies in the smoke)
+		var mp: CrewPerks = of(m) if m != crew else null
+		if mp != null:
+			for c: PerkComponent in mp.components.values():
+				total += c.ally_dodge_add_for(crew)
+	return total
 
 
 ## CrewHealth.take_hit (after the dodge roll, before armor): damage reduction (all perks summed,
@@ -76,13 +86,42 @@ static func dodge_add(h: CrewHealth) -> float:
 static func incoming_damage(h: CrewHealth, info: Dictionary, dmg: float) -> float:
 	var crew: CrewController = _crew_of(h)
 	if crew != null and dmg > 0.0:
-		dmg = maxf(dmg - PerkManiac.absorb_for(crew), 0.0)  # D-162 Hysteria: the holder's or a sharing teammate's
+		dmg = maxf(dmg - absorb(crew), 0.0)  # D-162 / D-163: flat absorption (Hysteria, Tag Team Synergy, ...)
 	var perks: CrewPerks = of(crew)
 	if perks == null or dmg <= 0.0:
 		return dmg
 	var dr: float = perks.damage_reduction(info) + PerkCrewChief.team_dr_for(crew)
 	dmg *= 1.0 - clampf(dr, 0.0, PerkTweak.data().max_damage_reduction)
 	return perks.incoming(info, dmg)
+
+
+## D-163 flat absorption `crew` gets per hit taken: every crew member's perk components offer {pool: value}
+## (PerkComponent.absorb_for); per pool the best value counts, the pools add up.
+static func absorb(crew: CrewController) -> float:
+	var rt: HeistRuntime = HeistRuntime.of(crew)
+	if rt == null:
+		return 0.0
+	var pools: Dictionary = {}
+	for m: CrewController in rt.crew_members():
+		var perks: CrewPerks = of(m)
+		if perks == null:
+			continue
+		for c: PerkComponent in perks.components.values():
+			var offer: Dictionary = c.absorb_for(crew)
+			for k: Variant in offer:
+				pools[k] = maxf(float(pools.get(k, 0.0)), float(offer[k]))
+	var total: float = 0.0
+	for k: Variant in pools:
+		total += float(pools[k])
+	return total
+
+
+## D-163: CrewHealth dodged a hit (a dodge roll or a smoke avoid). Server.
+static func on_dodge(h: CrewHealth, info: Dictionary = {}) -> void:
+	var perks: CrewPerks = of(_crew_of(h))
+	if perks != null and Net.is_authority():
+		for c: PerkComponent in perks.components.values():
+			c.on_dodge(info)
 
 
 ## CrewHealth.take_hit after armor / health were reduced (`out` = final DamageInfo so far).
@@ -141,6 +180,38 @@ static func throwable_id(crew: CrewController) -> StringName:
 		perks.refresh()  # ui_hud v1.20: also on a client, where no server tick refreshes the components
 	var t: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable if perks != null else null
 	return t.item_id() if t != null else &""
+
+
+## D-164: whether an EventBus.npc_killed info (the killing DamageInfo) was a headshot (PerkComponent.on_kill's info).
+static func is_headshot(info: Dictionary) -> bool:
+	return int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD
+
+
+## D-164 CrewHealth.take_hit: the hit took the last health; true when a perk keeps the holder up (it set the health).
+static func veto_down(h: CrewHealth) -> bool:
+	var perks: CrewPerks = of(_crew_of(h))
+	if perks == null or not Net.is_authority():
+		return false
+	for c: PerkComponent in perks.components.values():
+		if c.has_method(&"veto_down") and bool(c.call(&"veto_down")):
+			return true
+	return false
+
+
+## D-164 CrewHealth, every tick while down (DOWNED, a kick down, police-cuffed in bleed-out): the deck-item
+## cooldowns run; when DOWNED also the deck throwable's input edge, for the perks that allow a use while down (a
+## component with usable_while_down() true). True when the holder is no longer in that state after it.
+static func tick_downed(h: CrewHealth, delta: float) -> bool:
+	var crew: CrewController = _crew_of(h)
+	var perks: CrewPerks = of(crew)
+	if perks == null or not Net.is_authority():
+		return false
+	perks.tick_item_cooldowns(delta)
+	var t: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable
+	if t == null or crew.crew_state != Enums.CrewState.DOWNED:
+		return false
+	t.tick(0.0)
+	return crew.crew_state != Enums.CrewState.DOWNED
 
 
 ## Server: use `crew`'s deck throwable now (also on a CrewIntent.throw_item edge). True when used.

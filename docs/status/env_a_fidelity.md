@@ -77,7 +77,7 @@ comments). Rows the scan could not place were audited by hand (Status + evidence
 | S8.2 | Camera operator in the security room (a guard with a pager). Killing o | P2 | covered | test_s8_2_camera_operator |
 | S8.3 | Camera loop (Nimble basic): 25 s, one at a time per crew. | P3 | covered | test_s8_3_camera_loop |
 | S8.4 | ECM: 2 s deploy, 20 s jam (flashing for the last 8 s). Jams all camera | P2 | covered | test_s8_4_ecm |
-| S8.5 | ECM Overdrive aced opens keycard doors (4 s). ATMs open in 8 s (consum | P2 | covered | test_s8_4_ecm |
+| S8.5 | ECM Overdrive aced opens keycard doors (4 s). ATMs open in 8 s (consum | P2 | covered | test_s8_4_ecm (the ATM half added in r291: test_s8_5_ecm_on_atm_spot_opens_it; ND ATM spots flagged) |
 | S8.6 | ECM feedback: interact with a placed ECM to stun enemies in range (Clo | P3 | covered | test_s8_6_ecm_feedback |
 | S8.7 | Pocket ECM (Hacker deck): 6 s, 2 charges, 100 s recharge (−6 s per kil | P4 | held | stealth.pocket_ecm: Hacker deck held to P5+ (LEAD r280); no grant exists |
 | S9.1 | Everything is a hold-to-interact with a timer. Releasing cancels. Some | P1 | covered | test_d134_revive_under_fire, test_l2_survival, test_s9_10_lasers, test_s9_11_zipline_ladder |

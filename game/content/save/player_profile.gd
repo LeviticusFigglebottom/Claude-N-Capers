@@ -50,7 +50,7 @@ const DEFAULT_PROFILE_PATH: String = "res://content/data/save/default_profile.js
 ## Loadout input fields that are persisted. Order matters only for readability of the file.
 const LOADOUT_ID_FIELDS: Array[String] = [
 	"primary", "secondary", "melee", "throwable", "deployable", "deployable_secondary",
-	"armor", "mask", "perk_deck", "heister",
+	"armor", "mask", "perk_deck", "heister", "perk_mimic_deck",
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
@@ -299,6 +299,7 @@ static func loadout_to_dict(l: Loadout) -> Dictionary:
 		out[f] = _to_strings(l.get(f) as Array)
 	out["perk_deck_cards"] = l.perk_deck_cards
 	out["skills"] = _skills_to(l.skills)
+	out["perk_choices"] = choices_to(l.perk_choices)
 	return out
 
 
@@ -310,7 +311,27 @@ static func loadout_from_dict(d: Dictionary) -> Loadout:
 		l.set(f, _to_names(d.get(f, [])))
 	l.perk_deck_cards = int(d.get("perk_deck_cards", 0))
 	l.skills = _skills_from(d.get("skills", {}))
+	l.perk_choices = choices_from(d.get("perk_choices", {}))
 	return l
+
+
+## D-164: Loadout.perk_choices (int card index -> int option) as a JSON-safe {"<index>": option} map, and back.
+static func choices_to(c: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: Variant in c:
+		out[str(int(k))] = int(c[k])
+	return out
+
+
+static func choices_from(v: Variant) -> Dictionary:
+	var out: Dictionary = {}
+	if not (v is Dictionary):
+		return out
+	for k: Variant in v as Dictionary:
+		var key: String = str(k)
+		if key.is_valid_int():
+			out[int(key)] = maxi(int((v as Dictionary)[k]), 0)
+	return out
 
 
 func _skill_sets_to_list() -> Array[Dictionary]:

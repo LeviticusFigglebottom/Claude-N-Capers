@@ -208,7 +208,7 @@ static func resolve_modifiers(loadout: Loadout) -> Dictionary:
 		for i: int in range(_unlocked_cards(loadout, deck)):
 			var source: StringName = card_source(deck, i)
 			var grants: Dictionary = {}
-			_merge(grants, deck.cards[i].get("grants", {}), String(source))
+			_merge(grants, card_grants(loadout, deck, i), String(source))
 			_accumulate(out, _team_split(grants, false), source)
 	for key: Variant in out:
 		if out[key] is Array:
@@ -238,7 +238,7 @@ static func team_modifier_sources(loadout: Loadout) -> Dictionary:
 	if deck != null:
 		var grants: Dictionary = {}
 		for i: int in range(_unlocked_cards(loadout, deck)):
-			_merge(grants, _team_split(deck.cards[i].get("grants", {}), true), String(card_source(deck, i)))
+			_merge(grants, _team_split(card_grants(loadout, deck, i), true), String(card_source(deck, i)))
 		if not grants.is_empty():
 			out[team_perk_source(deck.id)] = grants
 	return out
@@ -264,6 +264,51 @@ static func crew_team_modifier_sources(loadouts: Array) -> Dictionary:
 				out[s] = sources[s]
 				rank[s] = r
 	return out
+
+
+## One perk card's grants for this loadout: the card's "grants", plus (D-164, Copycat) the chosen option of its
+## "choices" (Loadout.perk_choices; missing or out of range = option 0) and, on a "mimic" card, the mimicked deck's
+## mimic_grants (Loadout.perk_mimic_deck; ignored unless that deck is mimicable and not this deck). A MULT key picked
+## on several cards stacks additively like PD2 (+20% health twice = +40%): its n-th pick grants the cumulative ratio
+## (1 + step x n) / (1 + step x (n - 1)), authoring rule 2 applied at resolve time.
+static func card_grants(loadout: Loadout, deck: PerkDeckDef, index: int) -> Dictionary:
+	var card: Dictionary = deck.cards[index]
+	var out: Dictionary = (card.get("grants", {}) as Dictionary).duplicate(true)
+	var choices: Array = card.get("choices", []) as Array
+	if not choices.is_empty():
+		var picked: Dictionary = (choices[chosen_option(loadout, deck, index)] as Dictionary).get("grants", {}) as Dictionary
+		var extra: Dictionary = {}
+		for key: Variant in picked:
+			var v: Variant = picked[key]
+			if ModifierKeys.type_of(StringName(key)) == ModifierKeys.Type.MULT:
+				var step: float = float(v) - 1.0
+				var n: int = _earlier_picks_of(loadout, deck, index, StringName(key)) + 1
+				v = (1.0 + step * n) / (1.0 + step * (n - 1))
+			extra[key] = v
+		_merge(out, extra, String(card_source(deck, index)))
+	if bool(card.get("mimic", false)):
+		var mimic: PerkDeckDef = mimic_deck(loadout)
+		if mimic != null:
+			_merge(out, mimic.mimic_grants, String(card_source(deck, index)))
+	return out
+
+
+## The option index chosen on card `index` (0-based) of the loadout's deck: Loadout.perk_choices[index] (int or String
+## key, as saved), clamped to the card's choices; 0 when unset.
+static func chosen_option(loadout: Loadout, deck: PerkDeckDef, index: int) -> int:
+	var choices: Array = deck.cards[index].get("choices", []) as Array
+	if choices.is_empty():
+		return 0
+	var v: Variant = loadout.perk_choices.get(index, loadout.perk_choices.get(str(index), 0))
+	return clampi(int(v), 0, choices.size() - 1)
+
+
+## Loadout.perk_mimic_deck when it names a mimicable deck other than the loadout's own; else null.
+static func mimic_deck(loadout: Loadout) -> PerkDeckDef:
+	if loadout.perk_mimic_deck == &"" or loadout.perk_mimic_deck == loadout.perk_deck:
+		return null
+	var d: PerkDeckDef = ContentDB.by_id(ContentDB.PERKS, loadout.perk_mimic_deck) as PerkDeckDef
+	return d if d != null and d.mimicable else null
 
 
 ## &"perk.foreman" -> &"team_perk.foreman".
@@ -316,6 +361,19 @@ static func _team_source_rank(loadout: Loadout, source: StringName) -> int:
 		if tree.team_source(StringName(sid)) == source:
 			return int(loadout.skills[sid])
 	return 0
+
+
+## How many choice cards before `index` picked an option granting `key` (for the cumulative MULT ratio).
+static func _earlier_picks_of(loadout: Loadout, deck: PerkDeckDef, index: int, key: StringName) -> int:
+	var n: int = 0
+	for j: int in range(index):
+		var choices: Array = deck.cards[j].get("choices", []) as Array
+		if choices.is_empty():
+			continue
+		var g: Dictionary = (choices[chosen_option(loadout, deck, j)] as Dictionary).get("grants", {}) as Dictionary
+		if g.has(key):
+			n += 1
+	return n
 
 
 ## The `team.*` grants (team = true) or every other grant (team = false).

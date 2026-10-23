@@ -83,6 +83,10 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 | Inkwork (D-162) | Yakuza | `perk.yakuza` | none |
 | Road Crew (D-162) | Biker | `perk.biker` | none |
 | Frenzy (D-162) | Maniac | `perk.maniac` | none |
+| Veil (D-163) | Sicario | `perk.sicario`, `perk.throwable` (`throwable.smoke_bomb`) | `defense.dodge_add` 0.15 |
+| Buddy System (D-163) | Tag Team | `perk.tag_team`, `perk.throwable` (`throwable.gas_dispenser`) | `defense.health_mult` → 1.4 |
+| Lifeline (D-164) | Leech | `perk.leech`, `perk.throwable` (`throwable.leech_ampule`) | `defense.health_mult` → 1.4 |
+| Understudy (D-164) | Copycat | `perk.copycat` + a chosen option per card + the mimicked deck's `mimic_grants` | per choice (default: `defense.health_mult` → 1.8) |
 
 Notes on PD2 deviations:
 * **Clean Sweep** merges Hitman and Sociopath (fidelity table). Its cards are: Sociopath Tension
@@ -304,6 +308,69 @@ at most `max_procs` within a sliding `window_s`. `missing_h` / `missing_a` = who
 | team | bool | flag | false → true | 3 | Teammates also absorb from the holder's stacks; with several holders, only the best absorb counts. |
 | self_absorb_mult | float | mult | 1.0 → 2.0 | 9 | The holder's own absorb × this (teammates keep ×1). |
 
+### `perk.sicario` (Veil, D-163)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| smoke_duration_s / smoke_radius_m | float | s / m | 10.0 / 4.0 ◇ | 1 | The smoke bomb's cloud. |
+| cooldown_s / kill_cooldown_reduction_s | float | s | 60.0 ◇ / 1.0 ◇ | 1 | Recharge after the cloud ends; cut per holder kill. |
+| in_smoke_dodge_add | float | fraction | 0.5 | 1 | Holder and allies inside the cloud avoid this share of bullets. |
+| enemy_accuracy_mult | float | mult | 0.5 | 1 | Accuracy of enemies inside the cloud. |
+| twitch_dodge_add / twitch_lockout_s | float | fraction / s | 0.0 → 0.2 / 4.0 | 3 | Each hit taken adds this dodge (stacking) until a dodge resets it; then no stacking for the lockout. |
+| dodge_restores_armor | bool | flag | false → true | 7 | A dodge refills the holder's armor (◇ full refill, LEAD D-163). |
+| in_smoke_effect_mult | float | mult | 1.0 → 2.0 | 9 | While the holder is in the cloud, the deck's own effects (twitch, card 5 dodge) × this. |
+| ally_in_smoke_dodge_add | float | fraction | 0.0 → 0.1 | 9 | Extra dodge for allies inside the cloud. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.smoke_bomb"}`; card 5 is the generic `defense.dodge_add` 0.15.
+
+### `perk.tag_team` (Buddy System, D-163)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| tag_range_m | float | m | 18.0 | 1 | The gas dispenser tags the ally under the crosshair within this range with line of sight. |
+| duration_s / cooldown_s | float | s | 11.0 ◇ / 60.0 ◇ | 1 | Pairing time; recharge. |
+| kill_extend_s | float | s | 1.3 ◇ | 1 | Each holder kill extends the pairing. |
+| holder_kill_heal / tagged_kill_heal | float | HP | 15.0 / 7.5 | 1 | Each kill by either partner heals the holder / the tagged ally. |
+| kill_absorb / max_absorb | float | HP | 0 → 2.0 / 0 → 20.0 | 5 | Holder absorb per pair kill, capped, kept until the dispenser has recharged. |
+| tagged_kill_cooldown_cut_s | float | s | 0 → 2.0 | 9 | Each tagged-ally kill while paired cuts the recharge. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.gas_dispenser"}`; cards 3 / 7 are `defense.health_mult` 1.2 / 1.1666667.
+
+### `perk.leech` (Lifeline, D-164)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| duration_s / cooldown_s | float | s | 6.0 → 10.0 / 40.0 | 1, 5 | The ampule's effect and recharge. |
+| kill_cooldown_reduction_s | float | s | 0 → 1.0 | 5 | Recharge cut per holder kill. |
+| activate_heal_fraction | float | fraction | 0.4 | 1 | On use, heal this share of max health. |
+| armor_off | bool | flag | true | 1 | Armor is disabled while active. |
+| segment_fraction / kills_per_segment | float / int | fraction / kills | 0.2 → 0.1 ◇ / 2 | 1, 9 | While active, health is in slices of this share of max; a hit removes one whole slice; this many kills restore one. |
+| team_heal_on_damage_fraction | float | fraction | 0.05 → 0.1 | 1, 5 | Taking damage while active heals each teammate this share of their max health. |
+| no_bleedout / zero_health_speed_mult | bool / float | flag / mult | false → true / 1.0 → 0.2 | 3 | While active the holder can't go down; at 0 health their speed × this. |
+| usable_while_downed | bool | flag | false → true | 9 | Usable while downed: a temporary revive until it ends; a revive given or a doctor bag used before then keeps the holder up if health > 0. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.leech_ampule"}`; cards 3 / 7 are `defense.health_mult` 1.2 / 1.1666667.
+
+### `perk.copycat` (Understudy, D-164)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| tactical_reload_kills / quick_swap_window_s | int / float | kills / s | 10 / 3.0 | 1 | This many kills with the equipped weapon refill the holstered one's magazine (from reserve ◇); swapping to it within the window is near instant. |
+| headshot_heal / headshot_heal_cooldown_s | float | HP / s | 0 → 10.0 / 2.0 | 3 | Any headshot hit heals, at most once per cooldown. |
+| dodge_ricochet / ricochet_cooldown_s | bool / float | flag / s | false → true / 0.45 | 5 | A dodged bullet hits its shooter for its damage (◇), at most once per cooldown (0.35 s on the top difficulties, A's tweak). |
+| grace_health_threshold / grace_immunity_s / grace_cooldown_s | float | fraction / s / s | 0.5 / 0 → 2.0 / 15.0 | 7 | Dropping below the threshold gives this long without health damage, at most once per cooldown. |
+
+**Choices (cards 1/3/5/7, D-164).** Each of these cards also carries `"choices"`; the player picks one per card
+(`Loadout.perk_choices`, card index → option; default 0): Thick Skin `defense.health_mult` 1.2, Plated
+`defense.armor_mult` 1.05, Quick Step `defense.dodge_add` 0.05, Low Rider `movement.crouch_speed_mult` 1.1 +
+`loot.carry_speed_penalty_mult` 0.9. The same MULT picked on several cards stacks additively like PD2: LoadoutResolver
+grants the n-th pick the cumulative ratio (rule 2 at resolve time), so four health picks give 1.8.
+
+**Mimic (card 9, D-164).** Card 9 carries `"mimic": true` and grants `Loadout.perk_mimic_deck`'s
+`PerkDeckDef.mimic_grants`: that deck's card 9 as standalone keys. A PARAMS mimic sets every field the card 9 did not
+change to its neutral value, so only that card's effect runs. Mimicable (15): Hustler, Ironclad, Slipper, Prowler,
+Bulk (the card's own +60% health and regen), Clean Sweep, Foreman, Knuckles, Incumbent, Long Odds, Overclock
+(`tick_by_armor` {} = keep normal armor regen; A), Bloodletter (the whole card-9 grinder, since its card-9 change is
+only a duration), and the standalone variants Frenzy (PD2's Hysteria Stacks mimic), Inkwork ◇ and Road Crew ◇.
+Not mimicable (their card 9 needs the deck's own item, as in PD2): Composure, Overlord, Hacker, Veil, Buddy System,
+Lifeline, and Understudy itself. `perk.<deck>.mimic.desc` describes each mimic for the deck screen.
+
 ### `perk.throwable` (Composure, Overlord)
 | Field | Type | Semantics |
 |---|---|---|
@@ -351,6 +418,9 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 **D-161 / D-162:** `stealth.pocket_ecm` (A `perk_pocket_ecm.gd` + EcmSystem), `perk.yakuza`, `perk.biker` and
 `perk.maniac` (A `perk_<name>.gd`, PerkTweak defaults = card-1 values; Road Crew and Hacker card 9 via CrewKillFeed)
 are hooked under the field names of the schema tables above.
+D-163: `perk.sicario` and `perk.tag_team` (A `perk_sicario.gd` / `perk_tag_team.gd`) likewise.
+
+D-164: `perk.leech` and `perk.copycat` (A `perk_leech.gd` / `perk_copycat.gd`) likewise.
 
 **Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's

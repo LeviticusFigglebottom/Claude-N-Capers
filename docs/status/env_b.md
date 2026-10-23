@@ -4,6 +4,15 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### r290-292 (env/b-content 4a4b43e5, over trunk r290 f98c8dc1)
+* 23e8b556 pocket ECM model (D's glb) + safehouse ProbeWarmup. b4ff227e/f39aebd3 D-163 Veil / Buddy System (+HOOKED,
+  a-core 36df6d56). 29a0468d/7f0a2431 D-164 Lifeline (+HOOKED, a-core 9c4622d6). 3d21f76c HUD on perk_item (v1.21/1.22:
+  deck-item chip, PAIRED tag, leech slices; pocket_ecm alias gone). 933a0999 D-163 cue rows (smoke_bomb, gas_dispenser_tag).
+* Copycat: 895f760f push 1 (Understudy deck, choices + mimic card, mimic table on 15 decks, LEAD-granted contract edits
+  PerkDeckDef / Loadout / net.md, LoadoutResolver.card_grants, profile + lobby fields), aa9ad197 HOOKED (a-core 5b85146c),
+  4a4b43e5 push 2 (deck-screen pick lines + cycling). Windowed checks noted in the LEAD reports.
+* 22 perk decks; test_perk_wiring MISSING empty.
+
 ### r289-290 (env/b-content, over trunk r288 396bc109)
 * f96cd719 sentry cues on C's OGGs. ed4aac0c + ec354108 D-162 decks (Inkwork / Road Crew / Frenzy; held for A's
   hooks, merged in the same round as A's D-162). c9c914e7 HUD pocket ECM (ui_hud v1.20 `pocket_ecm`; cherry-pick).

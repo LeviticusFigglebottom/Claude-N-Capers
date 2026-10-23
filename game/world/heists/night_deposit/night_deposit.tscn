@@ -27338,6 +27338,7 @@ duration_s = 20.0
 target = NodePath("../AtmCash1")
 visual_scene = ExtResource("188_nd")
 objective_tag = &"atm"
+ecm_atm = true
 metadata/kind = "drill_point"
 
 [node name="UsePoint" parent="Gameplay/Atms/AtmSaw1" index="1"]
@@ -27373,6 +27374,7 @@ duration_s = 20.0
 target = NodePath("../AtmCash2")
 visual_scene = ExtResource("188_nd")
 objective_tag = &"atm"
+ecm_atm = true
 metadata/kind = "drill_point"
 
 [node name="UsePoint" parent="Gameplay/Atms/AtmSaw2" index="1"]

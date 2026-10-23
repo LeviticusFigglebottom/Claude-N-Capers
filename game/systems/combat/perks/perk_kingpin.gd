@@ -31,6 +31,11 @@ func use_throwable(kind: StringName) -> bool:
 
 func tick(delta: float) -> void:
 	active_left = maxf(active_left - delta, 0.0)
+	tick_item_cooldown(delta)
+
+
+## Its item cooldown: also while the holder is down (CrewPerks.tick_item_cooldowns, PD2 timers keep running).
+func tick_item_cooldown(delta: float) -> void:
 	cooldown_left = maxf(cooldown_left - delta, 0.0)
 
 

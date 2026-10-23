@@ -90,9 +90,14 @@ ui.hud.reloading,Reloading
 ui.hud.cable_ties,Cable ties: {count}
 ui.hud.body_bags,Body bags: {count}
 ui.hud.cable_ties_name,Cable ties
-ui.hud.pocket_ecm.jam,JAM {s} s
-ui.hud.pocket_ecm.feedback,FEEDBACK {s} s
-ui.hud.pocket_ecm.recharge,+1 in {s} s
+ui.hud.perk_item.jam,JAM {s} s
+ui.hud.perk_item.feedback,FEEDBACK {s} s
+ui.hud.perk_item.recharge,+1 in {s} s
+ui.hud.perk_item.active,ACTIVE {s} s
+ui.hud.perk_item.smoke_bomb,SMOKE {s} s
+ui.hud.perk_item.gas_dispenser,PAIRED {s} s
+ui.hud.perk_item.leech_ampule,AMPULE {s} s
+ui.hud.paired,PAIRED
 ui.hud.body_bags_name,Body bags
 ui.hud.hostages,Hostages: {count}
 ui.hud.trade_ready,Trade ready
@@ -1000,6 +1005,80 @@ perk.frenzy.card7.name,Red Mist
 perk.frenzy.card7.desc,"Every 25 Frenzy absorbs 1 damage, for you and your crew."
 perk.frenzy.card9.name,Unhinged
 perk.frenzy.card9.desc,"Your own Frenzy absorption is doubled."
+perk.veil.name,Veil
+perk.veil.desc,"A smoke bomb that hides you and your crew. Inside the smoke bullets miss more often, and every miss keeps you in the fight."
+perk.veil.card1.name,Smoke Out
+perk.veil.card1.desc,"Unlocks the smoke bomb (throwable slot): a 10 s cloud. You and your crew inside it dodge 50% of bullets, and enemies inside it shoot 50% less accurately. Recharges in 60 s, 1 s faster per kill."
+perk.veil.card3.name,Flinch
+perk.veil.card3.desc,"Each time you are shot, you gain 20% dodge until you dodge a bullet. Then it stops building for 4 s."
+perk.veil.card5.name,Light Feet
+perk.veil.card5.desc,You get 15% more dodge.
+perk.veil.card7.name,Slip Away
+perk.veil.card7.desc,Dodging a bullet refills your armor.
+perk.veil.card9.name,Ghost in the Smoke
+perk.veil.card9.desc,"In your smoke, this deck's own bonuses are doubled. Your crew gains 10% dodge while they stand in it."
+perk.buddy_system.name,Buddy System
+perk.buddy_system.desc,"Pair up with a teammate. Every kill either of you makes heals you both."
+perk.buddy_system.card1.name,Pair Up
+perk.buddy_system.card1.desc,"Unlocks the gas dispenser (throwable slot): look at a teammate within 18 m and use it to pair up for 11 s. Each kill by either of you heals you 15 health and them 7.5. Your kills add 1.3 s. Recharges in 60 s."
+perk.buddy_system.card3.name,Second Wind
+perk.buddy_system.card3.desc,You get 20% more health.
+perk.buddy_system.card5.name,In Sync
+perk.buddy_system.card5.desc,"Each kill by either of you gives you 2 damage absorption, up to 20, until the dispenser has recharged."
+perk.buddy_system.card7.name,Deep Breath
+perk.buddy_system.card7.desc,You get another 20% more health (40% in total).
+perk.buddy_system.card9.name,Ride or Die
+perk.buddy_system.card9.desc,"While you are paired, each kill by your teammate cuts the dispenser's recharge by 2 s."
+perk.lifeline.name,Lifeline
+perk.lifeline.desc,"An ampule that trades your armor for a stubborn will to live. While it runs, hits take whole slices of your health and kills win them back."
+perk.lifeline.card1.name,Second Pulse
+perk.lifeline.card1.desc,"Unlocks the leech ampule (throwable slot): for 6 s it restores 40% of your health and turns off your armor. Your health splits into 20% slices: a hit removes one, 2 kills restore one. Taking damage heals your crew 5%. Recharges in 40 s."
+perk.lifeline.card3.name,Hold the Line
+perk.lifeline.card3.desc,"You get 20% more health. While the ampule runs you can't go down; at 0 health you are slowed by 80% instead."
+perk.lifeline.card5.name,Stay Put
+perk.lifeline.card5.desc,"The ampule lasts 10 s, each kill cuts its recharge by 1 s, and taking damage heals your crew 10%."
+perk.lifeline.card7.name,Tough Stock
+perk.lifeline.card7.desc,You get another 20% more health (40% in total).
+perk.lifeline.card9.name,Bloodbond
+perk.lifeline.card9.desc,"You can use the ampule while downed: it gets you up until it ends, and reviving a teammate or using a doctor bag before then keeps you up. Its slices shrink to 10%."
+ui.perks.choice,"BONUS: {name}. {desc} Press to change."
+ui.perks.mimic,"COPIES {name}: {desc} Press to change."
+ui.perks.mimic_none,Press to choose a deck to copy.
+perk.understudy.name,Understudy
+perk.understudy.desc,"Build your own deck: pick a bonus on every deck card, and finish by copying another deck's last card."
+perk.understudy.card1.name,Second Draw
+perk.understudy.card1.desc,"10 kills with one weapon reload the other one. Swapping to it within 3 s is near instant."
+perk.understudy.card3.name,Head Games
+perk.understudy.card3.desc,"Each headshot heals you 10 health, at most once every 2 s."
+perk.understudy.card5.name,Return to Sender
+perk.understudy.card5.desc,"Bullets you dodge fly back at the shooter."
+perk.understudy.card7.name,Grace Period
+perk.understudy.card7.desc,"When your health drops below 50% you take no health damage for 2 s, at most once every 15 s."
+perk.understudy.card9.name,Copy Cat
+perk.understudy.card9.desc,"Copy the last card of another deck you choose."
+perk.understudy.choice.health.name,Thick Skin
+perk.understudy.choice.health.desc,You get 20% more health.
+perk.understudy.choice.armor.name,Plated
+perk.understudy.choice.armor.desc,You get 5% more armor.
+perk.understudy.choice.dodge.name,Quick Step
+perk.understudy.choice.dodge.desc,You get 5% more dodge.
+perk.understudy.choice.speed.name,Low Rider
+perk.understudy.choice.speed.desc,You move 10% faster while crouched or carrying a bag.
+perk.hustler.mimic.desc,Your armor recovers 10% faster.
+perk.ironclad.mimic.desc,"You get 5% more armor, and your crew's armor recovers 10% faster."
+perk.slipper.mimic.desc,"Your shots pierce 25% more armor, and you swap weapons 80% faster."
+perk.prowler.mimic.desc,"You move 10% faster while crouched. Standing still, your armor recovers 20% faster."
+perk.bulk.mimic.desc,"You get 60% more health and regenerate 3% of it every 5 s."
+perk.clean_sweep.mimic.desc,"Your armor recovers faster, and after it breaks it comes back within 1.5 s."
+perk.foreman.mimic.desc,"Each hostage (up to 4) gives you and your crew 6% more health and 12% more stamina, and the crew absorbs 5 damage per hit per hostage."
+perk.knuckles.mimic.desc,"Each melee hit heals you 20% of your health, at most once every 10 s."
+perk.incumbent.mimic.desc,"Kills while your armor is down speed up its recovery."
+perk.long_odds.mimic.desc,Picking up ammo heals you 16 health (every 3 s at most).
+perk.overclock.mimic.desc,"Dealing damage gives you 30 armor, at most once every 1.5 s."
+perk.bloodletter.mimic.desc,"In the suit or light vest, damaging an enemy heals you over 4.2 s. Your shots pierce 10% more armor."
+perk.frenzy.mimic.desc,"Your damage builds Frenzy; every 30 absorbs 1 damage per hit, for you and your crew. It fades by 60% + 80 every 8 s."
+perk.inkwork.mimic.desc,"Below full health your armor recovers up to 20% faster and you move up to 20% faster, peaking at 25% health."
+perk.road_crew.mimic.desc,"Each kill by you or your crew gives you 5 health and 5 armor, up to 4 times every 4 s."
 ui.skills.title,Skills
 ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic
@@ -1314,6 +1393,12 @@ item.throwable.boss_injector.name,Boss Injector
 item.throwable.boss_injector.desc,"A single-dose auto-injector. Use it, and every hit you take in the next few seconds patches you up instead."
 item.throwable.pocket_ecm.name,Pocket ECM
 item.throwable.pocket_ecm.desc,"The Hacker deck's handheld jammer: 2 charges of 6 s."
+item.throwable.smoke_bomb.name,Smoke Bomb
+item.throwable.smoke_bomb.desc,"A hand-thrown smoke charge. Granted by the Veil perk deck."
+item.throwable.gas_dispenser.name,Gas Dispenser
+item.throwable.gas_dispenser.desc,"A hand-held inhaler that pairs you with a teammate. Granted by the Buddy System perk deck."
+item.throwable.leech_ampule.name,Leech Ampule
+item.throwable.leech_ampule.desc,"A self-injected ampule. Granted by the Lifeline perk deck."
 item.weapon.warden_45.name,Warden .45
 item.weapon.warden_45.desc,"An all-steel heavy pistol from Marrow & Kell. Eight big rounds, a hard push, and walnut that has seen a few owners."
 item.weapon.hornet_9.name,Hornet 9

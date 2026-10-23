@@ -80,13 +80,14 @@ const MAX_CREW: int = 4
 const MAX_PERK_CARDS: int = 9
 ## Loadout fields carried by a profile summary (StringName ids; *_mods are id lists).
 const ID_FIELDS: Array[String] = ["primary", "secondary", "melee", "throwable", "deployable",
-	"deployable_secondary", "armor", "mask", "perk_deck", "heister"]
+	"deployable_secondary", "armor", "mask", "perk_deck", "heister", "perk_mimic_deck"]
 const MOD_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 ## Item kind each id field is checked against (ContentDB kinds).
 const FIELD_KINDS: Dictionary = {
 	"primary": ContentDB.WEAPONS, "secondary": ContentDB.WEAPONS, "melee": ContentDB.MELEE,
 	"throwable": ContentDB.THROWABLES, "deployable": ContentDB.DEPLOYABLES,
 	"deployable_secondary": ContentDB.DEPLOYABLES, "armor": ContentDB.ARMOR, "perk_deck": ContentDB.PERKS,
+	"perk_mimic_deck": ContentDB.PERKS,
 }
 
 var is_host: bool = false
@@ -453,6 +454,7 @@ static func loadout_to_dict(l: Loadout) -> Dictionary:
 	d["mask_descriptor"] = _json_copy(l.mask_descriptor)
 	d["weapon_finishes"] = WeaponFinishes.sanitize_map(l.get(&"weapon_finishes"))  # B7-04: {} until the field lands
 	d["perk_deck_cards"] = l.perk_deck_cards
+	d["perk_choices"] = PlayerProfile.choices_to(l.perk_choices)  # D-164 (net.md)
 	var skills: Dictionary = {}
 	for k: Variant in l.skills:
 		skills[String(k)] = int(l.skills[k])
@@ -477,6 +479,7 @@ static func loadout_from_dict(d: Dictionary) -> Loadout:
 			fin[StringName(String(k))] = StringName(String(src_f[k]))
 		l.set(&"weapon_finishes", fin)
 	l.perk_deck_cards = int(d.get("perk_deck_cards", 0))
+	l.perk_choices = PlayerProfile.choices_from(d.get("perk_choices", {}))
 	var skills: Dictionary = {}
 	var src: Dictionary = d.get("skills", {}) as Dictionary
 	for k: Variant in src:
@@ -517,6 +520,10 @@ static func sanitize_summary(data: Dictionary) -> Dictionary:
 	out["mask_descriptor"] = (desc as Dictionary).duplicate(true)
 	out["weapon_finishes"] = WeaponFinishes.sanitize_map(src.get("weapon_finishes", {}))  # cosmetic: unknown ids dropped
 	out["perk_deck_cards"] = int(cards)
+	var ch: Variant = src.get("perk_choices", {})
+	if not (ch is Dictionary):
+		return {}
+	out["perk_choices"] = PlayerProfile.choices_to(PlayerProfile.choices_from(ch))
 	var sk: Dictionary = {}
 	for k: Variant in skills as Dictionary:
 		var lv: Variant = (skills as Dictionary)[k]

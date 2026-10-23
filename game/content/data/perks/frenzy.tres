@@ -131,3 +131,18 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 30.0,
+"decay_fraction": 0.6,
+"decay_flat": 80.0,
+"decay_interval_s": 8.0,
+"team": true,
+"self_absorb_mult": 1.0
+}
+}
+mimicable = true

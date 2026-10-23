@@ -1,11 +1,15 @@
 ## Ammo (mag / reserve of the equipped slot) and equipment counts (deployable, throwable, cable
 ## ties, body bags) as glyph + count chips. Hidden until masked (civilian: no gear, S1.3 / D-065; casing: no weapon out).
-## D-161: with a Hacker pocket ECM (`pocket_ecm` non-empty) the throwable chip shows its charges and a caption: the
-## jam / feedback seconds left while active, else the next charge's recharge.
+## ui_hud v1.21 (D-163): with a deck throwable (`perk_item` non-empty: pocket ECM, smoke bomb, gas dispenser, ampule,
+## injector, flask) the throwable chip shows its glyph and charges and a caption: what runs and its seconds left while
+## active (jam / feedback for the pocket ECM), else the recharge.
 ## D-106 (ui_hud 1.12): while `reloading`, a RELOADING caption and a thin bar under the ammo line fill
 ## with `reload_progress` (read every frame while it runs; -1 / missing = an indeterminate full bar).
 class_name AmmoPanel
 extends HudWidget
+
+## perk_item kinds whose glyph differs from the kind name.
+const ITEM_GLYPHS: Dictionary = {&"injector": &"vial", &"flask": &"vial"}
 
 var ammo_label: Label
 ## Lead queue (d): one right-aligned row of [glyph count] chips (deployable, throwable, cable ties, body
@@ -15,7 +19,7 @@ var chips: Dictionary = {}
 ## Reload indicator row (caption + bar), shown only while reloading (tests).
 var reload_row: HBoxContainer
 var reload_bar: ProgressBar
-## D-161 pocket ECM caption inside the throwable chip (tests).
+## Deck-item caption inside the throwable chip (tests).
 var pocket_label: Label
 
 
@@ -59,7 +63,7 @@ func build() -> void:
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"ammo_changed", &"inventory_changed", &"player_mode_changed", &"pocket_ecm_changed"]
+	return [&"ammo_changed", &"inventory_changed", &"player_mode_changed", &"perk_item_changed"]
 
 
 func refresh() -> void:
@@ -78,15 +82,16 @@ func refresh() -> void:
 	_set_chip(&"deployable", EquipmentIcon.kind_for(dep), int(prop(&"deployable_count", 0)), dep != &"",
 			UiText.t(UiText.item_key(dep)) if dep != &"" else "")
 	var thr: StringName = StringName(prop(&"throwable_id", &""))
-	var pocket: Dictionary = prop(&"pocket_ecm", {}) as Dictionary
-	if pocket.is_empty():
+	var item: Dictionary = prop(&"perk_item", {}) as Dictionary
+	if item.is_empty():
 		_set_chip(&"throwable", EquipmentIcon.kind_for(thr), int(prop(&"throwable_count", 0)), thr != &"",
 				UiText.t(UiText.item_key(thr)) if thr != &"" else "")
 		_show_pocket_caption(false)
 	else:
-		_set_chip(&"throwable", &"pocket_ecm", int(pocket.get("charges", 0)), true,
-				UiText.t(UiText.item_key(&"throwable.pocket_ecm")))
-		_update_pocket(pocket)
+		var kind: StringName = StringName(item.get("kind", &""))
+		_set_chip(&"throwable", StringName(ITEM_GLYPHS.get(kind, kind)), int(item.get("charges", 0)), true,
+				UiText.t(UiText.item_key(thr)) if thr != &"" else "")
+		_update_item(item)
 	_set_chip(&"cable_ties", &"cable_tie", int(prop(&"cable_ties", 0)), true, UiText.t(&"ui.hud.cable_ties_name"))
 	_set_chip(&"body_bags", &"body_bag", int(prop(&"body_bags", 0)), true, UiText.t(&"ui.hud.body_bags_name"))
 
@@ -120,16 +125,23 @@ func _set_chip(key: StringName, kind: StringName, n: int, shown: bool, name: Str
 	icon.color = col
 
 
-## Caption: "JAM 4 s" / "FEEDBACK 4 s" while a charge runs, else "+1 in 38 s" while one recharges, else nothing.
-func _update_pocket(pocket: Dictionary) -> void:
-	var active: float = float(pocket.get("active_left", 0.0))
-	var mode: StringName = StringName(pocket.get("mode", &""))
-	var recharge: float = float(pocket.get("recharge_left", 0.0))
+## Caption: "JAM 4 s" / "FEEDBACK 4 s" (pocket ECM mode), "SMOKE 4 s" / "PAIRED 4 s" / "AMPULE 4 s" (per kind) or
+## "ACTIVE 4 s" while it runs, else "+1 in 38 s" while it recharges, else nothing.
+func _update_item(item: Dictionary) -> void:
+	var active: float = float(item.get("active_left", 0.0))
+	var cooldown: float = float(item.get("cooldown_left", 0.0))
+	var key: StringName = &""
+	if active > 0.0:
+		var mode: StringName = StringName(item.get("mode", &""))
+		var kind_key: StringName = StringName("ui.hud.perk_item." + String(item.get("kind", &"")))
+		key = StringName("ui.hud.perk_item." + String(mode)) if mode != &"" else kind_key
+		if not UiText.has(key):
+			key = &"ui.hud.perk_item.active"
 	var text: String = ""
-	if active > 0.0 and mode != &"":
-		text = UiText.t(StringName("ui.hud.pocket_ecm." + String(mode)), {"s": ceili(active)})
-	elif recharge > 0.0:
-		text = UiText.t(&"ui.hud.pocket_ecm.recharge", {"s": ceili(recharge)})
+	if key != &"":
+		text = UiText.t(key, {"s": ceili(active)})
+	elif cooldown > 0.0:
+		text = UiText.t(&"ui.hud.perk_item.recharge", {"s": ceili(cooldown)})
 	pocket_label.text = text
 	_show_pocket_caption(text != "")
 	pocket_label.add_theme_color_override(&"font_color", UiTokens.CYAN if active > 0.0 else UiTokens.PAPER_DIM)

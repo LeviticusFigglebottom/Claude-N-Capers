@@ -121,3 +121,16 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"perk.biker": {
+"heal": 5.0,
+"armor": 5.0,
+"max_procs": 4,
+"window_s": 4.0,
+"armor_per_missing_health": 0.0,
+"window_cut_per_missing_health": 0.0,
+"heal_per_missing_armor": 0.0,
+"window_cut_per_missing_armor": 0.0
+}
+}
+mimicable = true

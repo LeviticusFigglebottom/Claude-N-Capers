@@ -141,3 +141,20 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"perk.ex_president": {
+"store_per_kill": 0.0,
+"max_store_by_armor": {
+&"armor.tailored_suit": 24.0,
+&"armor.light_vest": 30.0,
+&"armor.patrol_vest": 36.0,
+&"armor.heavy_vest": 42.0,
+&"armor.flak_rig": 48.0,
+&"armor.tactical_plate": 54.0,
+&"armor.breacher_plate": 60.0
+},
+"max_store_mult": 1.0,
+"kill_regen_speedup_fraction": 0.1
+}
+}
+mimicable = true

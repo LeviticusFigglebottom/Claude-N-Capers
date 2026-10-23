@@ -21,6 +21,10 @@ extends Resource
 @export var mask_descriptor: Dictionary = {}
 @export var perk_deck: StringName = &""
 @export var perk_deck_cards: int = 0       ## unlocked card count 0..9
+## D-164 (Copycat): card index (0-based) -> chosen option index of that card's "choices"; missing = option 0.
+@export var perk_choices: Dictionary = {}
+## D-164 (Copycat): the deck whose mimic_grants the "mimic" card grants; &"" = none.
+@export var perk_mimic_deck: StringName = &""
 @export var skills: Dictionary = {}        ## skill_id -> 1 (basic) / 2 (aced)
 ## L6.2: AI teammates only (PD2 Crew Management). &"" = none; ids from ENV B's bot crew data.
 @export var bot_ability: StringName = &""  ## e.g. &"bot_ability.inspire" (on the bot's own slot)
