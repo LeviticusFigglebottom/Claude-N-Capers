@@ -190,7 +190,7 @@ func _open_guest_doors_toward(at: Vector3) -> void:
 	var here: Vector3 = pilot.crew.global_position
 	for n: Node in rt.find_children("*", "Door", true, false):
 		var door: Door = n as Door
-		if door.is_open or door.global_position.distance_to(here) > 6.0 \
+		if door.is_open or door.global_position.distance_to(here) > 6.0 or absf(door.global_position.y - here.y) > 1.5 \
 				or door.global_position.distance_to(at) > here.distance_to(at) + 1.0:
 			continue
 		var comp: InteractableComponent = _comp(door)
