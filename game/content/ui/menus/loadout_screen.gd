@@ -175,7 +175,8 @@ func build_ui() -> void:
 	root.add_child(perk_summary_label)
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
-	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
+	# r299 LEAD: a panelled button like Skills / Perk Deck / Workshop (a ghost read faint over the 3D safehouse).
+	back_button = UiBuild.button(&"ui.menu.back")
 	launch_button = UiBuild.primary(UiBuild.button(&"ui.heist_select.start"))
 	skills_button = UiBuild.button(&"ui.loadout.skills")
 	perks_button = UiBuild.button(&"ui.loadout.perk_deck")
