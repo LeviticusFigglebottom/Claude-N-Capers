@@ -1681,3 +1681,16 @@ B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac ho
   keys); Copycat card 9 grants the chosen deck's mimic_grants. A card 9 that only makes sense inside its own deck is marked
   non-mimicable or gets a standalone variant. Component params default to 0 / off so partial dicts are safe.
 - Order: Leech first (self-contained), then Copycat. B proposes names first, as in D-163.
+
+## D-165: Afterhours starts now, in parallel with Rolling Thunder's final-shot review (2026-10-23, LEAD; product owner)
+PO: "no agents/environments stalled ... if only one suite is pending approval the other agents should work on what they can, or
+begin Afterhours if applicable." Rolling Thunder has met every D-115 gate except the LEAD's review of C's 28 final shots (stage
+final, validate --stage=final PASS on trunk r300; e2e = A's harness env_a.md -50 + P's windowed confirm pair; strings/VO = B's
+slice; cast done; ghost gate n/a, loud-forced). That review is a single pending approval, so D-144 lifts now:
+- **Afterhours is the active build** (docs/design/heists/afterhours.md, D-075 / D-143 rulings). It lands on trunk behind the
+  readiness gate (heist_list hidden) until its own D-115 check.
+- **Rolling Thunder** content is frozen except fixes from the shot review; B's RT un-hide lands with the LEAD's RT DONE line
+  (written like D-152) once the shots pass.
+- Lanes: A the mission + logic; C the def, map (G1 greybox → G2) and music; D the club cast build + wiring; B items 8-10 as C's
+  def/map land (items 1-7 + achievements merge now); P the first real-input pass once C's greybox is playable, its RT
+  follow-ups until then.

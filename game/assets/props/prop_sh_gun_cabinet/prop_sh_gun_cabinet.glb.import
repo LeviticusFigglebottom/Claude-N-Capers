@@ -39,7 +39,40 @@ import_script/path="res://world/tools/import/glb_post_import.gd"
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
+_subresources={
+"materials": {
+"M_pr_emit_led_red": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_emit_led_red.tres",
+"use_external/path": "res://world/props/materials/pr_emit_led_red.tres"
+},
+"M_pr_metal_dark": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_dark.tres",
+"use_external/path": "res://world/props/materials/pr_metal_dark.tres"
+},
+"M_pr_metal_grey": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_grey.tres",
+"use_external/path": "res://world/props/materials/pr_metal_grey.tres"
+},
+"M_pr_paint_hazard_orange": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_paint_hazard_orange.tres",
+"use_external/path": "res://world/props/materials/pr_paint_hazard_orange.tres"
+},
+"M_pr_plastic_black": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_plastic_black.tres",
+"use_external/path": "res://world/props/materials/pr_plastic_black.tres"
+},
+"M_pr_powder_charcoal": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_powder_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_powder_charcoal.tres"
+}
+}
+}
 gltf/naming_version=2
 gltf/embedded_image_handling=1
 gltf/texture_map_mode=0

@@ -39,6 +39,8 @@ const OUT_DIRS: Dictionary = {
 	"sl_late_staff": "res://assets/characters/_review/sl_g3_cast/",
 	"sl_cleaners": "res://assets/characters/_review/sl_g3_cast/",
 	"nd_staff": "res://assets/characters/_review/nd_g3_cast/",
+	"db_cartel": "res://assets/characters/_review/db_g3_cast/",
+	"db_workers": "res://assets/characters/_review/db_g3_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
 	"d145_factions": "res://assets/characters/_review/d145_police/",
@@ -128,6 +130,13 @@ const POOLS: Dictionary = {
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
 	],
 	# GN-G3: the gallery staff, the guards and the gala guests (written to _review/gn_g3_cast/)
+	# DB-G3: Dockside's cartel crews and the dock / packing-wing workers
+	"db_cartel": [
+		"char_cartel_gunman", "char_cartel_gunman_b", "char_cartel_gunman_c", "char_cartel_gunman_d",
+		"char_cartel_gunman_e", "char_cartel_gunman_f", "char_cartel_gunman_g", "char_cartel_gunman_h",
+		"char_cartel_gunman_i", "char_cartel_gunman_j", "char_cartel_gunman_k", "char_cartel_gunman_l",
+	],
+	"db_workers": ["char_dock_worker", "char_dock_worker_b", "char_dock_worker_c", "char_dock_packer"],
 	# ND-G3: the night bank's own staff (the night manager and the two contract cleaners)
 	"nd_staff": ["char_npc_bank_night_manager", "char_npc_bank_cleaner", "char_npc_bank_cleaner_b"],
 	# SL-G3: the Calder Tower night cleaners

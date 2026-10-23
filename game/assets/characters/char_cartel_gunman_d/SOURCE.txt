@@ -17,5 +17,5 @@ look: deck_woman: cream roll-neck under a black puffer vest, flare-orange gaiter
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 30832
-tris_by_mesh: {"Body": 7726, "Gear": 190, "Hair": 1856, "Headwear": 1144, "Outfit": 19916}
+tris: 31208
+tris_by_mesh: {"Body": 7726, "Gear": 190, "Hair": 1856, "Headwear": 1520, "Outfit": 19916}

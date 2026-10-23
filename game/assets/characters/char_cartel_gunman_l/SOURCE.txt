@@ -17,5 +17,5 @@ look: cream_hoodie: cream pull-over hoodie (hood down), shaved head, black cargo
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26090
-tris_by_mesh: {"Body": 7956, "Gear": 136, "Hair": 580, "Outfit": 17418}
+tris: 28410
+tris_by_mesh: {"Body": 7956, "Gear": 2456, "Hair": 580, "Outfit": 17418}
