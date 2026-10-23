@@ -32,6 +32,7 @@ signal changed(property: StringName)
 signal dominate_prompt_changed()  ## dominate_target, dominate_window_s (PP-A-1, S5.8 / D-079)
 signal devices_changed()         ## devices (PO6-03 proposal to ENV A)
 signal crew_stats_changed()      ## crew_stats (B6-02 proposal, QB to ENV A; content/docs/scoreboard.md)
+signal pocket_ecm_changed()      ## pocket_ecm (D-161 proposal v1.20 to ENV A: EcmSystem.pocket_state(local slot))
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
 var health: float = 100.0:
@@ -112,6 +113,12 @@ var body_bags: int = 0:
 	set(v):
 		body_bags = v
 		inventory_changed.emit()
+## D-161 Hacker pocket ECM: {} = none, else {charges: int, max: int, recharge_left: float (s, 0 = full),
+## active_left: float (s), mode: StringName (&"" | &"jam" | &"feedback")}.
+var pocket_ecm: Dictionary = {}:
+	set(v):
+		pocket_ecm = v
+		pocket_ecm_changed.emit()
 ## {} = none, else { "loot_id": StringName, "weight": int (Enums.LootWeight) }
 var carried_bag: Dictionary = {}:
 	set(v):

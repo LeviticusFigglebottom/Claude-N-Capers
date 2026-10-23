@@ -1,11 +1,16 @@
 ## HUD equipment glyph (lead queue d): a small line drawing in paper with a dark outline (frameless HUD,
 ## readable on any scene), drawn in code (no image assets). `kind` comes from kind_for(item id):
 ## doctor_bag, ammo_bag, armor_bag, body_bag_case, grenade, concussion, incendiary, knife, vial,
-## cable_tie, body_bag, hostage. Unknown kinds draw a dot. Owner: ENV B.
+## cable_tie, body_bag, hostage, pocket_ecm (D-161), ecm, fak, sentry, trip_mine (KINDS). Unknown kinds draw a
+## dot; test_equipment_glyphs keeps every catalogue deployable / throwable off it. Owner: ENV B.
 class_name EquipmentIcon
 extends Control
 
 const OUTLINE: Color = Color(0, 0, 0, 0.8)
+## Every kind _glyph draws (anything else is the fallback dot).
+const KINDS: Array[StringName] = [&"doctor_bag", &"ammo_bag", &"armor_bag", &"body_bag_case", &"grenade",
+	&"concussion", &"incendiary", &"knife", &"vial", &"cable_tie", &"body_bag", &"hostage", &"pocket_ecm", &"ecm",
+	&"fak", &"sentry", &"trip_mine"]
 
 var kind: StringName = &""
 var color: Color = UiTokens.PAPER
@@ -90,6 +95,31 @@ func _glyph(c: Vector2, u: float, w: float, col: Color) -> void:
 					c + Vector2(0.3, -0.2) * u, c + Vector2(0.35, 0.75) * u]), col, w)
 			draw_line(c + Vector2(-0.2, 0.15) * u, c + Vector2(0.2, 0.45) * u, col, w)
 			draw_line(c + Vector2(0.2, 0.15) * u, c + Vector2(-0.2, 0.45) * u, col, w)
+		&"pocket_ecm":  # a hand-held jammer: a case with a light bar and two stub antennae
+			draw_rect(Rect2(c + Vector2(-0.4, -0.35) * u, Vector2(0.8, 1.15) * u), col, false, w)
+			draw_line(c + Vector2(-0.22, 0.0) * u, c + Vector2(0.22, 0.0) * u, col, w)
+			draw_line(c + Vector2(-0.22, -0.35) * u, c + Vector2(-0.3, -0.8) * u, col, w)
+			draw_line(c + Vector2(0.22, -0.35) * u, c + Vector2(0.3, -0.8) * u, col, w)
+		&"ecm":  # the placed jammer: a wide box, a mast and two signal arcs
+			draw_rect(Rect2(c + Vector2(-0.75, 0.0) * u, Vector2(1.5, 0.7) * u), col, false, w)
+			draw_line(c + Vector2(0, 0.0) * u, c + Vector2(0, -0.45) * u, col, w)
+			draw_arc(c + Vector2(0, -0.45) * u, 0.3 * u, PI * 1.15, PI * 1.85, 8, col, w)
+			draw_arc(c + Vector2(0, -0.45) * u, 0.6 * u, PI * 1.15, PI * 1.85, 10, col, w)
+		&"fak":  # a small first aid case: a square with a cross, no handle
+			draw_rect(Rect2(c + Vector2(-0.6, -0.6) * u, Vector2(1.2, 1.2) * u), col, false, w)
+			draw_line(c + Vector2(-0.3, 0) * u, c + Vector2(0.3, 0) * u, col, w * 1.3)
+			draw_line(c + Vector2(0, -0.3) * u, c + Vector2(0, 0.3) * u, col, w * 1.3)
+		&"sentry":  # a gun body with a barrel on a tripod
+			draw_rect(Rect2(c + Vector2(-0.45, -0.55) * u, Vector2(0.8, 0.45) * u), col, false, w)
+			draw_line(c + Vector2(0.35, -0.35) * u, c + Vector2(0.85, -0.35) * u, col, w)
+			draw_line(c + Vector2(0, -0.1) * u, c + Vector2(0, 0.3) * u, col, w)
+			for x: float in [-0.6, 0.0, 0.6]:
+				draw_line(c + Vector2(0, 0.3) * u, c + Vector2(x, 0.8) * u, col, w)
+		&"trip_mine":  # a small charge with its laser line
+			draw_rect(Rect2(c + Vector2(-0.8, -0.3) * u, Vector2(0.6, 0.6) * u), col, false, w)
+			for i: int in range(3):
+				var x0: float = -0.05 + 0.3 * i
+				draw_line(c + Vector2(x0, 0) * u, c + Vector2(x0 + 0.18, 0) * u, col, w)
 		&"body_bag":
 			draw_rect(Rect2(c + Vector2(-0.4, -0.8) * u, Vector2(0.8, 1.6) * u), col, false, w)
 			draw_line(c + Vector2(0, -0.7) * u, c + Vector2(0, 0.7) * u, col, w * 0.7)  # zip

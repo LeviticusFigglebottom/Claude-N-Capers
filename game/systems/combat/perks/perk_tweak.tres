@@ -136,6 +136,34 @@ defaults = Dictionary[StringName, Dictionary]({
 },
 &"perk.throwable": {
 "item_id": &""
+},
+&"perk.yakuza": {
+"low_health_threshold": 0.25,
+"armor_regen_max_add": 0.2,
+"move_speed_max_add": 0.0,
+"blocks_regen": true
+},
+&"perk.biker": {
+"heal": 5.0,
+"armor": 5.0,
+"max_procs": 4,
+"window_s": 4.0,
+"armor_per_missing_health": 0.0,
+"window_cut_per_missing_health": 0.0,
+"heal_per_missing_armor": 0.0,
+"window_cut_per_missing_armor": 0.0
+},
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 30.0,
+"decay_fraction": 0.8,
+"decay_flat": 120.0,
+"decay_interval_s": 8.0,
+"team": false,
+"self_absorb_mult": 1.0
 }
 })
 panic_stun_s = 2.0

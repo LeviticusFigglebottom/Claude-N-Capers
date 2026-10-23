@@ -1,5 +1,7 @@
 ## Ammo (mag / reserve of the equipped slot) and equipment counts (deployable, throwable, cable
 ## ties, body bags) as glyph + count chips. Hidden until masked (civilian: no gear, S1.3 / D-065; casing: no weapon out).
+## D-161: with a Hacker pocket ECM (`pocket_ecm` non-empty) the throwable chip shows its charges and a caption: the
+## jam / feedback seconds left while active, else the next charge's recharge.
 ## D-106 (ui_hud 1.12): while `reloading`, a RELOADING caption and a thin bar under the ammo line fill
 ## with `reload_progress` (read every frame while it runs; -1 / missing = an indeterminate full bar).
 class_name AmmoPanel
@@ -13,6 +15,8 @@ var chips: Dictionary = {}
 ## Reload indicator row (caption + bar), shown only while reloading (tests).
 var reload_row: HBoxContainer
 var reload_bar: ProgressBar
+## D-161 pocket ECM caption inside the throwable chip (tests).
+var pocket_label: Label
 
 
 func build() -> void:
@@ -43,10 +47,19 @@ func build() -> void:
 	v.add_child(equipment_row)
 	for key: StringName in [&"deployable", &"throwable", &"cable_ties", &"body_bags"]:
 		_chip(key)
+	pocket_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
+	pocket_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	pocket_label.visible = false
+	var gap: MarginContainer = MarginContainer.new()  # keeps the caption off the charge count
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	gap.visible = false
+	gap.add_theme_constant_override(&"margin_left", UiTokens.S2)
+	gap.add_child(pocket_label)
+	(chips[&"throwable"]["box"] as HBoxContainer).add_child(gap)
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"ammo_changed", &"inventory_changed", &"player_mode_changed"]
+	return [&"ammo_changed", &"inventory_changed", &"player_mode_changed", &"pocket_ecm_changed"]
 
 
 func refresh() -> void:
@@ -65,8 +78,15 @@ func refresh() -> void:
 	_set_chip(&"deployable", EquipmentIcon.kind_for(dep), int(prop(&"deployable_count", 0)), dep != &"",
 			UiText.t(UiText.item_key(dep)) if dep != &"" else "")
 	var thr: StringName = StringName(prop(&"throwable_id", &""))
-	_set_chip(&"throwable", EquipmentIcon.kind_for(thr), int(prop(&"throwable_count", 0)), thr != &"",
-			UiText.t(UiText.item_key(thr)) if thr != &"" else "")
+	var pocket: Dictionary = prop(&"pocket_ecm", {}) as Dictionary
+	if pocket.is_empty():
+		_set_chip(&"throwable", EquipmentIcon.kind_for(thr), int(prop(&"throwable_count", 0)), thr != &"",
+				UiText.t(UiText.item_key(thr)) if thr != &"" else "")
+		_show_pocket_caption(false)
+	else:
+		_set_chip(&"throwable", &"pocket_ecm", int(pocket.get("charges", 0)), true,
+				UiText.t(UiText.item_key(&"throwable.pocket_ecm")))
+		_update_pocket(pocket)
 	_set_chip(&"cable_ties", &"cable_tie", int(prop(&"cable_ties", 0)), true, UiText.t(&"ui.hud.cable_ties_name"))
 	_set_chip(&"body_bags", &"body_bag", int(prop(&"body_bags", 0)), true, UiText.t(&"ui.hud.body_bags_name"))
 
@@ -98,6 +118,26 @@ func _set_chip(key: StringName, kind: StringName, n: int, shown: bool, name: Str
 	var col: Color = UiTokens.PAPER if n > 0 else UiTokens.PAPER_DIM
 	count.add_theme_color_override(&"font_color", col)
 	icon.color = col
+
+
+## Caption: "JAM 4 s" / "FEEDBACK 4 s" while a charge runs, else "+1 in 38 s" while one recharges, else nothing.
+func _update_pocket(pocket: Dictionary) -> void:
+	var active: float = float(pocket.get("active_left", 0.0))
+	var mode: StringName = StringName(pocket.get("mode", &""))
+	var recharge: float = float(pocket.get("recharge_left", 0.0))
+	var text: String = ""
+	if active > 0.0 and mode != &"":
+		text = UiText.t(StringName("ui.hud.pocket_ecm." + String(mode)), {"s": ceili(active)})
+	elif recharge > 0.0:
+		text = UiText.t(&"ui.hud.pocket_ecm.recharge", {"s": ceili(recharge)})
+	pocket_label.text = text
+	_show_pocket_caption(text != "")
+	pocket_label.add_theme_color_override(&"font_color", UiTokens.CYAN if active > 0.0 else UiTokens.PAPER_DIM)
+
+
+func _show_pocket_caption(on: bool) -> void:
+	pocket_label.visible = on
+	(pocket_label.get_parent() as Control).visible = on
 
 
 func _process(_delta: float) -> void:

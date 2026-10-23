@@ -586,6 +586,8 @@ func server_tick(delta: float) -> void:
 func _tick_health_regen(delta: float) -> void:
 	since_damage_s += delta
 	var r: float = Modifiers.add(_slot(), &"defense.health_regen_per_sec")
+	if r > 0.0 and PerkYakuza.blocks_regen(_crew):
+		r = 0.0  # D-162 Yakuza card 1: below its threshold no third-party regen
 	if _crew.is_ai:  # D-145 §4a (◇, PO): bots regain health after a quiet spell
 		var ct: CrewAiTweak = _bot_tweak()
 		if ct != null and since_damage_s >= ct.bot_regen_delay_s:

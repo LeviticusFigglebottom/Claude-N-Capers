@@ -24,6 +24,7 @@ const BINDING: Dictionary = {
 	&"weapon_charge_changed": [&"weapon_charge"],
 	&"weapon_spin_changed": [&"weapon_spin"],
 	&"player_mode_changed": [&"player_mode"],
+	&"pocket_ecm_changed": [&"pocket_ecm"],  # v1.20 (D-161)
 }
 
 

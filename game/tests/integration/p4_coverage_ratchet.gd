@@ -7,7 +7,6 @@ extends RefCounted
 
 ## No runtime code reads the key (and so no behaviour test can exist).
 const UNHOOKED: Dictionary = {
-	&"stealth.pocket_ecm": "A",
 }
 
 ## Read by runtime code (hook file in the comment) but no behaviour test.
