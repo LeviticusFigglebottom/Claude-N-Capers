@@ -35,4 +35,7 @@ func throw_now() -> bool:
 	if kind == &"":
 		return false
 	var perks: CrewPerks = PerkHooks.of(crew)
-	return perks != null and perks.use_throwable(kind)
+	if perks == null or not perks.use_throwable(kind):
+		return false
+	CrewThrowables.deck_item_fired(crew, item_id(), kind)  # presentation: the FP / 3P use pose on every peer
+	return true

@@ -7,11 +7,16 @@
 ##   ThrownItem along the aim (lofted throw_loft_deg, throw_speed_mps + the thrower's velocity); then
 ##   throw_recover_s before the next throw. No shooting while throwing (CrewWeapons.can_fire reads `busy()`).
 ## Signals (presentation; FpViewmodel plays the `throwable` set): pin_pulled, released.
+## Deck items (pocket ECM, injector, flask, smoke bomb, gas dispenser, leech ampule: perk.throwable, consumed by a perk,
+## never a ThrownItem here): `deck_item_used(item_id, kind)` on EVERY peer when one fires (the server emits and
+## replicates it), and deck_item_def() gives its ThrowableDef (model path) for the FP / third-person use pose.
 class_name CrewThrowables
 extends Node
 
 signal pin_pulled()
 signal released()
+## A deck-supplied throwable fired (every peer; presentation only).
+signal deck_item_used(item_id: StringName, kind: StringName)
 
 const NODE_NAME: String = "Throwables"
 const CUE_PIN: StringName = &"cue.throwable_pin"
@@ -38,6 +43,24 @@ static func set_count(crew: CrewController, count: int) -> void:
 
 func _ready() -> void:
 	_crew = get_parent() as CrewController
+
+
+## Server, PerkThrowable: `crew`'s deck item `item_id` (ThrowableDef.kind `kind`) was used: deck_item_used here and on
+## every client.
+static func deck_item_fired(crew: CrewController, item_id: StringName, kind: StringName) -> void:
+	var t: CrewThrowables = crew.get_node_or_null(NODE_NAME) as CrewThrowables if crew != null else null
+	if t == null:
+		return
+	t.deck_item_used.emit(item_id, kind)
+	if Net.is_authority() and t.multiplayer.has_multiplayer_peer() \
+			and not (t.multiplayer.multiplayer_peer is OfflineMultiplayerPeer) and HeistNetSync.can_rpc(crew):
+		t._rpc_deck_item_used.rpc(item_id, kind)
+
+
+## The deck-supplied throwable's def (PerkHooks.throwable_id; null when the deck gives none). Any peer.
+func deck_item_def() -> ThrowableDef:
+	var id: StringName = PerkHooks.throwable_id(_crew) if _crew != null else &""
+	return ContentDB.throwable(id) if id != &"" else null
 
 
 ## The equipped grenade-type throwable (null when none, or a perk-deck item replaces it).
@@ -123,6 +146,11 @@ static func spawn(crew: CrewController, def: ThrowableDef, seq: int = 0, extra: 
 	item.global_position = crew.eye_position() + aim * 0.4
 	NetIds.claim(item)
 	return item
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_deck_item_used(item_id: StringName, kind: StringName) -> void:
+	deck_item_used.emit(item_id, kind)
 
 
 @rpc("authority", "call_remote", "reliable")
