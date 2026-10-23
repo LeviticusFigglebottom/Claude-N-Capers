@@ -168,8 +168,9 @@ func build_ui() -> void:
 	var stats_panel: PanelContainer = _build_stats_panel()
 	stats_panel.size_flags_vertical = Control.SIZE_SHRINK_BEGIN  # D-111: hugs its rows, no empty box below
 	cols.add_child(stats_panel)
-	perk_summary_label = UiBuild.label(&"", UiBuild.DIM)
-	perk_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# r292 aspect audit: on the label scrim, so the line reads over the 3D safehouse behind the screen.
+	perk_summary_label = UiBuild.scrim_label(UiBuild.label(&"", UiBuild.DIM))
+	perk_summary_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN  # one line; the scrim hugs the text
 	perk_summary_label.visible = not compact_mode
 	root.add_child(perk_summary_label)
 	var nav: HBoxContainer = UiBuild.hbox(16)

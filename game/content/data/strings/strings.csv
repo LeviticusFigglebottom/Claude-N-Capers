@@ -167,6 +167,11 @@ ui.tip.heist_rolling_thunder.signals,"Rig the junction signals before the convoy
 ui.tip.heist_rolling_thunder.crash,"Without the signals, Reyes rams it with the mixer and the fight starts at once. An early alarm also locks the trucks down."
 ui.tip.heist_rolling_thunder.trucks,"Saw or blow open the trucks. The bullion truck's rear doors need the thermite bag."
 ui.tip.heist_rolling_thunder.bags,"Secure at least 4 bags before the escape. Gold is heavy."
+ui.tip.heist_ostrander_federal.title,The consolidation
+ui.tip.heist_ostrander_federal.keycard,"Ashgrove, the day manager, carries the vault keycard. Take it from him."
+ui.tip.heist_ostrander_federal.code,"Hack the right officer's computer, or the server rack, for the vault code. It starts a long time lock."
+ui.tip.heist_ostrander_federal.drill,"Go loud and the vault locks down: call in the thermal drill and burn through from the teller floor."
+ui.tip.heist_ostrander_federal.hoist,Bags go up the hoist. Nobody climbs the ladder carrying one.
 ui.hud.hint.click_resume,Click to resume
 ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
 ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
