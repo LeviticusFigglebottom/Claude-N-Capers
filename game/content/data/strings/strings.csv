@@ -200,6 +200,11 @@ ui.prompt.use_doctor_bag,Hold {key} to use the doctor bag
 ui.prompt.use_ammo_bag,Hold {key} to refill ammo
 ui.prompt.take_body_bag,Hold {key} to take a body bag
 ui.prompt.deploy,Hold {key} to deploy {item}
+ui.prompt.sentry_pickup,Hold {key} to pick up the sentry
+ui.prompt.sentry_mode,Hold {key} to switch the sentry to {mode} mode
+ui.sentry.mode.normal,standard
+ui.sentry.mode.quiet,quiet
+ui.sentry.mode.ap,armor-piercing
 ui.prompt.trade_hostage,Hold {key} to trade the hostage
 ui.prompt.convert,Hold {key} to convert
 ui.prompt.send_lift,Hold {key} to send the lift
@@ -387,6 +392,8 @@ item.deployable.fak.name,First Aid Kit
 item.deployable.fak.desc,"Four small kits; each heals one heister once."
 item.deployable.trip_mine.name,Trip Mine
 item.deployable.trip_mine.desc,"Three mines that blow when someone crosses the beam."
+item.deployable.sentry.name,Sentry Gun
+item.deployable.sentry.desc,"An automatic turret that fires at anyone hostile in its arc. Deploying it costs 40% of your ammo."
 item.loot.jewelry.name,Jewelry
 item.loot.jewelry.desc,"Rings, necklaces and watches in a padded bag."
 item.loot.cash.name,Cash

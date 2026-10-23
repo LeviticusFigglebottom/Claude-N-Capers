@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DeployableDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://contracts/data/deployable_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"deployable.sentry"
+display_name = "Sentry Gun"
+kind = &"sentry"
+count = 1
+uses = 1
+deploy_time_s = 2.0
+params = {
+"ammo": 150,
+"ammo_cost_frac": 0.4,
+"damage": 20.0,
+"fire_rate_rpm": 600.0,
+"health": 300.0,
+"range_m": 30.0,
+"spread_deg": 3.0,
+"turn_speed_deg": 160.0
+}
+anim_set = &"deploy_sentry"
