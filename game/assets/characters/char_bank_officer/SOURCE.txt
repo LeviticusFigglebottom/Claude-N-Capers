@@ -16,5 +16,5 @@ look: Bank officer (gallery level): grey worsted skirt suit, cream band-collar b
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26596
-tris_by_mesh: {"Body": 10998, "Gear": 620, "Hair": 2088, "Outfit": 12890}
+tris: 27028
+tris_by_mesh: {"Body": 10998, "Gear": 1052, "Hair": 2088, "Outfit": 12890}

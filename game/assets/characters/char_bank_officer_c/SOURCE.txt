@@ -16,5 +16,5 @@ look: Bank officer (OF-D1): a man about 60, grey hair; grey worsted two-piece su
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26774
-tris_by_mesh: {"Body": 8964, "Gear": 1028, "Hair": 1728, "Outfit": 15054}
+tris: 26906
+tris_by_mesh: {"Body": 8964, "Gear": 1160, "Hair": 1728, "Outfit": 15054}
