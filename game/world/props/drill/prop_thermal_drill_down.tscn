@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_thermal_drill_down/prop_thermal_drill_down.glb" id="1_model"]
+[ext_resource type="Script" path="res://world/vfx/drill_sparks.gd" id="3_fx"]
+
+[node name="PropThermalDrillDown" type="Node3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Sparks" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.01)
+script = ExtResource("3_fx")
+
+[node name="Glow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.07)
+visible = false
+layers = 1048577
+light_color = Color(1, 0.5412, 0.2275, 1)
+light_energy = 2.5
+omni_range = 1.6
+omni_attenuation = 1.5
+light_size = 0.02
