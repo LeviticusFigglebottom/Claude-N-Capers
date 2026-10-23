@@ -348,11 +348,11 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 `game/tests/b/test_perk_behaviour.gd` (behaviour on a `CrewController.spawn_for_range` crew member).
 `test_every_granted_key_is_hooked_or_filed` fails if a deck grants a key that is in neither list below.
 
-**Held (D-161, D-162):** `stealth.pocket_ecm` (Hacker), `perk.yakuza` (Inkwork), `perk.biker` (Road Crew) and
-`perk.maniac` (Frenzy) wait on ENV A's hooks (fields: the schema tables above). They are the test's `MISSING` list;
-each one leaves it the round its hook lands. The Road Crew procs and Hacker card 9 both need a crew-kill event.
+**D-161 / D-162:** `stealth.pocket_ecm` (A `perk_pocket_ecm.gd` + EcmSystem), `perk.yakuza`, `perk.biker` and
+`perk.maniac` (A `perk_<name>.gd`, PerkTweak defaults = card-1 values; Road Crew and Hacker card 9 via CrewKillFeed)
+are hooked under the field names of the schema tables above.
 
-**Every other granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
+**Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's
 `game/systems/modifiers_params.md` reads every field under the same name (checked 2026-10-11), with
 `PerkTweak.defaults` for fields a card has not set yet. The schemas above stay authoritative. Since

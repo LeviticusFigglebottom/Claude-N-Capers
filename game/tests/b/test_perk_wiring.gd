@@ -194,10 +194,13 @@ const HOOKED: Dictionary = {
 	&"perk.kingpin": "res://systems/combat/perks/perk_kingpin.gd",
 	&"perk.throwable": "res://systems/combat/perks/perk_throwable.gd",
 	&"perk.rogue_dodge_stack": "res://systems/combat/perks/perk_rogue.gd",
+	&"stealth.pocket_ecm": "res://systems/combat/perks/perk_pocket_ecm.gd",  # D-161 (A 5f09d31a)
+	&"perk.yakuza": "res://systems/combat/perks/perk_yakuza.gd",  # D-162 (A 3668b28c)
+	&"perk.biker": "res://systems/combat/perks/perk_biker.gd",
+	&"perk.maniac": "res://systems/combat/perks/perk_maniac.gd",
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). stealth.pocket_ecm: the Hacker deck's
-## Pocket ECM (D-161); perk.yakuza / perk.biker / perk.maniac: D-162. ENV A's hooks; drop each the round it lands.
-const MISSING: Array = [&"stealth.pocket_ecm", &"perk.yakuza", &"perk.biker", &"perk.maniac"]
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty again since D-161 / D-162.
+const MISSING: Array = []
 
 
 func before_all() -> void:
