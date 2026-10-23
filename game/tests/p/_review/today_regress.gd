@@ -129,8 +129,8 @@ func _t_copycat() -> void:
 	var dodge: float = Modifiers.add(c.slot, &"defense.dodge_add")
 	var crouch: float = Modifiers.mult(c.slot, &"movement.crouch_speed_mult")
 	# armor: the card-1 pick (x1.05) plus Ironclad's mimicked card 9 (mimic_grants x1.05), additive as PD2: x1.10.
-	_row("copycat", "card picks + mimic applied in the heist (armor / 2 x dodge / crouch)", is_equal_approx(armor, 1.10)
-		and is_equal_approx(dodge, 0.1) and is_equal_approx(crouch, 1.1), "armor x%.2f, dodge +%.2f, crouch x%.2f" % [
+	_row("copycat", "card picks + mimic applied in the heist (armor / 2 x dodge / crouch)", absf(armor - 1.10) < 0.001
+		and absf(dodge - 0.1) < 0.001 and absf(crouch - 1.1) < 0.001, "armor x%.4f, dodge +%.4f, crouch x%.4f" % [
 		armor, dodge, crouch])
 	var perks: CrewPerks = PerkHooks.of(c)
 	var cc: PerkComponent = perks.component(PerkCopycat.KEY) if perks != null else null
