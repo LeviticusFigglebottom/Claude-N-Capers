@@ -95,6 +95,8 @@ func _deck_launch(deck: StringName) -> bool:
 		await wait_s(0.5)
 	_kills = 0
 	_heal_events.clear()
+	if not Net.is_authority():
+		Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no session
 	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, Enums.Difficulty.ROUTINE, self,
 		{"skip_casing": true, "ai_teammates": 3, "crew_ai": true, "loadouts": {Net.local_slot(): _deck_loadout(deck)}})
 	if rt == null:
