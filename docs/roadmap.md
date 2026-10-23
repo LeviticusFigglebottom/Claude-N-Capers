@@ -94,7 +94,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 |---|---|---|
 | A2-01 | ✅ DONE (A audit, env_a.md -48). Doors on the nav graph: NPC/AI teammates open unlocked doors on their path; guards use keycard doors they're authorised for; nav links toggle with door state | (QA-11) |
 | A2-02 | ✅ DONE (A audit, env_a.md -48). Cameras complete: security room + `camera_station` operator (kill/dominate → all cameras off), operator dispatches a guard to investigate a broken camera, Titan cameras (Lethal+) | S8.1, S8.2 |
-| A2-03 | GAP: S8.5 ATM-by-ECM only (A fixing, env_a.md -48). ECM jammer runtime: deploy, chaining, cameras/phones jam, doors/ATM open with skill, feedback stun, pager-delay skill | S8.4–S8.6, S5.6 |
+| A2-03 | ✅ DONE (A audit env_a.md -48; S8.5 ATM fix 8fd0d3f4, test_s8_4_ecm). ECM jammer runtime: deploy, chaining, cameras/phones jam, doors/ATM open with skill, feedback stun, pager-delay skill | S8.4–S8.6, S5.6 |
 | A2-04 | ✅ DONE (A audit, env_a.md -48). Keypads + code notes, safes with methods and time locks, saws, laser grids, zipline | S9.4, S9.7, S9.8, S9.10, S9.11 |
 | A2-05 | ✅ DONE (A audit, env_a.md -48). Guard cuff flow (yell, pause, cuff, 4 min cooldown, 60 s self-free), body-shot misfire, marking + Sixth Sense | S3.2, S3.7, S2.9 |
 | A2-06 | ✅ DONE (A audit, env_a.md -48). Deployables runtime: doctor bag, FAK, ammo bag, body bag case, ECM; dodge rolls | L2.11, L2.4, S6.2 |
