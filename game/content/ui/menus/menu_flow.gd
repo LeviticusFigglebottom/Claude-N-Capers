@@ -208,6 +208,7 @@ func show_screen(screen: Control) -> void:
 		if c is UiScreen:
 			(c as Control).visible = c == screen
 	current = screen
+	UiBuild.set_crumb_root(screen, _direct_home != null)  # LEAD r307: "Main menu / …" on the direct-entry path
 	if screen is MainMenu:
 		(screen as MainMenu).refresh_profile()
 

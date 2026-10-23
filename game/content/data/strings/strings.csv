@@ -1859,6 +1859,9 @@ ui.payday_cards.mask_kind.pattern,Mask pattern
 ui.payday_cards.mask_kind.preset,Complete mask
 ui.board.title,The Board
 ui.board.crumb,Safehouse / Contracts
+ui.crumb.safehouse,Safehouse
+ui.crumb.main_menu,Main menu
+ui.briefing.more_below,More below ▾
 ui.board.subtitle,Contracts from your contacts. Each stays up for {minutes} minutes; new ones land all the time.
 ui.board.level_caption,Level
 ui.board.stash_caption,Stash
