@@ -19,6 +19,9 @@
 ## InteractableComponents `LandingPanel<i>` (direct children, so explicit targets find them).
 ## Hold (bag_lift_send_s) at the landing where the car stands = kind &"send_lift": the car goes to
 ## the next landing ((i + 1) % count). At another landing = kind &"call_lift": the car comes there.
+## LEAD r304 (PD2 freight lifts pick the floor): with 3+ landings every landing's panel instead offers one send per
+## other landing (`LandingSend<i>_<j>`, stacked SEND_BUTTON_STEP_M apart up the panel, prompt send_prompt_key(j)),
+## active while the car stands there; that landing's own panel is then only the "call".
 ## Blocked while moving (BLOCK_STATE) and while more than `capacity` bags are in the car
 ## (BLOCK_LIFT_FULL). Bags in the car (not carried, origin inside the `car_size_m` box of the car)
 ## ride with it: frozen, without collision and not pick-up-able for `travel_s`, then released in
@@ -35,6 +38,11 @@ extends GameplayPrefab
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/bag_lift/bag_lift_placeholder.tscn")
 const BLOCK_LIFT_FULL: StringName = &"ui.blocked.lift_full"
 const PANEL_PREFIX: String = "LandingPanel"
+const SEND_PREFIX: String = "LandingSend"
+## Vertical spacing of a landing's per-destination send buttons (m).
+const SEND_BUTTON_STEP_M: float = 0.14
+## Fallback prompt of the send to landing j (when `send_prompt_keys` names none): "ui.prompt.send_lift_to_<j>".
+const SEND_PROMPT_FALLBACK: String = "ui.prompt.send_lift_to_%d"
 
 ## Other landings (Node3D markers at the car floor), in order. Landing 0 = this prefab.
 @export var targets: Array[NodePath] = []
@@ -52,6 +60,8 @@ const PANEL_PREFIX: String = "LandingPanel"
 @export var door_fold: bool = false
 ## Separate panel node outside the car visual (empty = a root `Panel` child, else the visual's).
 @export var panel_path: NodePath = NodePath("")
+## 3+ landings: the prompt key of the send to each landing, by landing index (e.g. ui.prompt.send_lift_roof).
+@export var send_prompt_keys: Array[StringName] = []
 ## Duplicate an external panel at every other landing (LandingPanelVisual<i>).
 @export var copy_panel: bool = true
 ## Loose bags that fall into the shaft are returned to the landing they fell in at.
@@ -80,6 +90,8 @@ var trip_t: float = 0.0
 var riding: Array[Dictionary] = []
 ## Panel per landing (index = landing).
 var panels: Array[InteractableComponent] = []
+## 3+ landings: landing -> {destination landing: its send button}.
+var send_buttons: Dictionary = {}
 ## Panel mesh node (external or the visual's), or null.
 var panel_node: Node3D = null
 ## True when the panel lives outside the car visual.
@@ -321,6 +333,59 @@ func _spawn_landing_panels() -> void:
 		p.global_transform = landing_transform(i) * rel
 		_setup_panel(p, i)
 		panels.append(p)
+	if landing_count() > 2:
+		for i2: int in range(landing_count()):
+			_spawn_send_buttons(i2)
+	_refresh_panels()
+
+
+## 3+ landings: landing `i`'s panel gets one send button per other landing, stacked up from its own panel.
+func _spawn_send_buttons(i: int) -> void:
+	var base: InteractableComponent = panels[i] if i < panels.size() else null
+	if base == null:
+		return
+	var row: Dictionary = {}
+	var k: int = 0
+	for j: int in range(landing_count()):
+		if j == i:
+			continue
+		var b: InteractableComponent = InteractableComponent.new()
+		b.name = "%s%d_%d" % [SEND_PREFIX, i, j]
+		b.kind = &"send_lift"
+		b.prompt_key = send_prompt_key(j)
+		b.interaction_time_s = base.interaction_time_s
+		b.requires_item = base.requires_item
+		b.stealth_only = base.stealth_only
+		b.loud_only = base.loud_only
+		b.phase_block_key = base.phase_block_key
+		b.casing_allowed = base.casing_allowed
+		b.noise = base.noise
+		add_child(b)
+		b.global_transform = base.global_transform.translated(Vector3.UP * SEND_BUTTON_STEP_M * float(k + 1))
+		b.extra_check = _send_availability.bind(i)
+		b.completed.connect(_on_send_completed.bind(i, j))
+		row[j] = b
+		k += 1
+	send_buttons[i] = row
+
+
+## The prompt key of a send to landing `j` (send_prompt_keys, else SEND_PROMPT_FALLBACK).
+func send_prompt_key(j: int) -> StringName:
+	if j < send_prompt_keys.size() and send_prompt_keys[j] != &"":
+		return send_prompt_keys[j]
+	return StringName(SEND_PROMPT_FALLBACK % j)
+
+
+func _send_availability(crew: Node, i: int) -> StringName:
+	if i != landing:
+		return InteractableComponent.BLOCK_STATE  # the car is not at this landing
+	return _availability(crew, i)
+
+
+func _on_send_completed(crew: Node, i: int, j: int) -> void:
+	if not Net.is_authority() or i != landing:
+		return
+	send(j, int(crew.get(&"slot")) if crew != null else -1)
 	_refresh_panels()
 
 
@@ -351,8 +416,10 @@ func _on_panel_completed(crew: Node, i: int) -> void:
 	_refresh_panels()
 
 
-## Panel kinds follow the car: "send" where it stands, "call" elsewhere.
+## Panel kinds follow the car: "send" where it stands, "call" elsewhere. 3+ landings: the send buttons are on where
+## the car stands and the landing's own panel (the call) is off there.
 func _refresh_panels() -> void:
+	var multi: bool = not send_buttons.is_empty()
 	for i: int in range(panels.size()):
 		var p: InteractableComponent = panels[i]
 		if p == null:
@@ -360,6 +427,10 @@ func _refresh_panels() -> void:
 		var here: bool = i == landing and not is_moving()
 		p.kind = &"send_lift" if here else &"call_lift"
 		p.prompt_key = &"ui.prompt.send_lift" if here else &"ui.prompt.call_lift"
+		if multi:
+			p.enabled = not here
+			for b: Variant in (send_buttons.get(i, {}) as Dictionary).values():
+				(b as InteractableComponent).enabled = here
 
 
 func _place_car(xf: Transform3D) -> void:
