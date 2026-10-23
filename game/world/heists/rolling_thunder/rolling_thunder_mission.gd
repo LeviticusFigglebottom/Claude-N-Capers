@@ -39,6 +39,7 @@ const WINDOW_S: float = 8.0
 const DISMOUNT_DELAY_S: float = 4.0
 ## D-158 truck window ◇: the first assault's BUILD begins no sooner than this many seconds after the stop (crash or
 ## clean, any difficulty), so the crew gets at the trucks before wave 1 lands (later alarm-based anticipation still rules).
+## The live value and its start point are RtTweak (truck_window_s / truck_window_from); this is its default.
 const TRUCK_WINDOW_S: float = 30.0
 const POLL_S: float = 1.0
 ## Convoy layout node and its pieces (C's G1 / RT-C2): `<route slot>/Convoy/<Clean|Crash>` (meta convoy_layout
@@ -514,8 +515,13 @@ func _mover_stopped() -> void:
 func _stopped() -> void:
 	_stop_done = true
 	var dir: AssaultDirector = _director()
+	var rtw: RtTweak = RtTweak.data()
 	if dir != null:
-		dir.first_build_hold_s = TRUCK_WINDOW_S
+		# D-158 / LEAD r286 levers (RtTweak; defaults = the shipped behaviour)
+		dir.first_build_hold_s = rtw.escort_down_max_s if rtw.truck_window_from == RtTweak.FROM_ESCORT_DOWN \
+			else rtw.truck_window_s
+		if not rtw.wave1_exclude.is_empty() and _runtime.difficulty >= rtw.wave1_exclude_min_difficulty:
+			dir.wave1_exclude = rtw.wave1_exclude.duplicate()
 	set_layout(layout_id)
 	if _slot_active(&"truck_count", &"trucks_2"):
 		_drop_vehicle("T3")
@@ -527,6 +533,7 @@ func _stopped() -> void:
 			t.lockdown()
 		_say_once(VO_DEADBOLTS)
 	_spawn_convoy_units()
+	_apply_escort_accuracy()
 	if _rare(RARE_BONDS):
 		spawn_loot(LOOT_BONDS, RARE_BONDS, BONDS_BAGS)
 	update_objective_data(&"trucks", {"opened": 0, "total": _trucks.size(), "marker_tags": [TAG_TRUCK_IN_PLAY]})
@@ -681,9 +688,39 @@ func _poll() -> void:
 		if _units_total > 0 and down >= _units_total:
 			_complete_once(&"escort")
 			_say_once(VO_ESCORT_DOWN)
+			_escort_down_window()
 	_last_counts = Vector2i(opened, down)
 	if not escape_open:
 		start_timer(&"poll", POLL_S, _poll)
+
+
+## RtTweak escort_accuracy_mult: every convoy unit hits at that multiple for escort_accuracy_window_s from the stop.
+func _apply_escort_accuracy() -> void:
+	var rtw: RtTweak = RtTweak.data()
+	if is_equal_approx(rtw.escort_accuracy_mult, 1.0):
+		return
+	for u: NpcBase in _units:
+		var g: NpcGunner = u.get_node_or_null(^"Gunner") as NpcGunner if is_instance_valid(u) else null
+		if g != null:
+			g.hit_chance_mult = rtw.escort_accuracy_mult
+			g.hit_chance_mult_left = rtw.escort_accuracy_window_s
+
+
+## RtTweak escort_engage_delay_s: a convoy unit that just got out holds fire that long.
+func _on_dismounted(npc: NpcBase) -> void:
+	var delay: float = RtTweak.data().escort_engage_delay_s
+	var g: NpcGunner = npc.get_node_or_null(^"Gunner") as NpcGunner
+	if delay > 0.0 and g != null and _units.has(npc):
+		g.engage_hold_left = delay
+
+
+## RtTweak.FROM_ESCORT_DOWN: the last convoy unit is down, so the BUILD hold now ends truck_window_s from here (or at
+## stop + escort_down_max_s, whichever comes first).
+func _escort_down_window() -> void:
+	var dir: AssaultDirector = _director()
+	var rtw: RtTweak = RtTweak.data()
+	if dir != null and rtw.truck_window_from == RtTweak.FROM_ESCORT_DOWN and dir.first_build_hold_s > 0.0:
+		dir.first_build_hold_s = minf(dir.first_build_hold_s, rtw.truck_window_s)
 
 
 ## A truck's rear doors opened: its line, and its cargo when the map gave it none (G1: bags at its rear doors).
