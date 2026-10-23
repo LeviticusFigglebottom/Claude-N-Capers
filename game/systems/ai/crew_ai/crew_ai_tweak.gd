@@ -66,6 +66,10 @@ extends Resource
 @export var cover_taken_m: float = 1.0
 ## Reached the cover point within this distance (m).
 @export var cover_arrive_m: float = 0.6
+## LEAD r286 (RT lever, P's D-158 verdict: bots went down beside the pilot): > 0 = a cover point "behind" the leader
+## (farther from the nearest threat than the leader, or on the leader's far side from it) counts this many metres
+## nearer in the cover pick. 0 = nearest free point (the shipped behaviour).
+@export var cover_prefer_behind_leader_m: float = 0.0
 
 @export_group("Revive (L6.1, L2.7)")
 ## Get this close (horizontal, m) to a downed crew member before holding interact.
@@ -86,6 +90,12 @@ extends Resource
 ## L2.12 / L6.1: the officer who cuffed a downed crew member (CrewCuffs.cuffed_by_net_id) scores its distance x this
 ## when the AI picks a target (shot first, like a tasing Stinger) ◇.
 @export var arrester_score_mult: float = 0.25
+## LEAD r288 (RT done path: downs -> cuffs -> custody): a cop going for / applying the cuffs on a downed teammate
+## (PoliceBrain mode &"cuff") scores its distance x this, so a bot that sees it shoots it before anything else ◇.
+## Ships 1.0 (off): the headless RT A/B (LEAD r288) found 0.15 cost the crew time on rt_clean, with no gain elsewhere.
+@export var cuffer_score_mult: float = 1.0
+## LEAD r288: a cop cuffing the patient within revive_clear_m is cleared before kneeling, even in a last stand ◇.
+@export var cuffer_clear_first: bool = false
 ## L2.12 / L6.1: a CUFFED crew member whose arresting officer is alive within this distance (m) is freed only once the
 ## officer is down or gone (freed next to him, he re-arrests after the D-108 grace, before the 6 s revive ends) ◇.
 @export var arrester_guard_m: float = 3.0

@@ -4,6 +4,30 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-40) Round 290/291 lane: escort knobs on, probe warm-up, pocket ECM, D-162, bot revive A/B (2026-10-23)
+- **e26cd387:** D-158 amendment 6, RT escort knobs on (1.5 s engage delay, ×0.7 accuracy for 10 s).
+- **788bd236:** ReflectionProbe load warm-up (HeistLauncher host and replica) and the safehouse.tscn path.
+  - Windowed: verified on 5 probes (2.3–2.6 s).
+  - Glasshouse unverified windowed (llvmpipe never finished loading the map).
+- **7e9ed5c2:** the mixer driver uses contact_hollis_rt.
+- **D-161 pocket ECM (5f09d31a):** EcmSystem jam / feedback charges and PerkPocketEcm. ui_hud v1.20 (bcdff5aa):
+  LocalHudModel.pocket_ecm and throwable_id from the deck throwable.
+- **D-162 (0ef6e4eb, 3668b28c):** perk.yakuza / biker / maniac on B's names, the CrewKillFeed, and the 3 contract rows
+  (LEAD-granted).
+- **Bot revive (47a6868f, b643bdae, 03048be7, f6b41619):**
+  - Bots reviving bots is now tested.
+  - Cuffer targeting / clear-first are knobs, shipped OFF: the headless A/B (12 + 3 runs) showed no gain anywhere and
+    the crew lasting 100–190 s less on the rt_clean seeds that diverged.
+### (-39) RT levers as knobs + A/B data (2026-10-23)
+- **Knobs, defaults = today** (d046e039, 140c1831), test_d158_rt_fairness 12/12:
+  - RtTweak: truck_window_from (stop | escort_down, max 60 s), wave1_exclude (with a minimum difficulty),
+    escort_engage_delay_s, escort_accuracy_mult and its window.
+  - CrewAiTweak.cover_prefer_behind_leader_m (the LEAD ruled it stays at 0).
+  - Generic NpcGunner fields: engage_hold_left, timed hit_chance_mult.
+  - HeistMission._on_dismounted hook.
+- **A/B** (Po5RtAb, headless, RT Hazardous, seeds 1001–1003, crash and clean stops):
+  - The window, wave-1 and cover knobs never engaged: the escort decides each run within ~20 s; cover 4.0 hurt.
+  - Escort knobs (1.5 s, ×0.7): escort survived in 4/6 runs vs 2/6, crew lasts ~2× longer, seed 1001 lethal either way.
 ### (-38) Last Breath, P4 ratchet emptied, LanDiscovery (2026-10-23)
 - **Last Breath / One Down (6d8b88bc):** CrewHealth.max_downs is 1 (+ defense.downs_extra) with the "last_breath"
   option. test_c4_last_breath 3/3.

@@ -12,8 +12,8 @@ body_faces_culled: 4820
 body_params: {"age": 0.12, "beard_shadow": 0.2, "build": 0.35, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.8, "lip": "auto", "skin": 5}
 bones: 52
 look: Jogger (RT-D1): heather-grey hoodie (hood down), black joggers, white trainers, black sports watch
-meshes: Body,Gear,Hair,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25622
-tris_by_mesh: {"Body": 9104, "Gear": 436, "Hair": 1728, "Outfit": 14354}
+tris: 27234
+tris_by_mesh: {"Body": 9104, "Gear": 436, "Hair": 1728, "Headwear": 1452, "Outfit": 14514}

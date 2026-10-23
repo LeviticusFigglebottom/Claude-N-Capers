@@ -191,7 +191,8 @@ static func _crew_from(v: Variant) -> Array[Dictionary]:
 		var e: Dictionary = src[i] as Dictionary if i < src.size() and src[i] is Dictionary else {}
 		out.append({"weapon": StringName(String(e.get("weapon", ""))), "mods": _to_names(e.get("mods", [])),
 			"armor": StringName(String(e.get("armor", ""))), "mask": StringName(String(e.get("mask", ""))),
-			"outfit": StringName(String(e.get("outfit", "")))})
+			"outfit": StringName(String(e.get("outfit", ""))), "ability": StringName(String(e.get("ability", ""))),
+			"boost": StringName(String(e.get("boost", "")))})
 	return out
 
 
@@ -199,7 +200,8 @@ static func _crew_to(entries: Array[Dictionary]) -> Array:
 	var out: Array = []
 	for e: Dictionary in _crew_from(entries):
 		out.append({"weapon": String(e["weapon"]), "mods": _to_strings(e["mods"] as Array[StringName]),
-			"armor": String(e["armor"]), "mask": String(e["mask"]), "outfit": String(e["outfit"])})
+			"armor": String(e["armor"]), "mask": String(e["mask"]), "outfit": String(e["outfit"]),
+			"ability": String(e["ability"]), "boost": String(e["boost"])})
 	return out
 
 

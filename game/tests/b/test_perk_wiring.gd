@@ -72,6 +72,10 @@ const GENERIC: Dictionary = {
 	],
 	&"perk.long_odds": [[&"defense.health_mult", &"", "mult", 1.4]],
 	&"perk.overlord": [[&"defense.health_mult", &"", "mult", 1.8]],
+	&"perk.hacker": [[&"defense.health_mult", &"", "mult", 1.2], [&"defense.dodge_add", &"", "add", 0.3]],
+	&"perk.inkwork": [],
+	&"perk.road_crew": [],
+	&"perk.frenzy": [],
 }
 
 const ARMOR_IDS: Array = [&"armor.tailored_suit", &"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest",
@@ -126,6 +130,24 @@ const PARAMS: Dictionary = {
 			"overheal_per_cooldown_s": 50.0},
 		&"perk.throwable": {"item_id": &"throwable.boss_injector"},
 	},
+	&"perk.hacker": {  # D-161: A's pocket ECM reads stealth.pocket_ecm
+		&"stealth.pocket_ecm": {"charges": 2, "duration_s": 6.0, "cooldown_s": 100.0, "kill_cooldown_reduction_s": 6.0,
+			"kill_heal": 20.0, "kill_dodge_add": 0.2, "kill_dodge_s": 30.0, "crew_kill_heal": 10.0},
+		&"perk.throwable": {"item_id": &"throwable.pocket_ecm"},
+	},
+	&"perk.inkwork": {  # D-162: A's perk.yakuza
+		&"perk.yakuza": {"low_health_threshold": 0.5, "armor_regen_max_add": 0.6, "move_speed_max_add": 0.2,
+			"blocks_regen": true},
+	},
+	&"perk.road_crew": {  # D-162: A's perk.biker
+		&"perk.biker": {"heal": 5.0, "armor": 5.0, "max_procs": 4, "window_s": 4.0, "armor_per_missing_health": 1.0,
+			"window_cut_per_missing_health": 0.1, "heal_per_missing_armor": 1.0, "window_cut_per_missing_armor": 0.1},
+	},
+	&"perk.frenzy": {  # D-162: A's perk.maniac
+		&"perk.maniac": {"conversion": 1.0, "gain_cap": 240.0, "gain_window_s": 4.0, "max_stacks": 600.0,
+			"stacks_per_absorb": 25.0, "decay_fraction": 0.6, "decay_flat": 40.0, "decay_interval_s": 8.0, "team": true,
+			"self_absorb_mult": 2.0},
+	},
 }
 
 ## Hook coverage (perk_decks.md "Hook coverage"): base key -> file that reads it with
@@ -172,8 +194,12 @@ const HOOKED: Dictionary = {
 	&"perk.kingpin": "res://systems/combat/perks/perk_kingpin.gd",
 	&"perk.throwable": "res://systems/combat/perks/perk_throwable.gd",
 	&"perk.rogue_dodge_stack": "res://systems/combat/perks/perk_rogue.gd",
+	&"stealth.pocket_ecm": "res://systems/combat/perks/perk_pocket_ecm.gd",  # D-161 (A 5f09d31a)
+	&"perk.yakuza": "res://systems/combat/perks/perk_yakuza.gd",  # D-162 (A 3668b28c)
+	&"perk.biker": "res://systems/combat/perks/perk_biker.gd",
+	&"perk.maniac": "res://systems/combat/perks/perk_maniac.gd",
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-056.
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty again since D-161 / D-162.
 const MISSING: Array = []
 
 
@@ -260,7 +286,7 @@ func _same_array(a: Array, b: Array) -> bool:
 # --- Full deck through the real path ---------------------------------------------------------------
 
 func test_every_deck_at_nine_cards_reaches_modifiers() -> void:
-	assert_eq(GENERIC.size(), 14, "expectations cover 14 decks")
+	assert_eq(GENERIC.size(), 18, "expectations cover 18 decks")
 	for deck_id: StringName in GENERIC:
 		assert_true(_deck(deck_id) != null, "%s exists" % deck_id)
 		Modifiers.clear_all()

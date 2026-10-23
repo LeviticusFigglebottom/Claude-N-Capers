@@ -1,6 +1,6 @@
-## C4-03 hub check (LEAD): B6-06's 3D safehouse mode (MenuFlow / SafehouseHost) on C's REAL staged scene
-## (safehouse_g1.tscn) with ENV A's hub crew (A3-11 CrewController.spawn_for_hub), run on one peer: the walker spawns
-## at the entry marker, a station is pressed through the crew's own interaction (aim + interact) and opens its screen,
+## C4-03 hub check (LEAD): B6-06's 3D safehouse mode (MenuFlow / SafehouseHost) on C's REAL scene (safehouse.tscn,
+## staged as safehouse_g1.tscn) with ENV A's hub crew (A3-11 CrewController.spawn_for_hub), run on one peer: the walker
+## spawns at the entry marker, a station is pressed through the crew's own interaction (aim + interact) and opens its screen,
 ## Back returns the walker to the station's UsePoint, and leave(marker) + enter() spawns at ReturnRange /
 ## ReturnHeist / the Spawn fallback. The host test runs it locally and on the client process (LoopbackProbe
 ## "hub_check") while the ENet session is up, so it also proves the hub does not depend on being the authority.
@@ -10,11 +10,21 @@
 class_name HubCheck
 extends RefCounted
 
-const SCENE: String = "res://world/hub/safehouse/safehouse_g1.tscn"
+## C's contract path (hub_map.md); STAGED_SCENE until C's move reaches this tree.
+const SCENE: String = "res://world/hub/safehouse/safehouse.tscn"
+const STAGED_SCENE: String = "res://world/hub/safehouse/safehouse_g1.tscn"
 const MAP_CLASS: StringName = &"SafehouseMap"
 const FLOW_SCENE: String = "res://content/ui/menus/menu_flow.tscn"
 const HUB_KEY: StringName = &"safehouse_hub"
 const STATION: StringName = &"armory"
+
+
+## The safehouse scene on this tree ("" = none).
+static func scene_path() -> String:
+	for p: String in [SCENE, STAGED_SCENE]:
+		if ResourceLoader.exists(p):
+			return p
+	return ""
 
 
 ## `root_dir`: this peer's own profile directory (host and client share user://).
@@ -29,7 +39,7 @@ static func run(parent: Node, root_dir: String) -> Dictionary:
 	GameSettings.current().set_value(GameSettings.CONTROLS, HUB_KEY, "walk")
 	var f: MenuFlow = (load(FLOW_SCENE) as PackedScene).instantiate() as MenuFlow
 	var t: SafehouseHubTweak = SafehouseHubTweak.load_default().duplicate() as SafehouseHubTweak
-	t.scene_path = SCENE
+	t.scene_path = scene_path()
 	t.map_class = MAP_CLASS
 	t.station_cam_blend_s = 0.0
 	parent.add_child(f)

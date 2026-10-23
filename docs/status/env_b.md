@@ -3,7 +3,86 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 01:30)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### r289-290 (env/b-content, over trunk r288 396bc109)
+* f96cd719 sentry cues on C's OGGs. ed4aac0c + ec354108 D-162 decks (Inkwork / Road Crew / Frenzy; held for A's
+  hooks, merged in the same round as A's D-162). c9c914e7 HUD pocket ECM (ui_hud v1.20 `pocket_ecm`; cherry-pick).
+* Equipment glyphs (LEAD r290): ecm, fak, sentry, trip_mine added; `EquipmentIcon.KINDS` lists every drawn kind and
+  test_equipment_glyphs keeps every catalogue deployable / throwable off the fallback dot. Windowed sheet of all 17
+  glyphs at 64 and 32 px checked under xvfb 1280x720 (2026-10-23): all distinct and readable.
+
+### D-161 (5a988303, trunk r287 merged)
+* **(1) S10.6 golden:** `test_economy_golden` (4): 18 D-120 bag values in PD2 order; 5 contracts (base_payout +
+  `HeistCatalog.contract_preview` at all 6 difficulties); `BoardBroker.cost` with the shipped BoardTweak at all 6
+  (2-25 % of a full clear); bag share of a full clear GH 55 / ND 67 / SL 39 / DB 81 / GN 53 %.
+* **(2) Hacker deck** `perk.hacker` (15th): card 1 `perk.throwable {throwable.pocket_ecm}` + `stealth.pocket_ecm`
+  {charges 2, duration_s 6, cooldown_s 100, kill_cooldown_reduction_s 6}; card 5 + kill_heal 20; card 7 +
+  kill_dodge_add 0.2 / kill_dodge_s 30; card 9 + crew_kill_heal 10; health ×1.2, dodge +0.3. `throwable.pocket_ecm`
+  def (perk-only, placeholder ECM prop model). Strings, picker (windowed shot, 15 decks, list scrolls).
+  **Held:** `stealth.pocket_ecm` is in test_perk_wiring `MISSING` + perk_decks.md "Held" until A's hook; then drop both.
+
+### B audit (LEAD r287, like A's A4-01). Run on env/b-content over trunk round 286
+Every test file named below was run green on this tree: 69 files, 921 tests, 0 failed (+ test_fidelity_b_gaps 4). "Done" means the row's scope exists and a test asserts it.
+
+**Roadmap B rows**
+
+| Row | Status | Evidence (tests in game/tests/b) |
+|---|---|---|
+| B1-01..B1-07 | ✅ done | test_content_data, test_loadout_resolver, test_stat_calculator, test_weapon_models, test_app_shell, test_ui_*, test_range, test_save_service, test_payout_calculator, test_strings, test_voice_lines |
+| B1-08 mask v1 | ✅ done (superseded by B2-03 / B4-15) | test_masks |
+| B2-01 pre-planning UI | ✅ done | test_preplan, test_preplan_screen, test_preplan_result, test_app_flow |
+| B2-02 briefing | ✅ done | test_briefing, test_contacts, test_briefing_intel |
+| B2-03 mask customization | ✅ done | test_masks, test_mask_batch |
+| B4-05 payday cards | ✅ done | test_payday_cards, test_ui_payday |
+| B4-06 Board + broker | ✅ done | test_board, test_board_screen |
+| B4-07 hub UI layer + accent theme | ✅ done | test_hub, test_ui_accent |
+| B4-08 D-038 follow-ups | ✅ done | test_preplan, test_preplan_result, test_preplan_variants |
+| B4-09 / B4-10 ND + SL data | ✅ done | test_p2_heist_content |
+| B4-11 co-op lobby | ✅ done | test_lobby_flow, test_lobby_loopback, test_lobby_state |
+| B4-12 / B4-18 armory batches | ✅ done: 36 weapons = the P5 target exactly | test_armory, test_armory_batch2, test_armory_batch3(_models), test_weapon_models |
+| B4-13 firing range full | ✅ done | test_range_complete |
+| B4-14 perk decks complete | ✅ done except Hacker's pocket ECM (`stealth.pocket_ecm`, LEAD hold, S8.7). The P4 ratchet has UNTESTED = {} and UNHOOKED = {pocket_ecm}. | test_perk_behaviour, test_perk_wiring, test_perk_decks |
+| B4-15 masks batch | ✅ done: 35 bases, 22 patterns, 24 materials, 27 colour pairs, 14 presets (target was +12 / +16 / +10) | test_mask_batch, test_masks |
+| B4-16 save v2+ | ✅ done (now v10, golden migrations) | test_save_service, test_crew_loadouts |
+| B4-17 workshop orbit view | ✅ done | test_workshop |
+| B4-19 stamina HUD | ✅ done | test_ui_hud |
+| B4-20 achievements stub | ✅ done (grew into B7-02) | test_achievements |
+| B5-01 options | ✅ done. Resolution, quality preset and interact hold / toggle landed in round 287. Note: FOV is vertical 60-100, shown as horizontal degrees (LEAD ruling), not "60-110". Settings live in settings.cfg, not the profile (by design). | test_options_*, test_options_gaps |
+| B5-02 notoriety | ✅ done | test_notoriety, test_notoriety_bonus, test_notoriety_ui |
+| B5-03 music selection | ✅ done | test_music |
+| B5-04 Dockside Burn data | ✅ done | test_p2_heist_content, test_voice_lines |
+| B5-05 civilian-mode UI | ✅ done in this audit: the briefing flag (the last missing piece) added. The HUD badge, the loadout notice and the gear-pickup prompt were already in. | test_ui_hud (civilian), test_deployable_gate (notice), test_briefing (civilian_start) |
+| B6-01 P5 loot catalogue | ✅ done | test_p5_catalogue |
+| B6-02 scoreboard + awards | ✅ done | test_ui_scoreboard, test_heist_awards |
+| B6-03 chat | ✅ done | test_chat |
+| B6-04 drop-in + kick UI | ✅ done | test_dropin, test_dropin_wiring |
+| B6-05 lobby codes + LAN list | ✅ done | test_lobby_code, test_lan_lobby |
+| B6-06 3D hub mode | ✅ done (B side). C's move of the scene to safehouse.tscn is pending. | test_hub_3d |
+| B6-07 heister choice | ✅ done | test_heisters |
+| B6-08 throwables | ✅ done: 6, the P5 target | test_throwables |
+| B7-01 career + profile | ✅ done | test_career |
+| B7-02 achievements ~40 | ✅ done: 44 | test_achievements, test_achievements_b702 |
+| B7-03 contact radio | ✅ done | test_contact_radio |
+| B7-04 weapon finishes | ✅ done | test_weapon_finishes |
+
+**P5 content counts.** Weapons 36: 6 pistols (incl. the akimbo pair), 6 SMGs, 6 ARs, 5 shotguns, 3 LMGs, 4 snipers and 6 specials (bow, crossbow, launcher, flamethrower, minigun, saw). Melee 12, throwables 6, deployables 8 (incl. the sentry), armors 7. All match the P5 row.
+
+**pd2_fidelity rows owned by B (phase <= P5), 42 rows.** 38 covered (6 of them closed in this audit), 3 partial where the rest isn't B's, 1 open (LEAD hold):
+- Covered: S1.1, S2.1, S2.3, S2.4, S5.6\*, S6.2\*, S7.3, S8.4\*, S9.1, S10.4, S11.1, L1.7\*, L2.3, L2.11\*, L3.1, L3.2, L3.4, L3.7, L3.9, L3.10, L6.2, P1-P9, C1-C4, C6, C8, C9.
+  \* = closed in this audit by test_fidelity_b_gaps:
+  - S5.6: the ECM pager delay is Jammer Jockey aced.
+  - S6.2: the body bag case holds 3.
+  - S8.4: the ECM deploys in 2 s and jams for 20 s.
+  - L2.11: doctor bag 2 uses with a down reset; first aid kit 4 at 1 s with no reset; ammo bag 4 uses.
+  - L1.7: the assault banner now draws the difficulty skulls (1 per tier above Routine) and a Last Breath tag. It was missing; added.
+- C5: covered for B by `cue.mask_on` registered (test_fidelity_b_gaps). The viewmodel animation is D / P.
+- Partial (not B's to finish):
+  - S1.2: mask on the crew model / FP view (A / D).
+  - S2.9: outline shader (C).
+  - S10.6: the bag-value table is not pinned (open question below).
+- Open: S8.7, pocket ECM data (Hacker deck held by the LEAD).
+- S10.6 question for the LEAD: pin the D-120 bag-value table in a test now, or wait for the economy pass?
+
 ### RT un-hide checklist (LEAD r276 #2). Goal: lifting RT onto the Board is ONE flag flip
 The flag: `game/content/data/ui/heist_list.tres` -> `rolling_thunder` -> delete `"hidden": true`. HeistCatalog.is_ready
 gates the menus on that flag, the map and the mission script, and only the menus read HeistRegistry.ids().
@@ -21,6 +100,29 @@ gates the menus on that flag, the map and the mission script, and only the menus
 | 10 | Music track name `music.rolling_thunder.name` ("Red Signal") | B (string) / C (track) | string done; track on env/c-worlds (held) |
 | 11 | Cues + ambience beds in `cues.tres` | C (73ec9b55, LEAD waiver) / B (train) | accepted (LEAD ruling a); B adds `cue.freight_train_pass` when C's stream exists |
 | 12 | Achievements screen / payday hide a hidden heist's set (`Achievements.shown()`) | B | done; flips with the flag |
+-38. **Round 286 items (2026-10-23).**
+     - 4b75c578: the 19 2D-hub test files pin the menu hub (SafehouseHost.menu_hub_only). Checked against C's scene at the
+       contract path.
+     - 8c2eb0dc / d5cd9d4f, D-157 sentry:
+       - sentry.tres: 1 unit, Battery +1 / +2.
+       - Gated on Mount Up basic (deploy.sentry_cost_mult).
+       - Prompts and cues are in; ui.* prompt args are translated.
+       - **Model link waits for D's eqp_sentry on trunk.**
+     - 391c86fd, Last Breath (One Down):
+       - The heist-select toggle sets options["last_breath"] (A reads it).
+       - The lobby contract carries it (host decides).
+       - Payday chip and Career last_breath_wins.
+     - d03f675c + d142fa4c, L6.2 bot crew:
+       - BotCrewDef kind bot_crew: 4 abilities + 5 boosts (◇ values).
+       - Crew-screen Ability / Crew Boost rows, saved in crew_loadouts.
+       - bot_loadout -> Loadout.bot_ability / bot_boost.
+     - 42443897, Options gaps:
+       - video/resolution, video/quality_preset (+ video/shadow_quality), controls/interact_mode.
+       - ENV P must read is_toggle(&"interact").
+     - Open:
+       - D-160 RT un-hide flip (ready; waits on P's verdict + the LEAD's done check).
+       - Refit the sledgehammer / fire axe to D's melee_heavy grip and switch their anim_set once fb81a04c is on trunk.
+       - LAN host list UI (A's B6-05).
 -37. **Round 285 items (2026-10-23).**
      - 274a5f53: the last 19 blocked_on_keys markers dropped; blocked_on_keys is empty.
      - ab9f637c: test_ui_payday fixed. A mask card can be a whole payday preset (mask.night_circuit).

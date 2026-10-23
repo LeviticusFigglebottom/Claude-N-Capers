@@ -1418,8 +1418,9 @@ func _hazard_run(clean: bool) -> bool:
 		while not t.opened and rt.heist_time_s < t_end and not _in_custody():
 			if comp.kind == &"fix_drill" and pilot.crew.crew_state == Enums.CrewState.NORMAL:
 				await pilot.use(comp, 60.0, func() -> bool: return comp.kind != &"fix_drill")
-			elif comp.kind == k0 and not t.opened and pilot.crew.crew_state == Enums.CrewState.NORMAL:
-				await pilot.use(comp, 60.0, func() -> bool: return t.opened or comp.kind != k0)  # the saw was never placed
+			elif not placed and comp.kind == k0 and not t.opened and pilot.crew.crew_state == Enums.CrewState.NORMAL:
+				# the saw was never placed (a placed SawPoint keeps its place_drill kind while it runs)
+				placed = await pilot.use(comp, 60.0, func() -> bool: return t.opened or comp.kind != k0)
 			await _hold_cover(func() -> bool: return t.opened or comp.kind == &"fix_drill", 6.0)
 		opened = t.opened
 		t_open = rt.heist_time_s

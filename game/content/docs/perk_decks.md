@@ -79,6 +79,10 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 | Incumbent | Ex-President | `perk.ex_president` | `defense.health_mult` → 1.4, `defense.dodge_add` 0.15 |
 | Long Odds | Gambler | `perk.gambler` | `defense.health_mult` → 1.4 |
 | Overlord | Kingpin | `perk.kingpin`, `perk.throwable` | `defense.health_mult` → 1.8 |
+| Hacker (D-161) | Hacker | `stealth.pocket_ecm`, `perk.throwable` (`throwable.pocket_ecm`) | `defense.health_mult` → 1.2, `defense.dodge_add` 0.3 |
+| Inkwork (D-162) | Yakuza | `perk.yakuza` | none |
+| Road Crew (D-162) | Biker | `perk.biker` | none |
+| Frenzy (D-162) | Maniac | `perk.maniac` | none |
 
 Notes on PD2 deviations:
 * **Clean Sweep** merges Hitman and Sociopath (fidelity table). Its cards are: Sociopath Tension
@@ -255,6 +259,51 @@ The bank pays out when armor breaks and starts to regenerate.
 
 Card 1 also grants `perk.throwable {item_id: &"throwable.boss_injector"}`.
 
+### `stealth.pocket_ecm` (Hacker, D-161)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| charges | int | count | 2 | 1 | Charges; each one recharges on its own timer, one after another. |
+| duration_s | float | s | 6.0 | 1 | Jam (stealth) / feedback (loud) duration of one charge. |
+| cooldown_s | float | s | 100.0 | 1 | Recharge time of one charge. |
+| kill_cooldown_reduction_s | float | s | 6.0 | 1 | Recharge cut per holder kill. |
+| kill_heal | float | HP | 20.0 | 5 | A holder kill while the feedback is active heals this. |
+| kill_dodge_add / kill_dodge_s | float | fraction / s | 0.2 / 30.0 | 7 | A holder kill while jamming or feedback gives this dodge for this long. |
+| crew_kill_heal | float | HP | 10.0 | 9 | A teammate's kill while the holder's feedback is active heals that teammate this. |
+
+Card 1 also grants `perk.throwable {item_id: &"throwable.pocket_ecm"}`.
+
+### `perk.yakuza` (Inkwork, D-162)
+`s` = 0 at full health, rising linearly to 1 at `low_health_threshold` and staying 1 below it (PD2 Irezumi).
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| low_health_threshold | float | fraction | 0.25 → 0.5 | 1, 9 | Health fraction where the bonuses peak. |
+| armor_regen_max_add | float | fraction | 0.2 / 0.4 / 0.6 | 1, 5, 7 | Armor recovery rate +add × s: the regen delay counts down (1 + add × s) times as fast (rule 3). |
+| move_speed_max_add | float | fraction | 0.0 → 0.2 | 3 | Movement speed × (1 + add × s). |
+| blocks_regen | bool | flag | true | 1 | While s > 0, other health regeneration (`defense.health_regen_per_sec`) is off (PD2 Koi: "negates third party regeneration"). |
+
+### `perk.biker` (Road Crew, D-162)
+Any crew kill (the holder's or a teammate's) is a proc: +heal health and +armor armor (PD2 display units),
+at most `max_procs` within a sliding `window_s`. `missing_h` / `missing_a` = whole 10% steps of missing health / armor.
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| heal / armor | float | HP | 5.0 / 5.0 | 1 | Base gain per proc. |
+| max_procs / window_s | int / float | count / s | 4 / 4.0 | 1 | Rate limit. |
+| armor_per_missing_health | float | armor | 1.0 | 3 | armor + this × missing_h. |
+| window_cut_per_missing_health | float | s | 0.1 | 5 | window_s − this × missing_h. |
+| heal_per_missing_armor | float | HP | 1.0 | 7 | heal + this × missing_a. |
+| window_cut_per_missing_armor | float | s | 0.1 | 9 | window_s − this × missing_a (both cuts add). |
+
+### `perk.maniac` (Frenzy, D-162)
+| Field | Type | Unit | Value | Card | Semantics |
+|---|---|---|---|---|---|
+| conversion | float | fraction | 1.0 | 1 | Stacks gained = damage dealt (PD2 display units) × this. |
+| gain_cap / gain_window_s | float | stacks / s | 240.0 / 4.0 | 1 | At most this many stacks gained per window. |
+| max_stacks | float | stacks | 600.0 | 1 | Cap. |
+| stacks_per_absorb | float | stacks | 30.0 → 25.0 | 1, 7 | 1 damage absorbed from every hit per this many stacks (floor). |
+| decay_fraction / decay_flat / decay_interval_s | float | fraction / stacks / s | 0.8 / 120 / 8 → 0.6 / 40 / 8 ◇ | 1, 5 | Every interval: stacks −= stacks × fraction + flat (min 0). Card 1's 80% + 120 is from memory (research text truncated) ◇. |
+| team | bool | flag | false → true | 3 | Teammates also absorb from the holder's stacks; with several holders, only the best absorb counts. |
+| self_absorb_mult | float | mult | 1.0 → 2.0 | 9 | The holder's own absorb × this (teammates keep ×1). |
+
 ### `perk.throwable` (Composure, Overlord)
 | Field | Type | Semantics |
 |---|---|---|
@@ -298,6 +347,10 @@ owns the progression readers in `game/content/**`. Tests: `game/tests/b/test_per
 gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above) and
 `game/tests/b/test_perk_behaviour.gd` (behaviour on a `CrewController.spawn_for_range` crew member).
 `test_every_granted_key_is_hooked_or_filed` fails if a deck grants a key that is in neither list below.
+
+**D-161 / D-162:** `stealth.pocket_ecm` (A `perk_pocket_ecm.gd` + EcmSystem), `perk.yakuza`, `perk.biker` and
+`perk.maniac` (A `perk_<name>.gd`, PerkTweak defaults = card-1 values; Road Crew and Hacker card 9 via CrewKillFeed)
+are hooked under the field names of the schema tables above.
 
 **Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's

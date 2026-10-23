@@ -1,6 +1,6 @@
 asset: char_armored_car_marshal
 script: tools/blender/characters/char_p5_convoy.py
-params: {"age": 0.66, "beard_shadow": 0.8, "build": 0.7, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.81, "look": "marshal", "skin": 3}
+params: {"age": 0.66, "beard_shadow": 0.8, "build": 0.7, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.81, "look": "marshal", "role": "marshal", "skin": 3}
 seed: 2617693601  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_armored_car_marshal
@@ -17,5 +17,5 @@ look: Vaultline route marshal: the crew uniform (sand shirt, brown trousers, cre
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31806
-tris_by_mesh: {"Body": 10516, "Gear": 2036, "Hair": 1728, "Headwear": 832, "Outfit": 16694}
+tris: 31602
+tris_by_mesh: {"Body": 10516, "Gear": 2352, "Hair": 1728, "Headwear": 832, "Outfit": 16174}

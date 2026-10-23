@@ -4,7 +4,9 @@
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_prop_review.tscn -- --out=/abs/dir \
 ##     --scenes=res://assets/props/prop_sh_jukebox/prop_sh_jukebox.glb,...   [--wall=<id>,...]
-## Wall props (``--wall``) are shown against a backdrop at y = 0 with the pivot at 1.5 m.
+## Wall props (``--wall``) are shown against a backdrop at y = 0 with the pivot at 1.5 m. ``--focus=x,y,z,r`` frames
+## every view on that point (scene space) at r metres instead of the whole AABB (close-ups of character details).
+## ``--lift=m`` raises every model by m (hand-held items whose origin is the grip, not the base).
 ## Owner: ENV D.
 extends Node3D
 
@@ -13,6 +15,8 @@ const TILE: Vector2i = Vector2i(480, 360)
 var _out: String = ""
 var _scenes: PackedStringArray = []
 var _wall: PackedStringArray = []
+var _focus: Vector4 = Vector4.ZERO
+var _lift: float = 0.0
 var _log: PackedStringArray = []
 
 
@@ -24,6 +28,11 @@ func _ready() -> void:
 			_scenes = a.trim_prefix("--scenes=").split(",", false)
 		elif a.begins_with("--wall="):
 			_wall = a.trim_prefix("--wall=").split(",", false)
+		elif a.begins_with("--lift="):
+			_lift = a.trim_prefix("--lift=").to_float()
+		elif a.begins_with("--focus="):
+			var f: PackedFloat64Array = a.trim_prefix("--focus=").split_floats(",")
+			_focus = Vector4(f[0], f[1], f[2], f[3])
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/prop_review"
 	DirAccess.make_dir_recursive_absolute(_out)
@@ -66,6 +75,7 @@ func _review(path: String) -> void:
 	add_child(root)
 	var model: Node3D = (load(path) as PackedScene).instantiate() as Node3D
 	root.add_child(model)
+	model.position.y += _lift
 	var post: MeshInstance3D = MeshInstance3D.new()  # 1.8 m reference post, 0.1 m square
 	var bm: BoxMesh = BoxMesh.new()
 	bm.size = Vector3(0.1, 1.8, 0.1)
@@ -96,6 +106,9 @@ func _review(path: String) -> void:
 			_say("  node %s (%s) at %s" % [model.get_path_to(n), n.get_class(), (n as Node3D).position])
 	var c: Vector3 = model.position + aabb.get_center()
 	var r: float = maxf(aabb.size.length() * 1.15, 1.6)
+	if _focus.w > 0.0:
+		c = model.position + Vector3(_focus.x, _focus.y, _focus.z)
+		r = _focus.w
 	post.position = Vector3(c.x + aabb.size.x / 2 + 0.4, 0.9, c.z)
 	var cam: Camera3D = Camera3D.new()
 	cam.fov = 45.0

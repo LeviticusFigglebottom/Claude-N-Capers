@@ -27,6 +27,11 @@ func test_def_is_pd2_shaped() -> void:
 		assert_true(d.params.has(k) and float(d.params[k]) > 0.0, "params.%s set" % k)
 	assert_near(float(d.params.get("ammo_cost_frac", 0.0)), 0.4, 0.001, "PD2: a sentry costs 40 % of your ammo")
 	assert_true(float(d.params.get("range_m", 0.0)) <= 40.0, "a defensive turret, not a sniper")
+	assert_true(d.model != null, "D's eqp_sentry model is linked")
+	if d.model != null:
+		var n: Node = d.model.instantiate()
+		assert_true(n is Node3D, "the model instantiates")
+		n.free()
 
 
 func test_strings_and_picker() -> void:
@@ -38,3 +43,35 @@ func test_strings_and_picker() -> void:
 	for r: Variant in ContentDB.all_deployables():
 		listed = listed or (r as DeployableDef).id == ID
 	assert_true(listed, "the loadout's deployable picker lists it (ContentDB.all_deployables)")
+
+
+## Stand-in for the HUD model's interaction state (InteractionPanel reads `interaction`).
+class FakeModel:
+	extends Node
+	signal interaction_changed
+	var interaction: Dictionary = {}
+
+
+func test_gate_needs_the_first_sentry_skill() -> void:
+	assert_eq(DeployableGate.required_flag(ID), &"deploy.sentry_cost_mult", "D-157: gated like the ECM / trip mine")
+	assert_false(DeployableGate.allowed(ID, {}), "no Sapper skill: locked")
+	assert_true(DeployableGate.allowed(ID, {&"deploy.sentry_cost_mult": 0.95}), "Mount Up basic unlocks it")
+	assert_eq(StringName(DeployableGate.unlock_skill(ID).get("id", &"")), &"skill.sapper.mount_up",
+			"the locked label names the tier-1 skill (Mount Up), not Lean Build")
+	assert_false(DeployableGate.unlock_skill(&"deployable.trip_mine").is_empty(), "the other gates still resolve")
+
+
+func test_mode_prompt_translates_its_mode_argument() -> void:
+	var panel: InteractionPanel = InteractionPanel.new()
+	add_child(panel)
+	await wait_frames(1)
+	var m: FakeModel = FakeModel.new()
+	add_child(m)
+	m.interaction = {"text_key": &"ui.prompt.sentry_mode", "kind": &"", "args": {"mode": &"ui.sentry.mode.ap"}}
+	panel.bind(m)
+	await wait_frames(1)
+	var shown: String = panel.prompt.text
+	assert_true(shown.contains(UiText.t(&"ui.sentry.mode.ap")) and not shown.contains("ui.sentry"), "shows: %s" % shown)
+	panel.queue_free()
+	m.queue_free()
+	await wait_frames(1)

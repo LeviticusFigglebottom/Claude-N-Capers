@@ -440,6 +440,12 @@ func _revive_threat(c: CrewController, delta: float) -> NpcBase:
 	if c.net_id != _clear_for_net_id:
 		_clear_for_net_id = c.net_id
 		_clear_spent_s = 0.0
+	for role: StringName in HOSTILE_ROLES if tweak.cuffer_clear_first and tweak.cuffer_score_mult < 1.0 else []:
+		for n: Node in _rt.npcs(role):
+			var cop: NpcBase = n as NpcBase
+			if cop != null and _is_hostile(cop) and _is_cuffing(cop) \
+					and cop.global_position.distance_to(c.global_position) <= tweak.revive_clear_m:
+				return cop
 	if _clear_spent_s >= tweak.revive_clear_s or c.health == null or c.health.bleedout_left < tweak.revive_clear_min_bleed_s:
 		return null
 	for role: StringName in HOSTILE_ROLES:
@@ -998,14 +1004,43 @@ func _pick_cover(leader: CrewController) -> Node3D:
 		return cover_point
 	var best: Node3D = null
 	var best_d: float = INF
+	var prefer: float = tweak.cover_prefer_behind_leader_m
+	var threat: Vector3 = _nearest_threat(leader) if prefer > 0.0 else Vector3.INF
 	for n: Node in get_tree().get_nodes_in_group(G.COVER_POINT):
 		var p: Node3D = n as Node3D
 		if p == null or not _rt.is_ancestor_of(p) or not _cover_ok(p, leader):
 			continue
 		var d: float = p.global_position.distance_to(_crew.global_position)
+		if threat != Vector3.INF and _behind_leader(p.global_position, leader.global_position, threat):
+			d -= prefer
 		if d < best_d:
 			best = p
 			best_d = d
+	return best
+
+
+## cover_prefer_behind_leader_m: `p` is farther (flat) from the threat than the leader, or on the leader's far side.
+static func _behind_leader(p: Vector3, leader: Vector3, threat: Vector3) -> bool:
+	var to_threat: Vector3 = Vector3(threat.x - leader.x, 0.0, threat.z - leader.z)
+	var to_p: Vector3 = Vector3(p.x - leader.x, 0.0, p.z - leader.z)
+	return _flat_dist(p, threat) > _flat_dist(leader, threat) or to_p.dot(to_threat) < 0.0
+
+
+## The nearest hostile NPC to `leader` (its position), INF when none is known.
+func _nearest_threat(leader: CrewController) -> Vector3:
+	var best: Vector3 = Vector3.INF
+	var best_d: float = INF
+	for role: StringName in HOSTILE_ROLES:
+		for n: Variant in _rt.npcs(role):
+			if not is_instance_valid(n):
+				continue
+			var npc: NpcBase = n as NpcBase
+			if npc == null or not _is_hostile(npc):
+				continue
+			var d: float = _flat_dist(npc.global_position, leader.global_position)
+			if d < best_d:
+				best_d = d
+				best = npc.global_position
 	return best
 
 
@@ -1174,6 +1209,8 @@ func _tick_scan(delta: float) -> void:
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
 			if _is_arresting_crew(npc):  # L2.12: the officer camping a cuffed teammate is shot first
 				score *= tweak.arrester_score_mult
+			elif _is_cuffing(npc):  # LEAD r288: the cop moving in to cuff a downed teammate, first of all
+				score *= tweak.cuffer_score_mult
 			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc) \
 					or _civilian_in_line(eye, p):
 				continue
@@ -1210,6 +1247,12 @@ func _is_arresting_crew(npc: NpcBase) -> bool:
 		if _arrester_of(c) == npc:
 			return true
 	return false
+
+
+## LEAD r288: `npc` is going for / applying the cuffs on a downed crew member (PoliceBrain mode &"cuff").
+static func _is_cuffing(npc: NpcBase) -> bool:
+	var b: Node = npc.get_node_or_null(^"Brain")
+	return b != null and b.get(&"mode") == &"cuff"
 
 
 ## L2.12: the alive officer who cuffed `c` (CUFFED), else null.

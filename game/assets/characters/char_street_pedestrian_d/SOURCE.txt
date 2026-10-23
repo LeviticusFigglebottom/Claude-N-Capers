@@ -16,5 +16,5 @@ look: Retiree (RT-D1): tweed flat cap, oat cardigan over a pale blue shirt, brow
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26502
-tris_by_mesh: {"Body": 8940, "Gear": 256, "Hair": 1200, "Headwear": 1038, "Outfit": 15068}
+tris: 27090
+tris_by_mesh: {"Body": 8940, "Gear": 556, "Hair": 1200, "Headwear": 1038, "Outfit": 15356}

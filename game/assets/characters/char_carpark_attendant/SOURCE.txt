@@ -7,13 +7,13 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_carpa
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0886, 0.1132] (model [0.0000, 1.2854, 0.1315], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0801, -0.0877] (model [0.0000, 1.6473, -0.0758], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1906, 0.0502, 0.0348] (model [0.1906, 0.9927, 0.0372], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2250, 0.0505, 0.0408] (model [0.2250, 0.9927, 0.0433], Godot axes, rest pose)
 body_faces_culled: 4132
 body_params: {"age": 0.6, "beard_shadow": 0.3, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "grey", "hair_peak": 0.0, "height": 1.76, "lip": "auto", "skin": 6}
 bones: 52
 look: Car-park attendant (RT-D1 staff_booth): teal polo under a dark espresso fleece gilet, the staff lanyard and white card, grey slacks, black belt and shoes, watch (no hi-vis)
-meshes: Body,Gear,Hair,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 29174
-tris_by_mesh: {"Body": 10480, "Gear": 802, "Hair": 1728, "Outfit": 16164}
+tris: 30042
+tris_by_mesh: {"Body": 10480, "Gear": 1062, "Hair": 1728, "Headwear": 608, "Outfit": 16164}

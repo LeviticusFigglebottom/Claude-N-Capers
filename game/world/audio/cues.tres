@@ -361,6 +361,14 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_ballast_buzz/sfx_amb_ballast_buzz.ogg" id="s343"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_drip/sfx_amb_drip.ogg" id="s344"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/amb_range_extractor/sfx_amb_range_extractor.ogg" id="s345"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_fire/sfx_sentry_fire_1.ogg" id="s_sentry_sf1"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_fire/sfx_sentry_fire_2.ogg" id="s_sentry_sf2"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_fire/sfx_sentry_fire_3.ogg" id="s_sentry_sf3"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_fire/sfx_sentry_fire_4.ogg" id="s_sentry_sf4"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_empty/sfx_sentry_empty.ogg" id="s_sentry_se"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_mode/sfx_sentry_mode.ogg" id="s_sentry_sm"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_destroyed/sfx_sentry_destroyed.ogg" id="s_sentry_sd"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/sentry_deploy/sfx_sentry_deploy.ogg" id="s_sentry_sp"]
 
 [sub_resource type="Resource" id="cue_1"]
 script = ExtResource("2_def")
@@ -2706,7 +2714,7 @@ loop = false
 [sub_resource type="Resource" id="cue_182"]
 script = ExtResource("2_def")
 id = &"cue.sentry_fire"
-streams = Array[AudioStream]([ExtResource("s45"), ExtResource("s46"), ExtResource("s47"), ExtResource("s48")])
+streams = Array[AudioStream]([ExtResource("s_sentry_sf1"), ExtResource("s_sentry_sf2"), ExtResource("s_sentry_sf3"), ExtResource("s_sentry_sf4")])
 volume_db = 0.0
 bus = &"Weapons"
 positional = true
@@ -2718,7 +2726,7 @@ loop = false
 [sub_resource type="Resource" id="cue_183"]
 script = ExtResource("2_def")
 id = &"cue.sentry_empty"
-streams = Array[AudioStream]([ExtResource("s171")])
+streams = Array[AudioStream]([ExtResource("s_sentry_se")])
 volume_db = -6.0
 bus = &"Weapons"
 positional = true
@@ -2730,7 +2738,7 @@ loop = false
 [sub_resource type="Resource" id="cue_184"]
 script = ExtResource("2_def")
 id = &"cue.sentry_mode"
-streams = Array[AudioStream]([ExtResource("s179")])
+streams = Array[AudioStream]([ExtResource("s_sentry_sm")])
 volume_db = -4.0
 bus = &"World"
 positional = true
@@ -2742,7 +2750,7 @@ loop = false
 [sub_resource type="Resource" id="cue_185"]
 script = ExtResource("2_def")
 id = &"cue.sentry_destroyed"
-streams = Array[AudioStream]([ExtResource("s226")])
+streams = Array[AudioStream]([ExtResource("s_sentry_sd")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true
@@ -2754,7 +2762,7 @@ loop = false
 [sub_resource type="Resource" id="cue_186"]
 script = ExtResource("2_def")
 id = &"cue.sentry_deploy"
-streams = Array[AudioStream]([ExtResource("s225")])
+streams = Array[AudioStream]([ExtResource("s_sentry_sp")])
 volume_db = 0.0
 bus = &"Enemies"
 positional = true

@@ -75,6 +75,8 @@ static func dodge_add(h: CrewHealth) -> float:
 ## capped at PerkTweak.max_damage_reduction, + perk.crew_chief team_dr) and the perk.stoic DoT split.
 static func incoming_damage(h: CrewHealth, info: Dictionary, dmg: float) -> float:
 	var crew: CrewController = _crew_of(h)
+	if crew != null and dmg > 0.0:
+		dmg = maxf(dmg - PerkManiac.absorb_for(crew), 0.0)  # D-162 Hysteria: the holder's or a sharing teammate's
 	var perks: CrewPerks = of(crew)
 	if perks == null or dmg <= 0.0:
 		return dmg
@@ -135,6 +137,8 @@ static func stamina_mult(crew: CrewController) -> float:
 ## The deck throwable replacing the equipped one (&"" = none: use Loadout.throwable).
 static func throwable_id(crew: CrewController) -> StringName:
 	var perks: CrewPerks = of(crew)
+	if perks != null:
+		perks.refresh()  # ui_hud v1.20: also on a client, where no server tick refreshes the components
 	var t: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable if perks != null else null
 	return t.item_id() if t != null else &""
 

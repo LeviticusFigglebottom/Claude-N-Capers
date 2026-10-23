@@ -17,5 +17,5 @@ look: Delivery rider (RT-D1): green padded bomber over a graphite knit, charcoal
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28086
-tris_by_mesh: {"Body": 9064, "Gear": 654, "Hair": 1856, "Outfit": 16512}
+tris: 28406
+tris_by_mesh: {"Body": 9064, "Gear": 654, "Hair": 1856, "Outfit": 16832}

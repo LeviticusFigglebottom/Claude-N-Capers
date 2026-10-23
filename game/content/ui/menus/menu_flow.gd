@@ -794,6 +794,8 @@ func _spawn_in_heist_ui() -> void:
 	_hud = HUD_SCENE.instantiate() as Control
 	if _hud is Hud:
 		(_hud as Hud).heist_id = _heist_id
+		(_hud as Hud).difficulty = _difficulty  # L1.7 assault-banner skulls
+		(_hud as Hud).last_breath = last_breath
 	_in_heist.add_child(_hud)
 	heist_radio = ContactRadio.spawn(_in_heist, _heist_id)
 	var pd: PaydayScreen = PAYDAY_SCENE.instantiate() as PaydayScreen

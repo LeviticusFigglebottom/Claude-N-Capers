@@ -90,6 +90,9 @@ ui.hud.reloading,Reloading
 ui.hud.cable_ties,Cable ties: {count}
 ui.hud.body_bags,Body bags: {count}
 ui.hud.cable_ties_name,Cable ties
+ui.hud.pocket_ecm.jam,JAM {s} s
+ui.hud.pocket_ecm.feedback,FEEDBACK {s} s
+ui.hud.pocket_ecm.recharge,+1 in {s} s
 ui.hud.body_bags_name,Body bags
 ui.hud.hostages,Hostages: {count}
 ui.hud.trade_ready,Trade ready
@@ -949,6 +952,54 @@ perk.overlord.card7.name,Bring It
 perk.overlord.card7.desc,Health bonus rises to 40%. Below half health the injector heals 25% more.
 perk.overlord.card9.name,Top of the Heap
 perk.overlord.card9.desc,Health bonus rises to 80%. Every 50 health the injector heals while you are at full health cuts 1 s from its cooldown.
+perk.hacker.name,Hacker
+perk.hacker.desc,"A pocket jammer that blinds the building in stealth and scrambles the police when it goes loud. Kills while it runs keep you alive."
+perk.hacker.card1.name,Dead Air
+perk.hacker.card1.desc,"Unlocks the pocket ECM (throwable slot): 2 charges of 6 s. Before the alarm it jams cameras and phones; after it, it stuns nearby enemies. Each charge recharges in 100 s, 6 s faster per kill. It can't open doors."
+perk.hacker.card3.name,Hardened Habits
+perk.hacker.card3.desc,You get 20% more health.
+perk.hacker.card5.name,Signal Rot
+perk.hacker.card5.desc,"Each kill while the stun is active heals you 20 health. You also get 15% more dodge."
+perk.hacker.card7.name,Workaround
+perk.hacker.card7.desc,"A kill while the pocket ECM jams or stuns gives you 20 more dodge for 30 s."
+perk.hacker.card9.name,Crowd Network
+perk.hacker.card9.desc,"Your crew's kills while your stun is active heal them 10 health. Your dodge rises another 15%."
+perk.inkwork.name,Inkwork
+perk.inkwork.desc,"The worse you look, the harder you are to stop. Lower health brings your armor back faster and moves you faster."
+perk.inkwork.card1.name,First Line
+perk.inkwork.card1.desc,"The lower your health, the faster your armor recovers: up to 20% faster below 25% health. It scales with health."
+perk.inkwork.card3.name,Second Skin
+perk.inkwork.card3.desc,"The lower your health, the faster you move: up to 20% faster below 25% health."
+perk.inkwork.card5.name,Old Scars
+perk.inkwork.card5.desc,"Low health speeds your armor recovery by up to another 20% (40% in total)."
+perk.inkwork.card7.name,Deep Ink
+perk.inkwork.card7.desc,"Low health speeds your armor recovery by up to another 20% (60% in total)."
+perk.inkwork.card9.name,Full Sleeve
+perk.inkwork.card9.desc,"Every effect in this deck reaches its full strength at 50% health instead of 25%."
+perk.road_crew.name,Road Crew
+perk.road_crew.desc,"Every kill your crew makes patches you up. The more beaten up you are, the more each kill gives back."
+perk.road_crew.card1.name,Patch Job
+perk.road_crew.card1.desc,"Each kill by you or your crew gives you 5 health and 5 armor, up to 4 times every 4 s."
+perk.road_crew.card3.name,Tail Rider
+perk.road_crew.card3.desc,"Each 10% of health you are missing adds 1 armor to every kill bonus."
+perk.road_crew.card5.name,Short Fuse
+perk.road_crew.card5.desc,"Each 10% of health you are missing cuts the 4 s kill-bonus window by 0.1 s."
+perk.road_crew.card7.name,Field Dressing
+perk.road_crew.card7.desc,"Each 10% of armor you are missing adds 1 health to every kill bonus."
+perk.road_crew.card9.name,Club President
+perk.road_crew.card9.desc,"Each 10% of armor you are missing cuts the 4 s kill-bonus window by another 0.1 s."
+perk.frenzy.name,Frenzy
+perk.frenzy.desc,"The damage you deal builds Frenzy, and Frenzy soaks up the damage you take. Keep shooting to keep it up."
+perk.frenzy.card1.name,Wound Up
+perk.frenzy.card1.desc,"Your damage builds Frenzy: up to 240 every 4 s, 600 at most. Every 30 Frenzy absorbs 1 damage from each hit. Frenzy fades by 80% + 120 every 8 s."
+perk.frenzy.card3.name,Contagion
+perk.frenzy.card3.desc,"Your crew also gets your Frenzy absorption. Only the strongest Frenzy in the crew counts."
+perk.frenzy.card5.name,Slow Burn
+perk.frenzy.card5.desc,"Frenzy fades more slowly: 60% + 40 every 8 s."
+perk.frenzy.card7.name,Red Mist
+perk.frenzy.card7.desc,"Every 25 Frenzy absorbs 1 damage, for you and your crew."
+perk.frenzy.card9.name,Unhinged
+perk.frenzy.card9.desc,"Your own Frenzy absorption is doubled."
 ui.skills.title,Skills
 ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic
@@ -1261,6 +1312,8 @@ item.throwable.steady_flask.name,Steady Flask
 item.throwable.steady_flask.desc,"A hip flask of something strong. One swallow and the damage you've taken stops counting, if you keep busy."
 item.throwable.boss_injector.name,Boss Injector
 item.throwable.boss_injector.desc,"A single-dose auto-injector. Use it, and every hit you take in the next few seconds patches you up instead."
+item.throwable.pocket_ecm.name,Pocket ECM
+item.throwable.pocket_ecm.desc,"The Hacker deck's handheld jammer: 2 charges of 6 s."
 item.weapon.warden_45.name,Warden .45
 item.weapon.warden_45.desc,"An all-steel heavy pistol from Marrow & Kell. Eight big rounds, a hard push, and walnut that has seen a few owners."
 item.weapon.hornet_9.name,Hornet 9
@@ -1402,6 +1455,7 @@ contact.role.handler,Handler on comms
 ui.briefing.title,Briefing
 ui.briefing.difficulty,Difficulty: {name}
 ui.briefing.mode,Approach: {mode}
+ui.briefing.civilian_start,Civilian start: no gear until you pick it up on site
 ui.briefing.intel,The Job
 ui.briefing.objectives,Objectives
 ui.briefing.objective_line,{index}. {text}
@@ -2449,6 +2503,19 @@ ui.options.video.window_mode,Window Mode
 ui.options.video.window_mode.windowed,Windowed
 ui.options.video.window_mode.fullscreen,Borderless Fullscreen
 ui.options.video.window_mode.exclusive_fullscreen,Exclusive Fullscreen
+ui.options.video.resolution,Resolution (windowed)
+ui.options.video.resolution.auto,Window default
+ui.options.video.resolution.1280x720,1280 × 720
+ui.options.video.resolution.1600x900,1600 × 900
+ui.options.video.resolution.1920x1080,1920 × 1080
+ui.options.video.resolution.2560x1440,2560 × 1440
+ui.options.video.resolution.3840x2160,3840 × 2160
+ui.options.video.quality_preset,Quality Preset
+ui.options.video.quality_preset.low,Low
+ui.options.video.quality_preset.medium,Medium
+ui.options.video.quality_preset.high,High
+ui.options.video.quality_preset.ultra,Ultra
+ui.options.video.quality_preset.custom,Custom
 ui.options.video.vsync,V-Sync
 ui.options.video.max_fps,Frame Rate Limit
 ui.options.video.max_fps.unlimited,Unlimited
@@ -2466,6 +2533,10 @@ ui.options.video.effects_quality,Effects Quality
 ui.options.video.effects_quality.low,Low
 ui.options.video.effects_quality.medium,Medium
 ui.options.video.effects_quality.high,High
+ui.options.video.shadow_quality,Shadow Quality
+ui.options.video.shadow_quality.low,Low
+ui.options.video.shadow_quality.medium,Medium
+ui.options.video.shadow_quality.high,High
 ui.options.controls.mouse_sensitivity_x,Mouse Sensitivity (Horizontal)
 ui.options.controls.mouse_sensitivity_y,Mouse Sensitivity (Vertical)
 ui.options.controls.ads_sensitivity,Aiming Sensitivity
@@ -2475,6 +2546,7 @@ ui.options.controls.pad_deadzone,Gamepad Deadzone
 ui.options.controls.aim_mode,Aim Down Sights
 ui.options.controls.crouch_mode,Crouch
 ui.options.controls.sprint_mode,Sprint
+ui.options.controls.interact_mode,Interact
 ui.options.mode.hold,Hold
 ui.options.mode.toggle,Toggle
 ui.options.controls.action,Action
@@ -2648,6 +2720,7 @@ item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by 
 item.mask.last_word.name,The Last Word
 item.mask.last_word.desc,"Carbon and ember for the crew that has nothing left to prove. Notoriety XXV only."
 ui.hud.civilian,Civilian
+ui.hud.last_breath,Last Breath
 ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or equipment until you pick up your gear on site. Your loadout waits there."
 heist.dockside_burn.name,Dockside Burn
 heist.dockside_burn.subtitle,Ortega Cold Storage
@@ -2978,6 +3051,11 @@ ui.kick.confirm,Kick {name} from the crew?
 ui.kick.yes,Kick
 ui.kick.no,Cancel
 ui.lobby.error.kicked,The host removed you from the lobby.
+ui.lobby.lan.title,Games on your network
+ui.lobby.lan.empty,"No games on your network. Ask the host for their lobby code, or join by address."
+ui.lobby.lan.busy,Another copy of the game on this computer is already listing network games.
+ui.lobby.lan.row,{name} · {job} · {players}/{max} players
+ui.lobby.lan.no_job,No job picked yet
 ui.lobby.code.title,Lobby code
 ui.lobby.code.value,{code}
 ui.lobby.code.copy,Copy
@@ -3836,17 +3914,23 @@ ui.crew.outfit.suit_charcoal,"Classic Suit, Charcoal"
 ui.crew.outfit.suit_navy,"Classic Suit, Navy"
 ui.crew.crumb,Safehouse / Bot Crew
 ui.crew.title,Bot Crew
-ui.crew.subtitle,"Gear your three crew bots from your armory: a primary with its mods, armor, a mask and an outfit. Changes save at once."
+ui.crew.subtitle,"Gear your three crew bots from your armory: a primary with its mods, armor, a mask and an outfit, plus an ability and a crew boost. Changes save at once."
 ui.crew.bot,Bot {n}
 ui.crew.summary,Your crew
 ui.crew.card,"Bot {n}: {weapon}, {armor}
-{mask} · {outfit}"
+{mask} · {outfit}
+{ability} · {boost}"
 ui.crew.workshop_hint,Buy more weapons and mods in the Workshop; armor unlocks with your level.
 ui.crew.reset,Reset bot
 ui.crew.row.weapon,Primary
 ui.crew.row.armor,Armor
 ui.crew.row.mask,Mask
 ui.crew.row.outfit,Outfit
+ui.crew.row.ability,Ability
+ui.crew.row.boost,Crew Boost
+ui.crew.none,None
+ui.crew.no_ability,No ability
+ui.crew.no_boost,No boost
 ui.hub.crew,Bot Crew
 ui.hud.device.time,{mm}:{ss}
 ui.hud.device.jammed,JAMMED
