@@ -133,6 +133,12 @@ const POOLS: Dictionary = {
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
 	],
 	# GN-G3: the gallery staff, the guards and the gala guests (written to _review/gn_g3_cast/)
+	# D-165 Afterhours: the patrons (bars, booths, foyer, VIP, queue)
+	"ah_patrons": [
+		"char_club_patron", "char_club_patron_b", "char_club_patron_c", "char_club_patron_d", "char_club_patron_e",
+		"char_club_patron_f", "char_club_patron_g", "char_club_patron_h", "char_club_patron_i", "char_club_patron_j",
+		"char_club_patron_k", "char_club_patron_l",
+	],
 	# D-165 Afterhours: the door team + bar staff + DJ
 	"ah_staff": [
 		"char_club_bouncer", "char_club_bouncer_b", "char_club_bouncer_c", "char_club_bouncer_d",
