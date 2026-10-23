@@ -1442,6 +1442,8 @@ func _hazard_run(clean: bool) -> bool:
 func _haz_bags(t: ArmoredTruck) -> int:
 	var zone: SecureZone = _secure_zone_near(E1_AT)
 	var secured: int = 0
+	# The mission spawns the cargo on its 1 s poll after the doors open (blown_confirm: the loop ran first and saw none).
+	await wait_until(func() -> bool: return _bag_near(_truck_use(t), 4.0) != null, 5.0)
 	var t_end: float = rt.heist_time_s + HAZ_BAGS_S
 	while rt.heist_time_s < t_end and not _in_custody() and zone != null:
 		if pilot.crew.crew_state != Enums.CrewState.NORMAL:
