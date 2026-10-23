@@ -105,7 +105,8 @@ func _row(item: String, verdict: String, detail: String, owner: String = "-") ->
 
 ## Launch the Velvet with real detection (NPCs, cameras), the civilian start (no skip_casing).
 func _ah_launch(loud_kit: bool = false) -> bool:
-	var opts: Dictionary = {}
+	# gear_cloak (the foyer, across the counter): reachable with no door, so the gear never decides the result.
+	var opts: Dictionary = {"preplan": {"force_variants": {&"gear_drop": [&"gear_cloak"]}}}
 	if loud_kit:
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
 	if not await _launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, Enums.Difficulty.ROUTINE, opts, false):
@@ -409,10 +410,13 @@ func _escape(esc: EscapeZone) -> bool:
 func _ah_loud() -> bool:
 	if not await _ah_launch(_build() == "loud"):
 		return false
-	if not await _gear() or not await _behind_east_bar() or not await _keycard():
+	# Masked straight after the gear (the alarm comes next anyway): a masked crew is not door-gated as casing is.
+	if not await _gear():
 		return false
 	if not await _mask():
 		return await _fail("mask")
+	if not await _behind_east_bar() or not await _keycard():
+		return false
 	pilot.combat = true
 	if not await _go(HALL_SHOT_AT, 0.8, 120.0):
 		_row("hall (the alarm shot)", "FAIL", "not reached", _owner_for(HALL_SHOT_AT))
