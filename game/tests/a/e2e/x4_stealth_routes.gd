@@ -25,6 +25,9 @@ extends RefCounted
 const KEYCARD: StringName = &"item.keycard"
 const ND_BAGS: int = 4
 const SL_DRIVES: int = 2
+## Afterhours: the required bags and the safe's loot id (AfterhoursMission.REQUIRED_BAGS / LOOT_SAFE).
+const AH_BAGS: int = 3
+const AH_SAFE_LOOT: StringName = &"loot.cash_bricks"
 const DONE: Enums.ObjectiveState = Enums.ObjectiveState.COMPLETED
 
 var f: X4StealthFlow = null
@@ -57,6 +60,8 @@ func steps_for(heist: StringName) -> Array[Callable]:
 				_sl_escape]
 		&"gallery_night":
 			return [_start, _gn_pick, _gn_sensors, _gn_barrier, _gn_canvases, _gn_escape]
+		&"afterhours":
+			return [_ah_start, _ah_keycard, _ah_office, _ah_code, _ah_safe, _ah_bags, _ah_escape]
 		&"ostrander_federal":
 			return [_start, _of_keycard, _of_code, _of_gate, _of_rack, _of_time_lock, _of_vault_opens, _of_cage, _of_bags,
 				_of_escape]
@@ -548,3 +553,97 @@ func _of_bags() -> bool:
 
 func _of_escape() -> bool:
 	return await f.escape(f.tagged(&"escape") as EscapeZone)
+
+
+# --- Afterhours ------------------------------------------------------------------------------------------
+
+## Civilian start (D-065): the rolled gear_drop bag first (only a civilian may use it), then the mask.
+func _ah_start() -> bool:
+	f.hide_from_observers()
+	f.note("gear_drop %s, keycard %s, code_note %s" % [f.rt.mission.variant(&"gear_drop"),
+		f.rt.mission.variant(&"keycard"), f.rt.mission.variant(&"code_note")])
+	if f.crew.civilian:
+		var gear: GearPickup = null
+		for n: Node in f.all_tagged(&"gear"):
+			var g: GearPickup = n as GearPickup
+			if g != null and g.is_enabled() and g.interactable != null and g.interactable.enabled:
+				gear = g
+				break
+		if not f.check(gear != null, "the rolled gear bag") or not await f.take(gear,
+				func() -> bool: return not f.crew.civilian, _tw().item_pickup_s, "take the gear at %s" % gear.name):
+			return false
+		f.check(f.objective(&"gear") == DONE, "[gear] done")
+	return await f.mask_up()
+
+
+func _ah_keycard() -> bool:
+	return await f.take(f.tagged(&"keycard"), _has_card(), _tw().item_pickup_s, "take the keycard")
+
+
+func _ah_office() -> bool:
+	return await f.take(f.tagged(&"office_reader"), _done(&"office"), _tw().keycard_s, "swipe the office reader")
+
+
+## The safe code off the rolled note (optional: the drill opens the safe without it).
+func _ah_code() -> bool:
+	var note: Node3D = f.tagged(&"safe_code")
+	if note == null or f.rt.mission.get(&"safe_open"):
+		f.note("no code note (or the safe is left open): the drill / nothing")
+		return true
+	return await f.take(note, _done(&"safe_code"), _tw().read_note_s, "read the safe code")
+
+
+## The code at the safe when read, else the drill (fixing its jams) until the safe opens.
+func _ah_safe() -> bool:
+	if f.rt.mission.get(&"safe_open"):
+		return f.check(true, "the safe was left open")
+	var safe: Node3D = f.tagged(&"safe")
+	if f.objective(&"safe_code") == DONE:
+		return await f.take(safe, _done(&"safe"), _tw().keypad_s, "open the safe with the code")
+	var drill: DrillPoint = f.tagged(&"safe_drill") as DrillPoint
+	if not f.check(drill != null, "the safe drill") or not await f.take(drill,
+			func() -> bool: return drill.runner != null and drill.runner.state != DeviceRunner.State.IDLE,
+			_tw().drill_place_s, "place the safe drill"):
+		return false
+	var t0: float = f.rt.heist_time_s
+	var budget: float = drill.runner.duration * 2.0 + 60.0
+	while f.objective(&"safe") != DONE and f.rt.heist_time_s - t0 < budget:
+		await f.fast_until(func() -> bool: return f.objective(&"safe") == DONE \
+			or drill.runner.state == DeviceRunner.State.JAMMED, budget)
+		if drill.runner.state == DeviceRunner.State.JAMMED and not await f.use(drill,
+				func() -> bool: return drill.runner.state != DeviceRunner.State.JAMMED, _tw().drill_fix_s + 2.0,
+				"fix the safe drill"):
+			return false
+	return f.check(f.objective(&"safe") == DONE, "the drill opened the safe")
+
+
+## The safe's cash bricks (loose bags at the safe_loot markers), carried to the rolled van's secure zone.
+func _ah_bags() -> bool:
+	var zone: Area3D = f.secure_zone(&"loot_secure")
+	if not f.check(zone != null, "the rolled van's secure zone"):
+		return false
+	var need: int = AH_BAGS
+	var safe: GameplayPrefab = f.tagged(&"safe") as GameplayPrefab
+	for taken: int in range(need):
+		var bag: LootBag = null
+		for n: Node in f.host.get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var b: LootBag = n as LootBag
+			if b != null and b.loot_id == AH_SAFE_LOOT and not b.secured and not b.is_carried():
+				bag = b
+				break
+		if not f.check(bag != null, "safe cash left to carry (%d taken)" % taken):
+			return false
+		# The bags stack 0.4 m apart at the one safe_loot marker: the upper ones are reached from the safe's front.
+		var near: Variant = null
+		if f._stand_spot(bag) == null and safe != null and safe.use_point != null:
+			near = safe.use_point.global_position
+			f.note("%s at %s: no floor spot under it, taken from the safe's UsePoint" % [bag.name, bag.global_position])
+		if not await f.go_to(bag, near) or not await f.use(bag, func() -> bool: return f.crew.is_carrying_bag(),
+				_tw().bag_loot_s + X4StealthFlow.MARGIN_S, "pick up %s" % bag.name) or not await f._secure_carried(zone):
+			return false
+	return f.check(f.objective(&"secure") == DONE, "[secure] done (%d bags)" % need)
+
+
+func _ah_escape() -> bool:
+	return await f.escape(f.tagged(&"escape_van") as EscapeZone)
+

@@ -29,6 +29,35 @@ tag_characters = {
 &"security_operator": [&"security_officer"]
 }
 heist_tag_characters = {
+&"afterhours": {
+&"camera_operator": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"cartel_courier": [&"cartel_gunman", &"cartel_gunman_c", &"cartel_gunman_d", &"cartel_gunman_e", &"cartel_gunman_h", &"cartel_gunman_i", &"cartel_gunman_j", &"cartel_gunman_k", &"cartel_gunman_l"],
+&"civ_bar_east": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"civ_bar_main": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"civ_bar_vip": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"civ_box_office": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"civ_count": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"civ_dancer": [&"club_dancer", &"club_dancer_b", &"club_dancer_c", &"club_dancer_d", &"club_dancer_e", &"club_dancer_f", &"club_dancer_g", &"club_dancer_h", &"club_dancer_i", &"club_dancer_j", &"club_dancer_k", &"club_dancer_l"],
+&"civ_dj_green": [&"club_dj"],
+&"civ_dj_stage": [&"club_dj"],
+&"civ_offduty": [&"club_offduty_cop"],
+&"civ_patron": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d", &"club_patron_e", &"club_patron_f", &"club_patron_g", &"club_patron_h", &"club_patron_i", &"club_patron_j", &"club_patron_k", &"club_patron_l"],
+&"civilian": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d", &"club_patron_e", &"club_patron_f", &"club_patron_g", &"club_patron_h", &"club_patron_i", &"club_patron_j", &"club_patron_k", &"club_patron_l"],
+&"guard": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"guard_alley": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"guard_boh": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"guard_door": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"guard_floor": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"guard_foh": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"guard_rope": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"guard_upper": [&"club_bouncer", &"club_bouncer_b", &"club_bouncer_c", &"club_bouncer_d", &"club_bouncer_e", &"club_bouncer_f"],
+&"staff": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"staff_bar": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"staff_dj": [&"club_dj"],
+&"staff_front": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"staff_upper": [&"club_bartender", &"club_bartender_b", &"club_bartender_c", &"club_bartender_d"],
+&"vip_party": [&"club_vip", &"club_vip_b", &"club_vip_c", &"club_vip_d", &"club_vip_e", &"club_vip_f"]
+},
 &"gallery_night": {
 &"civ_admin": [&"gallery_admin"],
 &"civ_attendant": [&"gallery_attendant", &"gallery_attendant_b", &"gallery_attendant_c"],
@@ -133,6 +162,31 @@ heist_tag_characters = {
 }
 }
 heist_tag_pools = {
+&"afterhours": {
+&"camera_operator": &"ah_bouncers",
+&"cartel_courier": &"ah_couriers",
+&"civ_bar_east": &"ah_staff",
+&"civ_bar_main": &"ah_staff",
+&"civ_bar_vip": &"ah_staff",
+&"civ_box_office": &"ah_staff",
+&"civ_count": &"ah_staff",
+&"civ_dancer": &"ah_dancers",
+&"civ_patron": &"ah_patrons",
+&"civilian": &"ah_patrons",
+&"guard": &"ah_bouncers",
+&"guard_alley": &"ah_bouncers",
+&"guard_boh": &"ah_bouncers",
+&"guard_door": &"ah_bouncers",
+&"guard_floor": &"ah_bouncers",
+&"guard_foh": &"ah_bouncers",
+&"guard_rope": &"ah_bouncers",
+&"guard_upper": &"ah_bouncers",
+&"staff": &"ah_staff",
+&"staff_bar": &"ah_staff",
+&"staff_front": &"ah_staff",
+&"staff_upper": &"ah_staff",
+&"vip_party": &"ah_vip"
+},
 &"glasshouse": {
 &"guard_alley_smoker": &"gh_guards",
 &"guard_post_floor": &"gh_guards",

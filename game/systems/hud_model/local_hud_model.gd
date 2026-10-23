@@ -307,6 +307,9 @@ var marker_lookups: int = 0
 ## (Rect2() when not scoped).
 var scoped_ads: bool = false
 var scope_ring: Rect2 = Rect2()
+## ui_hud v1.23 (PO-22): how far into ADS the local player is (0 hip .. 1 fully aimed), WRITTEN by ENV P's CrewView
+## every frame like scoped_ads (field only; the model never sets it).
+var ads_blend: float = 0.0
 var _runtime: HeistRuntime = null
 var _accum: float = 0.0
 var _mission: HeistMission = null
