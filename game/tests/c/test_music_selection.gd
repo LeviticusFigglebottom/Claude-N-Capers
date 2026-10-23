@@ -70,6 +70,31 @@ func test_preview_in_tree() -> void:
 	await get_tree().process_frame
 
 
+## hub_map.md (C4-02): set_ducked lowers the playing stem by DUCK_DB over DUCK_S and restores it.
+func test_set_ducked_offsets_the_playing_stem() -> void:
+	var m: MusicDirector = MusicDirector.new()
+	m.listen_to_event_bus = false
+	m.track_id = &""
+	get_tree().root.add_child(m)
+	assert_true(m.preview(&"glasshouse", MusicTrack.STEM_STEALTH), "preview the cabinet stem")
+	var fade_s: float = m.crossfade_beats * 60.0 / m.track.bpm
+	await get_tree().create_timer(fade_s + 0.2).timeout
+	var stem: AudioStreamPlayer = m.get_node(^"Stem0") as AudioStreamPlayer
+	var full: float = stem.volume_db
+	assert_near(full, m.track.stem_gain_db(MusicTrack.STEM_STEALTH), 0.05, "faded in to the stem's gain")
+	m.set_ducked(true)
+	assert_true(m.is_ducked())
+	await get_tree().create_timer(MusicDirector.DUCK_S + 0.15).timeout
+	assert_near(stem.volume_db, full + MusicDirector.DUCK_DB, 0.05, "ducked by 6 dB")
+	m.set_ducked(false)
+	await get_tree().create_timer(MusicDirector.DUCK_S + 0.15).timeout
+	assert_false(m.is_ducked())
+	assert_near(stem.volume_db, full, 0.05, "restored")
+	m.stop_preview()
+	m.queue_free()
+	await get_tree().process_frame
+
+
 func test_heist_track_id_outside_heist_is_empty() -> void:
 	assert_eq(MusicDirector.heist_track_id(null), &"", "no runtime -> no heist track")
 

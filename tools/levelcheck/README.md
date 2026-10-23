@@ -17,6 +17,16 @@ tools/levelcheck/render_shots.sh <heist_id> <g1|g2|g3> [--plan] [--cameras=a,b] 
   if there are none. Stage per heist: `game/world/heists/<id>/stage.txt` containing `greybox` or
   `final`, else a `Stage: final` line in `docs/design/heists/<id>.md`, else `greybox`. Exits 1 if any
   heist fails. It writes `docs/levels/<id>/validation.md` and `docs/levels/<id>/walkthrough.md`.
+* `validate_all.sh --hub` (C4-02, hub_map.md) validates the safehouse hub instead (after any heist ids given with
+  it): `--scene=res://world/hub/safehouse/safehouse_g1.tscn --profile=hub` (staged off hub_map's
+  `safehouse.tscn` until B's 2D-hub tests are pinned), stage from
+  `game/world/hub/safehouse/stage.txt` (default greybox), reports to `docs/levels/safehouse/`. The hub profile runs
+  `contract_nodes` against the hub list (Geometry, Props, Lighting, Navigation, Rooms, Spawns, Stations,
+  ReviewCameras; no HeistDef, PLAYER spawns only, the 9 station ids with UsePoints, the return markers, the root
+  API) and skips the heist-only checks (`LcRunner.HUB_SKIP`: secure_zones, barred_doors, patrols, lasers,
+  camera_spine, camera_screen, bag_line, hide_los, teller_worktop). Return markers are PLAYER SpawnPoints, so the
+  walkthrough walks from ReturnRange / ReturnHeist to every station UsePoint too. `sh_regen_twice.sh` checks the
+  safehouse generator's determinism and that the committed scene is current.
 * Direct call (headless, no rendering needed):
 
 ```bash
