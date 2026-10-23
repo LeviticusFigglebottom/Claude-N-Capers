@@ -98,12 +98,18 @@ work is needed.** Favors 5.
 &"civ_bar_east": [&"club_bartender_c", &"club_bartender"]   &"civ_bar_vip": [&"club_bartender_d"]
 &"civ_box_office": [&"club_bartender_b"]  &"civ_count": [&"club_bartender_d"]
 &"civ_dj_stage": [&"club_dj"]             &"civ_dj_green": [&"club_dj"]
-&"civ_patron": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d"]
-&"civ_dancer": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d"]
+# D batch 2 (b4f08e3a): 12 patron looks, a-l.
+&"civ_patron": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d", &"club_patron_e",
+	&"club_patron_f", &"club_patron_g", &"club_patron_h", &"club_patron_i", &"club_patron_j", &"club_patron_k",
+	&"club_patron_l"]
+# D batch 3 (21dfc4fe): the dance-floor pool, 12 looks a-l (dance_a/b/c checked for clipping).
+&"civ_dancer": [&"club_dancer", &"club_dancer_b", &"club_dancer_c", &"club_dancer_d", &"club_dancer_e",
+	&"club_dancer_f", &"club_dancer_g", &"club_dancer_h", &"club_dancer_i", &"club_dancer_j", &"club_dancer_k",
+	&"club_dancer_l"]
 &"civ_offduty": [&"frd_agent"]
 ```
 These are the doc's roster (D's `p5_cast.json` roles). The camera operator uses `club_bouncer_f` (the tag name `guard_camera` is a proposal: A / D pick the real
-CAMERA_OPERATOR tag). Patrons e-l and the `club_dancer` pool a-l come in D's batches 2 and 3. B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
+CAMERA_OPERATOR tag). B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
 
 ## 7. Strings (new rows; written when the gate opens)
 
