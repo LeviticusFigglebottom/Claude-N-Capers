@@ -531,8 +531,11 @@ work:** casing for keycards and notes, masked for doors, the safe and the bags.
 
 1. **East bar service door (FOH → BOH).** Gear at `gear_cloak`, `gear_wc` or `gear_booth` (all FOH). As casing, slip
    behind the east bar when the floor bouncer is at the stage end (his loop b), through the service
-   door into G20 (RESTRICTED: ×0.35 fill from the BOH rover and C3). Keycard in G12/G24, mask in G23
-   (no camera), staff stair → U6 → U6b → office. Risk: the BOH rover's G20 pause, C3 in `cam_b`.
+   door into G20 (RESTRICTED: ×0.35 fill from the BOH rover and C3). Keycard in G12/G24, then **mask on
+   the G22 staff stair's half landing** (an enclosed core: no camera, no civilian route; only the upper rover crosses it,
+   on his loop c, so mask while he is on loop a or b) → U6 → U6b → office. Risk: the BOH rover's G20 pause, C3 in
+   `cam_b`. (r305, P's wait-unseen: G23 is not a mask spot. The east bartender's stock runs keep it observed, with no
+   2 s unseen window in 240 s.)
 2. **Backstage.** With `dj_break` the stage is empty: up the 0.3 m step behind the speaker stack,
    the backstage door (13, 7) into G13 mid (C2 looks E from the west end: the door is 13 m in, inside
    its cone in `cam_a`). `kc_dj_booth` is on the way. With `dj_on` the DJ stands 3 m from the
