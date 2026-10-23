@@ -290,7 +290,9 @@ def always() -> Dict[str, List[list]]:
         ],
         "Gameplay/Markers": [
             M("CasingFoyer", [16.0, 0.0, 24.5], "casing", "casing objective marker: the foyer"),
-            M("SafeLoot", [33.5, U + 0.3, 20.35], "safe_loot", "safe_bags x loot.cash_bricks (+1 on count_done)"),
+        ] + [M("SafeLoot%d" % (i + 1), [33.35 + 0.3 * (i % 2), U + (0.3 if i < 2 else 0.85), 20.35], "safe_loot",
+               "safe_bags x loot.cash_bricks (+1 on count_done): A's spawn_loot cycles the 2 x 2 (the LARGE safe's "
+               "interior is 0.66 m wide, 2 shelves)") for i in range(4)] + [
             M("DJStage", [15.5, 1.3, 8.2], "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"),
         ] + [M("Holdout" + h, [x, y, z], "holdout_" + h.lower(), "doc Loud holdout " + h)
              for h, x, y, z in [("H1", 31.0, U, 18.0), ("H2", 13.0, U, 20.0), ("H3", 31.0, 0.0, 4.0),
