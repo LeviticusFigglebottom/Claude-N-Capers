@@ -315,8 +315,9 @@ func _collect_tres(dir_path: String, out: Array[String]) -> void:
 ## UNHOOKED, this fails until the key leaves blocked_on_keys in the same round, so the marker never outlives the gap.
 func test_blocked_parts_track_the_unhooked_keys() -> void:
 	var ratchet: GDScript = load("res://tests/integration/p4_coverage_ratchet.gd") as GDScript
+	# An empty UNHOOKED is the goal state (D-161: 175/175 hooked); then no part may carry a marker.
+	assert_true(ratchet.get_script_constant_map().has("UNHOOKED"), "the ratchet still names its UNHOOKED list")
 	var unhooked: Dictionary = ratchet.get_script_constant_map().get("UNHOOKED", {}) as Dictionary
-	assert_true(unhooked.size() > 0, "the ratchet lists unhooked keys")
 	var want: Dictionary = {}
 	for s: SkillDef in _skills:
 		for part: String in PARTS:
