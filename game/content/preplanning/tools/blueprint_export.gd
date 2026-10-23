@@ -38,6 +38,8 @@ const FLOOR_KEYS: Dictionary = {
 	# RT-B1 (doc "Levels"): Underpass -5.0 (exterior, no rooms), Street 0.0, Upper 3.5, Roof 7.0.
 	&"rolling_thunder": [&"ui.preplan.floor.underpass", &"ui.preplan.floor.street", &"ui.preplan.floor.upper",
 		&"ui.preplan.floor.roof"],
+	# AH-B1 (doc "Floor plans"): Ground 0.0, Balcony 4.2 (the old dress circle: VIP, office suite, count room).
+	&"afterhours": [&"ui.preplan.floor.ground", &"ui.preplan.floor.balcony"],
 }
 ## Ground slab name fragments (lowercase) -> shape kind; first match wins. Unmatched slabs are streets.
 const GROUND_KINDS: Array = [

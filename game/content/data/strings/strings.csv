@@ -4177,6 +4177,7 @@ ui.preplan.floor.gallery,Gallery level
 ui.preplan.floor.executive,Executive level
 ui.preplan.floor.underpass,Underpass
 ui.preplan.floor.street,Street level
+ui.preplan.floor.balcony,Balcony
 ui.preplan.bp.glasshouse.g1,Receiving
 ui.preplan.bp.glasshouse.g2,Workshop
 ui.preplan.bp.glasshouse.g3,WC
@@ -4464,6 +4465,42 @@ ui.preplan.bp.ostrander_federal.x5,Main roof
 ui.preplan.bp.ostrander_federal.xc,Executive corridor
 ui.preplan.bp.ostrander_federal.xl,Executive lounge
 ui.preplan.bp.ostrander_federal.xw,Executive restroom
+ui.preplan.bp.afterhours.g1,Foyer
+ui.preplan.bp.afterhours.g2,Box office and cloakroom
+ui.preplan.bp.afterhours.g3a,Restrooms
+ui.preplan.bp.afterhours.g3b,Restrooms
+ui.preplan.bp.afterhours.g6,Main hall
+ui.preplan.bp.afterhours.g7,Lounge bar
+ui.preplan.bp.afterhours.g8,Grand stair
+ui.preplan.bp.afterhours.g10,Bar stock
+ui.preplan.bp.afterhours.g11,Green room
+ui.preplan.bp.afterhours.g12,Staff room
+ui.preplan.bp.afterhours.g13,Back corridor
+ui.preplan.bp.afterhours.g14,Staff lockers
+ui.preplan.bp.afterhours.g15,Janitor
+ui.preplan.bp.afterhours.g16,Electrical
+ui.preplan.bp.afterhours.g20,East corridor
+ui.preplan.bp.afterhours.g21,Loading bay
+ui.preplan.bp.afterhours.g22,Staff stair
+ui.preplan.bp.afterhours.g23,Ice room
+ui.preplan.bp.afterhours.g24,Door team room
+ui.preplan.bp.afterhours.g25,Staff entrance
+ui.preplan.bp.afterhours.g26,Door office
+ui.preplan.bp.afterhours.g27,Event stock
+ui.preplan.bp.afterhours.u1,VIP balcony
+ui.preplan.bp.afterhours.u2,VIP lounge
+ui.preplan.bp.afterhours.u4a,VIP restrooms
+ui.preplan.bp.afterhours.u4b,VIP restrooms
+ui.preplan.bp.afterhours.u5,Security room
+ui.preplan.bp.afterhours.u6,Staff wing
+ui.preplan.bp.afterhours.u6b,Staff wing
+ui.preplan.bp.afterhours.u9,Crale's office
+ui.preplan.bp.afterhours.u10,Count room
+ui.preplan.bp.afterhours.u12,Private room
+ui.preplan.bp.afterhours.u13,Staff restrooms
+ui.preplan.bp.afterhours.x1,Alley
+ui.preplan.bp.afterhours.x1r,Back-of-house roof
+ui.preplan.bp.afterhours.x2,Marlin Avenue
 ui.preplan.bp.rolling_thunder.cp-g,"Car park, ground deck"
 ui.preplan.bp.rolling_thunder.cp-2,"Car park, deck 2"
 ui.preplan.bp.rolling_thunder.cp-r,Car park roof
