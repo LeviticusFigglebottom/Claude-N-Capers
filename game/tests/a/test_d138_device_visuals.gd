@@ -172,3 +172,51 @@ func test_device_art_as_a_spot_visual_shows_only_once_placed() -> void:
 		assert_true(bit_axis.dot(-dp.global_basis.z) > 0.999, "the bit points along the spot's -Z (%s)" % bit_axis)
 		assert_true(dp.device_node.global_position.distance_to(dp.global_position) < 0.001, "tip at the spot")
 	dp.runner.abort()
+
+
+static func _xf(n: Node) -> Transform3D:
+	var xf: Transform3D = Transform3D.IDENTITY
+	var cur: Node = n
+	while cur != null:
+		if cur is Node3D:
+			xf = (cur as Node3D).transform * xf
+		cur = cur.get_parent()
+	return xf
+
+
+## PO report (OF drill): every map drill spot with a `target` faces it (its -Z, the placed device's bit axis, within
+## 60 degrees of the direction to the target), and none uses device art as its rest visual. AUDIT lines list spots
+## without a target (mission-opened: their facing is the map's call).
+func test_audit_drill_spots_face_their_target() -> void:
+	var heists: Array[StringName] = HEISTS.duplicate()
+	heists.append_array([&"ostrander_federal", &"rolling_thunder", &"afterhours"])
+	var checked: int = 0
+	for h: StringName in heists:
+		var path: String = HeistLauncher.map_path(h)
+		if not ResourceLoader.exists(path):
+			continue
+		var root: Node = (load(path) as PackedScene).instantiate()
+		for n: Node in root.find_children("*", "DrillPoint", true, false):
+			var dp: DrillPoint = n as DrillPoint
+			var at: Transform3D = _xf(dp)
+			var label: String = "%s %s" % [h, root.get_path_to(dp)]
+			if dp.visual_scene != null and DrillPoint._is_device_art(dp.visual_scene):
+				print("AUDIT FINDING %s: device art as visual_scene (%s): set device_scene" % [label,
+					dp.visual_scene.resource_path])
+			var t: Node3D = dp.get_node_or_null(dp.target) as Node3D if not dp.target.is_empty() else null
+			if t == null:
+				print("AUDIT %s: no target; faces %s at %s" % [label, -at.basis.z.normalized(), at.origin])
+				continue
+			var bit: Vector3 = -at.basis.z.normalized()
+			var cos_a: float = 1.0
+			if t is Door:  # a door's origin is its hinge: the bit must cross the leaf (along the door's normal)
+				cos_a = absf(bit.dot(_xf(t).basis.z.normalized()))
+			else:
+				var to: Vector3 = _xf(t).origin - at.origin
+				to.y = 0.0
+				cos_a = bit.dot(to.normalized()) if to.length() > 0.5 else 1.0  # ATM cash sits in the saw spot
+			print("AUDIT %s -> %s cos %.2f" % [label, t.name, cos_a])
+			assert_true(cos_a > 0.5, "%s faces its target %s (cos %.2f)" % [label, t.name, cos_a])
+			checked += 1
+		root.free()
+	assert_true(checked > 3, "audited targeted drill spots (%d)" % checked)
