@@ -1564,3 +1564,55 @@ We follow that shape:
    Unlocking is derived from the player's level, so nothing new is saved.
 3. The starter knife and at least one blunt weapon are level 0. The heavy picks (sledgehammer, fire axe) unlock late, as in PD2.
    Achievement-gated melee waits until achievements grant items, and isn't built now.
+
+## D-156: Melee models stay with B; D builds the two-handed arms set (2026-10-22, LEAD; D-151 judgement)
+I had planned to move the 11 melee models to D (B's queue is long). B had already built them before the handover reached it, so ownership is unchanged:
+1. **B** keeps the melee models (`tools/blender/weapons/**`) and the MeleeDefs.
+2. **D** builds a new two-handed FP arms set `melee_heavy` (PD2: the sledgehammer and fire axe are two-handed). The right hand sits at the grip pivot (the item origin, as in every melee set) and the left hand on the same handle 0.28 m further down (item −Z).
+   Clips and events have the melee_blunt/blade shape, charge_time_s 1.0; characters v1.38 row when it lands.
+   B switches `sledgehammer` / `fire_axe` to `anim_set = &"melee_heavy"` in the same round, and makes the models' handles fit that two-hand grip.
+
+## D-157: The crew sentry gun is built (2026-10-22, LEAD; D-151 judgement)
+B's skill trees (Technician: Engineering / Sapper) carry six sentry keys: sentry_accuracy_mult, turn_speed_mult, cost_mult, health_mult, sentry_shield, sentry_modes.
+The game has no crew sentry, and PD2's Technician isn't PD2 without one. So it's built, not parked:
+1. **A** (after skills B6): the sentry prefab.
+   - It's placed like a deployable, with a hold to deploy, and its ammo is paid from the owner's ammo (PD2: 40% of total ammo, ◇ until B sets it).
+   - Targeting, turn rate, spread, health; it marks enemies the way PD2 sentries draw aggro.
+   - Pickup returns the remaining ammo.
+   - Mode toggle (standard / armour-piercing, the latter needing Engineering) and the sentry shield.
+   - Server-authoritative and replicated.
+   - It hooks the six keys.
+2. **B**: `deployables/sentry.tres` (DeployableDef kind "sentry"), loadout/armory entry, strings, the values (PD2-shaped), and the Technician markers.
+3. **D**: the model and its deploy/fold animation, once A's prefab nodes are fixed. A placeholder box until then.
+4. pd2_fidelity P5's deployables launch target becomes 8 (7 + sentry). pocket_ecm stays parked.
+5. (Amendment, LEAD) The sentry model is **D's**, at `tools/blender/equipment/sentry.py` → `game/assets/equipment/sentry/`
+   (owners.json: those paths go to D, excluded from C). The other deployable models stay in C's `tools/blender/props/equipment.py`.
+
+## D-158: Rolling Thunder Hazardous verdict: clean-stop detection fix, a truck window after a crash stop, bots use cover (2026-10-22, LEAD; D-151 judgement)
+P's real-input Hazardous pair (P 6f7baa97: rifle, heavy vest, doctor bag, no skills; seed 4101 north): **clean stop 0/1, unfair**
+(the crew was seen 1.5 s after the hand-over by an escort still SEATED in T3's cab, then wiped in 23 s from the best cover);
+**blown 0/1, borderline** (the escort was beaten from cover in 20 s, but police wave 1 BUILD landed 15 s after the crash stop, with a
+Phantom kick and a Stinger, before anyone reached a truck across 25 m of open road). A's bot data agrees: the escort itself is fair.
+1. **Logic fix (A):** a unit seated in a vehicle has no detection (vision and hearing gauges off) until it dismounts.
+   Seated crews can't see out of an armoured cab. The clean stop's ambush window then means what it says. Dismount stays
+   triggered by the ambush / any non-seated escort's alert, as now.
+2. **RT truck window (A, D-154 amendment):** after a crash or clean stop, the first assault's BUILD can't start before
+   stop + 30 s (◇) on any difficulty. That is the heist's designed "hit the trucks" beat. The alarm-based anticipation still
+   applies when it is later. Specials in wave 1 stay (PD2).
+3. **Bots use cover (A):** when the human they follow is in cover or crouched in combat, AI teammates take the nearest cover
+   point within 8 m of them instead of standing in the open. Small, general, all heists.
+4. **Check (C):** site guards hit the crew at the pier "over or through the hoarding line". Verify the hoarding blocks LOS
+   and bullets where it is solid.
+5. Re-judge: P reruns the Hazardous pair on the round with 1-3, once with no skills and once with a PD2 loud build. RT is done
+   only when the clean stop is fair (≥ 1 truck reachable by a competent human) and the blown run is at worst "hard but fair".
+
+## D-159: Safehouse hero props are D's (2026-10-23, LEAD; C proposal)
+D builds the 8 safehouse hero props (Old Press, jukebox, Board map, bunk, gun cabinet, PPE rack, drying line, type case).
+`owners.json`: `tools/blender/props/safehouse_hero.py` + `game/assets/props/prop_sh_*/**` go to D, excluded from C.
+C keeps the safehouse catalogue, placement and the stand-in → hero swaps (C4-03/G3). Pendants, work light and van stay C's.
+
+## D-160: No PO-only steps on the done path (2026-10-23, PO)
+PO: "skip the GPU render / any steps that'd need something you can't do yourself."
+Heist done checks no longer wait on PO actions (GPU re-renders, PO playthroughs). Windowed opengl3 evidence from the envs
+(reviewed by the LEAD) stands in. Rolling Thunder's done path is now:
+P's D-158 real-input verdict → the LEAD's D-115-style done check → B flips the un-hide flag → Afterhours starts (D-144).

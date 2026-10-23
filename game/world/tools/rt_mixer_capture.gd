@@ -5,7 +5,9 @@
 ## composes a contact sheet. PNGs, sheet and log to --out. Compatibility renderer, as the low-end players see it:
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 960x540 --path game res://world/tools/rt_mixer_capture.tscn -- --out=/abs/dir \
-##     [--seed=1] [--step=1.0]
+##     [--seed=1] [--step=1.0] [--crash] [--route=north|east]
+## --crash leaves the signals unrigged (the crash stop); --route quits with code 3 when the seed rolls the other route
+## (loop seeds in the shell). The log carries the mixer's pitch / roll / yaw (deg) per frame.
 ## Owner: ENV C.
 extends Node3D
 
@@ -21,6 +23,8 @@ const COLS: int = 4
 var _out: String = ""
 var _seed: int = 1
 var _step: float = 1.0
+var _crash: bool = false
+var _want_route: String = ""
 var _cam: Camera3D = null
 var _log: PackedStringArray = []
 var _shots: PackedStringArray = []
@@ -34,6 +38,10 @@ func _ready() -> void:
 			_seed = int(a.trim_prefix("--seed="))
 		elif a.begins_with("--step="):
 			_step = float(a.trim_prefix("--step="))
+		elif a == "--crash":
+			_crash = true
+		elif a.begins_with("--route="):
+			_want_route = a.trim_prefix("--route=")
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/rt_mixer"
 	RenderingServer.render_loop_enabled = false
@@ -55,7 +63,12 @@ func _run() -> void:
 	_cam.look_at_from_position(EYE, AT)
 	await _ticks(30)
 	var m: Node = rt.mission
-	m.set(&"signals_rigged", true)
+	var route: String = String(m.call(&"_route"))
+	print("[RTMIXER] seed %d route %s %s" % [_seed, route, "crash" if _crash else "clean"])
+	if _want_route != "" and not route.contains(_want_route):
+		get_tree().quit(3)
+		return
+	m.set(&"signals_rigged", not _crash)
 	await _snap("00_before", rt)
 	m.call(&"_convoy_arrives")
 	var mixer: ConvoyVehicle = m.call(&"_mixer") as ConvoyVehicle
@@ -92,8 +105,12 @@ func _snap(nm: String, rt: HeistRuntime) -> void:
 	_cam.look_at_from_position(EYE, AT)
 	for n: Node in rt.find_children("*", "CanvasLayer", true, false):   # the crew's viewmodel / HUD overlays
 		(n as CanvasLayer).visible = false
-	var line: String = "%s layout %s mixer %s gate open %s" % [nm, rt.mission.get(&"layout_id"),
-		mixer.global_position.snapped(Vector3.ONE * 0.01) if mixer != null else "-", gate.is_open if gate != null else "-"]
+	var rot: Vector3 = Vector3.ZERO
+	if mixer != null:   # Godot YXZ euler: x = pitch, y = yaw, z = roll
+		rot = mixer.global_basis.orthonormalized().get_euler() * (180.0 / PI)
+	var line: String = "%s layout %s mixer %s pitch %.2f roll %.2f yaw %.1f gate open %s" % [nm,
+		rt.mission.get(&"layout_id"), mixer.global_position.snapped(Vector3.ONE * 0.01) if mixer != null else "-",
+		rot.x, rot.z, rot.y, gate.is_open if gate != null else "-"]
 	_log.append(line)
 	print("[RTMIXER] " + line)
 	RenderingServer.render_loop_enabled = true

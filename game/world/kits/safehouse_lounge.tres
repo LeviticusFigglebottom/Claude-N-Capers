@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"safehouse_lounge"
+purpose = &"break_room"
+required_items = Array[StringName]([&"sofa", &"coffee_table", &"rug", &"fridge", &"kitchen_counter", &"microwave", &"coffee_machine", &"table", &"chair", &"wall_cabinet", &"bin"])
+optional_items = {
+&"armchair": 1,
+&"bookshelf": 0.6,
+&"kettle": 0.6,
+&"picture": 1,
+&"plant": 0.5,
+&"side_table": 1
+}
+clutter_groups = {
+&"counter": {
+"anchors": Array[StringName]([&"kitchen_counter", &"table", &"coffee_table"]),
+"count": Vector2i(1, 3),
+"items": {&"bottles": 1, &"kettle": 0.6, &"mug": 3, &"papers": 1},
+"radius": 0.5
+}
+}
+min_density = 0.2
+max_density = 1
+min_props = 16
+lone_ok_kinds = Array[StringName]([&"fridge", &"bookshelf", &"plant"])
+seed_salt = 4803
+counts = {
+&"chair": Vector2i(4, 4)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"chair": PackedStringArray("prop_chair_break"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect"),
+&"table": PackedStringArray("prop_table_break")
+}
+ceiling = {}
+notes = "Safehouse LG lounge (8 x 10 m, extends break_room): an L-sofa (sofa + armchair) round a coffee table on a rug, a kitchenette (counter, fridge, microwave, coffee machine, wall cabinets), a dining table with 4 chairs. The jukebox and the bulletin board (profile) are stations; the floor lamp and the pendant are explicit fixtures."

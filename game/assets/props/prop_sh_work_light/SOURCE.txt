@@ -1,0 +1,8 @@
+asset: prop_sh_work_light
+script: tools/blender/props/safehouse.py
+params: {"cat": {"fixture": true, "group": "safehouse", "kind": "light_fixture", "light": {"angle": 55, "color": "#FFF0E3", "energy": 1.6, "pos": [0.0, 1.7, 0.06], "range": 7.0, "type": "spot"}, "pin_only": true, "place": "floor"}, "fn": "work_light"}
+seed: 3168675387  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sh_work_light
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

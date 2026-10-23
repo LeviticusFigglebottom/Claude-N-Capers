@@ -20,16 +20,16 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 
 | Id | Task | Fidelity rows |
 |---|---|---|
-| A3-01 | Specials: Phantom, Stinger, Bulwark, Wrecker (staged plates), Longshot, Corpsman, with telegraphs and counterplay | L4.3–L4.8 |
-| A3-02 | Commander Brandt + Aegis squad (resistance stacking, retreat, assault lock) | L4.9 |
-| A3-03 | Director escalation: drama, stages, factions by difficulty, special spawn caps, between-wave specials | L1.2, L1.3, L1.5, L4.11 |
-| A3-04 | Custody / hostage trade / auto-release, police cuffing downed players, shout-surrender + Turncoat converts | L2.8–L2.10, L2.12, L5.1–L5.3 |
-| A3-05 | AI teammate orders (follow, hold, carry/drop bag, revive), stealth follow option | L6.1 |
-| A3-06 | Suppression, armor/shield/wall piercing, explosives, heavy frontal plates | L3.4–L3.6, L4.2 |
-| A3-07 | Co-op hardening: replicate deployables, codes, pre-plan drops and interaction progress; host+client loopback parity | net.md |
-| A3-09 | Night Deposit prefabs/systems: `bag_lift`, `hack_terminal`, OUT_OF_BOUNDS zones (respawn at `oob_respawn`), timed mission events (armoured car arrival) via HeistMission timers | QC-11/12/14 |
-| A3-10 | Shadow Ledger needs: per-difficulty weights for slot-group rules (QC-18; Night Deposit too), escape_type heli/zipline/lift with `arrival_delay_s`, `bag_only` (QC-19), no ladder climbing with a bag (QC-17) | D-042 |
-| A3-08 | Pending follow-ups: A2-08, QB-46..49 (input pause, camera/weapon visual ownership, HUD tracked_crew, gamepad look), D-038 (ECM feedback ungated, cuffed events, fail_reason, PreplanResult apply) | — |
+| A3-01 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Specials: Phantom, Stinger, Bulwark, Wrecker (staged plates), Longshot, Corpsman, with telegraphs and counterplay | L4.3–L4.8 |
+| A3-02 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Commander Brandt + Aegis squad (resistance stacking, retreat, assault lock) | L4.9 |
+| A3-03 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Director escalation: drama, stages, factions by difficulty, special spawn caps, between-wave specials | L1.2, L1.3, L1.5, L4.11 |
+| A3-04 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Custody / hostage trade / auto-release, police cuffing downed players, shout-surrender + Turncoat converts | L2.8–L2.10, L2.12, L5.1–L5.3 |
+| A3-05 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). AI teammate orders (follow, hold, carry/drop bag, revive), stealth follow option | L6.1 |
+| A3-06 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Suppression, armor/shield/wall piercing, explosives, heavy frontal plates | L3.4–L3.6, L4.2 |
+| A3-07 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Co-op hardening: replicate deployables, codes, pre-plan drops and interaction progress; host+client loopback parity | net.md |
+| A3-09 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Night Deposit prefabs/systems: `bag_lift`, `hack_terminal`, OUT_OF_BOUNDS zones (respawn at `oob_respawn`), timed mission events (armoured car arrival) via HeistMission timers | QC-11/12/14 |
+| A3-10 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Shadow Ledger needs: per-difficulty weights for slot-group rules (QC-18; Night Deposit too), escape_type heli/zipline/lift with `arrival_delay_s`, `bag_only` (QC-19), no ladder climbing with a bag (QC-17) | D-042 |
+| A3-08 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Pending follow-ups: A2-08, QB-46..49 (input pause, camera/weapon visual ownership, HUD tracked_crew, gamepad look), D-038 (ECM feedback ungated, cuffed events, fail_reason, PreplanResult apply) | — |
 
 | B4-05 | Payday card pick (1 of 3, 30 s auto-pick, card types) | P9 |
 | B4-06 | The Board + contract broker (contacts, rotating contracts, pro jobs) | C1 |
@@ -69,9 +69,9 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |
 | C4-02 | Safehouse greybox (G1) per docs/design/heists/safehouse.md: SafehouseMap root, 8 stations, validate_level `--profile=hub` | C4-01 |
 | C4-03 | Safehouse art pass (G2/G3) + review shots; dedicated safehouse music track (C5 backlog) | C4-02 |
-| A3-12 | Player melee (L3.9, P2 gap): CrewMelee from Loadout.melee (MeleeDef timings, charge, knockdown), gun bash, silent stealth kills, server-validated hit; then CrewThrowables (frag / concussion / incendiary by ThrowableDef.kind, pin_pull / release) with the D-069 FP sets | L3.9, D-069 |
-| A3-13 | Enemy close-range melee (PD2 point-blank shove/strike on crew; drives `defense.melee_counter` and `defense.melee_damage_taken_mult`) | L3.9, L2 |
-| A4-01 | Fidelity audit: every pd2_fidelity row owned by ENV A with phase ≤ P5 → test coverage table (row, test, status); implement any row found missing (as L3.9 melee was) | all A rows |
+| A3-12 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Player melee (L3.9, P2 gap): CrewMelee from Loadout.melee (MeleeDef timings, charge, knockdown), gun bash, silent stealth kills, server-validated hit; then CrewThrowables (frag / concussion / incendiary by ThrowableDef.kind, pin_pull / release) with the D-069 FP sets | L3.9, D-069 |
+| A3-13 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Enemy close-range melee (PD2 point-blank shove/strike on crew; drives `defense.melee_counter` and `defense.melee_damage_taken_mult`) | L3.9, L2 |
+| A4-01 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Fidelity audit: every pd2_fidelity row owned by ENV A with phase ≤ P5 → test coverage table (row, test, status); implement any row found missing (as L3.9 melee was) | all A rows |
 | A4-02 | Performance: frame/physics/AI/net budgets instrumented (Perf monitors + a headless perf scene: Dockside, 4 crew, enemy cap reached), CI perf test with thresholds; fix the worst offenders | P6 gate |
 | A4-03 | 4-client soak harness: host + 3 loopback clients with bot crew for a long loud run; checks desync (state hashes), memory growth, error log; feeds the lead's P6 gate | P6 gate |
 | A4-04 | Hook the modifier keys that do nothing: the lead's P4 gate (test_p4_progression.gd) found 69 keys ≤ P4 with no runtime hook (mostly the D-031 skill keys, e.g. weapon.fire_rate_mult, weapon.ads_speed_mult, defense.swan_song, interaction.speed_mult) and 31 hooked keys with no behaviour test. Hook each one and add a behaviour test, then shrink the gate's allowlist. Hooks in ENV P's files (player/viewmodel, e.g. ADS speed, movement) go through ENV P. Next after A4-01 (D-076 playability) | P4 gate |
@@ -85,7 +85,7 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | D4-01 | Character LODs for performance (A4-02): 3 LOD levels per body/outfit (≈ 100 / 45 / 15 %), visibility ranges, crowd-friendly lowest LOD (Afterhours, Gallery Night gala) | A4-02, P5 |
 | D4-02 | Crowd variety: +8 civilian outfits/variants for P5 crowds (club patrons, gala guests, bank customers, commuters), mix-and-match tops/bottoms/hair/colour so no two neighbours match | P5 |
 | D4-03 | Four more heisters (8 total, PD2 grew its roster): bodies, outfits, faces, FP sleeves, portraits, masks-fit envelope regen; ids to ENV B for the picker | P6 |
-| A3-11 | Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
+| A3-11 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Hub support (QC-43/44): crew spawn + interaction without a HeistRuntime (civilian mode, HUD prompt), `hub_station` prefab emitting `station_requested(id)` | C4-01 |
 | C5-01 | Music stems: night_deposit, shadow_ledger, dockside_burn heist tracks now (unlockables vault_hymn / long_con / last_call point at those stems meanwhile); the 3 unlockables get their own stems as P5 "music ×3" | P5 music |
 
 ## P2: Stealth complete (ENV A tasks dispatched early under the utilization policy, D-032)

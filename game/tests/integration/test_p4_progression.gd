@@ -8,7 +8,7 @@
 ##   * BEHAVIOUR TEST: the key (bare or qualified, `weapon.damage_mult.shotgun`) appears as a string
 ##     literal in the code of a behaviour test file, or is listed in INDIRECT (a behaviour test that
 ##     reaches the key through a skill / perk grant without naming it; the gate checks that the file
-##     and the test function exist). Behaviour test files = tests/a, tests/c, tests/integration and
+##     and the test function exist). Behaviour test files = tests/a, tests/c, tests/p, tests/integration and
 ##     tests/b minus DATA_ONLY_TESTS (registry / resolver / UI / save tests whose key literals are
 ##     data, not behaviour).
 ##   Why scan sources rather than a hand-kept registry: ENV A and ENV B keep adding tests next to their
@@ -32,7 +32,7 @@ extends TestCase
 const RATCHET: GDScript = preload("res://tests/integration/p4_coverage_ratchet.gd")
 const CURRENT_PHASE: int = 4
 const SELF_FILE: String = "test_p4_progression.gd"
-const TEST_DIRS: Array[String] = ["res://tests/a", "res://tests/b", "res://tests/c", "res://tests/integration"]
+const TEST_DIRS: Array[String] = ["res://tests/a", "res://tests/b", "res://tests/c", "res://tests/p", "res://tests/integration"]
 const RUNTIME_DIRS: Array[String] = ["res://systems", "res://core", "res://world", "res://content"]
 ## Runtime files whose key literals are not hooks.
 const NOT_HOOKS: Array[String] = ["res://core/modifiers.gd"]

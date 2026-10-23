@@ -326,8 +326,9 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	i.fire = Input.is_action_pressed(&"fire")
 	_sprint_to_fire(i)
 	i.aim = _held_or_toggled(&"aim")
-	if i.move.y <= 0.1:
-		_toggled.erase(&"sprint")  # a toggled sprint ends when the player stops running forward
+	var any_dir: bool = _crew != null and Modifiers.flag(_crew.slot, &"movement.sprint_any_direction")
+	if i.move.y <= 0.1 and not (any_dir and i.move.length() > 0.1):
+		_toggled.erase(&"sprint")  # a toggled sprint ends when the player stops running (forward, unless any_dir)
 	i.reload = Input.is_action_pressed(&"reload")
 	i.melee = Input.is_action_pressed(&"melee")
 	i.deploy = Input.is_action_pressed(&"deploy")
@@ -387,6 +388,10 @@ func _sprint_to_fire(i: CrewIntent) -> void:
 		_sprint_exit_left = maxf(_sprint_exit_left - dt, 0.0)
 		i.fire = false
 		i.sprint = false
+		return
+	# A4-04 movement.shoot_while_sprinting (Hip Fire .shotgun, Run and Gun .all): fire without leaving the sprint.
+	if i.fire and _crew != null and _crew.sprinting \
+			and Modifiers.flag(_crew.slot, &"movement.shoot_while_sprinting", CrewView.weapon_qualifiers(_crew)):
 		return
 	if i.fire and _crew != null and _crew.sprinting:
 		_sprint_exit_left = Tweak.crew().sprint_exit_fire_s

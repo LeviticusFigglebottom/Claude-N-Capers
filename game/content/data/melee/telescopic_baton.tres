@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="MeleeDef" format=3]
 
 [ext_resource type="Script" path="res://contracts/data/melee_def.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bsl8grmpt8an1" path="res://assets/weapons/wpn_melee_telescopic_baton/wpn_melee_telescopic_baton.glb" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -13,5 +14,5 @@ range_m = 1.8
 knockdown = 0.5
 concealment = 30
 silent = true
-price = 25000
+model = ExtResource("2")
 anim_set = &"melee_blunt"

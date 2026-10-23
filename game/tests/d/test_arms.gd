@@ -41,7 +41,8 @@ const DATA_PENDING: Array[String] = [
 ]
 ## D2-04 non-gun sets and their clips (lengths from MeleeDef / DeployableDef when that data exists).
 const ITEM_SETS: Array[String] = [
-	"melee_knife", "melee_blunt", "melee_blade", "throwable", "deploy_bag", "deploy_small", "deploy_sentry",
+	"melee_knife", "melee_blunt", "melee_blade", "melee_heavy", "throwable", "deploy_bag", "deploy_small",
+	"deploy_sentry",
 ]
 const ITEM_CLIPS: Dictionary = {
 	"melee": ["idle", "sprint", "draw", "holster", "swing", "charge_start", "charge", "charge_swing"],
@@ -57,7 +58,13 @@ const MELEE_MATCH: Dictionary = {
 	"melee_knife": ["knife", "dagger", "shank"],
 	"melee_blunt": ["baton", "bat", "club", "hammer", "pipe", "crowbar", "wrench"],
 	"melee_blade": ["machete", "sword", "katana", "axe", "cleaver"],
+	"melee_heavy": ["sledge", "fire_axe"],
 }
+## characters v1.38: melee_heavy is two-handed; the left hand closes round the handle this far below the right hand's
+## grip pivot (Godot item axes: the handle along +Y), in every frame of every clip.
+const HEAVY_LEFT_Y: float = -0.28
+## the left palm may sit this much further off its handle point than the right palm sits off the item origin
+const HEAVY_LEFT_TOL: float = 0.02
 const DEPLOY_KINDS: Dictionary = {
 	"deploy_bag": ["ammo_bag", "doctor_bag", "body_bag_case", "armor_bag"],
 	"deploy_small": ["ecm", "trip_mine", "fak"], "deploy_sentry": ["sentry"],
@@ -967,7 +974,7 @@ func test_item_sets() -> void:
 	# melee: the charge loop is seamless, starts where charge_start ends; charge_swing starts there too;
 	# swings end on idle; charge_start follows MeleeDef.charge_time_s when the data exists
 	var arm: Array = ["clavicle.R", "upper_arm.R", "forearm.R", "hand.R", "hand.L"]
-	for set_name: String in ["melee_knife", "melee_blunt", "melee_blade"]:
+	for set_name: String in ["melee_knife", "melee_blunt", "melee_blade", "melee_heavy"]:
 		var cs: Animation = _anim("%s_charge_start" % set_name)
 		var ch: Animation = _anim("%s_charge" % set_name)
 		var sw: Animation = _anim("%s_charge_swing" % set_name)
@@ -1008,6 +1015,7 @@ func test_item_sets() -> void:
 	assert_true(_event("throwable_draw", "pin_pull") > 0, "throwable_draw pin_pull@")
 	for key: String in ["fp.melee", "fp.throwable", "fp.deploy"]:
 		assert_true(String(_source.get(key, "")).length() > 60, "SOURCE %s documented" % key)
+	_check_heavy_two_hands()
 
 
 ## Pose the arms at `<clip>` frame 0 and return {"weapon": Transform3D, "palm_l", "palm_r": Vector3} in skeleton
@@ -1453,3 +1461,36 @@ static func _fp_sleeve_ids(h: String) -> Array[String]:
 					if v.begins_with("char_") and not v.contains(" "):
 						out.append(v)
 	return out
+
+
+## characters v1.38: in every frame of every melee_heavy clip both hands hold the handle: the right palm at the item
+## origin (as the one-handed sets), the left palm at item (0, HEAVY_LEFT_Y, 0) no further off it than the right.
+func _check_heavy_two_hands() -> void:
+	var weapon: int = _skel.find_bone("weapon")
+	var worst: float = 0.0
+	var where: String = ""
+	var n: int = 0
+	for clip: Variant in ITEM_CLIPS["melee"]:
+		var name: String = "melee_heavy_%s" % clip
+		var a: Animation = _anim(name)
+		assert_true(a != null, "%s exists" % name)
+		if a == null:
+			continue
+		_player.play(StringName(name))
+		for f: int in range(roundi(a.length * FPS) + 1):
+			_player.seek(minf(f / FPS, a.length), true)
+			var w: Transform3D = _skel.get_bone_global_pose(weapon)
+			var palm: Dictionary = {}
+			for s: String in ["L", "R"]:
+				var h: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("hand.%s" % s)).origin
+				var m: Vector3 = _skel.get_bone_global_pose(_skel.find_bone("middle_01.%s" % s)).origin
+				palm[s] = (h + m) * 0.5
+			var dl: float = (palm["L"] as Vector3).distance_to(w * Vector3(0.0, HEAVY_LEFT_Y, 0.0))
+			var dr: float = (palm["R"] as Vector3).distance_to(w.origin)
+			if dl - dr > worst:
+				worst = dl - dr
+				where = "%s f%d (left %.3f m, right %.3f m)" % [name, f, dl, dr]
+			n += 1
+		_player.stop()
+	assert_true(n > 0, "melee_heavy frames sampled")
+	assert_true(worst <= HEAVY_LEFT_TOL, "melee_heavy: the left hand stays on the handle (worst %s)" % where)
