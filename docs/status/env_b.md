@@ -3,7 +3,60 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 17:10)
+### LEAD r308 card ruling + AH HUD capture gaps
+- 6b3de312: on a civilian-start heist (player_mode civilian), the heist card shows first, ahead of Casing / Stealth, which queue behind it. Test: test_heist_tips.test_civilian_start_shows_the_heist_card_first. The capture shows "Guest list" at the civilian start.
+- Gaps closed, on the scratch tree with AH un-hidden. Seed 7 Brutal rolls sec_staffed and co_op_pickup (direct launch, `ah_hud_capture.gd -- <out> 7`). Shots are in content/ui/_review/r308_ah_gaps/ (720p + 1080p):
+  - the operator desk;
+  - the pager answer prompt facing the body, then mid-hold (the real 10 s hold, answered; "Pagers left: 2");
+  - payday with a secured Cash Bricks x1 line.
+- Stated shortcuts:
+  - the alley guard is killed by NpcBase.die (the real PagerSystem pages him);
+  - the secured bag is spawned in the secure zone. It sat at y -0.19 and never rest-secured, so LootManager._secure was called directly. That is likely a spawn-height artefact, not routed.
+- Finding for A: the staffed camera station prompt reads "Hold F to interact" / "Out of order" with the operator seated at it (generic verb; the blocked text reads as broken).
+
+### AH VO run coverage (LEAD r306: a stealth pass + forced rare events; scratch tree = env/b-content + trunk + A 871fc204 + C)
+Runs, all PASS:
+- loud seed 1234 Routine;
+- stealth seed 1234 + seeds 2-9;
+- loud with every bad rare event + extra_product forced (scratch-only chance 1.0, min_difficulty dropped), seed 1234 Routine, CREW_DMG 0.25 (1225 s);
+- a Brutal forced run FAILED: the pilot went to custody at 108 s, which is harness survival, not content.
+
+Stealth VO was captured with a scratch-only voice_line_requested logger in po5_flow_ah_stealth (reverted). 0 missing string keys in every log.
+Said in the runs: **26 of 43** AH lines. The 17 never said:
+
+| Lines | Why | Owner / fix |
+|---|---|---|
+| vo.mercer.afterhours_gear_{wc,cloak,booth,van} (4; cloak only via the harness note) | **BUG: `AfterhoursMission.gear_line()` is never called by the mission** (only A's tests call it). Mercer never names the gear spot. The seeds rolled all 4 slots (cloak x5, wc x2, booth, van) and no line played. vo_coverage counts them as said through the `%s` builder inside the dead function (a false positive) | **A**: `say(gear_line())` after the intro / contact intro |
+| vo.mercer.afterhours_intro, vo.accountant.afterhours_contact_intro | said in _on_mission_start, before the harness logger attaches (A's test_ah_a1_mission asserts both) | harness gap: A could log from runtime start |
+| vo.{accountant,mercer}.briefing_afterhours_* (5) | played by the briefing's Play Briefing, never in a heist run; test_briefing + vo_coverage's briefing builder cover them | none |
+| vo.mercer.afterhours_couriers, _off_duty_cop | both events forced active, but the couriers (14:00) and the cop's spotting are stealth-phase; the loud pilot is loud from 9 s and the stealth route ends at 24 s heist time | A: a stealth flow that waits to 14:00 / passes the cop |
+| vo.mercer.afterhours_lasers, _last_pager | the stealth route skips the U12 laser room and answers no pager (detection shortcut) | A: route variant (prod_private) / a pager step |
+| vo.dj.afterhours_shoutout_1..3 | every 3-5 min of the set; the stealth route is 24 s, and loud cuts the music at 9 s | A: a long stealth soak, or the mission's shoutout timer in a unit test |
+
+Surprise strings (ui.briefing.sec.event.afterhours.*) are briefing UI, not run-log text: test_briefing_intel shows all 4 at Brutal (off_duty from Hazardous, co_op from Brutal).
+
+### AH done-check, B slice (LEAD r305, early; D-115 style)
+Tree: env/b-content + trunk r304 + env/a-core + env/c-worlds, with the local AH un-hide applied (`hidden` dropped in
+heist_list), after --import.
+Patch saved, NOT pushed: scratchpad/ah_unhide_D165.patch. It touches heist_list.tres, test_heist_readiness (AH offered) and test_music (BASE_IDS + afterhours). Rebase it against the RT patch: both touch the readiness loop.
+
+| Check | How | Result |
+|---|---|---|
+| Heist text audit | test_heist_text_audit (AH in HEISTS) | 5/0 |
+| VO coverage | test_vo_coverage, AH no longer staged | **12/1**: `vo.accountant.afterhours_contact_intro` and `_payday` are never said. A's mission needs to say them, as OF / RT do. All other AH lines are said |
+| Voice table / strings | test_strings 23/0, test_ui_strings 3/0, test_ah_content 3/0, test_contacts 6/0 | pass |
+| First-time tip | test_heist_tips 5/0, test_onboarding_card 10/0 | pass |
+| Briefing | test_briefing 40/0, test_briefing_intel 15/0 (4 surprises), test_heist_screens_text 8/0 | pass |
+| Pre-planning | test_preplan 42/0, test_blueprints 9/0 (labels inside the plan, AH walked) | pass |
+| Achievements | test_heist_achievements 13/0 | pass |
+| Catalogue / readiness | test_heist_readiness 9/0 (AH offered + ready), test_p5_catalogue 7/0 (2 skipped: every P5 def has shipped) | pass |
+| Music | test_music 19/0 (Velvet Rope in the base set) | pass |
+| Board readiness | test_board 24/0, test_board_screen 7/0. Probe over 400 rotations at level 60: AH pin x478, contact.accountant, $40,000 base, difficulties Routine-Brutal, 73 pro | pass |
+| Main-menu path | test_main_menu_direct 4/0, test_app_flow 5/0 | pass |
+| Headless loud run | A's po5_flow_ah_loud, DIRECT=1, seed 1234, Routine | **PASS** in 1015 s: civilian start → gear (cloak) → office → safe (drill, jammed twice) → secure 10/12 bags → escape → payday → hub |
+| Run log | run.log + po5_log.txt | **0 missing string keys** and no script errors (only exit-time RID leak notes). VO said: 24 AH lines. Not reached on this seed (no rare event; loud from 9 s): code_found, lasers, last_pager, couriers, off_duty_cop, shoutouts |
+
 ### Afterhours items 8-10 (D-165; built against C's map + def, env/c-worlds 46512e5e; PAIR with it)
 - **8 assets:** asset.gear_drop and asset.count_window get `heists = [afterhours]` (D-143 allow-list, like the intel assets).
   The insider keycard needs no new asset: C's def points the library asset.inside_keycard at pp_insider_keycard.

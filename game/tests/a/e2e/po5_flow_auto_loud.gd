@@ -159,7 +159,8 @@ func play(flow: Node) -> int:
 		if rt.heist_time_s - last_shot > 90.0:
 			last_shot = rt.heist_time_s
 			await f.shot("auto_%d" % int(rt.heist_time_s))
-		await step()
+		if not await _hunt_captain():
+			await step()
 	if not _ended:
 		return fail("no heist end within %.0f s; markers %s" % [cap, _marker_summary()])
 	return await f.payday_to_hub()
@@ -184,6 +185,27 @@ func _gear_up() -> bool:
 			return true
 		f.note("civilian start: %s not used (%s)" % [g.name, g.interactable.availability(p.crew)])
 	return not p.crew.civilian
+
+
+## D-166 (harness): once the required loot is secured (no `secure` marker left), an active captain (Brandt, who holds
+## the assault in SUSTAIN) is the pilot's target, as a crew waiting on the escape would go and end the siege (AH
+## done-check, Hazardous 1 / 4242). Walk until he is in sight, then engage him. True when it acted.
+func _hunt_captain() -> bool:
+	var d: AssaultDirector = rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	if d == null or not d.captain_active() or _marked(&"secure") or _marked(&"escape"):
+		return false  # D-166: once the van is there (the waiver) the pilot leaves, Brandt or not
+	var brandt: NpcBase = d.captain.brandt
+	if brandt == null or not is_instance_valid(brandt) or not brandt.is_alive():
+		return false
+	_note_once(&"_captain", "required loot secured, Brandt holds the assault: hunting him (t=%.0f)" % rt.heist_time_s)
+	if p.has_los(p._aim_point(brandt), brandt) and p.crew.global_position.distance_to(brandt.global_position) <= 40.0:
+		await p.engage(brandt, 3.0)
+	elif not await p.goto(p.stand_point(brandt.global_position), 8.0, 6.0):
+		await p.hold_position(1.0)  # no path to him: fight from here (a failed goto returns at once: never spin)
+	await p.inp.ticks(1)  # every hunt pass yields a frame (the forced-captain runs looped in one frame to 7.8 GB, OOM)
+	if not is_instance_valid(brandt) or not brandt.is_alive():
+		f.note("Brandt down at t=%.0f" % rt.heist_time_s)
+	return true
 
 
 ## --po5-wait-convoy: unmasked, in place, until the convoy has stopped (RT _stop_done) or the crash's alarm is up
@@ -701,6 +723,8 @@ func _mark_if_unreached(c: InteractableComponent) -> void:
 ## A target `_mark_if_unreached` blacklisted: for the run when it had no path, else while its door still blocks.
 func _is_unreachable(c: InteractableComponent) -> bool:
 	var key: int = c.get_instance_id()
+	if int(_bag_fails.get(key, 0)) >= BAG_FAIL_LIMIT:
+		return true  # AH 6501 (prod_private): a path re-test un-skipped a bag the shelving hid; 700 s on it, no safe
 	if _skip_until.has(key):
 		if rt.heist_time_s < _skip_until[key]:
 			return true

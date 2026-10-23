@@ -70,6 +70,9 @@ func test_board_and_armory_back_to_the_main_menu() -> void:
 	var f: MenuFlow = await _flow()
 	await _press(f.main_menu.station_buttons[&"board"] as Button)
 	assert_eq(f.current, f.board_screen as Control, "The Board")
+	var crumb: Label = f.board_screen.find_child(UiBuild.CRUMB_NAME, true, false) as Label
+	assert_eq(crumb.text, UiText.t(UiBuild.CRUMB_MAIN_MENU) + " / " + UiText.t(&"ui.board.crumb").get_slice(" / ", 1),
+			"LEAD r307: the breadcrumb follows the path (Main menu / Contracts)")
 	await _press(f.board_screen.back_button)
 	assert_eq(f.current, f.main_menu as Control)
 	await _press(f.main_menu.station_buttons[&"armory"] as Button)
@@ -100,6 +103,8 @@ func test_all_stations_and_the_safehouse_entry() -> void:
 	assert_eq(f.current, f.hub as Control)
 	f.open_station(&"board")
 	await wait_frames(2)
+	assert_eq((f.board_screen.find_child(UiBuild.CRUMB_NAME, true, false) as Label).text, UiText.t(&"ui.board.crumb"),
+			"safehouse path: Safehouse / Contracts")
 	await _press(f.board_screen.back_button)
 	assert_eq(f.current, f.hub as Control, "safehouse path: Back to the hub")
 	BTestUtil.pin_menu_hub(false)

@@ -138,11 +138,37 @@ def _car(k: Kit, p: dict) -> None:
             (-hl + 0.2, 0.3)]
     body.profile_x(prof, -w / 2, w / 2, paint)
     cab = [(-hl + 0.9, 0.95), (-hl + 1.4, 1.38), (-hl + 1.55, 1.43), (hl - 2.0, 1.44), (hl - 1.8, 1.4), (hl - 1.2, 0.95)]
-    body.profile_x(cab, -w / 2 + 0.1, w / 2 - 0.1, paint)
+    gl = "glass_car" if escort else "glass_tinted"
+    if escort:
+        # an open cabin (LEAD r305: the seated escorts read through the glass): roof, A / C pillars, a dark interior
+        # (floor plate at the beltline, dash, four seat backs) behind light glass
+        body.profile_x([(-hl + 1.42, 1.37), (-hl + 1.55, 1.43), (hl - 2.0, 1.44), (hl - 1.82, 1.38)],
+                       -w / 2 + 0.1, w / 2 - 0.1, paint)
+        for sx in (-1, 1):
+            px = sx * (w / 2 - 0.13)
+            trim.rod((px, hl - 1.2, 0.96), (px, hl - 1.83, 1.39), 0.035, paint, segs=8)
+            trim.rod((px, -hl + 0.92, 0.96), (px, -hl + 1.43, 1.38), 0.035, paint, segs=8)
+        trim.bx((-w / 2 + 0.12, -hl + 0.95, 0.962), (w / 2 - 0.12, hl - 1.22, 0.968), "fabric_graphite")
+        trim.bx((-0.78, hl - 1.34, 0.96), (0.78, hl - 1.22, 1.07), "plastic_black")
+        for sx, sy in ((-1, 0.25), (1, 0.25), (-1, -0.95), (1, -0.95)):
+            trim.bx((sx * 0.4 - 0.23, sy - 0.4, 0.96), (sx * 0.4 + 0.23, sy - 0.3, 1.3), "fabric_graphite")
+        # the driver's wheel (Seat0, D's sit_vehicle_drive grip: _anim_rt.py WHEEL_C / WHEEL_R / WHEEL_TILT from the
+        # seat root): rim face toward the driver and up, two spokes, the column forward-down into the dash
+        ta = math.radians(30.0)
+        wc = (-0.4, 0.25 + 0.40, 0.18 + 0.76)
+        up = (0.0, math.sin(ta), math.cos(ta))
+        rim = [(wc[0] + 0.18 * math.sin(math.tau * i / 16), wc[1] + 0.18 * math.cos(math.tau * i / 16) * up[1],
+                wc[2] + 0.18 * math.cos(math.tau * i / 16) * up[2]) for i in range(16)]
+        trim.tube(rim, 0.016, "rubber", segs=6, closed=True, joints=False)
+        for s in (-1, 1):
+            trim.rod(wc, (wc[0] + s * 0.17, wc[1] - 0.03 * up[1], wc[2] - 0.03 * up[2]), 0.012, "plastic_black", segs=6)
+        trim.rod((wc[0], wc[1] - 0.01, wc[2] + 0.006), (wc[0], wc[1] + 0.36, wc[2] - 0.2), 0.03, "plastic_black", segs=8)
+    else:
+        body.profile_x(cab, -w / 2 + 0.1, w / 2 - 0.1, paint)
     # side glass + dark B pillar, beltline chrome, door seams and handles
     for sx in (-1, 1):
         x0, x1 = sorted((sx * (w / 2 - 0.1), sx * (w / 2 - 0.092)))
-        glass.profile_x([(-hl + 1.0, 0.99), (-hl + 1.42, 1.36), (hl - 1.98, 1.37), (hl - 1.32, 0.99)], x0, x1, "glass_tinted")
+        glass.profile_x([(-hl + 1.0, 0.99), (-hl + 1.42, 1.36), (hl - 1.98, 1.37), (hl - 1.32, 0.99)], x0, x1, gl)
         trim.bx((min(x0, x1) - 0.004, -0.12, 0.98), (max(x0, x1) + 0.004, -0.04, 1.39), "plastic_black")
         xs0, xs1 = sorted((sx * (w / 2 - 0.004), sx * (w / 2 + 0.004)))
         trim.bx((xs0, -hl + 1.0, 0.955), (xs1, hl - 1.3, 0.97), "chrome")
@@ -160,10 +186,10 @@ def _car(k: Kit, p: dict) -> None:
     a = (hl - 1.2, 0.96)
     b = (hl - 1.82, 1.41)
     # screens sit proud of the cabin faces (no coplanar faces: levelcheck zfight)
-    glass.profile_x([(a[0] + 0.03, a[1]), (b[0] + 0.03, b[1]), (b[0] + 0.018, b[1]), (a[0] + 0.018, a[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
+    glass.profile_x([(a[0] + 0.03, a[1]), (b[0] + 0.03, b[1]), (b[0] + 0.018, b[1]), (a[0] + 0.018, a[1])], -w / 2 + 0.13, w / 2 - 0.13, gl)
     c = (-hl + 0.92, 0.96)
     d = (-hl + 1.42, 1.4)
-    glass.profile_x([(c[0] - 0.03, c[1]), (d[0] - 0.03, d[1]), (d[0] - 0.018, d[1]), (c[0] - 0.018, c[1])], -w / 2 + 0.13, w / 2 - 0.13, "glass_tinted")
+    glass.profile_x([(c[0] - 0.03, c[1]), (d[0] - 0.03, d[1]), (d[0] - 0.018, d[1]), (c[0] - 0.018, c[1])], -w / 2 + 0.13, w / 2 - 0.13, gl)
     for sx in (-1, 1):
         trim.bx((sx * 0.62 - 0.18, hl - 0.06, 0.64), (sx * 0.62 + 0.18, hl + 0.004, 0.73), "glass_tinted")
         trim.bx((sx * 0.62 - 0.17, hl - 0.07, 0.65), (sx * 0.62 + 0.17, hl - 0.02, 0.72), "chrome")

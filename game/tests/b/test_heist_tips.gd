@@ -144,3 +144,22 @@ func test_loud_only_heist_queues_behind_the_loud_card() -> void:
 	assert_eq(_card.shown, &"loud")
 	_card.dismiss()
 	assert_eq(_card.shown, &"heist_dockside_burn")
+
+
+func test_civilian_start_shows_the_heist_card_first() -> void:
+	# LEAD r308: on a civilian-start heist the heist card ("Guest list") shows at the civilian start, ahead of the
+	# casing / stealth cards, which queue behind it.
+	await _start_run(&"afterhours")
+	_model.player_mode = &"civilian"
+	assert_eq(_card.shown, &"heist_afterhours", "the heist card first, at the civilian start")
+	_model.player_mode = &"casing"  # gear picked up
+	assert_eq(_card.shown, &"heist_afterhours", "the casing situation does not cut it short")
+	_card._process(OnboardingCard.DWELL_S + 0.1)
+	assert_eq(_card.shown, &"casing", "the casing card follows")
+	_card.dismiss()
+	_model.player_mode = &"masked"
+	assert_eq(_card.shown, &"stealth", "then the stealth card")
+	# A returning player (heist card seen) gets nothing in civilian mode: no situation yet.
+	await _start_run(&"afterhours")
+	_model.player_mode = &"civilian"
+	assert_eq(_card.shown, &"")

@@ -1,0 +1,25 @@
+seed 1 difficulty 0
+cast_01 Npc_guard role guard tags [&"guard_site_gate"] activity smoke look security_officer_b clip walk at (-18.09, 0.00, -29.81) facing 97
+cast_02 Npc_guard2 role guard tags [&"cop_diner"] activity look look patrol_officer clip idle at (12.00, 0.00, 12.50) facing 0
+cast_03 Npc_civilian role civilian tags [&"civ_street"] activity walk_text look bank_customer_f clip phone_call at (-12.00, 0.00, -20.00) facing 0
+cast_04 Npc_civilian2 role civilian tags [&"civ_street"] activity walk_text look bank_customer_g clip phone_call at (-12.00, 0.00, -55.00) facing 0
+cast_05 Npc_civilian3 role civilian tags [&"civ_street"] activity walk_text look bank_customer_h clip phone_call at (12.00, 0.00, -20.00) facing 0
+cast_06 Npc_civilian4 role civilian tags [&"civ_street"] activity walk_text look bank_customer_i clip phone_call at (12.00, 0.00, -60.00) facing 0
+cast_07 Npc_civilian5 role civilian tags [&"civ_street"] activity walk_text look bank_customer_j clip phone_call at (-12.00, 0.00, 20.00) facing 0
+cast_08 Npc_civilian6 role civilian tags [&"civ_street"] activity walk_text look civilian_customer_a clip phone_call at (-12.00, 0.00, 55.00) facing 0
+cast_09 Npc_civilian7 role civilian tags [&"civ_street"] activity walk_text look civilian_customer_b clip phone_call at (12.00, 0.00, 25.00) facing 0
+cast_10 Npc_civilian8 role civilian tags [&"civ_street"] activity walk_text look street_pedestrian clip phone_call at (12.00, 0.00, 50.00) facing 0
+cast_11 Npc_civilian9 role civilian tags [&"civ_street"] activity walk_text look street_pedestrian_b clip phone_call at (-30.00, 0.00, -9.50) facing 0
+cast_12 Npc_civilian17 role civilian tags [&"civ_bus"] activity queue look bank_customer clip queue_idle at (-38.50, 0.00, 13.32) facing -180
+cast_13 Npc_civilian18 role civilian tags [&"civ_bus"] activity queue look bank_customer_b clip queue_idle_b at (-37.50, 0.00, 13.32) facing -180
+cast_14 Npc_civilian19 role civilian tags [&"civ_bus"] activity queue look bank_customer_c clip queue_idle_b at (-30.50, 0.00, 13.32) facing -180
+cast_15 Npc_civilian20 role civilian tags [&"civ_bus"] activity queue look bank_customer_d clip queue_idle at (-29.50, 0.00, 13.32) facing -180
+cast_16 Npc_civilian21 role civilian tags [&"civ_diner"] activity sit_eat look street_pedestrian_d clip sit_eat at (19.88, 0.00, 18.00) facing -90
+cast_17 Npc_civilian22 role civilian tags [&"civ_diner"] activity sit_eat look street_pedestrian_g clip sit_eat at (19.88, 0.00, 22.00) facing -90
+cast_18 Npc_civilian23 role civilian tags [&"civ_diner"] activity sit_eat look street_pedestrian_h clip sit_eat at (21.12, 0.00, 18.00) facing 90
+cast_19 Npc_civilian26 role civilian tags [&"staff_waitress", &"staff_diner", &"staff"] activity counter_wipe look diner_waitress clip counter_wipe at (24.68, 0.00, 20.50) facing 90
+cast_20 Npc_civilian27 role civilian tags [&"staff_cook", &"staff_diner", &"staff"] activity cook_stove look diner_cook clip cook_stove at (28.25, 0.00, 17.00) facing 90
+cast_21 Npc_civilian28 role civilian tags [&"staff_booth", &"staff"] activity desk_work look carpark_attendant clip desk_work at (18.50, 0.00, -15.65) facing -180
+cast_22 Npc_civilian29 role civilian tags [&"driver_mixer"] activity idle look contact_hollis_rt clip sit_vehicle_drive at (-32.85, 1.20, -13.60) facing -180
+sheet rt_cast_sheet.png 22 shots
+RESULT DONE /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/rtcast

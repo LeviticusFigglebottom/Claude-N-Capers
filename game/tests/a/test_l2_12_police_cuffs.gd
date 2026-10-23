@@ -225,3 +225,62 @@ func _d108_setup() -> CrewController:
 	await wait_physics_frames(2)
 	c.health.go_down()
 	return c
+
+
+## D-167.1 (P AH Hazardous read #3: a Wrecker cuffed the pilot on his first down): only regular police arrest. Specials
+## and Brandt / Aegis never start a police cuff; a Wrecker standing over a downed, quiet player fights on.
+func test_d167_only_regular_police_cuff() -> void:
+	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	var far: Transform3D = Transform3D(Basis.IDENTITY, Vector3(30, 0.05, 30))
+	var cop: NpcBase = dir.spawn_enemy(dir.enemy_def_for(&"enemy.patrol_officer"), far, null)
+	assert_true(PoliceBrain.may_cuff(cop), "a patrol officer arrests")
+	for id: StringName in [&"enemy.wrecker_g", &"enemy.bulwark", &"enemy.corpsman", &"enemy.phantom", &"enemy.stinger",
+			&"enemy.longshot"]:
+		var def: EnemyDef = dir.enemy_def_for(id)
+		assert_true(def != null and def.is_special, "%s is a special" % id)
+		var sp: NpcBase = _rt.spawn_npc(&"police", far, {"enemy_def": def})
+		assert_false(PoliceBrain.may_cuff(sp), "%s never cuffs" % id)
+	var aegis: NpcBase = dir.spawn_enemy(dir.enemy_def_for(&"enemy.patrol_officer"), far, null)
+	aegis.set_meta(AegisCaptain.META_AEGIS, true)
+	assert_false(PoliceBrain.may_cuff(aegis), "an Aegis unit never cuffs")
+	cop.queue_free()
+	# live: a Wrecker next to a downed, quiet player
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	_rt.teleport_crew(1, Transform3D(Basis.IDENTITY, Vector3(-20, 0.05, 20)))
+	_crew(0).set_masked()
+	_crew(1).set_masked()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	_crew(0).health.go_down()
+	_crew(0).health.down_s = CustodyTweak.data().police_cuff_grace_s
+	var wrecker: NpcBase = dir.spawn_enemy(dir.enemy_def_for(&"enemy.wrecker_g"),
+		Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -2)), null)
+	assert_true(wrecker != null and wrecker.get_node(^"Brain") is PoliceBrain, "the Wrecker runs a PoliceBrain")
+	await wait_seconds(5.0)
+	assert_eq(_crew(0).crew_state, Enums.CrewState.DOWNED, "still downed: the Wrecker did not cuff")
+	assert_true(_events.filter(func(e: Array) -> bool: return e[0] == &"cuffed").is_empty(), "no crew_cuffed")
+
+
+## D-167.2: cuffed is not custody. Solo human cuffed with a bot in custody: no "all humans in custody" fail while the
+## bleed-out runs; it fails once the bleed-out puts him in custody (solo custody = fail, D-167.3).
+func test_d167_cuffed_is_not_custody_for_the_solo_fail() -> void:
+	var cs: CustodySystem = CustodySystem.of(_rt)
+	var human: CrewController = _crew(0)
+	var bot: CrewController = _crew(1)
+	human.set_masked()
+	bot.set_masked()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	bot.health.go_to_custody()
+	human.health.go_down()
+	human.health.down_s = CustodyTweak.data().police_cuff_grace_s
+	assert_true(CrewCuffs.of(human, true).cuff_downed(777), "cuffed")
+	await wait_physics_frames(2)
+	assert_eq(human.crew_state, Enums.CrewState.CUFFED)
+	assert_false(cs._should_fail(), "cuffed, bleeding out: not custody, no fail")
+	await wait_seconds(CustodyTweak.data().all_custody_fail_delay_s + 1.0)
+	assert_ne(_rt.phase, Enums.HeistPhase.ENDED, "no heist fail while cuffed")
+	human.health.bleedout_left = 0.2
+	var held: bool = await wait_until(func() -> bool: return human.crew_state == Enums.CrewState.CUSTODY, 3.0)
+	assert_true(held, "the bleed-out ended: custody")
+	assert_true(cs._should_fail(), "now every human is in custody, no free bot: the fail rule holds")

@@ -561,6 +561,16 @@ func _input(event: InputEvent) -> void:
 
 ## Global rect of the in-heist subtitle box while it shows rows (ContactRadio's SubtitleOverlay, a sibling layer), or
 ## an empty rect. The overlay is found once and held weakly.
+## The interaction prompt's text (and blocked reason) while it shows, global; empty when hidden (objective_markers).
+func _prompt_rect() -> Rect2:
+	if interaction == null or not interaction.is_visible_in_tree() or interaction.prompt == null:
+		return Rect2()
+	var r: Rect2 = interaction.prompt.get_global_rect()
+	if interaction.blocked_label != null and interaction.blocked_label.is_visible_in_tree():
+		r = r.merge(interaction.blocked_label.get_global_rect())
+	return r.grow(4.0)
+
+
 func _subtitle_rect() -> Rect2:
 	var sub: SubtitleOverlay = _subtitles.get_ref() as SubtitleOverlay if _subtitles != null else null
 	if sub == null:
@@ -588,6 +598,7 @@ func _process(delta: float) -> void:
 		objective_markers.avoid = sheet.get_global_rect() if sheet != null else Rect2()  # badges only on it
 	if objective_markers != null:
 		objective_markers.subtitle_band = _subtitle_rect()
+		objective_markers.prompt_band = _prompt_rect()
 		objective_markers.top_band = _banner_stack_rect()
 	if device_timers != null:
 		device_timers.top_band = _banner_stack_rect()

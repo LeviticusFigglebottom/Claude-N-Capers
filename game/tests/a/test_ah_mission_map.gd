@@ -109,3 +109,17 @@ func test_loud_on_the_real_map_cuts_the_club_and_locks_down() -> void:
 	assert_eq(m.objective_state(&"escape_wait"), Enums.ObjectiveState.ACTIVE, "escape_wait")
 	var lights: Node = _rt.map.find_child("ClubLights", true, false)
 	assert_true(lights != null, "C's ClubLights on the map")
+
+
+## vip_party (C 5f0b8f52): the VIPGuest spawns (civ_vip + scripted) are empty at load; the rare event spawns all six.
+func test_vip_party_guests_spawn_only_on_the_event() -> void:
+	if _pending():
+		return
+	var m: HeistMission = await _launch_real()
+	var tagged: Callable = func() -> int:
+		return _rt.npcs(&"civilian").filter(func(n: NpcBase) -> bool:
+			return (n.spawn_info.get("tags", []) as Array).has(&"civ_vip")).size()
+	assert_eq(tagged.call(), 0 if not m.call(&"_rare", &"vip_party") else tagged.call(), "no VIP guests at load")
+	var guests: Array = m.call(&"spawn_civilians", &"civ_vip")
+	assert_eq(guests.size(), 6, "the six VIPGuest spawns")
+

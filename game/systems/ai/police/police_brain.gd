@@ -26,7 +26,7 @@
 ##   left: hold where it stands (it sees the target) until the target moves.
 ## - FADE (L1.1): no retreat in P1. Units keep fighting; the director just stops reinforcing.
 ## - L2.12 (A3-04): a DOWNED target that is not shooting within CustodyTweak.police_cuff_approach_m
-##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed).
+##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed). D-167: regular police only (may_cuff).
 ## - Squad order (A3-02 L4.9, AegisCaptain): `order_position` set = run there and hold it (no cover,
 ##   flank or standoff; targeting and fire as usual) until clear_order().
 ## - L5.1 (A3-04): SURRENDERED / TIED / CONVERTED are owned by PoliceSurrender (not ACTIVE_STATES).
@@ -129,6 +129,8 @@ func _physics_step(delta: float) -> void:
 		return
 	if not _active:
 		if _runtime == null or not _runtime.went_loud or not ACTIVE_STATES.has(_npc.alert_state):
+			if _npc.alert_state == Enums.AlertState.CALM and _npc.spawn_info.get("idle_activity", &"") != &"":
+				anim_hint = _calm_activity()  # D (AH cast): the off-duty cop sits in his booth before the alarm
 			return
 		_activate()
 	if not ACTIVE_STATES.has(_npc.alert_state):
@@ -217,7 +219,15 @@ func _pick_target() -> void:
 
 func _cuffable_near(c: CrewController, dist_sq: float) -> bool:
 	var r: float = CustodyTweak.data().police_cuff_approach_m
-	return dist_sq <= r * r and CrewCuffs.can_police_cuff(c)
+	return dist_sq <= r * r and may_cuff(_npc) and CrewCuffs.can_police_cuff(c)
+
+
+## D-167.1: only regular police arrest a downed heister; specials (Wrecker, Bulwark, Phantom, Stinger, Corpsman,
+## Longshot) and Brandt / Aegis fight on (PD2: dozers and specials do not arrest).
+static func may_cuff(npc: NpcBase) -> bool:
+	if npc == null or AegisCaptain.is_aegis_unit(npc):
+		return false
+	return npc.enemy_def == null or not npc.enemy_def.is_special
 
 
 func _can_see(c: CrewController) -> bool:
@@ -242,6 +252,13 @@ func _choose_position() -> void:
 			cp.set_meta(CLAIM_META, _npc.get_instance_id())
 
 
+## D (AH cast): a CALM unit placed at a SpawnPoint with an idle activity (the off-duty cop's `sit` in his booth) plays
+## it (standing when there is no seat under him, PO6-06); otherwise the alert stand.
+func _calm_activity() -> StringName:
+	var act: StringName = StringName(_npc.spawn_info.get("idle_activity", &""))
+	return CivilianBrain.seated_or_standing(_npc, act) if act != &"" else &"idle_alert"
+
+
 func _tick_move(delta: float) -> void:
 	var t: Node3D = combat_target as Node3D
 	if has_order():
@@ -257,7 +274,7 @@ func _tick_move(delta: float) -> void:
 	if t == null:
 		_motor.stop()
 		mode = &"idle"
-		anim_hint = &"idle_alert"
+		anim_hint = _calm_activity() if _npc.alert_state == Enums.AlertState.CALM else &"idle_alert"
 		return
 	var tpos: Vector3 = t.global_position
 	if _tick_cuff(t):
@@ -457,7 +474,7 @@ func _assault_pushing() -> bool:
 ## L2.12: go for / apply the cuffs on a downed, non-shooting target. True while doing so.
 func _tick_cuff(t: Node3D) -> bool:
 	var tc: CrewController = t as CrewController
-	if tc == null or not CrewCuffs.can_police_cuff(tc):
+	if tc == null or not may_cuff(_npc) or not CrewCuffs.can_police_cuff(tc):
 		return false
 	var ct: CustodyTweak = CustodyTweak.data()
 	var d: float = _flat(tc.global_position - _npc.global_position).length()

@@ -135,6 +135,8 @@ func _ready() -> void:
 	events = AssaultEventRunner.new()
 	events.name = "AssaultEvents"
 	events.setup(self)
+	unit_spawned.connect(_log_special_spawn)
+	EventBus.npc_killed.connect(_log_special_death)
 	add_child(events)
 	if _runtime != null:
 		var override: DirectorTweak = _runtime.options.get("director_tweak") as DirectorTweak
@@ -358,6 +360,29 @@ func aegis_resistance() -> float:
 	return captain.resistance if captain != null else 0.0
 
 
+## P's AH Hazardous read (LEAD): every special's spawn and death is logged with its cap key and the alive count, so a
+## cap breach is provable from a run log (grep "special spawn" / "special death").
+func _log_special_spawn(npc: NpcBase, _point: Node3D) -> void:
+	var def: EnemyDef = npc.enemy_def if npc != null else null
+	if def == null or not def.is_special or AegisCaptain.is_aegis_unit(npc):
+		return
+	var key: StringName = roster.special_limit_key(def.id)
+	Log.info(&"director", "special spawn %s net %d wave %d %s: alive %d / cap %d" % [def.id, npc.net_id, wave_index,
+		Enums.AssaultPhase.keys()[assault_phase], roster.special_alive(key), roster.special_limit(def.id)])
+
+
+func _log_special_death(npc_net_id: int, _killer: int, _info: Dictionary) -> void:
+	if not Net.is_authority():  # clients run no roster: their alive count is stale
+		return
+	var npc: NpcBase = Ids.lookup(npc_net_id) as NpcBase
+	var def: EnemyDef = npc.enemy_def if npc != null else null
+	if def == null or not def.is_special or AegisCaptain.is_aegis_unit(npc):
+		return
+	var key: StringName = roster.special_limit_key(def.id)
+	Log.info(&"director", "special death %s net %d: alive %d / cap %d" % [def.id, npc_net_id,
+		roster.special_alive(key), roster.special_limit(def.id)])
+
+
 ## A3-02: Brandt is on the map (assault locked).
 func captain_active() -> bool:
 	return captain != null and captain.locks_assault()
@@ -376,10 +401,12 @@ func spawn_enemy(def: EnemyDef, xf: Transform3D, point: Node3D = null, extra: Di
 	if _runtime == null:
 		return null
 	var look: Vector3 = _flat(_centroid(_active_crew()) - xf.origin)
-	if look.length() > 0.1:
-		xf.basis = Basis.looking_at(look, Vector3.UP)
+	if look.length() > 0.1 and not (extra.has(MISSION_UNIT) and point is SpawnPoint):
+		xf.basis = Basis.looking_at(look, Vector3.UP)  # D (AH cast): a mission unit keeps its SpawnPoint's facing
 	var info: Dictionary = {"spawn_point": point, "assault_wave": wave_index, "faction": faction(),
 		"tags": point.get(&"tags") if point != null and point.get(&"tags") is Array else []}
+	if point is SpawnPoint and (point as SpawnPoint).idle_activity != &"":
+		info["idle_activity"] = (point as SpawnPoint).idle_activity  # D (AH cast): the off-duty cop sits in his booth
 	info.merge(extra, true)
 	if def != null:
 		info["enemy_def"] = def

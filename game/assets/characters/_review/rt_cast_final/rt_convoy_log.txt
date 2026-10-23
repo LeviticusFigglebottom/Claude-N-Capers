@@ -1,0 +1,13 @@
+seed 1 difficulty 0
+convoy layout east_clean after 9 s, units 8
+mixer at (-33.37, 0.00, -4.49)
+convoy_01 Npc_police role police tags [&"convoy_lead"] activity  look patrol_officer_duty clip sit_vehicle_drive at (18.25, 0.18, -3.60) facing 90
+convoy_02 Npc_police2 role police tags [&"convoy_lead"] activity  look patrol_officer_duty clip sit_vehicle at (18.25, 0.18, -4.40) facing 90
+convoy 03 Npc_police3 HIDDEN (cab) look armored_car_crew_b tags [&"convoy_t1"] at (25.0, 1.2, -3.35)
+convoy 04 Npc_police4 HIDDEN (cab) look armored_car_crew_c tags [&"convoy_t1"] at (25.0, 1.2, -4.65)
+convoy 05 Npc_police5 HIDDEN (cab) look armored_car_crew_d tags [&"convoy_t2"] at (35.72679, 0.944135, -3.35)
+convoy 06 Npc_police6 HIDDEN (cab) look armored_car_crew_e tags [&"convoy_t2"] at (35.72679, 0.944135, -4.65)
+convoy_07 Npc_police7 role police tags [&"convoy_rear"] activity  look patrol_officer_duty clip sit_vehicle_drive at (60.78, -4.00, -3.60) facing 90
+convoy_08 Npc_police8 role police tags [&"convoy_rear"] activity  look patrol_officer_duty clip sit_vehicle at (60.78, -4.00, -4.40) facing 90
+sheet rt_cast_sheet.png 11 shots
+RESULT DONE /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/rtconvoy

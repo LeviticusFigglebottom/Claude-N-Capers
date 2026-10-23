@@ -4,6 +4,8 @@
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_prop_review.tscn -- --out=/abs/dir \
 ##     --scenes=res://assets/props/prop_sh_jukebox/prop_sh_jukebox.glb,...   [--wall=<id>,...]
+## ``--light=night``: a dark stage so emissive signs read in their hue (writes <id>_review_night.png). Props under
+## 1 m across are framed on their own AABB, without the 1.8 m post (its size is in the log).
 ## Wall props (``--wall``) are shown against a backdrop at y = 0 with the pivot at 1.5 m. ``--focus=x,y,z,r`` frames
 ## every view on that point (scene space) at r metres instead of the whole AABB (close-ups of character details).
 ## ``--lift=m`` raises every model by m (hand-held items whose origin is the grip, not the base).
@@ -17,6 +19,9 @@ var _scenes: PackedStringArray = []
 var _wall: PackedStringArray = []
 var _focus: Vector4 = Vector4.ZERO
 var _lift: float = 0.0
+## --light=night: a dark stage (dim ambient, a weak cool key): emissive signs and lamps read in their own hue
+var _night: bool = false
+var _sun: DirectionalLight3D = null
 var _log: PackedStringArray = []
 
 
@@ -28,6 +33,8 @@ func _ready() -> void:
 			_scenes = a.trim_prefix("--scenes=").split(",", false)
 		elif a.begins_with("--wall="):
 			_wall = a.trim_prefix("--wall=").split(",", false)
+		elif a == "--light=night":
+			_night = true
 		elif a.begins_with("--lift="):
 			_lift = a.trim_prefix("--lift=").to_float()
 		elif a.begins_with("--focus="):
@@ -61,6 +68,13 @@ func _stage() -> void:
 	sun.rotation_degrees = Vector3(-50, 35, 0)
 	sun.shadow_enabled = true
 	add_child(sun)
+	_sun = sun
+	if _night:
+		env.environment.background_color = Color(0.03, 0.03, 0.05)
+		env.environment.ambient_light_color = Color(0.12, 0.12, 0.16)
+		env.environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+		sun.light_color = Color(0.6, 0.65, 0.85)
+		sun.light_energy = 0.12
 	var floor_mi: MeshInstance3D = MeshInstance3D.new()
 	var pm: PlaneMesh = PlaneMesh.new()
 	pm.size = Vector2(12, 12)
@@ -105,7 +119,13 @@ func _review(path: String) -> void:
 		if n is Node3D and not n is MeshInstance3D:
 			_say("  node %s (%s) at %s" % [model.get_path_to(n), n.get_class(), (n as Node3D).position])
 	var c: Vector3 = model.position + aabb.get_center()
-	var r: float = maxf(aabb.size.length() * 1.15, 1.6)
+	# small props (under 1 m across) are framed on their own AABB; the reference post then stands out of frame
+	var diag: float = aabb.size.length()
+	# wall pieces are flat and seen from the front: closer still
+	var r: float = maxf(diag * 1.15, 1.6) if diag >= 1.0 else maxf(diag * (1.3 if wall else 1.5), 0.25)
+	# the default key comes from behind the backdrop: a wall piece would sit in the wall's shadow, so light its face
+	_sun.rotation_degrees = Vector3(-35, 200, 0) if wall else Vector3(-50, 35, 0)
+	post.visible = diag >= 1.0  # beside a small prop, at close range the post blocks the side views
 	if _focus.w > 0.0:
 		c = model.position + Vector3(_focus.x, _focus.y, _focus.z)
 		r = _focus.w
@@ -123,7 +143,7 @@ func _review(path: String) -> void:
 		# the prop faces -Z: the front views come from -Z
 		cam.look_at_from_position(c + Vector3(sin(a) * r, r * 0.35, -cos(a) * r), c)
 		tiles.append(await _grab())
-	_sheet(tiles, 2, "%s/%s_review.png" % [_out, id])
+	_sheet(tiles, 2, "%s/%s_review%s.png" % [_out, id, "_night" if _night else ""])
 	root.queue_free()
 	await get_tree().process_frame
 

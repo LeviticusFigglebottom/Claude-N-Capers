@@ -4,6 +4,69 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-62) P Hazardous items, RT soak, AH cast re-run, AH perf first read (2026-10-23)
+- P Hazardous: bots free a tased / cloaker-pinned teammate first (CrewAiTweak.rescue_priority_m), special spawn / death
+  logged with alive vs cap, caps under churn tested (0585920d). The Stinger cap holds (alive <= 2 over 700 s; P's many
+  taser ids were replacements). AH Hazardous seed 7 headless recheck running.
+- Soak: a/test_a4_03_soak AH civilian-start soak + ah_perf_capture (27486136). RT 600 s: 4 peers 0 desync / 38 rounds
+  (+23 MB host, +40 MB peers); 2 humans + 2 bots 0 desync / 40 rounds (+24 / +55 MB).
+- D r308 cast: door bouncer gives up an unreachable post walk after GuardTweak.post_walk_give_up_s and stands; civ_offduty
+  holstered until ALARMED (HeldVisuals.plain_clothes_holstered) (86f076ee). The off-duty `sit` needs a "Seat" node at
+  VIPBooth3: asked C.
+- AH perf (Xvfb, seed 1 Routine, 56 civs): main draws max 539 (booth_over_floor), hall 193-355; D-146 main <=2500 met.
+  Shadow pass reads 0 in software render (total not measured); stampede sample came after the crowd left (re-time).
+
+### (-61) D-166 end to end, AH cast batch, gear bag, RT vehicle holster (2026-10-23)
+- **D-166 e2e** (harness PO5_FORCE_CAPTAIN 0bf50ccf + CREW_DMG 0.25, A head + C head, Hazardous): Brandt at wave 2,
+  SUSTAIN locked, ONE FADE in each run. Seed 4242: first cash bag t=439 -> escape_wait done / van at t=739 (+300 s) ->
+  escape t=745 -> RESULT PASS, payday -> hub. Seed 2: first bag t=626 -> van t=926 -> escape t=929 -> PASS. Product:
+  afterhours_mission.captain_waiver (0e068d4d), also on captain_arrived. Harness: the captain hunt yields a frame every pass
+  (bbf08c8e: it spun in one frame to 7.8 GB and was OOM-killed) and stops once the escape is marked (a3d04eb1).
+  Without forcing, the Hazardous re-runs (1 / 4242 / 6501) died to bot skill before Brandt (accepted; P's windowed read).
+- AH cast: idle variants off armed bodies (fae58828); bouncers' post activity, bartender_wipe, the off-duty cop's `sit`
+  and SpawnPoint facing through spawn_units (ce1c6084); vip_party spawns the civ_vip guests (scripted CIVILIAN spawns
+  skipped at load, HeistMission.spawn_civilians; civ_vip -> club_vip a-f) (e6fcf69a). Mercer's gear line (191a8554),
+  the Accountant's lines (871fc204).
+- Gear bag (B r308): InteractableComponent.aim_filter; GearPickup only targets crew without gear, off once all are
+  geared (ab48b324). a/test_s1_3_civilian_mode 6/6.
+- RT shot review: seated vehicle bodies holster; vehicle_exit draws at foot_out (2877b00f). a/test_rt_vehicle_holster 1/1.
+
+### (-60) AH done-check harness table: 5 seeds × {ah_stealth, ah_loud} × {Routine, Hazardous} (2026-10-23, LEAD r306)
+Tree: scratch merge of env/a-core 0f1f8c5b (= trunk r306 content on A's side) + env/c-worlds 66248215 + env/d-art
+dba5dfa2; the Routine loud re-runs ("r") add C's ProductPrivate fix and A's e1e9d39d. Headless real menus:
+`DIRECT=1 HEADLESS=1 run_po5.sh <ah_stealth|ah_loud> <seed> 4800 <out> "Afterhours" <Difficulty>`, no CREW_DMG (as the RT -50
+table). ah_stealth = X4StealthRoutes `afterhours` (stated shortcuts: navmesh teleports, crew.stealth_hidden), so its
+heist time is short; ah_loud = auto_loud (gear step, then masks and goes loud at once). D-140 = pagered NPCs at load /
+pager cap (margin); the 5th on Hazardous is the camera operator (sec_staffed; LEAD: a separate role, the lever working).
+Rolled: gear / keycard / code note / escape; seeds 1, 6501: wc / kc_bouncer_board|kc_staff_room / bouncer_log / alley;
+2: cloak / vip_bar / staff_board / alley; 7: booth / staff_room / count_board / alley; 4242: booth / bouncer_board /
+staff_board / tolley (prod_private on 6501 and 4242).
+
+| Flow | Diff | Seed | D-140 | Result | end (s) | STUCK | Cause |
+|---|---|---|---|---|---|---|---|
+| ah_stealth | Routine | 1 / 2 / 6501 / 7 / 4242 | 4/4 (0) | PASS ×5 | 15-16 | 0 | won stealth, payday -> hub |
+| ah_stealth | Hazardous | 1 / 2 / 6501 / 7 | 5/3 (2) | PASS ×4 | 15-16 | 0 | won stealth |
+| ah_stealth | Hazardous | 4242 | 4/3 (1) | PASS | 15 | 0 | won stealth (sec_empty) |
+| ah_loud | Routine | 1 | 4/4 | PASS | 937 | 10 | won, back in the 3D hub |
+| ah_loud | Routine | 2 | 4/4 | PASS | 992 | 3 | won |
+| ah_loud | Routine | 7 | 4/4 | PASS | 970 | 8 | won |
+| ah_loud | Routine | 6501 | 4/4 | FAIL | 2056 | 0 | MAP: ProductPrivate inside PrivateShelving (bags unpickable) + harness looped on it (fixed e1e9d39d); custody |
+| ah_loud | Routine | 6501r | 4/4 | PASS | 994 | 8 | won (C's marker fix) |
+| ah_loud | Routine | 4242 | 4/4 | FAIL | 1356 | 1 | same shelved-parcel loop; custody |
+| ah_loud | Routine | 4242r | 4/4 | PASS | 766 | 2 | won, 4 parcels from prod_private |
+| ah_loud | Hazardous | 2 | 5/3 | FAIL | 105 | 0 | wave-1 BUILD/SUSTAIN wipe in the club (all 4 down by ~88, pilot cuffed while downed), before the keycard |
+| ah_loud | Hazardous | 7 | 5/3 | FAIL | 140 | 0 | the same wave-1 wipe, before the keycard |
+| ah_loud | Hazardous | 6501 | 5/3 | FAIL | 447 | 0 | survived wave 1, office t=241; ~180 s lost on the shelved parcels (old map) in wave 2's SUSTAIN; down 3/3 at the safe drill |
+| ah_loud | Hazardous | 1 | 5/3 | FAIL | 2413 | 4 | SOFT LOCK: secure done t=676, Brandt arrived in wave 2 -> SUSTAIN never fades (captain_active) -> the van (2nd FADE) never comes |
+| ah_loud | Hazardous | 4242 | 4/3 | FAIL | 2413 | 0 | SOFT LOCK: secure done t=571, Brandt (wave 2), same |
+
+**Summary:** stealth 10/10 (D-140 margin 0 Routine, 1-2 Hazardous). Loud Routine 5/5 after C's marker fix (two first
+runs lost to the shelved parcels). Loud Hazardous 0/5: two wave-1 wipes (bot skill, as RT's Hazardous), one wave-2 loss
+helped by the old marker, and two runs that did everything (safe, 3 bags secured) and then soft-locked: AH's van waits for
+the second assault's FADE, and Brandt (captain_min_wave 2, captain_chance 0.5) locks SUSTAIN until he dies. The pilot
+does not hunt him; a crew that can't kill him also waits forever. LEAD ruling asked (pilot hunts Brandt, or the AH van
+rule while the assault is locked). No tweak changed. SCRIPT ERROR 0 in every run.
+
 ### (-59) AH looks, guard idle variants, AH ambient activities; AH loud e2e PASS seeds 1/2 (2026-10-23)
 - AH loud e2e on the [secure] fix (9b044447) + C 2c3cbe99: `po5_flow_ah_loud` PASS seed 1 (t=980) and seed 2
   (t=1041): gear -> mask -> loud -> keycard -> office -> safe -> safe_loot -> secure -> escape_wait -> escape, lockdown,

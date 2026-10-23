@@ -22,7 +22,8 @@ var _convoy: bool = true
 var _only: StringName = &""
 ## --crash: the signals are not rigged, so the convoy runs into the crash stop (Reyes rams it); --skip-cast: convoy only
 var _crash: bool = false
-## --cab: a seated character (with --only) shot from fixed views through its vehicle's door window and windscreen
+## --cab: a seated character (with --only) shot from fixed views through its vehicle's door window and windscreen; in
+## the convoy phase (with --skip-cast) every visible seated escort the same way
 var _cab: bool = false
 var _skip_cast: bool = false
 var _cam: Camera3D = null
@@ -57,12 +58,16 @@ func _ready() -> void:
 
 
 func _run() -> void:
+	# no probe prewarm: it waits on drawn frames, and with the render loop off the heist clock ran past the convoy's
+	# ETA during launch (the crash ambush, then the heist failed before the first shot)
 	var rt: HeistRuntime = await HeistLauncher.launch(&"rolling_thunder", _seed, _difficulty, self,
-		{"crew_ai": false, "ai_teammates": 0})
+		{"crew_ai": false, "ai_teammates": 0, "probe_prewarm": false})
 	if rt == null:
 		push_error("[RTCAST] launch failed")
 		get_tree().quit(1)
 		return
+	if not _convoy and rt.mission != null:
+		rt.mission.cancel_timer(&"convoy")  # --no-convoy: the cast in the calm casing phase, no arrival mid-shoot
 	_cam = Camera3D.new()
 	add_child(_cam)
 	_cam.fov = 55.0
@@ -120,7 +125,10 @@ func _convoy_phase(rt: HeistRuntime) -> void:
 			_say("convoy %02d %s HIDDEN (cab) look %s tags %s at %s" % [j, npc.name, NpcVisuals.character_id(npc),
 				npc.spawn_info.get("tags"), npc.global_position])
 			continue
-		await _npc_shot("convoy_%02d" % j, npc, 3.4)
+		if _cab:
+			await _cab_shots("convoy_%02d" % j, npc)  # --cab: the seated escorts through their glazing
+		else:
+			await _npc_shot("convoy_%02d" % j, npc, 3.4)
 	var first: NpcBase = null
 	for u: Variant in seated:
 		if u is NpcBase and is_instance_valid(u) and (u as NpcBase).visible:

@@ -54,6 +54,9 @@ const BLOCK_CIVILIAN: StringName = &"ui.blocked.civilian"
 @export var allowed_with_bag: bool = true
 ## Prefab root this action belongs to (net_id owner). Empty = parent.
 @export var owner_path: NodePath
+## Per-crew aim filter (crew -> bool): false = this crew member does not target it at all (no prompt, no red
+## "can't do that"); unset = everyone. GearPickup: only crew still without gear (B r308 HUD pass).
+var aim_filter: Callable = Callable()
 
 ## Arguments for prompt_key's string ({name}, ...; LocalHudModel interaction "args"). {key} is filled by the HUD.
 var prompt_args: Dictionary = {}
