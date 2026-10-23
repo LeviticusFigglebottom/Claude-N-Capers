@@ -701,6 +701,8 @@ func _mark_if_unreached(c: InteractableComponent) -> void:
 ## A target `_mark_if_unreached` blacklisted: for the run when it had no path, else while its door still blocks.
 func _is_unreachable(c: InteractableComponent) -> bool:
 	var key: int = c.get_instance_id()
+	if int(_bag_fails.get(key, 0)) >= BAG_FAIL_LIMIT:
+		return true  # AH 6501 (prod_private): a path re-test un-skipped a bag the shelving hid; 700 s on it, no safe
 	if _skip_until.has(key):
 		if rt.heist_time_s < _skip_until[key]:
 			return true

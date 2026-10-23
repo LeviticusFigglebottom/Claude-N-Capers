@@ -37,6 +37,10 @@ const LOOT_SAFE: StringName = &"loot.cash_bricks"
 const LOOT_PRODUCT: StringName = &"loot.parcels"
 const LOOT_COUNT: StringName = &"loot.cash"
 const SPEAKER_DJ: StringName = &"dj"
+const SPEAKER_ACCOUNTANT: StringName = &"accountant"
+## The Accountant's lines (as the OF mission): the contact intro after Mercer's, the payday as the escape opens.
+const VO_CONTACT_INTRO: StringName = &"vo.accountant.afterhours_contact_intro"
+const VO_PAYDAY: StringName = &"vo.accountant.afterhours_payday"
 const RNG_STREAM: StringName = &"afterhours"
 
 ## Objective tags on C's map (agreed contract).
@@ -84,6 +88,9 @@ var _assault_fades: int = 0
 func _on_mission_start() -> void:
 	own_last_pager_line = true
 	say(&"vo.mercer.afterhours_intro")
+	say(VO_CONTACT_INTRO, {}, SPEAKER_ACCOUNTANT)
+	if gear_line() != &"":
+		say(gear_line())  # Mercer names the rolled gear_drop slot (afterhours.md §Stealth 1)
 	add_objective(&"casing", &"objective.afterhours.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	add_objective(&"gear", &"objective.afterhours.gear", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_GEAR]})
 	add_objective(&"keycard", &"objective.afterhours.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_KEYCARD]})
@@ -314,6 +321,7 @@ func _try_escape() -> void:
 		complete(&"escape_wait")
 	activate(&"escape")
 	say(&"vo.mercer.afterhours_escape")
+	say(VO_PAYDAY, {}, SPEAKER_ACCOUNTANT)
 	activate_escape(TAG_ESCAPE)
 
 
