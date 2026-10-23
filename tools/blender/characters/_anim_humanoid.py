@@ -2119,6 +2119,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_rt as rt  # noqa: PLC0415 - RT-D1 Rolling Thunder; imports this module
 
     extra.update(rt.clips(sk, solver, table))
+    import _anim_ah as ah  # noqa: PLC0415 - AH-D1 Afterhours (the DJ); imports this module
+
+    extra.update(ah.clips(sk, solver, table))
     import _anim_idle_var as idlev  # noqa: PLC0415 - D polish #2 idle_alert variety; imports this module
 
     extra.update(idlev.clips(sk, solver, table))

@@ -17,6 +17,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 """
 
 import _anim as anim
+import _anim_ah as ah
 import _anim_assault as assault
 import _anim_bank as bank
 import _anim_civ_panic as civ
@@ -303,6 +304,9 @@ CLIPS = {
     # (bartender_wipe at the 0.9 m diner counter)
     "sit_vehicle_drive": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
     "counter_wipe": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
+    # AH-D1 Afterhours (QC-74, _anim_ah): the DJ at the 1.0 m booth on the stage, 120 BPM (16 beats per loop), the right
+    # hand on the headphone cup at `cue`; booth layout in SOURCE `ah_dj_placement`
+    "dj_mix": {"frames": 240, "loop": True, "speed": 0.0, "priority": 10, "events": {"cue": 90}},
     # D polish #2 (_anim_idle_var): idle_alert variety for posted / pausing guards; frame 0 IS idle_alert frame 0 (A:
     # VARIANT_GROUPS, SOURCE `idle_alert_variants`)
     "idle_alert_b": {"frames": 150, "loop": True, "speed": 0.0, "priority": 2, "events": {"watch": 57}},
@@ -353,7 +357,7 @@ def build(ctx) -> None:
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
                 or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP or name in bank.KEEP
-                or name in rt.KEEP or name in idlev.KEEP or name in rev.KEEP):
+                or name in rt.KEEP or name in idlev.KEEP or name in rev.KEEP or name in ah.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -381,6 +385,8 @@ def build(ctx) -> None:
             row += rt.check_row(sk, CLIPS, name, baked, keep)
         if name in idlev.NAMES:
             row += idlev.check_row(sk, CLIPS, name, baked, keep)
+        if name in ah.NAMES:
+            row += ah.check_row(sk, CLIPS, name, baked, keep)
         if name in rev.NAMES:
             row += rev.check_row(sk, CLIPS, name, clips[name], baked, keep)
         report.append(row)
@@ -425,6 +431,8 @@ def build(ctx) -> None:
     for key, text in rt.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in idlev.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
+    for key, text in ah.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in rev.source_notes(sk, CLIPS, clips, keep, keep).items():
         ctx.source_extra[key] = text
