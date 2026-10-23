@@ -136,8 +136,10 @@ func observer_kind() -> int:
 	return Enums.ObserverKind.GUARD
 
 
+## D-158: a unit still seated in its vehicle neither sees nor hears (StealthDirector meters and noise) until it
+## dismounts (HeistMission: the ambush, or a non-seated escort's alert).
 func can_observe() -> bool:
-	return alive and not BLIND_STATES.has(alert_state) and stun_left <= 0.0
+	return alive and not BLIND_STATES.has(alert_state) and stun_left <= 0.0 and not has_meta(HeistMission.META_SEATED_IN)
 
 
 ## A2-03 (S8.6): stun for `seconds` (keeps the longer of the current and new stun). Server.

@@ -43,6 +43,10 @@ const SERVICE: StringName = &"net_sync"
 const NODE_NAME: String = "NetSync"
 ## Discrete-state and transform rate (net.md: 10-20 Hz).
 const SYNC_HZ: float = 15.0
+## A4-03 soak (Dockside: two cowering civilians 5 m off on every client for the whole run): transforms go out
+## unreliable and only when changed, so one lost packet, or one that reached a client still building its replica,
+## leaves a now-still NPC stale for good. Every XFORM_KEYFRAME_S the full transform set is resent once.
+const XFORM_KEYFRAME_S: float = 2.0
 const SVC_INTERACTION: String = "isys"
 const SVC_CODES: String = "codes"
 const SVC_CUSTODY: String = "custody"
@@ -85,6 +89,7 @@ var _last_state: Dictionary[int, Dictionary] = {}
 var _last_xform: Dictionary[int, Variant] = {}
 var _last_services: Dictionary = {}
 var _accum: float = 0.0
+var _keyframe_left: float = XFORM_KEYFRAME_S
 ## Client: last replicated captain state (see captain_state()).
 var _captain: Dictionary = {"present": false, "resistance": 0.0}
 ## Server: peers holding a replica of this heist, the only ones replicated to: the peers connected at begin(),
@@ -382,10 +387,14 @@ func _physics_step(delta: float) -> void:
 	_scan_spawns()
 	_scan_despawns()
 	_accum += delta
+	_keyframe_left -= delta
 	if _accum < 1.0 / SYNC_HZ:
 		return
 	_accum = 0.0
 	_send_state()
+	if _keyframe_left <= 0.0:
+		_keyframe_left = XFORM_KEYFRAME_S
+		_last_xform.clear()  # this send carries every transform
 	_send_xforms()
 
 

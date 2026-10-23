@@ -4,6 +4,18 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-36) D-158 RT fairness, A4-03 soak (2026-10-23)
+- **D-158 (32a04e1e), test_d158_rt_fairness 4/4:**
+  - Seated vehicle occupants have no detection (NpcBase.can_observe is false while META_SEATED_IN).
+  - RT truck window: AssaultDirector.first_build_hold_s. RT's stop sets TRUCK_WINDOW_S 30 ◇, so the wave-1 BUILD comes
+    at stop + 30 s or later.
+  - Bots take cover, or else crouch at their slot, when the followed human is crouched or at a cover point in combat.
+  - Data: rt_clean ×3 and WAIT_CONVOY ×3 Hazardous (seeds 1001–1003) are running.
+- **A4-03 (5022eb14):** test_a4_03_soak, a host plus 3 client processes.
+  - dev_sandbox PASS (+1.7 MB per peer).
+  - Dockside found the CratesK visibility desync, fixed via the codec "vis" key. One NPC (net id 98) is still
+    5.2 m off on the clients: open.
+  - test_of_coop_loopback fails with or without my change: open.
 ### (-35) A4-01 audit, A4-02 perf scene, L6.2 bot crew, cancel_reload, police port arms (2026-10-22)
 - **A4-01 fidelity audit (5aca6ade, 984b124c):** docs/status/env_a_fidelity.md.
   - 103 A rows at phase ≤ P5: 101 covered, S8.7 held, L6.2 a gap (now built, below).

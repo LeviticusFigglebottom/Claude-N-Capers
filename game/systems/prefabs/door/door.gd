@@ -81,6 +81,9 @@ const LEAF_GLASS_KEYWORDS: PackedStringArray = ["glass"]
 @export var swing: Swing = Swing.INWARD
 ## Opening width. 0 = contract default (0.9 m single, 1.8 m DOUBLE).
 @export var width_m: float = 0.0
+## Leaf height (the leaf collision and the crossing check). 0 = contract default HEIGHT_M (2.1 m). D-158 (C's hoarding
+## check): RT's 2.4 m SiteTanneryGate leaves left a see- / shoot-through slot above a 2.1 m collision.
+@export var height_m: float = 0.0
 @export var starts_open: bool = false
 ## Keypad/code_note group that opens a CODE door (S9.7).
 @export var code_group: StringName = &""
@@ -166,6 +169,10 @@ func _default_interaction_time() -> float:
 			return tw.keycard_s
 		_:
 			return tw.c4_place_s if _charge_door() else tw.door_open_s
+
+
+func effective_height() -> float:
+	return height_m if height_m > 0.0 else HEIGHT_M
 
 
 func effective_width() -> float:
@@ -540,7 +547,7 @@ func doorway_crossing(a: Vector3, b: Vector3) -> Vector3:
 		return Vector3.INF
 	var t: float = la.z / (la.z - lb.z)
 	var lp: Vector3 = la.lerp(lb, t)
-	if absf(lp.x) > effective_width() * 0.5 + CROSS_MARGIN_M or lp.y > HEIGHT_M or lp.y < -1.0:
+	if absf(lp.x) > effective_width() * 0.5 + CROSS_MARGIN_M or lp.y > effective_height() or lp.y < -1.0:
 		return Vector3.INF
 	return a.lerp(b, t)
 
@@ -781,8 +788,10 @@ func _setup_leaf_bodies() -> void:
 		var cs: CollisionShape3D = body.get_node(^"Collision") as CollisionShape3D
 		var box: BoxShape3D = (cs.shape as BoxShape3D).duplicate() as BoxShape3D
 		box.size.x = leaf_w
+		box.size.y = effective_height()
 		cs.shape = box
 		cs.position.x = leaf_w * 0.5 * (1.0 if i == 0 else -1.0)
+		cs.position.y = effective_height() * 0.5
 		body.collision_layer = LAYER_WORLD_DYNAMIC
 		body.collision_mask = 0
 		body.set_meta(ShotFx.SURFACE_META, surface)

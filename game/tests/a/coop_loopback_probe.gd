@@ -5,6 +5,8 @@
 extends Node
 
 signal reported(kind: String, data: Dictionary)
+## A4-03 soak (several clients): the same report with the sending peer.
+signal reported_by(peer: int, kind: String, data: Dictionary)
 
 const NODE_NAME: String = "LoopbackProbe"
 
@@ -84,6 +86,9 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 		"launch_client":  # C11: wait for the host's next bring-up (back in the lobby, same session)
 			_relaunch(float(args.get("timeout", 30.0)))
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
+		"soak_drive":  # A4-03: drive this client's crew member with varied intents for `seconds`
+			_soak_drive(float(args.get("seconds", 60.0)), int(args.get("seed", 1)))
+			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
 		"quit":
 			get_tree().quit(0)
 
@@ -97,11 +102,45 @@ func _relaunch(timeout_s: float) -> void:
 	Log.info(&"loopback", "client: launch_client() again -> %s" % ("replica" if rt != null else "null"))
 
 
+## Client, A4-03 soak: every 0.5 s a new intent for this client's crew member (walk / sprint in a random direction,
+## turn toward the nearest enemy, fire in bursts, reload now and then), sent like player input, for `seconds`.
+## Test code: a local RNG seeded per client (D-051).
+func _soak_drive(seconds: float, seed_value: int) -> void:
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = seed_value
+	var end_ms: int = Time.get_ticks_msec() + int(seconds * 1000.0)
+	while Time.get_ticks_msec() < end_ms and is_inside_tree():
+		var rt: HeistRuntime = HeistRuntime.current()
+		var me: CrewController = rt.crew_controller(Net.local_slot()) as CrewController if rt != null else null
+		if me != null:
+			var i: CrewIntent = CrewIntent.new()
+			i.move = Vector2(rng.randf_range(-1.0, 1.0), rng.randf_range(-0.2, 1.0)).limit_length(1.0)
+			i.sprint = rng.randf() < 0.3
+			i.look_yaw = me.look_yaw + rng.randf_range(-0.6, 0.6)
+			var best: Node3D = null
+			for n: Node in rt.npcs():
+				var npc: NpcBase = n as NpcBase
+				if npc != null and npc.alive and npc.is_in_group(G.ENEMY) and (best == null
+						or npc.global_position.distance_to(me.global_position) < best.global_position.distance_to(me.global_position)):
+					best = npc
+			if best != null:
+				var to: Vector3 = best.global_position - me.global_position
+				i.look_yaw = atan2(-to.x, -to.z)
+				i.fire = rng.randf() < 0.6
+			i.reload = rng.randf() < 0.05
+			rt.set_bot_intent(Net.local_slot(), i)
+		await get_tree().create_timer(0.5).timeout
+	var rt2: HeistRuntime = HeistRuntime.current()
+	if rt2 != null:
+		rt2.clear_bot_intent(Net.local_slot())
+
+
 @rpc("any_peer", "call_remote", "reliable")
 func _rpc_report(kind: String, data: Dictionary) -> void:
 	if not multiplayer.is_server() or not multiplayer.get_peers().has(multiplayer.get_remote_sender_id()):
 		return
 	reported.emit(kind, data)
+	reported_by.emit(multiplayer.get_remote_sender_id(), kind, data)
 
 
 ## Client: state of the local replica (`args.probe_ids`: net ids whose existence to report).
@@ -153,6 +192,7 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 		"hud_objectives": rt.hud_model.objectives.map(func(o: Dictionary) -> String:
 			return "%s:%d" % [o["id"], int(o["state"])]) if rt.hud_model != null else [],
 		"of_state": of_state(rt) if bool(args.get("of_state", false)) else {},
+		"mem": OS.get_static_memory_usage(),  # A4-03 soak: memory growth on this peer
 	}
 
 

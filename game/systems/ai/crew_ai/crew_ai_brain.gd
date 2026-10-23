@@ -52,6 +52,8 @@ const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard", &"car
 ## CIV_BODY_TOP_M above its feet.
 const CIV_LINE_FROM_M: float = 0.3
 const CIV_BODY_TOP_M: float = 1.7
+## D-158: a leader this close (m, flat) to a cover point is "in cover".
+const LEADER_AT_COVER_M: float = 1.5
 
 @export var tweak: CrewAiTweak
 
@@ -93,6 +95,8 @@ var _pitch: float = 0.0
 var _following: bool = false
 ## Settled at `cover_point` this tick (crouches there).
 var _in_cover: bool = false
+## D-158: the followed human is in cover / crouched in combat (this bot seeks cover too, else crouches at its slot).
+var _leader_covering: bool = false
 ## Held at a door this bot may not open (this tick), and for how long in a row (s).
 var _door_blocked: bool = false
 var _blocked_s: float = 0.0
@@ -422,7 +426,9 @@ func _think(delta: float) -> CrewIntent:
 		_blocked_s = 0.0
 		wish = Vector3.ZERO
 	# D-111 (PD2 bots crouch behind cover): settled at the cover point while loud.
-	i.crouch = _in_cover and mobile and wish.length() <= 0.01 and _rt.went_loud
+	# D-158: with no cover point free, a bot beside a leader in cover crouches with them instead of standing in the open.
+	i.crouch = (_in_cover or (_leader_covering and mode == Mode.FOLLOW)) and mobile and wish.length() <= 0.01 \
+		and _rt.went_loud
 	_weapon_controls(i, eye, delta, interacting)
 	return i
 
@@ -538,7 +544,9 @@ func _follow_goal() -> Vector3:
 		mode = Mode.IDLE
 		return Vector3.INF
 	# Lead (ND): take cover whenever enemies are known near the leader, not only while one is targeted.
-	cover_point = _pick_cover(leader) if target_enemy != null or _enemies_near(leader) else null
+	# D-158 (P RT Hazardous: bots burned their downs in the open): also whenever the leader takes cover in combat.
+	_leader_covering = _leader_takes_cover(leader)
+	cover_point = _pick_cover(leader) if target_enemy != null or _leader_covering or _enemies_near(leader) else null
 	if cover_point != null:
 		mode = Mode.COVER
 		_following = false
@@ -1240,6 +1248,19 @@ func _sees_any(eye: Vector3, npc: NpcBase) -> bool:
 	var base: Vector3 = npc.global_position
 	for h: float in [tweak.chest_height_m, npc.head_height, SIGHT_HIPS_M]:
 		if _has_los(eye, base + Vector3(0.0, h, 0.0)):
+			return true
+	return false
+
+
+## D-158: the leader is in combat (loud) and crouched or at a cover point (within LEADER_AT_COVER_M of one).
+func _leader_takes_cover(leader: CrewController) -> bool:
+	if not _rt.went_loud or leader == null or leader.is_ai:
+		return false
+	if leader.crouched:
+		return true
+	for n: Node in get_tree().get_nodes_in_group(G.COVER_POINT):
+		var p: Node3D = n as Node3D
+		if p != null and _flat_dist(p.global_position, leader.global_position) <= LEADER_AT_COVER_M:
 			return true
 	return false
 
