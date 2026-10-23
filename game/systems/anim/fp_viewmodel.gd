@@ -30,6 +30,8 @@
 ## - Deploy (D-069): holding intent.deploy with a deployable left (masked, NORMAL) plays the DeployableDef
 ##   `anim_set` `place` with its `place@` frame on the deploy hold time (DeployableSystem.deploy_time_for); the
 ##   held form (`DeployableDef.model`) replaces the gun; releasing early cancels it.
+## - Deck item (LEAD r298): CrewThrowables.deck_item_used plays the item's use pose (FpViewmodelDeck), then the gun's
+##   `draw`.
 class_name FpViewmodel
 extends Node3D
 
@@ -88,7 +90,7 @@ class VgripPose:
 			vm.vgrip.apply(vm)
 
 
-enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW, INTERACT }
+enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW, INTERACT, DECK }
 
 const NODE_NAME: String = "FpViewmodel"
 const ATTACH_NAME: String = "WeaponBone"
@@ -133,6 +135,8 @@ var weapon_attach: BoneAttachment3D = null
 var offhand: FpViewmodelOffhand = FpViewmodelOffhand.new()
 ## D-118 vertical grip: the left hand takes D's `<set>_vgrip_hand` pose (FpViewmodelVgrip).
 var vgrip: FpViewmodelVgrip = FpViewmodelVgrip.new()
+## Perk-deck item use pose (FpViewmodelDeck).
+var deck: FpViewmodelDeck = FpViewmodelDeck.new()
 ## The WeaponVisual shown (during a holster: the outgoing one until the draw starts).
 var weapon_visual: WeaponVisual = null
 ## anim_set of the weapon currently in the hands.
@@ -313,6 +317,7 @@ func _ready() -> void:
 	if _crew != null and _crew.throwables != null:
 		_crew.throwables.pin_pulled.connect(_on_pin_pulled)
 		_crew.throwables.released.connect(_on_throw_released)
+		_crew.throwables.deck_item_used.connect(_on_deck_item_used)
 	if _crew != null:
 		_crew.carried_bag_changed.connect(_on_bag_changed)
 	EventBus.interaction_started.connect(_on_interaction_started)
@@ -338,7 +343,8 @@ func _exit_tree() -> void:
 	if _crew.melee != null:
 		pairs.append_array([[_crew.melee.charge_started, _on_melee_charge], [_crew.melee.swung, _on_melee_swung]])
 	if _crew.throwables != null:
-		pairs.append_array([[_crew.throwables.pin_pulled, _on_pin_pulled], [_crew.throwables.released, _on_throw_released]])
+		pairs.append_array([[_crew.throwables.pin_pulled, _on_pin_pulled], [_crew.throwables.released, _on_throw_released],
+			[_crew.throwables.deck_item_used, _on_deck_item_used]])
 	for pair: Array in pairs:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
@@ -427,6 +433,7 @@ func tick(delta: float) -> void:
 			_play_segment(_seg_i + 1)
 	_update_deploy()
 	_update_pin()
+	deck.tick(self, _seq_t)
 	_update_parts()
 	_update_ads(delta)
 	if action == Action.NONE:
@@ -882,8 +889,13 @@ func _on_throw_released() -> void:
 	_pin_t = -1.0
 
 
+## A perk-deck item was used (every peer): its use pose (FpViewmodelDeck).
+func _on_deck_item_used(item_id: StringName, kind: StringName) -> void:
+	deck.play(self, ContentDB.throwable(item_id), kind)
+
+
 func _update_pin() -> void:
-	if action != Action.THROW or _pin_t < 0.0 or _seq_t < _pin_t:
+	if (action != Action.THROW and action != Action.DECK) or _pin_t < 0.0 or _seq_t < _pin_t:
 		return
 	_pin_t = -1.0
 	var pin: Node3D = _item.find_child("Pin", true, false) as Node3D if _item != null and is_instance_valid(_item) else null
@@ -971,7 +983,9 @@ func _start(kind: int, segs: Array[Dictionary]) -> void:
 func _play_segment(i: int) -> void:
 	_seg_i = i
 	if i >= _segs.size():
-		if action != Action.INTERACT:  # an interaction holds the holstered pose until it ends
+		if action == Action.DECK:
+			_draw_weapon()  # the gun comes back after the deck item
+		elif action != Action.INTERACT:  # an interaction holds the holstered pose until it ends
 			_end_action()
 		return
 	var s: Dictionary = _segs[i]
@@ -1070,7 +1084,7 @@ func _check_aim_point(wv: WeaponVisual) -> void:
 # --- Per-frame helpers ------------------------------------------------------------------------
 
 func _item_action() -> bool:
-	return action == Action.MELEE or action == Action.DEPLOY or action == Action.THROW
+	return action == Action.MELEE or action == Action.DEPLOY or action == Action.THROW or action == Action.DECK
 
 
 ## D-069 deploy `place` while intent.deploy is held (presentation of DeployableSystem's server hold).
@@ -1082,7 +1096,8 @@ func _update_deploy() -> void:
 		if not held:
 			_end_action()  # released early (or the clip outlived the hold)
 		return
-	if not pressed or action == Action.SWAP or action == Action.MELEE or action == Action.THROW or not _can_deploy():
+	if not pressed or action == Action.SWAP or action == Action.MELEE or action == Action.THROW or action == Action.DECK \
+			or not _can_deploy():
 		return
 	var def: DeployableDef = DeployableSystem.def_for(_crew.weapons.deployable_id)
 	if def == null or not supports(def.anim_set):
@@ -1158,6 +1173,8 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	var pose_w: float = _sprint_w * (1.0 - ads_weight)
 	off += tw.sprint_pose_offset * pose_w
 	_bob_rot += tw.sprint_pose_rot_deg * pose_w
+	off += deck.offset  # the deck item use pose (about the firing hand, like the set pose)
+	_bob_rot += deck.rot_deg
 	# PO-4: the offset of the set actually playing (a melee / throw / deploy item set rides the gun's arms but has its
 	# own framing), eased so switching sets does not jump.
 	var set_now: StringName = _playing_set()
