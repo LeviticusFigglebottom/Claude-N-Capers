@@ -230,6 +230,7 @@ func build_stations(holder: Node3D) -> void:
 			continue
 		up.position = Vector3(0.0, -xf.origin.y, -float(s[3]))
 		it.position = v3(s[4])
+		it.set(&"aim_radius_m", L.STATION_AIM_RADIUS_M)
 		var body: Node3D = add(vis, node3d("Greybox")) as Node3D
 		var art: Node3D = null
 		var replaced: Array = []

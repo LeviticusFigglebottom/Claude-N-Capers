@@ -262,6 +262,7 @@ const NAV_CULL: Array = [
 	["WorksVanW", [-19.0, 41.0, -17.0, 46.0], 2.4, 2.0],
 	["NightBusE", [61.0, 33.0, 63.6, 45.0], 3.4, 2.0],
 	["RefuseTruck", [38.0, -19.0, 46.0, -17.0], 3.4, 2.0],
+	["CountWindowSill", [29.3, 6.8, 30.7, 7.2], 4.2, 2.1],
 ]
 ## OUT_OF_BOUNDS curtains (D-040): [name, [x0, y0, z0, x1, y1, z1]].
 const OOB: Array = [
