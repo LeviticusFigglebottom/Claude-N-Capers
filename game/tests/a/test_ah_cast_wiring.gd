@@ -126,3 +126,26 @@ func test_guard_post_walk_gives_up_and_stands() -> void:
 	assert_ne(brain.anim_hint, &"walk", "standing, not walking on the spot (hint %s)" % brain.anim_hint)
 	assert_true(brain._post_pos.distance_to(g.global_position) < 1.0, "the spot reached is the post now")
 
+
+
+## D r16 (AH in-map re-shoot): the door bouncer (DoorBouncer: bouncer_idle, no patrol graph) adopted the nearest graph and
+## patrolled it, playing bouncer_idle only at waypoints. A post activity without a named graph holds the post.
+func test_ah_door_bouncer_holds_his_post_in_bouncer_idle() -> void:
+	if not ResourceLoader.exists("res://world/heists/afterhours/afterhours.tscn"):
+		skip("no afterhours map on this branch")
+		return
+	_rt = await HeistLauncher.launch(&"afterhours", 1, Enums.Difficulty.ROUTINE, self, {"crew_ai": false, "ai_teammates": 0})
+	var door: NpcBase = null
+	for n: Node in _rt.npcs(&"guard"):
+		if ((n as NpcBase).spawn_info.get("tags", []) as Array).has(&"guard_door"):
+			door = n as NpcBase
+	assert_true(door != null, "the door bouncer spawned")
+	if door == null:
+		return
+	var brain: GuardBrain = door.get_node(^"Brain") as GuardBrain
+	var settled: bool = await wait_until(func() -> bool: return AnimDriver.of(door).clip == &"bouncer_idle", 7.0)
+	assert_true(brain.route.is_empty(), "no patrol route (%d points)" % brain.route.size())
+	assert_true(settled, "bouncer_idle at the door (clip %s, hint %s)" % [AnimDriver.of(door).clip, brain.anim_hint])
+	var p: Vector3 = door.global_position
+	await wait_seconds(2.0)
+	assert_true(door.global_position.distance_to(p) < 0.1, "and stays put")
