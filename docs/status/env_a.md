@@ -4,6 +4,81 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-51) D-158 amendment 9 (3585dce5): clean stop keeps RearStop on trucks_2 (2026-10-23)
+- Root cause of east's 33 m: trucks_2, not the route. Both routes share the stop geometry (Lead 18.5, T1 27.75,
+  T2 39, T3 51, Rear 61, RearStop2 49 along the route). _stop_marker closed the rear car up to RearStop2 on every
+  trucks_2 stop.
+- Fix: RtTweak.rear_close_up_clean (ships false). A clean stop keeps RearStop on trucks_2 too; the crash stop keeps
+  the close-up.
+- Test: test_clean_stop_rear_car_holds_back_on_both_routes_and_truck_counts pins the rear stop >= 42 m behind
+  LeadStop on north / east × trucks_2 / trucks_3 (clean), RearStop2 on the crash stop, and the knob. d158 13/13; RT
+  tests green (rt_a6 14, rt_a5 10, a5_02 4, looks 2, tactical 2, r288 2).
+- Re-run, seed 1001 east_clean trucks_2:
+  - The rear TAC Heavy is now 43 m from the crew at the stop (was 33).
+  - **Routine: PASS** (escort down t+24.8, build t+113.5, won at 522 s).
+  - **Hazardous: FAIL, unchanged** (down t+12.9, cuffed t+20.7, custody t+43.0 before build).
+  - The ESCORT hit log shows the TAC Heavy is not what downs the pilot: 30 of about 185 damage. The rest comes from
+    the T1/T2 security officers and convoy_lead at 6-15 m.
+  - Guard #102 sits 14 m from east's ambush cover. It goes ALARMED at t+2 (guard_radio springs the ambush) and is
+    shooting at 6 m by t+6.7; the column's crews join at t+8-9.5.
+
+### (-50) RT done-check harness evidence: 5 seeds × {loud, stealth prelude} × {Hazardous, Routine} (2026-10-23)
+Code: env/a-core dea7fc07..46bfd037, which equals trunk 9d4bca054 on A's side (amendment 8 knobs live: window from
+escort_down, wave 1 without stinger + phantom from Hazardous). Headless real-menu flow:
+`DIRECT=1 HEADLESS=1 run_po5.sh <flow> <seed> 3000 <out> "Rolling Thunder" <difficulty>`.
+- **auto_loud** = blown: mask up at once, loud, the pilot plays the convoy crash.
+- **rt_clean** = the stealth prelude (signals hack, padlocks, crew to the ambush spot unmasked) to the CLEAN stop, then
+  loud.
+- **No ghost run exists for RT.** It is loud-forced by design: RollingThunderMission raises the "ambush" alarm when the
+  8 s window after the stop ends (start_timer(&"window", WINDOW_S) -> raise_alarm(&"ambush")), and the trucks / cargo
+  objectives come after it. rt_clean is the stealthiest route there is.
+- "esc" / "build" / "cust" are seconds from the convoy's stop: escort down, the first assault BUILD, the human pilot's
+  custody (the harness fails on it). "end" = heist time at heist_ended or at the fail.
+
+| Flow | Diff | Seed | Route | esc | build | cust | Result | end (s) | Cause |
+|---|---|---|---|---|---|---|---|---|---|
+| auto_loud | Hazardous | 1001 | east_crash | 23.8 | 53.5 | 98.4 | FAIL | 141 | custody (pinned at the trucks by wave 1) |
+| auto_loud | Hazardous | 4101 | north_crash | 40.3 | 59.8 | 255.1 | FAIL | 296 | custody (1 truck's cargo out, bag carry under fire) |
+| auto_loud | Hazardous | 7 | north_crash | 31.0 | 59.8 | 192.0 | FAIL | 234 | custody |
+| auto_loud | Hazardous | 2024 | north_crash | 24.3 | 53.8 | 273.2 | FAIL | 314 | custody (3 crew in custody) |
+| auto_loud | Hazardous | 42 | north_crash | 22.7 | 52.6 | 87.3 | FAIL | 131 | custody (cuffed while downed) |
+| rt_clean | Hazardous | 1001 | east_clean | - | - | 42.7 | FAIL | 232 | custody BEFORE build, escort still up (TAC Heavy 33 m at the stop) |
+| rt_clean | Hazardous | 4101 | north_clean | 41.9 | 113.5 | 183.0 | FAIL | 370 | custody |
+| rt_clean | Hazardous | 7 | north_clean | 30.0 | 114.0 | 323.2 | FAIL | 495 | custody |
+| rt_clean | Hazardous | 2024 | north_clean | 27.9 | 113.6 | 293.6 | FAIL | 511 | custody |
+| rt_clean | Hazardous | 42 | north_clean | 38.2 | 113.9 | 292.9 | FAIL | 549 | all_custody |
+| auto_loud | Routine | 1001 | east_crash | 11.9 | 41.5 | - | PASS | 517 | won, 4 bags, back in the 3D hub |
+| auto_loud | Routine | 4101 | north_crash | 23.2 | 52.8 | - | PASS | 700 | won, 4 bags |
+| auto_loud | Routine | 7 | north_crash | 20.7 | 50.6 | - | PASS | 1066 | won |
+| auto_loud | Routine | 2024 | north_crash | 11.9 | 41.8 | - | PASS | 753 | won |
+| auto_loud | Routine | 42 | north_crash | 63.0 | 59.8 | - | PASS | 820 | won |
+| rt_clean | Routine | 1001 | east_clean | 27.9 | 113.9 | - | PASS | 538 | won |
+| rt_clean | Routine | 4101 | north_clean | 17.1 | 143.9 | - | PASS | 752 | won |
+| rt_clean | Routine | 7 | north_clean | 20.2 | 98.7 | - | PASS | 575 | won |
+| rt_clean | Routine | 2024 | north_clean | 14.0 | 141.6 | - | PASS | 677 | won |
+| rt_clean | Routine | 42 | north_clean | 146.7 | 143.7 | 730.7 | FAIL | 891 | custody (escort lasted 147 s) |
+
+**Summary:**
+- **Routine: 9/10 pass.** All five loud runs win end to end (payday -> the 3D safehouse). The one fail is seed 42
+  clean, where the escort fight lasted 147 s.
+- **Hazardous: 0/10.** Every seed wins the escort except 1001 east clean, then loses the truck fight after the wave-1
+  BUILD. The pilot gets downed, cuffed while downed (L2.12) and goes to custody 87-273 s after the stop.
+  - The waves include tac_heavy ×3 and bulwark / longshot. Later waves bring phantom / stinger (allowed from wave 2).
+- **Seed 1001 / route_east, clean stop, Hazardous:** still loses to the escort. The TAC Heavy stops 33 m from the stop
+  (north: 50 m). The crew is down at t+12.7 / 16.0 and in custody at t+42.7, before the escort is down.
+  - The same seed's blown run (east_crash) wins the escort at t+23.8.
+  - The same seed's clean stop at Routine wins the escort at t+27.9.
+- **STUCK:** one spot, (21.9, 0, -12.8), between Props/Dress/Streets/Forecourt/BinStreet0 and
+  Props/Dress/Direct/CarParkBarrier.
+  - The pilot wedges there in 7 runs (up to 42 STUCK lines, rauto_loud_7) and slides out. A real map snag for a player
+    too (C's dressing).
+- **"could not reach":** 0-4 per run. They are pilot targets set aside: a truck's fix_drill from the far side, a bag
+  under fire, ctrl_locked's padlock.
+- **Errors:** no game SCRIPT ERROR. One harness error: po5_pilot.use read a freed interactable after clearing threats
+  (rrt_clean_4101). Fixed in this push.
+- **Harness note:** the pilot is a bot. On Hazardous it plays the truck fight worse than a player would (it stands to
+  saw / carry under fire). These are bot-skill data next to P's windowed confirm runs.
+
 ### (-49) B's mimic dicts checked (2026-10-23)
 - perk.anarchist: an empty tick_by_armor ({}) now means CrewHealth's normal delayed regen (handles_armor_regen
   false, no ticks). It used to fall back to anarchist_fallback_tick. A missing field still takes the default table.

@@ -24,6 +24,10 @@ static var _cached: RtTweak = null
 @export var escort_engage_delay_s: float = 0.0
 @export var escort_accuracy_mult: float = 1.0
 @export var escort_accuracy_window_s: float = 10.0
+## D-158 amendment 9: on trucks_2 the rear car closes up behind T2 (RearStop2, 12 m nearer). True = also at a CLEAN
+## stop (before: the rear TAC Heavy 33 m from east's ambush cover); false (shipped) = a clean stop keeps RearStop on
+## both truck counts. The crash stop always closes up.
+@export var rear_close_up_clean: bool = false
 
 
 static func data() -> RtTweak:
