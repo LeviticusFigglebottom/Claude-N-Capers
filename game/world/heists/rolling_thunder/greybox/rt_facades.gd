@@ -46,10 +46,14 @@ const MATS: Dictionary = {
 	"joint": ["metal_matte", Color(0.2, 0.2, 0.2)],
 }
 const GLASS: Color = Color(0.1, 0.13, 0.16)
+## Planar UVs: one 1024 px texture repeat per 2 m = the style guide's 512 px/m (levelcheck materials).
+const UV_M: float = 2.0
 
 var b: Object
 var counts: Dictionary = {}
 var _st: Dictionary = {}
+## Box faces (by outward normal) the current builder step leaves out (coplanar with the host surface).
+var _skip: Array = []
 
 
 func _init(builder: Object) -> void:
@@ -63,6 +67,7 @@ func build() -> Dictionary:
 		site = root.get_node("Geometry") as Node3D
 	for f: Array in FACES:
 		_face(f)
+	_skip = [Vector3.UP]   # the soffit lines: no top face on the soffit plane (zfight with the deck)
 	_soffit()
 	var keys: Array = _st.keys()
 	keys.sort()
@@ -92,6 +97,7 @@ func _face(f: Array) -> void:
 	var a1: float = float(f[4])
 	var h: float = float(f[5])
 	var along_x: bool = absf(n.z) > 0.5
+	_skip = [-n]   # every slab of this face: no face on the wall plane (zfight with the wall / a barrier's end)
 
 	var at: Callable = func(a: float, y: float, out: float) -> Vector3:
 		return (Vector3(a, y, fixed) if along_x else Vector3(fixed, y, a)) + n * out
@@ -128,18 +134,20 @@ func _face(f: Array) -> void:
 	# downpipes on a 16 m pitch, off the bay grid
 	var p: float = a0 + 2.0
 	while p < a1 - 1.0:
-		_slab("pipe", at.call(p - 0.06, 0.0, 0.04), at.call(p + 0.06, h - 0.5, 0.16))
+		_slab("pipe", at.call(p - 0.06, 0.05, 0.04), at.call(p + 0.06, h - 0.5, 0.16))
 		p += PIPE_PITCH
 
 
 ## A frame (FRAME_T border, 0.06 proud) around a panel (`kind`: glass / door, 0.03 proud) centred on `c`, from `y0`.
 func _framed(c: float, y0: float, w: float, hh: float, at: Callable, kind: String) -> void:
 	var hw: float = w * 0.5
-	_slab("frame", at.call(c - hw - FRAME_T, y0 - FRAME_T, 0.0), at.call(c + hw + FRAME_T, y0, 0.06))
+	var foot: float = maxf(y0, 0.02)   # a door's frame stands on the street (no sill below the grade)
+	if y0 > 0.1:
+		_slab("frame", at.call(c - hw - FRAME_T, y0 - FRAME_T, 0.0), at.call(c + hw + FRAME_T, y0, 0.06))
 	_slab("frame", at.call(c - hw - FRAME_T, y0 + hh, 0.0), at.call(c + hw + FRAME_T, y0 + hh + FRAME_T, 0.06))
-	_slab("frame", at.call(c - hw - FRAME_T, y0, 0.0), at.call(c - hw, y0 + hh, 0.06))
-	_slab("frame", at.call(c + hw, y0, 0.0), at.call(c + hw + FRAME_T, y0 + hh, 0.06))
-	_slab(kind, at.call(c - hw, y0, 0.0), at.call(c + hw, y0 + hh, 0.03))
+	_slab("frame", at.call(c - hw - FRAME_T, foot, 0.0), at.call(c - hw, y0 + hh, 0.06))
+	_slab("frame", at.call(c + hw, foot, 0.0), at.call(c + hw + FRAME_T, y0 + hh, 0.06))
+	_slab(kind, at.call(c - hw, foot, 0.0), at.call(c + hw, y0 + hh, 0.03))
 
 
 # --- Skyway soffit -------------------------------------------------------------------------------
@@ -183,6 +191,8 @@ func _box(key: String, lo: Vector3, hi: Vector3) -> void:
 	for fc: Array in faces:
 		var idx: Array = fc[0]
 		var nn: Vector3 = fc[1]
+		if _skip.any(func(sk: Vector3) -> bool: return sk.is_equal_approx(nn)):
+			continue
 		for i: int in [0, 2, 1, 0, 3, 2]:
 			var v: Vector3 = c[int(idx[i])]
 			st.set_normal(nn)
@@ -192,10 +202,10 @@ func _box(key: String, lo: Vector3, hi: Vector3) -> void:
 
 static func _uv(v: Vector3, n: Vector3) -> Vector2:
 	if absf(n.y) > 0.5:
-		return Vector2(v.x, v.z)
+		return Vector2(v.x, v.z) / UV_M
 	if absf(n.x) > 0.5:
-		return Vector2(v.z, -v.y)
-	return Vector2(v.x, -v.y)
+		return Vector2(v.z, -v.y) / UV_M
+	return Vector2(v.x, -v.y) / UV_M
 
 
 func _mat(key: String) -> Material:
