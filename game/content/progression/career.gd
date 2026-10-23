@@ -14,6 +14,7 @@
 ##   * Weapons: the profile loadout's primary / secondary at payday (heists carried, not kills: the
 ##     HeistResult has no per-weapon data). favourite_weapon() = most carried.
 ##   * Payday cards (record_card, after PaydayCards.grant): card_cash / card_xp amounts, cards_taken.
+##   * Last Breath (One Down, C4): MenuFlow's contract flag via PaydayScreen.last_breath -> LAST_BREATH_WINS.
 ## TODO (no source yet): per-weapon kills, melee / throwable kills, pagers answered per player, time spent in menus.
 class_name Career
 extends RefCounted
@@ -38,6 +39,8 @@ const TIME_PLAYED_S: String = "time_played_s"
 const CARD_CASH: String = "card_cash"
 const CARD_XP: String = "card_xp"
 const CARDS_TAKEN: String = "cards_taken"
+## Wins with the Last Breath toggle on (totals and per heist).
+const LAST_BREATH_WINS: String = "last_breath_wins"
 ## Per-heist keys (besides played / won / failed / stealth_wins / loud_wins).
 const FASTEST_WIN_MS: String = "fastest_win_ms"
 ## "won_d<difficulty>": wins of that heist on that difficulty.
@@ -56,7 +59,9 @@ static func empty() -> Dictionary:
 
 ## Banks one payday into p.career. `crew_slot` = the local player's HeistResult crew row (-1 / missing =
 ## no combat counters). Call once per shown result (PaydayScreen._apply, before Achievements.on_payday).
-static func record(p: PlayerProfile, result: Dictionary, payout: Dictionary, crew_slot: int) -> void:
+## `last_breath` = the run had Last Breath on (HeistResult does not carry it).
+static func record(p: PlayerProfile, result: Dictionary, payout: Dictionary, crew_slot: int,
+		last_breath: bool = false) -> void:
 	if p == null:
 		return
 	_ensure(p)
@@ -75,6 +80,10 @@ static func record(p: PlayerProfile, result: Dictionary, payout: Dictionary, cre
 			_add_diff(p, diff, k, 1)
 	if success and heist != "":
 		_add_heist(p, heist, WON_ON_FMT % diff, 1)
+	if success and last_breath:
+		_add(p, "totals", LAST_BREATH_WINS, 1)
+		if heist != "":
+			_add_heist(p, heist, LAST_BREATH_WINS, 1)
 	_record_time(p, result, success, heist)
 	_record_money(p, payout)
 	if success:

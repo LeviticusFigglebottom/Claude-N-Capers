@@ -59,6 +59,8 @@ const COUNT_TICK_MS: int = 80
 ## Pro job (a Board contract flagged pro, B4-07): PayoutCalculator's is_pro (pro_job_xp_mult XP
 ## line). MenuFlow sets it from the contract before the heist ends; HeistResult does not carry it.
 @export var is_pro: bool = false
+## Last Breath (One Down, C4): MenuFlow sets it from the contract; a chip in the summary row and a career win.
+@export var last_breath: bool = false
 
 var profile: PlayerProfile
 ## PayoutCalculator.compute output for the shown result.
@@ -489,7 +491,7 @@ func _apply() -> void:
 	_applied = true
 	SaveService.apply_heist_payout(profile, payout, XpCurve.level_for_xp)
 	profile.add_stat("heists_completed" if bool(payout.get("success", false)) else "heists_failed")
-	Career.record(profile, result, payout, Net.local_slot())
+	Career.record(profile, result, payout, Net.local_slot(), last_breath)
 	HeistFreshness.record(profile, StringName(result.get("heist_id", &"")), bool(payout.get("success", false)))
 	var snap: Dictionary = facts.snapshot() if facts.started else {}
 	achievements_unlocked = Achievements.on_payday(profile, result, payout, is_pro, snap)
@@ -618,6 +620,8 @@ func _render() -> void:
 	]
 	if not has_pagers(StringName(result.get("heist_id", &""))):
 		summary.remove_at(2)  # D-115 B-DB: no "Pagers answered: 0" on a heist without pagers
+	if last_breath:
+		summary.append(UiText.t(&"ui.heist_select.last_breath"))
 	var chips: Label = UiBuild.caption()
 	chips.name = "SummaryChips"
 	chips.text = "   ·   ".join(summary)

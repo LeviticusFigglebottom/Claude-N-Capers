@@ -19,10 +19,10 @@
 ##                Every peer validates it with validate_summary()
 ##                (SkillPoints.validate + LoadoutResolver mod legality + known ids, architecture §11):
 ##                an illegal summary is FLAGGED on its slot and blocks Start; the host never launches it.
-## * MSG_CONTRACT {"heist": String, "difficulty": int, "is_pro": bool}   host only. D-049: every player
-##                has their own Board; the lobby runs the host's contract. A new heist/difficulty clears
-##                every ready flag and the plan-vote log.
-## * MSG_START    {"heist", "difficulty", "is_pro", "seed": int}           host only; the launch order.
+## * MSG_CONTRACT {"heist": String, "difficulty": int, "is_pro": bool, "last_breath": bool}   host only. D-049:
+##                every player has their own Board; the lobby runs the host's contract. A new heist/difficulty
+##                clears every ready flag and the plan-vote log; toggling Last Breath (C4) clears the ready flags.
+## * MSG_START    {"heist", "difficulty", "is_pro", "last_breath", "seed": int}   host only; the launch order.
 ## * PlanVote.MSG_CAST / MSG_RETRACT (preplanning.md): logged in order (vote_log) so a pre-planning
 ##                screen opened later can replay them (PreplanPlan.receive_vote); the live screen
 ##                applies them itself.
@@ -219,6 +219,8 @@ func _apply(from_slot: int, kind: StringName, data: Dictionary) -> bool:
 				if contract.is_empty() or c["heist"] != contract["heist"] or c["difficulty"] != contract["difficulty"]:
 					ready = {}
 					vote_log = []
+				elif bool(c["last_breath"]) != bool(contract.get("last_breath", false)):
+					ready = {}  # C4: Last Breath changes the stakes; everyone readies again
 				contract = c
 		MSG_START:
 			var st: Dictionary = parse_contract(data)
@@ -610,23 +612,26 @@ static func validate_summary(s: Dictionary) -> Array[String]:
 	return out
 
 
-## Host contract payload ({} on a bad shape): heist id, difficulty 0..5 and is_pro.
+## Host contract payload ({} on a bad shape): heist id, difficulty 0..5, is_pro and last_breath (absent = false).
 static func parse_contract(data: Dictionary) -> Dictionary:
 	var heist: Variant = data.get("heist")
 	var diff: Variant = data.get("difficulty")
-	if not (heist is String) or String(heist) == "" or not _is_int(diff) or not (data.get("is_pro", false) is bool):
+	if not (heist is String) or String(heist) == "" or not _is_int(diff) or not (data.get("is_pro", false) is bool) \
+			or not (data.get("last_breath", false) is bool):
 		return {}
 	if int(diff) < 0 or int(diff) >= Enums.Difficulty.size():
 		return {}
-	return {"heist": StringName(String(heist)), "difficulty": int(diff), "is_pro": bool(data.get("is_pro", false))}
+	return {"heist": StringName(String(heist)), "difficulty": int(diff), "is_pro": bool(data.get("is_pro", false)),
+			"last_breath": bool(data.get("last_breath", false))}
 
 
-static func contract_data(heist_id: StringName, difficulty: int, is_pro: bool) -> Dictionary:
-	return {"heist": String(heist_id), "difficulty": difficulty, "is_pro": is_pro}
+static func contract_data(heist_id: StringName, difficulty: int, is_pro: bool, last_breath: bool = false) -> Dictionary:
+	return {"heist": String(heist_id), "difficulty": difficulty, "is_pro": is_pro, "last_breath": last_breath}
 
 
 static func start_data(c: Dictionary, run_seed: int) -> Dictionary:
-	var d: Dictionary = contract_data(StringName(c.get("heist", &"")), int(c.get("difficulty", 0)), bool(c.get("is_pro", false)))
+	var d: Dictionary = contract_data(StringName(c.get("heist", &"")), int(c.get("difficulty", 0)), bool(c.get("is_pro", false)),
+			bool(c.get("last_breath", false)))
 	d["seed"] = run_seed
 	return d
 

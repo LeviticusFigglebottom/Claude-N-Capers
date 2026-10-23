@@ -8,10 +8,12 @@ var _screen: PaydayScreen
 
 
 func before_all() -> void:
+	BTestUtil.pin_menu_hub(true)  # C\'s 3D safehouse at the contract path: these drive the 2D hub
 	SaveService.root_dir = BTestUtil.profile_root()
 
 
 func after_all() -> void:
+	BTestUtil.pin_menu_hub(false)
 	SaveService.delete_profile(0)
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
 

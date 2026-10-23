@@ -25,6 +25,9 @@ extends Node
 
 ## True once the missing-scene note was logged (once per session).
 static var _missing_logged: bool = false
+## Tests that drive the 2D HubMenu set this (BTestUtil.pin_menu_hub) so ENV C's scene at the contract path and the
+## walk-by-default setting never route them into the 3D hub. Never set by the game.
+static var menu_hub_only: bool = false
 
 var flow: MenuFlow
 var tweak: SafehouseHubTweak
@@ -89,7 +92,7 @@ func is_active() -> bool:
 ## MenuFlow.show_hub() in 3D: enters the safehouse if needed, puts the walker back (at the station's
 ## UsePoint when a station screen was open), resumes it and shows the hub HUD. False = use the 2D hub.
 func show_home(p: PlayerProfile) -> bool:
-	if not walk_enabled():
+	if menu_hub_only or not walk_enabled():
 		leave()
 		return false
 	if not enter():

@@ -689,6 +689,8 @@ func _refresh_contract(st: LobbyState) -> void:
 	var detail: String = UiText.t(&"ui.board.difficulty", {"name": UiText.t(UiText.difficulty_key(int(st.contract["difficulty"])))})
 	if bool(st.contract["is_pro"]):
 		detail += "   " + UiText.t(&"ui.board.pro")
+	if bool(st.contract.get("last_breath", false)):
+		detail += "   " + UiText.t(&"ui.heist_select.last_breath")  # C4 One Down: the host decides
 	contract_detail_label.text = detail
 
 
