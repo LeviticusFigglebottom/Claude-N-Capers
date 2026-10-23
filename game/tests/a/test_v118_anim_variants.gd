@@ -206,9 +206,10 @@ func test_death_from_variant_pose_is_posed() -> void:
 func test_hard_hat_lift_on_the_variants() -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	for group: StringName in AnimDriver.VARIANT_GROUPS:
-		if group == &"flee" or group == &"cower" or group == &"queue_idle":
+		if group in [&"flee", &"cower", &"queue_idle", &"idle", &"idle_alert"]:
 			continue  # D-116 civ panic: flee* runs; cower_c holds the hands by the face (cower / cower_b below);
-			# OF-A6 queue_idle* is an ambient idle (hands at the waist / phone / arms crossed), not a hands-up pose
+			# OF-A6 queue_idle* is an ambient idle (hands at the waist / phone / arms crossed), not a hands-up pose;
+			# D 7d86014f idle* / idle_alert* likewise (a watch check, a stretch, a hand on the shoulder radio)
 		for v: Variant in AnimDriver.VARIANT_GROUPS[group]:
 			assert_true(tw.hard_hat_lift_clips.has(v), "%s is a hard-hat lift clip" % v)
 	assert_true(tw.hard_hat_lift_clips.has(&"cower") and tw.hard_hat_lift_clips.has(&"cower_b"),
@@ -227,3 +228,21 @@ func test_hard_hat_lift_on_the_variants() -> void:
 		assert_eq(d.clip, v, "%s variant %s plays" % [pair[0], v])
 		assert_near(d.hat_lift.influence, 1.0, 0.001, "%s: the lift is blended in" % v)
 		assert_true(d.hat_lift.active, "%s: the lift is active" % v)
+
+
+## D 7d86014f (idle_variants / idle_alert_variants): a calm body's idle and an alerted one's idle_alert play its
+## variant (same index as every group); a rig without the variants keeps the base clip (until D's round lands).
+func test_idle_and_idle_alert_follow_the_body_index() -> void:
+	for idx: int in 3:
+		var npc: NpcBase = _npc(_id_for(idx, 93000 + idx * 50), &"guard")
+		await wait_frames(1)
+		var d: AnimDriver = AnimDriver.of(npc)
+		var want: StringName = (AnimDriver.VARIANT_GROUPS[&"idle"] as Array)[idx]
+		var got: StringName = d.choose_clip()
+		assert_eq(got, want if _has(d, want) else &"idle", "index %d calm: %s" % [idx, got])
+		npc.alert_state = Enums.AlertState.ALARMED
+		var want_a: StringName = (AnimDriver.VARIANT_GROUPS[&"idle_alert"] as Array)[idx]
+		var got_a: StringName = d.choose_clip()
+		if String(got_a).begins_with("idle_alert_") and not (AnimDriver.VARIANT_GROUPS[&"idle_alert"] as Array).has(got_a):
+			continue  # an armed hold (idle_alert_<kind>) is never varied
+		assert_eq(got_a, want_a if _has(d, want_a) else &"idle_alert", "index %d alerted: %s" % [idx, got_a])

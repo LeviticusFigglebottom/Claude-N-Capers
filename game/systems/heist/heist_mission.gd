@@ -524,7 +524,9 @@ func is_variant_revealed(group: StringName) -> bool:
 ## metadata `objective_tag`) is `tag`, in tree order, cycling (0.4 m up per reuse) when count > markers. Server.
 ## `respawn` (§3b.9: no soft lock): a bag destroyed / freed without being secured or consumed by a device
 ## (LootManager.META_CONSUMED) comes back at its marker, and a loose bag that fell InteractionTweak
-## loot_lost_below_m below its marker (off the map) is put back there. Returns the bags ([] with no marker, logged).
+## loot_lost_below_m below its marker (off the map) is put back there. The bags are pre-placed style (LootBag.moved
+## false, S4.1): no guard or camera reacts to one until a crew member first picks it up (AH seed 2: the count room's
+## cash in CameraC8's view raised the alarm 2 s in). Returns the bags ([] with no marker, logged).
 func spawn_loot(loot_id: StringName, tag: StringName, count: int = 1, respawn: bool = false) -> Array:
 	var out: Array = []
 	var loot: LootManager = _runtime.service(G.SVC_LOOT) as LootManager if _runtime != null else null
@@ -577,7 +579,7 @@ func _spawn_loot_at(loot: LootManager, loot_id: StringName, marker: Node3D, laye
 	var xf: Transform3D = marker.global_transform
 	xf.basis = xf.basis.orthonormalized()
 	xf.origin += Vector3.UP * (0.4 * float(layer))
-	return loot.spawn_bag(loot_id, xf)
+	return loot.spawn_bag(loot_id, xf, false)  # S4.1: placed loot is ignored by guards / cameras until first picked up
 
 
 func _watch_respawn(bag: LootBag, marker: Node3D) -> void:

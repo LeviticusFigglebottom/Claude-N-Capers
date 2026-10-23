@@ -439,15 +439,18 @@ ALWAYS: Dict[str, List[list]] = {
         P("keypad", "CashCageKeypad", "B", [25.25, 1.2, 17.45], 0.0, {"code_group": "vault", "objective_tag": "cash_cage",
                                                                      "@targets": ["CashCageGate"]},
           [25.25, 0.0, 16.6], {"mount": "wall"}, "prop_keypad"),
-        # OF-C2 (GPU-16, LEAD r256): the head over the lid 0.35 m inside its west edge, the tripod pointing west, so all
-        # three feet (local (+-0.43, 0.6), (0, 1.38)) stand on the TW carpet 0.25 m+ clear of the burn-through cut once
-        # the lid is gone (at the hole centre two feet came down inside it); UsePoint unchanged (eye 1.95 m < reach)
-        P("drill_point", "LidDrill", "G", [23.75, 1.0, 14.6], -90.0, {"device": "enum:THERMAL", "duration_s": 360.0,
-                                                                  "loud_only": True, "objective_tag": "vault_drill",
-                                                                  "requires_loot": "loot.thermal_drill_part",
-                                                                  "requires_count": 2},
-          [25.6, 0.0, 14.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2},
-          "prop_thermal_drill_device"),
+        # A r305 (the PO: "standing upright, isn't it meant to drill into something?"): the lance burns DOWN through the
+        # lid. The spot sits on the lid's centre, pitched so its -Z (the bit) points at the floor; the drill-down rig
+        # (prop_thermal_drill_down: the tripod's feet in the tip plane, r 0.55) is the placed device, and the spot shows
+        # nothing until it is placed (visual: the shared empty scene, as RT's truck saw spots).
+        P("drill_point", "LidDrill", "G", [24.0, 0.0, 14.0], 0.0, {"device": "enum:THERMAL", "duration_s": 360.0,
+                                                                "loud_only": True, "objective_tag": "vault_drill",
+                                                                "requires_loot": "loot.thermal_drill_part",
+                                                                "requires_count": 2,
+                                                                "device_scene": "prop_thermal_drill_down"},
+          [25.7, 0.0, 14.0], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2, "pitch": -90.0,
+                                                                  "tilted": True},
+          "res://world/heists/glasshouse/art/gh_empty.tscn"),
         _alarm("AlarmSR", "G", [18.2, 1.1, 0.2], 180.0), _alarm("AlarmBM", "G", [47.8, 1.1, 22.5], 90.0),
         _alarm("AlarmSD", "B", [34.1, 1.1, 11.0], -90.0),
     ] + [_alarm("AlarmTeller%d" % (i + 1), "G", [x + 0.3, 0.75, COUNTER["top"][0]], 0.0) for i, x in enumerate(STATIONS)] + [

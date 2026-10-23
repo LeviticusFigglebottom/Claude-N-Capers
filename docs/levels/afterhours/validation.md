@@ -55,14 +55,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 140 props checked
+- 139 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_alley/EscapeAlley` @ (25.00, 0.00, -3.60): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_tolley/EscapeTolley` @ (40.00, 0.00, 22.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 140 props, 44 doors checked
+- 139 props, 44 doors checked
 
 - WARN `Props/MapBuilt/RollerShutter` @ (31.00, 0.00, 0.00): door has no Leaf node; swing arc not checked
 

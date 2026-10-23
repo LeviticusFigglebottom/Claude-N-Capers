@@ -427,9 +427,24 @@ func _rt_lift() -> bool:
 			return await _fail("bag %d into the car" % k)
 	_row("lift: 2 bags in the car (HEAVY + MEDIUM)", "PASS" if lift.bags_in_car().size() >= 2 else "FAIL",
 		"%d bags" % lift.bags_in_car().size(), "-")
-	# BagLift (A): a send goes to the NEXT landing ((i + 1) % count), so ground -> roof is two sends: from the ground
-	# (0 -> 1), then from Deck 2 (1 -> 2) after walking up stair A to meet the car, as a player would.
+	# LEAD r304 / A (round 305): 3+ landings get one "Send to <landing>" button per other landing (send_buttons[i][j]):
+	# ground -> roof in ONE send, then stair A all the way up. Fallback (older BagLift: a send goes to the NEXT landing):
+	# two sends, ground (0 -> 1), then Deck 2 (1 -> 2) after walking up to meet the car.
 	var t0: float = rt.heist_time_s
+	var sends: Dictionary = lift.send_buttons.get(0, {}) as Dictionary
+	if sends.has(2):
+		var btn: InteractableComponent = sends[2]
+		await _go(g_stand, 0.3, 30.0)
+		_diag_hold.call_deferred(btn, 8.0)
+		await pilot.use(btn, 30.0, func() -> bool: return lift.is_moving(), false)
+		var up: bool = await wait_until(func() -> bool: return not lift.is_moving() and lift.landing == 2, lift.travel_s * 2.0 + 5.0)
+		_row("lift: ground -> roof in ONE send (\"Send to Roof\")", "PASS" if up and lift.bags_in_car().size() >= 2 else "FAIL",
+			"at the roof %s, %.1f s heist time, %d bags rode up" % [up, rt.heist_time_s - t0, lift.bags_in_car().size()],
+			"-" if up else "A lift send buttons / C panel")
+		if not up or not await _leg("lift: ground -> roof by stair A to meet the car", STAIR_A.duplicate() +
+				[Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)]):
+			return false
+		return await _roof_bags_out(lift) and ok
 	if not await _lift_to(lift, 1, g_stand):
 		return await _fail("send ground -> Deck 2")
 	var d2_stand: Vector3 = Vector3(LIFT_AT.x, 3.5, LIFT_STAND_Z)
@@ -442,6 +457,12 @@ func _rt_lift() -> bool:
 	var r_stand: Vector3 = Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)
 	if not await _leg("lift: Deck 2 -> roof by stair A to meet the car", STAIR_A.slice(3) + [r_stand]):
 		return false
+	return await _roof_bags_out(lift) and ok
+
+
+## On the roof: into the car from the landing door, F each bag there, carry it out (both bags).
+func _roof_bags_out(lift: BagLift) -> bool:
+	var r_stand: Vector3 = Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)
 	var got: int = 0
 	for k: int in 2:
 		var bags: Array[LootBag] = lift.bags_in_car()
@@ -461,7 +482,7 @@ func _rt_lift() -> bool:
 	_row("lift: both bags out on the roof", "PASS" if got == 2 else "FAIL", "%d of 2 taken out by F" % got,
 		"-" if got == 2 else "C car / A lift")
 	await shot("lift_roof")
-	return ok and got == 2
+	return got == 2
 
 
 # --- site -----------------------------------------------------------------------------------------------------------

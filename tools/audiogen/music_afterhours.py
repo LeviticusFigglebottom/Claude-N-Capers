@@ -7,7 +7,7 @@ syncopated organ hook F#5 A5 G#5 E5 | C#5 E5 (answered D5 E5 F#5 A5 G#5). Progre
 (F#m9 Dmaj7 Bm7 C#7sus4 -> C#7). No bells, no arpeggios: the organ and the pad carry the harmony.
 
 Stealth is 32 bars of the grid (60 s) under which the sub-bass pulses run at 72 BPM (72 pulses per loop, so
-the loop stays seamless): it sits under the diegetic 124 BPM club loop, ducked by the MusicDirector in the
+the loop stays seamless): it sits under the diegetic 120 BPM club loop, ducked by the MusicDirector in the
 hall. control / anticipation / assault / fade are 16 bars each on the 128 BPM bar grid; assault drives the
 club bassline (CLUB_BASS) into a full four-on-the-floor assault. Mix room: "hall". Original material,
 synthesized from the shared engine.
@@ -29,7 +29,7 @@ PALETTE = "house organ stabs, formant velvet pad, rolling offbeat bass, 72 BPM s
 BPM = 128.0
 BEATS_PER_BAR = 4
 PROG8 = ["F#m9", "F#m9", "Dmaj7", "Dmaj7", "Bm7", "Bm7", "C#7sus4", "C#7"]
-# the club's own bassline (shared with the diegetic loop at 124 BPM): rolling offbeats with octave kicks
+# the club's own bassline (shared with the diegetic loop at 120 BPM): rolling offbeats with octave kicks
 CLUB_BASS = "..x-.xx-..x-.x.x"
 CLUB_OCT = "......o.......o."
 HOOK = [(0.0, 78, 0.5), (0.75, 81, 0.25), (1.0, 80, 0.5), (1.5, 76, 0.75), (2.5, 73, 0.5), (3.25, 76, 0.5)]
