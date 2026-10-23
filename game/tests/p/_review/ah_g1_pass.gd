@@ -209,6 +209,8 @@ func _ah_stealth() -> bool:
 		return await _fail("mask")
 	if not await _office():
 		return false
+	if not have_code:
+		have_code = await _code_note(safe, "masked, in the office")
 	var opened: bool = await _open_safe(safe, have_code)
 	if not opened:
 		return false
@@ -302,15 +304,17 @@ func _keycard() -> bool:
 		_row("keycard", "FAIL", "no reachable KeycardPickup", "C map / bake")
 		return false
 	var t0: float = rt.heist_time_s
+	var kc_name: String = String(best.name)  # the pickup frees itself when taken
 	var ok: bool = await _go_reach(best.global_position, 0.6, 180.0) \
 		and await pilot.use(_comp(best), 20.0, func() -> bool: return pilot.crew.item_count(&"item.keycard") > 0)
-	_row("keycard (%s, %.0f m walk)" % [best.name, best_m], "PASS" if ok else "FAIL", "%.0f s, peak %.2f" % [
+	_row("keycard (%s, %.0f m walk)" % [kc_name, best_m], "PASS" if ok else "FAIL", "%.0f s, peak %.2f" % [
 		rt.heist_time_s - t0, _worst_peak()], "-" if ok else "C map / A keycard")
 	return ok
 
 
-## The safe's code note (CodeNote with the safe's code_group), read as casing. False = drill instead (no row FAIL).
-func _code_note(safe: Safe) -> bool:
+## The safe's code note (CodeNote with the safe's code_group). `phase` labels the row. A note out of reach now (the
+## office blotter behind the masked-only VIP staff door while casing) is a NOTE, read later; false = not read.
+func _code_note(safe: Safe, phase: String = "casing") -> bool:
 	if safe.code_group == &"":
 		_row("safe code note", "NOTE", "the safe has no code_group: drill only", "-")
 		return false
@@ -318,9 +322,15 @@ func _code_note(safe: Safe) -> bool:
 		var cn: CodeNote = n as CodeNote
 		if cn.code_group != safe.code_group or pilot.nav_path(cn.global_position).is_empty():
 			continue
-		var ok: bool = await _go_reach(cn.global_position, 0.6, 180.0) and await pilot.use(_comp(cn), 15.0)
-		_row("safe code (%s)" % cn.name, "PASS" if ok else "FAIL", "read %s, code '%s'" % [ok, cn.code_text()],
-			"-" if ok else "C map / A code note")
+		var reached: bool = await _go_reach(cn.global_position, 0.6, 180.0)
+		if not reached and pilot.last_blocked_door != null:
+			_row("safe code (%s, %s)" % [cn.name, phase], "NOTE", "not reachable now: %s (%s); read later" % [
+				pilot.last_blocked_door.name, _comp(pilot.last_blocked_door).availability(pilot.crew)
+				if _comp(pilot.last_blocked_door) != null else "-"], "-")
+			return false
+		var ok: bool = reached and await pilot.use(_comp(cn), 15.0)
+		_row("safe code (%s, %s)" % [cn.name, phase], "PASS" if ok else "FAIL", "read %s, code '%s'" % [ok,
+			cn.code_text()], "-" if ok else "C map / A code note")
 		return ok
 	_row("safe code note", "NOTE", "none reachable for group %s: drill" % safe.code_group, "-")
 	return false
