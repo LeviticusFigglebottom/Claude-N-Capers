@@ -27,6 +27,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | hide_los | PASS | 0 | 0 |
 | teller_worktop | PASS | 0 | 0 |
 | materials | PASS | 0 | 0 |
+| metal_reflection | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
 | viewmodel_lit | PASS | 0 | 0 |
@@ -379,6 +380,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - 10248 surfaces checked
 
 
+## metal_reflection: Metal surfaces have a reflection source
+
+- environment reflections: on; 60 probe(s), 3 baked VoxelGI
+- 899 metal surface(s); 826 covered only by UPDATE_ONCE probes (black until the probe first renders)
+
+
 ## zfight: Z-fighting
 
 - 1363737 triangles checked
@@ -528,7 +535,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` | 1679 | 0 | 936 | 0 | 2615 | 673058 | 1 | Sun 936 |
+| `TopDownPlan` (plan, exempt) | 1679 | 0 | 936 | 0 | 2615 | 673058 | 1 | Sun 936 |
 | `rc_ext_plaza` | 1727 | 0 | 330 | 0 | 2057 | 659564 | 1 | Sun 330 |
 | `rc_ext_lane` | 2056 | 0 | 475 | 0 | 2531 | 796988 | 1 | Sun 475 |
 | `rc_ext_tannery` | 1766 | 0 | 825 | 0 | 2591 | 650120 | 1 | Sun 825 |
@@ -583,7 +590,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 23, chair 14, desk 29, table 15, low_table 1, wall_unit 104, lounge_seat 2, visitor_chair 16, desk_chair 55, stool 1, monitor 18
+- classified: chair 14, counter 23, desk 29, table 15, low_table 1, wall_unit 104, lounge_seat 2, visitor_chair 16, desk_chair 55, stool 1, monitor 18
 - 88 seats, 68 tables/desks/counters, 94 doors checked
 
 - WARN `Gameplay/Devices/LidDrill` @ (23.75, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.96 m (gameplay prefab / variant content: review)
