@@ -404,7 +404,7 @@ func _build_left() -> void:
 	exit_button = UiBuild.button(&"ui.range.exit")
 	reset_button = UiBuild.button(&"ui.range.reset_targets")
 	var foot: HBoxContainer = UiBuild.hbox(UiTokens.S3)
-	foot.add_child(UiBuild.ghost(exit_button))
+	foot.add_child(UiBuild.back(exit_button))
 	foot.add_child(UiBuild.spacer())
 	foot.add_child(reset_button)
 	for b: Button in [reset_button, exit_button]:

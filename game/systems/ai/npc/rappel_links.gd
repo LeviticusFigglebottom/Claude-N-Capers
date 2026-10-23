@@ -40,6 +40,9 @@ static func build(map: Node3D) -> int:
 		var link: NavigationLink3D = NavigationLink3D.new()
 		link.name = LINK_NAME
 		link.bidirectional = false
+		# Sweep r303 (OF seed 1, C's trace): on layer 1 the crew, guards and civilians pathed down the 8.6 m lantern drop.
+		# Only loud police use these (NpcMotor adds the breach layer, D-122; the director queries 1 | BREACH).
+		link.navigation_layers = Door.NAV_LAYER_BREACH
 		link.set_meta(META, true)
 		tp.add_child(link)
 		link.global_transform = Transform3D(Basis.IDENTITY, tp.global_position)

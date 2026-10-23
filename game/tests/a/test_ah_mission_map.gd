@@ -49,3 +49,56 @@ func test_objective_markers_resolve_on_the_map() -> void:
 	assert_ne(StringName(_rt.mission.call(&"gear_line")), &"", "a gear_drop slot rolled, and Mercer has its line")
 	var guards: int = _rt.npcs().filter(func(n: Node) -> bool: return (n as NpcBase).role == &"guard").size()
 	assert_eq(guards, 4, "exactly 4 guards (D-143)")
+
+
+func _launch_real(difficulty: int = Enums.Difficulty.ROUTINE) -> HeistMission:
+	_rt = await HeistLauncher.launch(HEIST, 1650, difficulty, self, {"crew_ai": false, "ai_teammates": 0})
+	await wait_physics_frames(3)
+	return _rt.mission
+
+
+func _first_net_id(tag: StringName) -> int:
+	for n: Node in _rt.mission.find_tagged(tag):
+		if n.get(&"net_id") != null and n.is_inside_tree():
+			return int(n.get(&"net_id"))
+	return 0
+
+
+func test_stealth_line_on_the_real_map() -> void:
+	if _pending():
+		return
+	var m: HeistMission = await _launch_real()
+	var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	assert_true(lm.bags().filter(func(b: LootBag) -> bool: return b.loot_id == &"loot.cash_bricks").size() >= 4,
+		"the safe's cash bags spawned at safe_loot")
+	assert_true(lm.bags().filter(func(b: LootBag) -> bool: return b.loot_id == &"loot.parcels").size() >= 3,
+		"the product spawned at the active product marker")
+	EventBus.item_picked_up.emit(&"item.gear", 0)
+	EventBus.item_picked_up.emit(&"item.keycard", 0)
+	EventBus.interaction_completed.emit(_first_net_id(&"office_reader"), 0, &"keycard_reader")
+	EventBus.item_picked_up.emit(&"item.code_note", 0)
+	m.call(&"open_safe", &"code")
+	for id: StringName in [&"gear", &"keycard", &"office", &"safe_code", &"safe"]:
+		assert_eq(m.objective_state(id), Enums.ObjectiveState.COMPLETED, "%s done" % id)
+	var secured: int = 0
+	for b: LootBag in lm.bags():
+		if b.loot_id == &"loot.cash_bricks" and secured < 3:
+			lm._secure(b)
+			secured += 1
+	await wait_physics_frames(2)
+	assert_eq(m.objective_state(&"secure"), Enums.ObjectiveState.COMPLETED, "3 bags")
+	assert_eq(m.objective_state(&"escape"), Enums.ObjectiveState.ACTIVE, "stealth: the van is there")
+
+
+func test_loud_on_the_real_map_cuts_the_club_and_locks_down() -> void:
+	if _pending():
+		return
+	var m: HeistMission = await _launch_real()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(3)
+	assert_true(bool(m.get(&"lockdown")), "lockdown")
+	var door: Door = m.find_tagged(&"office_door")[0] as Door
+	assert_true(door.charges_required >= 1, "the office door takes C4 loud")
+	assert_eq(m.objective_state(&"escape_wait"), Enums.ObjectiveState.ACTIVE, "escape_wait")
+	var lights: Node = _rt.map.find_child("ClubLights", true, false)
+	assert_true(lights != null, "C's ClubLights on the map")

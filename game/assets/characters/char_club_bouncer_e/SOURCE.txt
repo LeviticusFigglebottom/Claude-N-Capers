@@ -1,0 +1,20 @@
+asset: char_club_bouncer_e
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.12, "beard_shadow": 0.2, "build": 0.65, "gender": 0.0, "hair": "buzz", "hair_color": "blond", "height": 1.85, "look": "bouncer_e", "skin": 3}
+seed: 2121513980  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_bouncer_e
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0930, 0.1143] (model [0.0000, 1.3511, 0.1335], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0842, -0.0922] (model [0.0000, 1.7315, -0.0797], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2277, 0.0682, 0.0767] (model [0.2277, 1.0569, 0.0800], Godot axes, rest pose)
+body_faces_culled: 4836
+body_params: {"age": 0.12, "beard_shadow": 0.2, "build": 0.65, "gender": 0.0, "hair": "buzz", "hair_color": "blond", "hair_peak": 0.0, "height": 1.85, "lip": "auto", "skin": 3}
+bones: 52
+hip_note: Hip seat = the radio on the belt under the hoodie (right hip); the pager rides there
+look: Velvet bouncer (young): black hoodie, SECURITY across the back, belt radio under it, black trousers, boots, earpiece, a torch clipped at the chest
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 33564
+tris_by_mesh: {"Body": 9072, "Gear": 1482, "Hair": 1200, "Outfit": 21810}

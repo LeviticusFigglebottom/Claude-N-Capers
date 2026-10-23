@@ -64,13 +64,17 @@ FORBIDDEN = {"#4FD1E8"}
 #: ORM materials that also glow: id -> (emission sRGB hex, energy). Style guide §3: emissives may
 #: exceed the albedo saturation cap (the albedo itself stays in the palette rules). ENV A drives
 #: the energy at runtime (Phantom goggles: SpecialTweak.phantom_goggle_energy_idle/charge).
-EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0), "char_prop_ember": ("#FF6A2A", 1.6)}
+EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0), "char_prop_ember": ("#FF6A2A", 1.6),
+            # D-165: white screen-print fluoresces under the club's UV wash, so the door team's back print reads at
+            # 10 m under the magenta / violet floor light
+            "char_club_print": ("#D6D2FF", 0.6)}
 
 
 #: D-116: open long garments (robe, long coats, below the knee) show their inside where they part, a front split
 #: gaping on a seated body or a hem flaring on a stride; drawn single-sided, the far panel vanished there and left only
 #: its folded hem edge floating as a thin strip. These cloths render both faces (cull_mode = 2, CULL_DISABLED).
-DOUBLE_SIDED = {"char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_coat_camel", "char_coat_command",
+DOUBLE_SIDED = {"char_club_coral", "char_club_satin_ivory", "char_club_satin_black",   # D-165 club dresses, skirts
+                "char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_coat_camel", "char_coat_command",
                 # D-116 stride drape: dress and skirt cloths (g.dress, n.skirt). The skirt between the legs folds over
                 # on a stride or squat, and a squat or a seat shows the skirt's inside past the hem: single-sided, both
                 # read as holes (a hem ring floating round the knees)

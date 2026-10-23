@@ -1,0 +1,21 @@
+asset: char_club_bouncer_d
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.75, "beard_shadow": 0.9, "build": 0.95, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.84, "look": "bouncer_d", "skin": 1}
+seed: 158632810  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_bouncer_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0929, 0.1243] (model [0.0000, 1.3438, 0.1434], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0837, -0.0917] (model [0.0000, 1.7222, -0.0793], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2363, 0.0678, 0.0749] (model [0.2363, 1.0512, 0.0782], Godot axes, rest pose)
+body_faces_culled: 4823
+body_params: {"age": 0.75, "beard_shadow": 0.9, "build": 0.95, "gender": 0.0, "hair": "short", "hair_color": "grey", "hair_peak": 0.0, "height": 1.84, "lip": "auto", "skin": 1}
+bones: 52
+faces_hidden_by_coat: 3102
+hip_note: Hip seat = the radio on the belt under the coat (right hip); the pager rides there
+look: Velvet head doorman: older, heavy, grey beard; long black wool coat over a black tee, SECURITY across the back, belt radio, earpiece, gold watch
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 27616
+tris_by_mesh: {"Body": 9098, "Gear": 1674, "Hair": 1728, "Outfit": 15116}

@@ -15,5 +15,5 @@ look: Club patron: sleeveless magenta knit top, wide black trousers, heels, high
 meshes: Body,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26380
-tris_by_mesh: {"Body": 11776, "Hair": 1856, "Headwear": 1584, "Outfit": 11164}
+tris: 26700
+tris_by_mesh: {"Body": 11776, "Hair": 1856, "Headwear": 1584, "Outfit": 11484}

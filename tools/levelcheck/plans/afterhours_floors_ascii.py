@@ -94,7 +94,8 @@ OPENINGS: List[Opening] = [
     Opening("G", "d_backstage", 13, 7, "x", PERSONNEL, True, "stage backstage door"),
     Opening("G", "o_g20_g13", 27, 7, "x", 2.0, True, "open corridor"),
     # the hall and the east wing
-    Opening("G", "fx_hall_n", 0, 8, "z", DOUBLE, True, "fire exit, the passage"),
+    Opening("G", "fx_hall_n", 0, 8.3, "z", DOUBLE, True, "fire exit, the passage (doc (0, 8); 8.3 keeps the 2.0 m "
+            "door hole clear of the 0.4 m hall wall at z 7)"),
     Opening("G", "fx_hall_s", 0, 19, "z", DOUBLE, True, "fire exit, the passage"),
     Opening("G", "d_east_bar", 26, 11, "z", PERSONNEL, True, "east bar service door"),
     Opening("G", "d_g23", 28, 10, "z", PERSONNEL, True),
@@ -112,7 +113,8 @@ OPENINGS: List[Opening] = [
     Opening("G", "dd_main_w", 15, 28, "x", DOUBLE, True, "entrance, Marlin Ave"),
     Opening("G", "dd_main_e", 18, 28, "x", DOUBLE, True, "entrance, Marlin Ave"),
     # Balcony
-    Opening("U", "w_u10_roof", 30, 7, "x", 2.0, False, "count-room window onto the BOH roof (open_window)"),
+    Opening("G", "h_cloak", 22, 25.5, "z", 2.0, False, "the cloakroom hatch over the counter (gear_cloak, from G1)"),
+    Opening("U", "w_u10_roof", 30, 7, "x", 1.2, False, "count-room window onto the BOH roof (open_window)"),
     Opening("U", "d_u10", 30, 14, "x", PERSONNEL, True), Opening("U", "d_u7", 34, 14, "x", PERSONNEL, True),
     Opening("U", "o_u6_u6b", 27, 16, "x", 2.0, True, "the L corridor"),
     Opening("U", "d_vip_staff", 26, 18, "z", PERSONNEL, True, "VIP staff door, LOCKPICK"),

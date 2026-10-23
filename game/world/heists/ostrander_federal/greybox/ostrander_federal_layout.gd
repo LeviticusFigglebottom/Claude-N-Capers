@@ -707,16 +707,16 @@ const VISUALS: Array = [
 	["Meridian", [23.95, 0.002, 17.5], [24.05, 0.006, 31.9], "trim"],
 	["AreawayGrate", [29.97, 0.002, -1.6], [30.63, 0.006, -0.4], "trim"],
 ]
-## Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 walkable, 4 vent): the street islands'
-## one-way links, P5's rappels, the lantern rappel, the areaway vent.
+## Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 walkable, 2 police-only rappels, 4 vent):
+## the street islands' one-way links, P5's rappels, the lantern rappel, the areaway vent.
 const NAV_LINKS: Array = [
 	["IslandLinkP1", [-18.0, -0.75, 60.0], [-14.6, -0.75, 60.0], false, 1],
 	["IslandLinkP2", [68.0, -0.75, 55.0], [64.6, -0.75, 55.0], false, 1],
 	["IslandLinkP3", [-18.0, 0.0, -5.0], [-14.6, 0.0, -5.0], false, 1],
 	["IslandLinkP4", [55.0, 0.0, -16.0], [55.0, 0.0, -12.6], false, 1],
-	["RappelSetbackRoof", [-1.2, 16.0, 14.0], [1.6, 12.2, 14.0], false, 1],
-	["RappelSetbackTerrace", [-1.2, 16.0, 20.0], [1.6, 8.6, 20.0], false, 1],
-	["RappelLantern", [13.3, 8.6, 26.0], [16.0, 0.0, 26.0], false, 1],
+	["RappelSetbackRoof", [-1.2, 16.0, 14.0], [1.6, 12.2, 14.0], false, 2],
+	["RappelSetbackTerrace", [-1.2, 16.0, 20.0], [1.6, 8.6, 20.0], false, 2],
+	["RappelLantern", [13.3, 8.6, 26.0], [16.0, 0.0, 26.0], false, 2],
 	["AreawayVent", [30.0, 0.0, -1.6], [30.0, -4.0, 3.5], true, 4],
 ]
 ## PO6-17 breaches (assault_markers.gd rows): [name, kind, scene id, room-side face pos, yaw, size, room, depth(, door: the

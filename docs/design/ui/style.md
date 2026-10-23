@@ -23,7 +23,7 @@ confident and sparse. The 3D world and the art-directed heist lighting (GSR) car
 frames it and stays out of the way.
 
 Rules of thumb:
-1. **One primary action per screen**, brass, bottom right. Back is bottom left, ghost style.
+1. **One primary action per screen**, brass, bottom right. Back is bottom left, a panelled Button (`UiBuild.back`, LEAD r304: a ghost read faint over 3D / photo backdrops).
 2. **Labels are captions, values are body.** "SECONDARY" (caption caps, dim) above "Kestrel P9"
    (body, paper). Never "Secondary: Kestrel P9" in one string when a layout can split it.
 3. **Show less.** Default to what a player needs now; details on focus / hover or a second level.
@@ -40,7 +40,7 @@ Rules of thumb:
   * **Header band** (top, 120): caption breadcrumb (`SAFEHOUSE / PLANNING`) over an H1 title; right
     side: the player's money / level as caption + value pairs.
   * **Body**: 8 columns of content + 4 columns of context (details of the focused item).
-  * **Footer band** (bottom, 72): Back (ghost) left, a control-hint strip centre
+  * **Footer band** (bottom, 72): Back (panelled, `UiBuild.back`) left, a control-hint strip centre
     (`[Esc] Back  [Enter] Select`), primary action right.
 * Minimum text size: 21 units (14 px at 720p), from PQ-B-14.
 

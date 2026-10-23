@@ -542,6 +542,9 @@ def always() -> Dict[str, List[list]]:
                     "travel_s": 8.0,
                     "capacity": 2,
                     "door_fold": True,
+                    # A 451c8bff (RT-A6): one send button per other landing on a 3-landing lift
+                    "send_prompt_keys": ["ui.prompt.send_lift_ground", "ui.prompt.send_lift_deck2",
+                                         "ui.prompt.send_lift_roof"],
                     "car_size_m": [2.6, 2.4, 2.7],   # = the car (P r278: thrown bags rest at the shaft's walls)
                     "objective_tag": "goods_lift",
                     "@landings": [["GoodsLiftLanding2", [0.0, 3.5, 0.0]], ["GoodsLiftLandingR", [0.0, 7.0, 0.0]]],

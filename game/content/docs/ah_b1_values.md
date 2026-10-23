@@ -88,19 +88,32 @@ work is needed.** Favors 5.
 ## 6. Cast tag rows (A / D own `npc_visual_tweak.tres`; proposed `heist_tag_characters[&"afterhours"]`)
 
 ```
-&"guard_door": [&"club_bouncer"]          &"guard_rope": [&"club_bouncer_b"]
-&"guard_floor": [&"club_bouncer"]         &"guard_upper": [&"club_bouncer"]
-&"guard_boh": [&"club_bouncer_b"]         &"guard_alley": [&"club_bouncer_b"]
-&"civ_bar_main": [&"club_bartender", &"club_bartender_b"]
-&"civ_bar_east": [&"club_bartender"]      &"civ_bar_vip": [&"club_bartender_b"]
-&"civ_box_office": [&"club_bartender_b"]  &"civ_count": [&"club_bartender"]
+# D batch 1 (env/d-art 9dad4f12): 6 bouncer looks (b = woman / bun, d = older head doorman, e = young / hoodie,
+# f = polo + glasses: the camera-operator type), 4 bartender looks.
+&"guard_door": [&"club_bouncer_d", &"club_bouncer"]   &"guard_rope": [&"club_bouncer_b", &"club_bouncer_c"]
+&"guard_floor": [&"club_bouncer", &"club_bouncer_e"]  &"guard_upper": [&"club_bouncer_c", &"club_bouncer"]
+&"guard_boh": [&"club_bouncer_e", &"club_bouncer_b"]  &"guard_alley": [&"club_bouncer_e", &"club_bouncer_b"]
+&"guard_camera": [&"club_bouncer_f"]
+&"civ_bar_main": [&"club_bartender", &"club_bartender_b", &"club_bartender_c"]
+&"civ_bar_east": [&"club_bartender_c", &"club_bartender"]   &"civ_bar_vip": [&"club_bartender_d"]
+&"civ_box_office": [&"club_bartender_b"]  &"civ_count": [&"club_bartender_d"]
 &"civ_dj_stage": [&"club_dj"]             &"civ_dj_green": [&"club_dj"]
-&"civ_patron": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d"]
-&"civ_dancer": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d"]
-&"civ_offduty": [&"frd_agent"]
+# D batch 2 (b4f08e3a): 12 patron looks, a-l.
+&"civ_patron": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d", &"club_patron_e",
+	&"club_patron_f", &"club_patron_g", &"club_patron_h", &"club_patron_i", &"club_patron_j", &"club_patron_k",
+	&"club_patron_l"]
+# D batch 3 (21dfc4fe): the dance-floor pool, 12 looks a-l (dance_a/b/c checked for clipping).
+&"civ_dancer": [&"club_dancer", &"club_dancer_b", &"club_dancer_c", &"club_dancer_d", &"club_dancer_e",
+	&"club_dancer_f", &"club_dancer_g", &"club_dancer_h", &"club_dancer_i", &"club_dancer_j", &"club_dancer_k",
+	&"club_dancer_l"]
+# D 4eb0336a (p5_cast v16): the rare-event cast.
+&"civ_offduty": [&"club_offduty_cop"]     # off_duty_cop (plain clothes; replaces frd_agent's raid-jacket read)
+&"civ_vip": [&"club_vip", &"club_vip_b", &"club_vip_c", &"club_vip_d", &"club_vip_e", &"club_vip_f"]  # vip_party +6
+&"cartel_courier": [&"cartel_gunman", &"cartel_gunman_c", &"cartel_gunman_d", &"cartel_gunman_e", &"cartel_gunman_h",
+	&"cartel_gunman_i", &"cartel_gunman_j", &"cartel_gunman_k", &"cartel_gunman_l"]  # co_op_pickup (no face-covered looks)
 ```
-These are the doc's roster (D's `p5_cast.json` roles). The camera operator uses the CAMERA_OPERATOR spawn's own
-look (`club_bouncer_b`). B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
+These are the doc's roster (D's `p5_cast.json` roles). The camera operator uses `club_bouncer_f` (the tag name `guard_camera` is a proposal: A / D pick the real
+CAMERA_OPERATOR tag). `civ_vip` is a proposed tag name for vip_party's VIP patrons (C picks the real one). B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
 
 ## 7. Strings (new rows; written when the gate opens)
 

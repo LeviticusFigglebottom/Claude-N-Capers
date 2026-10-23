@@ -21,7 +21,15 @@
 ##    meshes (Wrecker `Faceplate` / `Visor` / `HeadArmored`) come through as they are.
 ##    Prop assets (CharacterSpec.PROP_SCENES: the Bulwark shields) become `Shield` AnimatableBody3D
 ##    scenes with `Collision` + `Visual` (see _assemble_prop).
-## 4. Writes world/characters/characters.json (the index ENV A and the tests read); D2-01 faction
+## 4. D-132 D1 (char_layers.gd): characters with a CrowdLod (minus world/characters/_layers/d1_exclude.json "ids", the
+##    per-character fallback; only its "only" ids when listed, D-165: the Afterhours looks) get each mesh node's plain
+##    surfaces merged into one surface per texture tier, saved as world/characters/<id>/<id>_<Node>.res and set as
+##    that node's mesh (node meta `source_materials` = the original material paths). Run build_char_layers.gd and
+##    `godot --import` first (its header has the order); the LOD2 mesh is built from the glb surfaces before the
+##    merge. Fallback (per character): add its id to world/characters/_layers/d1_exclude.json {"ids": [...]}, run
+##    build_char_layers.gd, `godot --import` and this script: the character gets its glb meshes and materials back
+##    (its <id>_<Node>.res files are removed). test_d1_layers.gd checks both states.
+## 5. Writes world/characters/characters.json (the index ENV A and the tests read); D2-01 faction
 ##    variants get `variant_of` + `variant` fields (from SOURCE.txt).
 ##
 ## Deterministic: sorted iteration, fixed sub-resource / ext-resource ids and path-derived uids, so
@@ -31,11 +39,15 @@ extends SceneTree
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 const RagdollBuilder: GDScript = preload("res://world/characters/_tools/ragdoll_builder.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 
 var _errors: int = 0
 ## Override with `-- --anim-glb=res://...` (testing the conversion against another glb).
 var _anim_glb: String = Spec.ANIM_GLB
 var _hand_sockets: Dictionary = {}
+var _layer_index: Dictionary = {}
+var _d1_excluded: Array[String] = []
+var _d1_only: Array[String] = []
 
 
 func _initialize() -> void:
@@ -45,6 +57,9 @@ func _initialize() -> void:
 	var hands: Array = Spec.hand_sockets()
 	_hand_sockets = hands[0]
 	print("assemble_characters: hand sockets from %s" % hands[1])
+	_layer_index = Layers.read_index()
+	_d1_excluded = Layers.excluded_ids()
+	_d1_only = Layers.only_ids()
 	var lib: AnimationLibrary = _build_library()
 	var entries: Array[Dictionary] = []
 	var props: Array[Dictionary] = []
@@ -254,7 +269,8 @@ func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> b
 	_add_extra_markers(skel, source, asset_id)
 	_apply_overrides(skel, source, asset_id, scene_path)
 	_apply_headwear_class(skel, source, asset_id)
-	_add_crowd_lod(skel, source, asset_id, scene_path)
+	var switch_m: float = _add_crowd_lod(skel, source, asset_id, scene_path)
+	_merge_layers(skel, asset_id, scene_path, switch_m)
 	_add_ragdoll(skel, asset_id)
 	var player: AnimationPlayer = AnimationPlayer.new()
 	player.name = "AnimationPlayer"
@@ -472,7 +488,8 @@ func _apply_overrides(skel: Skeleton3D, source: Dictionary, asset_id: String, sc
 ## D4-01: LOD2 (CrowdLod.gd): `Skeleton3D/CrowdLod`, one merged skinned surface saved as <scene>_lod.res,
 ## visible from the switch distance on; the glb meshes get the matching visibility_range_end. LOD1 is
 ## Godot's automatic mesh LOD (import option), so the existing nodes keep their paths and meshes.
-func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scene_path: String) -> void:
+## Returns the switch distance (0.0 = no LOD2).
+func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scene_path: String) -> float:
 	var meshes: Array[MeshInstance3D] = CrowdLod.source_meshes(skel)
 	var names: Array[String] = []
 	for mi: MeshInstance3D in meshes:
@@ -482,13 +499,13 @@ func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scen
 	if switch_m <= 0.0 or meshes.is_empty():
 		if FileAccess.file_exists(mesh_path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(mesh_path))
-		return
+		return 0.0
 	var mesh: ArrayMesh = CrowdLod.build_mesh(meshes)
 	if mesh == null:
 		_error("%s: no surface qualifies for the LOD2 mesh" % asset_id)
-		return
+		return 0.0
 	if not _save(mesh, mesh_path):
-		return
+		return 0.0
 	var saved: Mesh = ResourceLoader.load(mesh_path, "", ResourceLoader.CACHE_MODE_REPLACE) as Mesh
 	saved.set_id_for_path(scene_path, "3_lod")
 	var skin: Skin = meshes[0].skin.duplicate() if meshes[0].skin != null else null
@@ -498,7 +515,9 @@ func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scen
 		mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	var lod: MeshInstance3D = MeshInstance3D.new()
 	lod.name = CrowdLod.NODE_NAME
-	lod.set_script(load("res://world/characters/_tools/crowd_lod_proxy.gd"))
+	var proxy_script: Script = load("res://world/characters/_tools/crowd_lod_proxy.gd") as Script
+	proxy_script.set_id_for_path(scene_path, "3_proxy")   # a fixed ext-resource id (else random per run)
+	lod.set_script(proxy_script)
 	lod.mesh = saved
 	if skin != null:
 		skin.resource_path = ""
@@ -511,6 +530,38 @@ func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scen
 	lod.add_to_group(CrowdLod.GROUP, true)
 	skel.add_child(lod)
 	lod.skeleton = NodePath("..")
+	return switch_m
+
+
+## D-132 D1 (char_layers.gd): each mesh node's plain surfaces merged per texture tier into
+## <scene dir>/<id>_<Node>.res, set as the node's mesh, with meta `source_materials`. Not merged (no CrowdLod, or
+## listed in d1_exclude.json): stale merged meshes are removed and the glb meshes stay.
+func _merge_layers(skel: Skeleton3D, asset_id: String, scene_path: String, switch_m: float) -> void:
+	var merge: bool = Layers.is_merged(Spec.character_id(asset_id), switch_m, _d1_excluded, _d1_only)
+	if merge and _layer_index.is_empty():
+		_error("%s: %s missing (run build_char_layers.gd and godot --import first)" % [asset_id, Layers.INDEX_PATH])
+		merge = false
+	for mi: MeshInstance3D in CrowdLod.source_meshes(skel):
+		var mesh_path: String = "%s_%s.res" % [scene_path.get_basename(), mi.name]
+		var merged: ArrayMesh = null
+		if merge:
+			var errors: Array[String] = []
+			merged = Layers.merge_mesh(mi, _layer_index, errors)
+			for msg: String in errors:
+				_error("%s: %s" % [asset_id, msg])
+		if merged == null:
+			if FileAccess.file_exists(mesh_path):
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(mesh_path))
+			continue
+		var paths: Array[String] = []
+		for si: int in range(mi.mesh.get_surface_count()):
+			paths.append(Layers.surface_material(mi, si).resource_path)
+		if not _save(merged, mesh_path):
+			continue
+		var saved: Mesh = ResourceLoader.load(mesh_path, "", ResourceLoader.CACHE_MODE_REPLACE) as Mesh
+		saved.set_id_for_path(scene_path, "4_%s" % mi.name)
+		mi.mesh = saved
+		mi.set_meta(Layers.META_SOURCE, paths)
 
 
 ## PO6-19: the inactive physical-bones ragdoll `Skeleton3D/Ragdoll` (ragdoll_builder.gd, RAGDOLL.md).

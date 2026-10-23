@@ -10,6 +10,8 @@ const ROOF_Y: float = 6.0
 const ROOF_GOAL: Vector3 = Vector3(0, ROOF_Y, -6)
 const FLOOR_GOAL: Vector3 = Vector3(6, 0, 6)
 const HOLE_TAG: StringName = &"hole"
+## Rappel links are on the breach layer (88c955bc): query the way police / specials do.
+const POLICE_LAYERS: int = 1 | Door.NAV_LAYER_BREACH
 
 var _rt: HeistRuntime = null
 
@@ -157,12 +159,12 @@ func test_runtime_rappel_link_opens_the_path() -> void:
 		return
 	assert_false(link.enabled, "TAG_START_DISABLED: built disabled")
 	var nav_map: RID = _rt.get_viewport().world_3d.navigation_map
-	var off: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, ROOF_GOAL, FLOOR_GOAL, true, 1)
+	var off: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, ROOF_GOAL, FLOOR_GOAL, true, POLICE_LAYERS)
 	assert_true(off.size() >= 1 and off[off.size() - 1].y > ROOF_Y - 0.5, "no way off the roof while disabled")
 	assert_eq(RappelLinks.set_enabled(_rt.map, HOLE_TAG, true), 1, "one link enabled")
 	assert_true(link.enabled, "enabled")
 	await wait_physics_frames(1)  # D-121: sync navigation commits at the end of this physics frame
-	var on: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, ROOF_GOAL, FLOOR_GOAL, true, 1)
+	var on: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, ROOF_GOAL, FLOOR_GOAL, true, POLICE_LAYERS)
 	assert_true(on.size() >= 2 and on[on.size() - 1].distance_to(FLOOR_GOAL) < 0.3,
 		"the rappel link opens the path down (ends at %s)" % (on[on.size() - 1] if not on.is_empty() else Vector3.INF))
 	assert_eq(RappelLinks.set_enabled(_rt.map, HOLE_TAG, true), 0, "idempotent")
