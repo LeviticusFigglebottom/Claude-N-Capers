@@ -32,6 +32,8 @@ const OUT_DIRS: Dictionary = {
 	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
 	"rt_street_swaps": "res://assets/characters/_review/rt_d1_cast/",
 	"rt_street": "res://assets/characters/_review/rt_g3_cast/",
+	"gn_staff": "res://assets/characters/_review/gn_g3_cast/",
+	"gn_patrons": "res://assets/characters/_review/gn_g3_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
 	"d145_factions": "res://assets/characters/_review/d145_police/",
@@ -119,6 +121,16 @@ const POOLS: Dictionary = {
 	"rt_street_swaps": [
 		"char_street_pedestrian", "char_street_pedestrian_g", "char_street_pedestrian_b", "char_street_pedestrian_h",
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
+	],
+	# GN-G3: the gallery staff, the guards and the gala guests (written to _review/gn_g3_cast/)
+	"gn_staff": [
+		"char_gallery_curator", "char_gallery_admin", "char_gallery_conservator", "char_gallery_attendant",
+		"char_gallery_attendant_b", "char_gallery_attendant_c", "char_gallery_waiter", "char_gallery_waiter_b",
+	],
+	"gn_patrons": [
+		"char_gallery_patron", "char_gallery_patron_b", "char_gallery_patron_c", "char_gallery_patron_d",
+		"char_gallery_patron_e", "char_gallery_patron_f", "char_gallery_patron_g", "char_gallery_patron_h",
+		"char_gallery_patron_i", "char_gallery_patron_j",
 	],
 	# RT-G3 street polish: the nine street pedestrians and the car-park attendant
 	"rt_street": [

@@ -42,7 +42,6 @@ import _contact_gear as cg
 import _gear_kit as gk
 import _npc as n
 import _outfit as o
-import _outfit_garments as g
 from _outfit import Hull, Vector
 from _outfit_build import Kit, build_character
 
@@ -110,20 +109,6 @@ def _teller_g3(kit: Kit, tag_x: float, pin: bool = True) -> None:
     n.watch(kit, "L", strap="char_metal_silver", case="chrome")
 
 
-def _glasses_cord(kit: Kit) -> None:
-    """A thin cord from the glasses' temple tips round behind the neck (teller_b)."""
-    fit, k = kit.fit, kit.k
-    eye = fit.eye_centre()
-    nk = g.Neck(fit)
-    m = o.Mesh()
-    left, right = (Vector((sx * 0.072 * k, eye.y - 0.075 * k, eye.z - 0.004 * k)) for sx in (-1.0, 1.0))
-    # Neck angles: 0 = front, -pi/2 = the -x side, pi = behind; the cord dips round the back of the neck
-    arc = [nk.point(a * math.pi, 0.6, 0.012 * k) for a in (-0.55, -0.75, 1.0, 0.75, 0.55)]
-    path = [left] + arc + [right]
-    o.tube(m, path, 0.0012 * k, "brass", sides=4)
-    kit.add_gear(m)
-
-
 def _pencil_in_bun(kit: Kit) -> None:
     """A yellow pencil pushed through the bun (teller_d)."""
     fit, k = kit.fit, kit.k
@@ -162,7 +147,7 @@ def teller_b(kit: Kit) -> None:
     kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.09 * k, 0.2, 1.33 * k)), k=k))
     kit.add_head(gk.glasses(kit.fit, "char_metal_silver"))
     _teller_g3(kit, -0.09)
-    _glasses_cord(kit)
+    n.glasses_cord(kit)
 
 
 def teller_c(kit: Kit) -> None:

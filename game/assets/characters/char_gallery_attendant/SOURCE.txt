@@ -16,5 +16,5 @@ look: Gallery attendant: white band-collar shirt, black waistcoat with gold butt
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26200
-tris_by_mesh: {"Body": 7300, "Gear": 884, "Hair": 1728, "Outfit": 16288}
+tris: 26542
+tris_by_mesh: {"Body": 7300, "Gear": 1226, "Hair": 1728, "Outfit": 16288}

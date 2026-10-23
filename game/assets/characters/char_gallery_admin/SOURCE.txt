@@ -16,5 +16,5 @@ look: Admin PA (development office): teal knit cardigan over a pale-blue shirt, 
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26982
-tris_by_mesh: {"Body": 9198, "Gear": 548, "Hair": 2088, "Headwear": 498, "Outfit": 14650}
+tris: 27330
+tris_by_mesh: {"Body": 9198, "Gear": 896, "Hair": 2088, "Headwear": 498, "Outfit": 14650}

@@ -16,5 +16,5 @@ look: Drawings-cabinet attendant (man, about 50): grey knit cardigan over a whit
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25156
-tris_by_mesh: {"Body": 7272, "Gear": 552, "Hair": 580, "Outfit": 16752}
+tris: 25498
+tris_by_mesh: {"Body": 7272, "Gear": 894, "Hair": 580, "Outfit": 16752}
