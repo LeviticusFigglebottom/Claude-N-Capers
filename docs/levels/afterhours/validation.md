@@ -122,7 +122,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1078 polygons, cell 0.10/0.10 m
+- navmesh: 1075 polygons, cell 0.10/0.10 m
 - 228 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
