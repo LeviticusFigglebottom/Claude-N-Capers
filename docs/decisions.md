@@ -1710,3 +1710,19 @@ Ruling, both parts:
 - **Harness (A):** once the required loot is secured, the pilot targets an active captain. This tests the human answer too.
 - Re-run seeds 1 and 4242 on loud Hazardous with both parts. The other Hazardous losses (2 and 7: wave-1 wipes; 6501:
   old-map parcels) are bot skill, read the same as RT. Re-run 6501 on the fixed map. Routine and stealth are already PASS.
+
+## D-167: police cuffing on Hazardous+: who cuffs, and when solo fails (2026-10-23, LEAD; P AH Hazardous read #3)
+P's done-check read (env/p-play b81fb51a9, AH Hazardous, A's taser fix in): the specials are no longer the cause. The run
+ended when a **Wrecker** cuffed the downed pilot seconds after its FIRST down (1/4), and the solo heist failed at once.
+Rulings (L2.12 / D-108 / D-145 stand otherwise):
+1. **Only regular police cuff.** Specials (Wrecker, Bulwark, Phantom, Stinger, Corpsman, Longshot) and Brandt/Aegis never
+   start a police cuff; they fight. PD2's dozers and specials do not arrest (◇ where no source). A: a tested filter in the
+   cuff-start check.
+2. **Cuffed is not custody.** Per L2.12 a police-cuffed heister stays down with the bleed-out running; a teammate (bot
+   included) uncuffs back to DOWNED. Custody comes only when the bleed-out ends. The solo "all humans in custody" fail must
+   count custody, not cuffed. A: verify the fail check and the bots' uncuff path, with a test (solo human cuffed + bot alive
+   → no fail until the bleed-out ends; a bot uncuffs).
+3. **Solo custody = fail stays** (PD2 offline: no trade without another human).
+4. Bot cuffer targeting: the D-158.7 levers measured worse on RT and stay off. Re-measure them only after 1 and 2; no change
+   now.
+P re-reads AH Hazardous (#4) after A's fix; that read is the done-check read.
