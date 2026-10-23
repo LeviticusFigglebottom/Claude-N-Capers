@@ -22,7 +22,13 @@ For A, the mission says these ids:
 
 Fix: `ammo_panel` built `"ui.hud.perk_item." + kind` literally, and test_ui_strings read it as a missing key. It is now ITEM_KEY_FMT.
 
-Achievement proposal (all on existing condition fields):
+**Built (LEAD r299 pick, AH-B1):**
+- the 5 picked (no_witnesses, closing_time, bottle_service, just_looking, cataclysm), plus ah_dead_air (stealth, max_pagers 0), because test_heist_achievements enforces the r244 6-8 parity rule. Full Count is dropped.
+- Category "afterhours"; orders 790-795.
+- Rewards are unclaimed, non-default mask bases: pierrot, doll, moth, jester, sunburst, serpent. They can be swapped for D parts if D makes club ones.
+- just_looking no longer needs max_pagers, so it doesn't overlap dead_air.
+
+The original proposal follows (all on existing condition fields):
 | id | name | condition |
 |---|---|---|
 | ah_no_witnesses | Nobody Saw a Thing | `heist afterhours`, `stealth`, `max_kills 0`, `max_civilian_kills 0` (stealth no-kill) |

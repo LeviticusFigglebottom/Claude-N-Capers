@@ -28,7 +28,8 @@ const EVENTS: Array[StringName] = [HEIST_COMPLETED, HEIST_FAILED, STASH_EARNED, 
 ## Screen categories, in display order (strings `ui.achievements.category.<id>`).
 ## D-115: one category per heist (id = heist id) after the general heist list.
 const CATEGORIES: Array[StringName] = [&"career", &"heists", &"glasshouse", &"night_deposit", &"shadow_ledger",
-	&"dockside_burn", &"gallery_night", &"ostrander_federal", &"rolling_thunder", &"stealth", &"loud", &"combat", &"wealth", &"notoriety"]
+	&"dockside_burn", &"gallery_night", &"ostrander_federal", &"rolling_thunder",
+	&"afterhours", &"stealth", &"loud", &"combat", &"wealth", &"notoriety"]
 
 
 ## Every def in display order (order, then id).

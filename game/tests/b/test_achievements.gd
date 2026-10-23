@@ -25,8 +25,9 @@ func after_all() -> void:
 func test_data_is_complete() -> void:
 	var defs: Array[AchievementDef] = Achievements.all()
 	# B7-02 set of about 40, plus D-111's unlock achievements (Deep Water, Main Event, Private Viewing, The Planner,
-	# Wheelman), plus the per-heist sets (D-115's 28, OF-B1's 6 for Ostrander Federal, LEAD r244's 6 parity additions).
-	assert_true(defs.size() >= 80 and defs.size() <= 95, "about 40 (B7-02) + D-111 + 40 per-heist: %d" % defs.size())
+	# Wheelman), plus the per-heist sets (D-115's 28, OF-B1's 6 for Ostrander Federal, LEAD r244's 6 parity additions,
+	# RT-B1's 6, AH-B1's 6).
+	assert_true(defs.size() >= 80 and defs.size() <= 105, "about 40 (B7-02) + D-111 + 40 per-heist: %d" % defs.size())
 	var strings: Dictionary = StringTable.parse_csv()
 	for a: AchievementDef in defs:
 		assert_true(String(a.id).begins_with("achievement."), String(a.id))

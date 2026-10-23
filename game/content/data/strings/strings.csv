@@ -3087,6 +3087,19 @@ achievement.rt_quick.name,Green Light
 achievement.rt_quick.desc,"Clear Rolling Thunder in under 15 minutes."
 achievement.rt_cataclysm.name,End of the Line
 achievement.rt_cataclysm.desc,"Clear Rolling Thunder on Cataclysm."
+ui.achievements.category.afterhours,Afterhours
+achievement.ah_no_witnesses.name,Nobody Saw a Thing
+achievement.ah_no_witnesses.desc,Clear Afterhours in stealth without killing anyone.
+achievement.ah_dead_air.name,Dead Air
+achievement.ah_dead_air.desc,Clear Afterhours in stealth without answering a pager.
+achievement.ah_just_looking.name,Just Looking
+achievement.ah_just_looking.desc,Clear Afterhours in stealth after casing the club as a guest and opening the safe with its combination.
+achievement.ah_bottle_service.name,Bottle Service
+achievement.ah_bottle_service.desc,Clear Afterhours with at least 3 bags of the Co-op's product and the count room's cash.
+achievement.ah_closing_time.name,Closing Time
+achievement.ah_closing_time.desc,Clear Afterhours loud in under 12 minutes.
+achievement.ah_cataclysm.name,Last Dance
+achievement.ah_cataclysm.desc,Clear Afterhours on Cataclysm.
 ui.briefing.step.rolling_thunder.setup,"Rig the junction signals, and raid the site stores if there is time"
 ui.briefing.step.rolling_thunder.trucks,Open the trucks and bag the cargo
 ui.briefing.sec.event.rolling_thunder.marshal_early,the route marshal is early and walks two checks
