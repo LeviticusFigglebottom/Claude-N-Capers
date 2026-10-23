@@ -193,6 +193,15 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 		", open moves %d" % _open_moves if _open else ""])
 
 
+## Total damage logged on the pilot's slot so far (_on_blown_hit's rows "<attacker>|slot N").
+func _pilot_damage() -> float:
+	var sum: float = 0.0
+	for k: String in _hits:
+		if k.ends_with("|slot %d" % pilot.crew.slot):
+			sum += float(_hits[k]["dmg"])
+	return sum
+
+
 ## Enemies (alive) within `r` of the crew.
 func _enemies_within(r: float) -> Array[NpcBase]:
 	var out: Array[NpcBase] = []
@@ -291,19 +300,20 @@ func _dk_veil() -> bool:
 	# Measure under fire: wait until the pilot is actually being hit (armor down), not just enemies near; the
 	# before / inside windows are VEIL_WINDOW_S each (8 s was too short to see a hit at Hazardous).
 	await _fight(180.0, func() -> bool: return pilot.crew.health.armor < pilot.crew.health.max_armor - 1.0)
-	var h0: float = _health() + pilot.crew.health.armor
+	# Damage taken from the hit log (armor regen hides it in a health + armor delta).
+	var d0: float = _pilot_damage()
 	var t0: float = rt.heist_time_s
 	await _fight(VEIL_WINDOW_S)
-	var out_dps: float = maxf(h0 - (_health() + pilot.crew.health.armor), 0.0) / maxf(rt.heist_time_s - t0, 0.1)
+	var out_dps: float = (_pilot_damage() - d0) / maxf(rt.heist_time_s - t0, 0.1)
 	await pilot.face(pilot.crew.global_position + pilot.crew.global_transform.basis.z * -1.5 + Vector3.DOWN * 1.2, 0.05, 1.5)
 	await _use_deck_item()
 	await wait_s(1.5)
 	var in_cloud: bool = SmokeZones.in_smoke(pilot.crew)
 	await shot("veil_in_cloud")
-	var h1: float = _health() + pilot.crew.health.armor
+	var d1: float = _pilot_damage()
 	var t1: float = rt.heist_time_s
 	await _fight(VEIL_WINDOW_S)
-	var in_dps: float = maxf(h1 - (_health() + pilot.crew.health.armor), 0.0) / maxf(rt.heist_time_s - t1, 0.1)
+	var in_dps: float = (_pilot_damage() - d1) / maxf(rt.heist_time_s - t1, 0.1)
 	_row("smoke at the feet: in the cloud", "PASS" if in_cloud else "FAIL", "in smoke %s, damage/s before %.1f, inside %.1f" % [
 		in_cloud, out_dps, in_dps], "A PerkSicario / SmokeZones")
 	_danger_rows("veil")
