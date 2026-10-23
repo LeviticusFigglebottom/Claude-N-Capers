@@ -17,5 +17,5 @@ look: Halden night-shift guard: steel-blue shirt + charcoal tie under a charcoal
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31567
-tris_by_mesh: {"Body": 8940, "Gear": 2140, "Hair": 1728, "Outfit": 18759}
+tris: 31951
+tris_by_mesh: {"Body": 8940, "Gear": 2524, "Hair": 1728, "Outfit": 18759}
