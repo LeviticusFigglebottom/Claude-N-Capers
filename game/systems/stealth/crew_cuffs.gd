@@ -31,6 +31,8 @@ var cooldown_left: float = 0.0
 var cuffed_by_net_id: int = 0
 ## State the crew member returns to when freed (NORMAL; DOWNED after a police cuff, L2.12).
 var restore_state: Enums.CrewState = Enums.CrewState.NORMAL
+## D-108 (LEAD r310): seconds since a teammate uncuffed this downed crew member (INF = never); restarts the cuff grace.
+var since_uncuff_s: float = INF
 
 var _crew: CrewController = null
 var _uncuff: InteractableComponent = null
@@ -74,7 +76,8 @@ static func can_police_cuff(crew: CrewController) -> bool:
 static func down_quiet_s(crew: CrewController) -> float:
 	var down: float = crew.health.down_s if crew.health != null else INF
 	var shot: float = crew.weapons.last_shot_age if crew.weapons != null else INF
-	return minf(down, shot)
+	var c: CrewCuffs = of(crew)
+	return minf(minf(down, shot), c.since_uncuff_s if c != null else INF)  # r310: an uncuff restarts the grace
 
 
 func _ready() -> void:
@@ -144,7 +147,11 @@ func free_crew(by_slot: int = -1) -> void:
 	_crew.set_crew_state(back)
 	freed.emit(by_slot)
 	_emit(&"crew_uncuffed", [_crew.slot, by_slot])
-	Log.info(&"stealth", "slot %d freed from cuffs (by %d)" % [_crew.slot, by_slot])
+	if back == Enums.CrewState.DOWNED:  # LEAD r309 (P AH #4): next to the "(downed) cuffed by police" line, same channel
+		since_uncuff_s = 0.0  # D-108 (r310): a fresh police_cuff_grace_s before a cop may start again
+		Log.info(&"combat", "slot %d (downed) uncuffed by slot %d" % [_crew.slot, by_slot])
+	else:
+		Log.info(&"stealth", "slot %d freed from cuffs (by %d)" % [_crew.slot, by_slot])
 
 
 func _physics_process(delta: float) -> void:
@@ -152,6 +159,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if cooldown_left > 0.0:
 		cooldown_left = maxf(cooldown_left - delta, 0.0)
+	since_uncuff_s += delta
 	if not is_cuffed():
 		return
 	cuffed_left -= delta
@@ -175,6 +183,7 @@ func _on_crew_state_changed(old_state: int, new_state: int) -> void:
 		restore_state = Enums.CrewState.NORMAL
 		if Net.is_authority():
 			_emit(&"crew_uncuffed", [_crew.slot, -1])
+			Log.info(&"combat", "slot %d cuffs ended by %s" % [_crew.slot, Enums.CrewState.keys()[new_state]])
 
 
 func _uncuff_check(helper: Node) -> StringName:

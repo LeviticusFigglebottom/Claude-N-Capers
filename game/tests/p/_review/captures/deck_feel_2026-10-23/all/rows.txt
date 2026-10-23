@@ -1,0 +1,45 @@
+[DKF 458.7s t=3.7] deck check: local_slot 0, crew.slot 0, effective deck perk.hacker, perks [&"perk.throwable", &"stealth.pocket_ecm"], perk.throwable { "item_id": &"throwable.pocket_ecm" }
+[DKF] ROW hacker | loud by a burst | PASS | loud true | -
+[DKF 782.1s t=7.4] fight 0 s (t=7..7), custody false, kills 0
+[DKF] ROW hacker | pocket ECM: feedback in loud | PASS | mode feedback, active 5.4 s, charges 1, 1 of 2 near enemies stunned 1.5 s after G | A EcmSystem
+[DKF 1288.4s t=70.0] fight 60 s (t=9..70), custody false, kills 7
+[DKF] ROW hacker | kills / heals (Bit Decay, Botnet) | NOTE | 7 kills, heals:  | -
+[DKF] ROW hacker | hacker: danger Npc_guard|slot 3 | NOTE | 5 hits, 28 damage, mean range 10 m, from  | -
+[DKF] ROW hacker | hacker: danger Npc_police|slot 3 | NOTE | 1 hits, 7 damage, mean range 16 m, from  | -
+[DKF] RESULT PASS hacker
+[DKF 1470.1s t=2.8] deck check: local_slot 0, crew.slot 0, effective deck perk.lifeline, perks [&"perk.throwable", &"perk.leech"], perk.throwable { "item_id": &"throwable.leech_ampule" }
+[DKF] ROW lifeline | loud by a burst | PASS | loud true | -
+[DKF 4183.9s t=246.7] fight 240 s (t=6..247), custody false, kills 36
+[DKF] ROW lifeline | ampule: activate heal + segments | FAIL | health 322 -> 322 of 322, window 9.1 s, segments 10/10, HUD ["kind", "charges", "max", "cooldown_left", "active_left", "partner_slot", "mode", "segments"] | A PerkLeech
+[DKF 4521.9s t=257.0] fight 9 s (t=248..257), custody false, kills 42
+[DKF] ROW lifeline | segments over the window | NOTE | segments 10 -> 10, kills 42, heals  | -
+[DKF] ROW lifeline | lifeline: danger Npc_police|slot 3 | NOTE | 9 hits, 51 damage, mean range 8 m, from  | -
+[DKF] ROW lifeline | lifeline: danger Npc_guard|slot 3 | NOTE | 6 hits, 40 damage, mean range 11 m, from  | -
+[DKF] ROW lifeline | lifeline: danger Npc_bulwark|slot 3 | NOTE | 3 hits, 20 damage, mean range 9 m, from  | -
+[DKF] RESULT FAIL lifeline
+[DKF 4634.6s t=2.8] deck check: local_slot 0, crew.slot 0, effective deck perk.veil, perks [&"perk.throwable", &"perk.sicario"], perk.throwable { "item_id": &"throwable.smoke_bomb" }
+[DKF] ROW veil | loud by a burst | PASS | loud true | -
+[DKF 4765.7s t=6.5] fight 0 s (t=6..6), custody false, kills 0
+[DKF 5062.1s t=21.6] fight 15 s (t=6..22), custody false, kills 1
+[DKF 5101.2s t=32.3] fight 8 s (t=24..32), custody false, kills 1
+[DKF] ROW veil | smoke at the feet: in the cloud | PASS | in smoke true, damage/s before 0.0, inside 0.0 | A PerkSicario / SmokeZones
+[DKF] ROW veil | veil: danger Npc_guard|slot 3 | NOTE | 4 hits, 27 damage, mean range 11 m, from  | -
+[DKF] ROW veil | veil: danger Npc_police|slot 3 | NOTE | 2 hits, 7 damage, mean range 12 m, from  | -
+[DKF] RESULT PASS veil
+[DKF 5252.4s t=2.8] deck check: local_slot 0, crew.slot 0, effective deck perk.buddy_system, perks [&"perk.throwable", &"perk.tag_team"], perk.throwable { "item_id": &"throwable.gas_dispenser" }
+[DKF] ROW buddy | loud by a burst | PASS | loud true | -
+[DKF] ROW buddy | G tags the aimed bot | PASS | tagged slot 1 (aimed 1, 2 m) | A TagPairs
+[DKF 5977.7s t=67.7] fight 60 s (t=7..68), custody false, kills 5
+[DKF] ROW buddy | paired kills: heals + Synergy absorb | NOTE | kills 5, heals , absorb 0.0 | -
+[DKF] ROW buddy | buddy: danger Npc_police|slot 3 | NOTE | 5 hits, 27 damage, mean range 11 m, from  | -
+[DKF] ROW buddy | buddy: danger Npc_guard|slot 3 | NOTE | 3 hits, 21 damage, mean range 11 m, from  | -
+[DKF] RESULT PASS buddy
+[DKF 6148.4s t=2.9] deck check: local_slot 0, crew.slot 0, effective deck perk.understudy, perks [&"perk.copycat"], perk.throwable {  }
+[DKF] ROW copycat | loud by a burst | PASS | loud true | -
+[DKF 6591.9s t=36.8] fight 30 s (t=6..37), custody false, kills 2
+[DKF 7367.9s t=97.1] fight 60 s (t=37..97), custody false, kills 15
+[DKF] ROW copycat | Copycat live in a fight | PASS | kills 15, heals , reload kills { 0: 5 }, grace cd 0.0 | A PerkCopycat
+[DKF] ROW copycat | copycat: danger Npc_guard|slot 3 | NOTE | 6 hits, 41 damage, mean range 11 m, from  | -
+[DKF] ROW copycat | copycat: danger Npc_police|slot 3 | NOTE | 2 hits, 7 damage, mean range 12 m, from  | -
+[DKF] RESULT PASS copycat
+[DKF] RESULT FAIL (hacker PASS, lifeline FAIL, veil PASS, buddy PASS, copycat PASS)

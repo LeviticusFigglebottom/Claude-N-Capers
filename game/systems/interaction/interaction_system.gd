@@ -317,9 +317,18 @@ static func _container_hit(col: Node, owner: Node) -> bool:
 	var n: Node = col
 	while n != null:
 		if n is GameplayPrefab:
-			return n.is_ancestor_of(owner)
+			return n.is_ancestor_of(owner) or _in_open_safe(n as GameplayPrefab, owner)
 		n = n.get_parent()
 	return false
+
+
+## A bag spawned on an open safe's shelf (AfterhoursMission safe_loot) is not the safe's child, but sits in its hollow.
+static func _in_open_safe(prefab: GameplayPrefab, owner: Node) -> bool:
+	var safe: Safe = prefab as Safe
+	if safe == null or not safe.opened or not owner is Node3D:
+		return false
+	var interior: AABB = safe.interior_aabb()
+	return interior.has_volume() and interior.has_point(safe.global_transform.affine_inverse() * (owner as Node3D).global_position)
 
 
 func _emit(sig: StringName, args: Array) -> void:

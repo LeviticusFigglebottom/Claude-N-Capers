@@ -1602,8 +1602,10 @@ func _on_blown_hit(victim: int, attacker: int, info: Dictionary) -> void:
 	row["dmg"] = float(row["dmg"]) + float(info.get("amount", info.get("damage", 0.0)))
 	if apos != Vector3.INF and pilot != null:
 		row["dist"] = float(row["dist"]) + apos.distance_to(pilot.crew.global_position)
-		if (row["at"] as PackedStringArray).size() < 4:
-			(row["at"] as PackedStringArray).append(Po5Pilot._v(apos))
+		var at: PackedStringArray = row["at"]  # a value type: append to a local copy and store it back
+		if at.size() < 4:
+			at.append(Po5Pilot._v(apos))
+			row["at"] = at
 	_hits[key] = row
 
 

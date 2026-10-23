@@ -51,6 +51,13 @@ var prompt_band: Rect2 = Rect2():
 		if v != prompt_band:
 			prompt_band = v
 			queue_redraw()
+## LEAD r309 pad pass (AH: "Find the office keyc" ran under the Stay quiet card): the open onboarding card's canvas rect
+## (Hud sets it; empty = none). A marker label under it is not drawn, as under the prompt.
+var card_band: Rect2 = Rect2():
+	set(v):
+		if v != card_band:
+			card_band = v
+			queue_redraw()
 ## GPU-19: the top-centre banner stack (assault banner + boss panel; global rect, Hud sets it): badges under it step
 ## below it (below_band).
 var top_band: Rect2 = Rect2()
@@ -300,7 +307,7 @@ func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 	var w: float = _font.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	var at: Vector2 = Vector2(label_x(center.x, w, size.x, UiBuild.LABEL_SCRIM_PAD.x + 2.0), center.y)
 	var inv: Transform2D = get_global_transform_with_canvas().affine_inverse()
-	if label_hidden_by(Rect2(at - Vector2(0, fs), Vector2(w, fs + 4)), [inv * avoid, inv * prompt_band] as Array[Rect2]):
+	if label_hidden_by(Rect2(at - Vector2(0, fs), Vector2(w, fs + 4)), [inv * avoid, inv * prompt_band, inv * card_band] as Array[Rect2]):
 		return
 	# r249 contrast ruling: a rounded scrim behind the label (2.0:1 fill vs the OF stone without it).
 	var asc: float = _font.get_ascent(fs)

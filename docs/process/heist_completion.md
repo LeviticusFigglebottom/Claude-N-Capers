@@ -10,6 +10,9 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | Gallery Night | gallery_night | final art (G2) | done (D-115 assessment, D-135 close); harness carries OF-X1..X4 below |
 | Dockside Burn | dockside_burn | final art (G2) | done (D-115 assessment, D-135 close); harness carries OF-X1..X4 below |
 | Shadow Ledger | shadow_ledger | final art (G2, round 234) | done (D-115 assessment, D-135 close); harness carries OF-X1..X4 below |
+| Ostrander Federal | ostrander_federal | final art | done (D-152) |
+| Rolling Thunder | rolling_thunder | final art (G3, 28 shots) | done (D-169); un-hidden in the round after D-169 |
+| Afterhours | afterhours | greybox G1 + G2 props/cast | active build (D-165); Hazardous fairness accepted (P read #4); remaining: G2 placement + lighting (shadows → perf re-measure), G3 shots |
 
 ## Gap rows
 | id | heist | owner | gap | status |

@@ -84,6 +84,8 @@ var _flank_left: float = 0.0
 var _cuff_hold: float = 0.0
 var _cuff_frame: int = -1
 var _cuff_target: CrewController = null
+## D-168: crew net id -> heist time it last damaged this unit or a squadmate nearby (target scoring threat term).
+var _threat: Dictionary[int, float] = {}
 
 
 func _ready() -> void:
@@ -97,6 +99,7 @@ func _ready() -> void:
 	_npc.alert_state_changed.connect(_on_alert_state_changed)
 	_npc.died.connect(_on_died)
 	_npc.damaged.connect(func(_i: Dictionary, _a: int) -> void: _cuff_hold = 0.0)  # D-108: hurt cop restarts
+	_npc.damaged.connect(_on_damaged_threat)
 	_start.call_deferred()  # spawn_npc sets the transform after add_child
 
 
@@ -180,6 +183,7 @@ func has_order() -> bool:
 # --- Targeting ---------------------------------------------------------------------------
 
 func _pick_target() -> void:
+	var prev: Node = combat_target
 	combat_target = null
 	_target_visible = false
 	if _runtime == null:
@@ -193,6 +197,7 @@ func _pick_target() -> void:
 		var d: float = c.global_position.distance_squared_to(_npc.global_position)
 		if c.crew_state != Enums.CrewState.NORMAL and not _cuffable_near(c, d):
 			d += 1.0e6  # prefer standing targets (L2.12: a cuffable downed one nearby counts as standing)
+		d *= _threat_mult(c, prev)
 		d /= PerkHooks.aggro_weight(c, _npc)  # perk hook (QB-62: perk target-selection weight)
 		if d < best_any:
 			best_any = d
@@ -215,6 +220,32 @@ func _pick_target() -> void:
 		_target_visible = true
 	else:
 		combat_target = any
+
+
+## D-168 ◇: distance² factor for crew `c`: threat_dist_mult when it hurt this unit or a squadmate within the threat
+## window, sticky_dist_mult when it is the current target.
+func _threat_mult(c: CrewController, prev: Node) -> float:
+	var m: float = tweak.sticky_dist_mult if c == prev else 1.0
+	var t: float = _threat.get(c.net_id, -INF)
+	if _runtime != null and _runtime.heist_time_s - t <= tweak.threat_window_s:
+		m *= tweak.threat_dist_mult
+	return m
+
+
+## Server (D-168): crew `attacker_net_id` hurt this unit: remember it here and on the squadmates within threat_squad_m.
+func _on_damaged_threat(_info: Dictionary, attacker_net_id: int) -> void:
+	if _runtime == null or not Ids.lookup(attacker_net_id) is CrewController:
+		return
+	var now: float = _runtime.heist_time_s
+	_threat[attacker_net_id] = now
+	var r2: float = tweak.threat_squad_m * tweak.threat_squad_m
+	for node: Node in _runtime.npcs():
+		var n: NpcBase = node as NpcBase
+		if n == null or n == _npc or not n.alive or n.global_position.distance_squared_to(_npc.global_position) > r2:
+			continue
+		var b: PoliceBrain = n.get_node_or_null(^"Brain") as PoliceBrain
+		if b != null:
+			b._threat[attacker_net_id] = now
 
 
 func _cuffable_near(c: CrewController, dist_sq: float) -> bool:
