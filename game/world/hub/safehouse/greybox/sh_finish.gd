@@ -17,6 +17,11 @@ const FOLDER: String = "Finish"
 ## The ground slab is cut by the rooms only: a cut at every wall piece's end ran the whole slab and an eye ray along
 ## such a seam slipped between the two faces (bounds, C4-03). Its pieces under the walls are hidden inside them.
 const GROUND_PATH: String = "Building/Ground/"
+## Compatibility path (the low-end players): a merged room mesh gets every light in range per pixel (C4-03: the hall's
+## one mesh cost ~5 s a frame on llvmpipe), so every room's floors / ceilings go to SLAB_TILE tiles and its walls to
+## wall tiles (gh_mesh tile_groups / wall_tile_groups, as Glasshouse): each tile gets the lights around it. Visual only.
+const SLAB_TILE: float = 4.0
+const WALL_TILE_MIN_RUN: float = 1.0
 
 ## Finish key -> [library material id, albedo tint (null: the library's own)]. The G0 palette: aged brick (bare in the
 ## loading bay, the workshop and the kit store), the hall and the rooms limewashed (warm-white plaster), print-works
@@ -101,6 +106,9 @@ func _init(builder: Object) -> void:
 func build() -> void:
 	root = b.get(&"map_root")
 	_setup_materials()
+	for rid: String in ROOM_FINISH:
+		acc.tile_groups["R_" + rid] = SLAB_TILE
+		acc.wall_tile_groups["R_" + rid] = WALL_TILE_MIN_RUN
 	for r: Array in L.ROOMS:
 		if not ROOM_FINISH.has(String(r[0])):
 			continue
@@ -327,6 +335,9 @@ func _box(mi: MeshInstance3D, a: AABB, cls: String, path: String, self_id: int) 
 					q.append(p)
 				if key == "glass":
 					_glass_quad(q, n)
+				elif key == "frosted":   # transparent: its own mesh, never in a room's merged opaque mesh (C4-03:
+					# sharing the hall's mesh cost ~5 s a frame on the Compatibility path)
+					acc.quad("Frosted", key, q[0], q[1], q[2], q[3], n)
 				else:
 					acc.quad(group, key, q[0], q[1], q[2], q[3], n)
 				var lib: String = _lib_of(key)

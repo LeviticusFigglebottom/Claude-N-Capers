@@ -111,12 +111,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 513 surfaces checked
+- 841 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 79236 triangles checked
+- 79904 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -173,22 +173,22 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` (plan, exempt) | 353 | 159 | 841 | 0 | 1353 | 112942 | 5 | LbWorkLight 247, PressPendant 202, TablePendantE 198, TablePendantW 184, WsBenchLamp 10 |
-| `SpawnView` | 303 | 164 | 595 | 0 | 1062 | 76766 | 5 | TablePendantE 187, TablePendantW 168, PressPendant 135, LbWorkLight 95, WsBenchLamp 10 |
-| `HallWideSW` | 234 | 159 | 541 | 0 | 934 | 62208 | 5 | TablePendantE 188, TablePendantW 162, PressPendant 115, LbWorkLight 66, WsBenchLamp 10 |
-| `BoardClose` | 19 | 28 | 251 | 0 | 298 | 8762 | 3 | TablePendantE 107, TablePendantW 100, LbWorkLight 44 |
-| `PlanningTable` | 130 | 82 | 392 | 0 | 604 | 35006 | 4 | LbWorkLight 118, TablePendantW 99, PressPendant 99, TablePendantE 76 |
-| `OldPress` | 157 | 86 | 549 | 0 | 792 | 45576 | 4 | LbWorkLight 180, PressPendant 155, TablePendantE 111, TablePendantW 103 |
-| `LoungeFromHall` | 131 | 40 | 341 | 0 | 512 | 31826 | 3 | LbWorkLight 125, PressPendant 110, TablePendantW 106 |
-| `LoungeKitchen` | 71 | 8 | 238 | 0 | 317 | 19782 | 2 | PressPendant 128, LbWorkLight 110 |
-| `ArmoryBench` | 41 | 0 | 10 | 0 | 51 | 7428 | 1 | WsBenchLamp 10 |
-| `MaskRoom` | 72 | 0 | 10 | 0 | 82 | 17016 | 1 | WsBenchLamp 10 |
-| `CorridorToRange` | 115 | 22 | 387 | 0 | 524 | 29368 | 3 | PressPendant 149, TablePendantW 119, TablePendantE 119 |
-| `RangeVestibule` | 49 | 0 | 0 | 0 | 49 | 12292 | 0 |  |
-| `BunkRoom` | 98 | 0 | 140 | 0 | 238 | 24794 | 1 | PressPendant 140 |
-| `KitStore` | 47 | 0 | 0 | 0 | 47 | 13030 | 0 |  |
-| `RooflightUpA` | 23 | 48 | 236 | 0 | 307 | 6874 | 4 | TablePendantW 79, TablePendantE 73, PressPendant 73, LbWorkLight 11 |
-| `RooflightUpB` | 23 | 51 | 248 | 0 | 322 | 6874 | 4 | PressPendant 82, TablePendantW 79, TablePendantE 76, LbWorkLight 11 |
+| `TopDownPlan` (plan, exempt) | 681 | 304 | 1355 | 0 | 2340 | 113610 | 5 | PressPendant 357, LbWorkLight 344, TablePendantE 336, TablePendantW 308, WsBenchLamp 10 |
+| `SpawnView` | 509 | 242 | 923 | 0 | 1674 | 77150 | 5 | TablePendantE 307, TablePendantW 246, PressPendant 215, LbWorkLight 145, WsBenchLamp 10 |
+| `HallWideSW` | 389 | 243 | 846 | 0 | 1478 | 62496 | 5 | TablePendantE 316, TablePendantW 237, PressPendant 175, LbWorkLight 108, WsBenchLamp 10 |
+| `BoardClose` | 27 | 31 | 344 | 0 | 402 | 8720 | 3 | TablePendantE 145, TablePendantW 138, LbWorkLight 61 |
+| `PlanningTable` | 202 | 142 | 551 | 0 | 895 | 35070 | 4 | LbWorkLight 163, TablePendantW 154, PressPendant 139, TablePendantE 95 |
+| `OldPress` | 259 | 146 | 817 | 0 | 1222 | 45676 | 4 | LbWorkLight 252, PressPendant 241, TablePendantW 165, TablePendantE 159 |
+| `LoungeFromHall` | 181 | 66 | 495 | 0 | 742 | 31804 | 3 | PressPendant 171, TablePendantW 169, LbWorkLight 155 |
+| `LoungeKitchen` | 106 | 10 | 347 | 0 | 463 | 19876 | 2 | PressPendant 194, LbWorkLight 153 |
+| `ArmoryBench` | 63 | 0 | 10 | 0 | 73 | 7480 | 1 | WsBenchLamp 10 |
+| `MaskRoom` | 102 | 0 | 10 | 0 | 112 | 17064 | 1 | WsBenchLamp 10 |
+| `CorridorToRange` | 212 | 32 | 608 | 0 | 852 | 29468 | 3 | PressPendant 240, TablePendantE 189, TablePendantW 179 |
+| `RangeVestibule` | 90 | 0 | 0 | 0 | 90 | 12376 | 0 |  |
+| `BunkRoom` | 166 | 0 | 228 | 0 | 394 | 24962 | 1 | PressPendant 228 |
+| `KitStore` | 75 | 0 | 0 | 0 | 75 | 13120 | 0 |  |
+| `RooflightUpA` | 38 | 62 | 294 | 0 | 394 | 6820 | 4 | TablePendantW 103, TablePendantE 93, PressPendant 86, LbWorkLight 12 |
+| `RooflightUpB` | 42 | 75 | 316 | 0 | 433 | 6826 | 4 | TablePendantW 110, PressPendant 102, TablePendantE 90, LbWorkLight 14 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
