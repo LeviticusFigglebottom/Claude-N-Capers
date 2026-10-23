@@ -49,7 +49,9 @@ func _row(step: String, good: bool, detail: String, note: bool = false) -> void:
 func _click(c: Control, fired: Array[bool]) -> bool:
 	if c == null or not c.is_visible_in_tree():
 		return false
-	var at: Vector2 = c.get_global_rect().get_center()
+	# Window coordinates: the project stretches a 1920x1080 canvas (canvas_items) into the window, and input events
+	# are in window pixels, so map the control's canvas centre through the viewport's final (stretch) transform.
+	var at: Vector2 = c.get_viewport().get_final_transform() * c.get_global_rect().get_center()
 	var mv: InputEventMouseMotion = InputEventMouseMotion.new()
 	mv.position = at
 	mv.global_position = at
@@ -78,7 +80,8 @@ func _press(step: String, b: Button) -> bool:
 	var ok: bool = await _click(b, fired)
 	if b.pressed.is_connected(cb):
 		b.pressed.disconnect(cb)
-	_row(step, ok, "'%s' at %s, visible %s, disabled %s" % [b.text, b.get_global_rect().get_center().round(),
+	_row(step, ok, "'%s' at %s (window %s), visible %s, disabled %s" % [b.text, b.get_global_rect().get_center().round(),
+		(b.get_viewport().get_final_transform() * b.get_global_rect().get_center()).round(),
 		b.is_visible_in_tree(), b.disabled])
 	return ok
 
