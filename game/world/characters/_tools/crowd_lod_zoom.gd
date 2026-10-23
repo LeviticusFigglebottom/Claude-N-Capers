@@ -8,6 +8,8 @@ extends Node
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 const NODE_NAME: String = "CrowdLodZoom"
 const VIEW_CLASS: StringName = &"CrewView"
+## Root meta holding the watcher while its deferred add is pending (proxies entering in the same frame share it).
+const PENDING_META: StringName = &"_crowd_lod_zoom_pending"
 
 var _view: Object = null
 var _view_script: Script = null
@@ -21,9 +23,14 @@ static func ensure(tree: SceneTree) -> Node:
 	var w: Node = tree.root.get_node_or_null(NodePath(NODE_NAME))
 	if w != null:
 		return w
+	if tree.root.has_meta(PENDING_META):
+		var pending: Object = tree.root.get_meta(PENDING_META)
+		if is_instance_valid(pending):
+			return pending as Node
 	var script: GDScript = load("res://world/characters/_tools/crowd_lod_zoom.gd") as GDScript
 	w = script.new() as Node
 	w.name = NODE_NAME
+	tree.root.set_meta(PENDING_META, w)
 	tree.root.add_child.call_deferred(w)
 	return w
 
@@ -37,6 +44,8 @@ static func view_script() -> Script:
 
 
 func _ready() -> void:
+	if get_tree().root.has_meta(PENDING_META):
+		get_tree().root.remove_meta(PENDING_META)
 	_view_script = view_script()
 	get_tree().node_added.connect(_on_node_added)
 	recheck()
