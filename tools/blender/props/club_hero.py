@@ -39,6 +39,19 @@ G2 batch 1 (LEAD 2026-10-23, C's FURNITURE boxes):
   weighted brass base, a candle cup.
 * ``prop_ah_private_shelving`` (PrivateShelving, 3.0 x 0.6, 2.0 high; C turns it 90 deg to the wall): dark steel
   shelving, four shelves of locked cash boxes and document boxes, padlocks in brass.
+
+G2 batch 2 (back of house dressing, C's FURNITURE boxes):
+
+* ``prop_ah_keg_trolley`` (KegTrolley, 0.6 x 0.6, 1.0 high): a red steel hand truck with a 50 l keg strapped on its
+  toe plate.
+* ``prop_ah_keg_rack`` (KegRack, 2.4 x 0.8, 1.6 high; C turns it 90 deg): a galvanised two-tier rack of standing kegs,
+  the couplers on top.
+* ``prop_ah_bottle_bank`` (BottleBank, 1.2 x 0.9, 1.2 high): a green 1100 l wheelie bin for empties, lid shut, GLASS
+  stencilled on the front.
+* ``prop_ah_crates`` (CratesG13W/E, 1.2 x 0.7, 1.4 high): columns of plastic bottle crates (each column one colour,
+  red with one yellow), the top crates of the shorter columns loaded with empties.
+* ``prop_ah_flight_cases`` (FlightCases, 1.6 x 0.8, 1.0 high): two black road cases with aluminium edges, ball
+  corners and butterfly latches, a smaller one stacked on the big one, a VELVET stencil.
 """
 
 from __future__ import annotations
@@ -65,6 +78,12 @@ VARIANTS = {
     "prop_ah_bottle_table": {"fn": "bottle_table", "cat": dict(_FLOOR, kind="table", surface="stone")},
     "prop_ah_high_table": {"fn": "high_table", "cat": dict(_FLOOR, kind="table", surface="stone")},
     "prop_ah_private_shelving": {"fn": "private_shelving", "cat": dict(_FLOOR, kind="shelving", surface="metal")},
+    # G2 batch 2
+    "prop_ah_keg_trolley": {"fn": "keg_trolley", "cat": dict(_FLOOR, kind="trolley", surface="metal")},
+    "prop_ah_keg_rack": {"fn": "keg_rack", "cat": dict(_FLOOR, kind="shelving", surface="metal")},
+    "prop_ah_bottle_bank": {"fn": "bottle_bank", "cat": dict(_FLOOR, kind="bin", surface="plastic")},
+    "prop_ah_crates": {"fn": "crates", "cat": dict(_FLOOR, kind="crate", surface="plastic")},
+    "prop_ah_flight_cases": {"fn": "flight_cases", "cat": dict(_FLOOR, kind="crate", surface="wood")},
 }
 
 LACQUER = "plastic_black"
@@ -420,6 +439,130 @@ def _private_shelving(k: Kit, p: dict) -> None:
                      "brass")                                                               # padlock
             x += w + 0.05 + 0.05 * _hash(i * 11 + 5)
             i += 1
+    body.build()
+
+
+# ------------------------------------------------------------------------------------------- G2 batch 2
+
+def _keg(t, x: float, y: float, z: float, lying: bool = False) -> None:
+    """A 50 l steel keg (0.41 dia x 0.53) standing on ``z`` (lying: along X, its base at ``z``)."""
+    r, h = 0.205, 0.53
+    if lying:
+        t.cyl(r, h, (x, y, z + r), "steel_galv", segs=18, axis="X")
+        for dx in (-0.16, 0.16):
+            t.cyl(r + 0.008, 0.03, (x + dx, y, z + r), "steel_bare", segs=18, axis="X")    # rolling rings
+        return
+    t.cyl(r, h, (x, y, z + h / 2), "steel_galv", segs=18)
+    for dz in (0.15, 0.38):
+        t.cyl(r + 0.008, 0.03, (x, y, z + dz), "steel_bare", segs=18)
+    t.cyl(0.035, 0.03, (x, y, z + h + 0.015), "metal_dark", segs=10)                         # spear / coupler
+
+
+def _keg_trolley(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    t = body.part(bevel=0.002)
+    t.bx((-0.24, -0.22, 0.0), (0.24, 0.05, 0.02), "steel_bare")                              # toe plate
+    for x in (-0.24, 0.24):                                                                  # frame rails
+        t.rod((x, -0.26, 0.02), (x, -0.30, 1.0), 0.014, "metal_red", segs=8)
+        t.cyl(0.10, 0.06, (x + (0.04 if x > 0 else -0.04), -0.30, 0.10), "rubber", segs=16, axis="X")  # wheels
+    t.rod((-0.24, -0.30, 1.0), (0.24, -0.30, 1.0), 0.016, "metal_red", segs=8)              # handle
+    for z in (0.35, 0.70):
+        t.rod((-0.24, -0.27, z), (0.24, -0.27, z), 0.010, "metal_red", segs=6)
+    _keg(t, 0.0, -0.06, 0.02)
+    t.bx((-0.21, -0.27, 0.40), (0.21, 0.16, 0.43), "plastic_black")                         # strap
+    body.build()
+
+
+def _keg_rack(k: Kit, p: dict) -> None:
+    hx, hy = 1.2, 0.4
+    body = k.obj("Body")
+    c = body.part(bevel=0.002)
+    t = body.part(bevel=0.002)
+    for x in (-hx + 0.02, hx - 0.02):
+        for y in (-hy + 0.02, hy - 0.02):
+            c.bx((x - 0.02, y - 0.02, 0.0), (x + 0.02, y + 0.02, 1.6), "steel_galv")       # posts
+    for z in (0.08, 0.86):
+        c.bx((-hx, -hy, z - 0.03), (hx, hy, z), "steel_galv")                               # decks
+    for zi, z in enumerate((0.08, 0.86)):
+        for i in range(5):
+            if (i + zi) % 4 != 3:                                                           # a gap per tier
+                _keg(t, -hx + 0.24 + i * 0.48, 0.0, z)
+    body.build()
+
+
+def _bottle_bank(k: Kit, p: dict) -> None:
+    hx, hy, h = 0.6, 0.45, 1.12
+    body = k.obj("Body")
+    c = body.part(bevel=0.02, segments=2)
+    t = body.part(bevel=0.002)
+    c.bx((-hx + 0.04, -hy + 0.04, 0.10), (hx - 0.04, hy - 0.02, h), "metal_green")        # the bin (tapered look:
+    c.bx((-hx, -hy, h - 0.12), (hx, hy, h), "metal_green")                                  #  a wider rim band)
+    for x in (-hx + 0.12, hx - 0.12):                                                        # castors
+        for y in (-hy + 0.12, hy - 0.12):
+            t.cyl(0.05, 0.04, (x, y, 0.05), "rubber", segs=12, axis="X")
+    # the lid (hinged at the back, -Y)
+    t.bx((-hx - 0.01, -hy - 0.02, h), (hx + 0.01, hy + 0.02, h + 0.04), "metal_green")
+    t.bx((-hx + 0.06, -hy, h + 0.04), (hx - 0.06, -hy + 0.04, h + 0.08), "plastic_black")  # hinge strip
+    for x in (-0.3, 0.3):                                                                    # front handles
+        t.bx((x - 0.10, hy, 0.86), (x + 0.10, hy + 0.04, 0.90), "plastic_black")
+    lettering(t, "GLASS", 0.10, 0.0, hy + 0.002, 0.55, "paint_ivory", stroke=0.016, depth=0.004)
+    body.build()
+
+
+def _crate(t, x: float, y: float, z: float, key: str, full: bool, i: int) -> None:
+    """A 0.40 x 0.30 x 0.28 plastic bottle crate (open lattice read: a solid body with darker hand-hole bands)."""
+    t.bx((x - 0.20, y - 0.15, z), (x + 0.20, y + 0.15, z + 0.27), key)
+    t.bx((x - 0.12, y + 0.15, z + 0.18), (x + 0.12, y + 0.152, z + 0.23), "metal_dark")     # hand hole (front)
+    if full:
+        for bx in range(4):
+            for by in range(3):
+                kx, ky = x - 0.15 + bx * 0.10, y - 0.10 + by * 0.10
+                bk = ("metal_green", "art_ochre", "plastic_black")[(i + bx + by) % 3]
+                t.cyl(0.012, 0.09, (kx, ky, z + 0.315), bk, segs=6)                          # necks
+
+
+def _crates(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    t = body.part(bevel=0.004)
+    i = 0
+    for cx, n in ((-0.40, 5), (0.0, 4), (0.40, 3)):
+        for cy in (-0.17, 0.17):
+            m = n - (1 if cy > 0 and cx > 0.2 else 0)
+            key = "metal_yellow" if i == 3 else "metal_red"                                # one colour per column
+            for lvl in range(m):
+                # the top crate holds empties, except on the 5-high column (it stays inside C's 1.4 m box)
+                _crate(t, cx, cy, lvl * 0.275, key, lvl == m - 1 and m < 5, i)
+            i += 1
+    body.build()
+
+
+def _flight_case(c, t, x0: float, x1: float, y0: float, y1: float, z0: float, z1: float) -> None:
+    c.bx((x0, y0, z0), (x1, y1, z1), "plastic_black")
+    for x in (x0, x1):                                                                       # aluminium edges
+        for y in (y0, y1):
+            t.bx((x - 0.012, y - 0.012, z0), (x + 0.012, y + 0.012, z1), "steel_bare")
+            for z in (z0, z1):
+                t.sphere(0.022, (x, y, z), "steel_bare", segs=8, rings=4)                    # ball corners
+    for z in (z0, z1):
+        for y in (y0, y1):
+            t.bx((x0, y - 0.012, z - 0.012), (x1, y + 0.012, z + 0.012), "steel_bare")
+    zl = z0 + (z1 - z0) * 0.62                                                               # the lid line, latches
+    t.bx((x0, y1, zl - 0.006), (x1, y1 + 0.004, zl + 0.006), "steel_bare")
+    for f in (0.2, 0.8):
+        x = x0 + (x1 - x0) * f
+        t.bx((x - 0.04, y1, zl - 0.04), (x + 0.04, y1 + 0.012, zl + 0.04), "steel_bare")
+
+
+def _flight_cases(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    c = body.part(bevel=0.004)
+    t = body.part(bevel=0.0015)
+    _flight_case(c, t, -0.78, 0.78, -0.38, 0.38, 0.06, 0.62)                                # the big case
+    for x in (-0.6, 0.6):                                                                    # castors
+        for y in (-0.25, 0.25):
+            t.cyl(0.04, 0.03, (x, y, 0.04), "rubber", segs=10, axis="X")
+    _flight_case(c, t, -0.62, 0.30, -0.28, 0.28, 0.64, 1.0)                                 # the small one on top
+    lettering(t, "VELVET", 0.08, -0.30, 0.392, 0.30, "paint_ivory", stroke=0.012, depth=0.003)
     body.build()
 
 
