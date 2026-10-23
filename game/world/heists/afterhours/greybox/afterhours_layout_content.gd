@@ -229,12 +229,12 @@ const FURNITURE: Array = [
 	["box", "PrivateShelving", [35.4, 4.2, 23.0], [0.6, 2.0, 3.0], 0.0, "shelving", true, "prop", {}],
 	["box", "FlightCases", [12.5, 0.0, 1.0], [1.6, 1.0, 0.8], 0.0, "crate", false, "prop", {}],
 	["box", "GreenRoomSofa", [10.5, 0.0, 0.52], [2.2, 1.0, 0.6], 180.0, "sofa", false, "prop", {"seats": [[0.0, 0.45, -0.75]]}],
-	["box", "QueueRail", [8.0, 0.0, 30.5], [6.0, 1.0, 0.1], 0.0, "barrier", false, "prop", {}],
+	["box", "QueueRail", [8.0, 0.0, 30.5], [6.0, 1.0, 0.3], 0.0, "barrier", false, "prop", {}],
 	["box", "CarTolley1", [44.5, 0.0, 6.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {}],
 	["box", "CarTolley2", [44.5, 0.0, 26.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {}],
 	["box", "CarMarlin1", [30.0, 0.0, 33.5], [4.6, 1.45, 1.9], 0.0, "car", false, "prop", {}],
 	["box", "CarMarlin2", [-8.0, 0.0, 33.5], [4.6, 1.45, 1.9], 0.0, "car", false, "prop", {}],
-	["box", "PassageRope", [-1.6, 0.0, 28.6], [2.6, 1.0, 0.1], 0.0, "barrier", false, "prop", {}],
+	["box", "PassageRope", [-1.6, 0.0, 28.6], [2.6, 1.0, 0.3], 0.0, "barrier", false, "prop", {}],
 	["box", "RollerShutter", [31.0, 0.0, 0.0], [3.0, 3.0, 0.12], 0.0, "shutter", false, "door", {}],
 ]
 ## Always-present content: {parent path: rows}.

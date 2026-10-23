@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"vip_balcony"
+purpose = &"bar"
+required_items = Array[StringName]([&"fire_extinguisher", &"plant"])
+optional_items = {
+&"bin": 1,
+&"plant": 1
+}
+clutter_groups = {}
+min_density = 0
+max_density = 0.8
+min_props = 2
+lone_ok_kinds = Array[StringName]([&"fire_extinguisher", &"plant", &"bin"])
+seed_salt = 4805
+counts = {}
+assets = {
+&"plant": PackedStringArray("prop_plant_tall")
+}
+ceiling = {"prop_downlight": 3}
+notes = "AH U1 the balcony: the VIP booths along the brass rail are the map's; the kit adds palms, an extinguisher, downlights (the rail uplights are the lighting lane's)."

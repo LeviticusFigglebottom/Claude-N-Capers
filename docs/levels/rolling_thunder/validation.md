@@ -373,7 +373,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_site_frame` | 1494 | 385 | 1390 | 0 | 3269 | 654956 | 6 | Sun 683, LightFixture_7 243, LightFixture_9 197, UnderpassBatten1 104, LightFixture_7 85, UnderpassBatten0 78 |
 | `rc_site_slab` | 350 | 0 | 464 | 0 | 814 | 109502 | 1 | Sun 464 |
 | `rc_site_cabins` | 368 | 0 | 246 | 0 | 614 | 121278 | 1 | Sun 246 |
-| `rc_site_welfare` | 692 | 0 | 496 | 0 | 1188 | 181830 | 1 | Sun 496 |
+| `rc_site_welfare` | 352 | 0 | 228 | 0 | 580 | 104278 | 1 | Sun 228 |
 | `rc_underpass` | 213 | 135 | 1315 | 0 | 1663 | 74636 | 3 | Sun 1133, UnderpassBatten1 104, UnderpassBatten0 78 |
 | `rc_sniper_skyway` | 697 | 335 | 1624 | 0 | 2656 | 296658 | 5 | Sun 1201, LightFixture_7 166, UnderpassBatten1 104, UnderpassBatten0 78, LightFixture_7 75 |
 

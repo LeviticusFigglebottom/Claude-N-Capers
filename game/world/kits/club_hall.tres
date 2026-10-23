@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"club_hall"
+purpose = &"hall"
+required_items = Array[StringName]([&"fire_extinguisher"])
+optional_items = {
+&"bin": 1
+}
+clutter_groups = {}
+min_density = 0
+max_density = 0.4
+min_props = 2
+lone_ok_kinds = Array[StringName]([&"fire_extinguisher", &"bin"])
+seed_salt = 4801
+counts = {
+&"fire_extinguisher": Vector2i(2, 3)
+}
+assets = {
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher")
+}
+ceiling = {}
+notes = "AH G6 the hall: the floor stays clear (the dancers, the stampede lanes); the stage, the DJ booth, the stacks, the bars and the truss rig are the map's; the kit adds extinguishers on the walls (an exit sign on the north wall lands behind the stage riser, 2.06 m over the floor: none). No ceiling grid (the club rig)."

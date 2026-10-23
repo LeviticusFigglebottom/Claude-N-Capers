@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/restroom/prop_paper_dispenser.tscn" id="1_base"]
+
+[node name="PropPaperDispenser" instance=ExtResource("1_base")]
+
+[node name="Dispenser" parent="Model"]
+visibility_range_end = 10.0
+visibility_range_end_margin = 1.0
+visibility_range_fade_mode = 1
+cast_shadow = 0
+
+[editable path="Model"]

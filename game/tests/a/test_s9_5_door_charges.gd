@@ -70,3 +70,24 @@ func test_s9_5_charges_zero_keeps_old_behaviour() -> void:
 	await wait_physics_frames(2)
 	assert_eq(d.interactable.kind, &"open_door")
 	assert_eq(d.interactable.availability(_crew()), InteractableComponent.BLOCK_STATE, "barred: other prefabs only")
+
+
+## B r309 pad pass (RT site gates prompted "Press X to open" + "Can't do that right now"): a door locked with a lock the
+## crew never operates (BARRED / CODE / ELECTRONIC / VAULT, no charges) is no target at all; a charge door, a lockpick
+## door and an unlocked one are, and a barred gate the mission unlocks becomes one.
+func test_b_r309_barred_door_without_charges_is_not_a_target() -> void:
+	var c: CrewController = _crew()
+	var barred: Door = _door(Door.Lock.BARRED, 0)
+	await wait_physics_frames(2)
+	assert_false(barred.interactable.aim_filter.call(c), "barred, no charges: no prompt at all")
+	for lock: Door.Lock in [Door.Lock.CODE, Door.Lock.ELECTRONIC, Door.Lock.VAULT]:
+		var d: Door = _door(lock, 0)
+		await wait_physics_frames(1)
+		assert_false(d.interactable.aim_filter.call(c), "lock %d (opened elsewhere): no prompt" % lock)
+	var charge: Door = _door(Door.Lock.BARRED, 2)
+	var pick: Door = _door(Door.Lock.LOCKPICK, 0)
+	await wait_physics_frames(1)
+	assert_true(charge.interactable.aim_filter.call(c), "a charge door prompts (place C4)")
+	assert_true(pick.interactable.aim_filter.call(c), "a lockpick door prompts")
+	barred.unlock()
+	assert_true(barred.interactable.aim_filter.call(c), "unlocked by the mission: an ordinary door")
