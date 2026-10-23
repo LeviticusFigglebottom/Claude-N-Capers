@@ -271,6 +271,7 @@ static func spawn_for_hub(parent: Node, xform: Transform3D, p_loadout: Loadout) 
 	crew.civilian = true
 	var isys: InteractionSystem = InteractionSystem.new()
 	isys.name = "HubInteraction"
+	isys.local = true  # A (hub loopback): the hub's own system serves this client's presses locally
 	crew.add_child(isys)
 	crew.hub_interaction = isys
 	parent.add_child(crew)
@@ -437,6 +438,8 @@ func _physics_process(delta: float) -> void:
 		_tick_server_actions(delta)
 	elif is_local():
 		_simulate(delta)  # client-side prediction of own movement
+		if hub_interaction != null:  # A (hub loopback): a client presses the safehouse stations itself
+			hub_interaction.tick(self, intent, delta)
 		if weapons != null:
 			weapons.client_tick(intent, delta)
 		if melee != null:
