@@ -105,7 +105,7 @@ heist_tag_characters = {
 &"convoy_t2": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
 &"convoy_t3": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
 &"cop_diner": [&"patrol_officer"],
-&"driver_mixer": [&"contact_hollis"],
+&"driver_mixer": [&"contact_hollis_rt"],
 &"cop_plaza": [&"patrol_officer"],
 &"guard_site_cabins": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
 &"guard_site_frame": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
