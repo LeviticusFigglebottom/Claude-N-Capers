@@ -162,6 +162,11 @@ ui.tip.heist_gallery_night.list,Only the listed canvases count. The Lantern Bear
 ui.tip.heist_gallery_night.cut,"Cut a canvas from the stretcher, then carry it rolled."
 ui.tip.heist_gallery_night.gala,"Until last call, you can walk the ground floor unmasked as a guest."
 ui.tip.heist_gallery_night.last_call,"At last call the guests leave, and the whole building is restricted."
+ui.tip.heist_rolling_thunder.title,Stop the convoy
+ui.tip.heist_rolling_thunder.signals,"Rig the junction signals before the convoy comes: it stops clean at the red light, and you get 8 s before the escort reacts."
+ui.tip.heist_rolling_thunder.crash,"Without the signals, Reyes rams it with the mixer and the fight starts at once. An early alarm also locks the trucks down."
+ui.tip.heist_rolling_thunder.trucks,"Saw or blow open the trucks. The bullion truck's rear doors need the thermite bag."
+ui.tip.heist_rolling_thunder.bags,"Secure at least 4 bags before the escape. Gold is heavy."
 ui.hud.hint.click_resume,Click to resume
 ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
 ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
@@ -1488,6 +1493,8 @@ ui.loadout.perk_deck,Perk Deck
 ui.loadout.skills_summary,Skill points spent: {spent} of {total}
 ui.loadout.perk_summary,Perk deck: {deck} ({cards}/9 cards)
 ui.loadout.perk_none,Perk deck: none
+ui.loadout.perk_copies,copies {deck}
+ui.loadout.perk_copies_none,copies nothing yet
 ui.skills.points_left,{points} of {total}
 ui.skills.level_caption,Level
 ui.skills.points_caption,Skill points

@@ -4,6 +4,17 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### RT done-check, B slice (LEAD r292 queue (1), D-115 style; trunk r292 ae834d65)
+| Check | How | Result |
+|---|---|---|
+| Heist-list entry, contract card, broker | `heist.rolling_thunder.{name,subtitle,brief,briefing}`, mode `ui.heist_select.modes_loud_ambush`, Board entry (city_map: contact.reyes = "Hollis Reyes"), accent | all present |
+| Objectives (13 keys) + HUD args | test_heist_text_audit now includes RT (def objectives, briefing, loot, escape, assets, points, blueprint, voice, every literal key in the mission/map files) | **1 finding, fixed:** `objective.rolling_thunder.trucks` uses `{opened}`, which A's mission fills (`update_objective_data(&"trucks", {opened, total})`) but the audit did not know. Documented in ALLOWED_ARGS; 5/5 green |
+| Hints | first-time heist cards (`ui.tip.heist_<id>`): GH, ND, SL, DB, GN had one, **RT had none** | **gap, fixed:** RT card "Stop the convoy" (signals / crash stop / trucks / 4 bags); windowed shot checked (1280x720) |
+| VO + subtitles | test_vo_coverage now includes RT: every line has text (the subtitle), none unsaid by A/B/C; test_voice_lines, test_subtitle_args | green (39 RT voice strings; 86 VO events in the loud run below, 60 distinct lines) |
+| Payday / achievements / music | 6 achievements x name+desc, music `music.rolling_thunder.name`, payday + Reyes payday line | present; payday screen reached in the run |
+| Missing keys at runtime | headless loud run (A's harness: `DIRECT=1 HEADLESS=1 run_po5.sh auto_loud 7 2700 <out> "Rolling Thunder" Routine`): `[WARN][strings] missing string key` count | **0**. Heist success at 655 s (achievement rt_quick). The harness then reports FAIL at payday->hub only because the main menu's SAFEHOUSE now opens C's 3D safehouse (no 2D hub buttons): a harness gap for A, not RT |
+| Board readiness flip | `heist_list.tres` delete `"hidden": true` on rolling_thunder, applied locally | 14 affected test files run with the flag off: only test_heist_readiness (hidden switch) and test_music (RT's track joins the always-owned list) change; both updated in the prepared patch and green. **Not pushed** (scratchpad rt_unhide_D160.patch: 3 files, 52 lines) |
+
 ### r290-292 (env/b-content 4a4b43e5, over trunk r290 f98c8dc1)
 * 23e8b556 pocket ECM model (D's glb) + safehouse ProbeWarmup. b4ff227e/f39aebd3 D-163 Veil / Buddy System (+HOOKED,
   a-core 36df6d56). 29a0468d/7f0a2431 D-164 Lifeline (+HOOKED, a-core 9c4622d6). 3d21f76c HUD on perk_item (v1.21/1.22:

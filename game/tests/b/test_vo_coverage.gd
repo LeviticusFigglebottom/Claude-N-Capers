@@ -7,7 +7,7 @@ extends TestCase
 
 const VoCoverage: GDScript = preload("res://content/voice/tools/vo_coverage.gd")
 const HEISTS: Array[StringName] = [
-	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
+	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night", &"rolling_thunder",
 ]
 
 ## ENV A: lines only A code can trigger and does not yet (pd2_fidelity C8 barks). Every A line is said (the D-117

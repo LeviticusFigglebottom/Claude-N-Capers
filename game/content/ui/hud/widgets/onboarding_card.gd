@@ -40,6 +40,9 @@ const ROWS: Dictionary = {
 	&"heist_gallery_night": [[&"", &"ui.tip.heist_gallery_night.list"],
 			[&"interact", &"ui.tip.heist_gallery_night.cut"], [&"", &"ui.tip.heist_gallery_night.gala"],
 			[&"", &"ui.tip.heist_gallery_night.last_call"]],
+	&"heist_rolling_thunder": [[&"", &"ui.tip.heist_rolling_thunder.signals"],
+			[&"", &"ui.tip.heist_rolling_thunder.crash"], [&"interact", &"ui.tip.heist_rolling_thunder.trucks"],
+			[&"", &"ui.tip.heist_rolling_thunder.bags"]],
 }
 
 ## Tip on screen (&"" = none) and the situation the model is in now (tests).
