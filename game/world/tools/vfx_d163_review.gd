@@ -5,6 +5,8 @@
 ##     -- --out=<path prefix> [--radius=4]
 extends Node3D
 
+const NEAR_EYE: Vector3 = Vector3(1.5, 1.7, 5.0)
+
 
 func _ready() -> void:
 	_run.call_deferred()
@@ -65,9 +67,10 @@ func _run() -> void:
 	inside.position = Vector3(1.0, 0.9, -1.5)
 	root.add_child(inside)
 	var cam: Camera3D = Camera3D.new()
-	cam.position = Vector3(0, 1.8, 11)
+	var far_eye: Vector3 = Vector3(0, 1.8, 11)
+	cam.position = far_eye
 	root.add_child(cam)
-	cam.look_at(Vector3(0, 1.4, 0))
+	cam.look_at(Vector3(0, 1.4, -2))
 	cam.make_current()
 	d.smoke.fire(Vector3(0, 0, -2), radius, 10.0)
 	d.tethers.link(Vector2i(0, 1), a, b)
@@ -78,7 +81,11 @@ func _run() -> void:
 			await get_tree().process_frame
 			t += 0.25
 			d.advance(0.25)
-		await RenderingServer.frame_post_draw
-		var img: Image = get_viewport().get_texture().get_image()
-		img.save_jpg("%s_%02d.jpg" % [out, int(shot * 10.0)])
+		for view: Array in [["far", far_eye], ["near", NEAR_EYE]]:   # the near view judges the capsule inside
+			cam.position = view[1]
+			cam.look_at(Vector3(0, 1.4, -2))
+			await get_tree().process_frame
+			await RenderingServer.frame_post_draw
+			var img: Image = get_viewport().get_texture().get_image()
+			img.save_jpg("%s_%s_%02d.jpg" % [out, view[0], int(shot * 10.0)])
 	get_tree().quit()

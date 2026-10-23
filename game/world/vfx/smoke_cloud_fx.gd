@@ -16,10 +16,12 @@ const COLOR: Color = Color(0.7, 0.7, 0.68)
 ## Peak opacity of one puff (they overlap, so the cloud's core reads near-opaque).
 const ALPHA: float = 1.0
 ## Puff diameter as a fraction of the radius (min, max), and the swell over the cloud's life.
-const PUFF_SIZE: Vector2 = Vector2(0.7, 1.0)
+const PUFF_SIZE: Vector2 = Vector2(0.9, 1.25)
 const SWELL: float = 0.25
-## Puff layers in turn: (centre height, horizontal spread) as fractions of the radius: ground, body, crown.
-const LAYERS: Array[Vector2] = [Vector2(0.2, 0.8), Vector2(0.5, 0.7), Vector2(0.8, 0.45)]
+## Puff layers: ground, body, crown.
+## (centre height, horizontal spread) as fractions of the radius, and the layer's share of the puffs.
+const LAYERS: Array[Vector3] = [Vector3(0.15, 0.85, 16.0), Vector3(0.45, 0.65, 12.0), Vector3(0.75, 0.35, 8.0)]
+const GOLDEN: float = 2.39996323
 const DRIFT_M_PER_S: float = 0.08
 
 ## Clouds fired (tests).
@@ -117,24 +119,28 @@ func _apply(i: int) -> void:
 		q.scale = Vector3.ONE * float(q.get_meta(&"size")) * grow
 
 
-## Deterministic puff layout for this radius (same cloud every time: presentation only).
-## Deterministic puff layout for this radius (same cloud every time: presentation only). Three layers, in turn: a
-## ground layer that engulfs whatever stands in the cloud, a body layer and a crown, so the dome stands about one radius
-## tall (>= 2.5 m at a 4 m radius: it hides a standing crew member).
+## Deterministic, symmetric puff layout for this radius (same cloud every time: presentation only). Three layers:
+## a ground layer whose cores sit near the floor (it engulfs whatever stands in the cloud), a body and a crown, each a
+## sunflower (golden-angle) spiral so the cover is even in every direction. The dome stands about one radius tall and
+## reaches about the radius (>= 2.5 m tall at a 4 m radius: it hides a standing crew member).
 func _layout(s: Node3D, radius: float) -> void:
-	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	rng.seed = 0x5A0C
-	var n: int = 0
-	for c: Node in s.get_children():
-		var q: MeshInstance3D = c as MeshInstance3D
-		var layer: Vector2 = LAYERS[n % LAYERS.size()]   # (centre height, spread) as fractions of the radius
-		var a: float = rng.randf() * TAU
-		var r: float = 0.0 if n == 0 else sqrt(rng.randf()) * radius * layer.y
-		var size: float = rng.randf_range(PUFF_SIZE.x, PUFF_SIZE.y) * radius
-		n += 1
-		q.set_meta(&"home", Vector3(cos(a) * r, radius * layer.x * (0.85 + 0.3 * rng.randf()), sin(a) * r))
-		q.set_meta(&"drift", Vector3(cos(a), 0.3, sin(a)).normalized())
-		q.set_meta(&"size", size)
+	var count: int = s.get_child_count()
+	var share: float = 0.0
+	for l: Vector3 in LAYERS:
+		share += l.z
+	var first: int = 0
+	for li: int in range(LAYERS.size()):
+		var layer: Vector3 = LAYERS[li]   # (centre height, spread, share of the puffs)
+		var n: int = count - first if li == LAYERS.size() - 1 else roundi(count * layer.z / share)
+		for k: int in range(n):
+			var q: MeshInstance3D = s.get_child(first + k) as MeshInstance3D
+			var a: float = GOLDEN * float(k) + float(li) * 0.9
+			var r: float = radius * layer.y * sqrt((float(k) + 0.5) / float(n))
+			var size: float = radius * lerpf(PUFF_SIZE.x, PUFF_SIZE.y, fposmod(float(k) * 0.618, 1.0))
+			q.set_meta(&"home", Vector3(cos(a) * r, radius * layer.x, sin(a) * r))
+			q.set_meta(&"drift", Vector3(cos(a), 0.3, sin(a)).normalized())
+			q.set_meta(&"size", size)
+		first += n
 
 
 func _take() -> int:
