@@ -243,9 +243,14 @@ func _dk_lifeline() -> bool:
 	var leech: PerkLeech = PerkHooks.of(pilot.crew).component(PerkLeech.KEY) as PerkLeech
 	await shot("lifeline_ampule")
 	var seg: String = "%d/%d" % [leech.segments_left(), leech.segment_total()] if leech != null else "-"
-	var good: bool = leech != null and leech.is_active() and after > before
-	_row("ampule: activate heal + segments", "PASS" if good else "FAIL", "health %.0f -> %.0f of %.0f, window %.1f s, segments %s, HUD %s" % [
-		before, after, _max_health(), leech.active_left if leech != null else 0.0, seg, _items_state().keys()], "A PerkLeech")
+	var unhurt: bool = before >= _max_health() - 0.5  # never below LOW_HEALTH in the fight: nothing to heal
+	var good: bool = leech != null and leech.is_active() and (after > before or unhurt)
+	var detail: String = "health %.0f -> %.0f of %.0f, window %.1f s, segments %s, HUD %s" % [before, after, _max_health(),
+		leech.active_left if leech != null else 0.0, seg, _items_state().keys()]
+	if unhurt:
+		detail += " (the crew was never hurt: no heal to measure)"
+	_row("ampule: activate heal + segments", ("NOTE" if unhurt else "PASS") if good else "FAIL", detail,
+		"-" if good else "A PerkLeech")
 	var s0: int = leech.segments_left() if leech != null else 0
 	await _fight(minf(FIGHT_S, leech.active_left if leech != null else 0.0))
 	_row("segments over the window", "NOTE", "segments %d -> %d, kills %d, heals %s" % [s0,
