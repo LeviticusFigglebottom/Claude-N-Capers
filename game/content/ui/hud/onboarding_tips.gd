@@ -11,7 +11,7 @@ const ALL: Array[StringName] = [&"casing", &"stealth", &"loud", &"escape"]
 ## D-115: heists with a first-time card for their own mechanics; the card's tip id is heist_tip(heist id)
 ## ("heist_<id>"), stored in the same SETTINGS_KEY array.
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
-		&"gallery_night", &"rolling_thunder"]
+		&"gallery_night", &"rolling_thunder", &"ostrander_federal"]
 
 static var persist: bool = true
 static var profile_slot: int = 0
