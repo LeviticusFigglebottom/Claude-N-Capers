@@ -12,9 +12,9 @@ body_faces_culled: 4868
 body_params: {"age": 0.8, "beard_shadow": 0.25, "build": 0.35, "gender": 0.0, "hair": "side_part", "hair_color": "grey", "hair_peak": 0.0, "height": 1.88, "lip": "auto", "skin": 1}
 bones: 52
 faces_hidden_by_robe: 3099
-meshes: Body,Gear,Hair,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 target_note: Kessler (default, reading in the armchair): tallest, silver hair; long ice-silk robe with a graphite shawl collar and sash over graphite pyjamas with ice piping. The long-coat version is char_npc_kessler_coat
 tri_budget: 35000
-tris: 27120
-tris_by_mesh: {"Body": 9008, "Gear": 196, "Hair": 1856, "Outfit": 16060}
+tris: 27618
+tris_by_mesh: {"Body": 9008, "Gear": 196, "Hair": 1856, "Headwear": 498, "Outfit": 16060}

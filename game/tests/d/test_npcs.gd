@@ -219,6 +219,8 @@ const HAND_PROP_SMALL: Vector3 = Vector3(0.32, 0.32, 0.32)
 const SMOKER: String = "char_npc_bank_cleaner"
 const CIG_LEN: float = 0.072
 const CIG_DRAG: Array[int] = [20, 26, 80, 86]
+## The SL cleaner uniform's own hard parts (cleaner_outfit's metal); every SL cleaner wears them.
+const CLEANER_SL_GEAR: Array[String] = ["char_metal_silver"]
 
 var _index: Dictionary = {}
 
@@ -305,12 +307,15 @@ func _check_d115_cast() -> void:
 	var sl: Dictionary = _materials("char_npc_cleaner_sl")
 	for other: String in ["char_npc_cleaner_sl_b", "char_npc_cleaner_sl_d"]:   # D-130: _d wears it too
 		var sl_b: Dictionary = _materials(other)
-		for mesh: String in ["Outfit", "Gear"]:
-			var a: Array = (sl.get(mesh, []) as Array).duplicate()
-			var b: Array = (sl_b.get(mesh, []) as Array).duplicate()
-			a.sort()
-			b.sort()
-			assert_eq(b, a, "%s: same %s uniform as cleaner_sl" % [other, mesh])
+		var a: Array = (sl.get("Outfit", []) as Array).duplicate()
+		var b: Array = (sl_b.get("Outfit", []) as Array).duplicate()
+		a.sort()
+		b.sort()
+		assert_eq(b, a, "%s: same Outfit uniform as cleaner_sl" % other)
+		# SL-G3: Gear also carries one personal detail per cleaner (badge, pen, cloth), so only the uniform's own hard
+		# parts must match
+		for m: String in CLEANER_SL_GEAR:
+			assert_has(sl_b.get("Gear", []) as Array, m, "%s: the uniform's %s Gear" % [other, m])
 		assert_ne(sl_b.get("Body", []), sl.get("Body", []), "%s: a different skin from cleaner_sl" % other)
 	assert_ne(_materials("char_npc_cleaner_sl_b").get("Hair", []), sl.get("Hair", []),
 			"cleaner_sl_b: different hair from cleaner_sl")

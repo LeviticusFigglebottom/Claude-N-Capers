@@ -15,8 +15,8 @@ face: D-130: man in his late 60s, light skin, short grey hair, grey stubble
 faces_hidden_by_jacket: 2848
 hip_note: Hip seat = the radio on the belt under the jacket (right hip); the pager rides there
 look: Northgate Executive Protection: charcoal suit, grey shirt, black tie, earpiece + coiled cable (right ear), Northgate gate lapel pin, belt radio under the jacket
-meshes: Body,Gear,Hair,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26604
-tris_by_mesh: {"Body": 8932, "Gear": 1010, "Hair": 1728, "Outfit": 14934}
+tris: 27102
+tris_by_mesh: {"Body": 8932, "Gear": 1010, "Hair": 1728, "Headwear": 498, "Outfit": 14934}
