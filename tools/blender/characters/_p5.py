@@ -68,26 +68,29 @@ def _back_hit(hull: Hull, x: float, z: float, fallback_y: float) -> Vector:
 # =============================================================================================
 # lettering and insignia
 # =============================================================================================
-def letters(word: str, h: float, mat: str, lift: float = 0.0022) -> list[faction.Item]:
-    """Block letters ``h`` tall, centred on the origin (``_faction.letters`` + ``EXTRA_GLYPHS``)."""
+def letters(word: str, h: float, mat: str, lift: float = 0.0022, bold: float = 0.0) -> list[faction.Item]:
+    """Block letters ``h`` tall, centred on the origin (``_faction.letters`` + ``EXTRA_GLYPHS``); ``bold`` pads every
+    stroke by that fraction of a stroke on each side (0 = the plain 1-unit strokes)."""
     u = h / 5.0
+    pad = bold * u
     n = len(word)
     x0 = -(n * 3 + n - 1) * u / 2
     out: list[faction.Item] = []
     for ci, ch in enumerate(word):
         gx = x0 + ci * 4 * u
         for a, b, c, d in EXTRA_GLYPHS.get(ch) or GLYPHS[ch]:
-            out.append((_rect(gx + a * u, -h / 2 + b * u, gx + c * u, -h / 2 + d * u), mat, lift))
+            out.append((_rect(gx + a * u - pad, -h / 2 + b * u - pad, gx + c * u + pad, -h / 2 + d * u + pad), mat,
+                        lift))
     return out
 
 
-def stamp_back(kit: Kit, word: str, z: float, h: float, mat: str) -> None:
-    """Lettering across the upper back at ``z`` (m before height scaling), ``h`` tall."""
+def stamp_back(kit: Kit, word: str, z: float, h: float, mat: str, bold: float = 0.0) -> None:
+    """Lettering across the upper back at ``z`` (m before height scaling), ``h`` tall (``bold``: see ``letters``)."""
     fit, k = kit.fit, kit.k
     cy = fit.ring_centre("chest").y
     anchor = _back_hit(kit.hull(), 0.0, z * k, cy - 0.12 * k)
     m = Mesh()
-    faction.stamp(m, kit.hull, anchor, Vector((0.0, -1.0, 0.0)), UP, [letters(word, h * k, mat)], anchor=anchor)
+    faction.stamp(m, kit.hull, anchor, Vector((0.0, -1.0, 0.0)), UP, [letters(word, h * k, mat, bold=bold)], anchor=anchor)
     kit.add_gear(m)
 
 
