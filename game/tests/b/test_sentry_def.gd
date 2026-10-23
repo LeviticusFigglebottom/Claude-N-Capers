@@ -27,6 +27,11 @@ func test_def_is_pd2_shaped() -> void:
 		assert_true(d.params.has(k) and float(d.params[k]) > 0.0, "params.%s set" % k)
 	assert_near(float(d.params.get("ammo_cost_frac", 0.0)), 0.4, 0.001, "PD2: a sentry costs 40 % of your ammo")
 	assert_true(float(d.params.get("range_m", 0.0)) <= 40.0, "a defensive turret, not a sniper")
+	assert_true(d.model != null, "D's eqp_sentry model is linked")
+	if d.model != null:
+		var n: Node = d.model.instantiate()
+		assert_true(n is Node3D, "the model instantiates")
+		n.free()
 
 
 func test_strings_and_picker() -> void:

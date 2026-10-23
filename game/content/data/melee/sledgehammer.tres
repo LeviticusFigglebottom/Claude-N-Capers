@@ -16,4 +16,4 @@ concealment = 20
 silent = true
 unlock_level = 80
 model = ExtResource("2")
-anim_set = &"melee_blunt"
+anim_set = &"melee_heavy"
