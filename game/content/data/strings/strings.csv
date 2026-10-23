@@ -2064,6 +2064,7 @@ ui.preplan.point.pp_riser_l41,Riser panel: level 41
 ui.preplan.point.pp_riser_l42,Riser panel: level 42
 ui.menu.safehouse,Safehouse
 ui.menu.continue,Continue
+ui.menu.stations,All Stations
 ui.menu.continue_job,Continue · {heist} · {difficulty}
 ui.hub.title,The Safehouse
 ui.hub.subtitle,Every job starts at one of these stations.

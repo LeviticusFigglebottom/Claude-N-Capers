@@ -402,7 +402,7 @@ func _build_panel() -> PanelContainer:
 
 func _build_bottom() -> HBoxContainer:
 	var bottom: HBoxContainer = UiBuild.hbox(UiTokens.S3)
-	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
+	back_button = UiBuild.back(UiBuild.button(&"ui.menu.back"))
 	back_button.name = "BackButton"
 	confirm_button = UiBuild.primary(UiBuild.button(&"ui.preplan.confirm"))
 	confirm_button.name = "ConfirmButton"

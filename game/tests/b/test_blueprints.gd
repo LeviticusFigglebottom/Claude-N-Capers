@@ -5,14 +5,12 @@
 extends TestCase
 
 const HEISTS: Array[StringName] = [&"gallery_night", &"glasshouse", &"night_deposit", &"shadow_ledger",
-	&"dockside_burn"]
+	&"dockside_burn", &"ostrander_federal"]
 const MIN_INSIDE: float = 0.7
 const INSIDE_KINDS: Array[StringName] = [&"room", &"building"]
-## The only crossings left: every other spot (beside, shifted inside, pushed outside) overlaps another name or a
-## marker, which reads worse than touching the line. Shrink-only.
-const FRAME_CROSSING_ALLOWED: Array[String] = [
-	"rolling_thunder/2/755x487/GOODS LIFT", "dockside_burn/2/540x520/COUNT ROOM",
-]
+## Names allowed outside the drawn plan. Empty since LEAD r304 (names stay inside; one with no clear spot inside is
+## left out). Shrink-only.
+const FRAME_CROSSING_ALLOWED: Array[String] = []
 
 var _strings: Dictionary = {}
 ## RT-B1: staged heists (RT) join the walk through the test-only fixture until they are offered.
@@ -127,7 +125,12 @@ func test_point_labels_do_not_collide() -> void:
 				if l.visible and b.visible:
 					shown.append(Rect2(l.position, l.size))
 			var furniture: Array[Rect2] = view._furniture_rects()
+			var sc: float = float(view._transform()["scale"])
+			var frame: Rect2 = Rect2(view.world_to_view(view.board.blueprint.bounds.position),
+					view.board.blueprint.bounds.size * sc).grow(1.0)
 			for i: int in range(shown.size()):
+				# LEAD r304 (AH floor 0: "Gear: patrons' restroom duct" hung in the left margin): inside the drawn plan.
+				assert_true(frame.encloses(shown[i]), "%s floor %d @%s: label %d leaves the plan" % [heist, fl, view.size, i])
 				for f: Rect2 in furniture:
 					assert_false(shown[i].intersects(f), "%s floor %d @%s: label %d on the scale bar / north arrow"
 							% [heist, fl, view.size, i])
@@ -145,7 +148,7 @@ func test_point_labels_do_not_collide() -> void:
 
 func _label_jobs() -> Array[Array]:
 	var out: Array[Array] = []
-	for heist: StringName in [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]:
+	for heist: StringName in _heists():  # LEAD r304: OF, RT and AH too (their labels were never checked)
 		for sz: Vector2 in [Vector2(1130, 730), Vector2(755, 487), Vector2(347, 400)]:  # + the 720p briefing view
 			out.append([heist, sz])
 	return out
@@ -229,8 +232,9 @@ func test_zone_names_do_not_straddle_the_frame() -> void:
 				for z: Array in view._zone_labels():
 					var r: Rect2 = z[2] as Rect2
 					var key: String = "%s/%d/%dx%d/%s" % [id, fl, sz.x, sz.y, z[0]]
-					if frame.intersects(r) and not frame.encloses(r) and not FRAME_CROSSING_ALLOWED.has(key):
-						fail("%s: crosses the frame" % key)
+					# LEAD r304 (AH: "STAFF RESTROOMS" below the plan, "VIP RESTROOMS" in the margin): inside the plan.
+					if not frame.grow(1.0).encloses(r) and not FRAME_CROSSING_ALLOWED.has(key):
+						fail("%s: outside the plan" % key)
 					checked += 1
 			view.queue_free()
 			await wait_frames(1)
