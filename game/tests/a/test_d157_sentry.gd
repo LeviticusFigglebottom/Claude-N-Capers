@@ -173,3 +173,46 @@ func test_police_shoot_the_sentry() -> void:
 	var brain: Node = cop.get_node(^"Brain")
 	assert_eq(brain.get(&"combat_target"), sg, "the cop targets the sentry")
 	assert_true(hurt, "and shoots it")
+
+
+## D's model (eqp_sentry) is instanced UNDER Visual (Visual/<scene root>/Base/Yaw/Pitch): the contract nodes are found
+## at any depth (no placeholder over the model), and the model's baked `deploy` clip plays on placement.
+func test_model_nodes_found_under_the_scene_root_and_deploy_plays() -> void:
+	var holder: Node3D = Node3D.new()
+	var visual: Node3D = Node3D.new()
+	visual.name = "Visual"
+	holder.add_child(visual)
+	var model: Node3D = Node3D.new()
+	model.name = "eqp_sentry"
+	visual.add_child(model)
+	var base: Node3D = Node3D.new()
+	base.name = "Base"
+	model.add_child(base)
+	var yaw: Node3D = Node3D.new()
+	yaw.name = "Yaw"
+	base.add_child(yaw)
+	var pitch: Node3D = Node3D.new()
+	pitch.name = "Pitch"
+	yaw.add_child(pitch)
+	var muzzle: Marker3D = Marker3D.new()
+	muzzle.name = "Muzzle"
+	pitch.add_child(muzzle)
+	var ap: AnimationPlayer = AnimationPlayer.new()
+	ap.name = "AnimationPlayer"
+	var lib: AnimationLibrary = AnimationLibrary.new()
+	var anim: Animation = Animation.new()
+	anim.length = 0.8
+	lib.add_animation(SentryGun.DEPLOY_CLIP, anim)
+	ap.add_animation_library(&"", lib)
+	model.add_child(ap)
+	var sg: SentryGun = SentryGun.new()
+	sg.process_mode = Node.PROCESS_MODE_DISABLED  # _ready only: no setup() params to tick with
+	holder.add_child(sg)
+	_rt.dynamic_root.add_child(holder)
+	await wait_physics_frames(1)
+	assert_eq(sg._yaw, yaw, "Yaw found under the model's root")
+	assert_eq(sg._muzzle, muzzle, "Muzzle found")
+	assert_eq(model.get_child_count(), 2, "no placeholder built")
+	assert_true(model.visible, "the model stays shown")
+	assert_eq(str(ap.current_animation), str(SentryGun.DEPLOY_CLIP), "the deploy clip plays")
+	holder.queue_free()

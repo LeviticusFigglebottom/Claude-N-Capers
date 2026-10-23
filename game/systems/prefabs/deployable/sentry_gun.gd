@@ -22,6 +22,8 @@ extends Node3D
 const NODE_NAME: String = "Sentry"
 const GROUP: StringName = &"crew_sentry"
 const WEAPON_ID: StringName = &"deployable.sentry"
+## D's optional baked deploy clip on the model's AnimationPlayer (parts outside Yaw / Pitch), played on placement.
+const DEPLOY_CLIP: StringName = &"deploy"
 const MODE_NORMAL: StringName = &"normal"
 const MODE_QUIET: StringName = &"quiet"
 const MODE_AP: StringName = &"ap"
@@ -73,12 +75,18 @@ func setup(p_owner_slot: int, def_params: Dictionary) -> void:
 func _ready() -> void:
 	add_to_group(GROUP)
 	var visual: Node3D = get_parent().get_node_or_null(^"Visual") as Node3D
-	if visual != null and visual.get_node_or_null(^"Base") == null:
+	# D's model is instanced under Visual (Visual/<scene root>/Base/...): find the contract nodes at any depth.
+	var base: Node3D = visual.find_child("Base", true, false) as Node3D if visual != null else null
+	if visual != null and base == null:
 		_build_placeholder(visual)
-	_yaw = visual.get_node_or_null(^"Base/Yaw") as Node3D if visual != null else null
+		base = visual.find_child("Base", true, false) as Node3D
+	_yaw = base.get_node_or_null(^"Yaw") as Node3D if base != null else null
 	_pitch = _yaw.get_node_or_null(^"Pitch") as Node3D if _yaw != null else null
 	_muzzle = _pitch.get_node_or_null(^"Muzzle") as Node3D if _pitch != null else null
 	_show_shield()
+	var ap: AnimationPlayer = visual.find_child("AnimationPlayer", true, false) as AnimationPlayer if visual != null else null
+	if ap != null and ap.has_animation(DEPLOY_CLIP):
+		ap.play(DEPLOY_CLIP)  # D's baked deploy (legs out); never touches Yaw / Pitch
 
 
 ## Box placeholder following the node contract (the default deployable box hidden).
