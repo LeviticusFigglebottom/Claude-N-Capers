@@ -11,7 +11,7 @@
 ## Each: the alarm by a burst (real input), the deck's moment with ONE shot (HUD + FP pose), FIGHT_S of fighting, rows
 ## with numbers and a PD2 judgement line. Stated shortcuts: direct HeistLauncher.launch (seed, Routine), the
 ## hazard kit (corsair_ar + kestrel + heavy vest + doctor bag), the alarm by gunfire.
-##     --out=/abs/dir [--seed=N]
+##     --out=/abs/dir [--seed=N] [--open (advance on the nearest enemy, no holding at the spawn)]
 ## Output: "[DKF ...]" notes and "[DKF] ROW <deck> | <item> | PASS|FAIL|NOTE | <detail> | <owner>"; "[DKF] RESULT".
 ## Owner: ENV P.
 extends "res://tests/p/_review/rt_g1_pass.gd"
@@ -25,7 +25,12 @@ const DECKS: Dictionary = {&"hacker": &"perk.hacker", &"lifeline": &"perk.lifeli
 	&"buddy": &"perk.buddy_system", &"copycat": &"perk.understudy"}
 const COPYCAT_CHOICES: Dictionary = {0: 1, 2: 2, 4: 2, 6: 3}
 
+## --open: the pilot advances on the nearest enemy instead of fighting from where it stands.
+const OPEN_STOP_M: float = 7.0
+
 var _kills: int = 0
+var _open: bool = OS.get_cmdline_user_args().has("--open")
+var _open_moves: int = 0
 var _heal_events: Array[String] = []
 
 
@@ -155,6 +160,14 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 	while rt.heist_time_s < t_end and not _in_custody() and not (done.is_valid() and bool(done.call())):
 		await _hold_cover(func() -> bool: return true, 1.0)
 		var foe: NpcBase = pilot.nearest_enemy(BLOWN_PEEK_M)
+		if _open and pilot.crew.crew_state == Enums.CrewState.NORMAL:
+			# --open (LEAD): fight in the open, no holding at the spawn behind the bots: close to OPEN_STOP_M of the
+			# nearest enemy (seen or not) before every engagement.
+			var near: NpcBase = pilot.nearest_enemy(60.0)
+			if near != null and near.global_position.distance_to(pilot.crew.global_position) > OPEN_STOP_M + 0.5:
+				await pilot.goto(near.global_position, OPEN_STOP_M, 4.0)
+				_open_moves += 1
+			foe = pilot.nearest_enemy(BLOWN_PEEK_M)
 		if foe != null and pilot.crew.crew_state == Enums.CrewState.NORMAL:
 			await pilot.engage(foe, 1.5)
 		else:
@@ -163,8 +176,10 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 		if h > last + 0.5 and pilot.crew.crew_state == Enums.CrewState.NORMAL:
 			_heal_events.append("+%.0f at t=%.0f (kills %d)" % [h - last, rt.heist_time_s, _kills])
 		last = h
-	note("fight %.0f s (t=%.0f..%.0f), custody %s, kills %d" % [rt.heist_time_s - t_start, t_start, rt.heist_time_s,
-		_in_custody(), _kills])
+	note("fight %.0f s (t=%.0f..%.0f), custody %s, kills %d, health %.0f/%.0f armor %.0f, at %s%s" % [
+		rt.heist_time_s - t_start, t_start, rt.heist_time_s, _in_custody(), _kills, _health(), _max_health(),
+		pilot.crew.health.armor if pilot.crew.health != null else 0.0, Po5Pilot._v(pilot.crew.global_position),
+		", open moves %d" % _open_moves if _open else ""])
 
 
 ## Enemies (alive) within `r` of the crew.
@@ -243,9 +258,14 @@ func _dk_lifeline() -> bool:
 	var leech: PerkLeech = PerkHooks.of(pilot.crew).component(PerkLeech.KEY) as PerkLeech
 	await shot("lifeline_ampule")
 	var seg: String = "%d/%d" % [leech.segments_left(), leech.segment_total()] if leech != null else "-"
-	var good: bool = leech != null and leech.is_active() and after > before
-	_row("ampule: activate heal + segments", "PASS" if good else "FAIL", "health %.0f -> %.0f of %.0f, window %.1f s, segments %s, HUD %s" % [
-		before, after, _max_health(), leech.active_left if leech != null else 0.0, seg, _items_state().keys()], "A PerkLeech")
+	var unhurt: bool = before >= _max_health() - 0.5  # never below LOW_HEALTH in the fight: nothing to heal
+	var good: bool = leech != null and leech.is_active() and (after > before or unhurt)
+	var detail: String = "health %.0f -> %.0f of %.0f, window %.1f s, segments %s, HUD %s" % [before, after, _max_health(),
+		leech.active_left if leech != null else 0.0, seg, _items_state().keys()]
+	if unhurt:
+		detail += " (the crew was never hurt: no heal to measure)"
+	_row("ampule: activate heal + segments", ("NOTE" if unhurt else "PASS") if good else "FAIL", detail,
+		"-" if good else "A PerkLeech")
 	var s0: int = leech.segments_left() if leech != null else 0
 	await _fight(minf(FIGHT_S, leech.active_left if leech != null else 0.0))
 	_row("segments over the window", "NOTE", "segments %d -> %d, kills %d, heals %s" % [s0,

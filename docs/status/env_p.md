@@ -2,6 +2,30 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## To the LEAD: (updated 2026-10-23 18:15 UTC; r306-r309, D-167)
+- **Resume here:** deck feel `--test=all` is on copycat (5/5) on the main checkout (`$S/dk/all.log`); the `--open`
+  legs (lifeline, veil, buddy; `$S/dk/open_legs.sh`, logs `$S/dk/open_<deck>.log`) run in sequence. Report each
+  deck's rows, one shot, and a PD2 judgement. Commit the captures under captures/deck_feel_2026-10-23/.
+- **PO-21 / PO-22 / PO-23 CONFIRMED** windowed on trunk (r306 80ca7d568): no capture release held, mouse turns the
+  camera; crosshair alpha 1.00 at the hip and 0.00 aiming down sights (ads_blend 1.0); before/after crop in
+  captures/po_confirm_r306/. Hub stations 9/9 F.
+- **AH-P1 loud (Routine) FULL PASS** twice; C's f5349e97 cleared HallDoorsE (keycard trip 47 s -> 13 s). Bag-carry
+  STUCK rows were bodies in the firefight, not the map. Those runs used the default kit (harness bug below).
+- **AH Hazardous fairness: read #4 is the done check, ACCEPTED: harsh but fair** (trunk 6f88db99f + A 01a29e29, seed
+  6501): every row PASS to the carries; wave-2 wipe at t~361 from a full-cap special pulse (2 stingers + phantom +
+  4 bulwarks) downing all three bots, then the pilot's bleed-out (D-167 as ruled). Reads #1 (tase / cloak chains:
+  bots ignored a tasing stinger -> A 0585920d) and #3 (a Wrecker cuffed the downed pilot -> D-167) led to the fixes.
+  A also fixed the SafeLoot bag inside the safe (ef468abe). Evidence: captures/ah_g1_2026-10-23/.
+- **Harness bugs (mine), fixed:** loadouts were keyed on Net.local_slot() before any session (-1), so the deck / kit
+  never applied (14dfbf204; the offline peer is already authority, so key off Net.crew being empty); the hacker
+  result read EcmSystem's live dict (copy now); _in_custody() only saw the blown flow's signal (now the live state
+  and an ENDED heist, ace97d1e8); danger rows lost the attacker positions (PackedStringArray copy, 9f4e6c591);
+  carry rows blamed "A secure zone" for a carrier downed mid-carry (DOWNED now, d1d17fb12).
+- **Deck feel so far:** hacker PASS (pocket ECM feedback, 1 of 2 near enemies stunned, 7 kills / 60 s). Lifeline,
+  veil, buddy: the item works (ampule window 9.1 s 10/10 segments; smoke cloud at the feet; G tags the aimed bot)
+  but the standing pilot was never hit (all damage on bot slot 3) -> `--open` legs; the zero-hits-on-human
+  observation is with A as a target-selection check.
+
 ## To the LEAD: (updated 2026-10-23 10:00 UTC; D-165 Afterhours)
 - **AH-P1 harness ready (waiting on C's greybox):** `game/tests/p/_review/ah_g1_pass.gd/.tscn` (extends rt_g1_pass).
   `--test=casing`: the civilian start, the whole front of house (D-075 set: guest doors open, the 4 staff doors answer
