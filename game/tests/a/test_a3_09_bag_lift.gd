@@ -254,3 +254,44 @@ func test_client_mirrors_the_replicated_car() -> void:
 	lift.mirror_car()
 	assert_near(car.global_position.y, y0 + TOP_Y, 0.05, "arrived: the car at the top landing")
 	assert_eq(lift.panels[1].kind, &"send_lift", "the top panel sends from where the car stands")
+
+
+## LEAD r304 (PD2 freight lifts): with 3+ landings each landing's panel offers a send to EVERY other landing, so
+## ground -> roof is one send (here with 2 bags); the landing's own panel is then only the call.
+func test_three_landings_send_straight_to_the_roof() -> void:
+	var mid: Marker3D = Marker3D.new()
+	mid.name = "LiftMid"
+	_rt.map.get_node(^"Gameplay").add_child(mid)
+	mid.global_position = LIFT_POS + Vector3(0, TOP_Y, 0)
+	var roof: Marker3D = Marker3D.new()
+	roof.name = "LiftRoof"
+	_rt.map.get_node(^"Gameplay").add_child(roof)
+	roof.global_position = LIFT_POS + Vector3(0, TOP_Y * 2.0, 0)
+	var lift: BagLift = ATestMaps.add_prefab(_rt, "bag_lift", LIFT_POS, func(n: Node) -> void:
+		var l: BagLift = n as BagLift
+		l.targets = [NodePath("../LiftMid"), NodePath("../LiftRoof")] as Array[NodePath]
+		l.send_prompt_keys = [&"ui.prompt.send_lift_ground", &"", &"ui.prompt.send_lift_roof"] as Array[StringName]
+		l.travel_s = 2.0) as BagLift
+	var bags: Array[LootBag] = _bags(2)
+	await wait_physics_frames(3)
+	await wait_until(func() -> bool: return lift.bags_in_car().size() == 2, 3.0)
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	c.set_masked()
+	assert_eq((lift.send_buttons[0] as Dictionary).size(), 2, "ground: a send to Deck 2 and to the roof")
+	var to_roof: InteractableComponent = lift.send_buttons[0][2]
+	var to_mid: InteractableComponent = lift.send_buttons[0][1]
+	assert_eq(to_roof.prompt_key, &"ui.prompt.send_lift_roof", "labelled with the landing")
+	assert_eq(to_mid.prompt_key, &"ui.prompt.send_lift_to_1", "the fallback key when the map names none")
+	assert_false(lift.interactable.enabled, "the car is here: the panel is only the call, off")
+	assert_eq(to_roof.availability(c), &"", "the roof send is available")
+	assert_ne((lift.send_buttons[2][0] as InteractableComponent).availability(c), &"", "not from the roof (car below)")
+	to_roof.completed.emit(c)
+	assert_true(lift.is_moving() and lift.destination == 2, "one send: straight to the roof")
+	assert_eq(lift.riding.size(), 2, "with both bags")
+	assert_true(await wait_until(func() -> bool: return not lift.is_moving(), 4.0), "arrived")
+	assert_eq(lift.landing, 2, "at the roof")
+	await wait_physics_frames(10)
+	for b: LootBag in bags:
+		assert_true(absf(b.global_position.y - TOP_Y * 2.0) < 0.4, "bag on the roof (y %.2f)" % b.global_position.y)
+	assert_true(lift.interactable.enabled, "the ground panel calls it back again")
+	assert_false(to_roof.enabled, "ground sends are off while the car is elsewhere")

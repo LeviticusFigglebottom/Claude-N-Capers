@@ -4,6 +4,19 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-54) BagLift: a send to every other landing on 3+ landing lifts (LEAD r304) (2026-10-23)
+- `bag_lift.gd`: with 3+ landings each landing gets one `send_lift` button per other landing (`LandingSend<i>_<j>`,
+  stacked above its panel, in `send_buttons[i][j]`), enabled only while the car stands there; the landing panel then
+  only calls the car (enabled while the car is elsewhere). 2-landing lifts are unchanged. Same replicated state and
+  lockdown gating (`_availability`). Labels: `send_prompt_keys` per landing, fallback `ui.prompt.send_lift_to_<j>`.
+- RT `GoodsLift`: `ui.prompt.send_lift_ground` / `ui.prompt.send_lift_deck2` / `ui.prompt.send_lift_roof` (B owns the strings).
+- PO-5 auto_loud pilot sends to the landing nearest the secure zone through the send button (`_lift_send`, `_lift_top`).
+- `test_of_a2_prefab_enable`: the rappel-link path query now uses the breach layer (follow-up to 88c955bc; was red).
+- Tests: a/test_a3_09_bag_lift 9/9 (new `test_three_landings_send_straight_to_the_roof`: ground → roof, 2 bags, one
+  send), a/test_rt_a6_mission 14/14, a/test_po6_14_bot_catch_bag 7/7, a/test_of_mission_loud 6/6,
+  a/test_of_a2_prefab_enable 5/5, a/test_d105_prefab_surfaces 6/6, c/test_rt_goods_lift_throw 1/1,
+  c/test_of_hoist_panel 1/1, c/test_of_cash_lift_throw 1/1. gdlint, ownership, banned clean.
+
 ### (-53) AH-A1..A3 on C's G1, the rappel-link nav fix, the VO-coverage fix (2026-10-23)
 - **AH-A1 (d7f88cf2, 6b24b1dd, f7b40fd8):** AfterhoursMission (world/heists/afterhours/afterhours_mission.gd).
   - Objectives casing → … → escape, the loud lockdown, escape_wait (2nd FADE + 300 s), rare events, VO hooks on B's ids.

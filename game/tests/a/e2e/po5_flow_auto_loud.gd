@@ -948,7 +948,7 @@ func _lift_bag() -> bool:
 	if lift.bags_in_car().size() <= before:
 		f.note("hoist: the bag missed %s's car (try %d)" % [lift.name, _lift_tries])
 		return false
-	var panel: InteractableComponent = _lift_panel(lift, li)
+	var panel: InteractableComponent = _lift_send(lift, li, _lift_top(lift))
 	await p.use(panel, 10.0, func() -> bool: return lift.is_moving())
 	f.note("hoist: %s sent from landing %d with %d bag(s) (t=%.0f)" % [lift.name, li, lift.bags_in_car().size(),
 		rt.heist_time_s])
@@ -1022,6 +1022,26 @@ func _unload_lift() -> bool:
 			_mark_if_unreached(comp)  # a car the pilot cannot reach does not hold every step
 		return true
 	return false
+
+
+## The landing of `lift` nearest the secure zone's floor (where the pilot unloads); the highest one without a zone.
+func _lift_top(lift: BagLift) -> int:
+	var zone: SecureZone = p.secure_zone()
+	var top: int = 0
+	for i: int in range(lift.landing_count()):
+		var y: float = lift.landing_transform(i).origin.y
+		var ty: float = lift.landing_transform(top).origin.y
+		if (zone == null and y > ty) or (zone != null \
+				and absf(y - zone.global_position.y) < absf(ty - zone.global_position.y)):
+			top = i
+	return top
+
+
+## The interaction that sends `lift`'s car from landing `i` to landing `to`: the per-destination send button on a
+## lift with 3+ landings (LEAD r304: there the landing panel only calls the car), else that landing's panel.
+static func _lift_send(lift: BagLift, i: int, to: int) -> InteractableComponent:
+	var row: Dictionary = lift.send_buttons.get(i, {})
+	return row.get(to, _lift_panel(lift, i)) as InteractableComponent
 
 
 static func _lift_panel(lift: BagLift, i: int) -> InteractableComponent:
