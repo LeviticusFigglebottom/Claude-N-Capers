@@ -1057,7 +1057,7 @@ ui.perks.mimic_none,Press to choose a deck to copy.
 perk.understudy.name,Understudy
 perk.understudy.desc,"Build your own deck: pick a bonus on every deck card, and finish by copying another deck's last card."
 perk.understudy.card1.name,Second Draw
-perk.understudy.card1.desc,"10 kills with one weapon reload the other one. Swapping to it within 3 s is near instant."
+perk.understudy.card1.desc,"Every 10 kills with one weapon reloads your other weapon. Swapping to it within 3 s is near instant."
 perk.understudy.card3.name,Head Games
 perk.understudy.card3.desc,"Each headshot heals you 10 health, at most once every 2 s."
 perk.understudy.card5.name,Return to Sender
