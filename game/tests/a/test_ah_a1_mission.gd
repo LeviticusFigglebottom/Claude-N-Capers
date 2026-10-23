@@ -236,3 +236,37 @@ func test_off_duty_cop_is_a_calm_police_observer_without_a_pager() -> void:
 	assert_ne(cop.role, &"guard", "police role: no pager")
 	assert_ne(cop.alert_state, Enums.AlertState.COMBAT, "calm until he sees a masked crew member")
 	assert_eq(StringName(cop.get_meta(StealthDirector.META_ALARM_REASON, &"")), &"off_duty_cop", "his alarm reason")
+
+
+## D-166: Brandt holds the second assault in SUSTAIN (AssaultDirector.captain_active), so its FADE never comes: once
+## the 300 s secure wait is over the van comes anyway (the done-check soft lock, Hazardous seeds 1 / 4242); also when he
+## arrives after the wait ran out. Without him the second FADE is still needed.
+func test_captain_waives_the_second_fade() -> void:
+	var m: AfterhoursMissionProbe = await _launch()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	EventBus.device_finished.emit(_id(&"safe_drill"))
+	await _secure(3)
+	var d: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	assert_true(d != null and d.captain != null, "the director and its captain")
+	m.mission._on_secure_wait()
+	assert_eq(m.state(&"escape"), m.HIDDEN, "no captain, no second FADE: the van is not back")
+	d.captain.active = true
+	assert_true(m.mission.captain_waiver(), "Brandt holds the assault")
+	EventBus.captain_arrived.emit(0)
+	assert_eq(m.state(&"escape"), m.ACTIVE, "the wait is over and Brandt locks SUSTAIN: the van comes anyway")
+	d.captain.active = false
+
+
+func test_captain_waiver_at_the_end_of_the_wait() -> void:
+	var m: AfterhoursMissionProbe = await _launch()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	EventBus.device_finished.emit(_id(&"safe_drill"))
+	await _secure(3)
+	var d: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	d.captain.active = true
+	assert_eq(m.state(&"escape"), m.HIDDEN, "Brandt alone does not bring the van before the 300 s")
+	m.mission._on_secure_wait()
+	assert_eq(m.state(&"escape"), m.ACTIVE, "the 300 s run out with Brandt on the map: the van comes then")
+	d.captain.active = false

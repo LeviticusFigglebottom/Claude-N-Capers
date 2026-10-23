@@ -1,0 +1,8 @@
+asset: prop_ah_bottle_table
+script: tools/blender/props/club_hero.py
+params: {"cat": {"group": "afterhours", "kind": "table", "pin_only": true, "place": "floor", "surface": "stone"}, "fn": "bottle_table"}
+seed: 1406448810  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ah_bottle_table
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

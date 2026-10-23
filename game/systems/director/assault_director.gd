@@ -376,10 +376,12 @@ func spawn_enemy(def: EnemyDef, xf: Transform3D, point: Node3D = null, extra: Di
 	if _runtime == null:
 		return null
 	var look: Vector3 = _flat(_centroid(_active_crew()) - xf.origin)
-	if look.length() > 0.1:
-		xf.basis = Basis.looking_at(look, Vector3.UP)
+	if look.length() > 0.1 and not (extra.has(MISSION_UNIT) and point is SpawnPoint):
+		xf.basis = Basis.looking_at(look, Vector3.UP)  # D (AH cast): a mission unit keeps its SpawnPoint's facing
 	var info: Dictionary = {"spawn_point": point, "assault_wave": wave_index, "faction": faction(),
 		"tags": point.get(&"tags") if point != null and point.get(&"tags") is Array else []}
+	if point is SpawnPoint and (point as SpawnPoint).idle_activity != &"":
+		info["idle_activity"] = (point as SpawnPoint).idle_activity  # D (AH cast): the off-duty cop sits in his booth
 	info.merge(extra, true)
 	if def != null:
 		info["enemy_def"] = def

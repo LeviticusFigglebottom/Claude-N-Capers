@@ -1,0 +1,8 @@
+asset: prop_ah_flight_cases
+script: tools/blender/props/club_hero.py
+params: {"cat": {"group": "afterhours", "kind": "crate", "pin_only": true, "place": "floor", "surface": "wood"}, "fn": "flight_cases"}
+seed: 570198133  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ah_flight_cases
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

@@ -246,3 +246,17 @@ func test_idle_and_idle_alert_follow_the_body_index() -> void:
 		if String(got_a).begins_with("idle_alert_") and not (AnimDriver.VARIANT_GROUPS[&"idle_alert"] as Array).has(got_a):
 			continue  # an armed hold (idle_alert_<kind>) is never varied
 		assert_eq(got_a, want_a if _has(d, want_a) else &"idle_alert", "index %d alerted: %s" % [idx, got_a])
+
+
+## D 7a1f91d3 (couriers): a body showing a weapon keeps the base idle (no stretch / watch check pistol in hand).
+func test_armed_body_keeps_the_base_idle() -> void:
+	var npc: NpcBase = _npc(_id_for(1, 96000), &"guard")
+	await wait_frames(1)
+	var d: AnimDriver = AnimDriver.of(npc)
+	var gun: Node3D = Node3D.new()
+	npc.add_child(gun)
+	d.weapon_visual = gun
+	assert_eq(d.choose_clip(), &"idle", "armed and calm: the base idle, never idle_b / idle_c")
+	d.weapon_visual = null
+	var want: StringName = &"idle_b" if _has(d, &"idle_b") else &"idle"
+	assert_eq(d.choose_clip(), want, "unarmed: the body's variant again")

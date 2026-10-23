@@ -265,6 +265,24 @@ func spawn_guards(count: int, spawn_tag: StringName) -> Array[Node]:
 	return out
 
 
+## AH vip_party (rare): spawn the civilians of every CIVILIAN SpawnPoint tagged `spawn_tag` (scripted ones are not
+## spawned at load), with that point's tags and idle activity. Returns them.
+func spawn_civilians(spawn_tag: StringName) -> Array[NpcBase]:
+	var out: Array[NpcBase] = []
+	if _runtime == null or _runtime.map == null:
+		return out
+	for n: Node in _runtime.map.get_slots(G.CIVILIAN_SPAWN):
+		var sp: SpawnPoint = n as SpawnPoint
+		if sp == null or not sp.tags.has(spawn_tag):
+			continue
+		var npc: NpcBase = _runtime.spawn_npc(&"civilian", sp.global_transform, HeistRuntime.spawn_info(sp))
+		if npc != null:
+			out.append(npc)
+	if out.is_empty():
+		Log.error(&"mission", "spawn_civilians: no CIVILIAN SpawnPoint tagged '%s'" % spawn_tag)
+	return out
+
+
 func _spawn_scripted(sp: SpawnPoint, xf: Transform3D) -> NpcBase:
 	var info: Dictionary = HeistRuntime.spawn_info(sp)
 	if not sp.tags.has(CartelBrain.SPAWN_TAG):
