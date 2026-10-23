@@ -17,7 +17,7 @@
 extends "res://tests/p/_review/rt_g1_pass.gd"
 
 const GH_HEIST: StringName = &"glasshouse"
-const GH_SEED: int = 7101
+const DECK_SEED: int = 7101
 const FIGHT_S: float = 60.0
 const NEAR_M: float = 12.0
 const LOW_HEALTH: float = 0.6
@@ -95,7 +95,7 @@ func _deck_launch(deck: StringName) -> bool:
 		await wait_s(0.5)
 	_kills = 0
 	_heal_events.clear()
-	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else GH_SEED, Enums.Difficulty.ROUTINE, self,
+	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, Enums.Difficulty.ROUTINE, self,
 		{"skip_casing": true, "ai_teammates": 3, "crew_ai": true, "loadouts": {Net.local_slot(): _deck_loadout(deck)}})
 	if rt == null:
 		return await _fail("launch")
