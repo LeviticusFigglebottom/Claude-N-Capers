@@ -157,6 +157,25 @@ func test_heist_mission_lines_are_said() -> void:
 		assert_eq(int(c["A"]) + int(c["B"]), 0, "%s: no unsaid A/B lines" % h)
 
 
+## LEAD r306 (AH gear_line): a site inside a function nothing calls is not a say site. Referenced by a call, a
+## connect() or a call(&"name") string = live; only its own `func` line = dead.
+func test_sites_in_uncalled_functions_do_not_count() -> void:
+	var fx: String = "user://vo_cov_reach_fixture.gd"
+	var f: FileAccess = FileAccess.open(fx, FileAccess.WRITE)
+	f.store_string("extends Node\n\n\nfunc dead_line() -> StringName:\n\treturn StringName(\"vo.mercer.x_%s\" % 1)\n\n\n"
+			+ "func called_line() -> void:\n\tpass\n\n\nfunc wired() -> void:\n\tpass\n\n\nfunc named() -> void:\n\tpass\n\n\n"
+			+ "func _ready() -> void:\n\tcalled_line()\n\tready.connect(wired)\n\tcall(&\"named\")\n\t# dead_line() in a comment\n")
+	f.close()
+	var pending: Array[Dictionary] = []
+	for fn: String in ["dead_line", "called_line", "wired", "named"]:
+		pending.append({"raw": "vo.mercer.x", "site": "fx", "func": fn})
+	var live: Dictionary = VoCoverage.call(&"_reachable_funcs", pending, [fx] as Array[String]) as Dictionary
+	assert_false(live.has("dead_line"), "only its own func line (a comment does not count)")
+	for fn: String in ["called_line", "wired", "named"]:
+		assert_true(live.has(fn), "%s is reachable" % fn)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(fx))
+
+
 func _check_allowlist(owner: String, allow: Array[StringName]) -> void:
 	var actual: Array[StringName] = []
 	for row: Dictionary in VoCoverage.call(&"unsaid", _r, owner) as Array:
