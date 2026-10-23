@@ -4,6 +4,15 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-44) D-164 generic Leech hooks (2026-10-23)
+- PerkHooks.veto_down: CrewHealth.take_hit asks it before a down; a component's veto_down() sets the health and keeps
+  the holder up.
+- PerkHooks.tick_downed: the deck throwable can be used while DOWNED, but only by a component whose
+  usable_while_down() is true. CrewPerks.use_throwable skips every other component while down.
+- Tests: test_d163_systems 9/9. Regression all green: l2_survival 14, l2_12 9, l2_8 6, skills_b1 8, skills_b3 5,
+  c4_last_breath 3, d163_decks 5, d161 5, perk_combat 5, l4_3 9.
+- Next: PerkLeech on B's names.
+
 ### (-43) D-163 presentation hooks for C (2026-10-23)
 - EventBus smoke_cloud_fx(position, radius, duration_s): ThrownItem emits it on every peer when a smoke cloud starts,
   with the cloud's real radius and time left.

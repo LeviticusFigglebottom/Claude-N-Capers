@@ -206,3 +206,52 @@ func test_fx_hooks_smoke_cloud_and_tether() -> void:
 	EventBus.disconnect(TagPairs.SIGNAL_TETHER_FX, on_tether)
 	for sig: StringName in added:
 		EventBus.remove_user_signal(sig)
+
+
+# --- D-164 generic hooks (Leech) -----------------------------------------------------------------
+
+class VetoProbe extends PerkComponent:
+	var vetoes: int = 0
+
+	func veto_down() -> bool:
+		vetoes += 1
+		crew.health.health = 1.0
+		return true
+
+
+class DownedItemProbe extends PerkComponent:
+	var allow: bool = false
+	var used: int = 0
+
+	func usable_while_down() -> bool:
+		return allow
+
+	func use_throwable(_kind: StringName) -> bool:
+		used += 1
+		return true
+
+
+func test_d164_veto_down_keeps_the_holder_up() -> void:
+	var c: CrewController = _crew()
+	Modifiers.set_source(0, &"deck", {&"defense.dodge_add": -1.0})
+	var probe: VetoProbe = VetoProbe.new()
+	_probe(0, probe, &"perk.test_veto")
+	c.health.armor = 0.0
+	var out: Dictionary = _bullet(c, 9999.0)
+	assert_eq(probe.vetoes, 1, "asked once")
+	assert_true(bool(out.get("down_vetoed", false)), "reported")
+	assert_eq(c.crew_state, Enums.CrewState.NORMAL, "still up")
+	assert_near(c.health.health, 1.0, 0.001, "at the health the perk set")
+
+
+func test_d164_throwable_while_down_only_when_allowed() -> void:
+	var c: CrewController = _crew()
+	var probe: DownedItemProbe = DownedItemProbe.new()
+	_probe(0, probe, &"perk.test_downed_item")
+	var perks: CrewPerks = PerkHooks.of(c)
+	c.health.go_down()
+	assert_eq(c.crew_state, Enums.CrewState.DOWNED)
+	assert_false(perks.use_throwable(&"x"), "down: an ordinary deck item is not usable")
+	probe.allow = true
+	assert_true(perks.use_throwable(&"x"), "a perk that allows it")
+	assert_eq(probe.used, 1)

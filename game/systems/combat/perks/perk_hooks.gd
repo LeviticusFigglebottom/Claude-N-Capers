@@ -182,6 +182,29 @@ static func throwable_id(crew: CrewController) -> StringName:
 	return t.item_id() if t != null else &""
 
 
+## D-164 CrewHealth.take_hit: the hit took the last health; true when a perk keeps the holder up (it set the health).
+static func veto_down(h: CrewHealth) -> bool:
+	var perks: CrewPerks = of(_crew_of(h))
+	if perks == null or not Net.is_authority():
+		return false
+	for c: PerkComponent in perks.components.values():
+		if c.has_method(&"veto_down") and bool(c.call(&"veto_down")):
+			return true
+	return false
+
+
+## D-164 CrewHealth, every tick while DOWNED: the deck throwable's input edge, for the perks that allow a use while
+## down (a component with usable_while_down() true). True when the holder is no longer DOWNED after it.
+static func tick_downed(h: CrewHealth) -> bool:
+	var crew: CrewController = _crew_of(h)
+	var perks: CrewPerks = of(crew)
+	var t: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable if perks != null else null
+	if t == null or not Net.is_authority():
+		return false
+	t.tick(0.0)
+	return crew.crew_state != Enums.CrewState.DOWNED
+
+
 ## Server: use `crew`'s deck throwable now (also on a CrewIntent.throw_item edge). True when used.
 static func use_throwable(crew: CrewController) -> bool:
 	var perks: CrewPerks = of(crew)

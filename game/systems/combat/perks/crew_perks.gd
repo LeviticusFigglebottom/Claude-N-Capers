@@ -149,7 +149,10 @@ func on_ammo_picked(amount: int) -> void:
 
 
 func use_throwable(kind: StringName) -> bool:
+	var up: bool = crew == null or crew.crew_state in [Enums.CrewState.NORMAL, Enums.CrewState.SWAN_SONG]
 	for c: PerkComponent in components.values():
+		if not up and not (c.has_method(&"usable_while_down") and bool(c.call(&"usable_while_down"))):
+			continue  # D-164: while down only a perk that allows it (Leech)
 		if c.use_throwable(kind):
 			return true
 	return false
