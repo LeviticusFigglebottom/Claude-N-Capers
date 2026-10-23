@@ -4,6 +4,13 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### r289-290 (env/b-content, over trunk r288 396bc109)
+* f96cd719 sentry cues on C's OGGs. ed4aac0c + ec354108 D-162 decks (Inkwork / Road Crew / Frenzy; held for A's
+  hooks, merged in the same round as A's D-162). c9c914e7 HUD pocket ECM (ui_hud v1.20 `pocket_ecm`; cherry-pick).
+* Equipment glyphs (LEAD r290): ecm, fak, sentry, trip_mine added; `EquipmentIcon.KINDS` lists every drawn kind and
+  test_equipment_glyphs keeps every catalogue deployable / throwable off the fallback dot. Windowed sheet of all 17
+  glyphs at 64 and 32 px checked under xvfb 1280x720 (2026-10-23): all distinct and readable.
+
 ### D-161 (5a988303, trunk r287 merged)
 * **(1) S10.6 golden:** `test_economy_golden` (4): 18 D-120 bag values in PD2 order; 5 contracts (base_payout +
   `HeistCatalog.contract_preview` at all 6 difficulties); `BoardBroker.cost` with the shipped BoardTweak at all 6
