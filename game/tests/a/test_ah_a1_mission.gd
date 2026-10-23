@@ -67,6 +67,12 @@ func _map(pins: Dictionary, rares: Array[StringName] = [], scalars: Dictionary =
 		m.position = pair[1]
 		m.set_meta(&"objective_tag", pair[0])
 		gp.add_child(m)
+	var courier: SpawnPoint = SpawnPoint.new()  # co_op_pickup (scripted: not spawned at load)
+	courier.name = "Courier0"
+	courier.kind = SpawnPoint.Kind.GUARD
+	courier.position = Vector3(-4, 0.05, -10)
+	courier.tags = [&"cartel_courier", HeistRuntime.SCRIPTED_SPAWN_TAG] as Array[StringName]
+	root.get_node("Spawns").add_child(courier)
 	var flee: PatrolPoint = PatrolPoint.new()  # the stampede's exit (civilians_flee)
 	flee.name = "CivFlee"
 	flee.position = Vector3(-20, 0.05, -20)
@@ -183,3 +189,22 @@ func test_co_op_pickup_is_scheduled_at_14_00() -> void:
 	var m: AfterhoursMissionProbe = await _launch({}, [&"co_op_pickup"], {}, Enums.Difficulty.BRUTAL)
 	assert_true(m.mission.timer_left(&"couriers") > 800.0, "the couriers come at 14:00 (%.0f s)" % m.mission.timer_left(&"couriers"))
 	assert_true(m.mission.timer_left(&"dj_shoutout") > 170.0, "DJ shout-outs while the club plays")
+
+
+func test_couriers_alarm_only_when_the_product_is_gone() -> void:
+	var m: AfterhoursMissionProbe = await _launch({}, [&"co_op_pickup"], {&"product_bags": 3}, Enums.Difficulty.BRUTAL)
+	m.mission._couriers_arrive()
+	await wait_physics_frames(2)
+	assert_eq(m.mission.couriers.size(), 2, "two couriers, calm guards")
+	assert_true(_lines.has(&"vo.mercer.afterhours_couriers"), "Mercer warns")
+	assert_false(m.mission.couriers[0].alert_state == Enums.AlertState.COMBAT, "they walk in calm")
+	m.mission._check_couriers()
+	assert_false(m.mission.went_loud, "the product is there: no alarm")
+	var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	for b: LootBag in lm.bags():
+		if b.loot_id == &"loot.parcels":
+			b.queue_free()
+	await wait_physics_frames(1)
+	m.mission._check_couriers()
+	await wait_physics_frames(2)
+	assert_true(m.mission.went_loud, "the product is gone: they raise the alarm")

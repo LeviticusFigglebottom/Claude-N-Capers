@@ -21,6 +21,8 @@ const SECURE_WAIT_S: float = 300.0
 ## co_op_pickup: the couriers arrive at 14:00 heist time.
 const COURIER_TIME_S: float = 840.0
 const COURIER_COUNT: int = 2
+const COURIER_CHECK_S: float = 1.0
+const COURIER_REACH_M: float = 4.0
 ## The DJ's shout-outs while the club plays (stealth, dj_on).
 const DJ_SHOUTOUT_S: float = 180.0
 ## After the alarm: Mercer's "crowd's out" once the stampede had this long.
@@ -63,6 +65,7 @@ const TAG_DJ_STAGE: StringName = &"dj_stage"
 const OFF_DUTY_ENEMY: StringName = &"enemy.patrol_officer"
 
 var safe_open: bool = false
+var couriers: Array[NpcBase] = []
 var lockdown: bool = false
 var escape_open: bool = false
 var _van_fade: bool = false
@@ -330,11 +333,41 @@ func _rare_start() -> void:
 		schedule_at(COURIER_TIME_S, &"couriers", _couriers_arrive)
 
 
+## co_op_pickup: the couriers walk in as calm guards on their patrol route (the SpawnPoints tagged TAG_COURIER and their
+## patrol graph, C's G21 -> G13 -> the product room); a body or a masked crew member alarms them like any guard, and
+## so does finding the product gone (_check_couriers).
 func _couriers_arrive() -> void:
 	if went_loud:
 		return
-	if not spawn_guards(COURIER_COUNT, TAG_COURIER).is_empty():
+	couriers.clear()
+	for n: Node in spawn_guards(COURIER_COUNT, TAG_COURIER):
+		couriers.append(n as NpcBase)
+	if not couriers.is_empty():
 		say(&"vo.mercer.afterhours_couriers")
+		start_timer(&"courier_check", COURIER_CHECK_S, _check_couriers)
+
+
+## A courier within COURIER_REACH_M of a product marker with no parcels left there raises the alarm (stealth only).
+func _check_couriers() -> void:
+	if went_loud:
+		return
+	for c: NpcBase in couriers:
+		if not is_instance_valid(c) or not c.alive:
+			continue
+		for m: Node3D in loot_markers(TAG_PRODUCT):
+			if m.is_visible_in_tree() and c.global_position.distance_to(m.global_position) <= COURIER_REACH_M \
+					and _parcels_near(m.global_position) == 0:
+				raise_alarm(&"couriers_product_gone", c.net_id)
+				return
+	start_timer(&"courier_check", COURIER_CHECK_S, _check_couriers)
+
+
+func _parcels_near(pos: Vector3) -> int:
+	var lm: LootManager = _runtime.service(G.SVC_LOOT) as LootManager if _runtime != null else null
+	if lm == null:
+		return 0
+	return lm.bags().filter(func(b: LootBag) -> bool:
+		return b.loot_id == LOOT_PRODUCT and b.global_position.distance_to(pos) <= COURIER_REACH_M).size()
 
 
 func _dj_shoutout() -> void:
