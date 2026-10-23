@@ -144,7 +144,10 @@ func free_crew(by_slot: int = -1) -> void:
 	_crew.set_crew_state(back)
 	freed.emit(by_slot)
 	_emit(&"crew_uncuffed", [_crew.slot, by_slot])
-	Log.info(&"stealth", "slot %d freed from cuffs (by %d)" % [_crew.slot, by_slot])
+	if back == Enums.CrewState.DOWNED:  # LEAD r309 (P AH #4): next to the "(downed) cuffed by police" line, same channel
+		Log.info(&"combat", "slot %d (downed) uncuffed by slot %d" % [_crew.slot, by_slot])
+	else:
+		Log.info(&"stealth", "slot %d freed from cuffs (by %d)" % [_crew.slot, by_slot])
 
 
 func _physics_process(delta: float) -> void:
@@ -175,6 +178,7 @@ func _on_crew_state_changed(old_state: int, new_state: int) -> void:
 		restore_state = Enums.CrewState.NORMAL
 		if Net.is_authority():
 			_emit(&"crew_uncuffed", [_crew.slot, -1])
+			Log.info(&"combat", "slot %d cuffs ended by %s" % [_crew.slot, Enums.CrewState.keys()[new_state]])
 
 
 func _uncuff_check(helper: Node) -> StringName:

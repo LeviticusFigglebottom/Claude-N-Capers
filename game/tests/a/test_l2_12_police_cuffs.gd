@@ -284,3 +284,21 @@ func test_d167_cuffed_is_not_custody_for_the_solo_fail() -> void:
 	var held: bool = await wait_until(func() -> bool: return human.crew_state == Enums.CrewState.CUSTODY, 3.0)
 	assert_true(held, "the bleed-out ended: custody")
 	assert_true(cs._should_fail(), "now every human is in custody, no free bot: the fail rule holds")
+
+
+## LEAD r309 (P AH Hazardous #4: three "cuffed by police" lines in one down): an already-cuffed heister cannot be cuffed
+## again; only an uncuff (now logged next to the cuff line) makes him cuffable, and the log shows the pair in order.
+func test_r309_no_double_cuff_and_the_uncuff_is_an_event() -> void:
+	var c: CrewController = _crew(0)
+	c.health.go_down()
+	c.health.down_s = CustodyTweak.data().police_cuff_grace_s
+	var cuffs: CrewCuffs = CrewCuffs.of(c, true)
+	await wait_physics_frames(1)
+	assert_true(cuffs.cuff_downed(245), "the first cop cuffs")
+	assert_false(cuffs.cuff_downed(241), "a second cop cannot cuff a cuffed heister")
+	assert_false(CrewCuffs.can_police_cuff(c), "not cuffable while CUFFED")
+	assert_eq(cuffs.cuffed_by_net_id, 245, "still the first cop's cuffs")
+	cuffs.free_crew(1)
+	assert_true(cuffs.cuff_downed(251), "uncuffed and still down: cuffable again")
+	var seq: Array = _events.map(func(e: Array) -> Array: return [e[0], e[2]])
+	assert_eq(seq, [[&"cuffed", 245], [&"uncuffed", 1], [&"cuffed", 251]], "cuff, uncuff, cuff: %s" % [seq])
