@@ -7317,11 +7317,11 @@ size = Vector3(5.5, 3, 6)
 size = Vector3(4, 2.2, 0.06)
 
 [sub_resource type="BoxShape3D" id="sh_602"]
-size = Vector3(3, 0.9, 1.5)
+size = Vector3(3, 0.86, 1.5)
 
 [sub_resource type="ORMMaterial3D" id="sh_603"]
 resource_name = "sh_tri_gunmetal"
-albedo_color = Color(0.2, 0.21, 0.22, 1)
+albedo_color = Color(0.42, 0.43, 0.44, 1)
 albedo_texture = ExtResource("20_sh")
 orm_texture = ExtResource("22_sh")
 normal_enabled = true
@@ -7335,40 +7335,61 @@ metadata/uv_tile_m = 2.0
 
 [sub_resource type="BoxMesh" id="sh_604"]
 material = ExtResource("125_sh")
-size = Vector3(3, 0.9, 1.5)
+size = Vector3(3, 0.86, 1.5)
 
 [sub_resource type="BoxShape3D" id="sh_605"]
+size = Vector3(3, 0.03999996, 1.5)
+
+[sub_resource type="ORMMaterial3D" id="sh_606"]
+resource_name = "sh_tri_tabletop"
+albedo_color = Color(0.7, 0.69, 0.66, 1)
+albedo_texture = ExtResource("20_sh")
+orm_texture = ExtResource("22_sh")
+normal_enabled = true
+normal_texture = ExtResource("21_sh")
+ao_enabled = true
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+uv1_world_triplanar = true
+texture_filter = 5
+metadata/uv_tile_m = 2.0
+
+[sub_resource type="BoxMesh" id="sh_607"]
+material = ExtResource("125_sh")
+size = Vector3(3, 0.03999996, 1.5)
+
+[sub_resource type="BoxShape3D" id="sh_608"]
 size = Vector3(2.4, 0.9, 0.8)
 
-[sub_resource type="BoxMesh" id="sh_606"]
+[sub_resource type="BoxMesh" id="sh_609"]
 material = ExtResource("125_sh")
 size = Vector3(2.4, 0.9, 0.8)
 
-[sub_resource type="BoxShape3D" id="sh_607"]
+[sub_resource type="BoxShape3D" id="sh_610"]
 size = Vector3(2.4, 1.3999999, 0.03999999)
 
-[sub_resource type="BoxMesh" id="sh_608"]
+[sub_resource type="BoxMesh" id="sh_611"]
 material = ExtResource("30_sh")
 size = Vector3(2.4, 1.3999999, 0.03999999)
 
-[sub_resource type="BoxShape3D" id="sh_609"]
+[sub_resource type="BoxShape3D" id="sh_612"]
 size = Vector3(1.8, 0.76, 0.7)
 
-[sub_resource type="BoxMesh" id="sh_610"]
+[sub_resource type="BoxMesh" id="sh_613"]
 material = ExtResource("125_sh")
 size = Vector3(1.8, 0.76, 0.7)
 
-[sub_resource type="BoxShape3D" id="sh_611"]
+[sub_resource type="BoxShape3D" id="sh_614"]
 size = Vector3(1.8, 1.3000001, 0.03999999)
 
-[sub_resource type="BoxMesh" id="sh_612"]
+[sub_resource type="BoxMesh" id="sh_615"]
 material = ExtResource("30_sh")
 size = Vector3(1.8, 1.3000001, 0.03999999)
 
-[sub_resource type="BoxShape3D" id="sh_613"]
+[sub_resource type="BoxShape3D" id="sh_616"]
 size = Vector3(3, 1.5000001, 0.029999971)
 
-[sub_resource type="ORMMaterial3D" id="sh_614"]
+[sub_resource type="ORMMaterial3D" id="sh_617"]
 resource_name = "sh_tri_paper"
 albedo_color = Color(0.9, 0.88, 0.8, 1)
 albedo_texture = ExtResource("8_sh")
@@ -7382,21 +7403,21 @@ uv1_world_triplanar = true
 texture_filter = 5
 metadata/uv_tile_m = 2.0
 
-[sub_resource type="BoxMesh" id="sh_615"]
+[sub_resource type="BoxMesh" id="sh_618"]
 material = ExtResource("30_sh")
 size = Vector3(3, 1.5000001, 0.029999971)
 
-[sub_resource type="BoxShape3D" id="sh_616"]
+[sub_resource type="BoxShape3D" id="sh_619"]
 size = Vector3(1, 2.1, 0.060000002)
 
-[sub_resource type="BoxMesh" id="sh_617"]
+[sub_resource type="BoxMesh" id="sh_620"]
 material = ExtResource("128_sh")
 size = Vector3(1, 2.1, 0.060000002)
 
-[sub_resource type="BoxShape3D" id="sh_618"]
+[sub_resource type="BoxShape3D" id="sh_621"]
 size = Vector3(0.3, 0.35000002, 0.1)
 
-[sub_resource type="ORMMaterial3D" id="sh_619"]
+[sub_resource type="ORMMaterial3D" id="sh_622"]
 resource_name = "sh_tri_polymer"
 albedo_texture = ExtResource("129_sh")
 orm_texture = ExtResource("131_sh")
@@ -7409,14 +7430,14 @@ uv1_world_triplanar = true
 texture_filter = 5
 metadata/uv_tile_m = 1.0
 
-[sub_resource type="BoxMesh" id="sh_620"]
+[sub_resource type="BoxMesh" id="sh_623"]
 material = ExtResource("30_sh")
 size = Vector3(0.3, 0.35000002, 0.1)
 
-[sub_resource type="BoxShape3D" id="sh_621"]
+[sub_resource type="BoxShape3D" id="sh_624"]
 size = Vector3(0.7, 0.6, 0.03)
 
-[sub_resource type="ORMMaterial3D" id="sh_622"]
+[sub_resource type="ORMMaterial3D" id="sh_625"]
 resource_name = "sh_tri_plywood"
 albedo_texture = ExtResource("132_sh")
 orm_texture = ExtResource("134_sh")
@@ -7429,14 +7450,14 @@ uv1_world_triplanar = true
 texture_filter = 5
 metadata/uv_tile_m = 2.0
 
-[sub_resource type="BoxMesh" id="sh_623"]
+[sub_resource type="BoxMesh" id="sh_626"]
 material = ExtResource("30_sh")
 size = Vector3(0.7, 0.6, 0.03)
 
-[sub_resource type="BoxShape3D" id="sh_624"]
+[sub_resource type="BoxShape3D" id="sh_627"]
 size = Vector3(1.2, 0.9, 0.03)
 
-[sub_resource type="BoxMesh" id="sh_625"]
+[sub_resource type="BoxMesh" id="sh_628"]
 material = ExtResource("30_sh")
 size = Vector3(1.2, 0.9, 0.03)
 
@@ -11741,7 +11762,7 @@ metadata/support = true
 [node name="Greybox" type="Node3D" parent="Stations/planning/Visual" index="0" unique_id=101050]
 
 [node name="Table" type="StaticBody3D" parent="Stations/planning/Visual/Greybox" unique_id=101051]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43, 0)
 collision_mask = 0
 metadata/surface = &"metal"
 
@@ -11752,6 +11773,18 @@ shape = SubResource("sh_602")
 material_override = SubResource("sh_603")
 mesh = SubResource("sh_604")
 
+[node name="Top" type="StaticBody3D" parent="Stations/planning/Visual/Greybox" unique_id=101054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.88, 0)
+collision_mask = 0
+metadata/surface = &"metal"
+
+[node name="Collision" type="CollisionShape3D" parent="Stations/planning/Visual/Greybox/Top" unique_id=101055]
+shape = SubResource("sh_605")
+
+[node name="Mesh" type="MeshInstance3D" parent="Stations/planning/Visual/Greybox/Top" unique_id=101056]
+material_override = SubResource("sh_606")
+mesh = SubResource("sh_607")
+
 [node name="UsePoint" parent="Stations/planning" index="1"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1.25)
 
@@ -11760,11 +11793,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="StationCam" type="Marker3D" parent="Stations/planning" unique_id=101054]
+[node name="StationCam" type="Marker3D" parent="Stations/planning" unique_id=101057]
 transform = Transform3D(-1, 0, 0, 0, 0.91914505, 0.39391932, 0, 0.39391932, -0.91914505, 0, 1.7, -1.75)
 metadata/fov = 55.0
 
-[node name="armory" parent="Stations" unique_id=101055 instance=ExtResource("120_sh")]
+[node name="armory" parent="Stations" unique_id=101058 instance=ExtResource("120_sh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27.4, 0, 3.5)
 script = ExtResource("121_sh")
 station_id = &"armory"
@@ -11772,31 +11805,31 @@ visual_scene = ExtResource("122_sh")
 metadata/kind = "hub_station"
 metadata/support = true
 
-[node name="Greybox" type="Node3D" parent="Stations/armory/Visual" index="0" unique_id=101056]
+[node name="Greybox" type="Node3D" parent="Stations/armory/Visual" index="0" unique_id=101059]
 
-[node name="Bench" type="StaticBody3D" parent="Stations/armory/Visual/Greybox" unique_id=101057]
+[node name="Bench" type="StaticBody3D" parent="Stations/armory/Visual/Greybox" unique_id=101060]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 collision_mask = 0
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/armory/Visual/Greybox/Bench" unique_id=101058]
-shape = SubResource("sh_605")
+[node name="Collision" type="CollisionShape3D" parent="Stations/armory/Visual/Greybox/Bench" unique_id=101061]
+shape = SubResource("sh_608")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/armory/Visual/Greybox/Bench" unique_id=101059]
+[node name="Mesh" type="MeshInstance3D" parent="Stations/armory/Visual/Greybox/Bench" unique_id=101062]
 material_override = SubResource("sh_88")
-mesh = SubResource("sh_606")
+mesh = SubResource("sh_609")
 
-[node name="Pegboard" type="StaticBody3D" parent="Stations/armory/Visual/Greybox" unique_id=101060]
+[node name="Pegboard" type="StaticBody3D" parent="Stations/armory/Visual/Greybox" unique_id=101063]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0.38)
 collision_mask = 0
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/armory/Visual/Greybox/Pegboard" unique_id=101061]
-shape = SubResource("sh_607")
+[node name="Collision" type="CollisionShape3D" parent="Stations/armory/Visual/Greybox/Pegboard" unique_id=101064]
+shape = SubResource("sh_610")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/armory/Visual/Greybox/Pegboard" unique_id=101062]
+[node name="Mesh" type="MeshInstance3D" parent="Stations/armory/Visual/Greybox/Pegboard" unique_id=101065]
 material_override = SubResource("sh_88")
-mesh = SubResource("sh_608")
+mesh = SubResource("sh_611")
 
 [node name="UsePoint" parent="Stations/armory" index="1"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1)
@@ -11806,11 +11839,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.2)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="StationCam" type="Marker3D" parent="Stations/armory" unique_id=101063]
+[node name="StationCam" type="Marker3D" parent="Stations/armory" unique_id=101066]
 transform = Transform3D(-1, 0, 0, 0, 0.8804711, 0.47409987, 0, 0.47409987, -0.8804711, 0, 1.7, -1.5)
 metadata/fov = 55.0
 
-[node name="masks" parent="Stations" unique_id=101064 instance=ExtResource("120_sh")]
+[node name="masks" parent="Stations" unique_id=101067 instance=ExtResource("120_sh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27.4, 0, 9.5)
 script = ExtResource("121_sh")
 station_id = &"masks"
@@ -11818,31 +11851,31 @@ visual_scene = ExtResource("122_sh")
 metadata/kind = "hub_station"
 metadata/support = true
 
-[node name="Greybox" type="Node3D" parent="Stations/masks/Visual" index="0" unique_id=101065]
+[node name="Greybox" type="Node3D" parent="Stations/masks/Visual" index="0" unique_id=101068]
 
-[node name="Bench" type="StaticBody3D" parent="Stations/masks/Visual/Greybox" unique_id=101066]
+[node name="Bench" type="StaticBody3D" parent="Stations/masks/Visual/Greybox" unique_id=101069]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
 collision_mask = 0
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/masks/Visual/Greybox/Bench" unique_id=101067]
-shape = SubResource("sh_609")
+[node name="Collision" type="CollisionShape3D" parent="Stations/masks/Visual/Greybox/Bench" unique_id=101070]
+shape = SubResource("sh_612")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/masks/Visual/Greybox/Bench" unique_id=101068]
+[node name="Mesh" type="MeshInstance3D" parent="Stations/masks/Visual/Greybox/Bench" unique_id=101071]
 material_override = SubResource("sh_88")
-mesh = SubResource("sh_610")
+mesh = SubResource("sh_613")
 
-[node name="MaskWall" type="StaticBody3D" parent="Stations/masks/Visual/Greybox" unique_id=101069]
+[node name="MaskWall" type="StaticBody3D" parent="Stations/masks/Visual/Greybox" unique_id=101072]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0.38)
 collision_mask = 0
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/masks/Visual/Greybox/MaskWall" unique_id=101070]
-shape = SubResource("sh_611")
+[node name="Collision" type="CollisionShape3D" parent="Stations/masks/Visual/Greybox/MaskWall" unique_id=101073]
+shape = SubResource("sh_614")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/masks/Visual/Greybox/MaskWall" unique_id=101071]
+[node name="Mesh" type="MeshInstance3D" parent="Stations/masks/Visual/Greybox/MaskWall" unique_id=101074]
 material_override = SubResource("sh_88")
-mesh = SubResource("sh_612")
+mesh = SubResource("sh_615")
 
 [node name="UsePoint" parent="Stations/masks" index="1"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.8)
@@ -11852,11 +11885,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -0.1)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="StationCam" type="Marker3D" parent="Stations/masks" unique_id=101072]
+[node name="StationCam" type="Marker3D" parent="Stations/masks" unique_id=101075]
 transform = Transform3D(-1, 0, 0, 0, 0.8160244, 0.57801735, 0, 0.57801735, -0.8160244, 0, 1.7, -1.3)
 metadata/fov = 55.0
 
-[node name="jukebox" parent="Stations" unique_id=101073 instance=ExtResource("120_sh")]
+[node name="jukebox" parent="Stations" unique_id=101076 instance=ExtResource("120_sh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.6, 0, 10.25)
 script = ExtResource("121_sh")
 station_id = &"jukebox"
@@ -11864,9 +11897,9 @@ visual_scene = ExtResource("122_sh")
 metadata/kind = "hub_station"
 metadata/fixture = true
 
-[node name="Greybox" type="Node3D" parent="Stations/jukebox/Visual" index="0" unique_id=101074]
+[node name="Greybox" type="Node3D" parent="Stations/jukebox/Visual" index="0" unique_id=101077]
 
-[node name="Art" type="Node3D" parent="Stations/jukebox/Visual" index="1" unique_id=101075 instance=ExtResource("126_sh")]
+[node name="Art" type="Node3D" parent="Stations/jukebox/Visual" index="1" unique_id=101078 instance=ExtResource("126_sh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0037, 0.005499989)
 metadata/kind = &"jukebox"
 metadata/art_asset = "prop_sh_jukebox"
@@ -11879,35 +11912,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -0.35)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="Speaker" type="Node3D" parent="Stations/jukebox" unique_id=101076]
+[node name="Speaker" type="Node3D" parent="Stations/jukebox" unique_id=101079]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.2)
 
-[node name="StationCam" type="Marker3D" parent="Stations/jukebox" unique_id=101077]
+[node name="StationCam" type="Marker3D" parent="Stations/jukebox" unique_id=101080]
 transform = Transform3D(-1, 0, 0, 0, 0.86824316, 0.49613902, 0, 0.49613902, -0.86824316, 0, 1.7, -1.4)
 metadata/fov = 55.0
 
-[node name="notoriety" parent="Stations" unique_id=101078 instance=ExtResource("120_sh")]
+[node name="notoriety" parent="Stations" unique_id=101081 instance=ExtResource("120_sh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 10.4)
 script = ExtResource("121_sh")
 station_id = &"notoriety"
 visual_scene = ExtResource("122_sh")
 metadata/kind = "hub_station"
 
-[node name="Greybox" type="Node3D" parent="Stations/notoriety/Visual" index="0" unique_id=101079]
+[node name="Greybox" type="Node3D" parent="Stations/notoriety/Visual" index="0" unique_id=101082]
 
-[node name="Clippings" type="StaticBody3D" parent="Stations/notoriety/Visual/Greybox" unique_id=101080]
+[node name="Clippings" type="StaticBody3D" parent="Stations/notoriety/Visual/Greybox" unique_id=101083]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6500001, 1.485)
 collision_mask = 0
 metadata/surface = &"plaster"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/notoriety/Visual/Greybox/Clippings" unique_id=101081]
-shape = SubResource("sh_613")
+[node name="Collision" type="CollisionShape3D" parent="Stations/notoriety/Visual/Greybox/Clippings" unique_id=101084]
+shape = SubResource("sh_616")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/notoriety/Visual/Greybox/Clippings" unique_id=101082]
-material_override = SubResource("sh_614")
-mesh = SubResource("sh_615")
+[node name="Mesh" type="MeshInstance3D" parent="Stations/notoriety/Visual/Greybox/Clippings" unique_id=101085]
+material_override = SubResource("sh_617")
+mesh = SubResource("sh_618")
 
-[node name="Art" type="Node3D" parent="Stations/notoriety/Visual" index="1" unique_id=101083 instance=ExtResource("127_sh")]
+[node name="Art" type="Node3D" parent="Stations/notoriety/Visual" index="1" unique_id=101086 instance=ExtResource("127_sh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.037500083, 0, -0.019949973)
 metadata/kind = &"press"
 metadata/art_asset = "prop_sh_old_press"
@@ -11920,30 +11953,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -0.55)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="StationCam" type="Marker3D" parent="Stations/notoriety" unique_id=101084]
+[node name="StationCam" type="Marker3D" parent="Stations/notoriety" unique_id=101087]
 transform = Transform3D(-1, 0, 0, 0, 0.9284767, 0.37139067, 0, 0.37139067, -0.9284767, 0, 1.7, -1.8)
 metadata/fov = 55.0
 
-[node name="range" parent="Stations" unique_id=101085 instance=ExtResource("120_sh")]
+[node name="range" parent="Stations" unique_id=101088 instance=ExtResource("120_sh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.75, 0, 17.8)
 script = ExtResource("121_sh")
 station_id = &"range"
 visual_scene = ExtResource("122_sh")
 metadata/kind = "hub_station"
 
-[node name="Greybox" type="Node3D" parent="Stations/range/Visual" index="0" unique_id=101086]
+[node name="Greybox" type="Node3D" parent="Stations/range/Visual" index="0" unique_id=101089]
 
-[node name="Door" type="StaticBody3D" parent="Stations/range/Visual/Greybox" unique_id=101087]
+[node name="Door" type="StaticBody3D" parent="Stations/range/Visual/Greybox" unique_id=101090]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.2)
 collision_mask = 0
 metadata/surface = &"metal"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/range/Visual/Greybox/Door" unique_id=101088]
-shape = SubResource("sh_616")
+[node name="Collision" type="CollisionShape3D" parent="Stations/range/Visual/Greybox/Door" unique_id=101091]
+shape = SubResource("sh_619")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/range/Visual/Greybox/Door" unique_id=101089]
+[node name="Mesh" type="MeshInstance3D" parent="Stations/range/Visual/Greybox/Door" unique_id=101092]
 material_override = SubResource("sh_218")
-mesh = SubResource("sh_617")
+mesh = SubResource("sh_620")
 
 [node name="UsePoint" parent="Stations/range" index="1"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.9)
@@ -11953,11 +11986,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="StationCam" type="Marker3D" parent="Stations/range" unique_id=101090]
+[node name="StationCam" type="Marker3D" parent="Stations/range" unique_id=101093]
 transform = Transform3D(-1, 0, 0, 0, 0.919145, 0.39391932, 0, 0.39391932, -0.919145, 0, 1.7, -1.4)
 metadata/fov = 55.0
 
-[node name="crew" parent="Stations" unique_id=101091 instance=ExtResource("120_sh")]
+[node name="crew" parent="Stations" unique_id=101094 instance=ExtResource("120_sh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 8.1, 1.4, 8)
 script = ExtResource("121_sh")
 station_id = &"crew"
@@ -11965,31 +11998,31 @@ visual_scene = ExtResource("122_sh")
 metadata/mount = "wall"
 metadata/kind = "hub_station"
 
-[node name="Greybox" type="Node3D" parent="Stations/crew/Visual" index="0" unique_id=101092]
+[node name="Greybox" type="Node3D" parent="Stations/crew/Visual" index="0" unique_id=101095]
 
-[node name="Phone" type="StaticBody3D" parent="Stations/crew/Visual/Greybox" unique_id=101093]
+[node name="Phone" type="StaticBody3D" parent="Stations/crew/Visual/Greybox" unique_id=101096]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024999999, -0.05)
 collision_mask = 0
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/crew/Visual/Greybox/Phone" unique_id=101094]
-shape = SubResource("sh_618")
+[node name="Collision" type="CollisionShape3D" parent="Stations/crew/Visual/Greybox/Phone" unique_id=101097]
+shape = SubResource("sh_621")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/crew/Visual/Greybox/Phone" unique_id=101095]
-material_override = SubResource("sh_619")
-mesh = SubResource("sh_620")
+[node name="Mesh" type="MeshInstance3D" parent="Stations/crew/Visual/Greybox/Phone" unique_id=101098]
+material_override = SubResource("sh_622")
+mesh = SubResource("sh_623")
 
-[node name="Polaroids" type="StaticBody3D" parent="Stations/crew/Visual/Greybox" unique_id=101096]
+[node name="Polaroids" type="StaticBody3D" parent="Stations/crew/Visual/Greybox" unique_id=101099]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.1, -0.015)
 collision_mask = 0
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/crew/Visual/Greybox/Polaroids" unique_id=101097]
-shape = SubResource("sh_621")
+[node name="Collision" type="CollisionShape3D" parent="Stations/crew/Visual/Greybox/Polaroids" unique_id=101100]
+shape = SubResource("sh_624")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/crew/Visual/Greybox/Polaroids" unique_id=101098]
-material_override = SubResource("sh_622")
-mesh = SubResource("sh_623")
+[node name="Mesh" type="MeshInstance3D" parent="Stations/crew/Visual/Greybox/Polaroids" unique_id=101101]
+material_override = SubResource("sh_625")
+mesh = SubResource("sh_626")
 
 [node name="UsePoint" parent="Stations/crew" index="1"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.4, -0.9)
@@ -11999,11 +12032,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="StationCam" type="Marker3D" parent="Stations/crew" unique_id=101099]
+[node name="StationCam" type="Marker3D" parent="Stations/crew" unique_id=101102]
 transform = Transform3D(-1, 0, 0, 0, 0.9701424, 0.24253568, 0, 0.24253568, -0.9701424, 0, 0.30000007, -1.4)
 metadata/fov = 55.0
 
-[node name="profile" parent="Stations" unique_id=101100 instance=ExtResource("120_sh")]
+[node name="profile" parent="Stations" unique_id=101103 instance=ExtResource("120_sh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.9, 1.4, 15)
 script = ExtResource("121_sh")
 station_id = &"profile"
@@ -12011,19 +12044,19 @@ visual_scene = ExtResource("122_sh")
 metadata/mount = "wall"
 metadata/kind = "hub_station"
 
-[node name="Greybox" type="Node3D" parent="Stations/profile/Visual" index="0" unique_id=101101]
+[node name="Greybox" type="Node3D" parent="Stations/profile/Visual" index="0" unique_id=101104]
 
-[node name="BulletinBoard" type="StaticBody3D" parent="Stations/profile/Visual/Greybox" unique_id=101102]
+[node name="BulletinBoard" type="StaticBody3D" parent="Stations/profile/Visual/Greybox" unique_id=101105]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.049999997, -0.015)
 collision_mask = 0
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Stations/profile/Visual/Greybox/BulletinBoard" unique_id=101103]
-shape = SubResource("sh_624")
+[node name="Collision" type="CollisionShape3D" parent="Stations/profile/Visual/Greybox/BulletinBoard" unique_id=101106]
+shape = SubResource("sh_627")
 
-[node name="Mesh" type="MeshInstance3D" parent="Stations/profile/Visual/Greybox/BulletinBoard" unique_id=101104]
-material_override = SubResource("sh_622")
-mesh = SubResource("sh_625")
+[node name="Mesh" type="MeshInstance3D" parent="Stations/profile/Visual/Greybox/BulletinBoard" unique_id=101107]
+material_override = SubResource("sh_625")
+mesh = SubResource("sh_628")
 
 [node name="UsePoint" parent="Stations/profile" index="1"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.4, -1.1)
@@ -12033,126 +12066,126 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
 script = ExtResource("124_sh")
 kind = &"hub_station"
 
-[node name="StationCam" type="Marker3D" parent="Stations/profile" unique_id=101105]
+[node name="StationCam" type="Marker3D" parent="Stations/profile" unique_id=101108]
 transform = Transform3D(-1, 0, 0, 0, 0.9805807, 0.19611618, 0, 0.19611618, -0.9805807, 0, 0.30000007, -1.6)
 metadata/fov = 55.0
 
-[node name="ReviewCameras" type="Node3D" parent="." unique_id=101106]
+[node name="ReviewCameras" type="Node3D" parent="." unique_id=101109]
 
-[node name="TopDownPlan" type="Marker3D" parent="ReviewCameras" unique_id=101107]
+[node name="TopDownPlan" type="Marker3D" parent="ReviewCameras" unique_id=101110]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 14, 30, 9)
 metadata/size = 32.0
 metadata/caption = "TopDownPlan (plan_top)"
 
-[node name="SpawnView" type="Marker3D" parent="ReviewCameras" unique_id=101108]
-transform = Transform3D(0, 0.04440061, -0.99901384, 0, 0.99901384, 0.04440061, 1, 0, 0, 6, 1.6, 4)
+[node name="SpawnView" type="Marker3D" parent="ReviewCameras" unique_id=101111]
+transform = Transform3D(0, 0.042067986, -0.99911475, 0, 0.99911475, 0.042067986, 1, 0, 0, 5.5, 1.6, 5.5)
 metadata/fov = 70.0
 metadata/caption = "SpawnView (spawn_view)"
 
-[node name="HallWideSW" type="Marker3D" parent="ReviewCameras" unique_id=101109]
+[node name="HallWideSW" type="Marker3D" parent="ReviewCameras" unique_id=101112]
 transform = Transform3D(0.6361816, 0.046908304, -0.7701121, 0, 0.99815005, 0.060798332, 0.77153933, -0.03867878, 0.6350047, 8.6, 2.4, 11.4)
 metadata/fov = 70.0
 metadata/caption = "HallWideSW (hall_wide_sw)"
 
-[node name="BoardClose" type="Marker3D" parent="ReviewCameras" unique_id=101110]
+[node name="BoardClose" type="Marker3D" parent="ReviewCameras" unique_id=101113]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1.6, 2.7)
 metadata/fov = 70.0
 metadata/caption = "BoardClose (board_close)"
 
-[node name="PlanningTable" type="Marker3D" parent="ReviewCameras" unique_id=101111]
+[node name="PlanningTable" type="Marker3D" parent="ReviewCameras" unique_id=101114]
 transform = Transform3D(0.67705655, -0.29726666, 0.6732213, 0, 0.9147886, 0.4039328, -0.735931, -0.27348536, 0.61936367, 17.5, 2.4, 8.8)
 metadata/fov = 70.0
 metadata/caption = "PlanningTable (planning_table)"
 
-[node name="OldPress" type="Marker3D" parent="ReviewCameras" unique_id=101112]
+[node name="OldPress" type="Marker3D" parent="ReviewCameras" unique_id=101115]
 transform = Transform3D(-0.86618555, -0.12869304, 0.48286706, 0, 0.96627057, 0.25752908, -0.4997224, 0.22306797, -0.8369697, 12.5, 1.8, 8)
 metadata/fov = 70.0
 metadata/caption = "OldPress (old_press)"
 
-[node name="LoungeFromHall" type="Marker3D" parent="ReviewCameras" unique_id=101113]
+[node name="LoungeFromHall" type="Marker3D" parent="ReviewCameras" unique_id=101116]
 transform = Transform3D(0, -0.0680239, 0.9976837, 0, 0.9976837, 0.0680239, -1, 0, 0, 9.4, 1.6, 10.25)
 metadata/fov = 70.0
 metadata/caption = "LoungeFromHall (lounge_from_hall)"
 
-[node name="LoungeKitchen" type="Marker3D" parent="ReviewCameras" unique_id=101114]
+[node name="LoungeKitchen" type="Marker3D" parent="ReviewCameras" unique_id=101117]
 transform = Transform3D(-0.9230769, -0.035352662, 0.38298717, 0, 0.9957667, 0.091916926, -0.38461536, 0.08484639, -0.91916925, 5.5, 1.6, 10)
 metadata/fov = 70.0
 metadata/caption = "LoungeKitchen (lounge_kitchen)"
 
-[node name="ArmoryBench" type="Marker3D" parent="ReviewCameras" unique_id=101115]
+[node name="ArmoryBench" type="Marker3D" parent="ReviewCameras" unique_id=101118]
 transform = Transform3D(0, 0.11043154, -0.9938837, 0, 0.9938837, 0.11043154, 1, 0, 0, 24, 1.7, 3.5)
 metadata/fov = 70.0
 metadata/caption = "ArmoryBench (armory_bench)"
 
-[node name="MaskRoom" type="Marker3D" parent="ReviewCameras" unique_id=101116]
+[node name="MaskRoom" type="Marker3D" parent="ReviewCameras" unique_id=101119]
 transform = Transform3D(0.3090861, 0.11226771, -0.94438434, 0, 0.9930079, 0.11804804, 0.95103407, -0.03648701, 0.30692494, 23.6, 1.7, 10.8)
 metadata/fov = 70.0
 metadata/caption = "MaskRoom (mask_room)"
 
-[node name="CorridorToRange" type="Marker3D" parent="ReviewCameras" unique_id=101117]
+[node name="CorridorToRange" type="Marker3D" parent="ReviewCameras" unique_id=101120]
 transform = Transform3D(-1, 0, 0, 0, 0.99962485, 0.027386993, 0, 0.027386993, -0.99962485, 20.75, 1.6, 10.5)
 metadata/fov = 70.0
 metadata/caption = "CorridorToRange (corridor_to_range)"
 
-[node name="RangeVestibule" type="Marker3D" parent="ReviewCameras" unique_id=101118]
+[node name="RangeVestibule" type="Marker3D" parent="ReviewCameras" unique_id=101121]
 transform = Transform3D(-0.9789804, 0.02747872, -0.2020947, 0, 0.9908824, 0.1347298, 0.20395428, 0.13189784, -0.97005445, 20, 1.7, 14.2)
 metadata/fov = 70.0
 metadata/caption = "RangeVestibule (range_vestibule)"
 
-[node name="BunkRoom" type="Marker3D" parent="ReviewCameras" unique_id=101119]
+[node name="BunkRoom" type="Marker3D" parent="ReviewCameras" unique_id=101122]
 transform = Transform3D(-0.70710677, 0.101867385, -0.6997307, 0, 0.98956865, 0.14406224, 0.70710677, 0.101867385, -0.6997307, 14.6, 1.7, 14.1)
 metadata/fov = 70.0
 metadata/caption = "BunkRoom (bunk_room)"
 
-[node name="KitStore" type="Marker3D" parent="ReviewCameras" unique_id=101120]
+[node name="KitStore" type="Marker3D" parent="ReviewCameras" unique_id=101123]
 transform = Transform3D(-0.7776301, 0.07233336, -0.6245473, 0, 0.9933599, 0.115048215, 0.62872213, 0.089464955, -0.77246654, 23.2, 1.7, 12.8)
 metadata/fov = 70.0
 metadata/caption = "KitStore (kit_store)"
 
-[node name="RooflightUpA" type="Marker3D" parent="ReviewCameras" unique_id=101121]
+[node name="RooflightUpA" type="Marker3D" parent="ReviewCameras" unique_id=101124]
 transform = Transform3D(1, 0, 0, 0, 0.45631668, -0.8898175, 0, 0.8898175, 0.45631668, 15, 1.8, 8)
 metadata/fov = 70.0
 metadata/caption = "RooflightUpA (rooflight_up_a)"
 
-[node name="RooflightUpB" type="Marker3D" parent="ReviewCameras" unique_id=101122]
+[node name="RooflightUpB" type="Marker3D" parent="ReviewCameras" unique_id=101125]
 transform = Transform3D(1, 0, 0, 0, 0.45631668, -0.8898175, 0, 0.8898175, 0.45631668, 12, 1.8, 8)
 metadata/fov = 70.0
 metadata/caption = "RooflightUpB (rooflight_up_b)"
 
-[node name="Audio" type="Node3D" parent="." unique_id=101123]
+[node name="Audio" type="Node3D" parent="." unique_id=101126]
 
-[node name="Jukebox" type="Node" parent="Audio" unique_id=101124]
+[node name="Jukebox" type="Node" parent="Audio" unique_id=101127]
 script = ExtResource("135_sh")
 track_id = &""
 listen_to_event_bus = false
 positional_parent = NodePath("../../Stations/jukebox/Speaker")
 
-[node name="BedInterior" type="Node3D" parent="Audio" unique_id=101125]
+[node name="BedInterior" type="Node3D" parent="Audio" unique_id=101128]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 2.5, 9)
 script = ExtResource("136_sh")
 cue_id = &"cue.amb_safehouse_interior"
 
-[node name="FridgeHum" type="Node3D" parent="Audio" unique_id=101126]
+[node name="FridgeHum" type="Node3D" parent="Audio" unique_id=101129]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.9, 12.5)
 script = ExtResource("136_sh")
 cue_id = &"cue.amb_fridge_hum"
 
-[node name="WallClock" type="Node3D" parent="Audio" unique_id=101127]
+[node name="WallClock" type="Node3D" parent="Audio" unique_id=101130]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.2, 8.15)
 script = ExtResource("136_sh")
 cue_id = &"cue.amb_wall_clock"
 
-[node name="BallastBuzz" type="Node3D" parent="Audio" unique_id=101128]
+[node name="BallastBuzz" type="Node3D" parent="Audio" unique_id=101131]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3.4, 3.5)
 script = ExtResource("136_sh")
 cue_id = &"cue.amb_ballast_buzz"
 
-[node name="Drip" type="Node3D" parent="Audio" unique_id=101129]
+[node name="Drip" type="Node3D" parent="Audio" unique_id=101132]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.25, 0.9, 17.5)
 script = ExtResource("136_sh")
 cue_id = &"cue.amb_drip"
 
-[node name="RangeExtractor" type="Node3D" parent="Audio" unique_id=101130]
+[node name="RangeExtractor" type="Node3D" parent="Audio" unique_id=101133]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.75, 2.6, 17.6)
 script = ExtResource("136_sh")
 cue_id = &"cue.amb_range_extractor"
