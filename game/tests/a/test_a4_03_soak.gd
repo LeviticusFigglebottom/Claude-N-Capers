@@ -151,8 +151,11 @@ func _soak(clients: int, heist_override: StringName = &"", skip_casing: bool = t
 	var peers: Array[int] = []
 	for p: int in multiplayer.get_peers():
 		peers.append(p)
+	var poll: Array[int] = [0]
 	var ready: bool = await wait_until(func() -> bool:
-		_probe.call(&"command", "snapshot", {})
+		if Time.get_ticks_msec() >= poll[0]:  # r310: not every frame (a slow client answered the backlog for a minute)
+			poll[0] = Time.get_ticks_msec() + 500
+			_probe.call(&"command", "snapshot", {})
 		return peers.all(func(p: int) -> bool: return bool(((_reports.get(p, {}) as Dictionary).get("snapshot", {})
 			as Dictionary).get("launch_client", false))), 120.0)
 	assert_true(ready, "every client built its replica")
@@ -236,7 +239,15 @@ func _snap(peer: int, args: Dictionary) -> Dictionary:
 	if _reports.has(peer):
 		(_reports[peer] as Dictionary).erase("snapshot")
 	_probe.rpc_id(peer, &"_rpc_command", "snapshot", args)
-	await wait_until(func() -> bool: return (_reports.get(peer, {}) as Dictionary).has("snapshot"), 15.0)
+	var want_of: bool = bool(args.get("of_state", false))
+	await wait_until(func() -> bool:
+		var r: Dictionary = _reports.get(peer, {}) as Dictionary
+		if not r.has("snapshot"):
+			return false
+		if want_of and ((r["snapshot"] as Dictionary).get("of_state", {}) as Dictionary).is_empty():
+			r.erase("snapshot")  # r310: a late answer to an earlier plain snapshot request, not this one
+			return false
+		return true, 15.0)
 	return (_reports.get(peer, {}) as Dictionary).get("snapshot", {}) as Dictionary
 
 
