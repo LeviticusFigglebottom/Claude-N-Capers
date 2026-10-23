@@ -301,8 +301,9 @@ what was run. The LEAD's merge rounds follow the same rule (test what the merged
   - Info for A (PP-C-1 walk rows, not failures): night_deposit STUCK-DOOR at AtmInnerDoor (23.4,0,17.6), AlarmSecurity (21.7,0,18.0), SallyPersonnelDoor (13.2,0,1.5).
 
 ## Rules in force
-- D-135 (PO, 08:40): no new scope; every env closes its queue and reports QUEUE CLEAR, then Ostrander Federal kicks off for all envs together.
-  QUEUE CLEAR status: A open (ND-1, DB-7, anim lane + civ panic wiring) · B open (1080p GN/DB/SL) · C open (DB-1, chair Seat) · D open (dress knee clipping, seated re-check, GN scatter capture; D1 parked on the PO GPU run) · P open (ND-2, SL confirm, D-128/D-130 remainder, DB-P1).
+- D-144: one new heist at a time; Rolling Thunder until its done check, then Afterhours. D-160 (PO): no PO-only steps on done paths.
+- Regen after a trunk merge: run `godot --headless --path game --import` FIRST (new classes must be imported, or generators write defaults; C, r286).
+- Only quote a commit sha after the push output shows it.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
