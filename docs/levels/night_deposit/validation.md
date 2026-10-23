@@ -27,13 +27,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | hide_los | PASS | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
+| metal_reflection | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
 | viewmodel_lit | PASS | 0 | 0 |
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 15 |
+| perf | PASS | 0 | 13 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -134,7 +135,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2024 polygons, cell 0.10/0.10 m
+- navmesh: 2031 polygons, cell 0.10/0.10 m
 - 176 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -177,7 +178,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 36 variant configuration(s), 103065 spawn->target path queries
+- 36 variant configuration(s), 0 convoy layout(s), 103065 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -210,6 +211,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## materials: Materials and texel density
 
 - 2722 surfaces checked
+
+
+## metal_reflection: Metal surfaces have a reflection source
+
+- environment reflections: on; 27 probe(s), 1 baked VoxelGI
+- 338 metal surface(s); 282 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
@@ -262,11 +269,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## variety: Layout variety
 
-- kit `banking_hall`: 1 room(s), 1 distinct layout(s)
 - kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `locker_room`: 1 room(s), 1 distinct layout(s)
 - kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `depository`: 1 room(s), 1 distinct layout(s)
+- kit `banking_hall`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_harbor`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_lot`: 1 room(s), 1 distinct layout(s)
 - kit `count_room`: 1 room(s), 1 distinct layout(s)
@@ -291,7 +298,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 290 eye samples, 23490 rays, sky yes, 0 void ray(s)
+- 291 eye samples, 23571 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
@@ -300,8 +307,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownSite` | 1392 | 589 | 3844 | 0 | 5825 | 364960 | 6 | LampHarbor2 1037, LotLampMid 830, LampQuayE 624, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
-| `TopDownBuilding` | 1994 | 765 | 3718 | 0 | 6477 | 715946 | 6 | LampHarbor2 977, LotLampMid 817, LampQuayE 571, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
+| `TopDownSite` (plan, exempt) | 1392 | 589 | 3844 | 0 | 5825 | 364960 | 6 | LampHarbor2 1037, LotLampMid 830, LampQuayE 624, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
+| `TopDownBuilding` (plan, exempt) | 1994 | 765 | 3718 | 0 | 6477 | 715946 | 6 | LampHarbor2 977, LotLampMid 817, LampQuayE 571, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
 | `ExtHarborFacade` | 2341 | 816 | 3726 | 0 | 6883 | 747246 | 6 | LampHarbor2 971, LotLampMid 830, LampQuayE 572, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
 | `ExtAtmCorner` | 2384 | 806 | 3767 | 0 | 6957 | 775060 | 6 | LampHarbor2 1002, LotLampMid 830, LampQuayE 582, LightFixture_5 547, LightFixture_5 425, LightFixture_3 381 |
 | `ExtLotSallyPort` | 1634 | 824 | 3003 | 0 | 5461 | 514744 | 6 | LampHarbor2 825, LotLampMid 591, LampQuayE 481, LightFixture_5 438, LightFixture_3 345, LightFixture_5 323 |
@@ -345,8 +352,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - WARN `ReviewCameras/HallGuardPost` @ (8.00, 1.65, 13.00): 4007 draw calls in view (main 1418 + lit 485 + shadow 2104 + cast 0) > 4000
 - WARN `ReviewCameras/StaffCorridor` @ (25.40, 1.65, 6.75): 5449 draw calls in view (main 1749 + lit 773 + shadow 2927 + cast 0) > 4000
 - WARN `ReviewCameras/TellerWorkroom` @ (0.80, 1.65, 9.30): 5754 draw calls in view (main 2080 + lit 711 + shadow 2963 + cast 0) > 4000
-- WARN `ReviewCameras/TopDownBuilding` @ (13.00, 40.00, 10.00): 6477 draw calls in view (main 1994 + lit 765 + shadow 3718 + cast 0) > 4000
-- WARN `ReviewCameras/TopDownSite` @ (13.00, 80.00, 10.00): 5825 draw calls in view (main 1392 + lit 589 + shadow 3844 + cast 0) > 4000
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
@@ -366,6 +371,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 7, chair 4, desk 7, table 6, wall_unit 25, visitor_chair 4, desk_chair 7, stool 4, monitor 3
+- classified: chair 4, counter 7, desk 7, table 6, wall_unit 25, visitor_chair 4, desk_chair 7, stool 4, monitor 3
 - 19 seats, 20 tables/desks/counters, 36 doors checked
 

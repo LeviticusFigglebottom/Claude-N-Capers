@@ -280,7 +280,7 @@ func fit_width(w: float) -> void:
 	for r: Node in rows_box.get_children():
 		var l: Label = r.get_child(r.get_child_count() - 1) as Label
 		if l != null:
-			l.custom_minimum_size.x = w - 120
+			l.custom_minimum_size.x = w - 120 - float(r.get_meta(&"cap_extra", 0.0))
 	panel.reset_size()
 
 
@@ -300,6 +300,8 @@ func _close() -> void:
 func _row(action: StringName, key: StringName) -> HBoxContainer:
 	var h: HBoxContainer = UiBuild.hbox(UiTokens.S2)
 	var glyph: String = InteractionPanel.action_key_text(action) if action != &"" else ""
+	var extra: float = cap_extra(glyph)
+	h.set_meta(&"cap_extra", extra)
 	if glyph != "":
 		var cap: PanelContainer = UiBuild.keycap(glyph, UiTokens.FONT_SMALL)
 		cap.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
@@ -318,6 +320,17 @@ func _row(action: StringName, key: StringName) -> HBoxContainer:
 	l.add_theme_color_override(&"font_color", UiTokens.PAPER)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l.custom_minimum_size = Vector2(width - 120, 0)
+	l.custom_minimum_size = Vector2(width - 120 - extra, 0)
 	h.add_child(l)
 	return h
+
+
+## LEAD r309 pad pass: how much wider than a one-letter cap the cap for `glyph` is ("D-pad Up" pushed the Stay quiet
+## card past the right edge at 720p); the row's text gives that width back so the card keeps its width.
+static func cap_extra(glyph: String) -> float:
+	if glyph.length() <= 1:
+		return 0.0
+	var f: Font = UiTokens.font_caps()
+	var fs: int = UiTokens.FONT_SMALL
+	return maxf(0.0, f.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+			- f.get_string_size("X", HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x)

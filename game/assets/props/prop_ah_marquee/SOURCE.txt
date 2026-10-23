@@ -1,6 +1,6 @@
 asset: prop_ah_marquee
 script: tools/blender/props/club_hero.py
-params: {"cat": {"group": "afterhours", "kind": "sign", "pin_only": true, "place": "wall", "surface": "metal"}, "fn": "marquee"}
+params: {"cat": {"group": "afterhours", "kind": "sign", "pin_only": true, "place": "wall_mount", "surface": "metal", "z": 4.0}, "fn": "marquee"}
 seed: 1739161924  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category props --asset prop_ah_marquee

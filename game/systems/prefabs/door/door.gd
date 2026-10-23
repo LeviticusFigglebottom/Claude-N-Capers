@@ -659,6 +659,7 @@ func _setup_interactable() -> void:
 		interactable.global_position = handle.global_position
 	_apply_lock_interaction()
 	interactable.extra_check = _availability
+	interactable.aim_filter = func(_crew: Node) -> bool: return _crew_operable()
 	interactable.completed.connect(_on_completed)
 
 
@@ -687,6 +688,15 @@ func _apply_lock_interaction() -> void:
 			interactable.kind = &"place_c4" if _charge_door() else &"open_door"
 			if _charge_door():
 				interactable.prompt_key = &"ui.prompt.place_c4"
+
+
+## B r309 pad pass (RT site gates: "Press X to open" + "Can't do that right now"): a door locked with a lock the crew
+## never operates here (CODE / ELECTRONIC / BARRED / VAULT, opened by a keypad, panel or the mission; no charge path) is
+## not a target at all, PD2-style. Unlocked, lockpick / keycard and charge doors are.
+func _crew_operable() -> bool:
+	if not locked:
+		return true
+	return lock == Lock.LOCKPICK or lock == Lock.KEYCARD or _charge_door()
 
 
 func _availability(crew: Node) -> StringName:

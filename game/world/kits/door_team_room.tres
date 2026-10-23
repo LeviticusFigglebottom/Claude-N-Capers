@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"door_team_room"
+purpose = &"staff_room"
+required_items = Array[StringName]([&"desk", &"chair", &"key_cabinet", &"charger", &"lockers", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"coffee_machine": 0.8,
+&"picture": 1
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(2, 4),
+"items": {&"binders": 1, &"mug": 2, &"notebook": 1.5, &"papers": 3, &"pen_cup": 1.5, &"plant_small": 0.6},
+"radius": 0.6
+},
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"door"]),
+"count": Vector2i(0, 1),
+"items": {&"bag": 1, &"bin": 2, &"box": 1},
+"radius": 0.8
+}
+}
+min_density = 0.4
+max_density = 1.8
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"charger", &"key_cabinet"])
+seed_salt = 20
+seed_id = &"security_office"
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"chair": PackedStringArray("prop_chair_office"),
+&"charger": PackedStringArray("prop_ah_radio_charger"),
+&"desk": PackedStringArray("prop_desk_office"),
+&"key_cabinet": PackedStringArray("prop_ah_key_hooks"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_notice_frame")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "Afterhours (staff_room), from security_office: AH G24 door team room: the key board (prop_ah_key_hooks), the radio charger, lockers, the head of security's desk; the door log desk is the map's (DoorLogDesk)."

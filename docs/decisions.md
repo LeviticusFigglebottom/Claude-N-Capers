@@ -1739,3 +1739,22 @@ shooting from cover never draws fire while a closer bot is visible. PD2 weighs a
 Also from A's AH co-op soak (PASS 3/3, 0 desync): A splits HeistNetSync._send_xforms into ≤ MTU chunks with a lower rate for
 far or calm civilians (the AH crowd sent 4340 B unreliable packets), then gates per-peer NetSync sends until that peer's
 runtime is ready (the join race behind the session-start "Node not found" spam).
+- (Amendment 2026-10-23, LEAD) P retracted the trigger: in an open leg the human took hits on par with the bots, so the 0-hit legs were
+  geometry (bots body-blocking the storefront spawn). The threat term stays on PD2-fidelity grounds; A's balance guard showed no
+  win-rate move (RT 4/4, AH 5/5 with the 6501 A/B re-run; human intake 0.71 → 0.71 dmg/s).
+
+## D-169: Rolling Thunder is DONE (2026-10-23 19:50, LEAD; D-115 gates)
+All D-115 gates are met (docs/process/heist_completion.md):
+- **Stage final, validate --stage=final PASS** on trunk (r307–r310) and on C's final map 62a16962 (regen byte-identical).
+- **Final shots:** the LEAD reviewed all 28 (C a506ec73). 22 passed as shot. 6 were fixed and re-shot (C 75e302ad, reviewed):
+  carpark stair lit (10 landing bulkheads; it is an escape route), the office sun leak (SUN_SKIP_ROOMS), the shared magenta
+  neon 6.0 → 1.8 (diner + Vossberg signs read pink), and the east-arm and welfare reframes. Escort wheel hubs are painted
+  metal (b85898ca).
+- **e2e:** A's harness, Routine 9/10 and 4/4 after D-168 (env_a.md -50 + the D-168 balance guard). Hazardous losses are bot
+  skill. P's windowed confirm pair (clean = truck + 3 bags; blown = harsh but fair) and traversal set are PASS on trunk
+  (one-send lift 9.8 s, fences).
+- **Co-op:** A's 4-client soak PASS (0 desync in 38/40 rounds; memory within limits).
+- **Strings / VO:** B's slice is done. Board / select / briefing were reviewed (r307 shots); the pad-only flow has 0 issues.
+- **Cast:** D's in-map reads in both phases; the seated escorts are holstered and grip the new wheel (2877b00f, 2af75541).
+- **Ghost gate:** n/a (loud-forced, D-158).
+B pushes the RT un-hide patch (rt_unhide_D160) now; it lands in the next round. **Afterhours stays the active build (D-165).**

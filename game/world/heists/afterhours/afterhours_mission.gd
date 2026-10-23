@@ -356,7 +356,11 @@ func _spawn_safe_bags() -> void:
 	var safe_n: int = int(variant(&"safe_bags")) if variant(&"safe_bags") != null else REQUIRED_BAGS + 1
 	if _slot_active(&"count_room", &"count_done"):
 		safe_n += 1
-	spawn_loot(LOOT_SAFE, TAG_SAFE_LOOT, safe_n)
+	# P AH read #3: the shelves sit inside the safe's solid collision box, so a live body was pushed out (one bag
+	# behind the safe, unreachable). Placed loot rests frozen on its shelf until picked up (LootBag.release thaws it);
+	# the open safe's body does not block aiming at it (InteractionSystem._container_hit).
+	for b: Variant in spawn_loot(LOOT_SAFE, TAG_SAFE_LOOT, safe_n):
+		(b as LootBag).freeze = true
 
 
 func _rare_start() -> void:

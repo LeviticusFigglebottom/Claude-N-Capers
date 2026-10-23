@@ -300,6 +300,7 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	Log.info(&"heist", "replica of %s (seed %d) built: %d map ids, %d missing" % [
 		heist_id, run_seed, (data.get("map_ids", {}) as Dictionary).size(), replica_missing_ids.size()])
 	EventBus.heist_loaded.emit(heist_id, run_seed, variants)
+	net_sync.notify_ready.call_deferred()  # D-168: after this frame's map _ready work, the host may replicate to us
 	return true
 
 

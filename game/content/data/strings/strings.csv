@@ -1664,7 +1664,7 @@ ui.preplan.vote_line,{group}: {choice}  ({cast}/{voters} votes)
 ui.preplan.vote_solo,Solo: your vote decides every plan.
 ui.preplan.vote_host_ties,Plans need a majority vote; the host breaks ties.
 ui.preplan.confirm,Confirm plan
-ui.preplan.hint,Spending cash is paid when you confirm. Esc / B returns from a list to the blueprint.
+ui.preplan.hint,Spending cash is paid when you confirm. {key} returns from a list to the blueprint.
 ui.preplan.nothing_here,No assets for this point.
 ui.preplan.invalid,The plan is over budget or breaks a rule. Remove something first.
 ui.preplan.row,"{name}  -  {cost}, {favors}"

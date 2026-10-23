@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_ah_clock_in/prop_ah_clock_in.glb" id="1_model"]
+
+[node name="PropAhClockIn" type="Node3D"]
+metadata/kind = &"terminal"
+metadata/mount = &"wall"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[editable path="Model"]

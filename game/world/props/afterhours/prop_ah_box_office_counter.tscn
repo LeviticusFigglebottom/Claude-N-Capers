@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_ah_box_office_counter/prop_ah_box_office_counter.glb" id="1_model"]
+
+[node name="PropAhBoxOfficeCounter" type="Node3D"]
+metadata/kind = &"counter"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

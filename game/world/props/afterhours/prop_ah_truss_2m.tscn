@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_ah_truss_2m/prop_ah_truss_2m.glb" id="1_model"]
+
+[node name="PropAhTruss2m" type="Node3D"]
+metadata/kind = &"truss"
+metadata/mount = &"ceiling"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[editable path="Model"]

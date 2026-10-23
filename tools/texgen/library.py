@@ -49,6 +49,11 @@ LIBRARY: dict[str, dict] = {
     "plywood_painted": {"size": 1024},
     # RT-C2 GPU-21: the diner's checkerboard vinyl (the vinyl_floor model, cream / charcoal).
     "vinyl_checker": {"size": 1024},
+    # AH-C2 (Afterhours G2, the club palette: velvet plum, black lacquer, gilded plaster) + the plum carpet runners.
+    "velvet_plum": {"size": 1024},
+    "lacquer_black": {"size": 1024},
+    "plaster_gilded": {"size": 1024},
+    "carpet_plum": {"size": 1024},
     # First-person weapon materials (D-026): 1 UV unit = 1 m, 1024 px/m.
     "polymer_black": {"size": 1024, "tile_m": 1.0},
     "polymer_stipple": {"size": 1024, "tile_m": 1.0},
