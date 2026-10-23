@@ -26,7 +26,7 @@ extends TestCase
 const GLB: String = "res://assets/characters/char_arms_fp/char_arms_fp.glb"
 const SOURCE: String = "res://assets/characters/char_arms_fp/SOURCE.txt"
 ## D2-03 follow-up: crew heisters with a first-person sleeve variant char_arms_fp_<heister>.
-const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren", "marten", "jay"]
+const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren", "marten", "jay", "juno", "hale"]
 const WEAPONS_DIR: String = "res://content/data/weapons"
 const FPS: float = 30.0
 const FINGERS: Array[String] = ["thumb", "index", "middle", "ring", "pinky"]

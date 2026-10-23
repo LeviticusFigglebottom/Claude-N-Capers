@@ -8,7 +8,7 @@
 ## Owner: ENV D.
 extends Node
 
-const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay"]
+const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale"]
 
 var _out: String = "user://sleeve_pistol_review"
 var _weapon: StringName = &"weapon.kestrel_p9"

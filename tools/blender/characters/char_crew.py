@@ -44,6 +44,11 @@ VARIANTS = {
                          "hair_color": "grey", "heister": "marten"},
     "char_crew_jay": {"height": 1.83, "build": 0.15, "gender": 0.0, "age": 0.15, "skin": 4, "hair": "buzz",
                       "hair_color": "dark", "beard_shadow": 0.3, "heister": "jay"},
+    # D4-03: the roster's seventh and eighth heisters
+    "char_crew_juno": {"height": 1.73, "build": 0.35, "gender": 1.0, "age": 0.3, "skin": 1, "hair": "side_part",
+                       "hair_color": "blond", "heister": "juno"},
+    "char_crew_hale": {"height": 1.85, "build": 0.75, "gender": 0.0, "age": 0.5, "skin": 6, "hair": "bald",
+                       "hair_color": "dark", "beard_shadow": 0.5, "heister": "hale"},
 }
 
 
@@ -143,12 +148,12 @@ def build(ctx) -> None:
         recipe(kit)
 
     build_character(ctx, rec)
-    if cg.apply_strand_uvs(kits[0]):   # Dutch's beard: strand UVs instead of the box projection
-        _headwear_into_hair(ctx)
+    cg.apply_strand_uvs(kits[0])   # Dutch's beard: strand UVs instead of the box projection
+    _headwear_into_hair(ctx)       # all-hair Headwear (Dutch's beard, Hale's moustache) joins Hair
 
 
 def _headwear_into_hair(ctx) -> None:
-    """Dutch: the beard and moustache are hair, so they join the ``Hair`` mesh (the whole ``Headwear``
+    """Facial hair (Dutch's beard and moustache, Hale's moustache) is hair, so it joins the ``Hair`` mesh (the whole ``Headwear``
     is hair-material: masks seat over hair, garments may not poke into them, see test_crew.gd)."""
     import bpy
 
@@ -167,4 +172,4 @@ def _headwear_into_hair(ctx) -> None:
     tris["Hair"] = tris.get("Hair", 0) + tris.pop("Headwear")
     ctx.source_extra["tris_by_mesh"] = json.dumps(tris, sort_keys=True)
     ctx.source_extra["meshes"] = ",".join(sorted(tris))
-    ctx.source_extra["hair_note"] = f"beard + moustache ({n_hw} tris) joined into Hair"
+    ctx.source_extra["hair_note"] = f"facial hair ({n_hw} tris) joined into Hair"

@@ -447,9 +447,21 @@
 			"test": false
 		},
 		{
+			"asset": "char_crew_hale",
+			"id": "crew_hale",
+			"scene": "res://world/characters/crew_hale/crew_hale.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_crew_jay",
 			"id": "crew_jay",
 			"scene": "res://world/characters/crew_jay/crew_jay.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_crew_juno",
+			"id": "crew_juno",
+			"scene": "res://world/characters/crew_juno/crew_juno.tscn",
 			"test": false
 		},
 		{

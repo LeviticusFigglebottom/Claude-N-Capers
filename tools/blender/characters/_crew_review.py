@@ -2,7 +2,7 @@
 
     blender -b --factory-startup --python tools/blender/characters/_crew_review.py -- <mode> <out.png>
 
-* ``lineup``: the four heisters in A-pose, each bare-faced and then masked (the mask glb placed at the
+* ``lineup``: the heisters in A-pose, each bare-faced and then masked (the mask glb placed at the
   game's ``Head/Socket`` point: ``character_spec.gd`` SOCKET_POINTS["Head"] scaled by height, so the
   render shows the in-game fit), library materials (``_crew_review/crew_lineup.png``).
 * ``silhouette``: flat black figures, masked, 30 m from a 60 deg / 1080 p camera (~56 px tall), front
@@ -31,7 +31,8 @@ ROOT = os.environ.get("CHAR_ROOT") or str(ASSETS / "characters")
 MASKS = str(ASSETS / "masks")
 CREW = [("char_crew_rook", 1.84, "mask_gilded_heron"), ("char_crew_sable", 1.75, "mask_base_vulpine"),
         ("char_crew_dutch", 1.86, "mask_base_bruiser"), ("char_crew_wren", 1.68, "mask_base_owl"),
-        ("char_crew_marten", 1.70, "mask_base_signal"), ("char_crew_jay", 1.83, "mask_base_lucha")]
+        ("char_crew_marten", 1.70, "mask_base_signal"), ("char_crew_jay", 1.83, "mask_base_lucha"),
+        ("char_crew_juno", 1.73, "mask_base_moth"), ("char_crew_hale", 1.85, "mask_base_welder")]
 HEAD_SOCKET = Vector((0.0, 0.0767, 1.666))   # Godot (0, 1.666, -0.0767) at 1.78 m, in Blender axes
 mode, out = sys.argv[sys.argv.index("--") + 1:][:2]
 
@@ -145,9 +146,11 @@ if mode == "lineup":
         figure(cid, h, None, Vector((-(xs[2 * i] - mid), 0, 0)), 0.0)
         figure(cid, h, mask, Vector((-(xs[2 * i + 1] - mid), 0, 0)), 0.0)
     studio(e_key=1500, e_fill=500, e_rim=1300, spread=2.0)
-    sc.render.resolution_x, sc.render.resolution_y = 3600, 1000
-    cam_d.lens = 50
-    aim((0.0, 21.5, 1.1), (0, 0, 0.92))
+    # sized for six heisters at 3600 px / 21.5 m; both scale with the roster so the figures keep their pixel size
+    grow = len(CREW) / 6
+    sc.render.resolution_x, sc.render.resolution_y = round(3600 * grow), 1000
+    cam_d.lens = 50 / grow ** 0.6
+    aim((0.0, 21.5 * grow, 1.1), (0, 0, 0.92))
     render(out)
 elif mode == "silhouette":
     bg.inputs[0].default_value = (0.8, 0.8, 0.8, 1)

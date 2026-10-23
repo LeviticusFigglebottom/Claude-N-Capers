@@ -1,0 +1,23 @@
+asset: char_crew_hale
+script: tools/blender/characters/char_crew.py
+params: {"age": 0.5, "beard_shadow": 0.5, "build": 0.75, "gender": 0.0, "hair": "bald", "hair_color": "dark", "height": 1.85, "heister": "hale", "skin": 6}
+seed: 2503421628  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_crew_hale
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0932, 0.1184] (model [0.0000, 1.3511, 0.1376], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0842, -0.0922] (model [0.0000, 1.7315, -0.0797], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2029, 0.0528, 0.0368] (model [0.2029, 1.0435, 0.0394], Godot axes, rest pose)
+body_faces_culled: 5806
+body_params: {"age": 0.5, "beard_shadow": 0.5, "build": 0.75, "gender": 0.0, "hair": "bald", "hair_color": "dark", "hair_peak": 0.0, "height": 1.85, "lip": "auto", "skin": 6}
+bones: 52
+faces_hidden_by_chore_jacket: 2993
+fp_sleeve: {"cuff": "char_crew_hale_jacket", "glove": "char_crew_glove_work", "sleeve": "char_crew_hale_jacket"}
+hair_note: facial hair (404 tris) joined into Hair
+head_note: hat-free; the crew mask attaches at Head (face centre)
+look: Hale: boxy sand canvas chore jacket buttoned to the point collar, patch pockets; navy henley, dark jeans, brown work boots, yellow work gloves; bald, dark moustache
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26892
+tris_by_mesh: {"Body": 7216, "Gear": 696, "Hair": 984, "Outfit": 17996}
