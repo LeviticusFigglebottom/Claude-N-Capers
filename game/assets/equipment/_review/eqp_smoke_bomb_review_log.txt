@@ -1,0 +1,2 @@
+eqp_smoke_bomb aabb pos (-0.0438, -0.057, -0.038885) size (0.0796, 0.1608, 0.074685) (x 0.08  y 0.16  z 0.07)  tris 1522
+  node Vent (Node3D) at (0.0, 0.101, 0.0)
