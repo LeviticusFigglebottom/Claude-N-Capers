@@ -387,6 +387,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_contact_hollis_rt",
+			"id": "contact_hollis_rt",
+			"scene": "res://world/characters/contact_hollis_rt/contact_hollis_rt.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_contact_odile",
 			"id": "contact_odile",
 			"scene": "res://world/characters/contact_odile/contact_odile.tscn",
