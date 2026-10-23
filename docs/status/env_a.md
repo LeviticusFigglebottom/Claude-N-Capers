@@ -4,6 +4,17 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-63) D-167, AH safe cash, camera station, AH soak (2026-10-23)
+- D-167: PoliceBrain.may_cuff (no special / Aegis / Brandt cuffs), cuffed is not custody for the solo fail, tested
+  (397e8bc2). AH safe cash frozen on its shelves + aimable through the open safe (ef468abe; the bags were pushed out of
+  OfficeSafe's solid box). Camera station: no prompt while the operator is on duty, need_skill, cameras_down (0d86ff1d,
+  069e2754 with B aa39bfe3). Special death log host-only (54b89ee0). AH Hazardous seed 7 recheck PASS (2 tases).
+- AH soak 600 s x3 (4 peers / 2+2 bots / civilian start): PASS, 0 desync, 0 SCRIPT ERROR, host +10..18 MB, peers
+  +25..34 MB, flat after warm-up. Open (proposed, A): NetSync join race (14 engine ERRORs at start) and the 4.3 kB
+  unreliable xform packet with 56 civilians (> MTU).
+- Target selection (P's Glasshouse): nearest visible crew / perk aggro weight, no bot weight; no PD2 threat term.
+  Proposal sent, no change.
+
 ### (-62) P Hazardous items, RT soak, AH cast re-run, AH perf first read (2026-10-23)
 - P Hazardous: bots free a tased / cloaker-pinned teammate first (CrewAiTweak.rescue_priority_m), special spawn / death
   logged with alive vs cap, caps under churn tested (0585920d). The Stinger cap holds (alive <= 2 over 700 s; P's many
