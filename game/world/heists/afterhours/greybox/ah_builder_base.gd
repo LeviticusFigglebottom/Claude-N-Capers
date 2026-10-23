@@ -46,8 +46,9 @@ const STEP_INSET: float = 0.005
 const RAMP_TONGUE: float = 0.3
 const VIEWMODEL_LIT_LAYER: int = 1 << 20
 ## Exports a row may set before the prefab has them (ENV A lands the export later; set_prop skips them until then):
-## BagLift.phase_block_key (env/a-core 417425fd); Door.height_m (D-158, env/a-core 75400478).
-const OPTIONAL_PROPS: Array[String] = ["phase_block_key", "height_m"]
+## BagLift.phase_block_key (env/a-core 417425fd); Door.height_m (D-158, env/a-core 75400478); Door.civilian_allowed (A, the
+## D-075 guest doors: P casing seed 6501).
+const OPTIONAL_PROPS: Array[String] = ["phase_block_key", "height_m", "civilian_allowed"]
 
 var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()

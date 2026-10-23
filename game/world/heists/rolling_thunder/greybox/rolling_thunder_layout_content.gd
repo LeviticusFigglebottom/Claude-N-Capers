@@ -317,6 +317,7 @@ const ALWAYS: Dictionary = {
 				"travel_s": 8.0,
 				"capacity": 2,
 				"door_fold": true,
+				"send_prompt_keys": ["ui.prompt.send_lift_ground", "ui.prompt.send_lift_deck2", "ui.prompt.send_lift_roof"],
 				"car_size_m": [2.6, 2.4, 2.7],
 				"objective_tag": "goods_lift",
 				"@landings": [["GoodsLiftLanding2", [0.0, 3.5, 0.0]], ["GoodsLiftLandingR", [0.0, 7.0, 0.0]]],
