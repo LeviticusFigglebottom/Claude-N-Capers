@@ -231,6 +231,8 @@ func _build_route() -> void:
 	if bool(_npc.spawn_info.get("no_patrol", false)):
 		return  # A2-02 S8.2: the camera operator holds his station (post), never patrols.
 	var graph: PatrolGraph = _npc.spawn_info.get("patrol_graph") as PatrolGraph
+	if graph == null and StringName(_npc.spawn_info.get("idle_activity", &"")) != &"":
+		return  # D r16 (AH door bouncer): a post activity and no named graph = he holds the post, no nearest-graph patrol
 	if graph == null and _runtime != null:
 		var graphs: Array[Node] = []
 		for g: Node in get_tree().get_nodes_in_group(G.PATROL_GRAPH):

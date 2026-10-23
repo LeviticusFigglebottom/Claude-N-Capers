@@ -77,6 +77,10 @@ func test_host_client_parity() -> void:
 		snap = await _snapshot()
 	var ok: bool = bool(snap.get("has_rt", false))
 	assert_true(ok, "client built a replica (%s)" % snap)
+	# D-168: the host replicates to the client only once it reported its replica ready (no RPC to a missing NetSync).
+	var peer: int = multiplayer.get_peers()[0] if not multiplayer.get_peers().is_empty() else 0
+	var gated: bool = await wait_until(func() -> bool: return _rt.net_sync.replicates_to(peer), _budget(5.0))
+	assert_true(gated and _rt.net_sync._pending.is_empty(), "the client's KIND_READY arrived: replicated to, nothing held")
 	if ok:
 		await _check_bring_up(snap)
 		var slot: int = int(snap["local_slot"])
