@@ -31,6 +31,8 @@ const RNG_STREAM: StringName = &"cameras"
 const LOOP_FLAG: StringName = &"stealth.camera_loop"
 ## The loop needs the skill (was BLOCK_DISABLED = "Out of order", B r308 05_camera_operator).
 const BLOCK_NEED_SKILL: StringName = &"ui.blocked.need_skill"
+## The operator is down and every feed with him (B aa39bfe3).
+const BLOCK_CAMERAS_DOWN: StringName = &"ui.blocked.cameras_down"
 ## Operator states that take him off duty (S8.2 "killed or dominated").
 const OFF_DUTY_STATES: Array[int] = [
 	Enums.AlertState.DOMINATED, Enums.AlertState.TIED, Enums.AlertState.SURRENDERED,
@@ -254,7 +256,7 @@ func _dispatch(cam: SecurityCamera) -> void:
 
 func _loop_check(crew: Node) -> StringName:
 	if cameras_off:
-		return InteractableComponent.BLOCK_STATE
+		return BLOCK_CAMERAS_DOWN
 	var slot: int = int(crew.get(&"slot")) if crew != null else -1
 	if slot < 0 or not Modifiers.flag(slot, LOOP_FLAG):
 		return BLOCK_NEED_SKILL

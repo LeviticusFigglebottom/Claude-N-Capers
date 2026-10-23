@@ -142,6 +142,7 @@ func test_s8_2_no_console_prompt_while_the_operator_is_on_duty() -> void:
 	assert_false(s.interactable.aim_filter.call(_crew()), "operator at the desk: no prompt at all")
 	_kill(s.operator)
 	assert_true(s.interactable.aim_filter.call(_crew()), "operator down: the console targets again")
+	assert_eq(s._loop_check(_crew()), CameraStation.BLOCK_CAMERAS_DOWN, "...and says the cameras are down")
 
 
 func test_s8_2_dominate_operator_disables_cameras() -> void:
