@@ -333,6 +333,18 @@
 			"test": false
 		},
 		{
+			"asset": "char_club_bartender_c",
+			"id": "club_bartender_c",
+			"scene": "res://world/characters/club_bartender_c/club_bartender_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bartender_d",
+			"id": "club_bartender_d",
+			"scene": "res://world/characters/club_bartender_d/club_bartender_d.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_club_bouncer",
 			"id": "club_bouncer",
 			"scene": "res://world/characters/club_bouncer/club_bouncer.tscn",
@@ -342,6 +354,30 @@
 			"asset": "char_club_bouncer_b",
 			"id": "club_bouncer_b",
 			"scene": "res://world/characters/club_bouncer_b/club_bouncer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_c",
+			"id": "club_bouncer_c",
+			"scene": "res://world/characters/club_bouncer_c/club_bouncer_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_d",
+			"id": "club_bouncer_d",
+			"scene": "res://world/characters/club_bouncer_d/club_bouncer_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_e",
+			"id": "club_bouncer_e",
+			"scene": "res://world/characters/club_bouncer_e/club_bouncer_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_club_bouncer_f",
+			"id": "club_bouncer_f",
+			"scene": "res://world/characters/club_bouncer_f/club_bouncer_f.tscn",
 			"test": false
 		},
 		{

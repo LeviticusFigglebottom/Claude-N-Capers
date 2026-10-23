@@ -195,6 +195,8 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_nylon_black": ("#26272B", 0.45, 0.0, "cloth"),  # D3-01 afterhours: bouncer's black nylon bomber
     "char_satin_gold": ("#B8954E", 0.35, 0.0, "cloth"),  # D3-01 afterhours: patron's gold satin mini dress
     "char_club_magenta": ("#9E3A72", 0.70, 0.0, "cloth"),  # D3-01 afterhours: patron's magenta top
+    "char_club_lime": ("#9BC43A", 0.60, 0.0, "cloth"),  # D-165 afterhours: neon-safe lime accent (wristbands, clubwear)
+    "char_club_coral": ("#E0705A", 0.60, 0.0, "cloth"),  # D-165 afterhours: neon-safe coral accent
     "char_hoodie_cream": ("#B9AE98", 0.95, 0.0, "cloth"),  # D3-01 afterhours: patron's cream hoodie
     "char_suit_plum": ("#4A2C40", 0.76, 0.0, "cloth"),  # D-115 glasshouse: Greta Vossberg's deep plum trouser suit
     "char_knit_oat": ("#A89878", 0.95, 0.0, "cloth"),  # D-115 glasshouse: admin clerk's oatmeal cardigan

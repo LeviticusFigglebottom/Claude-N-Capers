@@ -49,8 +49,9 @@
 			"ram_driver": ["contact_hollis_rt"]
 		},
 		"afterhours": {
-			"club_bouncer": ["club_bouncer", "club_bouncer_b"],
-			"club_bartender": ["club_bartender", "club_bartender_b"],
+			"club_bouncer": ["club_bouncer", "club_bouncer_b", "club_bouncer_c", "club_bouncer_d", "club_bouncer_e",
+				"club_bouncer_f"],
+			"club_bartender": ["club_bartender", "club_bartender_b", "club_bartender_c", "club_bartender_d"],
 			"club_dj": ["club_dj"],
 			"club_patron": ["club_patron", "club_patron_b", "club_patron_c", "club_patron_d"]
 		},
