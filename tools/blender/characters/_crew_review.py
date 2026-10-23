@@ -183,7 +183,7 @@ elif mode == "silhouette":
             if o.type != "CAMERA":
                 bpy.data.objects.remove(o, do_unlink=True)
         for i, (cid, h, mask) in enumerate(CREW):
-            figure(cid, h, mask, Vector((-(i - 1.5) * 1.7, 0, 0)), rot)
+            figure(cid, h, mask, Vector((-(i - (len(CREW) - 1) / 2) * 1.7, 0, 0)), rot)
         for o in bpy.data.objects:
             if o.type == "MESH":
                 for s in range(len(o.material_slots)):
