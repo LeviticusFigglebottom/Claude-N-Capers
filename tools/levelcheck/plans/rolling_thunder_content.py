@@ -1364,7 +1364,7 @@ def review_cameras() -> List[list]:
         # the car park under the Skyway fascia (the old eye stood 1.3 m behind a shelter's back panel)
         ["rc_ext_junction", "X3", [-16.5, 1.7, 17.5], [6.0, 3.5, -6.0]],
         ["rc_ext_north_arm", "X1", [-4.0, 1.7, -8.0], [-5.0, 2.0, -60.0]],
-        ["rc_ext_east_arm", "X6", [40.0, 1.7, -12.6], [75.0, -3.0, 0.0]],
+        ["rc_ext_east_arm", "X6", [38.0, 1.6, -5.5], [75.0, -3.0, 1.0]],   # r309: off the car park wall, in the lane
         ["rc_ext_plaza", "X3", [-16.0, 1.7, 22.0], [-40.0, 3.0, 28.0]],
         ["rc_ext_tannery_west", "X1", [0.0, 1.7, 2.0], [-70.0, 2.0, 0.0]],
         # GPU-22: from Tannery's south sidewalk at the junction corner, east along the diner's Tannery face to the
@@ -1392,7 +1392,7 @@ def review_cameras() -> List[list]:
         ["rc_site_frame", "FG", [-48.0, 1.7, -48.0], [-34.0, 1.0, -30.0]],
         ["rc_site_slab", "F1", [-34.0, 5.2, -30.6], [-30.0, 4.0, -50.0]],
         ["rc_site_cabins", "X4", [-40.0, 1.7, -14.0], [-52.0, 1.0, -22.0]],
-        ["rc_site_welfare", "C2", [-53.5, 1.7, -17.8], [-53.5, 0.9, -25.0]],
+        ["rc_site_welfare", "C2", [-54.6, 1.6, -17.3], [-52.6, 0.9, -25.0]],   # r309: diagonal, the east wall recedes
         ["rc_underpass", "X2", [62.0, -3.3, 2.0], [92.0, -4.0, 0.0]],
         ["rc_sniper_skyway", "", [12.0, 10.6, -20.0], [40.0, 0.0, -14.0]],
     ]
