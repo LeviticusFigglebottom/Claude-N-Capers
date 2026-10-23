@@ -75,7 +75,7 @@ func diff(c: Dictionary, since_ms: int, tol: Dictionary) -> Array[String]:
 ## One host state vs the client: key (kind + id) -> message for every value that differs.
 func diff_one(h: Dictionary, c: Dictionary, tol: Dictionary) -> Dictionary:
 	var out: Dictionary = {}
-	for k: String in ["phase", "went_loud", "objectives", "reveals", "items"]:
+	for k: String in ["phase", "went_loud", "objectives", "reveals", "items", "civ"]:
 		if h.has(k) and str(h[k]) != str(c.get(k)):
 			out[k] = "%s host %s client %s" % [k, h[k], c.get(k)]
 	for k: String in ["prefabs", "doors"]:

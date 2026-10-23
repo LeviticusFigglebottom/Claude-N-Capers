@@ -247,12 +247,14 @@ static func of_state(rt: HeistRuntime) -> Dictionary:
 	for n: Node in rt.npcs():
 		npcs[NetIds.of(n)] = _r((n as Node3D).global_position)
 	var items: Dictionary = {}
+	var civ: Dictionary = {}
 	for c: CrewController in rt.crew_members():
 		items[c.slot] = c.items.duplicate()
+		civ[c.slot] = c.civilian  # S1.3 per-crew gear (AH civilian start, A4-03)
 	var reveals: Array = Array(rt.preplan.reveals()).map(func(g: StringName) -> String: return String(g))
 	reveals.sort()
 	return {"phase": int(rt.phase), "went_loud": rt.went_loud, "prefabs": prefabs, "lifts": lifts, "doors": doors,
-		"bags": bags, "npcs": npcs, "items": items, "reveals": reveals,
+		"bags": bags, "npcs": npcs, "items": items, "civ": civ, "reveals": reveals,
 		"objectives": rt.hud_model.objectives.map(func(o: Dictionary) -> String:
 			return "%s:%d" % [o["id"], int(o["state"])]) if rt.hud_model != null else []}
 
