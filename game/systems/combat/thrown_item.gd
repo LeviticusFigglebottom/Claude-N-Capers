@@ -8,6 +8,8 @@
 ## - incendiary: on its first contact a fire pool of radius_m burns incendiary_pool_s: NPCs inside are set
 ##   burning (BurnStatus, DamageType.FIRE, panic roll); crew are never burnt (no friendly fire).
 ## - throwing_knife: one MELEE hit of `damage` on the first target it touches, then it drops.
+## - smoke (D-163 Sicario): on its first contact a smoke cloud of radius_m stays smoke_s (SmokeZones: crew inside avoid
+##   crew_bullet_avoid of the bullets, enemies inside hit at npc_accuracy_mult; no LOS blocking, PD2).
 ## Clients only fly the visual (and show the pool).
 class_name ThrownItem
 extends Node3D
@@ -17,7 +19,12 @@ const KIND_FRAG: StringName = &"frag"
 const KIND_CONCUSSION: StringName = &"concussion"
 const KIND_INCENDIARY: StringName = &"incendiary"
 const KIND_KNIFE: StringName = &"throwing_knife"
-const KINDS: Array[StringName] = [KIND_FRAG, KIND_CONCUSSION, KIND_INCENDIARY, KIND_KNIFE]
+const KIND_SMOKE: StringName = &"smoke"
+const KINDS: Array[StringName] = [KIND_FRAG, KIND_CONCUSSION, KIND_INCENDIARY, KIND_KNIFE, KIND_SMOKE]
+## D-163 smoke cloud defaults ◇ (params override: radius_m, smoke_s, crew_bullet_avoid, npc_accuracy_mult).
+const SMOKE_RADIUS_M: float = 6.0
+const SMOKE_S: float = 10.0
+const CUE_SMOKE: StringName = &"cue.smoke_bomb"
 const POOL_TICK_S: float = 0.25
 ## audio_cues v1.3 (D-073).
 const CUE_FRAG: StringName = &"cue.throwable_frag"
@@ -72,7 +79,7 @@ func _physics_process(delta: float) -> void:
 	if _age > tw.throw_lifetime_s:
 		_remove()
 		return
-	if Net.is_authority() and kind() != KIND_INCENDIARY and kind() != KIND_KNIFE \
+	if Net.is_authority() and not [KIND_INCENDIARY, KIND_KNIFE, KIND_SMOKE].has(kind()) \
 			and _age >= float(params.get("fuse_s", 2.5)):
 		_detonate(global_position)
 		return
@@ -117,6 +124,9 @@ func _contact(hit: Dictionary, tw: CombatTweak) -> void:
 		KIND_INCENDIARY:
 			global_position = pos + n * 0.05
 			_ignite_pool(tw)
+		KIND_SMOKE:
+			global_position = pos + n * 0.05
+			_start_smoke()
 		KIND_KNIFE:
 			var t: Object = hit.get("target") as Object
 			var body: bool = t != null and is_instance_valid(t) and t.has_method(&"take_hit")
@@ -181,6 +191,19 @@ static func spawn_fire_pool(near: Node, pos: Vector3, radius: float, duration: f
 	return item
 
 
+## D-163: the smoke cloud starts (it counts down through the pool timer; SmokeZones reads it).
+func _start_smoke() -> void:
+	landed = true
+	pool_left = float(params.get("smoke_s", SMOKE_S))
+	_cue(CUE_SMOKE, global_position, int(params.get("attacker", 0)))
+	_show_pool()
+
+
+## The cloud radius of a smoke item (m).
+func smoke_radius() -> float:
+	return float(params.get("radius_m", SMOKE_RADIUS_M))
+
+
 func _ignite_pool(tw: CombatTweak) -> void:
 	landed = true
 	pool_left = float(params.get("pool_s", tw.incendiary_pool_s))  # B5: a trip mine's fire sets its own duration
@@ -195,8 +218,8 @@ func _tick_pool(delta: float, tw: CombatTweak) -> void:
 		if Net.is_authority():
 			_remove()
 		return
-	if not Net.is_authority():
-		return
+	if not Net.is_authority() or kind() == KIND_SMOKE:
+		return  # smoke: SmokeZones reads the live cloud, nothing burns
 	_pool_tick -= delta
 	if _pool_tick > 0.0:
 		return
@@ -246,6 +269,9 @@ func _apply_net_state(d: Dictionary) -> void:
 func _show_pool() -> void:
 	if get_node_or_null(^"Pool") != null:
 		return
+	if kind() == KIND_SMOKE:
+		_show_smoke()
+		return
 	var fire: CueEmitter = CueEmitter.new()
 	fire.name = "FireLoop"
 	fire.cue_id = CUE_FIRE_LOOP
@@ -265,6 +291,23 @@ func _show_pool() -> void:
 	mat.emission = Color(1.0, 0.4, 0.05)
 	cyl.material = mat
 	mi.mesh = cyl
+	add_child(mi)
+
+
+## Every peer: an original placeholder cloud (a translucent grey dome; C's smoke VFX replaces it).
+func _show_smoke() -> void:
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Pool"
+	var sm: SphereMesh = SphereMesh.new()
+	sm.radius = smoke_radius()
+	sm.height = smoke_radius() * 1.2
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
+	mat.albedo_color = Color(0.7, 0.7, 0.72, 0.45)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	sm.material = mat
+	mi.mesh = sm
 	add_child(mi)
 
 

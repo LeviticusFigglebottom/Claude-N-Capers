@@ -67,6 +67,8 @@ const SVC_BUFFS: String = "buffs"
 const SVC_POCKET_ECM: String = "pocket_ecm"
 ## D-162: Maniac Hysteria stacks per holder slot (HUD).
 const SVC_MANIAC: String = "maniac"
+## D-163: TagPairs (Tag Team) per holder slot.
+const SVC_TAG_PAIRS: String = "tag_pairs"
 ## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
 const KIND_CLOSED: StringName = &"heist_closed"
 const KIND_LEFT: StringName = &"heist_left"
@@ -372,6 +374,9 @@ func services_state() -> Dictionary:
 			maniac[c.slot] = snappedf(PerkManiac.stacks_of(c), 1.0)
 	if not maniac.is_empty():
 		out[SVC_MANIAC] = maniac
+	var tags: TagPairs = _runtime.service(TagPairs.SERVICE) as TagPairs
+	if tags != null and not tags.pairs.is_empty():
+		out[SVC_TAG_PAIRS] = tags.net_state()
 	return out
 
 
@@ -553,6 +558,8 @@ func apply_services(svc: Dictionary) -> void:
 	var ecm: EcmSystem = _runtime.service(EcmSystem.SERVICE) as EcmSystem
 	if svc.has(SVC_POCKET_ECM) and ecm != null:
 		ecm.apply_net_state(svc[SVC_POCKET_ECM] as Dictionary)
+	if svc.has(SVC_TAG_PAIRS):
+		TagPairs.of(_runtime).apply_net_state(svc[SVC_TAG_PAIRS] as Dictionary)
 	var maniac: Dictionary = svc.get(SVC_MANIAC, {}) as Dictionary
 	for k: Variant in maniac:
 		var mc: Node = _runtime.crew_controller(int(k))

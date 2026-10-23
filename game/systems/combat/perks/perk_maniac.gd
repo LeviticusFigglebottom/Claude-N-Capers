@@ -2,13 +2,15 @@
 ## Hysteria stacks (x conversion, at most gain_cap per gain_window_s, up to max_stacks); every decay_interval_s the stacks
 ## lose decay_fraction of themselves + decay_flat. Every stacks_per_absorb stacks give 1 flat damage absorption (display
 ## units) off each hit taken: the holder x self_absorb_mult (Insanity); with `team` (Outburst) every teammate gets the
-## best sharing holder's absorb (they do not stack). absorb_for(crew) is the CrewHealth hook. Stacks replicate per holder (META on
+## best sharing holder's absorb (they do not stack): the generic PerkComponent.absorb_for, pool POOL. Stacks replicate per holder (META on
 ## the CrewController, HeistNetSync SVC_MANIAC) for the HUD.
 class_name PerkManiac
 extends PerkComponent
 
 const KEY: StringName = &"perk.maniac"
 const META: StringName = &"maniac_stacks"
+## Absorb pool: several Hysteria holders never stack (the best one counts).
+const POOL: StringName = &"hysteria"
 
 var stacks: float = 0.0
 var _gained: float = 0.0
@@ -49,22 +51,13 @@ func base_absorb() -> float:
 	return floorf(stacks / per) if per > 0.0 else 0.0
 
 
-## The flat absorption `c` gets per hit taken: its own Maniac (x self_absorb_mult) or the best sharing teammate's.
-static func absorb_for(c: CrewController) -> float:
-	var rt: HeistRuntime = HeistRuntime.of(c)
-	if rt == null:
-		return 0.0
-	var best: float = 0.0
-	for m: CrewController in rt.crew_members():
-		var perks: CrewPerks = PerkHooks.of(m)
-		var p: PerkManiac = perks.component(KEY) as PerkManiac if perks != null else null
-		if p == null:
-			continue
-		if m == c:
-			best = maxf(best, p.base_absorb() * p.num("self_absorb_mult"))
-		elif bool(p.param("team", false)):
-			best = maxf(best, p.base_absorb())
-	return best
+## D-163 generic absorb: the holder's own stacks x self_absorb_mult, a teammate the base absorb with `team`.
+func absorb_for(target: CrewController) -> Dictionary:
+	if target == crew:
+		return {POOL: base_absorb() * num("self_absorb_mult")}
+	if bool(param("team", false)):
+		return {POOL: base_absorb()}
+	return {}
 
 
 ## Hysteria stacks of `c` on any peer (the replicated META).

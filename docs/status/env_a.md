@@ -4,6 +4,15 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-41) D-163 name-independent systems (2026-10-23)
+- ThrownItem KIND_SMOKE (no fuse; a cloud of radius_m for smoke_s) and SmokeZones: crew inside avoid a bullet at
+  crew_bullet_avoid (a dodge), enemies inside hit at ×npc_accuracy_mult. No LOS blocking.
+- PerkHooks.on_dodge, plus the generic pooled absorb (the best offer per pool, pools add). Maniac now runs on it.
+- TagPairs service: aim-line tag, duration / extend, cooldown / cut, paired_holders, replicated as SVC_TAG_PAIRS.
+- Tests: test_d163_systems 6/6. Regression: d162 5/5, d161 5/5, d158 12/12, a3_12 4/4, perk_armor 6/6,
+  perk_combat 5/5, l3_6 4/4.
+- Next: PerkSicario and PerkTagTeam on B's names, and ui_hud v1.21.
+
 ### (-40) Round 290/291 lane: escort knobs on, probe warm-up, pocket ECM, D-162, bot revive A/B (2026-10-23)
 - **e26cd387:** D-158 amendment 6, RT escort knobs on (1.5 s engage delay, ×0.7 accuracy for 10 s).
 - **788bd236:** ReflectionProbe load warm-up (HeistLauncher host and replica) and the safehouse.tscn path.

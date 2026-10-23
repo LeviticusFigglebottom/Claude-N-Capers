@@ -217,8 +217,10 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	# --- A2-06 dodge (L2.4): a ranged or melee hit may do nothing (melee knockback still applies, the
 	# caller pushes the crew regardless); a dodge restarts the armor regen delay.
 	var dodge_type: int = int(info.get("type", Enums.DamageType.BULLET))
-	if (dodge_type == Enums.DamageType.BULLET or dodge_type == Enums.DamageType.MELEE) and _roll_dodge():
+	if (dodge_type == Enums.DamageType.BULLET or dodge_type == Enums.DamageType.MELEE) \
+			and (_roll_dodge() or (bullet and SmokeZones.crew_avoids(_crew))):  # D-163: a smoke cloud avoids bullets
 		regen_delay_left = _regen_delay(tw)
+		PerkHooks.on_dodge(self)  # D-163 (Sicario: Twitch reset, Agility Shield)
 		if bullet:
 			_start_grace(dmg)
 		out["amount"] = 0.0

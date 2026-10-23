@@ -96,6 +96,17 @@ func melee_damage_mult() -> float:
 
 
 ## The deck throwable of `kind` (ThrowableDef.kind) was used; true when this perk consumed it.
+## D-163: the holder dodged a hit (CrewHealth: dodge roll or smoke avoid).
+func on_dodge() -> void:
+	pass
+
+
+## D-163 generic flat absorption this component gives crew member `target` (the holder or a teammate), as
+## {pool: value}: per pool only the best value counts (PD2: Hysteria from several holders does not stack), pools add.
+func absorb_for(_target: CrewController) -> Dictionary:
+	return {}
+
+
 func use_throwable(_kind: StringName) -> bool:
 	return false
 

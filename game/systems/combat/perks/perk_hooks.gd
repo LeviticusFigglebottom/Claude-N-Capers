@@ -76,13 +76,42 @@ static func dodge_add(h: CrewHealth) -> float:
 static func incoming_damage(h: CrewHealth, info: Dictionary, dmg: float) -> float:
 	var crew: CrewController = _crew_of(h)
 	if crew != null and dmg > 0.0:
-		dmg = maxf(dmg - PerkManiac.absorb_for(crew), 0.0)  # D-162 Hysteria: the holder's or a sharing teammate's
+		dmg = maxf(dmg - absorb(crew), 0.0)  # D-162 / D-163: flat absorption (Hysteria, Tag Team Synergy, ...)
 	var perks: CrewPerks = of(crew)
 	if perks == null or dmg <= 0.0:
 		return dmg
 	var dr: float = perks.damage_reduction(info) + PerkCrewChief.team_dr_for(crew)
 	dmg *= 1.0 - clampf(dr, 0.0, PerkTweak.data().max_damage_reduction)
 	return perks.incoming(info, dmg)
+
+
+## D-163 flat absorption `crew` gets per hit taken: every crew member's perk components offer {pool: value}
+## (PerkComponent.absorb_for); per pool the best value counts, the pools add up.
+static func absorb(crew: CrewController) -> float:
+	var rt: HeistRuntime = HeistRuntime.of(crew)
+	if rt == null:
+		return 0.0
+	var pools: Dictionary = {}
+	for m: CrewController in rt.crew_members():
+		var perks: CrewPerks = of(m)
+		if perks == null:
+			continue
+		for c: PerkComponent in perks.components.values():
+			var offer: Dictionary = c.absorb_for(crew)
+			for k: Variant in offer:
+				pools[k] = maxf(float(pools.get(k, 0.0)), float(offer[k]))
+	var total: float = 0.0
+	for k: Variant in pools:
+		total += float(pools[k])
+	return total
+
+
+## D-163: CrewHealth dodged a hit (a dodge roll or a smoke avoid). Server.
+static func on_dodge(h: CrewHealth) -> void:
+	var perks: CrewPerks = of(_crew_of(h))
+	if perks != null and Net.is_authority():
+		for c: PerkComponent in perks.components.values():
+			c.on_dodge()
 
 
 ## CrewHealth.take_hit after armor / health were reduced (`out` = final DamageInfo so far).
