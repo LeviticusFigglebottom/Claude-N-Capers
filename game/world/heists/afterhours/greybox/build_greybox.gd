@@ -117,6 +117,7 @@ func _build() -> void:
 	# PO6-17 assault events: no ASSAULT_* rows emitted for AH at G1 (an empty AssaultEvents node)
 	errors.append_array(AM.build(map_root, [], [], [], [], _breaches(), obstructions))
 	build_nav_links(nav)
+	load("res://world/heists/afterhours/greybox/ah_dress.gd").new().call(&"run", self)  # AH-C2 dressing (G2)
 	for line: String in NS.snap(map_root):
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
