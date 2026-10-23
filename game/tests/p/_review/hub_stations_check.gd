@@ -55,6 +55,8 @@ func _run() -> void:
 	var pin: PlayerInput = c.get_node(^"PlayerInput") as PlayerInput
 	await _shot("00_safehouse")
 	var stations: Array[Node] = sh.map.get_node(^"Stations").get_children()
+	# The range station leaves the safehouse for the range: check it last.
+	stations.sort_custom(func(a: Node, b: Node) -> bool: return a.name != "range" and b.name == "range")
 	for st: Node in stations:
 		var hs: HubStationPrefab = st as HubStationPrefab
 		if hs == null:
@@ -74,14 +76,20 @@ func _run() -> void:
 		pin.add_look(0.0, atan2(to.y, Vector2(to.x, to.z).length()) - c.look_pitch)
 		await _frames(8)
 		var aimed: bool = c.hub_interaction.aimed_component(c) == comp
+		var sid: StringName = hs.station_id  # the range station frees the safehouse (leave(range_marker))
+		var comp_y: float = comp.global_position.y
+		var dist: float = c.eye_position().distance_to(comp.global_position)
 		await _inp.tap(&"interact")
 		await _frames(40)
-		var opened: bool = sh.station_id == hs.station_id
-		await _shot("%s_after_f" % hs.station_id)
+		var left: bool = not sh.is_active()  # the range: the safehouse left for it
+		var opened: bool = sh.station_id == sid or left
+		await _shot("%s_after_f" % sid)
 		_ok = _ok and aimed and opened
-		print("[HUB] ROW %s | natural %s | aimed %s | F %s | comp y %.2f, eye y %.2f, dist %.2f, screen '%s'" % [
-			hs.station_id, "y" if natural else "n", "y" if aimed else "n", "y" if opened else "n",
-			comp.global_position.y, c.eye_position().y, c.eye_position().distance_to(comp.global_position), sh.station_id])
+		print("[HUB] ROW %s | natural %s | aimed %s | F %s | comp y %.2f, dist %.2f, screen '%s'%s" % [sid,
+			"y" if natural else "n", "y" if aimed else "n", "y" if opened else "n", comp_y, dist, sh.station_id,
+			" (left for the range)" if left else ""])
+		if left:
+			break  # the safehouse (and its stations) is gone; the remaining stations need a fresh enter
 		if sh.station_id != &"" and f.current is UiScreen:
 			(f.current as UiScreen).back_requested.emit()
 			await _frames(40)
