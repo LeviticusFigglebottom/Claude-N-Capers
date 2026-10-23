@@ -309,7 +309,7 @@ def _bunk_bed(k: Kit, p: dict) -> None:
 
 def _gun_cabinet(k: Kit, p: dict) -> None:
     """1.0 (x) x 0.5 (y) x 2.0 m: a welded steel cabinet, two doors with a centre hasp and padlock, a keypad, louvres,
-    a stencilled number."""
+    a stencilled locker number."""
     hx, hy, h = 0.5, 0.25, 2.0
     body = k.obj("Body")
     s = body.part(bevel=0.006)
@@ -334,7 +334,7 @@ def _gun_cabinet(k: Kit, p: dict) -> None:
             t.bx((0.152 + c * 0.03, hy + 0.012, 1.27 + r * 0.03), (0.172 + c * 0.03, hy + 0.016, 1.285 + r * 0.03),
                  "metal_grey")
     t.bx((0.215, hy + 0.012, 1.355), (0.228, hy + 0.016, 1.368), "emit_led_red")
-    lettering(t, "G2", 0.09, 0.27, hy, 0.35, "paint_hazard_orange", stroke=0.016, depth=0.002, inlay=True)
+    lettering(t, "K4", 0.09, 0.27, hy, 0.35, "paint_hazard_orange", stroke=0.016, depth=0.002, inlay=True)
     body.build()
     k.collision([((-hx, -hy, 0.0), (hx, hy + 0.03, h))])
 

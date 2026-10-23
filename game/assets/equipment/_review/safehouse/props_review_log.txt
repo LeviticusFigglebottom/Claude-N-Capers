@@ -10,7 +10,7 @@ prop_sh_board_map aabb pos (-2.0, -1.1, -0.103281) size (4.0, 2.2, 0.103281) (x 
 prop_sh_bunk_bed aabb pos (-0.495, 0.0, -1.045) size (0.99, 1.75, 2.09) (x 0.99  y 1.75  z 2.09)  tris 2424
   node Collision (StaticBody3D) at (0.0, 0.0, 0.0)
   node Collision/CollisionShape3D (CollisionShape3D) at (0.0, 0.0, 0.0)
-prop_sh_gun_cabinet aabb pos (-0.506617, 0.0, -0.285) size (1.013235, 2.0, 0.535) (x 1.01  y 2.00  z 0.53)  tris 3396
+prop_sh_gun_cabinet aabb pos (-0.506617, 0.0, -0.285) size (1.013235, 2.0, 0.535) (x 1.01  y 2.00  z 0.53)  tris 2560
   node Collision (StaticBody3D) at (0.0, 0.0, 0.0)
   node Collision/CollisionShape3D (CollisionShape3D) at (0.0, 0.0, 0.0)
 prop_sh_ppe_rack aabb pos (-0.5, -0.4, -0.162) size (1.0, 0.8, 0.162) (x 1.00  y 0.80  z 0.16)  tris 8532
