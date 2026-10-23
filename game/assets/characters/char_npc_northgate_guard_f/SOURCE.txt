@@ -18,5 +18,5 @@ look: Northgate Executive Protection: charcoal suit, grey shirt, black tie, earp
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26786
-tris_by_mesh: {"Body": 8960, "Gear": 1010, "Hair": 1856, "Outfit": 14960}
+tris: 26830
+tris_by_mesh: {"Body": 8960, "Gear": 1054, "Hair": 1856, "Outfit": 14960}

@@ -15,5 +15,5 @@ look: Calder Tower night cleaner, fourth face (D-130): same glass-teal tabard un
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 30360
-tris_by_mesh: {"Body": 7332, "Gear": 44, "Hair": 2088, "Outfit": 20896}
+tris: 30404
+tris_by_mesh: {"Body": 7332, "Gear": 88, "Hair": 2088, "Outfit": 20896}
