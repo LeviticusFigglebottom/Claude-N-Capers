@@ -58,12 +58,15 @@ func _run() -> void:
 	for yaw: int in [0, 90, 180, 270]:
 		await _view(rt, "hall_calm_%d" % yaw, FLOOR_CENTRE, FLOOR_CENTRE + Vector3(0, 0, -6).rotated(Vector3.UP, deg_to_rad(yaw)))
 	rt.stealth.raise_alarm(&"perf", 0)
-	for i: int in 180:  # the stampede: civilians_flee, the crowd running for the exits
+	for i: int in 120:  # the stampede: civilians_flee, the crowd running for the exits
 		await get_tree().physics_frame
+	# a software-rendered view takes minutes of wall time: slow the game so the crowd is still on the floor when sampled
+	Engine.time_scale = 0.02
 	for yaw: int in [0, 90, 180, 270]:
 		await _view(rt, "hall_stampede_%d" % yaw, FLOOR_CENTRE, FLOOR_CENTRE + Vector3(0, 0, -6).rotated(Vector3.UP,
 			deg_to_rad(yaw)))
 	await _view(rt, "booth_stampede", BOOTH_EYE, FLOOR_CENTRE + Vector3(0, -0.6, 2.0))
+	Engine.time_scale = 1.0
 	print("[AHPERF] over budget: %s" % [_over])
 	print("[AHPERF] done: %s" % _out)
 	get_tree().quit(0)
