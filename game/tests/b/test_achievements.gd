@@ -8,7 +8,7 @@ const SLOT: int = 0
 
 
 func before_all() -> void:
-	BTestUtil.pin_menu_hub(true)  # C\'s 3D safehouse at the contract path: these drive the 2D hub
+	BTestUtil.pin_menu_hub(true)  # C's 3D safehouse at the contract path: these drive the 2D hub
 	SaveService.root_dir = BTestUtil.profile_root()
 
 
