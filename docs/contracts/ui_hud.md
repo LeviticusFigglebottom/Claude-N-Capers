@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.19)
+# Contract: HUD data (v1.20)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -187,3 +187,13 @@ state only on change (P saw `cartel -> ACTIVE` re-emitted on every data update).
 - Strings: `ui.freshness.badge` "{pct} %", `ui.freshness.reason_repeat` "Played {n}× in your last {memory} heists",
   `ui.freshness.reason_rotation` "Not played in {since} heists", `ui.heist_select.freshness`.
 - D-140: the card's "N pagers" note shows only where the def cap is below StealthTweak's 4.
+
+## v1.20: pocket ECM (D-161; B proposal)
+- A: `LocalHudModel.pocket_ecm: Dictionary` = EcmSystem.pocket_state(local slot): `{}` when the local crew has no pocket ECM,
+  else `{charges: int, max: int, recharge_left: float (s), active_left: float (s), mode: StringName &"" | &"jam" | &"feedback"}`.
+  Signal `pocket_ecm_changed` on any field change (0.1 s snapping is fine).
+- A: `LocalHudModel.throwable_id` reports `PerkHooks.throwable_id(crew)` (a deck's replacement throwable: Composure flask,
+  Overlord injector, Hacker pocket ECM), not the raw `Loadout.throwable`.
+- B: the throwable chip shows the pocket ECM glyph + charge count (dimmed at 0); caption "JAM {s} s" / "FEEDBACK {s} s" while
+  active, "+1 in {s} s" while recharging, else hidden. Models without the field leave the HUD unchanged.
+
