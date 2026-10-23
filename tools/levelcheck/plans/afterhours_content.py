@@ -270,12 +270,13 @@ def always() -> Dict[str, List[list]]:
         "Gameplay/Loot": [
             # Crale's safe (LARGE, against U9's internal south wall): code / drill (A's afterhours_mission: the mission
             # spawns `safe_bags` loot.cash_bricks at the SafeLoot marker; loud it disables the CODE method)
+            # the drill spot sits on the safe's door face (as GH's WorkshopSafe), turned so its -Z (the bit) bores
+            # into the safe (A r305 audit: it faced the room)
             Pf("safe", "OfficeSafe", [33.5, U, 20.35], 0.0,
-               {"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe"},
+               {"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe",
+                "@contents": [["drill_point", "SafeDrill", [0.2, 1.0, -0.36],
+                               {"objective_tag": "safe_drill", "target": ".."}, 180.0]]},
                [33.5, U, 19.2], {}, "prop_safe_large"),
-            Pf("drill_point", "SafeDrill", [33.5, U + 0.05, 19.6], 0.0, {"objective_tag": "safe_drill",
-                                                                        "@target": "OfficeSafe"},
-               [33.5, U, 19.2], {}, ""),
             # the door take: G26's drop safe (SMALL, drill / saw; saw 60 s), small loot x3 inside
             Pf("safe", "DropSafe", [28.0, 0.0, 27.45], 0.0,
                {"size": "enum:SMALL", "methods": ["drill", "saw"], "saw_duration_s": 60.0,

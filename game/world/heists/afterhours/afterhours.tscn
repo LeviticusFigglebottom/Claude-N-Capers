@@ -7543,17 +7543,18 @@ metadata/surface = &"metal"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("ah_421")
 
-[node name="SafeDrill" parent="Gameplay/Loot" unique_id=101260 instance=ExtResource("45_ah")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.5, 4.25, 19.6)
+[node name="SafeDrill" parent="Gameplay/Loot/OfficeSafe" unique_id=101260 instance=ExtResource("45_ah")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.2, 1, -0.36)
 script = ExtResource("46_ah")
-target = NodePath("../OfficeSafe")
+target = NodePath("..")
 objective_tag = &"safe_drill"
 metadata/kind = "drill_point"
+metadata/inside = true
 
-[node name="UsePoint" parent="Gameplay/Loot/SafeDrill" index="1"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.05000019, -0.39999962)
+[node name="UsePoint" parent="Gameplay/Loot/OfficeSafe/SafeDrill" index="1"]
+transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, 0.20000076, -1, 0.789999)
 
-[node name="Interactable" parent="Gameplay/Loot/SafeDrill" index="2"]
+[node name="Interactable" parent="Gameplay/Loot/OfficeSafe/SafeDrill" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
 script = ExtResource("38_ah")
 kind = &"place_drill"
@@ -9235,7 +9236,7 @@ cue_id = &"cue.crowd_stampede"
 [editable path="Gameplay/Doors/StockCageGate/Padlock"]
 [editable path="Gameplay/Devices/OfficeReader"]
 [editable path="Gameplay/Loot/OfficeSafe"]
-[editable path="Gameplay/Loot/SafeDrill"]
+[editable path="Gameplay/Loot/OfficeSafe/SafeDrill"]
 [editable path="Gameplay/Loot/DropSafe"]
 [editable path="Gameplay/Loot/DropSafe/DropSafeTake1"]
 [editable path="Gameplay/Loot/DropSafe/DropSafeTake2"]

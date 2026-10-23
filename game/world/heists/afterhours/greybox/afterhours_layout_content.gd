@@ -245,12 +245,14 @@ const ALWAYS: Dictionary = {
 	"Gameplay/Loot": [
 		[
 			"prefab", "safe", "OfficeSafe", [33.5, 4.2, 20.35], 0.0,
-			{"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe"}, [33.5, 4.2, 19.2],
-			{}, "prop_safe_large",
-		],
-		[
-			"prefab", "drill_point", "SafeDrill", [33.5, 4.25, 19.6], 0.0, {"objective_tag": "safe_drill", "@target": "OfficeSafe"},
-			[33.5, 4.2, 19.2], {}, "",
+			{
+				"size": "enum:LARGE",
+				"methods": ["code", "drill"],
+				"code_group": "office",
+				"objective_tag": "safe",
+				"@contents": [["drill_point", "SafeDrill", [0.2, 1.0, -0.36], {"objective_tag": "safe_drill", "target": ".."}, 180.0]],
+			},
+			[33.5, 4.2, 19.2], {}, "prop_safe_large",
 		],
 		[
 			"prefab", "safe", "DropSafe", [28.0, 0.0, 27.45], 0.0,
