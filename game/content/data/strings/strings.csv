@@ -1402,6 +1402,7 @@ contact.role.handler,Handler on comms
 ui.briefing.title,Briefing
 ui.briefing.difficulty,Difficulty: {name}
 ui.briefing.mode,Approach: {mode}
+ui.briefing.civilian_start,Civilian start: no gear until you pick it up on site
 ui.briefing.intel,The Job
 ui.briefing.objectives,Objectives
 ui.briefing.objective_line,{index}. {text}
@@ -2666,6 +2667,7 @@ item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by 
 item.mask.last_word.name,The Last Word
 item.mask.last_word.desc,"Carbon and ember for the crew that has nothing left to prove. Notoriety XXV only."
 ui.hud.civilian,Civilian
+ui.hud.last_breath,Last Breath
 ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or equipment until you pick up your gear on site. Your loadout waits there."
 heist.dockside_burn.name,Dockside Burn
 heist.dockside_burn.subtitle,Ortega Cold Storage
