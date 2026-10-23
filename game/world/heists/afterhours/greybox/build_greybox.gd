@@ -120,6 +120,7 @@ func _build() -> void:
 	for line: String in NS.snap(map_root):
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
+	preload("res://world/heists/afterhours/greybox/ah_finish.gd").new(self).call(&"build")  # AH-C2 finishes (G2)
 	_build_club_lights(n("Lighting"))
 	_build_audio()
 	var polys: int = await _bake(nav)

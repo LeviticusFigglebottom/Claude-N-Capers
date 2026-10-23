@@ -99,16 +99,16 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomU5` (security_room): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomU12` (living_room): ceiling median 3.00 m (rule 2.6-3.0)
 - `Rooms/RoomU13` (restroom): ceiling median 3.00 m (rule 2.6-3.0)
-- `Geometry/Building/StairFlights/G8Flight1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/G8Flight1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/G8Flight1`: 12 risers, 0.000 -> 2.100 m
 - `Geometry/Building/StairFlights/G8Flight1` rails: -X wall, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m; +X wall, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/G8Flight2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/G8Flight2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/G8Flight2`: 12 risers, 2.100 -> 4.200 m
 - `Geometry/Building/StairFlights/G8Flight2` rails: -X wall, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m; +X partly walled, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/G22Flight1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/G22Flight1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/G22Flight1`: 12 risers, 0.000 -> 2.100 m
-- `Geometry/Building/StairFlights/G22Flight1` rails: -X wall, rail tops [0.85, 0.86, 0.86, 0.86, 0.87] m above nosing, max drop 0.00 m; +X wall, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/G22Flight2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/G22Flight1` rails: -X wall, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m; +X wall, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m
+- `Geometry/Building/StairFlights/G22Flight2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/G22Flight2`: 12 risers, 2.100 -> 4.200 m
 - `Geometry/Building/StairFlights/G22Flight2` rails: -X wall, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m; +X partly walled, rail tops [0.86, 0.86, 0.86, 0.87, 0.87] m above nosing, max drop 0.00 m
 - stair chain: `Geometry/Building/StairFlights/G8Flight1` -> `Geometry/Building/StairFlights/G8Flight2` joined by a landing at 2.100 m
