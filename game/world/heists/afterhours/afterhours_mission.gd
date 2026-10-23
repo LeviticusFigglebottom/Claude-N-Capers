@@ -54,9 +54,11 @@ const TAG_COURIER: StringName = &"cartel_courier"
 const TAG_OFF_DUTY: StringName = &"civ_offduty"
 const TAG_ROOFTOP: StringName = &"rooftop_watch"
 const TAG_FLEE: StringName = &"civ_flee"
-## C's audio / lighting nodes (afterhours.md §Audio/lighting), under the map root.
-const CLUB_SOUND_PATH: NodePath = ^"Audio/ClubSound"
-const CLUB_LIGHTS_PATH: NodePath = ^"Lighting/ClubLights"
+## C's audio / lighting nodes (afterhours.md §Audio/lighting), found by name anywhere under the map root.
+const CLUB_SOUND: String = "ClubSound"
+const CLUB_LIGHTS: String = "ClubLights"
+## The DJ's lines play at this node (objective_tag / meta; the stage).
+const TAG_DJ_STAGE: StringName = &"dj_stage"
 ## The off-duty cop: a police-preset observer who radios the alarm (QC-76; no pager).
 const OFF_DUTY_ENEMY: StringName = &"enemy.patrol_officer"
 
@@ -244,10 +246,10 @@ func _go_loud() -> void:
 	if lockdown:
 		return
 	lockdown = true
-	_call_map(CLUB_SOUND_PATH, &"cut")
-	_call_map(CLUB_LIGHTS_PATH, &"set_state", [&"house"])
+	_call_map(CLUB_SOUND, &"cut")
+	_call_map(CLUB_LIGHTS, &"set_state", [&"house"])
 	cancel_timer(&"dj_shoutout")
-	say(&"vo.dj.afterhours_alarm", {}, SPEAKER_DJ)
+	say(&"vo.dj.afterhours_alarm", _dj_context(), SPEAKER_DJ)
 	say(&"vo.mercer.afterhours_music_cut")
 	if not safe_open:
 		update_objective_data(&"safe", {"methods": [&"drill", &"c4"], "lockdown": true})
@@ -339,17 +341,23 @@ func _dj_shoutout() -> void:
 	if went_loud:
 		return
 	var n: int = GameRng.stream(RNG_STREAM).randi_range(1, 3)
-	say(StringName("vo.dj.afterhours_shoutout_%d" % n), {}, SPEAKER_DJ)
+	say(StringName("vo.dj.afterhours_shoutout_%d" % n), _dj_context(), SPEAKER_DJ)
 	start_timer(&"dj_shoutout", DJ_SHOUTOUT_S, _dj_shoutout)
 
 
 # --- Helpers ----------------------------------------------------------------------------------
 
-func _call_map(path: NodePath, method: StringName, args: Array = []) -> void:
+func _call_map(node_name: String, method: StringName, args: Array = []) -> void:
 	var map_root: Node = get_parent()
-	var n: Node = map_root.get_node_or_null(path) if map_root != null else null
+	var n: Node = map_root.find_child(node_name, true, false) if map_root != null else null
 	if n != null and n.has_method(method):
 		n.callv(method, args)
+
+
+## {"position": the stage} for the DJ's positional lines ({} without a dj_stage node).
+func _dj_context() -> Dictionary:
+	var stage: Array[Node3D] = loot_markers(TAG_DJ_STAGE)
+	return {"position": stage[0].global_position} if not stage.is_empty() else {}
 
 
 func _skip_if_active(objective_id: StringName) -> void:
