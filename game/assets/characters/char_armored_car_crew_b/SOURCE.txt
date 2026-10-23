@@ -17,5 +17,5 @@ look: Vaultline Armored Transport crew: sand short-sleeved shirt, brown trousers
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31738
-tris_by_mesh: {"Body": 10508, "Gear": 3020, "Hair": 2088, "Headwear": 832, "Outfit": 15290}
+tris: 31758
+tris_by_mesh: {"Body": 10508, "Gear": 3040, "Hair": 2088, "Headwear": 832, "Outfit": 15290}
