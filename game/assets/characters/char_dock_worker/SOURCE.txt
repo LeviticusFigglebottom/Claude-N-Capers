@@ -18,5 +18,5 @@ look: forklift driver: orange hi-vis vest (silver tape hoops + braces) over a na
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31916
-tris_by_mesh: {"Body": 9354, "Gear": 730, "Hair": 1728, "Headwear": 932, "Outfit": 19172}
+tris: 32004
+tris_by_mesh: {"Body": 9354, "Gear": 818, "Hair": 1728, "Headwear": 932, "Outfit": 19172}
