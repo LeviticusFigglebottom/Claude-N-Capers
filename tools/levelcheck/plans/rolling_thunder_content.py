@@ -1392,7 +1392,7 @@ def review_cameras() -> List[list]:
         ["rc_site_frame", "FG", [-48.0, 1.7, -48.0], [-34.0, 1.0, -30.0]],
         ["rc_site_slab", "F1", [-34.0, 5.2, -30.6], [-30.0, 4.0, -50.0]],
         ["rc_site_cabins", "X4", [-40.0, 1.7, -14.0], [-52.0, 1.0, -22.0]],
-        ["rc_site_welfare", "C2", [-54.5, 1.6, -18.0], [-52.6, 0.9, -25.0]],   # r309: diagonal, clear of the door frame
+        ["rc_site_welfare", "C2", [-52.5, 1.6, -18.0], [-54.4, 0.9, -25.0]],   # r309: SE corner diagonal (bright E wall beside the lens)
         ["rc_underpass", "X2", [62.0, -3.3, 2.0], [92.0, -4.0, 0.0]],
         ["rc_sniper_skyway", "", [12.0, 10.6, -20.0], [40.0, 0.0, -14.0]],
     ]
