@@ -4,6 +4,22 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-37) A4-03 closed, C4-03 hub loopback, Door height_m, sentry content (2026-10-23)
+- **A4-03 accepted:**
+  - Real net bug fixed: HeistNetSync XFORM_KEYFRAME_S 2.0 (3a568f94). Unreliable, change-only transforms had left
+    still NPCs stale on clients.
+  - OfParity history compare (d9f45ec2) fixed the red test_of_coop_loopback.
+  - Soak variants: 4 peers, and 2 humans + 2 bots.
+  - 600 s runs: no game leak (wave nodes reclaimed, clients flat); the host creep is the test runner's.
+  - The soak now releases custody each round (cloaker kicks bypass the immunity mult).
+- **C4-03 (e052a322):** test_c4_03_hub_loopback, host + client on safehouse_g1.
+  - All hub checks pass on both peers.
+  - Gap found: the client's hub stations need InteractionSystem.local (A, done) plus a CrewController tick in the
+    client branch (P, routed via the LEAD). Unreachable today (co-op shows the lobby).
+- **75400478:** Door.height_m for C (RT gate leaves 2.4 m).
+- **D-157:**
+  - 89fcee36: SentryGun finds D's model under Visual/<root> and plays its baked deploy clip.
+  - 367cdf1d: B's pickup / mode prompts and cue.sentry_deploy. B is to resolve the {mode} key arg in the panel.
 ### (-36) D-158 RT fairness, A4-03 soak (2026-10-23)
 - **D-158 (32a04e1e), test_d158_rt_fairness 4/4:**
   - Seated vehicle occupants have no detection (NpcBase.can_observe is false while META_SEATED_IN).
