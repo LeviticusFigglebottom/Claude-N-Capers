@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.20)
+# Contract: HUD data (v1.21)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -196,4 +196,11 @@ state only on change (P saw `cartel -> ACTIVE` re-emitted on every data update).
   Overlord injector, Hacker pocket ECM), not the raw `Loadout.throwable`.
 - B: the throwable chip shows the pocket ECM glyph + charge count (dimmed at 0); caption "JAM {s} s" / "FEEDBACK {s} s" while
   active, "+1 in {s} s" while recharging, else hidden. Models without the field leave the HUD unchanged.
+
+## v1.21: generic perk item (D-163; B proposal, A 36df6d56)
+- A: `LocalHudModel.perk_item: Dictionary` = `{}` when the local deck has no perk item, else
+  `{kind: StringName, charges: int, max: int, cooldown_left: float (s), active_left: float (s), partner_slot: int (-1 = none)}`
+  from the replicated PerkItems service; signal `perk_item_changed`. Kinds today: &"pocket_ecm", &"smoke_bomb", &"gas_dispenser".
+- `pocket_ecm` (v1.20) stays as an alias for one round, then B migrates to perk_item and the alias is removed.
+- B: the throwable chip shows the item's glyph, charges and cooldown; Tag Team marks the partner's teammate panel "tagged".
 
