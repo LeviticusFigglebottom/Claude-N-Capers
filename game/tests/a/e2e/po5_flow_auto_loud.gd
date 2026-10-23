@@ -200,8 +200,9 @@ func _hunt_captain() -> bool:
 	_note_once(&"_captain", "required loot secured, Brandt holds the assault: hunting him (t=%.0f)" % rt.heist_time_s)
 	if p.has_los(p._aim_point(brandt), brandt) and p.crew.global_position.distance_to(brandt.global_position) <= 40.0:
 		await p.engage(brandt, 3.0)
-	else:
-		await p.goto(p.stand_point(brandt.global_position), 8.0, 6.0)
+	elif not await p.goto(p.stand_point(brandt.global_position), 8.0, 6.0):
+		await p.hold_position(1.0)  # no path to him: fight from here (a failed goto returns at once: never spin)
+	await p.inp.ticks(1)  # every hunt pass yields a frame (the forced-captain runs looped in one frame to 7.8 GB, OOM)
 	if not is_instance_valid(brandt) or not brandt.is_alive():
 		f.note("Brandt down at t=%.0f" % rt.heist_time_s)
 	return true
