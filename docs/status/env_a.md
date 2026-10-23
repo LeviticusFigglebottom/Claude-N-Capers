@@ -4,6 +4,19 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-59) AH looks, guard idle variants, AH ambient activities; AH loud e2e PASS seeds 1/2 (2026-10-23)
+- AH loud e2e on the [secure] fix (9b044447) + C 2c3cbe99: `po5_flow_ah_loud` PASS seed 1 (t=980) and seed 2
+  (t=1041): gear -> mask -> loud -> keycard -> office -> safe -> safe_loot -> secure -> escape_wait -> escape, lockdown,
+  the stock cage padlock sawn for the parcels. One 1.19 s hitch in anim_driver (3 Godot processes on the box): watching.
+- D-165 AH looks (0fe1ff72): heist_tag_characters[afterhours] (+ pools); a/test_ah_cast_looks.
+- D 7d86014f guard idle variety: VARIANT_GROUPS idle (idle, idle_b, idle_c) and idle_alert (idle_alert, _b, _c); the
+  plain stands vary after the shield remap (`_idle_variant`), never the armed idle_alert_<kind>; walk_start from any
+  idle*. a/test_v118_anim_variants 8/8 (with D's clips: idle_b / idle_c per body index; without: the base).
+- AH ambient (found by test_anim_driver on C's map): HINT_CLIPS bouncer_idle, dj_mix (fallback browse until QC-74);
+  CivilianBrain.KNOWN_ACTIVITIES dance_a/b/c, dj_mix. a/test_anim_driver 30/30 on C+D's tree; test_a1_06_civilians 4/4,
+  test_gn_ambient_clips 5/5, test_of_a6_bank_ambient 7/7, test_po6_06 3/3, test_d132_anim_lod 9/9.
+- PO-25 shots on C 0872cf0c (1c2e4886): the drill-down rig on the OF lid; AH SafeDrill re-faced by C (audit 4/4).
+
 ### (-58) AH [secure] counts the safe cash only; OF drill visuals; auto_loud padlock-first (2026-10-23)
 - BUG (found by the AH loud runs on C's 2c3cbe99): `[secure]` used require_loot (any bag), so parcels + count cash
   closed it at t=201 and seed 2 escaped with 4 parcels and the safe shut (heist_ended success). Now `[secure]` counts
