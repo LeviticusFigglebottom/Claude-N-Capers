@@ -15,5 +15,5 @@ look: Teller (OF-D1): a woman about 50, mid-light skin, brown hair pinned up in 
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 29708
-tris_by_mesh: {"Body": 10952, "Gear": 664, "Hair": 1856, "Headwear": 1144, "Outfit": 15092}
+tris: 30416
+tris_by_mesh: {"Body": 10952, "Gear": 1332, "Hair": 1856, "Headwear": 1184, "Outfit": 15092}

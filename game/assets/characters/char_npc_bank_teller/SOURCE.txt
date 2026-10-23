@@ -14,5 +14,5 @@ bones: 52
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28788
-tris_by_mesh: {"Body": 10936, "Gear": 664, "Hair": 2088, "Outfit": 15100}
+tris: 29456
+tris_by_mesh: {"Body": 10936, "Gear": 1332, "Hair": 2088, "Outfit": 15100}

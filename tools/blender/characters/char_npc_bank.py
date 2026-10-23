@@ -36,10 +36,13 @@ Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headw
 No blend shapes (baked at the params below).
 """
 
+import math
+
 import _contact_gear as cg
 import _gear_kit as gk
 import _npc as n
 import _outfit as o
+import _outfit_garments as g
 from _outfit import Vector
 from _outfit_build import Kit, build_character
 
@@ -87,6 +90,53 @@ def _z(kit: Kit) -> tuple[float, float, float]:
     return hips_z, belt_z, belt_z - 0.02 * kit.k
 
 
+def _teller_g3(kit: Kit, tag_x: float, pin: bool = True) -> None:
+    """G3 close-range detail for the tellers: the Ostrander keyhole pin beside the name tag, a pen clipped in the
+    chest pocket on the other side and a steel watch. ``tag_x``: the name tag's x (m before height scaling)."""
+    k = kit.k
+    hull = kit.hull()
+    cy = kit.fit.ring_centre("chest").y
+    gear = o.Mesh()
+    if pin:
+        gear.extend(n.bank_badge(hull, n._front_hit(hull, tag_x * k, 1.355 * k, cy + 0.12 * k), Vector((0, 1, 0.1)),
+                                 0.016, 0.019, k, rim="brass", fill=SLATE_DARK, glyph="brass", depth=0.003))
+    pen_top = n._front_hit(hull, -tag_x * k, 1.345 * k, cy + 0.12 * k)
+    pen = o.Gear()
+    pen.cyl(0.0042 * k, 0.11 * k, centre=(0.0, -0.045 * k, 0.0), axis="Y", segs=8, mat="polymer_black")
+    pen.box((-0.0012 * k, -0.035 * k, 0.003 * k), (0.0012 * k, 0.006 * k, 0.0055 * k), "char_metal_silver")  # clip
+    mtx, loc = o.surface_frame(hull, pen_top, Vector((0.0, 1.0, 0.0)), lift=0.004 * k)
+    gear.extend(pen.to_mesh(mtx, anchor=loc))
+    kit.add_gear(gear)
+    n.watch(kit, "L", strap="char_metal_silver", case="chrome")
+
+
+def _glasses_cord(kit: Kit) -> None:
+    """A thin cord from the glasses' temple tips round behind the neck (teller_b)."""
+    fit, k = kit.fit, kit.k
+    eye = fit.eye_centre()
+    nk = g.Neck(fit)
+    m = o.Mesh()
+    left, right = (Vector((sx * 0.072 * k, eye.y - 0.075 * k, eye.z - 0.004 * k)) for sx in (-1.0, 1.0))
+    # Neck angles: 0 = front, -pi/2 = the -x side, pi = behind; the cord dips round the back of the neck
+    arc = [nk.point(a * math.pi, 0.6, 0.012 * k) for a in (-0.55, -0.75, 1.0, 0.75, 0.55)]
+    path = [left] + arc + [right]
+    o.tube(m, path, 0.0012 * k, "brass", sides=4)
+    kit.add_gear(m)
+
+
+def _pencil_in_bun(kit: Kit) -> None:
+    """A yellow pencil pushed through the bun (teller_d)."""
+    fit, k = kit.fit, kit.k
+    c = fit.head_centre()
+    top = fit.head_top()
+    p = Vector((c.x, c.y - 0.085 * k, top - 0.045 * k))
+    a, b = p + Vector((-0.07 * k, 0.0, 0.025 * k)), p + Vector((0.075 * k, 0.0, -0.02 * k))
+    m = o.Mesh()
+    o.tube(m, [a, b], 0.0035 * k, "char_rubber_yellow", sides=6)
+    o.tube(m, [b, b + (b - a).normalized() * 0.012 * k], 0.0036 * k, "char_bank_red", sides=6)
+    kit.add_head(m)
+
+
 def teller(kit: Kit) -> None:
     k = kit.k
     hips_z, _belt_z, tuck = _z(kit)
@@ -97,6 +147,7 @@ def teller(kit: Kit) -> None:
     n.waistcoat(kit, SLATE, hips_z - 0.005 * k, 1.17 * k, point=0.045, neck_w=0.065, buttons=4)
     n.neckerchief(kit, RED, side=1.0)
     kit.add_gear(gk.name_tag(kit.hull(), Vector((0.085 * k, 0.2, 1.31 * k)), k=k))
+    _teller_g3(kit, 0.085)
 
 
 def teller_b(kit: Kit) -> None:
@@ -110,6 +161,8 @@ def teller_b(kit: Kit) -> None:
     n.knit_vest(kit, "char_knit_slate", hips_z - 0.01 * k, 1.13 * k)
     kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.09 * k, 0.2, 1.33 * k)), k=k))
     kit.add_head(gk.glasses(kit.fit, "char_metal_silver"))
+    _teller_g3(kit, -0.09)
+    _glasses_cord(kit)
 
 
 def teller_c(kit: Kit) -> None:
@@ -123,6 +176,7 @@ def teller_c(kit: Kit) -> None:
     n.tie(kit, RED, belt_z + 0.03 * k, width=0.07)
     n.knit_vest(kit, "char_knit_slate", hips_z - 0.01 * k, 1.13 * k)
     kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.09 * k, 0.2, 1.33 * k)), k=k))
+    _teller_g3(kit, -0.09)
     kit.notes["look"] = ("Teller (OF-D1): a young man, light skin, short blond hair; cream shirt, bank-red tie, slate "
                          "knit sweater vest, dark slate trousers, black belt, name badge")
 
@@ -131,6 +185,7 @@ def teller_d(kit: Kit) -> None:
     """OF-D1: the women's teller uniform on a woman about 50 with her hair in a bun."""
     teller(kit)
     kit.add_head(cg.chignon(kit.fit, "char_hair_brown", size=0.9))
+    _pencil_in_bun(kit)
     kit.notes["look"] = ("Teller (OF-D1): a woman about 50, mid-light skin, brown hair pinned up in a bun; cream "
                          "band-collar blouse, slate waistcoat, bank-red neckerchief, dark slate knee skirt, low heels, "
                          "name badge")
@@ -150,6 +205,10 @@ def teller_e(kit: Kit) -> None:
     kit.add_gear(gk.name_tag(kit.hull(), Vector((0.09 * k, 0.2, 1.32 * k)), k=k))
     kit.add_gear(n.bank_badge(kit.hull(), Vector((-0.09 * k, 0.2, 1.33 * k)), Vector((0, 1, 0.1)), 0.020, 0.024, k,
                               rim="brass", fill=SLATE_DARK, glyph="brass", depth=0.003))
+    _teller_g3(kit, 0.09, pin=False)
+    hull = kit.hull()                                                             # G3: a gold tie bar
+    kit.add_gear(gk.bar(hull, n._front_hit(hull, 0.0, 1.24 * k, kit.fit.ring_centre("chest").y + 0.12 * k),
+                        Vector((0.0, 1.0, 0.0)), 0.045, 0.005, 0.003, "brass", k=k))
     kit.notes["look"] = ("Teller (OF-D1): a man about 40, deep skin, dark buzz cut and stubble; cream shirt, bank-red "
                          "tie, slate tailored waistcoat, dark slate trousers, name badge, keyhole pin")
 

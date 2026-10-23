@@ -31,6 +31,7 @@ const OUT_DIRS: Dictionary = {
 	"of_vip": "res://assets/characters/_review/of_d1_cast/",
 	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
 	"rt_street_swaps": "res://assets/characters/_review/rt_d1_cast/",
+	"rt_street": "res://assets/characters/_review/rt_g3_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
 	"d145_factions": "res://assets/characters/_review/d145_police/",
@@ -118,6 +119,12 @@ const POOLS: Dictionary = {
 	"rt_street_swaps": [
 		"char_street_pedestrian", "char_street_pedestrian_g", "char_street_pedestrian_b", "char_street_pedestrian_h",
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
+	],
+	# RT-G3 street polish: the nine street pedestrians and the car-park attendant
+	"rt_street": [
+		"char_street_pedestrian", "char_street_pedestrian_b", "char_street_pedestrian_c", "char_street_pedestrian_d",
+		"char_street_pedestrian_e", "char_street_pedestrian_f", "char_street_pedestrian_g", "char_street_pedestrian_h",
+		"char_street_pedestrian_i", "char_carpark_attendant",
 	],
 }
 const COLS: int = 9
