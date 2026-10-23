@@ -138,9 +138,6 @@ const KEYS: Dictionary = {
 	&"perk.infiltrator": [Type.PARAMS, 4, "Knuckles: close-range damage reduction, melee buffs."],
 	&"perk.muscle": [Type.PARAMS, 4, "Bulk: health regen, threat increase."],
 	&"perk.armorer": [Type.PARAMS, 4, "Ironclad: armor bonus, brief invulnerability on armor break."],
-	&"perk.yakuza": [Type.PARAMS, 5, "Inkwork (D-162): lower health -> faster armor regen and movement."],
-	&"perk.biker": [Type.PARAMS, 5, "Road Crew (D-162): any crew kill gives health + armor, rate-limited."],
-	&"perk.maniac": [Type.PARAMS, 5, "Frenzy (D-162): damage dealt -> stacks that absorb damage, shared with the crew."],
 	&"perk.crew_chief": [Type.PARAMS, 4, "Foreman: team-wide stacking buffs."],
 	&"perk.throwable": [Type.PARAMS, 4, "Deck-granted throwable item replacing grenades {item_id}."],
 
