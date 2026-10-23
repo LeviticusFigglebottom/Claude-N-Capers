@@ -99,7 +99,7 @@ func build_ui() -> void:
 	detail.add_child(freshness_label)
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
-	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
+	back_button = UiBuild.back(UiBuild.button(&"ui.menu.back"))
 	next_button = UiBuild.primary(UiBuild.button(&"ui.heist_select.next"))
 	back_button.pressed.connect(back_requested.emit)
 	next_button.pressed.connect(_on_next)

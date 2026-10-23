@@ -87,7 +87,7 @@ func build_ui() -> void:
 	_build_side_column(body)
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
-	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
+	back_button = UiBuild.back(UiBuild.button(&"ui.menu.back"))
 	continue_button = UiBuild.primary(UiBuild.button(&"ui.briefing.continue"))
 	back_button.pressed.connect(_on_back)
 	continue_button.pressed.connect(_on_continue)

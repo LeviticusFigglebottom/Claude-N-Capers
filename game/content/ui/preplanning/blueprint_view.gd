@@ -14,6 +14,10 @@ const PAD: float = 28.0
 
 ## Zone name size (canvas units) in _draw(); _zone_label_rects() measures with it.
 const ZONE_FONT: int = 16
+## LEAD r304: a name too big for its zone at ZONE_FONT tries this size inside the zone before going beside it.
+const ZONE_FONT_SMALL: int = 12
+## LEAD r304: point labels also try spots this many pixels further out from their marker (crowded plans).
+const LABEL_FAR: float = 16.0
 ## Clear pixels kept between two markers (_separate_markers).
 const MARKER_GAP: float = 4.0
 ## Length of the scale bar in meters (_draw_scale_bar, _furniture_rects).
@@ -154,7 +158,7 @@ func _layout_markers() -> void:
 	var hard: Array[Rect2] = _furniture_rects()
 	var marker_rects: Array[Rect2] = []
 	for pid: Variant in markers:
-		marker_rects.append((markers[pid] as Button).get_rect().grow(2.0))
+		marker_rects.append((markers[pid] as Button).get_rect().grow(5.0))  # LEAD r304: clear of the focus ring too
 	var edges: Array[Rect2] = _shape_edge_rects()
 	for pid: Variant in markers:
 		var b: Button = markers[pid] as Button
@@ -163,20 +167,26 @@ func _layout_markers() -> void:
 		var c: Vector2 = b.position + b.size * 0.5
 		var h: Vector2 = b.size * 0.5
 		var w: Vector2 = l.size
-		var spots: Array[Vector2] = [
-			Vector2(c.x - w.x * 0.5, c.y + h.y + 2.0), Vector2(c.x - w.x * 0.5, c.y - h.y - 2.0 - w.y),
-			Vector2(c.x + h.x + 4.0, c.y - w.y * 0.5), Vector2(c.x - h.x - 4.0 - w.x, c.y - w.y * 0.5),
-			Vector2(c.x + h.x + 2.0, c.y + h.y), Vector2(c.x - h.x - 2.0 - w.x, c.y + h.y),
-			Vector2(c.x + h.x + 2.0, c.y - h.y - w.y), Vector2(c.x - h.x - 2.0 - w.x, c.y - h.y - w.y)]
+		var spots: Array[Vector2] = []
+		for far: float in [0.0, LABEL_FAR]:  # LEAD r304: a second, wider ring for crowded plans
+			spots.append_array([
+				Vector2(c.x - w.x * 0.5, c.y + h.y + 2.0 + far), Vector2(c.x - w.x * 0.5, c.y - h.y - 2.0 - w.y - far),
+				Vector2(c.x + h.x + 4.0 + far, c.y - w.y * 0.5), Vector2(c.x - h.x - 4.0 - w.x - far, c.y - w.y * 0.5),
+				Vector2(c.x + h.x + 2.0 + far, c.y + h.y), Vector2(c.x - h.x - 2.0 - w.x - far, c.y + h.y),
+				Vector2(c.x + h.x + 2.0 + far, c.y - h.y - w.y), Vector2(c.x - h.x - 2.0 - w.x - far, c.y - h.y - w.y)])
+		# LEAD r304 (AH: "Gear: patrons' restroom duct" hung in the margin): a label stays inside the drawn plan.
+		var frame: Rect2 = Rect2(world_to_view(board.blueprint.bounds.position),
+				board.blueprint.bounds.size * float(_transform()["scale"]))
 		var best: Vector2 = spots[0]
 		var best_cost: float = INF
 		var best_blocked: bool = true
-		for spot: Vector2 in spots:
+		for si: int in range(spots.size()):
+			var spot: Vector2 = spots[si]
 			var r: Rect2 = Rect2(spot, w)
-			if size != Vector2.ZERO and not Rect2(Vector2.ZERO, size).encloses(r):
+			if size != Vector2.ZERO and not (Rect2(Vector2.ZERO, size).encloses(r) and frame.encloses(r)):
 				continue
 			var blocked: bool = false
-			var cost: float = 0.0
+			var cost: float = 0.5 if si >= 8 else 0.0  # the near ring wins a tie
 			for m: Rect2 in marker_rects:
 				if m.intersects(r):
 					blocked = true
@@ -265,7 +275,7 @@ func _zone_label_rects() -> Array[Rect2]:
 	return out
 
 
-## The zone names this floor shows: [text, baseline pos, rect, leader] (leader: [from, to] or null).
+## The zone names this floor shows: [text, baseline pos, rect, leader, font size] (leader: [from, to] or null).
 ## 1. Inside: at the zone's top-left when the name fits the zone (width AND height) and clears a name already
 ##    placed (ND audit: "WAREHOUSE YARD" on a 1 m strip ran into "STAFF LOT").
 ## 2. Beside (LEAD r226, DB containers / west lane): a name that fits none of its zones goes just outside the union
@@ -296,7 +306,11 @@ func _zone_labels() -> Array[Array]:
 		var r: Rect2 = sh.get("rect", Rect2()) as Rect2
 		var vr: Rect2 = Rect2(world_to_view(r.position), r.size * s)
 		var text: String = UiText.t(key).to_upper()
-		var ts: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
+		var fs: int = ZONE_FONT
+		var ts: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs)
+		if ts.x > vr.size.x - 8.0 or ts.y > vr.size.y - 4.0:
+			fs = ZONE_FONT_SMALL
+			ts = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs)
 		var rect: Rect2 = Rect2(vr.position + Vector2(6, 4), ts)
 		var under_marker: bool = false
 		for m: Rect2 in marker_rects:
@@ -311,7 +325,7 @@ func _zone_labels() -> Array[Array]:
 			continue
 		placed.append(rect)
 		shown[text] = true
-		out.append([text, vr.position + Vector2(6, 18), rect, null])
+		out.append([text, vr.position + Vector2(6, 4.0 + float(fs) * 0.875), rect, null, fs])
 	var hard: Array[Rect2] = _furniture_rects()
 	hard.append_array(marker_rects)
 	var edges: Array[Rect2] = _shape_edge_rects()
@@ -329,24 +343,17 @@ func _zone_labels() -> Array[Array]:
 		var spots: Array[Vector2] = [
 			Vector2(z.end.x + gap, z.get_center().y - ts2.y * 0.5), Vector2(z.position.x - gap - ts2.x, z.get_center().y - ts2.y * 0.5),
 			Vector2(z.get_center().x - ts2.x * 0.5, z.position.y - gap - ts2.y), Vector2(z.get_center().x - ts2.x * 0.5, z.end.y + gap)]
-		# Each spot that crosses the frame is also tried shifted wholly inside it, and pushed just outside the nearest
-		# frame edge into the margin (a name on the map's edge otherwise straddles the line).
+		# LEAD r304: names stay inside the drawn plan. A spot that leaves it is tried shifted wholly inside instead
+		# (the margin is no longer used); a name with no clear spot inside is left out.
+		var lim: Vector2 = (frame.end - ts2).max(frame.position)
 		for k: int in range(spots.size()):
-			var r0: Rect2 = Rect2(spots[k], ts2)
-			if not frame.intersects(r0) or frame.encloses(r0):
-				continue
-			var lim: Vector2 = (frame.end - ts2).max(frame.position)
-			spots.append(spots[k].clamp(frame.position, lim))
-			var outs: Array[Vector2] = [Vector2(frame.position.x - ts2.x - 1.0, spots[k].y),
-					Vector2(frame.end.x + 1.0, spots[k].y), Vector2(spots[k].x, frame.position.y - ts2.y - 1.0),
-					Vector2(spots[k].x, frame.end.y + 1.0)]
-			outs.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.distance_to(spots[k]) < b.distance_to(spots[k]))
-			spots.append(outs[0])
+			if not frame.encloses(Rect2(spots[k], ts2)):
+				spots[k] = spots[k].clamp(frame.position, lim)
 		var best: Rect2 = Rect2()
 		var best_cost: float = INF
 		for sp: Vector2 in spots:
 			var rr: Rect2 = Rect2(sp, ts2)
-			if not view.encloses(rr):
+			if not view.encloses(rr) or not frame.encloses(rr):
 				continue
 			var cost: float = 0.0
 			for p2: Rect2 in placed + hard:
@@ -366,7 +373,7 @@ func _zone_labels() -> Array[Array]:
 		shown[text] = true
 		var to: Vector2 = Vector2(clampf(best.get_center().x, z.position.x, z.end.x), clampf(best.get_center().y, z.position.y, z.end.y))
 		var from: Vector2 = Vector2(clampf(to.x, best.position.x, best.end.x), clampf(to.y, best.position.y, best.end.y))
-		out.append([text, best.position + Vector2(3, 15), best, [from, to]])
+		out.append([text, best.position + Vector2(3, 15), best, [from, to], ZONE_FONT])
 	return out
 
 
@@ -465,7 +472,7 @@ func _draw() -> void:
 			var lead: Array = z[3] as Array
 			draw_line(lead[0] as Vector2, lead[1] as Vector2, tweak.label_color, 1.0, true)
 			draw_rect(z[2] as Rect2, Color(tweak.paper_color, tweak.label_plate_alpha))
-		draw_string(font, z[1] as Vector2, String(z[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT, tweak.label_color)
+		draw_string(font, z[1] as Vector2, String(z[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, int(z[4]), tweak.label_color)
 	draw_rect(area, tweak.line_color, false, 2.0)
 	_draw_scale_bar(area, s, font)
 
