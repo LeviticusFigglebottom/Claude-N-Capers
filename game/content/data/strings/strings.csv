@@ -232,6 +232,13 @@ ui.prompt.trade_hostage,Hold {key} to trade the hostage
 ui.prompt.convert,Hold {key} to convert
 ui.prompt.send_lift,Hold {key} to send the lift
 ui.prompt.call_lift,Hold {key} to call the lift
+ui.prompt.send_lift_ground,Hold {key} to send the lift to the ground floor
+ui.prompt.send_lift_deck2,Hold {key} to send the lift to Deck 2
+ui.prompt.send_lift_roof,Hold {key} to send the lift to the roof
+ui.prompt.send_lift_to_0,Hold {key} to send the lift to the first landing
+ui.prompt.send_lift_to_1,Hold {key} to send the lift to the second landing
+ui.prompt.send_lift_to_2,Hold {key} to send the lift to the third landing
+ui.prompt.send_lift_to_3,Hold {key} to send the lift to the fourth landing
 ui.prompt.start_hack,Hold {key} to start the hack
 ui.prompt.restart_hack,Hold {key} to restart the hack
 ui.prompt.cable_tie,Hold {key} to cuff
