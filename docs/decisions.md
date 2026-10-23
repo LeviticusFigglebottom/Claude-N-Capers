@@ -1645,3 +1645,15 @@ B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac ho
    The two new levers (cuffer_score_mult: shoot the cop moving to cuff first; cuffer_clear_first: clear a cuffer near the patient
    before kneeling) measured WORSE on rt_clean in every diverging A/B comparison (4/4) and equal elsewhere. Both ship OFF (1.0 / false)
    and stay as knobs. The cuff-vs-revive race is lost on time, not targeting.
+
+## D-163: Further perk decks, batch 2: Sicario, Tag Team (2026-10-23, LEAD; A plan)
+- **Sicario:** Smoke Bomb = a new thrown kind `smoke` (existing thrown-item path; 10 s cloud). Crew inside avoid 50% of bullet hits
+  (a separate roll); enemies inside hit at ×0.5; no LOS blocking (PD2). Twitch (+20% dodge per hit taken until a dodge, 4 s lockout),
+  Agility Shield (a dodge refills armor, via a new PerkHooks.on_dodge), Unseen Shadow (×2 in smoke; allies in smoke +10% dodge).
+- **Tag Team:** Gas Dispenser = throwable-key tag of an aimed ally ≤ 18 m with LOS (ShoutSystem.ally_target_for). Paired kills heal
+  holder 15 / tagged 7.5 (CrewKillFeed); Synergy +2 flat absorb per paired kill (max 20) via a generic PerkComponent.absorb() summed in
+  PerkHooks.incoming_damage (Maniac moves onto it); Harmony −2 s cooldown per tagged kill.
+- Order: **B proposes the param names first** (deck data + ThrowableDefs); A builds against them (avoids the D-162 rename).
+  Truncated PD2 values (smoke cooldown, tag duration, per-kill extension) are ◇.
+- HUD: `LocalHudModel.tag_team {tagged_slot, left, cooldown}` → ui_hud v1.21 when A lands it. C: smoke-cloud VFX + cue.smoke_bomb;
+  D/C: gas-tether look + cue.gas_dispenser_tag.
