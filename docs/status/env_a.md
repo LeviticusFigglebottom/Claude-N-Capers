@@ -4,6 +4,21 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-61) D-166 end to end, AH cast batch, gear bag, RT vehicle holster (2026-10-23)
+- **D-166 e2e** (harness PO5_FORCE_CAPTAIN 0bf50ccf + CREW_DMG 0.25, A head + C head, Hazardous): Brandt at wave 2,
+  SUSTAIN locked, ONE FADE in each run. Seed 4242: first cash bag t=439 -> escape_wait done / van at t=739 (+300 s) ->
+  escape t=745 -> RESULT PASS, payday -> hub. Seed 2: first bag t=626 -> van t=926 -> escape t=929 -> PASS. Product:
+  afterhours_mission.captain_waiver (0e068d4d), also on captain_arrived. Harness: the captain hunt yields a frame every pass
+  (bbf08c8e: it spun in one frame to 7.8 GB and was OOM-killed) and stops once the escape is marked (a3d04eb1).
+  Without forcing, the Hazardous re-runs (1 / 4242 / 6501) died to bot skill before Brandt (accepted; P's windowed read).
+- AH cast: idle variants off armed bodies (fae58828); bouncers' post activity, bartender_wipe, the off-duty cop's `sit`
+  and SpawnPoint facing through spawn_units (ce1c6084); vip_party spawns the civ_vip guests (scripted CIVILIAN spawns
+  skipped at load, HeistMission.spawn_civilians; civ_vip -> club_vip a-f) (e6fcf69a). Mercer's gear line (191a8554),
+  the Accountant's lines (871fc204).
+- Gear bag (B r308): InteractableComponent.aim_filter; GearPickup only targets crew without gear, off once all are
+  geared (ab48b324). a/test_s1_3_civilian_mode 6/6.
+- RT shot review: seated vehicle bodies holster; vehicle_exit draws at foot_out (2877b00f). a/test_rt_vehicle_holster 1/1.
+
 ### (-60) AH done-check harness table: 5 seeds × {ah_stealth, ah_loud} × {Routine, Hazardous} (2026-10-23, LEAD r306)
 Tree: scratch merge of env/a-core 0f1f8c5b (= trunk r306 content on A's side) + env/c-worlds 66248215 + env/d-art
 dba5dfa2; the Routine loud re-runs ("r") add C's ProductPrivate fix and A's e1e9d39d. Headless real menus:
