@@ -455,6 +455,8 @@ crew.dutch,Dutch
 crew.wren,Wren
 crew.marten,Marten
 crew.jay,Jay
+crew.juno,Juno
+crew.hale,Hale
 enemy.security_officer,Security Officer
 enemy.camera_operator,Camera Operator
 enemy.civilian,Civilian
@@ -647,6 +649,50 @@ voice.vo.jay.guard_down_1,Guard's out.
 voice.vo.jay.guard_down_2,Lights out for that one.
 voice.vo.jay.civilian_killed_1,"Whoa, whoa, not the civvies!"
 voice.vo.jay.civilian_killed_2,That's gonna cost us. Stop!
+voice.vo.juno.pager_started_1,"Pager. Give it here, I'll sweet-talk him."
+voice.vo.juno.pager_started_2,I've got the pager. Act natural.
+voice.vo.juno.reloading_1,Reloading. Cover me.
+voice.vo.juno.reloading_2,Fresh mag. Two seconds.
+voice.vo.juno.device_jammed_1,Drill's choked. Somebody kick it.
+voice.vo.juno.device_jammed_2,The drill quit. Get it running.
+voice.vo.juno.bagging_body_1,Bagging him. Eyes up.
+voice.vo.juno.bagging_body_2,Into the bag. Nobody saw that.
+voice.vo.juno.going_loud_1,"That's it, we're loud. Ride it out."
+voice.vo.juno.going_loud_2,"Loud, then. Let's be quick about it."
+voice.vo.juno.crew_downed_1,I'm down! Get me up!
+voice.vo.juno.crew_downed_2,Hit! I'm down here!
+voice.vo.juno.reviving_1,Up you get. We're not leaving you.
+voice.vo.juno.reviving_2,Got you. Back on your feet.
+voice.vo.juno.cops_incoming_1,Cops coming in. Find cover.
+voice.vo.juno.cops_incoming_2,More of them. Watch the doors.
+voice.vo.juno.loot_secured_1,One more in the van.
+voice.vo.juno.loot_secured_2,Secured. Keep them coming.
+voice.vo.juno.guard_down_1,Guard's down.
+voice.vo.juno.guard_down_2,He's out cold.
+voice.vo.juno.civilian_killed_1,Hey! Not the civilians!
+voice.vo.juno.civilian_killed_2,That's on us now. Stop it.
+voice.vo.hale.pager_started_1,Pager's going. I'll handle him.
+voice.vo.hale.pager_started_2,Leave the pager to me. Steady voice.
+voice.vo.hale.reloading_1,Changing mags.
+voice.vo.hale.reloading_2,Reloading. Hold the line.
+voice.vo.hale.device_jammed_1,Drill's jammed. I'll look at it if nobody else will.
+voice.vo.hale.device_jammed_2,That drill's stuck again. Give it a nudge.
+voice.vo.hale.bagging_body_1,Bagging this one. Watch my back.
+voice.vo.hale.bagging_body_2,In the bag he goes. Tidy.
+voice.vo.hale.going_loud_1,"Loud, then. Do it properly."
+voice.vo.hale.going_loud_2,Quiet's over. Dig in.
+voice.vo.hale.crew_downed_1,I'm down. Give us a hand.
+voice.vo.hale.crew_downed_2,Took one. I'm down.
+voice.vo.hale.reviving_1,Up you come. Easy now.
+voice.vo.hale.reviving_2,Got you. On your feet.
+voice.vo.hale.cops_incoming_1,Police coming. Find something solid.
+voice.vo.hale.cops_incoming_2,Another lot coming in. Heads down.
+voice.vo.hale.loot_secured_1,That's one secured.
+voice.vo.hale.loot_secured_2,In the van. Next one.
+voice.vo.hale.guard_down_1,Guard's down.
+voice.vo.hale.guard_down_2,He'll sleep it off.
+voice.vo.hale.civilian_killed_1,Oi! Leave the civilians be!
+voice.vo.hale.civilian_killed_2,That wasn't needed. Stop it.
 ui.common.money,${amount}
 ui.common.percent,{value}%
 ui.menu.coming_soon,Coming soon

@@ -23,10 +23,10 @@ extends Resource
 ## ContactDef.voice_speaker.
 ## &"guard" = any guard NPC (ENV A requests guard lines by id, e.g. StealthTweak.cuff_yell_line).
 const SPEAKERS: Array[StringName] = [
-	&"mercer", &"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"crew", &"vance", &"reyes", &"accountant", &"guard",
+	&"mercer", &"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale", &"crew", &"vance", &"reyes", &"accountant", &"guard",
 ]
 ## The heisters: the only speakers that &"crew" lines stand in for.
-const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay"]
+const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale"]
 ## Known trigger vocabulary: EventBus signal names first, then semantic tags.
 const EVENTS: Array[StringName] = [
 	# EventBus signals
