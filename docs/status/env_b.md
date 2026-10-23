@@ -4,6 +4,27 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### AH done-check, B slice (LEAD r305, early; D-115 style)
+Tree: env/b-content + trunk r304 + env/a-core + env/c-worlds, with the local AH un-hide applied (`hidden` dropped in
+heist_list), after --import.
+Patch saved, NOT pushed: scratchpad/ah_unhide_D165.patch. It touches heist_list.tres, test_heist_readiness (AH offered) and test_music (BASE_IDS + afterhours). Rebase it against the RT patch: both touch the readiness loop.
+
+| Check | How | Result |
+|---|---|---|
+| Heist text audit | test_heist_text_audit (AH in HEISTS) | 5/0 |
+| VO coverage | test_vo_coverage, AH no longer staged | **12/1**: `vo.accountant.afterhours_contact_intro` and `_payday` are never said. A's mission needs to say them, as OF / RT do. All other AH lines are said |
+| Voice table / strings | test_strings 23/0, test_ui_strings 3/0, test_ah_content 3/0, test_contacts 6/0 | pass |
+| First-time tip | test_heist_tips 5/0, test_onboarding_card 10/0 | pass |
+| Briefing | test_briefing 40/0, test_briefing_intel 15/0 (4 surprises), test_heist_screens_text 8/0 | pass |
+| Pre-planning | test_preplan 42/0, test_blueprints 9/0 (labels inside the plan, AH walked) | pass |
+| Achievements | test_heist_achievements 13/0 | pass |
+| Catalogue / readiness | test_heist_readiness 9/0 (AH offered + ready), test_p5_catalogue 7/0 (2 skipped: every P5 def has shipped) | pass |
+| Music | test_music 19/0 (Velvet Rope in the base set) | pass |
+| Board readiness | test_board 24/0, test_board_screen 7/0. Probe over 400 rotations at level 60: AH pin x478, contact.accountant, $40,000 base, difficulties Routine-Brutal, 73 pro | pass |
+| Main-menu path | test_main_menu_direct 4/0, test_app_flow 5/0 | pass |
+| Headless loud run | A's po5_flow_ah_loud, DIRECT=1, seed 1234, Routine | **PASS** in 1015 s: civilian start → gear (cloak) → office → safe (drill, jammed twice) → secure 10/12 bags → escape → payday → hub |
+| Run log | run.log + po5_log.txt | **0 missing string keys** and no script errors (only exit-time RID leak notes). VO said: 24 AH lines. Not reached on this seed (no rare event; loud from 9 s): code_found, lasers, last_pager, couriers, off_duty_cop, shoutouts |
+
 ### Afterhours items 8-10 (D-165; built against C's map + def, env/c-worlds 46512e5e; PAIR with it)
 - **8 assets:** asset.gear_drop and asset.count_window get `heists = [afterhours]` (D-143 allow-list, like the intel assets).
   The insider keycard needs no new asset: C's def points the library asset.inside_keycard at pp_insider_keycard.
