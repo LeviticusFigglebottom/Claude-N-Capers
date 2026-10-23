@@ -40,6 +40,9 @@ extends Resource
 @export var look_hold_s: float = 1.2
 ## Distance from the post at which the guard walks back to it (m).
 @export var post_return_m: float = 0.6
+## D's AH cast review (the door bouncer walked on the spot all night): a walk back to the post that has not arrived
+## after this long (s) takes the spot reached as the post (the crowd / a door left the exact point unreachable) ◇.
+@export var post_walk_give_up_s: float = 5.0
 
 @export_group("Curious / investigate (S3.4)")
 ## "?" beat: stop and face the source before walking over (s) ◇.

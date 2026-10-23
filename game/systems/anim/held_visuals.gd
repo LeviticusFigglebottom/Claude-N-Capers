@@ -9,6 +9,8 @@ extends RefCounted
 const WEAPON_RANGE_MARGIN_M: float = 1.0
 const SILHOUETTES_PATH: String = G.CHARACTERS_DIR + "_props/weapon_silhouettes/weapon_silhouettes.json"
 const SILHOUETTE_NODE: String = "WeaponSilhouette"
+## Spawn tags of plain-clothes armed NPCs: holstered until ALARMED / COMBAT (plain_clothes_holstered).
+const PLAIN_CLOTHES_TAGS: Array[StringName] = [&"civ_offduty"]
 
 static var _weapon_defs: Dictionary = {}
 ## weapon_silhouettes.json `silhouettes` (NPC weapon id -> scene path), loaded once; {} without the file.
@@ -232,6 +234,19 @@ static func update_slung(rig: Node3D, clip: StringName) -> void:
 	var slung: Node3D = rig.get_node_or_null(^"Skeleton3D/Slung") as Node3D if rig != null else null
 	if slung != null:
 		slung.visible = not seated_clip(clip)
+
+
+## D's AH cast review (r308_offduty.png): a plain-clothes observer (PLAIN_CLOTHES_TAGS on his spawn: the AH off-duty
+## cop) keeps his gun holstered in the crowd until he radios the alarm or fights (ALARMED / COMBAT). The tags travel with
+## the spawn descriptor, so every peer agrees (AnimDriver.weapon_shown).
+static func plain_clothes_holstered(npc: NpcBase) -> bool:
+	if npc == null or npc.alert_state == Enums.AlertState.ALARMED or npc.alert_state == Enums.AlertState.COMBAT:
+		return false
+	var tags: Array = npc.spawn_info.get("tags", []) as Array
+	for t: StringName in PLAIN_CLOTHES_TAGS:
+		if tags.has(t):
+			return true
+	return false
 
 
 static func seated_clip(clip: StringName) -> bool:
