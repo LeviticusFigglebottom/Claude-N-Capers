@@ -1616,3 +1616,9 @@ PO: "skip the GPU render / any steps that'd need something you can't do yourself
 Heist done checks no longer wait on PO actions (GPU re-renders, PO playthroughs). Windowed opengl3 evidence from the envs
 (reviewed by the LEAD) stands in. Rolling Thunder's done path is now:
 P's D-158 real-input verdict → the LEAD's D-115-style done check → B flips the un-hide flag → Afterhours starts (D-144).
+6. (Amendment 2026-10-23, LEAD) A's bot A/B (seeds 1001-1003, 6 runs each way): the window / wave-1 Stinger / cover knobs never
+   engage, because the convoy escort decides the run in the first ~20 s after the stop. Cover-behind-leader was HARMFUL (bots held
+   back while the leader lay downed at the front), so it stays 0. The escort knobs act on the right phase: escort_engage_delay_s 1.5
+   + escort_accuracy_mult 0.7 for 10 s took the escort phase from 2/6 to 4/6 survived, and downs before BUILD from 13 to 8, without
+   touching the later heist. **Ruling: escort knobs ON (1.5 s / ×0.7 / 10 s).** The truck window and the wave-1 exclusion stay
+   available but OFF unless P's human runs show the crew dies in the first assault. P's remaining verdicts run with the escort knobs on.
