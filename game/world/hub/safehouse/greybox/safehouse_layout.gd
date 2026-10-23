@@ -182,10 +182,11 @@ const SPAWNS: Array = [
 	["ReturnRange", [20.75, 0.0, 16.4], 0.0, ["hub_return_range"]],
 ]
 
-## Props/ (greybox stand-ins; G2 dresses the rooms): [name, min, max, class, kind]. The crew van backed in under the
-## roller door, rear doors (north) open.
+## Props/: [name, min, max, class, kind, art (catalog asset at the box's floor centre, "" = the greybox box)]. The crew
+## van backed in under the roller door, its rear doors open (veh_sh_crew_van: the body is 2.0 x 2.2 x 5.0, the open
+## doors reach 0.95 m behind it; the collider is the body).
 const PROPS: Array = [
-	["CrewVan", [2.9, 0.0, 0.6], [4.7, 2.3, 6.2], "prop", "vehicle"],
+	["CrewVan", [2.8, 0.0, 1.2], [4.8, 2.2, 6.2], "prop", "vehicle", "veh_sh_crew_van"],
 ]
 
 ## ReviewCameras (G0 Review shots, 16): [name, caption, position, look-at]. TopDownPlan is the plan render.
@@ -225,11 +226,11 @@ const AMBER: Color = Color(0.89, 0.61, 0.23)
 ## armory bench lamp. The hall's south high-bays are modelled but off (G0: "one bank on, dimmed").
 const FIXTURES: Array = [
 	# either side of the middle rooflight's well (x 14-16), over the table's ends
-	["TablePendantW", "prop_pendant_brass", [13.7, 5.0, 6.5], 0.0,
+	["TablePendantW", "prop_sh_pendant_enamel", [13.7, 5.0, 6.5], 0.0,
 		{"light_color": K2700, "light_energy": 2.0, "omni_range": 6.0}, true, true],
-	["TablePendantE", "prop_pendant_brass", [16.3, 5.0, 6.5], 0.0,
+	["TablePendantE", "prop_sh_pendant_enamel", [16.3, 5.0, 6.5], 0.0,
 		{"light_color": K2700, "light_energy": 2.0, "omni_range": 6.0}, true, true],
-	["PressPendant", "prop_pendant_brass", [11.0, 5.0, 10.2], 0.0,
+	["PressPendant", "prop_sh_pendant_enamel", [11.0, 5.0, 10.2], 0.0,
 		{"light_color": K2700, "light_energy": 1.8, "omni_range": 5.5}, true, true],
 	["BoardLightW", "prop_picture_light", [14.0, 2.95, 0.2], 180.0, {"light_color": K3000, "light_energy": 1.6},
 		false, true],
@@ -243,7 +244,8 @@ const FIXTURES: Array = [
 	["HighBaySE", "prop_highbay_led", [19.0, 5.0, 8.5], 0.0, {}, false, false],
 	["LbHighBay", "prop_highbay_led", [3.8, 4.5, 4.0], 0.0,
 		{"light_color": K4000, "light_energy": 2.2, "spot_range": 8.0}, false, true],
-	["LbWorkLight", "prop_highbay_led", [6.5, 4.5, 6.5], 0.0,
+	# the work light on its tripod (C4-03 asset), by O1 and clear of the spawns
+	["LbWorkLight", "prop_sh_work_light", [6.6, 0.0, 1.4], 180.0,
 		{"light_color": K5000, "light_energy": 1.6, "spot_range": 7.0}, true, true],
 	["LgFloorLamp", "prop_floor_lamp", [7.4, 0.0, 8.6], 0.0, {"light_color": K2700, "light_energy": 0.9}, false, true],
 	["LgPendant", "prop_pendant_diner", [3.5, 3.0, 15.5], 0.0,

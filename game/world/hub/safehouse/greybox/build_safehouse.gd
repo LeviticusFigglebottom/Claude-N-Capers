@@ -254,6 +254,20 @@ func build_props(props: Node3D) -> void:
 		var b: StaticBody3D = box(props, String(p[0]), mn, mx, String(p[3]))
 		b.set_meta(&"prop", true)
 		b.set_meta(&"kind", String(p[4]))
+		var art: String = String(p[5])
+		if art != "":   # C4-03: catalog art in place of the greybox mesh (the collider stays)
+			var ps: PackedScene = load(String(PropCatalog.entry(StringName(art)).get("scene", ""))) as PackedScene
+			if ps == null:
+				errors.append("prop %s: no scene for %s" % [p[0], art])
+			else:
+				var mesh: Node = b.get_node("Mesh")
+				b.remove_child(mesh)
+				mesh.free()
+				var inst: Node3D = ps.instantiate() as Node3D
+				inst.name = "Art"
+				inst.position = Vector3(0.0, -(mx.y - mn.y) * 0.5, 0.0)
+				add(b, inst)
+				b.set_meta(&"art_asset", art)
 		obstruct(Transform3D.IDENTITY, AABB(mn, mx - mn))
 	for w: Array in L.WALL_FIXTURES:
 		var pivot: Node3D = add(props, node3d(String(w[0]), v3(w[1]))) as Node3D

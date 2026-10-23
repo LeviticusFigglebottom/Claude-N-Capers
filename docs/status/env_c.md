@@ -6,6 +6,10 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-23, **C5-01: the three unlockable tracks have their own stems** (vault_hymn D minor 128, a string-choir
+  hymn with bells and timpani; long_con G dorian 120, noir walking bass and harpsichord; last_call B minor 150, saw
+  arps, glass pad and a bell lead). tools/audiogen/music_{vault_hymn,long_con,last_call}.py; 5 stems + 2 stingers
+  each, rendered twice byte-identical; test_music_selection asserts every stem and stinger loads.
 - 2026-10-22, **C4-03 safehouse G2 art pass: validate --hub final PASS.**
   - **Lighting:** the night env + lut_safehouse, 24 fixtures at the G0's colour temperatures, the LIVE FIRE lamp and
     jukebox glow, one VoxelGI, probes, occluders.

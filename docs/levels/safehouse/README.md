@@ -44,6 +44,17 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
 * **Audio**: the jukebox plays positionally at the cabinet (`MusicDirector.positional_parent`, 4 m unit size, 30 m);
   the interior bed and 5 point emitters (`tools/audiogen/cues_safehouse.py`). `SafehouseMap.start_ambience()` plays
   only registered cues, so they are silent until B's cue rows land.
-* **Waits (new assets, D):** the bunk bed (queen beds stand in), the gun cabinets (lockers), the ear-defender rack and
-  drying line (coat rails), the old type cases (plan chests), the work light on its stand (a second high-bay), the van,
-  the Old Press, the jukebox cabinet, the Board's painted map, the green-enamel pendants (brass pendants stand in).
+* **Built by C (C4-03):** the green-enamel pendants (prop_sh_pendant_enamel), the work light on its stand
+  (prop_sh_work_light), the crew van with its rear doors open (veh_sh_crew_van; tools/blender/props/safehouse.py).
+* **Waits (new assets, D, prop_sh_*):** the Old Press, the jukebox cabinet, the Board's painted map, the bunk bed (queen
+  beds stand in), the gun cabinets (lockers), the ear-defender rack and drying line (coat rails), the old type cases
+  (plan chests). Specs: C's message to D of 2026-10-23.
+
+## G3 todo
+* **The planning table and the Old Press render black on their sides** (the LEAD's G2 note: give them at least a
+  dark metal / wood so they do not read as holes). Their tops light normally. Not metallic (their triplanar overrides
+  carry metallic 0) and not the tint (a lighter cast-iron tint changed nothing): the vertical faces of these two
+  station bodies get no light at all on the Compatibility path, while the armory and mask benches (same pass, oak) do.
+  To investigate at G3: the station-local boxes' normals / triplanar under a turned station root, the shadowed
+  pendants above them, and the per-object light list.
+
