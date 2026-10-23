@@ -81,23 +81,31 @@ def hollis(kit: Kit) -> None:
     kit.notes["portrait"] = "QB-50a contact bust: Hollis 'Hammer' Reyes (fixer)"
 
 
-def _hoop(kit: Kit, centre: Vector, axis: Vector, mat: str, width: float, n_pts: int = 24, reach: float = 0.12) -> None:
+def _hoop(kit: Kit, centre: Vector, axis: Vector, mat: str, width: float, n_pts: int = 32, reach: float = 0.12,
+          smooth: bool = False) -> None:
     """A closed reflective tape band on the current outer surface, round ``axis`` through ``centre``; the rays start
-    ``reach`` out from the axis (just outside the limb or torso, so a bind-pose arm is never hit first)."""
+    ``reach`` out from the axis (just outside the limb or torso, so a bind-pose arm is never hit first). ``smooth``:
+    ride a smoothed profile over pocket flaps and seams (the torso) instead of every surface step."""
     k = kit.k
     hull = kit.hull()
     ref = Vector((0.0, 1.0, 0.0)) if abs(axis.y) < 0.9 else Vector((1.0, 0.0, 0.0))
     u = (ref - axis * ref.dot(axis)).normalized()
     v = axis.cross(u)
-    ring = []
+    dirs, radii = [], []
     for i in range(n_pts):
         a = math.tau * i / n_pts
         d = u * math.cos(a) + v * math.sin(a)
         hit = hull.cast(centre + d * reach * k, -d, reach * k)
-        ring.append((hit[0] if hit[0] is not None else centre + d * 0.6 * reach * k) + d * 0.004 * k)
+        dirs.append(d)
+        radii.append((hit[0] - centre).dot(d) if hit[0] is not None else 0.6 * reach * k)
+    if smooth:   # the rolling max of three, then two smoothing passes
+        radii = [max(radii[i - 1], radii[i], radii[(i + 1) % n_pts]) for i in range(n_pts)]
+    for _ in range(2 if smooth else 0):
+        radii = [0.25 * radii[i - 1] + 0.5 * radii[i] + 0.25 * radii[(i + 1) % n_pts] for i in range(n_pts)]
+    ring = [centre + d * (r + 0.004 * k) for d, r in zip(dirs, radii)]
     m = Mesh()
     o.strip(m, hull, ring, width * 0.5 * k, 0.0022 * k, mat, segs_across=1, chamfer=0.001 * k, closed=True,
-            cast_back=0.03 * k)    # a short re-cast: a long one snaps the inner arm band onto the torso
+            cast_back=(0.006 if smooth else 0.03) * k)   # short re-casts: a long one snaps an arm band onto the torso
     kit.add_soft(m)
 
 
@@ -113,7 +121,7 @@ def hollis_rt(kit: Kit) -> None:
     cgr.work_jacket(kit, HIVIS, "char_suit_brown", hips_z - 0.06 * k, 1.44 * k)
     chest = fit.ring_centre("chest")
     for z in (1.00, 1.08):                                                     # body hoops (below the armpits)
-        _hoop(kit, Vector((0.0, chest.y, z * k)), Vector((0.0, 0.0, 1.0)), TAPE, 0.040, reach=0.22)
+        _hoop(kit, Vector((0.0, chest.y, z * k)), Vector((0.0, 0.0, 1.0)), TAPE, 0.040, reach=0.22, smooth=True)
     for sfx in ("L", "R"):                                                     # arm hoops above the elbow
         sh, el = Vector(fit.J[f"shoulder.{sfx}"]), Vector(fit.J[f"elbow.{sfx}"])
         _hoop(kit, sh.lerp(el, 0.72), (el - sh).normalized(), TAPE, 0.035, n_pts=16, reach=0.07)
