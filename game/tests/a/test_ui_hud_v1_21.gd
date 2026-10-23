@@ -1,6 +1,7 @@
 ## ui_hud v1.21 (D-163): LocalHudModel.perk_item = the deck throwable's state for any deck ({kind, charges, max,
 ## cooldown_left, active_left, partner_slot}) with perk_item_changed, from the replicated PerkItems; the pocket ECM
-## shows there too (pocket_ecm stays one round as an alias).
+## shows there too (pocket_ecm stays one round as an alias), with its mode; v1.22 (D-164): segments while a Leech
+## ampule runs.
 extends TestCase
 
 const GAS_ITEM: StringName = &"throwable.test_hud_gas"
@@ -71,3 +72,18 @@ func test_pocket_ecm_shows_as_perk_item() -> void:
 	assert_eq(int(hud.perk_item.get("max", -1)), 2, "max")
 	assert_true(float(hud.perk_item.get("active_left", 0.0)) > 4.0, "active_left")
 	assert_eq(int(hud.pocket_ecm.get("charges", -1)), 1, "the pocket_ecm alias still there")
+	assert_eq(StringName(hud.perk_item.get("mode", &"x")), EcmSystem.MODE_JAM, "B's request: mode carried (jam)")
+
+
+func test_v1_22_segments_replicate() -> void:
+	var items: PerkItems = PerkItems.of(_rt)
+	items.publish(0, PerkLeech.KEY, PerkItems.entry(PerkLeech.KIND, 0, 1, 0.0, 5.0, -1, &"", {"count": 3, "size": 10}))
+	items.publish(1, PerkTagTeam.KEY, PerkItems.entry(PerkTagTeam.KIND, 1, 1, 0.0, 0.0))
+	var mirror: PerkItems = PerkItems.new()
+	mirror.apply_net_state(bytes_to_var(var_to_bytes(items.net_state())) as Dictionary)
+	assert_eq(mirror.state(0).get("segments", {}), {"count": 3, "size": 10}, "segments while active")
+	assert_false(mirror.state(1).has("segments"), "none for other kinds")
+	assert_eq(StringName(mirror.state(1)["mode"]), &"", "mode empty for other kinds")
+	mirror.free()
+	await wait_seconds(0.5)
+	assert_eq(_rt.hud_model.perk_item.get("segments", {}), {"count": 3, "size": 10}, "on the HUD")

@@ -9,7 +9,7 @@ var _rt: HeistRuntime = null
 class DodgeProbe extends PerkComponent:
 	var dodges: int = 0
 
-	func on_dodge() -> void:
+	func on_dodge(_info: Dictionary) -> void:
 		dodges += 1
 
 

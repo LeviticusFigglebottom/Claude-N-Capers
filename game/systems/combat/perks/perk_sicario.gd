@@ -36,15 +36,20 @@ func use_throwable(kind: StringName) -> bool:
 
 func tick(delta: float) -> void:
 	twitch_lockout_left = maxf(twitch_lockout_left - delta, 0.0)
-	if not _cloud_live():
-		cloud = null
-		cooldown_left = maxf(cooldown_left - delta, 0.0)  # the recharge runs once the cloud is gone
+	tick_item_cooldown(delta)
 	var items: PerkItems = PerkItems.of(HeistRuntime.of(crew))
 	if items != null:
 		var active: float = cloud.pool_left if cloud != null and cloud.landed else 0.0
 		items.publish(_slot(), key, PerkItems.entry(ThrownItem.KIND_SMOKE, 0 if cooldown_left > 0.0 else 1, 1,
 			cooldown_left, active))
 
+
+
+## Its item cooldown: also while the holder is down (CrewPerks.tick_item_cooldowns, PD2 timers keep running).
+func tick_item_cooldown(delta: float) -> void:
+	if not _cloud_live():
+		cloud = null
+		cooldown_left = maxf(cooldown_left - delta, 0.0)  # the recharge runs once the cloud is gone
 
 
 func on_kill(_victim: Node, _info: Dictionary) -> void:
@@ -57,7 +62,7 @@ func after_hit(out: Dictionary) -> void:
 		twitch_stacks += 1
 
 
-func on_dodge() -> void:
+func on_dodge(_info: Dictionary) -> void:
 	twitch_stacks = 0
 	twitch_lockout_left = num("twitch_lockout_s")
 	var h: CrewHealth = _health()

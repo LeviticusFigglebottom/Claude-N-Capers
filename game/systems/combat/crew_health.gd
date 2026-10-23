@@ -220,7 +220,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if (dodge_type == Enums.DamageType.BULLET or dodge_type == Enums.DamageType.MELEE) \
 			and (_roll_dodge() or (bullet and SmokeZones.crew_avoids(_crew))):  # D-163: a smoke cloud avoids bullets
 		regen_delay_left = _regen_delay(tw)
-		PerkHooks.on_dodge(self)  # D-163 (Sicario: Twitch reset, Agility Shield)
+		PerkHooks.on_dodge(self, {"amount": dmg, "type": dodge_type, "attacker": attacker_net_id,
+			"position": info.get("position", Vector3.ZERO)})  # D-163 Sicario; D-164 Copycat ricochet
 		if bullet:
 			_start_grace(dmg)
 		out["amount"] = 0.0
@@ -258,12 +259,14 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.interaction != null and armor_dmg + health_dmg > 0.0:
 		rt.interaction.interrupt_on_damage(_crew.slot)  # S9.1
-	if health <= 0.0 and PerkHooks.veto_down(self):  # D-164 (Leech): a perk keeps the holder up (sets health itself)
+	# D-164 (Leech): a perk keeps the holder up (it sets the health, possibly leaving it at 0: no down).
+	var vetoed: bool = health <= 0.0 and PerkHooks.veto_down(self)
+	if vetoed:
 		out["down_vetoed"] = true
-	if health <= 0.0:
+	elif health <= 0.0:
 		out["killed"] = true
 	_publish(out, attacker_net_id)
-	if health <= 0.0 and not _swan_song():
+	if health <= 0.0 and not vetoed and not _swan_song():
 		go_down()
 	return out
 
@@ -534,8 +537,8 @@ func _tick_down_states(delta: float) -> bool:
 				and not SkillTriggers.seen_by_enemy(_crew)):  # B3 Playing Possum: paused while unseen
 			bleedout_left -= delta
 		down_s += delta
-		if st == Enums.CrewState.DOWNED and PerkHooks.tick_downed(self):
-			return true  # D-164: a deck throwable used while down stood the holder up (Leech's temporary revive)
+		if PerkHooks.tick_downed(self, delta):  # D-164: item cooldowns run while down; a use may stand the holder up
+			return true
 		if bleedout_left <= 0.0:
 			bleedout_left = 0.0
 			go_to_custody()

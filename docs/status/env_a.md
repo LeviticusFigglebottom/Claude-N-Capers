@@ -4,6 +4,56 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-47) A4-02 re-measure + anim_driver profile (2026-10-23)
+- A4-02 was delivered in 26509c96 (entry -35). Re-measured on 5b85146c, Dockside, 4 crew, cap 24 enemies, headless:
+  - Frame: avg 7.4 ms, p95 12.2 ms. Process: avg 9.6 ms. Saturated: 4.84 ms per physics tick.
+  - Net: transforms 25.8 KB/s at 15 Hz, full state 6.3 KB.
+  - Same as the baseline, so D-158..D-164 added nothing measurable.
+- CI budgets (test_a4_02_dockside_perf, unchanged, about 2× the baselines): process avg 20 ms, frame p95 40 ms,
+  tick 12 ms, xform 96 KB/s, full state 64 KB.
+- FrameProf top: anim_driver 2.15 ms/frame (headless is always the FULL AnimLod band; windowed play LODs it),
+  npc_motor 0.62, everything else < 0.25.
+- anim_driver profile: turn 0.52, choose 0.45, left-hand IK 0.22, hold 0.19, apply 0.18, hint 0.11.
+  - TurnInPlace and the tick each ran choose_clip(). Now one _choose_clip_tick() per tick, invalidated when a one-shot
+    starts in between.
+  - Result: anim_driver 2.15 -> 2.06 ms (small; within noise).
+- Anim tests all green (anim_driver 30, d116 clips 21, turn 7, lod 9, ...).
+
+### (-46b) D-158 amendment 8 (4c5b9248, its own commit, sent to P)
+- rt_tweak.tres: truck_window_from escort_down; wave1_exclude [stinger, phantom] from Hazardous.
+- test_d158_rt_fairness 12/12 checks the shipped values; the tests that change the tweak restore them.
+
+### (-46) D-164 perk.copycat on B's names; item cooldowns run while down (2026-10-23)
+- PerkCopycat:
+  - Tactical reload: kills per weapon slot refill the holstered magazine from its reserve, then a near-instant swap
+    window (CrewWeapons.grant_quick_equip, equip time /10 ◇, server side).
+  - Headshot heal on any headshot hit, with its cooldown.
+  - Dodge ricochet back at the shooter (the dodged bullet's damage ◇); its cooldown is 0.35 s on LETHAL/CATACLYSM ◇.
+  - Grace: health-only immunity after the hit that crosses the threshold, with its cooldown.
+- CrewWeapons.refill_mag(ws, free).
+- PerkHooks.is_headshot(info) for the kill and damage infos.
+- on_dodge now passes {amount, type, attacker, position}.
+- Deck-item cooldowns (Stoic flask, Kingpin injector, Sicario, Leech) tick while down, via
+  tick_item_cooldown / CrewPerks.tick_item_cooldowns. TagPairs and the pocket ECM are services that already ran.
+- Contract row perk.copycat (phase 5). perk_tweak defaults (all behaviours off).
+- Tests: test_d164_copycat 5/5 (includes a partial-dict / mimic smoke test over every family's component);
+  test_d164_leech 7/7 (+ cooldowns while down, refill_mag / is_headshot).
+
+### (-45) D-164 perk.leech on B's names, ui_hud v1.22 segments, perk_item.mode (2026-10-23)
+- PerkLeech:
+  - The ampule window: activate heal, armor_off, and segmented health (a hit takes the whole top segment).
+  - kills_per_segment restores a segment; team_heal_on_damage_fraction heals teammates when the holder is hit.
+  - Cooldown from the window's end, with kill cuts.
+  - no_bleedout: the holder stays up at 0 health, at ×zero_health_speed_mult via CrewBuffs, and goes down at the end.
+  - usable_while_downed: a temporary revive. It goes back to the same down and bleed-out unless the holder revived a
+    teammate or a doctor bag reset the downs.
+- CrewHealth: a vetoed down at 0 health no longer goes down.
+- PerkItems / perk_item: optional `mode` (B's request; the pocket ECM's jam / feedback) and `segments`
+  {count, size} while active.
+- Contract row perk.leech (phase 5). perk_tweak defaults (card-1 values).
+- Tests: test_d164_leech 5/5, test_ui_hud_v1_21 3/3.
+- Known limit: CrewPerks does not tick while DOWNED, so the cooldown pauses while the holder is down.
+
 ### (-44) D-164 generic Leech hooks (2026-10-23)
 - PerkHooks.veto_down: CrewHealth.take_hit asks it before a down; a component's veto_down() sets the health and keeps
   the holder up.

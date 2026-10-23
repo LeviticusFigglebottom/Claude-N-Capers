@@ -8,7 +8,8 @@ const SERVICE: StringName = &"perk_items"
 const NODE_NAME: String = "PerkItems"
 
 ## slot -> {"kind": StringName, "charges": int, "max": int, "cooldown_left": float, "active_left": float,
-## "partner_slot": int (-1 = none)}
+## "partner_slot": int (-1 = none), "mode": StringName (&"" | &"jam" | &"feedback"), and while a Leech ampule runs
+## "segments": {"count": int (left), "size": int (total)} (ui_hud v1.22)}
 var items: Dictionary[int, Dictionary] = {}
 ## Server: slot -> the perk key that published it (not replicated).
 var _keys: Dictionary[int, StringName] = {}
@@ -28,9 +29,13 @@ static func of(rt: HeistRuntime) -> PerkItems:
 
 ## One state dict in the perk_item shape.
 static func entry(kind: StringName, charges: int, max_charges: int, cooldown_left: float, active_left: float,
-		partner_slot: int = -1) -> Dictionary:
-	return {"kind": kind, "charges": charges, "max": max_charges, "cooldown_left": snappedf(maxf(cooldown_left, 0.0), 0.1),
-		"active_left": snappedf(maxf(active_left, 0.0), 0.1), "partner_slot": partner_slot}
+		partner_slot: int = -1, mode: StringName = &"", segments: Dictionary = {}) -> Dictionary:
+	var e: Dictionary = {"kind": kind, "charges": charges, "max": max_charges,
+		"cooldown_left": snappedf(maxf(cooldown_left, 0.0), 0.1), "active_left": snappedf(maxf(active_left, 0.0), 0.1),
+		"partner_slot": partner_slot, "mode": mode}
+	if not segments.is_empty():
+		e["segments"] = segments
+	return e
 
 
 ## Server: slot's item state now, from perk `key` ({} clears it).
@@ -54,13 +59,16 @@ func state(slot: int) -> Dictionary:
 	return items.get(slot, {})
 
 
-## HeistNetSync SVC_PERK_ITEMS: {slot: [kind, charges, max, cooldown_left, active_left, partner_slot]}.
+## HeistNetSync SVC_PERK_ITEMS: {slot: [kind, charges, max, cooldown_left, active_left, partner_slot, mode,
+## segments count, segments size (-1 = none)]}.
 func net_state() -> Dictionary:
 	var out: Dictionary = {}
 	for s: int in items:
 		var e: Dictionary = items[s]
+		var seg: Dictionary = e.get("segments", {})
 		out[s] = [String(e["kind"]), int(e["charges"]), int(e["max"]), float(e["cooldown_left"]),
-			float(e["active_left"]), int(e["partner_slot"])]
+			float(e["active_left"]), int(e["partner_slot"]), String(e.get("mode", &"")),
+			int(seg.get("count", -1)), int(seg.get("size", -1))]
 	return out
 
 
@@ -68,4 +76,6 @@ func apply_net_state(d: Dictionary) -> void:
 	items.clear()
 	for k: Variant in d:
 		var a: Array = d[k] as Array
-		items[int(k)] = entry(StringName(a[0]), int(a[1]), int(a[2]), float(a[3]), float(a[4]), int(a[5]))
+		var seg: Dictionary = {"count": int(a[7]), "size": int(a[8])} if int(a[8]) >= 0 else {}
+		items[int(k)] = entry(StringName(a[0]), int(a[1]), int(a[2]), float(a[3]), float(a[4]), int(a[5]),
+			StringName(a[6]), seg)

@@ -332,6 +332,11 @@ var _oneshot_while_moving: bool = false
 var _oneshot_start: float = 0.0
 var _restart: bool = false
 var _turning_left: float = 0.0
+## A4-02: this tick's choose_clip(), shared by TurnInPlace and the tick (valid while _sel_rev is unchanged: a one-shot
+## started in between, a turn or a door kick, invalidates it).
+var _sel_clip: StringName = &""
+var _sel_rev: int = 0
+var _sel_cached_rev: int = -1
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
@@ -515,6 +520,7 @@ func tick(delta: float) -> void:
 	if _npc != null and NpcRagdoll.owns_pose(_npc):
 		return  # PO6-19: the ragdoll owns the pose (paused player, baked skeleton, rig yaw kept)
 	delta = maxf(delta, 0.0001)
+	_sel_cached_rev = -1  # a new tick: choose afresh
 	loop_resume.step(delta)
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
@@ -537,7 +543,7 @@ func tick(delta: float) -> void:
 			play_oneshot(once, -1.0, true)
 	_update_turn(delta, tw)
 	combat.update_door_kick(_npc)  # D-116: the loud breach of a locked door (door_kick_<fam>)
-	var want: StringName = civ_panic.apply(choose_clip(), delta)
+	var want: StringName = civ_panic.apply(_choose_clip_tick(), delta)
 	if _npc != null and _npc.alive:
 		_seated = SEATED_CLIPS.has(want)
 		_alive_clip = want
@@ -594,6 +600,7 @@ func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1
 	if not _has_clip(c):
 		return
 	_state_oneshot = c
+	_sel_rev += 1
 	_state_oneshot_speed = speed
 	_state_oneshot_t = 0.0
 	_oneshot_left = 0.0
@@ -635,6 +642,7 @@ func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool
 	if duration < 0.0:
 		duration = player.get_animation(full).length / maxf(speed, 0.01)
 	_oneshot = p_clip
+	_sel_rev += 1
 	_oneshot_left = duration
 	_oneshot_dur = duration
 	_oneshot_speed = speed
@@ -658,6 +666,15 @@ func choose_clip() -> StringName:
 	if crew_action != null and crew_action.action != &"" and horizontal_speed() <= AnimTweak.data().move_threshold_mps:
 		return crew_action.action  # v1.23 standing: full body (moving: CrewActionAnim's upper-body layer)
 	return _shield_clip(_active_clip(hint_clip))
+
+
+## A4-02: choose_clip() at most once per tick unless a one-shot started since (TurnInPlace asks first; the tick reuses
+## it). Outside tick() it is choose_clip().
+func _choose_clip_tick() -> StringName:
+	if _sel_cached_rev != _sel_rev:
+		_sel_clip = choose_clip()
+		_sel_cached_rev = _sel_rev
+	return _sel_clip
 
 
 ## characters.md v1.18: this body's variant index, hash(net_id) % 3: the same on every peer (net ids replicate) and
