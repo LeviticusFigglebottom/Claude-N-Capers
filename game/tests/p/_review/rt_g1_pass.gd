@@ -1264,12 +1264,13 @@ func _c4_fetch() -> int:
 	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
 	if door != null and not door.is_open and lock != null:
 		_diag_hold.call_deferred(_comp(lock), 10.0)  # availability / aim / block reason (r284 c4: loud place_saw failed at once)
+		var loud: bool = rt.went_loud
 		await pilot.use(_comp(lock), 40.0, func() -> bool: return (door.is_open or not door.locked
-			or _comp(lock) == null or _comp(lock).kind != &"place_saw"))
-		# Loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut before the door.
-		Engine.time_scale = DEVICE_SCALE
-		await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
-		Engine.time_scale = 1.0
+			or (loud and (_comp(lock) == null or _comp(lock).kind != &"place_saw"))))
+		if loud:  # loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut
+			Engine.time_scale = DEVICE_SCALE
+			await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
+			Engine.time_scale = 1.0
 		if not door.is_open:
 			await pilot.use(_comp(door), 20.0, func() -> bool: return door.is_open)
 	_row("magazine door open (padlock %s)" % ("sawn" if rt.went_loud else "picked"), "PASS" if door != null
