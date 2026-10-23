@@ -55,6 +55,19 @@ VARIANTS = {
                               "hair": "side_part", "hair_color": "blond", "look": "bartender_b"},
     "char_club_dj": {"height": 1.78, "build": 0.4, "gender": 0.0, "age": 0.3, "skin": 5, "beard_shadow": 0.5,
                      "hair": "short", "hair_color": "dark", "look": "dj"},
+    # D-165: the door team and bar staff for Afterhours' live counts (up to 6 bouncers, 4-6 bar / front staff)
+    "char_club_bouncer_c": {"height": 1.74, "build": 0.7, "gender": 1.0, "age": 0.35, "skin": 5, "hair": "side_part",
+                            "hair_color": "dark", "look": "bouncer_c"},
+    "char_club_bouncer_d": {"height": 1.84, "build": 0.95, "gender": 0.0, "age": 0.75, "skin": 1, "beard_shadow": 0.9,
+                            "hair": "short", "hair_color": "grey", "look": "bouncer_d"},
+    "char_club_bouncer_e": {"height": 1.85, "build": 0.65, "gender": 0.0, "age": 0.12, "skin": 3, "beard_shadow": 0.2,
+                            "hair": "buzz", "hair_color": "blond", "look": "bouncer_e"},
+    "char_club_bouncer_f": {"height": 1.70, "build": 0.5, "gender": 1.0, "age": 0.45, "skin": 2, "hair": "bob",
+                            "hair_color": "brown", "look": "bouncer_f"},
+    "char_club_bartender_c": {"height": 1.68, "build": 0.3, "gender": 1.0, "age": 0.22, "skin": 6, "hair": "short",
+                              "hair_color": "dark", "look": "bartender_c"},
+    "char_club_bartender_d": {"height": 1.79, "build": 0.45, "gender": 0.0, "age": 0.35, "skin": 4, "beard_shadow": 0.4,
+                              "hair": "side_part", "hair_color": "dark", "look": "bartender_d"},
     "char_club_patron": {"height": 1.72, "build": 0.3, "gender": 1.0, "age": 0.25, "skin": 1, "hair": "bob",
                          "hair_color": "blond", "lip": "char_lip_rose", "look": "patron"},
     "char_club_patron_b": {"height": 1.81, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 4, "beard_shadow": 0.5,
@@ -68,6 +81,8 @@ VARIANTS = {
 BLACK = "char_shirt_black"
 VIOLET = "char_club_violet"
 PALE = "char_button_pale"
+LIME = "char_club_lime"
+CORAL = "char_club_coral"
 
 
 def _z(kit: Kit) -> tuple[float, float, float]:
@@ -110,6 +125,8 @@ def bouncer(kit: Kit) -> None:
     n.earpiece(kit, "R")
     kit.notes["hip_note"] = ("Hip seat = the radio clipped outside the bomber on its ribbed waistband (right hip); "
                              "the pager rides there")
+    n.arm_band(kit, "L", 1.86, 0.010, LIME, height=0.003)                             # AH-G3: event
+    n.arm_band(kit, "L", 1.80, 0.010, CORAL, height=0.003)                            # wristbands
     kit.notes["look"] = ("Velvet bouncer: biggest build, bald; black nylon bomber over a black tee, SECURITY across "
                          "the back, radio clipped on the bomber waistband, black trousers, boots, earpiece")
 
@@ -128,6 +145,8 @@ def bouncer_b(kit: Kit) -> None:
     p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
     n.earpiece(kit, "R")
     kit.notes["hip_note"] = "Hip seat = the radio on the belt (right hip); the pager rides there"
+    n.front_item(kit, -0.070, belt_z / k - 0.005, (0.034, 0.046, 0.022), "char_metal_silver", lift=0.004)  # AH-G3: a
+                                                                                  # door clicker on the belt
     kit.notes["look"] = ("Velvet bouncer: big build, tight black short-sleeved tee tucked in, SECURITY on the back, "
                          "belt radio, black trousers, boots, earpiece")
 
@@ -145,6 +164,8 @@ def bartender(kit: Kit) -> None:
             o.rounded_rect(0.24 * k, 0.11 * k, 0.01 * k, 2), 0.003 * k, "char_denim", cast_dir=Vector((0, -1, 0)),
             rings=2, chamfer=0.003 * k)
     kit.add_soft(pk)
+    n.front_item(kit, 0.145, 0.950, (0.075, 0.170, 0.006), "char_medic_white", lift=0.003,
+                 up=Vector((0.15, 0.0, 1.0)))                                         # AH-G3: a bar towel
     kit.notes["look"] = "Velvet bartender: black shirt with rolled sleeves, dark denim bib apron with leather straps"
 
 
@@ -160,6 +181,7 @@ def bartender_b(kit: Kit) -> None:
     n.cull_under(kit, n0, vest, "faces_hidden_by_waistcoat")
     n.waist_apron(kit, "char_tux_black", belt_z + 0.01 * k, 0.36 * k)
     kit.add_head(cg.chignon(fit, "char_hair_blond"))
+    kit.add_gear(gk.name_tag(kit.hull(), Vector((0.090 * k, 0.2, 1.31 * k)), k=k, mat="char_satin_gold"))  # AH-G3
     kit.notes["look"] = ("Velvet bartender: white shirt with rolled sleeves, violet waistcoat, long black bistro "
                          "apron, blond chignon")
 
@@ -181,6 +203,7 @@ def dj(kit: Kit) -> None:
     p5.headphones_on(kit, "polymer_black", "rubber_black", accent=VIOLET)
     kit.add_head(gk.glasses(fit, "char_button_dark"))
     kit.add_head(cg.lenses(fit, "char_lens"))
+    n.lanyard(kit, "char_club_magenta", "char_medic_white", card_z=1.16)               # AH-G3: an artist pass
     kit.notes["look"] = ("Velvet DJ: over-ear headphones on the head (violet accents), tinted glasses, oversized "
                          "violet hoodie, black trousers, white trainers")
 
@@ -229,8 +252,117 @@ def patron_d(kit: Kit) -> None:
     kit.notes["look"] = "Club patron: cream hoodie (hood down), grey knit beanie, jeans, white trainers"
 
 
+# ---------------------------------------------------------------------------------------------
+# D-165: more of the door team and the bar
+def bouncer_c(kit: Kit) -> None:
+    """A woman on the door team: the bomber, a high bun, a staff laminate on a magenta lanyard."""
+    bouncer(kit)
+    kit.add_head(cg.chignon(kit.fit, "char_hair_dark", size=0.9, lift=0.02))
+    n.lanyard(kit, "char_club_magenta", "char_medic_white", card_z=1.17)              # AH-G3: a staff laminate
+    kit.notes["look"] = ("Velvet bouncer (woman): black nylon bomber over a black tee, SECURITY across the back, radio "
+                         "on the bomber waistband, earpiece, high bun, staff laminate on a magenta lanyard")
+
+
+def bouncer_d(kit: Kit) -> None:
+    """The head doorman: older and heavy, a long black wool coat over the black tee, grey beard."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    bt = _boots(kit)
+    tee = g.knit_top(fit, kit.hull(), BLACK, tuck, neck="crew", base=0.004)
+    kit.add_soft(tee)
+    tr = n.trousers(kit, "char_trousers_black", bt, belt_z + 0.022 * k, hem_r=0.064)
+    b = n.belt(kit, tr, belt_z, buckle="chrome", height=0.036)
+    a_radio = math.radians(108.0)
+    kit.add_gear(gk.radio(b, a_radio))
+    kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_suit_dark", 0.58 * k, 1.08 * k, button_mat="char_button_dark", lapel_w=0.06,
+                         neck_w=0.085, flare=0.08, open_below=0.0)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_coat")
+    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    n.earpiece(kit, "R")
+    n.watch(kit, "L", strap="char_satin_gold", case="char_satin_gold")                 # AH-G3: a gold watch
+    kit.notes["hip_note"] = "Hip seat = the radio on the belt under the coat (right hip); the pager rides there"
+    kit.notes["look"] = ("Velvet head doorman: older, heavy, grey beard; long black wool coat over a black tee, "
+                         "SECURITY across the back, belt radio, earpiece, gold watch")
+
+
+def bouncer_e(kit: Kit) -> None:
+    """The youngest of the door team: a black hoodie over the belt radio, a torch clipped at the chest."""
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, tuck = _z(kit)
+    bt = _boots(kit)
+    tee = g.knit_top(fit, kit.hull(), BLACK, tuck, neck="crew", base=0.004)
+    kit.add_soft(tee)
+    tr = n.trousers(kit, "char_trousers_black", bt, belt_z + 0.022 * k, hem_r=0.062)
+    b = n.belt(kit, tr, belt_z, buckle="chrome", height=0.034)
+    a_radio = math.radians(108.0)
+    kit.add_gear(gk.radio(b, a_radio))
+    kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.050 * k)
+    n.hoodie(kit, "char_nylon_black", hips_z - 0.05 * k, string_mat="char_knit_graphite")
+    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    n.earpiece(kit, "R")
+    n.front_item(kit, -0.090, 1.290, (0.018, 0.110, 0.018), "polymer_black", lift=0.003)  # AH-G3: a torch
+    n.front_item(kit, -0.090, 1.348, (0.022, 0.012, 0.020), "char_medic_white", lift=0.003)  # and its lens
+    kit.notes["hip_note"] = "Hip seat = the radio on the belt under the hoodie (right hip); the pager rides there"
+    kit.notes["look"] = ("Velvet bouncer (young): black hoodie, SECURITY across the back, belt radio under it, black "
+                         "trousers, boots, earpiece, a torch clipped at the chest")
+
+
+def bouncer_f(kit: Kit) -> None:
+    """The door team's camera operator: a black short-sleeved polo, glasses, belt radio, a pen."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    bt = _boots(kit)
+    n.shirt(kit, BLACK, tuck, point_len=0.048, spread=0.34, sleeve=0.55, cuff=False)
+    tr = n.trousers(kit, "char_trousers_black", bt, belt_z + 0.022 * k, hem_r=0.058)
+    b = n.belt(kit, tr, belt_z, buckle="chrome", height=0.034)
+    a_radio = math.radians(108.0)
+    kit.add_gear(gk.radio(b, a_radio))
+    kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
+    p5.stamp_back(kit, "SECURITY", 1.33, 0.045, PALE)
+    n.earpiece(kit, "R")
+    kit.add_head(gk.glasses(fit, "char_button_dark"))
+    n.front_item(kit, -0.092, 1.300, (0.008, 0.075, 0.007), "char_medic_white", lift=0.003)  # AH-G3: a white pen
+    kit.notes["hip_note"] = "Hip seat = the radio on the belt (right hip); the pager rides there"
+    kit.notes["look"] = ("Velvet door team (camera operator): black short-sleeved polo, SECURITY on the back, belt "
+                         "radio, black trousers, boots, earpiece, glasses, a white pen")
+
+
+def bartender_c(kit: Kit) -> None:
+    """East-bar bartender: a black sleeveless knit top, a short black waist apron, gold bangles."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    top = g.knit_top(fit, kit.hull(), BLACK, tuck, sleeve=0.0, neck="crew", base=0.004, rib=0.025)
+    kit.add_soft(top)
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.056)
+    n.waist_apron(kit, "char_tux_black", belt_z + 0.01 * k, 0.70 * k)
+    for t in (1.84, 1.90):                                                             # AH-G3: gold bangles
+        n.arm_band(kit, "R", t, 0.007, "char_satin_gold", height=0.003)
+    kit.notes["look"] = ("Velvet bartender (east bar): black sleeveless knit top, short black waist apron, black "
+                         "trousers, short dark hair, stacked gold bangles")
+
+
+def bartender_d(kit: Kit) -> None:
+    """The cocktail bartender: white shirt, black bow tie, long black apron, black sleeve garters."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.054, spread=0.30)
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k)
+    n.bow_tie(kit, "char_tie_black")
+    n.waist_apron(kit, "char_tux_black", belt_z + 0.01 * k, 0.36 * k)
+    for side in ("L", "R"):                                                            # AH-G3: sleeve garters
+        n.arm_band(kit, side, 0.55, 0.022, "char_tux_black", height=0.004)
+    kit.notes["look"] = ("Velvet cocktail bartender: white shirt, black bow tie, long black bistro apron, black "
+                         "trousers, black sleeve garters")
+
+
 _looks = {"bouncer": bouncer, "bouncer_b": bouncer_b, "bartender": bartender, "bartender_b": bartender_b, "dj": dj,
-          "patron": patron, "patron_b": patron_b, "patron_c": patron_c, "patron_d": patron_d}
+          "patron": patron, "patron_b": patron_b, "patron_c": patron_c, "patron_d": patron_d,
+          "bouncer_c": bouncer_c, "bouncer_d": bouncer_d, "bouncer_e": bouncer_e, "bouncer_f": bouncer_f,
+          "bartender_c": bartender_c, "bartender_d": bartender_d}
 
 
 def recipe(kit: Kit) -> None:
