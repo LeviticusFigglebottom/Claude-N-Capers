@@ -1,0 +1,8 @@
+asset: prop_sh_board_map
+script: tools/blender/props/safehouse_hero.py
+params: {"cat": {"group": "safehouse", "kind": "board", "mount": "wall", "pin_only": true, "place": "wall_mount", "surface": "wood"}, "fn": "board_map"}
+seed: 1428670985  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sh_board_map
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000
