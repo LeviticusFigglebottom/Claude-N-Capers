@@ -1,0 +1,8 @@
+asset: prop_sh_gun_cabinet
+script: tools/blender/props/safehouse_hero.py
+params: {"cat": {"group": "safehouse", "kind": "gun_cabinet", "pin_only": true, "place": "floor", "surface": "metal"}, "fn": "gun_cabinet"}
+seed: 4073886170  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sh_gun_cabinet
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

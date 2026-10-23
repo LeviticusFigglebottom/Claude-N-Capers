@@ -10,6 +10,7 @@ const CLUB_PATRON_SCENE: String = "res://world/characters/club_patron/club_patro
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
+const ZOOM_SCRIPT: String = "res://world/characters/_tools/crowd_lod_zoom.gd"
 const BIG_SURFACE: int = 1000
 
 var _index: Array[Dictionary] = []
@@ -182,7 +183,7 @@ class _SignalView extends Node:
 ## D-084: a CrowdLod entering the tree creates the watcher; with no CrewView.local_view it is a no-op;
 ## a view's zoom_factor_changed drives the switch; the view leaving resets to 1x.
 func test_crowd_lod_subscribes_to_zoom() -> void:
-	var zoom_script: GDScript = load("res://world/characters/_tools/crowd_lod_zoom.gd") as GDScript
+	var zoom_script: GDScript = load(ZOOM_SCRIPT) as GDScript
 	var root: Node3D = (load(CLUB_PATRON_SCENE) as PackedScene).instantiate() as Node3D
 	add_child(root)
 	await get_tree().process_frame
@@ -209,3 +210,25 @@ func test_crowd_lod_subscribes_to_zoom() -> void:
 	assert_false(bool(w.call(&"is_subscribed")), "unsubscribed after the view left")
 	late.queue_free()
 	root.queue_free()
+
+
+## A's A4-03 soak find: proxies entering in the same frame (a map load) share one pending watcher, not one each.
+func test_one_zoom_watcher_per_tree() -> void:
+	var zoom_script: GDScript = load(ZOOM_SCRIPT) as GDScript
+	for n: Node in get_tree().root.get_children():
+		if n.get_script() == zoom_script:
+			n.free()
+	var crowd: Array[Node] = []
+	for i: int in 4:
+		var r: Node = (load(CLUB_PATRON_SCENE) as PackedScene).instantiate()
+		add_child(r)
+		crowd.append(r)
+	await get_tree().process_frame
+	var count: int = 0
+	for n: Node in get_tree().root.get_children():
+		if n.get_script() == zoom_script:
+			count += 1
+	assert_eq(count, 1, "one watcher for 4 proxies entering in one frame")
+	assert_false(get_tree().root.has_meta(zoom_script.PENDING_META), "pending marker cleared once added")
+	for r: Node in crowd:
+		r.queue_free()

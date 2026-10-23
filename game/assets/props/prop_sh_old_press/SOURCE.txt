@@ -1,0 +1,8 @@
+asset: prop_sh_old_press
+script: tools/blender/props/safehouse_hero.py
+params: {"cat": {"group": "safehouse", "kind": "press", "pin_only": true, "place": "floor", "surface": "metal"}, "fn": "old_press"}
+seed: 3946521986  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sh_old_press
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000
