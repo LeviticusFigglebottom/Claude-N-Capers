@@ -106,10 +106,14 @@ work is needed.** Favors 5.
 &"civ_dancer": [&"club_dancer", &"club_dancer_b", &"club_dancer_c", &"club_dancer_d", &"club_dancer_e",
 	&"club_dancer_f", &"club_dancer_g", &"club_dancer_h", &"club_dancer_i", &"club_dancer_j", &"club_dancer_k",
 	&"club_dancer_l"]
-&"civ_offduty": [&"frd_agent"]
+# D 4eb0336a (p5_cast v16): the rare-event cast.
+&"civ_offduty": [&"club_offduty_cop"]     # off_duty_cop (plain clothes; replaces frd_agent's raid-jacket read)
+&"civ_vip": [&"club_vip", &"club_vip_b", &"club_vip_c", &"club_vip_d", &"club_vip_e", &"club_vip_f"]  # vip_party +6
+&"cartel_courier": [&"cartel_gunman", &"cartel_gunman_c", &"cartel_gunman_d", &"cartel_gunman_e", &"cartel_gunman_h",
+	&"cartel_gunman_i", &"cartel_gunman_j", &"cartel_gunman_k", &"cartel_gunman_l"]  # co_op_pickup (no face-covered looks)
 ```
 These are the doc's roster (D's `p5_cast.json` roles). The camera operator uses `club_bouncer_f` (the tag name `guard_camera` is a proposal: A / D pick the real
-CAMERA_OPERATOR tag). B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
+CAMERA_OPERATOR tag). `civ_vip` is a proposed tag name for vip_party's VIP patrons (C picks the real one). B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
 
 ## 7. Strings (new rows; written when the gate opens)
 
