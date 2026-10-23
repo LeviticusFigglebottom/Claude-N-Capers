@@ -7,6 +7,11 @@
 ##     [--actions=idle,melee,melee_charge,throw]: idle = 0.5 s of the hip hold; a quick melee (tap), a charged melee
 ##     (held 1 s, released) and a throw (held 0.4 s, released) with --melee (melee.folding_knife) and --throwable
 ##     (throwable.frag) in the loadout
+##     heavy_idle / heavy_charge (characters v1.38 melee_heavy review, before B's sledgehammer model lands): the loadout
+##     melee is melee.sledgehammer, its MeleeDef switched IN MEMORY to anim_set melee_heavy with a stand-in two-handed
+##     prop (0.9 m handle from -0.33 to +0.55 on Godot +Y, a head at +0.55; identity on the weapon bone);
+##     heavy_idle force-plays melee_heavy/idle with the prop, heavy_charge holds melee 1.3 s (frames over the last 0.3 s)
+##     and releases (the strike every tick)
 ## Owner: ENV D.
 extends Node
 
@@ -63,6 +68,15 @@ func _weapon(wid: StringName) -> void:
 	if not _actions.is_empty():
 		l.melee = _melee
 		l.throwable = _throwable
+	var heavy: bool = false
+	for act: String in _actions:
+		heavy = heavy or act.begins_with("heavy_")
+	if heavy:
+		l.melee = &"melee.sledgehammer"
+		var md: MeleeDef = ContentDB.melee(l.melee)
+		if md != null:   # in memory only, this run: the v1.38 two-handed set with the stand-in prop
+			md.anim_set = &"melee_heavy"
+			md.model = _heavy_prop()
 	var rt: HeistRuntime = await HeistLauncher.launch(_heist, 1002, Enums.Difficulty.ROUTINE, self,
 			{"ai_teammates": 0, "crew_ai": false, "loadouts": {0: l}})
 	rt.isolate_npc(null)
@@ -117,6 +131,26 @@ func _action_rows(inp: PInputDriver, wname: String) -> void:
 				inp.release(&"melee")
 				held.append_array(await _frames(wname, act + "_swing", 0.8))
 				rows.append(held)
+			"heavy_idle":
+				var fp: Node = get_tree().root.find_child("FpViewmodel", true, false)
+				var md: MeleeDef = ContentDB.melee(&"melee.sledgehammer")
+				if fp != null and md != null and fp.call(&"supports", &"melee_heavy"):
+					var segs: Array[Dictionary] = []
+					fp.call(&"_add_seg", segs, &"melee_heavy", &"idle", 3.0, 1.0)
+					fp.call(&"_start_item", FpViewmodel.Action.MELEE, segs, md.model)
+				await _ticks(20)
+				rows.append(await _frames(wname, act, 0.3))
+			"heavy_charge":
+				inp.press(&"melee")
+				await _ticks(60)
+				var hv: Array[Image] = await _frames(wname, act + "_hold", 0.3)
+				inp.release(&"melee")
+				var keep: int = _step
+				_step = 1   # the strike at every tick (the hit lands within ~0.3 s of the release)
+				hv.append_array(await _frames(wname, act + "_strike", 0.4))
+				_step = keep
+				hv.append_array(await _frames(wname, act + "_swing", 0.6))
+				rows.append(hv)
 			"throw":
 				inp.press(&"throw_item")
 				var aim: Array[Image] = await _frames(wname, act + "_hold", 0.4)
@@ -125,6 +159,43 @@ func _action_rows(inp: PInputDriver, wname: String) -> void:
 				rows.append(aim)
 		await _ticks(120)
 	_sheet(rows, "%s/%s_actions.png" % [_out, wname])
+
+
+## The stand-in two-handed prop (Godot item axes): a 0.85 m handle on +Y from -0.33 to +0.52 and an 8 x 8 x 22 cm
+## head from +0.52 to +0.60, long along the striking direction (Z).
+func _heavy_prop() -> PackedScene:
+	var root: Node3D = Node3D.new()
+	root.name = "HeavyProp"
+	var wood: StandardMaterial3D = StandardMaterial3D.new()
+	wood.albedo_color = Color(0.55, 0.45, 0.32)
+	var steel: StandardMaterial3D = StandardMaterial3D.new()
+	steel.albedo_color = Color(0.62, 0.64, 0.67)
+	steel.metallic = 0.6
+	steel.roughness = 0.35
+	var handle: MeshInstance3D = MeshInstance3D.new()
+	var cyl: CylinderMesh = CylinderMesh.new()
+	cyl.top_radius = 0.017
+	cyl.bottom_radius = 0.017
+	cyl.height = 0.85
+	cyl.material = wood
+	handle.mesh = cyl
+	handle.position = Vector3(0.0, 0.095, 0.0)
+	handle.name = "Handle"
+	var head: MeshInstance3D = MeshInstance3D.new()
+	var box: BoxMesh = BoxMesh.new()
+	box.size = Vector3(0.08, 0.08, 0.22)
+	box.material = steel
+	head.mesh = box
+	head.position = Vector3(0.0, 0.56, 0.0)
+	head.name = "Head"
+	root.add_child(handle)
+	root.add_child(head)
+	handle.owner = root
+	head.owner = root
+	var ps: PackedScene = PackedScene.new()
+	ps.pack(root)
+	root.free()
+	return ps
 
 
 func _frames(wname: String, phase: String, seconds: float) -> Array[Image]:

@@ -36,11 +36,16 @@ NAMES = tuple(f"hold_{kind}_{g}" for kind in holds.KINDS for g in GAITS)
 #: item 2 (police combat movement, the crew too): aiming on the move, per aim family, over walk / run / crouch_walk
 AIM_FAMILIES = ("rifle", "pistol", "akimbo")
 AIM_GAITS = ("walk", "run", "crouch")
+#: TAC port arms over the run (D-153 TAC ruling, characters v1.37 note): the rifle diagonally across the chest (the
+#: sprint carry's frame) over the run gait, for police NPC rifles while running and not aiming
+PORT_NAMES = ("hold_rifle_port_run",)
 AIM_NAMES = tuple(f"aim_{fam}_{g}" for fam in AIM_FAMILIES for g in AIM_GAITS)
 #: aimed, the weapon stays on the target: it follows little of the trunk's turn, one frame late, a stiff spring
 AIM_FOLLOW = {"walk": (0.12, 0.25, 0.3), "run": (0.18, 0.35, 0.4), "crouch": (0.12, 0.2, 0.3)}
 AIM_SPRING = 0.35
 #: frames the weapon trails the chest, per gait family
+#: v1.37 (D-153, the TAC "crouched" aim-run): the weapon class's forward lean over the run family, x this
+RUN_CLASS_LEAN = 0.4
 LAG = {"walk": 2, "run": 2, "sprint": 1, "crouch": 2}
 #: share of the chest's turn the weapon follows (yaw, pitch, roll); the rest is taken up by the arms
 FOLLOW = {"walk": (0.45, 0.6, 0.5), "run": (0.45, 0.6, 0.5), "sprint": (0.9, 1.0, 0.9), "crouch": (0.45, 0.35, 0.5)}
@@ -153,17 +158,17 @@ def _clear(pose: Pose, sfx: str) -> None:
         pose.D.pop(f"{b}.{sfx}", None)
 
 
-def _trunk_set(sk: Skeleton, kind: str) -> Pose:
+def _trunk_set(sk: Skeleton, kind: str, lean_k: float = 1.0) -> Pose:
     """The weapon class's own trunk (rifle blade / pistol lean) as world-axes deltas to compose onto the gait's."""
     p = Pose()
-    holds.H.aim_body(sk, p, kind not in ("pistol", "akimbo"))
+    holds.H.aim_body(sk, p, kind not in ("pistol", "akimbo"), lean_k)
     return p
 
 
-def _aim_trunk(sk: Skeleton, fam: str) -> Pose:
+def _aim_trunk(sk: Skeleton, fam: str, lean_k: float = 1.0) -> Pose:
     """The standing aim's trunk (and stance) of an aim family: aim_rifle / aim_pistol / aim_akimbo's."""
     p = Pose()
-    holds.H.aim_body(sk, p, fam == "rifle")
+    holds.H.aim_body(sk, p, fam == "rifle", lean_k)
     if fam == "akimbo":                                    # _anim_crew3p.akimbo_pose's trunk
         A.spine(p, lean=6, twist=0, chest_lean=6, neck=(2, 0, 0), head=(-4, 0, 0), hips=(1, 0, 0))
     return p
@@ -216,7 +221,7 @@ def _spring(acc: list[np.ndarray], loop: bool, k: float) -> list[np.ndarray]:
     return out
 
 
-def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, aim: str = "") -> Clip:
+def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, aim: str = "", port: bool = False) -> Clip:
     """``hold_<kind>_<gait>`` over ``base`` (or, with ``aim`` = an aim family, ``aim_<aim>_<gait>``): see the module
     docstring."""
     k = sk.scale
@@ -229,7 +234,9 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, a
         A.fix_hips_for_reach(solver, poses[:N] if loop else poses, loop)
         if loop:
             poses[N] = poses[0].copy()
-    trunk = _aim_trunk(sk, aim) if aim else (None if sprint else _trunk_set(sk, kind))
+    # v1.37: over the run the class's forward lean is scaled down (RUN_CLASS_LEAN) so the layer stays a jog, not a hunch
+    lk = RUN_CLASS_LEAN if fam == "run" else 1.0
+    trunk = _aim_trunk(sk, aim, lk) if aim else (None if sprint or port else _trunk_set(sk, kind, lk))
     if trunk is not None:
         for p in poses:
             for b in ("spine", "chest", "neck", "head"):
@@ -238,14 +245,14 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, a
     # the reference chest: the class's standing trunk (the frames above are authored for it) or an upright stand
     ref = Pose()
     if aim:
-        ref = _aim_trunk(sk, aim)
+        ref = _aim_trunk(sk, aim, lk)
     elif trunk is not None:
-        holds.H.aim_body(sk, ref, kind not in ("pistol", "akimbo"))
+        holds.H.aim_body(sk, ref, kind not in ("pistol", "akimbo"), lk)
     else:
         holds.H.stand(sk, ref)
     S0 = solver.solve(ref)
     W0, P0 = S0.W["chest"], S0.P["chest"]
-    frames0 = aim_frames(sk, aim) if aim else (sprint_frames(sk, kind) if sprint else low_frames(sk, kind))
+    frames0 = aim_frames(sk, aim) if aim else (sprint_frames(sk, kind) if sprint or port else low_frames(sk, kind))
     # the spring's drive: the root's forward acceleration (starts / stops) and the chest's vertical acceleration
     tr = getattr(base, "transition", None)
     s = [tr.s(float(f)) if tr is not None else 0.0 for f in range(N + 1)]
@@ -284,9 +291,9 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, a
         if aim:
             aim_grip(sk, pose, aim, out)
         else:
-            grip(sk, pose, kind, out, sprint)
+            grip(sk, pose, kind, out, sprint or port)
         return pose
-    name = f"aim_{aim}_{gait}" if aim else f"hold_{kind}_{gait}"
+    name = f"aim_{aim}_{gait}" if aim else (f"hold_{kind}_port_{gait}" if port else f"hold_{kind}_{gait}")
     return Clip(name, N, loop, fn, 0.0, None, dict(base.events), reach_fix=False)
 
 
@@ -305,6 +312,9 @@ def clips(sk: Skeleton, solver: Solver, table: dict, base: dict[str, Clip]) -> d
         src = GAITS[gait]
         if src in base:
             out[name] = layer_clip(sk, solver, "pistol" if fam != "rifle" else "rifle", gait, base[src], aim=fam)
+    for name in [n for n in PORT_NAMES if n in table]:
+        if "run" in base:
+            out[name] = layer_clip(sk, solver, "rifle", "run", base["run"], port=True)
     return out
 
 
@@ -322,6 +332,9 @@ def rows(table: dict) -> dict:
         for gait in AIM_GAITS:
             r = table[GAITS[gait]]
             out[f"aim_{fam}_{gait}"] = {"frames": r["frames"], "loop": r["loop"], "speed": 0.0, "priority": 2}
+    r = table["run"]
+    for name in PORT_NAMES:
+        out[name] = {"frames": r["frames"], "loop": r["loop"], "speed": 0.0, "priority": 2}
     return out
 
 
@@ -337,4 +350,9 @@ def source_notes() -> dict:
         "-> _sprint (the PD2 sprint carry: long guns across the chest, the pistol tucked at the chest); crouch_walk -> "
         "_crouch; walk_start / walk_stop / run_start / run_stop -> the same-named layer. Set the layer time to the "
         "locomotion clip's playback position every tick (never a random offset). strafe_l / strafe_r (18 f) keep "
-        "hold_<kind>")}
+        "hold_<kind>"),
+        "loco_port": (
+            "D-153 TAC ruling: hold_rifle_port_run is hold_rifle_run's port-arms variant (the rifle diagonally across "
+            "the chest, the sprint carry's frame, over the run gait with the plain run's upright trunk; same frames / "
+            "loop / events as run, frame-locked like hold_rifle_run). For police NPC rifles (TAC Light / Heavy and "
+            "their faction looks) while running and NOT aiming, instead of hold_rifle_run; crew keep hold_rifle_run.")}
