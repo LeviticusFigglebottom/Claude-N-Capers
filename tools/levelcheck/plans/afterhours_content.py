@@ -193,8 +193,8 @@ def furniture() -> List[list]:
         B("DJBooth", [15.5, 0.3, 8.85], [3.0, 1.0, 1.0], 0.0, "counter", True, "counter"),
         B("SpeakerStackW", [8.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
         B("SpeakerStackE", [18.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
-        # G7 booths: banquettes (1.1 m backs) along the circle's south wall and the reserved corner booth (east end); W1 clear of the
-        # WC door (x 4)
+        # G7 booths: banquettes (1.1 m backs) along the circle's south wall and the reserved corner booth (east end);
+        # W1 clear of the WC door (x 4)
         # seats (A PO6-06 seat_near): each sitter's root, 0.75 in front of the greybox block's centre (G2: D's booths)
         B("BoothW1", [6.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
         B("BoothW2", [9.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
