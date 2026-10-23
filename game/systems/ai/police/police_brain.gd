@@ -26,7 +26,7 @@
 ##   left: hold where it stands (it sees the target) until the target moves.
 ## - FADE (L1.1): no retreat in P1. Units keep fighting; the director just stops reinforcing.
 ## - L2.12 (A3-04): a DOWNED target that is not shooting within CustodyTweak.police_cuff_approach_m
-##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed).
+##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed). D-167: regular police only (may_cuff).
 ## - Squad order (A3-02 L4.9, AegisCaptain): `order_position` set = run there and hold it (no cover,
 ##   flank or standoff; targeting and fire as usual) until clear_order().
 ## - L5.1 (A3-04): SURRENDERED / TIED / CONVERTED are owned by PoliceSurrender (not ACTIVE_STATES).
@@ -219,7 +219,15 @@ func _pick_target() -> void:
 
 func _cuffable_near(c: CrewController, dist_sq: float) -> bool:
 	var r: float = CustodyTweak.data().police_cuff_approach_m
-	return dist_sq <= r * r and CrewCuffs.can_police_cuff(c)
+	return dist_sq <= r * r and may_cuff(_npc) and CrewCuffs.can_police_cuff(c)
+
+
+## D-167.1: only regular police arrest a downed heister; specials (Wrecker, Bulwark, Phantom, Stinger, Corpsman,
+## Longshot) and Brandt / Aegis fight on (PD2: dozers and specials do not arrest).
+static func may_cuff(npc: NpcBase) -> bool:
+	if npc == null or AegisCaptain.is_aegis_unit(npc):
+		return false
+	return npc.enemy_def == null or not npc.enemy_def.is_special
 
 
 func _can_see(c: CrewController) -> bool:
@@ -466,7 +474,7 @@ func _assault_pushing() -> bool:
 ## L2.12: go for / apply the cuffs on a downed, non-shooting target. True while doing so.
 func _tick_cuff(t: Node3D) -> bool:
 	var tc: CrewController = t as CrewController
-	if tc == null or not CrewCuffs.can_police_cuff(tc):
+	if tc == null or not may_cuff(_npc) or not CrewCuffs.can_police_cuff(tc):
 		return false
 	var ct: CustodyTweak = CustodyTweak.data()
 	var d: float = _flat(tc.global_position - _npc.global_position).length()

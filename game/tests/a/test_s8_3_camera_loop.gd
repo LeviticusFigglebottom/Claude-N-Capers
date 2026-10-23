@@ -22,7 +22,7 @@ func test_s8_3_loop_one_camera_25s() -> void:
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	var station: CameraStation = _rt.map.get_node("Gameplay/Station") as CameraStation
 	assert_eq(station._loop_check(c),
-		InteractableComponent.BLOCK_DISABLED, "no flag: no loop")
+		CameraStation.BLOCK_NEED_SKILL, "no flag: needs the skill")
 	Modifiers.set_source(0, &"test", {&"stealth.camera_loop": true})
 	assert_eq(station._loop_check(c), InteractableComponent.BLOCK_NONE)
 	station._on_loop_completed(c)

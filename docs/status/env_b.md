@@ -3,7 +3,18 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 17:10)
+### LEAD r308 card ruling + AH HUD capture gaps
+- 6b3de312: on a civilian-start heist (player_mode civilian), the heist card shows first, ahead of Casing / Stealth, which queue behind it. Test: test_heist_tips.test_civilian_start_shows_the_heist_card_first. The capture shows "Guest list" at the civilian start.
+- Gaps closed, on the scratch tree with AH un-hidden. Seed 7 Brutal rolls sec_staffed and co_op_pickup (direct launch, `ah_hud_capture.gd -- <out> 7`). Shots are in content/ui/_review/r308_ah_gaps/ (720p + 1080p):
+  - the operator desk;
+  - the pager answer prompt facing the body, then mid-hold (the real 10 s hold, answered; "Pagers left: 2");
+  - payday with a secured Cash Bricks x1 line.
+- Stated shortcuts:
+  - the alley guard is killed by NpcBase.die (the real PagerSystem pages him);
+  - the secured bag is spawned in the secure zone. It sat at y -0.19 and never rest-secured, so LootManager._secure was called directly. That is likely a spawn-height artefact, not routed.
+- Finding for A: the staffed camera station prompt reads "Hold F to interact" / "Out of order" with the operator seated at it (generic verb; the blocked text reads as broken).
+
 ### AH VO run coverage (LEAD r306: a stealth pass + forced rare events; scratch tree = env/b-content + trunk + A 871fc204 + C)
 Runs, all PASS:
 - loud seed 1234 Routine;

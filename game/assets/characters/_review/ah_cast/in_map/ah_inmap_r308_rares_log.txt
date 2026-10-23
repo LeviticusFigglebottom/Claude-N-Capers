@@ -1,0 +1,70 @@
+seed 1 difficulty 0 lights club
+Npc_guard role guard tags [&"guard_door"] activity bouncer_idle look club_bouncer_f clip idle at (15.51, 0.00, 28.59) facing 18
+Npc_guard2 role guard tags [&"guard_rope"] activity bouncer_idle look club_bouncer clip bouncer_idle at (9.20, 4.20, 26.60) facing -90
+Npc_guard3 role guard tags [&"guard", &"guard_boh"] activity  look club_bouncer_b clip idle at (3.00, 0.00, 6.00) facing 0
+Npc_guard4 role guard tags [&"guard", &"guard_alley"] activity  look club_bouncer_c clip idle at (35.00, 0.00, -1.60) facing 0
+Npc_civilian role civilian tags [&"civ_bar_main", &"staff", &"staff_bar"] activity bartender_wipe look club_bartender_c clip bartender_wipe at (1.62, 0.00, 12.00) facing -90
+Npc_civilian2 role civilian tags [&"civ_bar_main", &"staff", &"staff_bar"] activity bartender_pour look club_bartender_d clip bartender_pour at (1.62, 0.00, 15.50) facing -90
+Npc_civilian3 role civilian tags [&"civ_bar_east", &"staff", &"staff_bar"] activity bartender_wipe look club_bartender clip bartender_wipe at (24.48, 0.00, 11.00) facing 90
+Npc_civilian4 role civilian tags [&"civ_bar_vip", &"staff", &"staff_bar"] activity bartender_pour look club_bartender_b clip bartender_pour at (16.00, 4.20, 26.48) facing 0
+Npc_civilian5 role civilian tags [&"civ_box_office", &"staff", &"staff_front"] activity teller look club_bartender_c clip teller_count at (22.98, 0.00, 23.50) facing 90
+Npc_civilian6 role civilian tags [&"civ_patron"] activity walk_text look club_patron_j clip phone_call at (3.00, 0.00, 11.50) facing -90
+Npc_civilian7 role civilian tags [&"civ_patron"] activity walk_text look club_patron_k clip phone_call at (3.00, 0.00, 15.00) facing -90
+Npc_civilian8 role civilian tags [&"civ_patron"] activity walk_text look club_patron_l clip phone_call at (22.80, 0.00, 9.50) facing 90
+Npc_civilian9 role civilian tags [&"civ_patron"] activity walk_text look club_patron clip phone_call at (22.80, 0.00, 12.50) facing 90
+Npc_civilian10 role civilian tags [&"civ_patron"] activity queue look club_patron_b clip queue_idle_c at (6.60, 0.00, 19.60) facing -180
+Npc_civilian11 role civilian tags [&"civ_patron"] activity queue look club_patron_c clip queue_idle_c at (9.60, 0.00, 19.60) facing -180
+Npc_civilian12 role civilian tags [&"civ_patron"] activity queue look club_patron_d clip queue_idle_b at (22.00, 0.00, 19.60) facing -180
+Npc_civilian13 role civilian tags [&"civ_patron"] activity walk_text look club_patron_e clip phone_call at (6.50, 0.00, 16.80) facing -180
+Npc_civilian14 role civilian tags [&"civ_patron"] activity walk_text look club_patron_f clip phone_call at (21.00, 0.00, 16.80) facing -180
+Npc_civilian15 role civilian tags [&"civ_patron"] activity walk_text look club_patron_g clip phone_call at (12.50, 0.00, 24.00) facing 90
+Npc_civilian16 role civilian tags [&"civ_patron"] activity queue look club_patron_h clip queue_idle_b at (19.50, 0.00, 25.50) facing -90
+Npc_civilian17 role civilian tags [&"civ_patron"] activity walk_text look club_patron_i clip phone_call at (2.00, 0.00, 25.00) facing 0
+Npc_civilian18 role civilian tags [&"civ_patron"] activity smoke look club_patron_j clip smoke at (-1.60, 0.00, 22.00) facing 90
+Npc_civilian19 role civilian tags [&"civ_patron"] activity smoke look club_patron_k clip smoke at (-1.40, 0.00, 25.50) facing -90
+Npc_civilian20 role civilian tags [&"civ_patron"] activity queue look club_patron_l clip queue_idle_c at (6.60, 4.20, 19.60) facing -180
+Npc_civilian21 role civilian tags [&"civ_patron"] activity queue look club_patron clip queue_idle_b at (7.60, 4.20, 19.60) facing -180
+Npc_civilian22 role civilian tags [&"civ_patron"] activity walk_text look club_patron_b clip phone_call at (14.00, 4.20, 23.00) facing 0
+Npc_civilian23 role civilian tags [&"civ_patron"] activity walk_text look club_patron_c clip phone_call at (18.00, 4.20, 23.50) facing 0
+Npc_civilian24 role civilian tags [&"civ_patron"] activity walk_text look club_patron_d clip phone_call at (13.60, 4.20, 22.40) facing -90
+Npc_civilian25 role civilian tags [&"civ_patron"] activity walk_text look club_patron_e clip phone_call at (13.00, 0.00, 18.50) facing 0
+Npc_civilian26 role civilian tags [&"civ_dancer", &"dance_cluster_1"] activity dance_a look club_dancer_k clip dance_a at (11.30, 0.00, 12.50) facing 90
+Npc_civilian27 role civilian tags [&"civ_dancer", &"dance_cluster_1"] activity dance_b look club_dancer_l clip dance_b at (10.75, 0.00, 13.26) facing 18
+Npc_civilian28 role civilian tags [&"civ_dancer", &"dance_cluster_1"] activity dance_c look club_dancer clip dance_c at (9.85, 0.00, 12.97) facing -54
+Npc_civilian29 role civilian tags [&"civ_dancer", &"dance_cluster_1"] activity dance_a look club_dancer_b clip dance_a at (9.85, 0.00, 12.03) facing -126
+Npc_civilian30 role civilian tags [&"civ_dancer", &"dance_cluster_1"] activity dance_b look club_dancer_c clip dance_b at (10.75, 0.00, 11.74) facing 162
+Npc_civilian31 role civilian tags [&"civ_dancer", &"dance_cluster_2"] activity dance_b look club_dancer_d clip dance_b at (14.76, 0.00, 12.74) facing 73
+Npc_civilian32 role civilian tags [&"civ_dancer", &"dance_cluster_2"] activity dance_c look club_dancer_e clip dance_c at (14.01, 0.00, 13.30) facing 1
+Npc_civilian33 role civilian tags [&"civ_dancer", &"dance_cluster_2"] activity dance_a look club_dancer_f clip dance_a at (13.24, 0.00, 12.76) facing -71
+Npc_civilian34 role civilian tags [&"civ_dancer", &"dance_cluster_2"] activity dance_b look club_dancer_g clip dance_b at (13.52, 0.00, 11.86) facing -143
+Npc_civilian35 role civilian tags [&"civ_dancer", &"dance_cluster_2"] activity dance_c look club_dancer_h clip dance_c at (14.46, 0.00, 11.85) facing 145
+Npc_civilian36 role civilian tags [&"civ_dancer", &"dance_cluster_3"] activity dance_c look club_dancer_i clip dance_c at (18.16, 0.00, 12.95) facing 56
+Npc_civilian37 role civilian tags [&"civ_dancer", &"dance_cluster_3"] activity dance_a look club_dancer_j clip dance_a at (17.27, 0.00, 13.27) facing -16
+Npc_civilian38 role civilian tags [&"civ_dancer", &"dance_cluster_3"] activity dance_b look club_dancer_k clip dance_b at (16.70, 0.00, 12.52) facing -88
+Npc_civilian39 role civilian tags [&"civ_dancer", &"dance_cluster_3"] activity dance_c look club_dancer_l clip dance_c at (17.23, 0.00, 11.75) facing -160
+Npc_civilian40 role civilian tags [&"civ_dancer", &"dance_cluster_3"] activity dance_a look club_dancer clip dance_a at (18.13, 0.00, 12.01) facing 128
+Npc_civilian41 role civilian tags [&"civ_dancer", &"dance_cluster_4"] activity dance_a look club_dancer_b clip dance_a at (11.00, 0.00, 15.63) facing 38
+Npc_civilian42 role civilian tags [&"civ_dancer", &"dance_cluster_4"] activity dance_b look club_dancer_c clip dance_b at (10.06, 0.00, 15.67) facing -34
+Npc_civilian43 role civilian tags [&"civ_dancer", &"dance_cluster_4"] activity dance_c look club_dancer_d clip dance_c at (9.73, 0.00, 14.78) facing -106
+Npc_civilian44 role civilian tags [&"civ_dancer", &"dance_cluster_4"] activity dance_a look club_dancer_e clip dance_a at (10.47, 0.00, 14.20) facing -178
+Npc_civilian45 role civilian tags [&"civ_dancer", &"dance_cluster_4"] activity dance_b look club_dancer_f clip dance_b at (11.25, 0.00, 14.72) facing 110
+Npc_civilian46 role civilian tags [&"civ_dancer", &"dance_cluster_5"] activity dance_b look club_dancer_g clip dance_b at (14.29, 0.00, 15.75) facing 21
+Npc_civilian47 role civilian tags [&"civ_dancer", &"dance_cluster_5"] activity dance_c look club_dancer_h clip dance_c at (13.38, 0.00, 15.51) facing -51
+Npc_civilian48 role civilian tags [&"civ_dancer", &"dance_cluster_5"] activity dance_a look club_dancer_i clip dance_a at (13.33, 0.00, 14.57) facing -123
+Npc_civilian49 role civilian tags [&"civ_dancer", &"dance_cluster_5"] activity dance_b look club_dancer_j clip dance_b at (14.20, 0.00, 14.23) facing 165
+Npc_civilian50 role civilian tags [&"civ_dancer", &"dance_cluster_5"] activity dance_c look club_dancer_k clip dance_c at (14.80, 0.00, 14.95) facing 93
+Npc_civilian51 role civilian tags [&"civ_dancer", &"dance_cluster_6"] activity dance_c look club_dancer_l clip dance_c at (17.56, 0.00, 15.80) facing 4
+Npc_civilian52 role civilian tags [&"civ_dancer", &"dance_cluster_6"] activity dance_a look club_dancer clip dance_a at (16.76, 0.00, 15.30) facing -68
+Npc_civilian53 role civilian tags [&"civ_dancer", &"dance_cluster_6"] activity dance_b look club_dancer_b clip dance_b at (16.99, 0.00, 14.39) facing -140
+Npc_civilian54 role civilian tags [&"civ_dancer", &"dance_cluster_6"] activity dance_c look club_dancer_c clip dance_c at (17.92, 0.00, 14.32) facing 148
+Npc_civilian55 role civilian tags [&"civ_dancer", &"dance_cluster_6"] activity dance_a look club_dancer_d clip dance_a at (18.28, 0.00, 15.19) facing 76
+Npc_civilian56 role civilian tags [&"civ_dj_stage", &"staff", &"staff_dj"] activity dj_mix look club_dj clip dj_mix at (15.50, 0.30, 8.05) facing -180
+Npc_police role police tags [&"civ_offduty", &"scripted"] activity sit look club_offduty_cop clip queue_idle_c at (20.00, 4.20, 19.60) facing -180
+Npc_civilian57 role civilian tags [&"civ_vip", &"scripted"] activity walk_text look club_vip_f clip phone_call at (12.00, 4.20, 22.50) facing 90
+Npc_civilian58 role civilian tags [&"civ_vip", &"scripted"] activity walk_text look club_vip clip phone_call at (12.50, 4.20, 24.20) facing 90
+Npc_civilian59 role civilian tags [&"civ_vip", &"scripted"] activity walk_text look club_vip_b clip phone_call at (19.50, 4.20, 22.50) facing -90
+Npc_civilian60 role civilian tags [&"civ_vip", &"scripted"] activity walk_text look club_vip_c clip phone_call at (19.00, 4.20, 24.30) facing -90
+Npc_civilian61 role civilian tags [&"civ_vip", &"scripted"] activity walk_text look club_vip_d clip phone_call at (14.20, 4.20, 24.60) facing -180
+Npc_civilian62 role civilian tags [&"civ_vip", &"scripted"] activity walk_text look club_vip_e clip phone_call at (17.80, 4.20, 24.60) facing -180
+alarm raised, lights house
+sheet ah_cast_sheet.png 21 shots

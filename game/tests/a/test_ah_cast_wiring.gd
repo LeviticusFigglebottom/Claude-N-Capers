@@ -80,6 +80,11 @@ func test_spawn_units_passes_the_spawn_activity_and_facing() -> void:
 	var brain: Node = cop.get_node(^"Brain")
 	assert_eq(brain.get(&"anim_hint"), CivilianBrain.seated_or_standing(cop, &"sit"),
 		"calm: his activity (seated on a seat, standing without one), not idle_alert")
+	# D r308 (r308_offduty.png): the plain-clothes cop keeps his gun holstered until he radios / fights.
+	var d: AnimDriver = AnimDriver.of(cop)
+	assert_false(d.weapon_shown(&"idle"), "calm in the crowd: holstered")
+	cop.set_alert_state(Enums.AlertState.ALARMED)
+	assert_true(d.weapon_shown(&"idle_alert"), "alarmed: drawn")
 
 
 ## (4) vip_party: HeistMission.spawn_civilians spawns the civilians of the CIVILIAN SpawnPoints carrying a tag, with
@@ -102,3 +107,22 @@ func test_spawn_civilians_by_tag() -> void:
 	if not vips.is_empty():
 		assert_true((vips[0].spawn_info.get("tags", []) as Array).has(&"civ_vip"), "the point's tags (the club_vip look)")
 		assert_eq(StringName(vips[0].spawn_info.get("idle_activity", &"")), &"walk_text", "and its activity")
+
+
+## D r308 (the door bouncer walked on the spot): a guard whose walk back to his post cannot arrive takes the spot he
+## reached as the post after GuardTweak.post_walk_give_up_s and stands (idle -> his post activity), no endless walk.
+func test_guard_post_walk_gives_up_and_stands() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 1309, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0, "crew_ai": false, "skip_casing": true})
+	await wait_physics_frames(2)
+	var g: NpcBase = _rt.spawn_npc(&"guard", Transform3D(Basis.IDENTITY, Vector3(2, 0.05, -4)),
+		{"tags": [&"guard_door"], "idle_activity": &"bouncer_idle"})
+	await wait_physics_frames(10)
+	var brain: GuardBrain = g.get_node(^"Brain") as GuardBrain
+	brain._post_pos = Vector3(2, 0.0, -400.0)  # off the map: the walk back can never arrive
+	brain._walking = false
+	await wait_seconds(brain.tweak.post_walk_give_up_s + 1.5)
+	assert_false(brain._walking, "the walk gave up")
+	assert_ne(brain.anim_hint, &"walk", "standing, not walking on the spot (hint %s)" % brain.anim_hint)
+	assert_true(brain._post_pos.distance_to(g.global_position) < 1.0, "the spot reached is the post now")
+

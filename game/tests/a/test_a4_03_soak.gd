@@ -70,7 +70,52 @@ func test_a4_03_two_humans_two_bots_soak() -> void:
 		assert_eq(_rt.crew_members().filter(func(c: CrewController) -> bool: return c.is_ai).size(), 2, "two bots")
 
 
-func _soak(clients: int) -> void:
+## LEAD r309: Afterhours' civilian start over four peers. Every crew member starts civilian on every peer; the host's
+## gear pickup gears the host and the bots only (D-065 P5) while the client humans stay civilian (replicated, compared:
+## of_state "civ") and still target the bag (InteractableComponent.aim_filter) while the host does not; once every human
+## has taken gear the bag is off; then the alarm and the usual loud soak. SKIPs without the AH map.
+func test_a4_03_afterhours_civilian_start_soak() -> void:
+	if not ResourceLoader.exists(HeistLauncher.map_path(&"afterhours")):
+		skip("pending C G1: no afterhours map on this branch")
+		return
+	await _soak(CLIENTS, &"afterhours", false, _ah_gear_prelude)
+
+
+func _ah_gear_prelude(peers: Array[int]) -> void:
+	var gear: GearPickup = null
+	for n: Node in _rt.find_children("*", "GearPickup", true, false):
+		var g: GearPickup = n as GearPickup
+		if g != null and g.is_enabled() and g.interactable != null and g.interactable.enabled:
+			gear = g
+	assert_true(gear != null, "the rolled gear bag")
+	if gear == null:
+		return
+	var humans: Array[CrewController] = []
+	for c: CrewController in _rt.crew_members():
+		assert_true(c.civilian, "slot %d starts civilian" % c.slot)
+		if not c.is_ai:
+			humans.append(c)
+	var host: CrewController = _rt.crew_controller(0) as CrewController
+	gear._on_completed(host)
+	await wait_seconds(1.0)
+	for c: CrewController in _rt.crew_members():
+		var want: bool = not c.is_ai and c != host
+		assert_eq(c.civilian, want, "after the host's pickup: slot %d civilian %s" % [c.slot, want])
+		assert_eq(gear.interactable.aim_filter.call(c), want, "slot %d targets the bag: %s" % [c.slot, want])
+	assert_true(gear.interactable.enabled, "the bag stays on while a human still needs gear")
+	for p: int in peers:
+		assert_eq(await _compare(p), [] as Array[String], "peer %d agrees on who is geared (civ)" % p)
+	for c: CrewController in humans:
+		if c != host:
+			gear._on_completed(c)
+	await wait_seconds(1.0)
+	assert_false(gear.interactable.enabled, "every human geared: the bag is off")
+	for p: int in peers:
+		assert_eq(await _compare(p), [] as Array[String], "peer %d agrees after every pickup" % p)
+
+
+func _soak(clients: int, heist_override: StringName = &"", skip_casing: bool = true,
+		prelude: Callable = Callable()) -> void:
 	var soak_s: float = _soak_s()
 	var timeout_s: int = int(soak_s) + 240
 	var port: int = _host()
@@ -97,8 +142,9 @@ func _soak(clients: int) -> void:
 	if not joined:
 		return
 	var map_env: String = OS.get_environment("CAPER_SOAK_MAP")
-	var heist: StringName = StringName(map_env) if map_env != "" else SOAK_MAP
-	_rt = await HeistLauncher.launch(heist, SEED, Enums.Difficulty.HAZARDOUS, get_tree().root, {"skip_casing": true, "crew_ai": true})
+	var heist: StringName = heist_override if heist_override != &"" else (StringName(map_env) if map_env != "" else SOAK_MAP)
+	_rt = await HeistLauncher.launch(heist, SEED, Enums.Difficulty.HAZARDOUS, get_tree().root,
+		{"skip_casing": skip_casing, "crew_ai": true})
 	assert_true(_rt != null, "the host launched")
 	if _rt == null:
 		return
@@ -112,10 +158,12 @@ func _soak(clients: int) -> void:
 	assert_true(ready, "every client built its replica")
 	if not ready:
 		return
+	_parity = OfParity.attach(_rt, get_tree().root)
+	if prelude.is_valid():
+		await prelude.call(peers)
 	for slot: int in _rt.crew_members().map(func(c: CrewController) -> int: return c.slot):
 		Modifiers.set_source(slot, &"soak.immune", {&"defense.damage_taken_mult": 0.0})  # a long, stable fight
 	_rt.stealth.raise_alarm(&"soak", 0)
-	_parity = OfParity.attach(_rt, get_tree().root)
 	var i_peer: int = 0
 	for p: int in peers:
 		i_peer += 1
