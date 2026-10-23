@@ -44,8 +44,8 @@ class FakeCuffBrain extends Node:
 
 
 ## LEAD r288 (RT done path: downs -> cuffs -> custody): a cop going for the cuffs on a downed teammate (PoliceBrain mode
-## &"cuff") is the bot's first target even when another cop stands nearer (cuffer_score_mult), and near the patient it
-## is cleared first even in a last stand (the bleed-out guard of revive_clear does not let a cuffer finish).
+## &"cuff") is the bot's first target even when another cop stands nearer (cuffer_score_mult); clearing it at the patient
+## before kneeling (cuffer_clear_first) ships OFF: the A/B showed it costs revives in a race decided on revive time.
 func test_r288_bots_shoot_the_cuffing_cop_first() -> void:
 	await _go_loud()
 	var bot: CrewController = _crew(_ai_slots()[0])
@@ -71,7 +71,12 @@ func test_r288_bots_shoot_the_cuffing_cop_first() -> void:
 	var c: CrewController = _crew(0)
 	c.health.go_down()
 	c.health.bleedout_left = 1.0  # last stand: revive_clear would skip an ordinary cop
-	assert_eq(b._revive_threat(c, 0.1), cuffer, "a cuffer at the patient is cleared even in a last stand")
+	assert_eq(b._revive_threat(c, 0.1), null, "shipped (LEAD r288 A/B ruling): no clear-first, the revive is not delayed")
+	b.tweak.cuffer_clear_first = true
+	b._clear_for_net_id = 0
+	var cleared: NpcBase = b._revive_threat(c, 0.1)
+	b.tweak.cuffer_clear_first = false
+	assert_eq(cleared, cuffer, "with the knob on, a cuffer at the patient is cleared even in a last stand")
 
 
 ## LEAD r288 (PD2 bots revive anyone downed): a downed BOT is revived by another bot.
