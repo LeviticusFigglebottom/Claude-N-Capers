@@ -12,7 +12,7 @@ const CREW_EVENTS: Array[StringName] = [
 	&"pager_started", &"reloading", &"device_jammed", &"bagging_body", &"going_loud", &"crew_downed",
 	&"reviving", &"cops_incoming", &"loot_secured", &"guard_down", &"civilian_killed",
 ]
-const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay"]
+const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale"]
 
 var _table: VoiceLineTable = null
 var _strings: Dictionary = {}

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="FpViewmodelTweak" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="FpViewmodelTweak" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://systems/anim/fp_viewmodel_tweak.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://c1kbgtywyoegv" path="res://assets/characters/char_arms_fp/char_arms_fp.glb" id="2"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://dc75nwt7p1abq" path="res://assets/characters/char_arms_fp_wren/char_arms_fp_wren.glb" id="s_wren"]
 [ext_resource type="PackedScene" uid="uid://d20wd3fv3i87i" path="res://assets/characters/char_arms_fp_marten/char_arms_fp_marten.glb" id="s_marten"]
 [ext_resource type="PackedScene" uid="uid://ci1a2cysxbdca" path="res://assets/characters/char_arms_fp_jay/char_arms_fp_jay.glb" id="s_jay"]
+[ext_resource type="PackedScene" uid="uid://c5gnqqhfo63nc" path="res://assets/characters/char_arms_fp_juno/char_arms_fp_juno.glb" id="s_juno"]
+[ext_resource type="PackedScene" uid="uid://d3x3kw2lamf8i" path="res://assets/characters/char_arms_fp_hale/char_arms_fp_hale.glb" id="s_hale"]
 
 [resource]
 script = ExtResource("1")
@@ -18,7 +20,9 @@ sleeve_scenes = Dictionary[StringName, PackedScene]({
 &"dutch": ExtResource("s_dutch"),
 &"wren": ExtResource("s_wren"),
 &"marten": ExtResource("s_marten"),
-&"jay": ExtResource("s_jay")
+&"jay": ExtResource("s_jay"),
+&"juno": ExtResource("s_juno"),
+&"hale": ExtResource("s_hale")
 })
 weapon_bone = &"weapon"
 magazine_bone = &"magazine"
