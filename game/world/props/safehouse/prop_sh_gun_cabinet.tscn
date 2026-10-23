@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_sh_gun_cabinet/prop_sh_gun_cabinet.glb" id="1_model"]
+
+[node name="PropShGunCabinet" type="Node3D"]
+metadata/kind = &"gun_cabinet"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

@@ -3,9 +3,8 @@
 Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/contracts/hub_map.md v1.2 (root
 `SafehouseMap extends HeistMap`, data only: no HeistDef, never on the Board).
 
-* Scene: `game/world/hub/safehouse/safehouse_g1.tscn` (**staged**: hub_map's `safehouse.tscn` path makes B's
-  SafehouseHost enter the 3D hub, which fails 31 of B's 2D-hub tests; it moves to that path once B pins them),
-  generated (never hand-edit) by
+* Scene: `game/world/hub/safehouse/safehouse.tscn` (hub_map's path since G3; B's 2D-hub tests pin the 2D menu with
+  `SafehouseHost.menu_hub_only`, b-content 4b75c578), generated (never hand-edit) by
   `game/world/hub/safehouse/greybox/build_safehouse.gd` from `safehouse_layout.gd` (the G0 tables).
   Determinism: `tools/levelcheck/sh_regen_twice.sh`.
 * Validate: `tools/levelcheck/validate_all.sh --hub` (greybox PASS; `validation.md`, `walkthrough.md` here:
@@ -46,15 +45,15 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
   only registered cues, so they are silent until B's cue rows land.
 * **Built by C (C4-03):** the green-enamel pendants (prop_sh_pendant_enamel), the work light on its stand
   (prop_sh_work_light), the crew van with its rear doors open (veh_sh_crew_van; tools/blender/props/safehouse.py).
-* **Waits (new assets, D, prop_sh_*):** the Old Press, the jukebox cabinet, the Board's painted map, the bunk bed (queen
-  beds stand in), the gun cabinets (lockers), the ear-defender rack and drying line (coat rails), the old type cases
-  (plan chests). Specs: C's message to D of 2026-10-23.
+* **D's hero props (D-159, G3):** the Old Press, the jukebox cabinet and the Board's painted map are station art
+  (`safehouse_layout.gd` `STATION_ART`: under each station's Visual, aligned to the greybox parts they replace); the
+  bunk beds, gun cabinets, PPE rack, drying line and type cases are pinned in the kits. C's placement hints over D's
+  `cat` (bunks, cabinets and type cases backed to a wall, the PPE rack at 1.5 m): `_scenes.py` `CAT_OVERRIDES`.
 
 ## G3 todo
-* **The planning table and the Old Press render black on their sides** (the LEAD's G2 note: give them at least a
-  dark metal / wood so they do not read as holes). Their tops light normally. Not metallic (their triplanar overrides
-  carry metallic 0) and not the tint (a lighter cast-iron tint changed nothing): the vertical faces of these two
-  station bodies get no light at all on the Compatibility path, while the armory and mask benches (same pass, oak) do.
-  To investigate at G3: the station-local boxes' normals / triplanar under a turned station root, the shadowed
-  pendants above them, and the per-object light list.
-
+* **Black faces: solved (2026-10-23).** Library ORM materials carry `metallic = 1`, so ORM.b decides metalness and a
+  bare metal (`steel_bare`) has no diffuse. With the environment's reflections disabled it showed only its
+  ReflectionProbe, which (UPDATE_ONCE) renders ~14-20 frames after a camera first sees it: until then it read black.
+  Fixes: the planning table is `gunmetal` (painted, dielectric), the environment reflects the dim night sky, the Old
+  Press is D's art, `review_shots` warms every UPDATE_ONCE probe first, and levelcheck `metal_reflection` (final)
+  fails a metal with no reflection source.

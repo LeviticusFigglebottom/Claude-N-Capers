@@ -27,6 +27,7 @@ import cues_impact  # noqa: E402
 import cues_ostrander  # noqa: E402
 import cues_rolling_thunder  # noqa: E402
 import cues_safehouse  # noqa: E402
+import cues_sentry  # noqa: E402
 import music_dockside_burn  # noqa: E402
 import music_gallery_night  # noqa: E402
 import music_glasshouse  # noqa: E402
@@ -71,7 +72,7 @@ def stem_aliases(track: str) -> dict[str, str]:
 REPORT_DIR = Path("docs/levels/_audio")
 # every SFX cue: the main table plus the grouped tables (impact_fx.md: cue.impact_<surface>; D-117 heist beds)
 ALL_CUES: list[cues.CueSpec] = (cues.CUES + cues_impact.CUES + cues_ambience.CUES + cues_ostrander.CUES
-                                + cues_rolling_thunder.CUES + cues_safehouse.CUES)
+                                + cues_rolling_thunder.CUES + cues_safehouse.CUES + cues_sentry.CUES)
 
 # Loudness classes (style guide §9). ceiling = true-peak dBTP.
 TARGETS = {
