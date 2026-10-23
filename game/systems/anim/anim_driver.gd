@@ -136,6 +136,9 @@ const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_ch
 ## the rig has them (play_vehicle_exit; no fallback clip). No caller yet: the convoy / police dismount is QC-83/86.
 const VEHICLE_EXIT_L: StringName = &"vehicle_exit_l"
 const VEHICLE_EXIT_R: StringName = &"vehicle_exit_r"
+## The dismount's `foot_out` (SOURCE: frame 14 of 45 at 30 fps) when the rig's SOURCE lacks it: the weapon is drawn
+## again from there (a seated body holsters it).
+const VEHICLE_FOOT_OUT_S: float = 14.0 / 30.0
 ## characters v1.27 reversal states (_reversal_step).
 const REV_NONE: int = 0
 const REV_PENDING: int = 1
@@ -621,17 +624,29 @@ func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1
 ## (crew_cuffed*, kneel_cuffed*); shown while downed (downed / downed_fire / downed_reload / downed_getup); in
 ## downed_arrested until its `disarm` event, in crew_cuffed_free from its `free` event (AnimTweak event times).
 func weapon_shown(c: StringName) -> bool:
-	if _death_clip != &"" or (crew_action != null and crew_action.holsters_weapon()):
-		return false  # v1.23: none while casing (PD2), drawn when mask_on has finished
+	if _death_clip != &"" or (crew_action != null and crew_action.holsters_weapon()) \
+			or c == &"sit_vehicle" or c == &"sit_vehicle_drive":
+		return false  # v1.23: none while casing (PD2), drawn when mask_on has finished; RT shot review (D 38b3a924):
+		# holstered in a vehicle seat, not held on the wheel
 	var tw: AnimTweak = AnimTweak.data()
+	var shown: bool = not POSE_CLIPS.has(c)
 	match c:
 		&"downed", &"downed_crawl", &"downed_fire", &"downed_reload", &"downed_getup":
-			return true
+			shown = true
 		&"downed_arrested":
-			return _state_oneshot_t < tw.disarm_s()
+			shown = _state_oneshot_t < tw.disarm_s()
 		&"crew_cuffed_free":
-			return _state_oneshot_t >= tw.free_s()
-	return not POSE_CLIPS.has(c)
+			shown = _state_oneshot_t >= tw.free_s()
+		VEHICLE_EXIT_L, VEHICLE_EXIT_R:  # drawn again once the door-side foot is out
+			shown = _vehicle_exit_elapsed() >= AnimTweak.clip_event_s(c, &"foot_out", VEHICLE_FOOT_OUT_S)
+	return shown
+
+
+## Seconds into the running vehicle_exit_l / _r one-shot (clip time, speed applied); -1 when none plays.
+func _vehicle_exit_elapsed() -> float:
+	if _oneshot != VEHICLE_EXIT_L and _oneshot != VEHICLE_EXIT_R:
+		return -1.0
+	return _oneshot_start + (_oneshot_dur - _oneshot_left) * _oneshot_speed
 
 
 ## Play `p_clip` once for `duration` seconds (-1 = the clip's length / speed). `while_moving` lets it
