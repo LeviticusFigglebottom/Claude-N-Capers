@@ -892,7 +892,7 @@ Blueprint: `docs/levels/afterhours/blueprint.png` from the plan renderer.
   (tyres on wet asphalt, distant sirens, the queue's chatter). After the stampede the club ambience
   drops to an empty-room tone.
 - **Music:** `afterhours` (proposed name for ENV B's `music.afterhours.name`: "Velvet Rope").
-  - **Diegetic stem `club`** (new, ENV C): a 124 BPM four-on-the-floor house loop played **by the
+  - **Diegetic stem `club`** (new, ENV C): a 120 BPM four-on-the-floor house loop (16 bars, 32.0 s) played **by the
     club's speakers**, not by the MusicDirector: 6 `AudioStreamPlayer3D`s in the hall (stacks, balcony,
     VIP, foyer) under a map node `ClubSound`, on the **Ambience** bus (D-075: it is world audio, so the
     ambience slider governs it, not the music slider), with wall occlusion low-pass for the BOH.
@@ -902,7 +902,11 @@ Blueprint: `docs/levels/afterhours/blueprint.png` from the plan renderer.
     full level elsewhere (BOH, upper wing, alley, streets). On `alarm_raised` the mission calls
     `ClubSound.cut()` (`cue.club_power_down`), the MusicDirector un-ducks and runs `control` →
     `anticipation` → `assault` → `fade` as usual. The `club` stem and the assault stem share the
-    tempo grid (124 → 128 BPM assault), so the cut lands on a bar line.
+    tempo grid (120 → 128 BPM assault), so the cut lands on a bar line.
+  - **One beat for the club (LEAD r305):** 120 BPM, the tempo D's dancers (`dance_a/b/c`) and the DJ's `dj_mix`
+    are authored at (DANCE_BPM 120, 16-beat loops), so the floor stays on the beat. The four club-side beds
+    (`amb_afterhours_club_music`, `amb_afterhours_club`, `amb_afterhours_boh`, `amb_street_wet_night`) are 32.0 s,
+    a whole number of 120 BPM bars, and their bass bleed beats with the loop. The score keeps its own 128 BPM grid.
   - If the host picked another `music_track` (D-062), only the score changes: the club's own loop
     stays Afterhours' (it is world audio).
   - Score stems: `stealth` (72 BPM, sub-bass pulses that sit under the club loop), `control`,
