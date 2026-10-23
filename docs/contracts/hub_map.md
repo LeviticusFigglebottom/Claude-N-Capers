@@ -1,11 +1,11 @@
-# Contract: safehouse hub map (v1.1)
+# Contract: safehouse hub map (v1.2)
 
 Owner: LEAD. Producer ENV C (scene, art), ENV A (`hub_station` prefab, hub crew spawn: A3-11), consumer ENV B
 (MenuFlow / SafehouseHost, B6-06). Design: docs/design/heists/safehouse.md ("The Press"). Decision: D-072.
 
 ## Scene
-* `res://world/hub/safehouse/safehouse.tscn`, root class `SafehouseMap` (not a HeistMap: no HeistDef, never on the
-  Board). Children follow heist_map.md where they apply (Geometry, Props, Lighting, Navigation, Rooms, Spawns,
+* `res://world/hub/safehouse/safehouse.tscn`, root class `SafehouseMap extends HeistMap` (v1.2: a data-only HeistMap subclass with
+  `heist_def = null` and `variant_table = null`; no `<id>_def.tres`, so never on the Board; levelcheck reuses its pipeline). Children follow heist_map.md where they apply (Geometry, Props, Lighting, Navigation, Rooms, Spawns,
   ReviewCameras); gameplay nodes live under `Stations/`. validate_level runs with `--profile=hub`.
 * The root provides:
   * `signal station_requested(id: StringName)` (optional when every station emits it itself);
@@ -32,3 +32,10 @@ Owner: LEAD. Producer ENV C (scene, art), ENV A (`hub_station` prefab, hub crew 
   (ENV A, QC-43): unmasked civilian mode, `set_input_paused(bool)`, `teleport(xform)`, a Camera3D; its prompt comes
   through `LocalHudModel.track(crew)` `interaction`. The 2D hub stays as the fallback (Options → Controls
   `safehouse_hub` walk/menu).
+
+## v1.2 (2026-10-22, LEAD; C proposal for C4-02)
+* `SafehouseMap` extends `HeistMap` (data only, no HeistDef / variant table) instead of being an unrelated root, so validate_level's
+  HeistMap-typed pipeline is reused. `--profile=hub` skips the heist-only checks (contract heist nodes, variants, police/assault,
+  loot, cameras, stealth) and keeps geometry, floating, clipping, materials, lights, scale, doors, navmesh, rooms, bounds and the
+  walkthrough (spawn → every station UsePoint). B's SafehouseHost still checks for `SafehouseMap`. Anything that iterates heists must
+  go through HeistRegistry (def files), never through `is HeistMap`.

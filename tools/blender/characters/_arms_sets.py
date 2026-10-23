@@ -932,13 +932,16 @@ def _len(row: dict, key: str, default_s: float) -> int:
 #: melee kinds: (swing frames, hit frame, charged swing frames, hit frame, draw frames). PD2: a quick
 #: swing lands ~0.2 s after the press; the charged swing is quicker to land (the wind-up is done).
 MELEE_TIMING = {"melee_knife": (18, 6, 18, 5, 12), "melee_blunt": (24, 10, 22, 7, 15),
-                "melee_blade": (22, 9, 20, 7, 14)}
+                "melee_blade": (22, 9, 20, 7, 14), "melee_heavy": (30, 13, 26, 9, 20)}
 MELEE_DEFAULTS = {"charge_time_s": 1.0}
 MELEE_CHARGE_LOOP = 30
 #: MeleeDef ids without an ``anim_set`` field map by name until ENV B adds it (contract proposal)
 MELEE_MATCH = {"melee_knife": ("knife", "dagger", "shank"), "melee_blunt": ("baton", "bat", "club", "hammer", "pipe",
                                                                           "crowbar", "wrench"),
-               "melee_blade": ("machete", "sword", "katana", "axe", "cleaver")}
+               "melee_blade": ("machete", "sword", "katana", "axe", "cleaver"),
+               "melee_heavy": ("sledge", "fire_axe")}
+#: fragments that a set must not match (the two-handed fire axe is melee_heavy, not melee_blade)
+MELEE_EXCLUDE = {"melee_blade": ("fire_axe",), "melee_blunt": ("sledge",)}
 
 
 def _melee_clips(name: str, row: dict) -> dict:
@@ -966,7 +969,9 @@ def _item_set(name: str, hip: tuple, sprint: tuple, lowered: tuple, clips: dict,
 
 def _melee_set(name: str) -> FPSet:
     keys = MELEE_MATCH[name]
-    row = def_row("melee", name, lambda r: any(k in str(r.get("id", "")) for k in keys))
+    skip = MELEE_EXCLUDE.get(name, ())
+    row = def_row("melee", name, lambda r: any(k in str(r.get("id", "")) for k in keys)
+                  and not any(k in str(r.get("id", "")) for k in skip))
     return _item_set(name, ((0.15, 0.30, -0.20), 0.0, 0.0, 0.0), ((0.16, 0.24, -0.26), 0.0, 0.0, 0.0),
                      ((0.17, 0.12, -0.50), 0.0, 0.0, 0.0), _melee_clips(name, row), "melee", row)
 
@@ -974,6 +979,7 @@ def _melee_set(name: str) -> FPSet:
 MELEE_KNIFE = _melee_set("melee_knife")
 MELEE_BLUNT = _melee_set("melee_blunt")
 MELEE_BLADE = _melee_set("melee_blade")
+MELEE_HEAVY = _melee_set("melee_heavy")
 
 # -- throwable (frag / concussion / incendiary: the pin pulled, an overhand or underhand throw) -----
 THROW_DRAW, THROW_PIN, THROW_N, THROW_RELEASE, THROW_HOLSTER = 18, 9, 24, 11, 12
@@ -1021,7 +1027,7 @@ DEPLOY_SMALL = _deploy_set("deploy_small")
 DEPLOY_SENTRY = _deploy_set("deploy_sentry")
 
 #: the D2-04 non-gun sets
-ITEM_SETS = ("melee_knife", "melee_blunt", "melee_blade", "throwable", "deploy_bag", "deploy_small", "deploy_sentry")
+ITEM_SETS = ("melee_knife", "melee_blunt", "melee_blade", "melee_heavy", "throwable", "deploy_bag", "deploy_small", "deploy_sentry")
 
 B3: dict[str, FPSet] = {s.name: s for s in (BREAK_ACTION, LEVER, BOW, CROSSBOW, LAUNCHER, FLAMETHROWER, SAW, MINIGUN)}
 SETS: dict[str, FPSet] = {s.name: s for s in (PISTOL, SMG, RIFLE, SHOTGUN, LMG, SNIPER, AKIMBO, REVOLVER, *B3.values(),
@@ -1042,7 +1048,7 @@ def bash_family(name: str) -> str:
 for _s in list(SETS.values()):
     _n, _h = BASH[bash_family(_s.name)]
     _s.clips["bash"] = _one(_n, {"hit": _h, "done": _n})
-SETS.update({s.name: s for s in (MELEE_KNIFE, MELEE_BLUNT, MELEE_BLADE, THROWABLE, DEPLOY_BAG, DEPLOY_SMALL,
+SETS.update({s.name: s for s in (MELEE_KNIFE, MELEE_BLUNT, MELEE_BLADE, MELEE_HEAVY, THROWABLE, DEPLOY_BAG, DEPLOY_SMALL,
                                   DEPLOY_SENTRY)})
 
 

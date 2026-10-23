@@ -1,0 +1,8 @@
+asset: veh_sh_crew_van
+script: tools/blender/props/safehouse.py
+params: {"cat": {"group": "safehouse", "kind": "vehicle", "pin_only": true, "place": "none", "surface": "metal"}, "doors_open_deg": 100.0, "fn": "crew_van"}
+seed: 3400075169  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset veh_sh_crew_van
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

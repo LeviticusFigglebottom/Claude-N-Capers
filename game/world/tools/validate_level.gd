@@ -1,7 +1,8 @@
 ## validate_level: the automated level gate (level_standards §7). Owner: ENV C.
 ## godot --headless --path game res://world/tools/validate_level.tscn -- --heist=<id>
 ##   --stage=<greybox|final> [--variants=all] [--report=<path>] [--scene=<res path>]
-##   [--only=check1,check2] [--walkthrough-report=<path>] [--kits=<res dir>,...] [--timeout=<s>]
+##   [--only=check1,check2] [--walkthrough-report=<path>] [--kits=<res dir>,...] [--timeout=<s>] [--profile=hub]
+## --profile=hub: the safehouse hub (hub_map.md; a data-only HeistMap): the hub contract nodes, no heist-only checks.
 ## Exit code 0 = pass, 1 = fail, 2 = usage/load error, 3 = timeout/crash (watchdog).
 ## See tools/levelcheck/README.md.
 extends Node
@@ -57,6 +58,7 @@ func _main() -> void:
 	ctx.heist_id = heist
 	ctx.stage = stage
 	ctx.variants_all = String(args.get("variants", "")) == "all"
+	ctx.profile = String(args.get("profile", ""))
 	if args.has("kits"):
 		for d: String in String(args["kits"]).split(",", false):
 			ctx.kit_dirs.append(d)

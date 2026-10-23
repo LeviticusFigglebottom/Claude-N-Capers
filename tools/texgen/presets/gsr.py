@@ -298,6 +298,18 @@ PRESET = {
             "pivot": 0.45,
             "saturation": 1.03,
         },
+        # Safehouse "The Press" (safehouse.md §Lighting and mood, C4-03): night, warm 2700-3000 K pools in a dark
+        # industrial shell: warm mids, print-works green in the shadows, the blacks held.
+        "safehouse": {
+            "slope": (1.03, 1.0, 0.96),
+            "offset": (0.0, 0.002, 0.0),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (-0.008, 0.008, 0.0),
+            "highlight_tint": (0.02, 0.01, -0.015),
+            "contrast": 1.02,
+            "pivot": 0.45,
+            "saturation": 1.0,
+        },
     },
     # Godot Environment resources (godot.py).
     "environments": {

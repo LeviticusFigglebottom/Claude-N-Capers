@@ -330,6 +330,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		props["objective_tag"] = String(extra["tag"])
 	if extra.has("leaf"):
 		props["leaf_surface"] = String(extra["leaf"])
+	if extra.has("height"):   # D-158: leaf collision as tall as the visual leaves (A's Door.height_m, env/a-core 75400478)
+		props["height_m"] = float(extra["height"])
 	var metas: Dictionary = {"kind": String(extra.get("kind", "door")), "swing_side": "back"}
 	if bool(extra.get("push_bar", false)):
 		metas["fire_exit"] = true
@@ -447,7 +449,8 @@ func _convoy_mover(movers: Node3D, paths: Node3D, mv: Array) -> void:
 	var veh: Node3D = ps.instantiate() as Node3D
 	veh.name = String(mv[0])
 	veh.transform = Transform3D(yaw_basis(float(mv[3])), v3(mv[2]))
-	set_prop(veh, "vehicle_kind", "truck" if kind != "car" else "car")
+	# (the mixer is its own kind: Reyes sits visible at its wheel; trucks are armoured, their crew hidden: D r280)
+	set_prop(veh, "vehicle_kind", kind if kind == "car" or kind == "mixer" else "truck")
 	var art: String = CONVOY_CAR_ART if kind == "car" else (CONVOY_MIXER_ART if kind == "mixer" else
 		String(CONVOY_CAB_ART[kind]))
 	veh.set(&"visual_scene", catalog_scene(art))

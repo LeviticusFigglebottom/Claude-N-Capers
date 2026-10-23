@@ -130,6 +130,9 @@ const UNSEEN_GUARD_M: float = 30.0
 const UNSEEN_CIV_M: float = 15.0
 const UNSEEN_HOLD_S: float = 2.0
 const SIGNAL_RIG_AT: Vector3 = Vector3(-16.25, 0.75, -13.45)
+const MIXER_START: Vector3 = Vector3(-33.5, 0.0, -16.6)
+const MIXER_GATE_OUT: Vector3 = Vector3(-33.5, 0.0, -9.0)
+const MIXER_GATE_IN: Vector3 = Vector3(-33.5, 0.0, -13.5)
 const MAGAZINE_DOOR_AT: Vector3 = Vector3(-23.0, 0.0, -49.0)
 const MAGAZINE_BOXES_AT: Vector3 = Vector3(-23.0, 0.0, -51.0)
 const C4_NEEDED: int = 4
@@ -143,6 +146,19 @@ const BLOWN_COVER: Vector3 = Vector3(0.0, 0.0, -37.6)
 const BLOWN_FIGHT_S: float = 150.0
 const BLOWN_MAX_S: float = 900.0
 const BLOWN_PEEK_M: float = 45.0
+const LULL_S: float = 2.0
+const HAZ_PRIMARY: StringName = &"weapon.corsair_ar"
+const HAZ_ARMOR: StringName = &"armor.heavy_vest"
+const HAZ_DEPLOYABLE: StringName = &"deployable.doctor_bag"
+const HAZ_BAGS_S: float = 300.0
+## PD2-style loud rifle tank (Enforcer/Mastermind): armor (Juggernaut), revives / Inspire (Field Medic), rifle aim
+## (Marksman), down insurance (Undying); every skill aced, the skill-point budget not checked; deck Ironclad 9/9.
+const LOUD_SKILLS: Dictionary = {&"skill.juggernaut.thick_skin": 2, &"skill.juggernaut.hold_the_line": 2,
+	&"skill.juggernaut.shoulder_check": 2, &"skill.juggernaut.plated": 2, &"skill.field_medic.triage": 2,
+	&"skill.field_medic.bedside_manner": 2, &"skill.field_medic.rally_cry": 2, &"skill.marksman.steady_aim": 2,
+	&"skill.marksman.snap_shot": 2, &"skill.marksman.deliberate_fire": 2, &"skill.undying.cats_luck": 2,
+	&"skill.undying.second_lease": 2}
+const LOUD_PERK_DECK: StringName = &"perk.ironclad"
 
 var _rows: PackedStringArray = PackedStringArray()
 var _straight_on: bool = false
@@ -834,7 +850,7 @@ func _rt_breach() -> bool:
 		ok = await _c4_truck(trucks[2]) and ok
 	else:
 		_c4_row(trucks)
-	_mixer_row()
+	await _mixer_row()
 	# The cargo: a T1 bag on foot to E1.
 	ok = await _carry_to_escape("T1 cargo -> E1", trucks[0], E1_AT, LOOT_MEDIUM, true) and ok
 	return ok
@@ -844,6 +860,8 @@ func _rt_breach() -> bool:
 func _rt_c4() -> bool:
 	if not await _truck_launch(&"route_north", {&"site_stores": [&"stores_c4"], &"truck_count": [&"trucks_3"]}):
 		return false
+	# "charges" is a setup step: pick the magazine padlock and take the C4 before the convoy (crew hidden, quiet).
+	await _c4_fetch()
 	if not await _stop(true):
 		return false
 	_clear_npcs()
@@ -907,7 +925,7 @@ func _rt_setup() -> bool:
 		var worst: float = 0.0
 		for id: int in _peaks:
 			worst = maxf(worst, float(_peaks[id]["max"]))
-		var good: bool = t_rig > 0.0 and t_rig < eta and _alarm == &""
+		var good: bool = t_rig > 0.0 and t_rig < eta and _alarm == &"" and worst < 1.0
 		var fmt: String = "gate t=%.1f, rig hacked t=%.1f, ETA %.0f s (%.0f s spare), alarm '%s', %d observers, peak %.2f"
 		_row("setup from %s spawn" % label, "PASS" if good else "FAIL", fmt % [
 			t_gate, t_rig, eta, eta - t_rig, _alarm, _peaks.size(), worst], "-" if good else "C map / A mission")
@@ -991,7 +1009,7 @@ func _ambush_test(clean: bool, route: StringName) -> bool:
 	var ok: bool = await _stop(clean)
 	_clear_npcs()
 	if ok:
-		_mixer_row()
+		await _mixer_row()
 	return ok
 
 
@@ -1168,18 +1186,22 @@ func _c4_row(trucks: Array[ArmoredTruck]) -> void:
 		trucks.size()], "-" if boxes > 0 else "A5-03 (A) / C markers")
 
 
+## r280 phase 2: at _mixer_move the SiteTanneryGate (opens_with mixer_move) swings open and the Mixer drives from
+## the site to the layout's MixerStop. Waits for both, then walks the gate from the site to the Tannery sidewalk.
 func _mixer_row() -> void:
-	var gates: PackedStringArray = PackedStringArray()
-	for nm: String in ["SiteTanneryGateW", "SiteTanneryGateE"]:
-		var d: Door = rt.find_child(nm, true, false) as Door
-		gates.append("%s %s" % [nm, "missing" if d == null else ("open" if d.is_open else ("locked" if d.locked
-			else "closed"))])
-	var mixer: Node3D = rt.find_child("MixerTruck", true, false) as Node3D
-	var passable: bool = gates.size() > 0 and ", ".join(gates).contains("open")
-	# LEAD r276: mixer phase 2 (C's Mixer / MixerStop / gates) is held from trunk until r277.
-	_row("the mixer leaves / the Tannery gate passable (§7.6, QC-RT1)", "PASS" if passable else "BLOCKED: C r277",
-		"%s; MixerTruck at %s; layout '%s'" % [", ".join(gates), Po5Pilot._v(mixer.global_position) if mixer != null
-		else "-", _mission().layout_id], "-" if passable else "A mission (_mixer_move layouts) / C map")
+	var gate: Door = rt.find_child("SiteTanneryGate", true, false) as Door
+	var mixer: Node3D = rt.find_child("Mixer", true, false) as Node3D
+	var moved: Callable = func() -> bool: return mixer != null and pilot.flat_dist(mixer.global_position, MIXER_START) > 5.0
+	await wait_until(func() -> bool: return gate != null and gate.is_open and moved.call(), 60.0)
+	var walked: bool = false
+	if gate != null and gate.is_open:
+		walked = await _go(MIXER_GATE_OUT, 0.5, 240.0) and await _walk_straight(MIXER_GATE_IN, 15.0) >= 0.0
+	var ok: bool = gate != null and gate.is_open and moved.call() and walked
+	_row("the mixer leaves / the Tannery gate passable (§7.6, QC-RT1)", "PASS" if ok else "FAIL",
+		"gate %s, Mixer at %s (moved %s), walked through %s; layout '%s'" % ["missing" if gate == null else ("open"
+		if gate.is_open else "closed"), Po5Pilot._v(mixer.global_position) if mixer != null else "-", moved.call(),
+		walked, _mission().layout_id], "-" if ok else "A mission (_mixer_move) / C map")
+	await shot("mixer")
 
 
 ## Carry a bag of `loot` from `t`'s rear step to the escape at `esc`: real cargo when the truck is open, else
@@ -1223,18 +1245,32 @@ func _carry_to_escape(item: String, t: ArmoredTruck, esc: Vector3, loot: StringN
 
 ## The magazine's padlock (pick), a C4 box (F: 4 x item.c4), out of the site, F on `t`'s lock (place_c4), the fuse.
 func _c4_truck(t: ArmoredTruck) -> bool:
+	var have: int = pilot.crew.item_count(&"item.c4")
+	if have < C4_NEEDED:
+		have = await _c4_fetch()
+	if have < C4_NEEDED:
+		return false
+	if not await _go(MAN_GATE_IN, 0.5, 120.0) or not await _go(MAN_GATE_OUT, 0.5, 60.0):
+		return false
+	return await _c4_place(t, have)
+
+
+## The magazine (padlock: picked in stealth, sawn once loud) and its C4 boxes until C4_NEEDED x item.c4 are carried.
+func _c4_fetch() -> int:
 	var t0: float = rt.heist_time_s
 	if not await _site_in():
-		return false
+		return 0
 	var door: Door = _door_near(MAGAZINE_DOOR_AT, 1.5)
 	var lock: Node3D = _nearest("Padlock", MAGAZINE_DOOR_AT + Vector3.UP * 1.05, 2.0)
 	if door != null and not door.is_open and lock != null:
+		_diag_hold.call_deferred(_comp(lock), 10.0)  # availability / aim / block reason (r284 c4: loud place_saw failed at once)
+		var loud: bool = rt.went_loud
 		await pilot.use(_comp(lock), 40.0, func() -> bool: return (door.is_open or not door.locked
-			or _comp(lock) == null or _comp(lock).kind != &"place_saw"))
-		# Loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut before the door.
-		Engine.time_scale = DEVICE_SCALE
-		await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
-		Engine.time_scale = 1.0
+			or (loud and (_comp(lock) == null or _comp(lock).kind != &"place_saw"))))
+		if loud:  # loud, the padlock takes a placed saw (place_saw) instead of a pick: wait out the cut
+			Engine.time_scale = DEVICE_SCALE
+			await wait_until(func() -> bool: return door.is_open or not door.locked, 240.0 / DEVICE_SCALE)
+			Engine.time_scale = 1.0
 		if not door.is_open:
 			await pilot.use(_comp(door), 20.0, func() -> bool: return door.is_open)
 	_row("magazine door open (padlock %s)" % ("sawn" if rt.went_loud else "picked"), "PASS" if door != null
@@ -1253,10 +1289,11 @@ func _c4_truck(t: ArmoredTruck) -> bool:
 		have = pilot.crew.item_count(&"item.c4")
 	_row("C4 from the magazine (padlock pick + box)", "PASS" if have >= C4_NEEDED else "FAIL", "door open %s, %d x item.c4, %.0f s" % [
 		door != null and door.is_open, have, rt.heist_time_s - t0], "-" if have >= C4_NEEDED else "C magazine / A item_pickup")
-	if have < C4_NEEDED:
-		return false
-	if not await _go(MAN_GATE_IN, 0.5, 120.0) or not await _go(MAN_GATE_OUT, 0.5, 60.0):
-		return false
+	return have
+
+
+## F on `t`'s lock with `have` x item.c4 carried (place_c4), then the fuse.
+func _c4_place(t: ArmoredTruck, have: int) -> bool:
 	var comp: InteractableComponent = _comp(t)
 	var t1: float = rt.heist_time_s
 	var placed: bool = comp != null and await pilot.use(comp, 60.0,
@@ -1297,7 +1334,8 @@ func _hazard_run(clean: bool) -> bool:
 		rt.teardown()
 		rt = null
 		await wait_s(0.5)
-	var opts: Dictionary = {"preplan": {"force_variants": f}, "skip_casing": true, "ai_teammates": 3, "crew_ai": true}
+	var opts: Dictionary = {"preplan": {"force_variants": f}, "skip_casing": true, "ai_teammates": 3, "crew_ai": true,
+		"loadouts": {0: _hazard_loadout()}}
 	rt = await HeistLauncher.launch(RT_HEIST, _seed if _seed >= 0 else RT_SEED, Enums.Difficulty.HAZARDOUS, self, opts)
 	if rt == null:
 		return await _fail("launch")
@@ -1306,7 +1344,7 @@ func _hazard_run(clean: bool) -> bool:
 	await wait_s(2.0)
 	pilot = Po5Pilot.new(self, c)
 	pilot.quiet = true
-	pilot.combat = true
+	pilot.combat = not clean  # clean: no shooting through the setup (a downed site guard's pager blows it); on at the stop
 	await pilot.calibrate()
 	for s: int in 4:
 		var cc: Node = rt.crew_controller(s)
@@ -1322,6 +1360,8 @@ func _hazard_run(clean: bool) -> bool:
 		note("CUSTODY slot %d" % slot))
 	_watch_hp.call_deferred()
 	await shot("%s_spawn" % tag)
+	if _fast:
+		_set_fast(true)  # render loop off between screenshots (presentation only, as _launch): llvmpipe was ~130x slow
 	var m: RollingThunderMission = _mission()
 	if clean:
 		_crew_hidden(true)
@@ -1344,7 +1384,11 @@ func _hazard_run(clean: bool) -> bool:
 	if clean:
 		pilot.inp.press(&"crouch")
 		await wait_until(func() -> bool: return m._stop_done, 400.0)
+		note("clean_haz: waiting at %s crouched %s" % [Po5Pilot._v(pilot.crew.global_position), pilot.crew.crouched])
 		_crew_hidden(false)
+		pilot.combat = true
+		_peaks.clear()
+		_watch_detection.call_deferred()  # DETECT lines: who sees the pilot at the hand-over, and when
 		note("clean_haz: crew hiding off at the stop (t=%.1f, clean_stop %s)" % [rt.heist_time_s, m.clean_stop])
 	await _hold_cover(func() -> bool: return m._stop_done, 400.0)
 	var t_stop: float = rt.heist_time_s
@@ -1362,6 +1406,8 @@ func _hazard_run(clean: bool) -> bool:
 	var opened: bool = false
 	var t_open: float = -1.0
 	if not trucks.is_empty() and not _in_custody():
+		var lull: float = await _wait_lull(120.0)
+		note("%s: left cover for T1 after a %.0f s wait for a lull (t=%.1f)" % [tag, lull, rt.heist_time_s])
 		var t: ArmoredTruck = trucks[0]
 		var sp: Node = t.get_node_or_null("SawPoint")
 		var comp: InteractableComponent = _comp(sp) if sp != null else _comp(t)
@@ -1377,12 +1423,43 @@ func _hazard_run(clean: bool) -> bool:
 			await _hold_cover(func() -> bool: return t.opened or comp.kind == &"fix_drill", 6.0)
 		opened = t.opened
 		t_open = rt.heist_time_s
-	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f"
+	var open_fmt: String = "opened %s at t=%.1f, %s, player health min %.0f; %s"
 	_row("%s: a truck opened (T1 saw, Hazardous, AI crew)" % tag, "PASS" if opened else "FAIL", open_fmt % [
-		opened, t_open, _downs_text(), _hp_min], "-" if opened else "balance (D-154)")
+		opened, t_open, _downs_text(), _hp_min, _kit_text()], "-" if opened else "balance (D-154)")
+	if opened and not trucks.is_empty():
+		var secured: int = await _haz_bags(trucks[0])
+		_row("%s: bags secured at E1 under fire" % tag, "PASS" if secured > 0 else "FAIL", "%d bag(s) by t=%.1f, %s" % [
+			secured, rt.heist_time_s, _downs_text()], "-" if secured > 0 else "balance (D-154)")
 	_danger_rows(tag)
+	if clean:
+		_peaks_table()
 	await shot("%s_end" % tag)
 	return opened
+
+
+## Carry T1's cargo to E1 one bag at a time in combat (Po5Pilot fights on the way) until custody or HAZ_BAGS_S.
+func _haz_bags(t: ArmoredTruck) -> int:
+	var zone: SecureZone = _secure_zone_near(E1_AT)
+	var secured: int = 0
+	var t_end: float = rt.heist_time_s + HAZ_BAGS_S
+	while rt.heist_time_s < t_end and not _in_custody() and zone != null:
+		if pilot.crew.crew_state != Enums.CrewState.NORMAL:
+			await wait_s(1.0)
+			continue
+		var lb: LootBag = _bag_near(_truck_use(t), 4.0)
+		if lb == null:
+			break
+		if not await pilot.use(_comp(lb), 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			continue
+		var id: int = (pilot.crew.carried_bag as LootBag).net_id
+		if await _go(pilot.stand_point(zone.global_position), 1.5, 240.0) and pilot.crew.is_carrying_bag():
+			await pilot.face(zone.global_position + Vector3.UP * 0.5, 0.05, 1.0)
+			await pilot.inp.tap(&"drop_bag")
+			await wait_until(func() -> bool: return _secured_ids.has(id), 3.0)
+		if _secured_ids.has(id):
+			secured += 1
+			note("bag %d secured at E1 (t=%.1f)" % [secured, rt.heist_time_s])
+	return secured
 
 
 ## Crouched in cover; every 0.5 s peek (stand) at the nearest visible enemy within BLOWN_PEEK_M and engage 1.5 s.
@@ -1404,6 +1481,50 @@ func _hold_cover(done: Callable, max_s: float) -> void:
 	pilot.inp.release(&"crouch")
 
 
+## A competent Hazardous loud kit (the player default is a pistol and a suit): the bots' rifle, the pistol, a heavy
+## vest, a doctor bag. No skills / perk deck (stated in the rows).
+func _hazard_loadout() -> Loadout:
+	var lo: Loadout = Loadout.new()
+	lo.primary = HAZ_PRIMARY
+	lo.secondary = CombatTweak.data().default_secondary
+	lo.armor = HAZ_ARMOR
+	lo.deployable = HAZ_DEPLOYABLE
+	if _build() == "loud":
+		lo.skills = LOUD_SKILLS.duplicate()
+		lo.perk_deck = LOUD_PERK_DECK
+		lo.perk_deck_cards = 9
+	return CrewWeapons.build_loadout(lo)
+
+
+## --build=loud: the PD2 loud build below (LoadoutModifiers pushes its grants at heist start); else none.
+func _build() -> String:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--build="):
+			return a.trim_prefix("--build=")
+	return ""
+
+
+func _kit_text() -> String:
+	var kit: String = "kit corsair_ar + kestrel_p9 + heavy_vest + doctor bag"
+	if _build() == "loud":
+		return kit + ", PD2 loud build: %s aced, deck %s 9/9" % [", ".join(LOUD_SKILLS.keys()), LOUD_PERK_DECK]
+	return kit + ", no skills"
+
+
+## Leave cover only in a lull: no visible enemy within BLOWN_PEEK_M for LULL_S running (fighting meanwhile).
+func _wait_lull(max_s: float) -> float:
+	var t0: float = rt.heist_time_s
+	var quiet: float = 0.0
+	while quiet < LULL_S and rt.heist_time_s - t0 < max_s and not _in_custody():
+		if pilot.nearest_enemy(BLOWN_PEEK_M) != null:
+			quiet = 0.0
+			await _hold_cover(func() -> bool: return pilot.nearest_enemy(BLOWN_PEEK_M) == null, 3.0)
+		else:
+			quiet += 0.5
+			await wait_s(0.5)
+	return rt.heist_time_s - t0
+
+
 func _crew_hidden(on: bool) -> void:
 	for s: int in 4:
 		var cc: CrewController = rt.crew_controller(s) as CrewController
@@ -1423,7 +1544,7 @@ func _on_blown_hit(victim: int, attacker: int, info: Dictionary) -> void:
 		return
 	var who: String = _observer_name(attacker).rstrip("0123456789_")
 	var apos: Vector3 = Vector3.INF
-	for n: Node in rt.find_children("*", "NpcBase", true, false):
+	for n: Node in rt.npcs():
 		if NetIds.of(n) == attacker:
 			apos = (n as Node3D).global_position
 	var key: String = "%s|slot %d" % [who, int(_crew_ids[victim])]

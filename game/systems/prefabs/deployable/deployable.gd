@@ -27,6 +27,7 @@ const KIND_INTERACTION: Dictionary = {
 	&"body_bag_case": [&"take_body_bag", &"ui.prompt.take_body_bag"],
 	&"ecm": [&"ecm_feedback", &"ui.prompt.ecm_feedback"],
 	&"armor_bag": [&"use_armor_bag", &"ui.prompt.use_armor_bag"],
+	&"sentry": [&"use_sentry", &"ui.prompt.interact"],  # D-157: the owner cycles modes / picks it up (SentryGun)
 }
 const AMMO_EPSILON: float = 0.0005
 
@@ -94,6 +95,11 @@ func setup(def: DeployableDef, p_owner_slot: int, uses: int) -> void:
 			resets_downs = bool(def.params.get("resets_downs", true))
 		&"body_bag_case":
 			uses_left = maxi(uses, 1)
+		&"sentry":  # D-157: the turret behaviour (SentryGun.NODE_NAME child)
+			var sg: SentryGun = SentryGun.new()
+			sg.name = SentryGun.NODE_NAME
+			sg.setup(owner_slot, def.params)
+			add_child(sg)
 
 
 func _prefab_ready() -> void:
@@ -159,9 +165,12 @@ func _on_completed(crew: Node) -> void:
 	match kind:
 		&"doctor_bag":
 			c.health.heal(c.health.max_health * heal_frac, resets_downs)  # L2.11
+			SkillTriggers.doctor_bag_used(self, c)  # B1 Messiah Aced
+			SkillTriggers.medical_used(self, c)  # B3 Bedside Manner
 			_consume_use()
 		&"fak":
 			c.health.heal(heal_amount, false)  # L2.11: no down reset
+			SkillTriggers.medical_used(self, c)  # B3 Bedside Manner
 			_consume_use()
 		&"ammo_bag":
 			_give_ammo(c)
@@ -176,6 +185,18 @@ func _on_completed(crew: Node) -> void:
 		&"armor_bag":
 			DeployableSystem.wear_armor(c, bag_armor)  # QB-58
 			_consume_use()
+		&"sentry":
+			var sg: SentryGun = SentryGun.of(self)
+			if sg != null and sg.interact(c):  # D-157: picked up: the ammo refunded, the sentry back in the inventory
+				var ds: DeployableSystem = HeistRuntime.get_service(DeployableSystem.SERVICE) as DeployableSystem
+				if ds != null:
+					ds.restock(c.slot, deployable_id)
+				_spent()
+
+
+## Server: one use gone (B3 Field Kit: the first-aid kit that auto-revived someone).
+func consume_use() -> void:
+	_consume_use()
 
 
 func _consume_use() -> void:
@@ -230,6 +251,10 @@ func trip_detonate() -> void:
 	EventBus.audio_cue_requested.emit(&"cue.trip_mine_explode", pos, by)
 	Net.replicate_event(&"audio_cue_requested", [&"cue.trip_mine_explode", pos, by])
 	Explosion.apply(self, pos, radius, tw.trip_mine_damage, by, &"deployable.trip_mine")
+	var fire: Dictionary = Modifiers.params(owner_slot, &"deploy.trip_mine_fire") if owner_slot >= 0 else {}
+	if not fire.is_empty():  # B5 Hot Floor: the blast leaves a fire pool
+		ThrownItem.spawn_fire_pool(self, global_position, float(fire.get("radius", 0.0)), float(fire.get("duration", 0.0)),
+			by, owner_slot)
 	_spent()
 
 
@@ -279,5 +304,6 @@ func _give_ammo(c: CrewController) -> void:
 		var add: int = int(round(float(maxi(mx - have, 0)) * scale))
 		w.set_ammo(ws, w.mag(ws), mini(w.reserve(ws) + add, mx - w.mag(ws)))  # shared pool (400 %)
 	ammo_left = maxf(ammo_left - take, 0.0)
+	SkillTriggers.ammo_bag_used(self, c, owner_slot, take)  # B1 Bulletstorm (the bag owner's skill)
 	if ammo_left <= AMMO_EPSILON:
 		_spent()

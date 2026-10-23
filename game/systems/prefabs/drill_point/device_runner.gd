@@ -31,6 +31,8 @@ var auto_restart: bool = false
 var restart_left: float = -1.0
 ## Crew slot that placed the device (modifier source).
 var slot: int = -1
+## B1 Kickstarter: this jam has had its melee try.
+var kicked: bool = false
 
 var _owner: GameplayPrefab = null
 var _noise_left: float = 0.0
@@ -62,6 +64,18 @@ func fix(crew_slot: int) -> void:
 		return
 	_roll_restart()
 	_restart(crew_slot)
+
+
+## Server, B1 `interaction.device_melee_restart` (PD2 Kickstarter): `crew_slot` hit the JAMMED device with melee; one
+## try per jam restarts it with InteractionTweak.device_melee_restart_chance (GameRng "devices"). True: restarted.
+func kick(crew_slot: int) -> bool:
+	if state != State.JAMMED or kicked or not Modifiers.flag(crew_slot, &"interaction.device_melee_restart"):
+		return false
+	kicked = true
+	if GameRng.stream(&"devices").randf() >= Tweak.interaction().device_melee_restart_chance:
+		return false
+	fix(crew_slot)
+	return true
 
 
 ## Server: the target was opened another way while the device runs or is jammed (PO6-04: code / keycard on a
@@ -155,6 +169,7 @@ func _roll_restart() -> void:
 
 func _jam() -> void:
 	restart_left = -1.0
+	kicked = false
 	if auto_restart:
 		var r: Vector2 = Tweak.interaction().device_restart_delay_s
 		restart_left = GameRng.stream(&"devices").randf_range(r.x, r.y)

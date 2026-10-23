@@ -12,6 +12,9 @@ signal stem_changed(stem_name: StringName)
 
 const SILENCE: StringName = &""
 const FADE_FLOOR_DB: float = -60.0
+## set_ducked (hub_map.md): -6 dB over 0.25 s.
+const DUCK_DB: float = -6.0
+const DUCK_S: float = 0.25
 
 @export var track_id: StringName = &"glasshouse"
 @export var track: MusicTrack
@@ -19,6 +22,11 @@ const FADE_FLOOR_DB: float = -60.0
 ## Crossfade length in beats (applied at the bar line).
 @export var crossfade_beats: float = 1.0
 @export var bus: StringName = &"Music"
+## Safehouse jukebox (docs/design/heists/safehouse.md Audio): when set, the stems play as AudioStreamPlayer3Ds under
+## this Node3D (the cabinet), still on `bus`, so the Music slider applies; empty = 2D players (heists, menus).
+@export var positional_parent: NodePath = ^""
+@export var unit_size: float = 4.0
+@export var max_distance: float = 30.0
 
 ## Stem the director wants (changes immediately on a phase fact).
 var target_stem: StringName = SILENCE
@@ -28,10 +36,14 @@ var heist_phase: int = Enums.HeistPhase.LOADING
 var assault_phase: int = Enums.AssaultPhase.NONE
 var last_stinger: StringName = &""
 
-var _players: Array[AudioStreamPlayer] = []
+## The two stem players: AudioStreamPlayer, or AudioStreamPlayer3D with positional_parent (duck-typed: _p_* helpers).
+var _players: Array[Node] = []
 var _active: int = -1
 var _stinger: AudioStreamPlayer = null
 var _tweens: Array[Tween] = [null, null]
+var _duck_db: float = 0.0
+var _duck_target: float = 0.0
+var _duck_tween: Tween = null
 ## True once the track came from the heist (launch options / HeistDef), not the `track_id` export.
 var _heist_track: bool = false
 
@@ -118,6 +130,34 @@ func preview(p_track_id: StringName, stem: StringName = MusicTrack.STEM_ASSAULT)
 	return true
 
 
+## hub_map.md (QC-48): duck the whole director by DUCK_DB over DUCK_S (the safehouse cabinet while another station's
+## screen is open), or restore it. An offset on the playing stems; a crossfade's target carries it too.
+func set_ducked(on: bool) -> void:
+	var to: float = DUCK_DB if on else 0.0
+	if is_equal_approx(to, _duck_target):
+		return
+	_duck_target = to
+	if _duck_tween != null and _duck_tween.is_valid():
+		_duck_tween.kill()
+	if not is_inside_tree():
+		_apply_duck(to)
+		return
+	_duck_tween = create_tween()
+	_duck_tween.tween_method(_apply_duck, _duck_db, to, DUCK_S)
+
+
+func is_ducked() -> bool:
+	return _duck_target < 0.0
+
+
+func _apply_duck(v: float) -> void:
+	var delta: float = v - _duck_db
+	_duck_db = v
+	for p: Node in _players:
+		if _p_playing(p) and _p_db(p) > FADE_FLOOR_DB + 1.0:
+			p.set(&"volume_db", _p_db(p) + delta)
+
+
 ## Stop the jukebox preview immediately.
 func stop_preview() -> void:
 	stop_all()
@@ -129,12 +169,23 @@ func stop_preview() -> void:
 func _ensure_players() -> void:
 	if not _players.is_empty():
 		return
+	var host: Node3D = get_node_or_null(positional_parent) as Node3D if positional_parent != ^"" else null
 	for i: int in range(2):
-		var p: AudioStreamPlayer = AudioStreamPlayer.new()
+		var p: Node = null
+		if host != null:
+			var p3: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
+			p3.unit_size = unit_size
+			p3.max_distance = max_distance
+			p = p3
+		else:
+			p = AudioStreamPlayer.new()
 		p.name = "Stem%d" % i
-		p.bus = AudioCueLib.bus_or_master(bus)
-		p.volume_db = FADE_FLOOR_DB
-		add_child(p)
+		p.set(&"bus", AudioCueLib.bus_or_master(bus))
+		p.set(&"volume_db", FADE_FLOOR_DB)
+		if host != null:
+			host.add_child(p)
+		else:
+			add_child(p)
 		_players.append(p)
 	_stinger = AudioStreamPlayer.new()
 	_stinger.name = "Stinger"
@@ -148,8 +199,8 @@ func _exit_tree() -> void:
 
 ## Stop every stem and the stinger immediately (teardown, tests).
 func stop_all() -> void:
-	for p: AudioStreamPlayer in _players:
-		p.stop()
+	for p: Node in _players:
+		p.call(&"stop")
 	if _stinger != null:
 		_stinger.stop()
 
@@ -159,11 +210,11 @@ func _process(delta: float) -> void:
 		return
 	if _players.is_empty():
 		return
-	if _active < 0 or not _players[_active].playing or current_stem == SILENCE:
+	if _active < 0 or not _p_playing(_players[_active]) or current_stem == SILENCE:
 		_switch(0.0)
 		return
 	var bar: float = track.bar_seconds() if track != null else 2.0
-	var pos: float = _players[_active].get_playback_position() + AudioServer.get_time_since_last_mix()
+	var pos: float = _p_pos(_players[_active]) + AudioServer.get_time_since_last_mix()
 	var next_bar: float = ceilf(pos / bar - 0.001) * bar
 	if next_bar - pos <= delta:
 		_switch(next_bar)
@@ -176,10 +227,10 @@ func request_stem(stem_name: StringName) -> void:
 
 ## Seconds until the next bar line of the playing stem (0 when nothing plays).
 func time_to_next_bar() -> float:
-	if _active < 0 or not _players[_active].playing or track == null:
+	if _active < 0 or not _p_playing(_players[_active]) or track == null:
 		return 0.0
 	var bar: float = track.bar_seconds()
-	var pos: float = _players[_active].get_playback_position()
+	var pos: float = _p_pos(_players[_active])
 	return ceilf(pos / bar - 0.001) * bar - pos
 
 
@@ -231,28 +282,40 @@ func _switch(bar_pos: float) -> void:
 		return
 	AudioCueLib.set_loop(stream, true)
 	var nxt: int = 1 if _active == 0 else 0
-	var p: AudioStreamPlayer = _players[nxt]
-	p.stream = stream
+	var p: Node = _players[nxt]
+	p.set(&"stream", stream)
 	var length: float = stream.get_length()
 	var start: float = fmod(bar_pos, length) if length > 0.0 else 0.0
-	p.volume_db = FADE_FLOOR_DB
+	p.set(&"volume_db", FADE_FLOOR_DB)
 	if p.is_inside_tree():
-		p.play(start)
-	_fade(nxt, track.stem_gain_db(to_stem), fade_s, false)
+		p.call(&"play", start)
+	_fade(nxt, track.stem_gain_db(to_stem) + _duck_db, fade_s, false)
 	_active = nxt
 
 
 func _fade(idx: int, to_db: float, seconds: float, stop_after: bool) -> void:
-	var p: AudioStreamPlayer = _players[idx]
+	var p: Node = _players[idx]
 	if _tweens[idx] != null and _tweens[idx].is_valid():
 		_tweens[idx].kill()
 	if not is_inside_tree() or seconds <= 0.0:
-		p.volume_db = to_db
+		p.set(&"volume_db", to_db)
 		if stop_after:
-			p.stop()
+			p.call(&"stop")
 		return
 	var tw: Tween = create_tween()
 	tw.tween_property(p, "volume_db", to_db, seconds)
 	if stop_after:
-		tw.tween_callback(p.stop)
+		tw.tween_callback(Callable(p, &"stop"))
 	_tweens[idx] = tw
+
+
+static func _p_playing(p: Node) -> bool:
+	return bool(p.get(&"playing"))
+
+
+static func _p_db(p: Node) -> float:
+	return float(p.get(&"volume_db"))
+
+
+static func _p_pos(p: Node) -> float:
+	return float(p.call(&"get_playback_position"))

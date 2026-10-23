@@ -74,6 +74,7 @@ const HINT_CLIPS: Dictionary = {
 	&"press_alarm": &"interact_mid",
 	# RT-D1 (Rolling Thunder, clips announced by ENV D): seated in a car / cab, eating in a diner booth, the diner cook.
 	&"sit_vehicle": &"sit_vehicle", &"vehicle": &"sit_vehicle", &"sit_eat": &"sit_eat", &"eat": &"sit_eat",
+	&"sit_vehicle_drive": &"sit_vehicle_drive",  # D (r280): a driver, hands on the wheel at 10 and 2
 	&"cook_stove": &"cook_stove", &"cook": &"cook_stove",
 	&"counter_wipe": &"counter_wipe",  # the RT diner waitress at the counter (D)
 }
@@ -123,7 +124,7 @@ const META_NET_HINT: StringName = &"net_anim_hint"
 const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
 ## characters.md v1.11: clips that mean "seated at a desk / chair" for the seated deaths.
 const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_chair_watch", &"cower_seated",
-	&"sit_eat", &"sit_vehicle"]
+	&"sit_eat", &"sit_vehicle", &"sit_vehicle_drive"]
 ## RT-D1 vehicle dismounts (~45 f one-shots with root motion, step events, ending on idle_alert f0): played only when
 ## the rig has them (play_vehicle_exit; no fallback clip). No caller yet: the convoy / police dismount is QC-83/86.
 const VEHICLE_EXIT_L: StringName = &"vehicle_exit_l"
@@ -217,6 +218,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"counter_customer": &"idle", &"check_desk_write": &"idle",
 	# RT-D1: seated loops sit on the chair loop, the cook stands.
 	&"sit_vehicle": &"sit_chair", &"sit_eat": &"sit_chair", &"cook_stove": &"idle", &"counter_wipe": &"idle",
+	&"sit_vehicle_drive": &"sit_vehicle",  # a rig without the driver clip sits as a passenger
 }
 ## PO6-17: an NPC meta (StringName clip) that wins over every NPC state / brain hint while set (host). The
 ## assault-event runner sets it for scripted moments: rope descent, landing, heli door, van exit, breach charge.

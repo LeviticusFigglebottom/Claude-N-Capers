@@ -101,6 +101,25 @@ func test_sprint_carry_keeps_the_sprint_trunk() -> void:
 				assert_true(d < 1.0, "hold_%s_sprint %s at %.2f s: the sprint's (%.2f deg off)" % [kind, bone, time, d])
 
 
+## D-153 TAC ruling: the police rifle's port-arms run (hold_rifle_port_run) has the run's length and loop and keeps the
+## plain run's upright trunk (no weapon-class hunch), unlike hold_rifle_run.
+func test_port_run_keeps_the_run_trunk() -> void:
+	if not _ready_or_fail():
+		return
+	var base: Animation = _anim("run")
+	var a: Animation = _anim("hold_rifle_port_run")
+	assert_true(a != null, "hold_rifle_port_run exists")
+	if a == null or base == null:
+		return
+	assert_near(a.length, base.length, 0.001, "hold_rifle_port_run length == run")
+	assert_eq(a.loop_mode, base.loop_mode, "hold_rifle_port_run loops like run")
+	for i: int in range(6):
+		var time: float = a.length * float(i) / 6.0
+		for bone: String in ["spine", "chest"]:
+			var d: float = rad_to_deg(_rot(a, bone, time).angle_to(_rot(base, bone, time)))
+			assert_true(d < 1.0, "hold_rifle_port_run %s at %.2f s: the run's (%.2f deg off)" % [bone, time, d])
+
+
 func test_walking_layers_move_with_the_steps() -> void:
 	if not _ready_or_fail():
 		return

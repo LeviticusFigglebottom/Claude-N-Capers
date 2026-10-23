@@ -227,6 +227,9 @@ KITS.update(ostrander_kits(KITS))
 from _kits_rolling_thunder import rolling_thunder_kits  # noqa: E402  (Rolling Thunder variants, RT-C2)
 
 KITS.update(rolling_thunder_kits(KITS))
+from _kits_safehouse import SAFEHOUSE_KITS  # noqa: E402  (Safehouse kits, C4-03)
+
+KITS.update(SAFEHOUSE_KITS)
 
 
 def _sn(s: str) -> str:

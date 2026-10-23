@@ -91,6 +91,10 @@ const HEIST_MUSIC: Array[StringName] = [&"glasshouse", &"night_deposit", &"shado
 		&"gallery_night", &"ostrander_federal", &"rolling_thunder"]
 ## Heist tracks whose map does not place its Audio node yet.
 const HEIST_MUSIC_MAP_PENDING: Array[StringName] = []
+## C4-03: the safehouse cues whose cues.tres rows ENV B adds (cue rows go to B); generated and committed by C
+## (tools/audiogen/cues_safehouse.py). Empty this once B's rows land.
+const CUE_ROWS_PENDING: Array[StringName] = [&"cue.amb_safehouse_interior", &"cue.amb_fridge_hum",
+	&"cue.amb_wall_clock", &"cue.amb_ballast_buzz", &"cue.amb_drip", &"cue.amb_range_extractor"]
 ## RT-C2 / audio_cues v1.9 (QC-85): the convoy-ambush one-shots and the freight train, 3D on the World bus.
 const RT_CUES: Array[StringName] = [&"cue.convoy_approach", &"cue.convoy_brake", &"cue.mixer_ram",
 		&"cue.signal_click", &"cue.truck_doors_open", &"cue.freight_train_pass"]
@@ -623,7 +627,7 @@ func test_every_cue_referenced_in_code_is_registered() -> void:
 	assert_true(refs.size() > 20, "found %d cue literals" % refs.size())
 	var missing: PackedStringArray = []
 	for id: String in refs:
-		if not _reg.has_cue(StringName(id)):
+		if not _reg.has_cue(StringName(id)) and not CUE_ROWS_PENDING.has(StringName(id)):
 			missing.append("%s (%s)" % [id, refs[id]])
 	assert_true(missing.is_empty(), "cues referenced in code but not registered: %s" % ", ".join(missing))
 	assert_true(refs.has("cue.npc_melee_swing"), "the A3-13 melee windup cue is seen by the scan")

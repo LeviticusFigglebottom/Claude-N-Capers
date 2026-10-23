@@ -1,0 +1,13 @@
+seed 1 difficulty 0
+convoy layout east_crash after 11 s, units 8
+mixer at (-9.26, 0.00, 1.38)
+convoy_01 Npc_police role police tags [&"convoy_lead"] activity  look patrol_officer_duty clip run at (-8.86, 0.00, 3.62) facing 95
+convoy_02 Npc_police2 role police tags [&"convoy_lead"] activity  look patrol_officer_duty clip run at (-6.15, 0.00, 3.33) facing 122
+convoy_03 Npc_police3 role police tags [&"convoy_t1"] activity  look armored_car_crew_b clip run at (3.62, 0.00, 1.94) facing 121
+convoy_04 Npc_police4 role police tags [&"convoy_t1"] activity  look armored_car_crew_c clip run at (6.88, 0.00, -5.07) facing 109
+convoy_05 Npc_police5 role police tags [&"convoy_t2"] activity  look armored_car_crew_d clip run at (18.96, 0.00, -2.36) facing 134
+convoy_06 Npc_police6 role police tags [&"convoy_t2"] activity  look armored_car_crew_e clip run_start at (19.93, 0.00, -8.99) facing 91
+convoy_07 Npc_police7 role police tags [&"convoy_rear"] activity  look patrol_officer_duty clip run at (20.01, 0.00, 2.76) facing 111
+convoy_08 Npc_police8 role police tags [&"convoy_rear"] activity  look patrol_officer_duty clip run at (21.80, 0.00, 1.10) facing 115
+no visible seated unit: no dismount strip
+sheet rt_cast_sheet.png 9 shots

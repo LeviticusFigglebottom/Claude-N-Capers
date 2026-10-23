@@ -13,6 +13,8 @@ static var _cached: DeployableTweak = null
 ## id -> {kind, count, uses, deploy_time_s, params}: used when ContentDB.deployable(id) is null.
 @export var fallback_defs: Dictionary = {
 	&"deployable.ecm": {"kind": &"ecm", "count": 1, "uses": 1, "deploy_time_s": 2.0, "params": {"duration": 20.0}},
+	# D-157 crew sentry (PD2: 2 per player ◇) until B ships content/data/deployables/sentry.tres; params: SentryGun.DEFAULTS.
+	&"deployable.sentry": {"kind": &"sentry", "count": 2, "uses": 1, "deploy_time_s": 2.0, "params": {}},
 	&"deployable.fak": {"kind": &"fak", "count": 4, "uses": 1, "deploy_time_s": 1.0, "params": {"heal": 150.0}},
 	&"deployable.first_aid_kit": {"kind": &"fak", "count": 4, "uses": 1, "deploy_time_s": 1.0, "params": {"heal": 150.0}},
 	&"deployable.doctor_bag": {"kind": &"doctor_bag", "count": 1, "uses": 2, "deploy_time_s": 2.0,

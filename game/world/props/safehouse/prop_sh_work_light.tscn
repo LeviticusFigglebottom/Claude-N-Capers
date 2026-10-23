@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_sh_work_light/prop_sh_work_light.glb" id="1_model"]
+
+[node name="PropShWorkLight" type="Node3D" groups=["fixture"]]
+metadata/kind = &"light_fixture"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Light" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 1.7, 0.06)
+spot_range = 7
+spot_angle = 55
+spot_angle_attenuation = 0.6
+layers = 1048577
+light_color = Color(1, 0.9412, 0.8902, 1)
+light_energy = 1.6
+light_size = 0.05
+shadow_enabled = false

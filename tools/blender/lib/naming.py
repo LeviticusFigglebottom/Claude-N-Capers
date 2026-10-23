@@ -22,6 +22,7 @@ PREFIX_CATEGORY: dict[str, str] = {
     "fx": "fx",
     "veh": "props",
     "mask": "masks",
+    "eqp": "equipment",  # D-157: ENV D's equipment (tools/blender/equipment, the crew sentry eqp_sentry)
 }
 
 MATERIAL_PREFIX = "M_"

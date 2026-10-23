@@ -7,63 +7,7 @@ extends RefCounted
 
 ## No runtime code reads the key (and so no behaviour test can exist).
 const UNHOOKED: Dictionary = {
-	&"ability.convert_owner_buff": "A",
-	&"ability.hostage_regen": "A",
-	&"ability.inspire": "A",
-	&"ability.revive_target_buff": "A",
-	&"ability.revive_target_health_mult": "A",
-	&"ability.stockholm": "A",
-	&"defense.armor_break_speed_buff": "A",
-	&"defense.armor_broken_stagger": "A",
-	&"defense.berserk": "A",
-	&"defense.bleedout_pause_unseen": "A",
-	&"defense.bullseye": "A",
-	&"defense.dodge_per_concealment": "A",
-	&"defense.flashbang_duration_mult": "A",
-	&"defense.outnumbered": "A",
-	&"defense.post_revive_buff": "A",
-	&"defense.reviving_damage_taken_mult": "A",
-	&"defense.self_revive_charges": "A",
-	&"defense.self_revive_refill_on_doctor_bag": "A",
-	&"defense.sprint_dodge_add": "A",
-	&"defense.swan_song": "A",
-	&"defense.target_priority_mult": "A",
-	&"deploy.ammo_bag_bulletstorm": "A",
-	&"deploy.fak_auto_revive": "A",
-	&"deploy.medical_user_buff": "A",
-	&"deploy.sentry_accuracy_mult": "A",
-	&"deploy.sentry_cost_mult": "A",
-	&"deploy.sentry_health_mult": "A",
-	&"deploy.sentry_modes": "A",
-	&"deploy.sentry_shield": "A",
-	&"deploy.sentry_turn_speed_mult": "A",
-	&"deploy.trip_mine_fire": "A",
-	&"interaction.device_melee_restart": "A",
-	&"movement.ads_speed_penalty_mult": "A",
-	&"movement.reload_while_sprinting": "A",
-	&"movement.shoot_while_sprinting": "A",
-	&"movement.sprint_any_direction": "A",
-	&"stealth.mark_by_aim": "A",
-	&"stealth.mark_damage_bonus_mult": "A",
-	&"stealth.mark_far_damage_mult": "A",
-	&"stealth.noise_intimidates_civilians": "A",
 	&"stealth.pocket_ecm": "A",
-	&"weapon.ads_speed_mult": "A",
-	&"weapon.body_expertise": "A",
-	&"weapon.crit_chance_add": "A",
-	&"weapon.crit_per_concealment": "A",
-	&"weapon.falloff_range_mult": "A",
-	&"weapon.graze": "A",
-	&"weapon.headshot_refund": "A",
-	&"weapon.hip_fire_rate_mult": "A",
-	&"weapon.hip_spread_mult": "A",
-	&"weapon.hit_stack_buff": "A",
-	&"weapon.kill_damage_buff": "A",
-	&"weapon.kill_reload_buff": "A",
-	&"weapon.moving_spread_mult": "A",
-	&"weapon.stagger_chance_add": "A",
-	&"weapon.still_spread_mult": "A",
-	&"weapon.unseen_strike": "A",
 }
 
 ## Read by runtime code (hook file in the comment) but no behaviour test.
@@ -79,7 +23,6 @@ const UNTESTED: Dictionary = {
 	&"loot.can_sprint_with_heavy": "A",  # systems/player/crew_controller.gd
 	&"loot.carry_speed_penalty_mult": "A",  # systems/player/crew_controller.gd
 	&"movement.crouch_speed_mult": "A",  # systems/player/crew_controller.gd
-	&"movement.speed_mult": "A",  # systems/player/crew_controller.gd
 	&"stealth.body_bag_concealed_carry": "A",  # systems/player/crew_controller.gd
 	&"stealth.cable_tie_speed_mult": "A",  # systems/ai/civilian/civilian_brain.gd, ...
 	&"stealth.civilian_intimidate_range_mult": "A",  # systems/stealth/shout_system.gd
@@ -93,6 +36,5 @@ const UNTESTED: Dictionary = {
 	&"weapon.saw_shield_pierce": "A",  # systems/combat/special_weapons.gd
 	&"weapon.saw_wear_mult": "A",  # systems/combat/special_weapons.gd
 	&"weapon.shield_knockback": "A",  # systems/combat/crew_melee.gd
-	&"weapon.spread_mult": "A",  # systems/combat/crew_weapons.gd
 	&"weapon.swap_speed_mult": "A",  # systems/combat/crew_weapons.gd, ...
 }

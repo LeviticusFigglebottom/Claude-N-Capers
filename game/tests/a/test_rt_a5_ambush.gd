@@ -158,8 +158,13 @@ func test_car_occupant_slides_out_over_the_exit_clip() -> void:
 	await wait_seconds(0.1)  # D: the root holds for frames 0-6 while the unit turns to the door
 	var held: Vector3 = car.to_local(u.global_position) - car.to_local(seat)
 	assert_true(Vector2(held.x, held.z).length() < 0.02, "the root holds at the start of the clip (%.3f m)" % held.x)
+	var player: AnimationPlayer = AnimDriver.of(u).player
+	assert_eq(player.process_mode, Node.PROCESS_MODE_ALWAYS, "D r283: the AnimationPlayer runs while the body is paused")
+	await wait_seconds(0.7)
+	assert_near(player.current_animation_position, 0.8, 0.12, "the exit clip advances with the slide (D: frame 24 at 0.8 s)")
 	var handed: bool = await wait_until(func() -> bool: return u.process_mode == Node.PROCESS_MODE_INHERIT, exit_s + 0.5)
 	assert_true(handed, "the brain runs after the clip")
+	assert_eq(player.process_mode, Node.PROCESS_MODE_INHERIT, "the AnimationPlayer inherits again once out")
 	var out_x: float = absf(car.to_local(u.global_position).x) - absf(car.to_local(seat).x)
 	if not curve.is_empty():
 		assert_near(out_x, curve[curve.size() - 1], 0.03, "out by exactly the clip's root travel (D: no foot skate)")
@@ -179,6 +184,36 @@ func test_one_unit_per_seat_over_calls() -> void:
 		return
 	assert_true(a[0].global_position.distance_to(b[0].global_position) > 0.3,
 		"different seats (%s / %s)" % [a[0].global_position, b[0].global_position])
+
+
+## D r280: Seat0 of a seen vehicle is the driver (sit_vehicle_drive, hands on the wheel), the rest sit as passengers;
+## an armoured cab hides its crew in the passenger pose unless shown (Reyes at the Mixer's wheel, a "truck").
+func test_driver_seat_pose_and_shown_driver() -> void:
+	var car: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(0, 0, -12), func(n: Node) -> void:
+		(n as ConvoyVehicle).vehicle_kind = &"car") as ConvoyVehicle
+	var truck: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(8, 0, -12), func(n: Node) -> void:
+		(n as ConvoyVehicle).vehicle_kind = &"truck") as ConvoyVehicle
+	await wait_physics_frames(2)
+	var hint: Callable = func(u: NpcBase) -> StringName: return StringName(u.get_node(^"Brain").get(&"anim_hint"))
+	var a: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.patrol_officer", 2, &"", true, car)
+	assert_eq(a.size(), 2, "two in the car")
+	if a.size() < 2:
+		return
+	assert_eq(hint.call(a[0]), HeistMission.DRIVER_HINT, "Seat0 drives")
+	assert_eq(hint.call(a[1]), HeistMission.SEATED_HINT, "Seat1 rides")
+	var t: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.security_officer", 1, &"", true, truck)
+	assert_true(t.size() == 1 and not t[0].visible and hint.call(t[0]) == HeistMission.SEATED_HINT,
+		"an armoured cab's driver is hidden, in the passenger pose")
+	var shown: NpcBase = _rt.mission.spawn_units(&"enemy.security_officer", 1, &"", false, truck)[0]
+	shown.global_transform = truck.seats()[0].global_transform
+	_rt.mission._seat(shown, truck, true, true)
+	assert_true(shown.visible, "a shown driver is seen in a truck")
+	assert_eq(hint.call(shown), HeistMission.DRIVER_HINT, "and drives")
+	_rt.mission.dismount_units(a)
+	var out: bool = await wait_until(func() -> bool: return a[0].visible and a[0].process_mode == Node.PROCESS_MODE_INHERIT,
+		5.0)  # a car's occupants slide out over the exit clip first
+	assert_true(out, "the driver got out")
+	assert_eq(hint.call(a[0]), &"", "the driver's pose ends at the dismount")
 
 
 ## P: a seated unit killed in its car (C4 / an explosion) or freed before the dismount: no "cast a freed object"; the

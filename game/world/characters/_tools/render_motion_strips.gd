@@ -10,7 +10,7 @@
 ## Writes <out>/<case>.png (strip, 2 rows) and <out>/motion_log.txt.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_motion_strips.tscn -- --out=/abs/dir \
-##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300] [--cases=crew_strafe,cop_stagger]
+##     [--heist=glasshouse] [--seed=7] [--difficulty=0] [--wait=300] [--cases=crew_strafe,cop_stagger,cop_look_1..4]
 ## Owner: ENV D.
 extends Node3D
 
@@ -34,6 +34,8 @@ var _rt: HeistRuntime = null
 ## the cases to shoot (--cases=crew_strafe,...; default all)
 var _cases: Array[String] = CASES.duplicate()
 var _home: Vector3 = Vector3.INF
+## looks already stripped by a cop_look_<n> case
+var _looks: Dictionary = {}
 var _legs: int = 0
 
 
@@ -47,7 +49,10 @@ func _ready() -> void:
 			"seed": _seed = int(v)
 			"difficulty": _difficulty = int(v)
 			"wait": _wait = float(v)
-			"cases": _cases = Array(v.split(","), TYPE_STRING, &"", null)
+			"cases":
+				_cases.clear()
+				for c: String in v.split(","):
+					_cases.append(c)
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/motion_strips"
 	RenderingServer.render_loop_enabled = false  # frames only for the strips (llvmpipe)
@@ -101,6 +106,7 @@ func _run() -> void:
 				_say("t=%.1f %s on %s" % [t, c, _who(body)])
 				await _strip(c, body)
 				_done[c] = true
+				_looks[_look(body)] = true
 				break
 		if int(t * 10.0) % 100 == 0:
 			_crew_diag(t)
@@ -147,6 +153,9 @@ func _find(c: String) -> Node3D:
 			"cop_run_gun":
 				ok = (base.begins_with("run") or base.begins_with("walk")) and lay.begins_with("aim_") \
 					and (lay.ends_with("_run") or lay.ends_with("_walk"))
+			_:
+				# cop_look_<n>: any police unit on a run clip (aiming or not), one strip per distinct look (v1.37 roster)
+				ok = c.begins_with("cop_look_") and base.begins_with("run") and not _looks.has(_look(b))
 		if ok and ad.horizontal_speed() > 0.5:
 			return b
 	return null
@@ -188,7 +197,7 @@ func _strip(c: String, body: Node3D) -> void:
 		var at: Vector3 = body.global_position + Vector3.UP * 1.0
 		var eye: Vector3 = _eye(body, at, fwd)
 		var info: String = "%s | %s @%.2f | %.1f m/s" % [ad.clip, ad.hold_layer.clip if ad.hold_layer != null else &"-",
-			ad.hold_layer.time if ad.hold_layer != null else 0.0, ad.horizontal_speed()]
+			ad.hold_layer.time if ad.hold_layer != null else 0.0, ad.horizontal_speed()] + _pose_stats(body)
 		_label.text = "%s %d  %s\n%s" % [c, k, _look(body), info]
 		_say("%s f%d %s" % [c, k, info])
 		_cam.look_at_from_position(eye, at)
@@ -260,6 +269,26 @@ func _crew_diag(t: float) -> void:
 		_say("diag t=%.0f %s ai %s clip %s layer %s active %s speed %.1f state %s" % [t, m.name, m.is_ai, ad.clip,
 			ad.hold_layer.clip if ad.hold_layer != null else &"-", ad.hold_layer.active if ad.hold_layer != null else false,
 			ad.horizontal_speed(), m.crew_state])
+
+
+## " | hips 0.88 m knee 61": the live skeleton's hips joint height above the body root (m) and the larger knee flexion
+## (deg), as probe_gait_heights measures the clips.
+func _pose_stats(body: Node3D) -> String:
+	var found: Array[Node] = body.find_children("*", "Skeleton3D", true, false)
+	if found.is_empty():
+		return ""
+	var sk: Skeleton3D = found[0] as Skeleton3D
+	var hips: int = sk.find_bone("hips")
+	if hips < 0:
+		return ""
+	var y: float = (sk.global_transform * sk.get_bone_global_pose(hips)).origin.y - body.global_position.y
+	var kn: float = 0.0
+	for s: String in ["L", "R"]:
+		var th: Vector3 = sk.get_bone_global_pose(sk.find_bone("thigh." + s)).origin
+		var sh: Vector3 = sk.get_bone_global_pose(sk.find_bone("shin." + s)).origin
+		var ft: Vector3 = sk.get_bone_global_pose(sk.find_bone("foot." + s)).origin
+		kn = maxf(kn, 180.0 - rad_to_deg((th - sh).angle_to(ft - sh)))
+	return " | hips %.3f m knee %.0f" % [y, kn]
 
 
 func _look(b: Node3D) -> String:

@@ -102,7 +102,8 @@ static func tick(h: CrewHealth, delta: float) -> bool:
 ## it. `from` = the choosing NPC (perk.kingpin: nearby enemies only).
 static func aggro_weight(crew: CrewController, from: Node3D = null) -> float:
 	var perks: CrewPerks = of(crew)
-	return maxf(perks.aggro_mult(from), 0.01) if perks != null else 1.0
+	var skill: float = Modifiers.mult(crew.slot, &"defense.target_priority_mult") if crew != null else 1.0  # B2 Low Profile
+	return maxf((perks.aggro_mult(from) if perks != null else 1.0) * skill, 0.01)
 
 
 ## Melee damage multiplier for `crew`'s next melee hit (perk.infiltrator chain).

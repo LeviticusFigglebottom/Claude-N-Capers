@@ -22,6 +22,9 @@ extends Resource
 @export var perk_deck: StringName = &""
 @export var perk_deck_cards: int = 0       ## unlocked card count 0..9
 @export var skills: Dictionary = {}        ## skill_id -> 1 (basic) / 2 (aced)
+## L6.2: AI teammates only (PD2 Crew Management). &"" = none; ids from ENV B's bot crew data.
+@export var bot_ability: StringName = &""  ## e.g. &"bot_ability.inspire" (on the bot's own slot)
+@export var bot_boost: StringName = &""    ## e.g. &"bot_boost.ammo" (crew-wide while the bot is free)
 
 ## Filled in by ENV B's LoadoutResolver (single source of truth for these numbers):
 @export var resolved_primary: WeaponStats
