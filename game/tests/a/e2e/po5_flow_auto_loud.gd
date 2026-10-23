@@ -192,8 +192,8 @@ func _gear_up() -> bool:
 ## done-check, Hazardous 1 / 4242). Walk until he is in sight, then engage him. True when it acted.
 func _hunt_captain() -> bool:
 	var d: AssaultDirector = rt.service(G.SVC_DIRECTOR) as AssaultDirector
-	if d == null or not d.captain_active() or _marked(&"secure"):
-		return false
+	if d == null or not d.captain_active() or _marked(&"secure") or _marked(&"escape"):
+		return false  # D-166: once the van is there (the waiver) the pilot leaves, Brandt or not
 	var brandt: NpcBase = d.captain.brandt
 	if brandt == null or not is_instance_valid(brandt) or not brandt.is_alive():
 		return false
