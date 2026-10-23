@@ -793,7 +793,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 				break
 			# Re-aim before pressing again: an F press with the crosshair on a cop is a shout (ND attempts 15-18).
 			await face(target, 0.03, 1.0)
-			if no_blind_press and not await _aim_on(comp, target):
+			if not is_instance_valid(comp) or (no_blind_press and not await _aim_on(comp, target)):
 				break
 			if isys.aimed_component(crew) == comp:
 				d.note("pilot: use %s hold dropped (hit or blocked), re-pressing" % comp.kind)
