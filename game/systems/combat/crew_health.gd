@@ -35,6 +35,10 @@ signal downed(downs_used: int)
 signal revived(by_slot: int)
 signal custody()
 
+## C4 Last Breath (PD2 One Down): the launch option and its down limit.
+const LAST_BREATH_OPTION: String = "last_breath"
+const LAST_BREATH_DOWNS: int = 1
+
 ## D-145 §4a: the bots' CrewAiTweak (regen tunables), loaded once.
 static var _crew_ai_tweak: CrewAiTweak = null
 
@@ -119,8 +123,14 @@ func _regen_delay(tw: CrewTweak) -> float:
 		&"team.armor_regen_delay_mult")
 
 
+## L2.6; C4 Last Breath (PD2 One Down, B's launch option "last_breath", the host's on a replica): LAST_BREATH_DOWNS
+## instead of downs_before_custody, still + defense.downs_extra (Nine Lives aced: 2).
 func max_downs() -> int:
-	return Tweak.crew().downs_before_custody + int(Modifiers.add(_slot(), &"defense.downs_extra"))
+	var rt: HeistRuntime = HeistRuntime.of(_crew) if _crew != null else null
+	var base: int = Tweak.crew().downs_before_custody
+	if rt != null and bool(rt.launch_options.get(LAST_BREATH_OPTION, false)):
+		base = LAST_BREATH_DOWNS
+	return base + int(Modifiers.add(_slot(), &"defense.downs_extra"))
 
 
 ## Full health and armor, downs reset (spawn, custody release, doctor bag P2).
