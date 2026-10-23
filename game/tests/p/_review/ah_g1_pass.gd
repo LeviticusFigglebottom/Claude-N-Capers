@@ -11,7 +11,7 @@
 ##            bar service door, backstage, the box-office flap, the VIP staff door) answers ui.blocked.civilian.
 ##   stealth  Stealth route 1 (east bar service door): the nearest gear_drop -> casing; behind the east bar into G20; a
 ##            keycard (nearest KeycardPickup) and the safe's code note (CodeNote of the safe's code_group) as casing;
-##            mask in G23 when unseen; the staff stair -> U6 -> the office keycard door -> the safe keypad -> 3 cash bags
+##            mask on the G22 stair half landing when unseen; up to U6 -> the office keycard door -> the safe keypad -> 3 cash bags
 ##            out to the active van's secure zone; into the escape. No alarm allowed (a row per step, peaks table).
 ##   loud     The loud line: gear + keycard as casing, mask, a burst in the hall (the alarm: music cut, stampede),
 ##            the office by keycard, the safe drilled (jams fixed), the van's return (2nd FADE or 300 s), 3 bags
@@ -48,7 +48,9 @@ const STAFF_DOORS: Array = [
 ]
 const EAST_BAR_BEHIND: Vector3 = Vector3(25.2, 0.0, 12.0)
 const G20_IN: Vector3 = Vector3(27.0, 0.0, 12.0)
-const G23_MASK: Vector3 = Vector3(31.0, 0.0, 10.0)
+## Route 1 mask spot (C, r305 relay): the G22 staff stair half landing (enclosed core, no camera, no civilian route);
+## G23 was dropped (the bartender's stock runs: no unseen window in 240 s).
+const MASK_SPOT: Vector3 = Vector3(34.5, 2.1, 7.8)
 const STAFF_STAIR_GROUND: Vector3 = Vector3(34.0, 0.0, 15.0)
 const U6_AT: Vector3 = Vector3(33.0, UP, 15.0)
 const OFFICE_DOOR_AT: Vector3 = Vector3(28.0, UP, 18.0)
@@ -283,10 +285,10 @@ func _ah_stealth() -> bool:
 	if pilot.crew.global_position.y > 2.0 and not await _leg("back down the guest way to G20 (casing)",
 			[Vector3(8.0, UP, 26.0), Vector3(18.0, 0.0, 25.0), EAST_BAR_BEHIND, G20_IN], 0.8, 180.0):
 		return false
-	if not await _go(G23_MASK, 0.6, 90.0):
-		_row("G23 (mask spot)", "FAIL", "not reached", _owner_for(G23_MASK))
+	if not await _go(MASK_SPOT, 0.6, 90.0):
+		_row("G22 half landing (mask spot)", "FAIL", "not reached", _owner_for(MASK_SPOT))
 		return false
-	await _wait_unseen("G23")
+	await _wait_unseen("G22 half landing")
 	if not await _mask():
 		return await _fail("mask")
 	if not await _office():
