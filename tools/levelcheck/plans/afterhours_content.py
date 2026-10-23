@@ -226,7 +226,7 @@ def furniture() -> List[list]:
         B("PrivateShelving", [35.4, U, 23.0], [0.6, 2.0, 3.0], 0.0, "shelving", True),
         B("FlightCases", [12.5, 0.0, 1.0], [1.6, 1.0, 0.8], 0.0, "crate"),
         # the DJ's break seat, its back to the north wall
-        B("GreenRoomSofa", [10.5, 0.0, 0.35], [2.2, 1.0, 0.6], 180.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
+        B("GreenRoomSofa", [10.5, 0.0, 0.52], [2.2, 1.0, 0.6], 180.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
         # Marlin Ave: the queue barriers (posts), parked cars on Tolley St
         B("QueueRail", [8.0, 0.0, 30.5], [6.0, 1.0, 0.1], 0.0, "barrier"),
         B("CarTolley1", [44.5, 0.0, 6.0], [1.9, 1.45, 4.6], 0.0, "car", False, "prop"),
@@ -592,7 +592,7 @@ SLOTS: List[list] = [
     ["gear_drop", "gear_booth", 1.0, "G7", [24.6, 0.0, 18.8], 0.0, "under the reserved booth's banquette"],
     ["gear_drop", "gear_van", 1.0, "X1", [26.6, 0.0, -4.0], 0.0, "the van (E1)"],
     ["dj_set", "dj_on", 0.65, "G6", [15.5, 0.3, 8.05], 0.0, "the DJ on stage"],
-    ["dj_set", "dj_break", 0.35, "G11", [10.5, 0.0, 1.1], 0.0, "the DJ in the green room"],
+    ["dj_set", "dj_break", 0.35, "G11", [10.5, 0.0, 1.27], 0.0, "the DJ in the green room"],
     ["keycard", "kc_staff_room", 1.0, "G12", [18.0, 0.75, 2.6], 0.0, "the staff-room table under the rota"],
     ["keycard", "kc_bouncer_board", 1.0, "G24", [30.4, 1.0, 20.55], 0.0, "the door-log desk"],
     ["keycard", "kc_vip_bar", 1.0, "U2", [12.5, U + BAR_TOP, 25.9], 0.0, "behind the VIP register"],
@@ -694,7 +694,7 @@ def slot_content() -> Dict[str, List[list]]:
         "gear_van": _gear([26.6, 0.0, -4.0], 90.0, [25.8, 0.0, -4.0]),
         # behind the booth (z 8.35-9.35), its front edge 0.30 m ahead of the root (D's ah_dj_placement), facing the crowd
         "dj_on": [S("DJ", "CIVILIAN", [15.5, 0.3, 8.05], 180.0, ["civ_dj_stage", STAFF, "staff_dj"], "dj_mix")],
-        "dj_break": [S("DJ", "CIVILIAN", [10.5, 0.0, 1.1], 0.0, ["civ_dj_green", STAFF, "staff_dj"], "sit")],
+        "dj_break": [S("DJ", "CIVILIAN", [10.5, 0.0, 1.27], 0.0, ["civ_dj_green", STAFF, "staff_dj"], "sit")],
         "kc_staff_room": _keycard([18.0, 0.75, 2.6], 0.0, [18.0, 0.0, 3.4]),
         "kc_bouncer_board": _keycard([30.4, 1.0, 20.55], 0.0, [30.4, 0.0, 19.8]),
         "kc_vip_bar": _keycard([12.5, U + BAR_TOP, 25.9], 0.0, [12.5, U, 26.6]),

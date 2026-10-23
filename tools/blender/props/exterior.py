@@ -157,9 +157,9 @@ def _car(k: Kit, p: dict) -> None:
         ta = math.radians(30.0)
         wc = (-0.4, 0.25 + 0.40, 0.18 + 0.76)
         up = (0.0, math.sin(ta), math.cos(ta))
-        rim = [(wc[0] + 0.18 * math.sin(math.tau * i / 24), wc[1] + 0.18 * math.cos(math.tau * i / 24) * up[1],
-                wc[2] + 0.18 * math.cos(math.tau * i / 24) * up[2]) for i in range(24)]
-        trim.tube(rim, 0.016, "rubber", segs=6, closed=True)
+        rim = [(wc[0] + 0.18 * math.sin(math.tau * i / 16), wc[1] + 0.18 * math.cos(math.tau * i / 16) * up[1],
+                wc[2] + 0.18 * math.cos(math.tau * i / 16) * up[2]) for i in range(16)]
+        trim.tube(rim, 0.016, "rubber", segs=6, closed=True, joints=False)
         for s in (-1, 1):
             trim.rod(wc, (wc[0] + s * 0.17, wc[1] - 0.03 * up[1], wc[2] - 0.03 * up[2]), 0.012, "plastic_black", segs=6)
         trim.rod((wc[0], wc[1] - 0.01, wc[2] + 0.006), (wc[0], wc[1] + 0.36, wc[2] - 0.2), 0.03, "plastic_black", segs=8)

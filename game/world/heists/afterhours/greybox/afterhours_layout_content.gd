@@ -228,7 +228,7 @@ const FURNITURE: Array = [
 	["box", "OfficeDesk", [31.0, 4.2, 18.0], [1.8, 0.75, 0.9], 0.0, "desk", true, "prop", {}],
 	["box", "PrivateShelving", [35.4, 4.2, 23.0], [0.6, 2.0, 3.0], 0.0, "shelving", true, "prop", {}],
 	["box", "FlightCases", [12.5, 0.0, 1.0], [1.6, 1.0, 0.8], 0.0, "crate", false, "prop", {}],
-	["box", "GreenRoomSofa", [10.5, 0.0, 0.35], [2.2, 1.0, 0.6], 180.0, "sofa", false, "prop", {"seats": [[0.0, 0.45, -0.75]]}],
+	["box", "GreenRoomSofa", [10.5, 0.0, 0.52], [2.2, 1.0, 0.6], 180.0, "sofa", false, "prop", {"seats": [[0.0, 0.45, -0.75]]}],
 	["box", "QueueRail", [8.0, 0.0, 30.5], [6.0, 1.0, 0.1], 0.0, "barrier", false, "prop", {}],
 	["box", "CarTolley1", [44.5, 0.0, 6.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {}],
 	["box", "CarTolley2", [44.5, 0.0, 26.0], [1.9, 1.45, 4.6], 0.0, "car", false, "prop", {}],
@@ -465,7 +465,7 @@ const SLOTS: Array = [
 	["gear_drop", "gear_booth", 1.0, "G7", [24.6, 0.0, 18.8], 0.0, "under the reserved booth's banquette"],
 	["gear_drop", "gear_van", 1.0, "X1", [26.6, 0.0, -4.0], 0.0, "the van (E1)"],
 	["dj_set", "dj_on", 0.65, "G6", [15.5, 0.3, 8.05], 0.0, "the DJ on stage"],
-	["dj_set", "dj_break", 0.35, "G11", [10.5, 0.0, 1.1], 0.0, "the DJ in the green room"],
+	["dj_set", "dj_break", 0.35, "G11", [10.5, 0.0, 1.27], 0.0, "the DJ in the green room"],
 	["keycard", "kc_staff_room", 1.0, "G12", [18.0, 0.75, 2.6], 0.0, "the staff-room table under the rota"],
 	["keycard", "kc_bouncer_board", 1.0, "G24", [30.4, 1.0, 20.55], 0.0, "the door-log desk"],
 	["keycard", "kc_vip_bar", 1.0, "U2", [12.5, 5.25, 25.9], 0.0, "behind the VIP register"],
@@ -528,7 +528,7 @@ const SLOT_ITEMS: Dictionary = {
 		],
 	],
 	"dj_on": [["spawn", "DJ", "CIVILIAN", [15.5, 0.3, 8.05], 180.0, ["civ_dj_stage", "staff", "staff_dj"], "dj_mix", "", ""]],
-	"dj_break": [["spawn", "DJ", "CIVILIAN", [10.5, 0.0, 1.1], 0.0, ["civ_dj_green", "staff", "staff_dj"], "sit", "", ""]],
+	"dj_break": [["spawn", "DJ", "CIVILIAN", [10.5, 0.0, 1.27], 0.0, ["civ_dj_green", "staff", "staff_dj"], "sit", "", ""]],
 	"kc_staff_room": [
 		[
 			"prefab", "keycard_pickup", "Keycard", [18.0, 0.75, 2.6], 0.0, {"objective_tag": "keycard"}, [18.0, 0.0, 3.4], {},
