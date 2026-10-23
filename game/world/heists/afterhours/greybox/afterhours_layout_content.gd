@@ -346,8 +346,8 @@ const FIXED_SPAWNS: Array = [
 		"spawn", "BoxOffice", "CIVILIAN", [22.98, 0.0, 23.5], 90.0, ["civ_box_office", "staff", "staff_front"], "desk_work", "",
 		"",
 	],
-	["spawn", "Courier1", "GUARD", [33.6, 0.0, -2.4], 0.0, ["cartel_courier", "cartel", "scripted"], "", "", ""],
-	["spawn", "Courier2", "GUARD", [36.4, 0.0, -2.4], 0.0, ["cartel_courier", "cartel", "scripted"], "", "", ""],
+	["spawn", "Courier1", "GUARD", [33.6, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "", "Courier", ""],
+	["spawn", "Courier2", "GUARD", [36.4, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "", "Courier", ""],
 	["spawn", "OffDutyCop", "CIVILIAN", [20.0, 4.2, 19.6], 180.0, ["civ_offduty"], "sit", "", ""],
 	["spawn", "PatronMainBar1", "CIVILIAN", [3.0, 0.0, 11.5], -90.0, ["civ_patron"], "walk_text", "Patrons", ""],
 	["spawn", "PatronMainBar2", "CIVILIAN", [3.0, 0.0, 15.0], -90.0, ["civ_patron"], "walk_text", "Patrons", ""],
@@ -820,12 +820,16 @@ const GRAPHS: Dictionary = {
 		{
 			"Door": [[35.0, 0.0, -1.6], [3.0, 6.0], "", ["courier"], null],
 			"G21": [[33.0, 0.0, 3.0], [3.0, 6.0], "", ["courier"], null],
+			"G21W": [[30.0, 0.0, 3.5], [3.0, 6.0], "", ["courier"], null],
 			"G13E": [[31.0, 0.0, 6.0], [3.0, 6.0], "", ["courier"], null],
 			"G13Mid": [[13.0, 0.0, 6.0], [3.0, 6.0], "", ["courier"], null],
 			"G10": [[4.0, 0.0, 3.6], [3.0, 6.0], "", ["courier"], null],
 			"G11": [[11.0, 0.0, 3.6], [3.0, 6.0], "", ["courier"], null],
 		},
-		[["Door", "G21"], ["G21", "G13E"], ["G13E", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"]],
+		[
+			["Door", "G21"], ["Door", "G21W"], ["G21", "G21W"], ["G21", "G13E"], ["G21W", "G13E"], ["G13E", "G13Mid"],
+			["G21W", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"], ["G10", "G11"],
+		],
 	],
 }
 ## TacticalPoints: police entries, flanks, shield anchors, perches S1-S3, COVER.

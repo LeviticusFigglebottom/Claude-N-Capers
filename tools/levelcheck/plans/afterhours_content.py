@@ -340,10 +340,11 @@ def fixed_spawns() -> List[list]:
         S("BoxOffice", "CIVILIAN", [22.7 + BAR_BEHIND, 0.0, 23.5], 90.0, ["civ_box_office", STAFF, "staff_front"],
           "desk_work"),
     ]
-    # rare co_op_pickup (A: 14:00): two cartel couriers at the loading door, held back (HeistRuntime's scripted tag)
+    # rare co_op_pickup (A 9a335a1d: 14:00): two couriers walk in calm from the loading door (held back by
+    # HeistRuntime's scripted tag; no `cartel` tag, which spawns in COMBAT) and patrol the Courier graph
     for i, x in enumerate([33.6, 36.4]):
-        # (no graph on the spawn: A's mission walks them over the `courier` PatrolPoints by tag)
-        out.append(S("Courier%d" % (i + 1), "GUARD", [x, 0.0, -2.4], 0.0, ["cartel_courier", "cartel", "scripted"]))
+        out.append(S("Courier%d" % (i + 1), "GUARD", [x, 0.0, -2.4], 0.0, ["cartel_courier", "scripted"], "",
+                     "Courier"))
     # rare off_duty_cop: a patron in a U1 booth (A spawns enemy.patrol_officer here)
     out.append(S("OffDutyCop", "CIVILIAN", [20.0, U, 19.6], 180.0, ["civ_offduty"], "sit"))
     for nm, pos, yaw, idle in PATRONS:
@@ -396,7 +397,7 @@ COWER = [(nm, [on_wall(lv, x, z, 0.21)[0], y, on_wall(lv, x, z, 0.21)[1]], yaw) 
 FLEE = [("FleeMainW", [15.0, 0.0, 31.0]), ("FleeMainE", [18.0, 0.0, 31.0]), ("FleeFireN", [-1.5, 0.0, 8.3]),
         ("FleeFireS", [-1.5, 0.0, 19.0]), ("FleePassageS", [-1.5, 0.0, 30.0])]
 # the couriers' walk: the loading door -> G21 -> G13 -> the product rooms
-COURIER = {"Door": [35.0, 0.0, -1.6], "G21": [33.0, 0.0, 3.0], "G13E": [31.0, 0.0, 6.0], "G13Mid": [13.0, 0.0, 6.0],
+COURIER = {"Door": [35.0, 0.0, -1.6], "G21": [33.0, 0.0, 3.0], "G21W": [30.0, 0.0, 3.5], "G13E": [31.0, 0.0, 6.0], "G13Mid": [13.0, 0.0, 6.0],
            "G10": [4.0, 0.0, 3.6], "G11": [11.0, 0.0, 3.6]}
 
 
@@ -431,8 +432,11 @@ def graphs() -> Dict[str, list]:
         "CivFlee": ["civ_flee", 0, {nm: [p, [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], None] for nm, p in FLEE},
                     [["FleeMainW", "FleeMainE"], ["FleeMainW", "FleePassageS"], ["FleePassageS", "FleeFireS"],
                      ["FleeFireS", "FleeFireN"]]],
+        # loops (patrols: >= 3 through the start for a 2-guard graph): the loading bay and the corridor both way
+        # round, the stock and green rooms in a ring off G13
         "Courier": ["courier", 0, pts(COURIER, [3.0, 6.0], ["courier"]),
-                    [["Door", "G21"], ["G21", "G13E"], ["G13E", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"]]],
+                    [["Door", "G21"], ["Door", "G21W"], ["G21", "G21W"], ["G21", "G13E"], ["G21W", "G13E"],
+                     ["G13E", "G13Mid"], ["G21W", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"], ["G10", "G11"]]],
     }
 
 

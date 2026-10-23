@@ -123,7 +123,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 1078 polygons, cell 0.10/0.10 m
-- 227 markers checked
+- 228 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomG10` | 88 | 88 | 100% |
@@ -172,7 +172,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 41 variant configuration(s), 0 convoy layout(s), 100884 spawn->target path queries
+- 41 variant configuration(s), 0 convoy layout(s), 101376 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -190,7 +190,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - graph `patrons`: 7 points, 0 guard(s)
 - graph `cower`: 7 points, 0 guard(s)
 - graph `civ_flee`: 5 points, 0 guard(s)
-- graph `courier`: 6 points, 0 guard(s)
+- graph `courier`: 7 points, 2 guard(s)
 - 9 patrol graph(s)
 
 
