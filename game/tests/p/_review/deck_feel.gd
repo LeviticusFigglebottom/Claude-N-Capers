@@ -297,9 +297,9 @@ func _dk_lifeline() -> bool:
 func _dk_veil() -> bool:
 	if not await _deck_launch(DECKS[&"veil"]):
 		return false
-	# Measure under fire: wait until the pilot is actually being hit (armor down), not just enemies near; the
+	# Measure under fire: wait until the pilot's armor is broken (real pressure), not just enemies near; the
 	# before / inside windows are VEIL_WINDOW_S each (8 s was too short to see a hit at Hazardous).
-	await _fight(180.0, func() -> bool: return pilot.crew.health.armor < pilot.crew.health.max_armor - 1.0)
+	await _fight(240.0, func() -> bool: return pilot.crew.health.armor <= 0.5 or _health() < _max_health() - 1.0)
 	# Damage taken from the hit log (armor regen hides it in a health + armor delta).
 	var d0: float = _pilot_damage()
 	var t0: float = rt.heist_time_s
