@@ -54705,16 +54705,19 @@ end_position = Vector3(55, 0, -12.6)
 
 [node name="RappelSetbackRoof" type="NavigationLink3D" parent="Navigation" unique_id=106471]
 bidirectional = false
+navigation_layers = 2
 start_position = Vector3(-1.2, 16, 14)
 end_position = Vector3(1.6, 12.2, 14)
 
 [node name="RappelSetbackTerrace" type="NavigationLink3D" parent="Navigation" unique_id=106472]
 bidirectional = false
+navigation_layers = 2
 start_position = Vector3(-1.2, 16, 20)
 end_position = Vector3(1.6, 8.6, 20)
 
 [node name="RappelLantern" type="NavigationLink3D" parent="Navigation" unique_id=106473]
 bidirectional = false
+navigation_layers = 2
 start_position = Vector3(13.3, 8.6, 26)
 end_position = Vector3(16, 0, 26)
 

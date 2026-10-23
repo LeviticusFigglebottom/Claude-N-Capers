@@ -6,6 +6,17 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-23, **AH-C1 Afterhours lane (D-165), round 303.**
+  - **4daad7d5** G1 geometry and content tables (afterhours_geometry.py / afterhours_content.py), emitted to
+    afterhours_layout{,_content}.gd; regen byte-identical.
+  - **34ea6472** afterhours_def.tres (B's values block), tracks.tres afterhours row, and 5 AH loop stop owners in
+    cue_player. Green on B's 4f665f86 cues; merge the two together.
+  - **8a7762b6** content on A's objective_tag contract; review_shots `--cameras` warms only the probes near those
+    cameras (RT's 23 probes x 16 frames was over an hour on lavapipe).
+  - **OF nav (A's sweep):** the lantern and setback rappels move to layer 2 (police-only, D-122), so crew no longer
+    path down the 8.6 m lantern drop. validate final is running.
+  - **Next:** the AH GD chain (build_greybox, copy-adapted from RT) and validate greybox; then RT final shots and the
+    safehouse SpawnView/PlanningTable shots.
 - 2026-10-23, **Crew sentry sounds (D-157), 70b155c1.** tools/audiogen/cues_sentry.py: fire x4, empty, mode,
   destroyed, deploy under game/assets/audio/sfx/sentry_*/ (deterministic, distinct from the police turret). Paths
   sent to B for its cue_182..186 rows.
