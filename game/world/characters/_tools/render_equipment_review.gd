@@ -3,17 +3,19 @@
 ## Base/Yaw pivot ~0.55 m, Yaw/Pitch, Pitch/Gun, Pitch/Muzzle -Z = forward and level at rest, Pitch/Shield,
 ## Base/AmmoBox, no CollisionObject3D anywhere) and writes <out>/<id>_turntable.png (8 views, 45 deg apart, plus the
 ## same with the Shield shown and the gun yawed / pitched by code) and <out>/<id>_ingame.png (on the Glasshouse crew
-## spawn floor, eye height 1.65 m).
+## spawn floor, eye height 1.65 m). Also checks the baked ``deploy`` clip (an AnimationPlayer in the scene, ~0.8 s,
+## tracks only under Base/Legs, never Base / Yaw / Pitch; legs above the floor on every sampled frame) and writes
+## <out>/<id>_deploy.png (the clip at 0 / 0.1 / 0.2 / 0.3 / 0.45 / 0.6 / 0.8 s).
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_equipment_review.tscn -- --out=/abs/dir \
-##     [--glb=res://assets/equipment/eqp_sentry/eqp_sentry.glb]
+##     [--glb=res://assets/equipment/eqp_sentry/eqp_sentry.tscn]   (the D scene A instances; a .glb works too)
 ## Owner: ENV D.
 extends Node3D
 
 const TILE: Vector2i = Vector2i(480, 360)
 
 var _out: String = ""
-var _glb: String = "res://assets/equipment/eqp_sentry/eqp_sentry.glb"
+var _glb: String = "res://assets/equipment/eqp_sentry/eqp_sentry.tscn"
 var _cam: Camera3D = null
 var _log: PackedStringArray = []
 var _fails: int = 0
@@ -37,6 +39,10 @@ func _run() -> void:
 	add_child(model)  # global transforms are only valid in the tree
 	_check(model)
 	await _turntable(id, model)
+	model = (load(_glb) as PackedScene).instantiate() as Node3D
+	add_child(model)
+	_check_deploy(model)
+	await _deploy_strip(id, model)
 	await _ingame(id)
 	var f: FileAccess = FileAccess.open("%s/%s_review_log.txt" % [_out, id], FileAccess.WRITE)
 	f.store_string("\n".join(_log) + "\n")
@@ -59,20 +65,20 @@ func _check(model: Node3D) -> void:
 	_expect(model.find_child("Gun", true, false) != null and model.find_child("Shield", true, false) != null,
 		"Pitch/Gun and Pitch/Shield exist")
 	_expect(model.find_child("AmmoBox", true, false) != null, "Base/AmmoBox exists")
+	_expect(model.find_child("Handle", true, false) != null, "Base/Handle (FP carry marker) exists")
+	var sh: Node3D = model.find_child("Shield", true, false) as Node3D
+	_expect(sh != null and not sh.visible, "Shield hidden by default")
 	if base == null or yaw == null or pitch == null or muzzle == null:
 		return
 	_expect(yaw.get_parent() == base and pitch.get_parent() == yaw and muzzle.get_parent() == pitch,
-		"hierarchy Base/Yaw/Pitch/Muzzle")
+		"hierarchy Base/Yaw/Pitch/Muzzle (Yaw a direct child of Base)")
 	var yaw_h: float = yaw.global_position.y - model.global_position.y
 	_expect(absf(yaw_h - 0.55) < 0.05, "Yaw pivot %.3f m above the floor (~0.55)" % yaw_h)
 	var fwd: Vector3 = -muzzle.global_basis.z.normalized()
 	_expect(fwd.dot(Vector3.FORWARD) > 0.99, "Muzzle -Z faces the front (-Z), level: %s" % fwd)
 	var reach: float = -(pitch.global_basis.inverse() * (muzzle.global_position - pitch.global_position)).z
 	_expect(reach > 0.45 and reach < 0.75, "barrel reach %.3f m in front of the pitch pivot (~0.6)" % reach)
-	var stand: Array[MeshInstance3D] = []
-	for n: Node in [base, model.find_child("AmmoBox", true, false)]:
-		if n is MeshInstance3D:
-			stand.append(n as MeshInstance3D)
+	var stand: Array[MeshInstance3D] = _stand_meshes(model)
 	var aabb: AABB = _aabb(stand)
 	_expect(aabb.size.x < 0.62 and aabb.size.z < 0.62 and aabb.position.y > -0.01,
 		"stand footprint %.2f x %.2f m, nothing below the floor (%.3f)" % [aabb.size.x, aabb.size.z, aabb.position.y])
@@ -127,12 +133,66 @@ func _turntable(id: String, model: Node3D) -> void:
 		_cam.look_at_from_position(Vector3(sin(a) * 1.7, 1.0, cos(a) * 1.7), Vector3(0, 0.45, 0))
 		tiles.append(await _grab())
 	if shield != null:
-		shield.visible = false
+		shield.visible = true  # the sentry armour upgrade
 		var a2: float = deg_to_rad(20.0)
 		_cam.look_at_from_position(Vector3(sin(a2) * 1.7, 1.0, cos(a2) * 1.7), Vector3(0, 0.45, 0))
 		tiles.append(await _grab())
-		shield.visible = true
+		shield.visible = false
 	_sheet(tiles, 4, "%s/%s_turntable.png" % [_out, id])
+	model.queue_free()
+	await get_tree().process_frame
+
+
+## The stand's meshes: Base, AmmoBox and the legs (not the gun on Yaw).
+func _stand_meshes(model: Node3D) -> Array[MeshInstance3D]:
+	var out: Array[MeshInstance3D] = []
+	for n: Node in model.find_children("*", "MeshInstance3D", true, false):
+		var p: String = str(model.get_path_to(n))
+		if not p.contains("/Yaw"):
+			out.append(n as MeshInstance3D)
+	return out
+
+
+func _check_deploy(model: Node3D) -> void:
+	var ap: AnimationPlayer = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	_expect(ap != null and ap.has_animation(&"deploy"), "AnimationPlayer with a `deploy` clip")
+	if ap == null or not ap.has_animation(&"deploy"):
+		return
+	for clip: StringName in ap.get_animation_list():
+		var an: Animation = ap.get_animation(clip)
+		var bad: PackedStringArray = []
+		for t: int in an.get_track_count():
+			var path: String = str(an.track_get_path(t))
+			if not path.begins_with("Base/Legs/"):
+				bad.append(path)
+		_say("clip %s %.2f s, %d tracks" % [clip, an.length, an.get_track_count()])
+		_expect(bad.is_empty(), "%s animates only under Base/Legs (not Base / Yaw / Pitch) %s" % [clip, bad])
+	var dl: float = ap.get_animation(&"deploy").length
+	_expect(dl > 0.6 and dl < 1.0, "deploy lasts %.2f s (~0.8)" % dl)
+	var low: float = 9.0
+	ap.play(&"deploy")
+	for k: int in 17:
+		ap.seek(dl * k / 16.0, true)
+		low = minf(low, _aabb(_stand_meshes(model)).position.y)
+	_expect(low > -0.02, "the legs stay above the floor through deploy (lowest %.3f m)" % low)
+	ap.seek(dl, true)
+	var aabb: AABB = _aabb(_stand_meshes(model))
+	_expect(aabb.size.x < 0.62 and aabb.size.z < 0.62, "deploy ends standing (%.2f x %.2f m)" % [aabb.size.x, aabb.size.z])
+
+
+func _deploy_strip(id: String, model: Node3D) -> void:
+	var ap: AnimationPlayer = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if ap == null or not ap.has_animation(&"deploy"):
+		return
+	var tiles: Array[Image] = []
+	var a: float = deg_to_rad(45.0 * 1 + 20.0)
+	_cam.look_at_from_position(Vector3(sin(a) * 1.7, 0.9, cos(a) * 1.7), Vector3(0, 0.4, 0))
+	ap.play(&"deploy")
+	for t: float in [0.0, 0.1, 0.2, 0.3, 0.45, 0.6, 0.8]:
+		ap.seek(t, true)
+		ap.pause()
+		tiles.append(await _grab())
+	_sheet(tiles, 4, "%s/%s_deploy.png" % [_out, id])
 	for c: Node in get_children():
 		c.queue_free()
 	await get_tree().process_frame

@@ -1,5 +1,13 @@
 node Base (MeshInstance3D) local (0.0, 0.0, 0.0)
 node Base/AmmoBox (MeshInstance3D) local (0.0, 0.0, 0.0)
+node Base/Handle (Node3D) local (-0.064952, 0.42, 0.0375)
+node Base/Legs (Node3D) local (0.0, 0.0, 0.0)
+node Base/Legs/Leg0 (Node3D) local (0.0, 0.3, 0.05)
+node Base/Legs/Leg0/Leg0Mesh (MeshInstance3D) local (0.0, 0.0, 0.0)
+node Base/Legs/Leg1 (Node3D) local (0.043301, 0.3, -0.025)
+node Base/Legs/Leg1/Leg1Mesh (MeshInstance3D) local (0.0, 0.0, 0.0)
+node Base/Legs/Leg2 (Node3D) local (-0.043301, 0.3, -0.025)
+node Base/Legs/Leg2/Leg2Mesh (MeshInstance3D) local (0.0, 0.0, 0.0)
 node Base/Yaw (Node3D) local (0.0, 0.55, 0.0)
 node Base/Yaw/Pitch (Node3D) local (0.0, 0.1, 0.0)
 node Base/Yaw/Pitch/Gun (MeshInstance3D) local (0.0, 0.0, 0.0)
@@ -9,11 +17,22 @@ node Base/Yaw/YawMesh (MeshInstance3D) local (0.0, 0.0, 0.0)
 OK   Base / Yaw / Pitch / Muzzle exist
 OK   Pitch/Gun and Pitch/Shield exist
 OK   Base/AmmoBox exists
-OK   hierarchy Base/Yaw/Pitch/Muzzle
+OK   Base/Handle (FP carry marker) exists
+OK   Shield hidden by default
+OK   hierarchy Base/Yaw/Pitch/Muzzle (Yaw a direct child of Base)
 OK   Yaw pivot 0.550 m above the floor (~0.55)
 OK   Muzzle -Z faces the front (-Z), level: (0.0, 0.0, -1.0)
 OK   barrel reach 0.600 m in front of the pitch pivot (~0.6)
-OK   stand footprint 0.49 x 0.44 m, nothing below the floor (0.000)
-sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/sentry/eqp_sentry_turntable.png
-sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/sentry/eqp_sentry_ingame.png
+OK   stand footprint 0.50 x 0.44 m, nothing below the floor (0.000)
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/eqp/eqp_sentry_turntable.png
+OK   AnimationPlayer with a `deploy` clip
+clip deploy 0.80 s, 3 tracks
+OK   deploy animates only under Base/Legs (not Base / Yaw / Pitch) []
+clip fold 0.80 s, 3 tracks
+OK   fold animates only under Base/Legs (not Base / Yaw / Pitch) []
+OK   deploy lasts 0.80 s (~0.8)
+OK   the legs stay above the floor through deploy (lowest -0.000 m)
+OK   deploy ends standing (0.50 x 0.44 m)
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/eqp/eqp_sentry_deploy.png
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/eqp/eqp_sentry_ingame.png
 in-game: sentry at (0.8, 0.0, 14.4)
