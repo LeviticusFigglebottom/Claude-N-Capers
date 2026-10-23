@@ -53,7 +53,10 @@
 				"club_bouncer_f"],
 			"club_bartender": ["club_bartender", "club_bartender_b", "club_bartender_c", "club_bartender_d"],
 			"club_dj": ["club_dj"],
-			"club_patron": ["club_patron", "club_patron_b", "club_patron_c", "club_patron_d"]
+			"club_patron": ["club_patron", "club_patron_b", "club_patron_c", "club_patron_d", "club_patron_e", "club_patron_f",
+				"club_patron_g", "club_patron_h", "club_patron_i", "club_patron_j", "club_patron_k", "club_patron_l"],
+			"club_dancer": ["club_dancer", "club_dancer_b", "club_dancer_c", "club_dancer_d", "club_dancer_e", "club_dancer_f",
+				"club_dancer_g", "club_dancer_h", "club_dancer_i", "club_dancer_j", "club_dancer_k", "club_dancer_l"]
 		},
 		"glasshouse": {
 			"guard_post_floor": ["security_officer", "security_officer_b", "security_officer_c", "security_officer_d", "security_officer_e",
