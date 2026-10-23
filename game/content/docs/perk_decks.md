@@ -79,6 +79,7 @@ Data: `game/content/data/perks/<deck>.tres` (`PerkDeckDef`, id `perk.<deck>`). T
 | Incumbent | Ex-President | `perk.ex_president` | `defense.health_mult` → 1.4, `defense.dodge_add` 0.15 |
 | Long Odds | Gambler | `perk.gambler` | `defense.health_mult` → 1.4 |
 | Overlord | Kingpin | `perk.kingpin`, `perk.throwable` | `defense.health_mult` → 1.8 |
+| Hacker (D-161) | Hacker | `stealth.pocket_ecm`, `perk.throwable` (`throwable.pocket_ecm`) | `defense.health_mult` → 1.2, `defense.dodge_add` 0.3 |
 
 Notes on PD2 deviations:
 * **Clean Sweep** merges Hitman and Sociopath (fidelity table). Its cards are: Sociopath Tension
@@ -299,7 +300,11 @@ gating at every n, team_perk dedupe, exact PARAMS field sets = the schemas above
 `game/tests/b/test_perk_behaviour.gd` (behaviour on a `CrewController.spawn_for_range` crew member).
 `test_every_granted_key_is_hooked_or_filed` fails if a deck grants a key that is in neither list below.
 
-**Every granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
+**Held (D-161):** `stealth.pocket_ecm` (Hacker cards 1/5/7/9: `charges`, `duration_s`, `cooldown_s`,
+`kill_cooldown_reduction_s`, `kill_heal`, `kill_dodge_add`, `kill_dodge_s`, `crew_kill_heal`) waits on ENV A's
+Pocket ECM hook; it is the one entry in the test's `MISSING` list until that lands.
+
+**Every other granted key is hooked (D-056, A3-08 QB-56..62).** Every PARAMS grant at 9 cards has exactly the
 fields and final values of the tables above; every armor id and throwable id it names exists. ENV A's
 `game/systems/modifiers_params.md` reads every field under the same name (checked 2026-10-11), with
 `PerkTweak.defaults` for fields a card has not set yet. The schemas above stay authoritative. Since

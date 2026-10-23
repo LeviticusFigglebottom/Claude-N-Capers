@@ -3,7 +3,17 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 03:00)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### D-161 (5a988303, trunk r287 merged)
+* **(1) S10.6 golden:** `test_economy_golden` (4): 18 D-120 bag values in PD2 order; 5 contracts (base_payout +
+  `HeistCatalog.contract_preview` at all 6 difficulties); `BoardBroker.cost` with the shipped BoardTweak at all 6
+  (2-25 % of a full clear); bag share of a full clear GH 55 / ND 67 / SL 39 / DB 81 / GN 53 %.
+* **(2) Hacker deck** `perk.hacker` (15th): card 1 `perk.throwable {throwable.pocket_ecm}` + `stealth.pocket_ecm`
+  {charges 2, duration_s 6, cooldown_s 100, kill_cooldown_reduction_s 6}; card 5 + kill_heal 20; card 7 +
+  kill_dodge_add 0.2 / kill_dodge_s 30; card 9 + crew_kill_heal 10; health ×1.2, dodge +0.3. `throwable.pocket_ecm`
+  def (perk-only, placeholder ECM prop model). Strings, picker (windowed shot, 15 decks, list scrolls).
+  **Held:** `stealth.pocket_ecm` is in test_perk_wiring `MISSING` + perk_decks.md "Held" until A's hook; then drop both.
+
 ### B audit (LEAD r287, like A's A4-01). Run on env/b-content over trunk round 286
 Every test file named below was run green on this tree: 69 files, 921 tests, 0 failed (+ test_fidelity_b_gaps 4). "Done" means the row's scope exists and a test asserts it.
 

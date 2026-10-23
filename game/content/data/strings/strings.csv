@@ -949,6 +949,18 @@ perk.overlord.card7.name,Bring It
 perk.overlord.card7.desc,Health bonus rises to 40%. Below half health the injector heals 25% more.
 perk.overlord.card9.name,Top of the Heap
 perk.overlord.card9.desc,Health bonus rises to 80%. Every 50 health the injector heals while you are at full health cuts 1 s from its cooldown.
+perk.hacker.name,Hacker
+perk.hacker.desc,"A pocket jammer that blinds the building in stealth and scrambles the police when it goes loud. Kills while it runs keep you alive."
+perk.hacker.card1.name,Dead Air
+perk.hacker.card1.desc,"Unlocks the pocket ECM (throwable slot): 2 charges of 6 s. Before the alarm it jams cameras and phones; after it, it stuns nearby enemies. Each charge recharges in 100 s, 6 s faster per kill. It can't open doors."
+perk.hacker.card3.name,Hardened Habits
+perk.hacker.card3.desc,You get 20% more health.
+perk.hacker.card5.name,Signal Rot
+perk.hacker.card5.desc,"Each kill while the stun is active heals you 20 health. You also get 15% more dodge."
+perk.hacker.card7.name,Workaround
+perk.hacker.card7.desc,"A kill while the pocket ECM jams or stuns gives you 20 more dodge for 30 s."
+perk.hacker.card9.name,Crowd Network
+perk.hacker.card9.desc,"Your crew's kills while your stun is active heal them 10 health. Your dodge rises another 15%."
 ui.skills.title,Skills
 ui.skills.crumb,Safehouse / Loadout
 ui.skills.basic,Basic
@@ -1261,6 +1273,8 @@ item.throwable.steady_flask.name,Steady Flask
 item.throwable.steady_flask.desc,"A hip flask of something strong. One swallow and the damage you've taken stops counting, if you keep busy."
 item.throwable.boss_injector.name,Boss Injector
 item.throwable.boss_injector.desc,"A single-dose auto-injector. Use it, and every hit you take in the next few seconds patches you up instead."
+item.throwable.pocket_ecm.name,Pocket ECM
+item.throwable.pocket_ecm.desc,"The Hacker deck's handheld jammer: 2 charges of 6 s."
 item.weapon.warden_45.name,Warden .45
 item.weapon.warden_45.desc,"An all-steel heavy pistol from Marrow & Kell. Eight big rounds, a hard push, and walnut that has seen a few owners."
 item.weapon.hornet_9.name,Hornet 9
