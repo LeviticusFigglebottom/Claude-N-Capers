@@ -43,7 +43,7 @@ import _gear_kit as gk
 import _npc as n
 import _outfit as o
 import _outfit_garments as g
-from _outfit import Vector
+from _outfit import Hull, Vector
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
@@ -262,6 +262,10 @@ def guard(kit: Kit) -> None:
     gear.extend(gk.name_tag(hull, Vector((0.090 * k, 0.2, 1.36 * k)), k=k, mat=GOLD))
     kit.add_gear(gear)
     n.duty_belt(kit, tr, belt_z)
+    # the same ring n.duty_belt samples (its Belt isn't returned), only to hang the key ring on
+    kb = gk.Belt(kit.fit, Hull(kit.fit, [tr], body_regions=set()), belt_z, height=0.046, thick=0.006)
+    kit.add_gear(gk.key_ring(kb, math.radians(-25.0)))                           # G3: key ring, watch
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.notes["look"] = ("Halden night-shift guard: steel-blue shirt + charcoal tie under a charcoal V-neck "
                          "sweater vest, charcoal epaulettes with gold bars, burgundy/gold H sleeve patch, gold-rim "
                          "burgundy chest badge, duty belt (radio = Hip), bare-headed")
