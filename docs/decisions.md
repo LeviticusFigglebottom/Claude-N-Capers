@@ -1610,3 +1610,9 @@ Phantom kick and a Stinger, before anyone reached a truck across 25 m of open ro
 D builds the 8 safehouse hero props (Old Press, jukebox, Board map, bunk, gun cabinet, PPE rack, drying line, type case).
 `owners.json`: `tools/blender/props/safehouse_hero.py` + `game/assets/props/prop_sh_*/**` go to D, excluded from C.
 C keeps the safehouse catalogue, placement and the stand-in → hero swaps (C4-03/G3). Pendants, work light and van stay C's.
+
+## D-160: No PO-only steps on the done path (2026-10-23, PO)
+PO: "skip the GPU render / any steps that'd need something you can't do yourself."
+Heist done checks no longer wait on PO actions (GPU re-renders, PO playthroughs). Windowed opengl3 evidence from the envs
+(reviewed by the LEAD) stands in. Rolling Thunder's done path is now:
+P's D-158 real-input verdict → the LEAD's D-115-style done check → B flips the un-hide flag → Afterhours starts (D-144).
