@@ -202,7 +202,9 @@ PAINTINGS: dict[str, str] = {
 
 # Untextured materials (validator meta untextured_ok): emissives and LEDs. color/emission sRGB.
 EMISSIVE: dict[str, dict] = {
-    "emit_neon_magenta": {"color": "#5A1636", "emission": "#FF3EA5", "energy": 1.8},  # D r307: 6.0 clipped to white
+    "emit_neon_magenta": {"color": "#5A1636", "emission": "#FF3EA5", "energy": 6.0},
+    # LEAD r307: 6.0 clips to white; the sign variant for D's AH props (the shared key waits on the RT sheet review)
+    "emit_neon_magenta_sign": {"color": "#5A1636", "emission": "#FF3EA5", "energy": 1.8},
     "emit_warm": {"color": "#8A6A48", "emission": "#FFB46B", "energy": 3.0},
     "emit_neutral": {"color": "#8A7C6A", "emission": "#FFD9B0", "energy": 2.5},
     "emit_cool": {"color": "#8A8784", "emission": "#F4EEE4", "energy": 2.5},
