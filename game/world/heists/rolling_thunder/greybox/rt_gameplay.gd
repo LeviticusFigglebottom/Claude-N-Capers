@@ -330,6 +330,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		props["objective_tag"] = String(extra["tag"])
 	if extra.has("leaf"):
 		props["leaf_surface"] = String(extra["leaf"])
+	if extra.has("height"):   # D-158: leaf collision as tall as the visual leaves (A's Door.height_m, env/a-core 75400478)
+		props["height_m"] = float(extra["height"])
 	var metas: Dictionary = {"kind": String(extra.get("kind", "door")), "swing_side": "back"}
 	if bool(extra.get("push_bar", false)):
 		metas["fire_exit"] = true

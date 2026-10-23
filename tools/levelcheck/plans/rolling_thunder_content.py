@@ -214,7 +214,7 @@ GATES: List[list] = [
         "N",
         "BARRED",
         {"opens_with": "mixer_move", "tag": "tannery_gate", "visual": "prop_door_site_gate_w400_h240", "width": 4.0,
-         "kind": "industrial_door"},
+         "kind": "industrial_door", "height": 2.4},
     ],
 ]
 
