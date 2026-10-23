@@ -344,8 +344,9 @@ func _pocket_entry(slot: int, p: Dictionary) -> Dictionary:
 		var n: int = int(p.get("charges", 2))
 		pocket[slot] = {"charges": n, "max": n, "recharge_left": 0.0, "active_left": 0.0, "mode": &"",
 			"pulse_left": 0.0, "params": {}}
-		if not EventBus.npc_killed.is_connected(_on_pocket_kill):
-			EventBus.npc_killed.connect(_on_pocket_kill)
+		var feed: CrewKillFeed = CrewKillFeed.of(_runtime)
+		if feed != null and not feed.crew_kill.is_connected(_on_pocket_crew_kill):
+			feed.crew_kill.connect(_on_pocket_crew_kill)
 	var e: Dictionary = pocket[slot]
 	e["cooldown_s"] = float(p.get("cooldown_s", 100.0))
 	e["max"] = int(p.get("charges", e["max"]))
@@ -403,11 +404,9 @@ func _pocket_pulse(slot: int) -> int:
 	return count
 
 
-## Botnet (crew_kill_heal): a teammate's kill during a holder's feedback heals that teammate.
-func _on_pocket_kill(_npc_id: int, killer: int, _info: Dictionary) -> void:
-	if not Net.is_authority() or _runtime == null:
-		return
-	var k: CrewController = Ids.lookup(killer) as CrewController
+## Botnet (crew_kill_heal, the shared crew-kill event): a teammate's kill during a holder's feedback heals that teammate.
+func _on_pocket_crew_kill(killer_slot: int, _victim: int, _info: Dictionary) -> void:
+	var k: CrewController = _runtime.crew_controller(killer_slot) as CrewController if _runtime != null else null
 	if k == null or k.health == null:
 		return
 	for slot: int in pocket:
