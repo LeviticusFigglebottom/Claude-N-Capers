@@ -59,6 +59,8 @@ var reset_button: Button
 var back_button: Button
 var dirty_label: Label
 var _page_host: ScrollContainer
+## "section/key" -> its row control, so rows follow draft changes made elsewhere (video/quality_preset).
+var _row_controls: Dictionary = {}
 
 
 func build_ui() -> void:
@@ -301,6 +303,7 @@ func _build_pages() -> void:
 	_page_host.add_child(host)
 	pages.clear()
 	page_focus.clear()
+	_row_controls.clear()
 	for t: StringName in TABS:
 		var page: VBoxContainer = UiBuild.vbox(10)
 		page.name = "Page_%s" % t
@@ -347,6 +350,7 @@ func _rows(page: VBoxContainer, section: StringName) -> Array[Control]:
 				c = OptionsRows.toggle(page, draft, section, key)
 			_:
 				c = OptionsRows.choice(page, draft, section, key)
+		_row_controls["%s/%s" % [section, key]] = c
 		out.append(c)
 	return out
 
@@ -389,7 +393,10 @@ func _refresh_palette_preview() -> void:
 		palette_preview.add_child(sw)
 
 
-func _on_draft_changed(section: StringName, _key: StringName) -> void:
+func _on_draft_changed(section: StringName, key: StringName) -> void:
+	var c: Control = _row_controls.get("%s/%s" % [section, key]) as Control
+	if c != null and is_instance_valid(c):
+		OptionsRows.sync(c, draft, section, key)
 	if section == GameSettings.ACCESSIBILITY:
 		_refresh_palette_preview()
 	_update_dirty()

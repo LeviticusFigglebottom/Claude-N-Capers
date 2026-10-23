@@ -35,6 +35,8 @@ it into `current()` on Apply). Generic access: `get_value(section, key)`; sectio
 | Pad deadzone | `pad_deadzone()` | float 0.05..0.5 | 0.2 | `PlayerInput.gamepad_deadzone` (right stick). |
 | Hold / toggle | `is_toggle(&"aim")`, `&"crouch"`, `&"sprint"` | bool | false (hold) | Toggle = a press flips the state; release does nothing. Clearing the toggle on down / custody is A's call. |
 | Scoreboard hold / toggle (B6-02) | `is_toggle(&"scoreboard")` / `controls/scoreboard_mode` | bool | false (hold) | B's own: the HUD's `ScoreboardOverlay` reads it; nothing for ENV A. |
+| Interact hold / toggle (options gap, LEAD r280 (5)) | `is_toggle(&"interact")` / `controls/interact_mode` | bool | false (hold) | ENV P: toggle = PD2's "toggle interaction". A press starts a timed interaction and it runs on without holding; another press, moving out of range, or looking away cancels it. Instant interactions are unchanged. |
+| Quality preset / shadows / resolution (options gap) | `video/quality_preset`, `video/shadow_quality`, `video/resolution` / `resolution()` | choice / Vector2i | high / high / auto (ZERO) | B's own (SettingsApplier). A preset writes render_scale / msaa / fxaa / effects_quality / shadow_quality (GameSettings.QUALITY_PRESETS); a hand edit re-derives it ("custom"). Shadows = shadow atlas size (1024 / 2048 / 4096; high = Godot's default). Resolution sizes the window in windowed mode only. |
 
 Suggested hook (ENV A, `systems/player/player_input.gd`): in `_ready()` read the values above, connect
 `GameSettings.current().changed` and re-read on `section == &"controls"`; `crew_view.gd` sets

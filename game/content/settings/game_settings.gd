@@ -43,10 +43,23 @@ const EFFECTS_QUALITY_IDS: Array[StringName] = [&"low", &"medium", &"high"]
 ## Suggested count multiplier per level for pooled effects (debris, decals, shells, tracers):
 ## `GameSettings.EFFECTS_SCALE[s.effects_quality()]`.
 const EFFECTS_SCALE: Array[float] = [0.3, 0.6, 1.0]
-## Actions with a hold / toggle choice -> their controls key.
+## Actions with a hold / toggle choice -> their controls key. interact (PD2 "toggle interaction"): a press starts a
+## timed interaction and it runs on without holding; another press, or moving off it, cancels (ENV P's input).
 const MODE_KEYS: Dictionary = {
 	&"aim": &"aim_mode", &"crouch": &"crouch_mode", &"sprint": &"sprint_mode", &"scoreboard": &"scoreboard_mode",
+	&"interact": &"interact_mode",
 }
+## video/quality_preset -> the video values it sets. Editing one of PRESET_KEYS by hand re-derives the preset (the one
+## the values now match, else "custom"). "high" is the shipped defaults.
+const QUALITY_PRESETS: Dictionary = {
+	"low": {&"render_scale": 0.75, &"msaa": "off", &"fxaa": true, &"effects_quality": "low", &"shadow_quality": "low"},
+	"medium": {&"render_scale": 0.85, &"msaa": "2x", &"fxaa": false, &"effects_quality": "medium",
+		&"shadow_quality": "medium"},
+	"high": {&"render_scale": 1.0, &"msaa": "4x", &"fxaa": false, &"effects_quality": "high", &"shadow_quality": "high"},
+	"ultra": {&"render_scale": 1.0, &"msaa": "8x", &"fxaa": false, &"effects_quality": "high", &"shadow_quality": "high"},
+}
+const QUALITY_CUSTOM: String = "custom"
+const PRESET_KEYS: Array[StringName] = [&"render_scale", &"msaa", &"fxaa", &"effects_quality", &"shadow_quality"]
 
 ## Tests point this at a per-process folder (BTestUtil.settings_root()).
 static var root_dir: String = DEFAULT_ROOT_DIR
@@ -56,6 +69,8 @@ var defaults: SettingsDefaults
 ## Version read from the file (CURRENT_VERSION for a new / default object).
 var loaded_version: int = CURRENT_VERSION
 var _values: Dictionary = {}
+## True while a quality preset writes its values (they must not flip the preset to custom).
+var _applying_preset: bool = false
 
 
 func _init(p_defaults: SettingsDefaults = null) -> void:
@@ -170,7 +185,38 @@ func set_value(section: StringName, key: StringName, value: Variant) -> Variant:
 	if _values[section][key] != clean:
 		_values[section][key] = clean
 		changed.emit(section, key)
+		if section == VIDEO:
+			_sync_quality_preset(key)
 	return clean
+
+
+## A picked preset writes its values; a hand edit of one of them re-derives the preset.
+func _sync_quality_preset(key: StringName) -> void:
+	if _applying_preset:
+		return
+	if key == &"quality_preset":
+		var p: Dictionary = QUALITY_PRESETS.get(String(_values[VIDEO][key]), {})
+		_applying_preset = true
+		for k: StringName in p:
+			set_value(VIDEO, k, p[k])
+		_applying_preset = false
+	elif PRESET_KEYS.has(key):
+		_applying_preset = true
+		set_value(VIDEO, &"quality_preset", matching_preset())
+		_applying_preset = false
+
+
+## The preset the current video values match ("custom" when none does).
+func matching_preset() -> String:
+	for id: String in QUALITY_PRESETS:
+		var p: Dictionary = QUALITY_PRESETS[id]
+		var all: bool = true
+		for k: StringName in p:
+			var v: Variant = _values[VIDEO][k]
+			all = all and (is_equal_approx(float(v), float(p[k])) if v is float else v == p[k])
+		if all:
+			return id
+	return QUALITY_CUSTOM
 
 
 ## Every key of `section` back to its default (BINDINGS: every override cleared).
@@ -286,7 +332,13 @@ func hub_walk() -> bool:
 	return String(get_value(CONTROLS, &"safehouse_hub")) != "menu"
 
 
-## True when `action` (aim, crouch, sprint, scoreboard) is set to toggle instead of hold.
+## Windowed size from video/resolution ("1600x900"); Vector2i.ZERO = "auto" (keep the window's size).
+func resolution() -> Vector2i:
+	var parts: PackedStringArray = String(get_value(VIDEO, &"resolution")).split("x")
+	return Vector2i(int(parts[0]), int(parts[1])) if parts.size() == 2 else Vector2i.ZERO
+
+
+## True when `action` (aim, crouch, sprint, scoreboard, interact) is set to toggle instead of hold.
 func is_toggle(action: StringName) -> bool:
 	return MODE_KEYS.has(action) and String(get_value(CONTROLS, MODE_KEYS[action])) == "toggle"
 

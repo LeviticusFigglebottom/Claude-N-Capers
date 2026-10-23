@@ -2449,6 +2449,19 @@ ui.options.video.window_mode,Window Mode
 ui.options.video.window_mode.windowed,Windowed
 ui.options.video.window_mode.fullscreen,Borderless Fullscreen
 ui.options.video.window_mode.exclusive_fullscreen,Exclusive Fullscreen
+ui.options.video.resolution,Resolution (windowed)
+ui.options.video.resolution.auto,Window default
+ui.options.video.resolution.1280x720,1280 × 720
+ui.options.video.resolution.1600x900,1600 × 900
+ui.options.video.resolution.1920x1080,1920 × 1080
+ui.options.video.resolution.2560x1440,2560 × 1440
+ui.options.video.resolution.3840x2160,3840 × 2160
+ui.options.video.quality_preset,Quality Preset
+ui.options.video.quality_preset.low,Low
+ui.options.video.quality_preset.medium,Medium
+ui.options.video.quality_preset.high,High
+ui.options.video.quality_preset.ultra,Ultra
+ui.options.video.quality_preset.custom,Custom
 ui.options.video.vsync,V-Sync
 ui.options.video.max_fps,Frame Rate Limit
 ui.options.video.max_fps.unlimited,Unlimited
@@ -2466,6 +2479,10 @@ ui.options.video.effects_quality,Effects Quality
 ui.options.video.effects_quality.low,Low
 ui.options.video.effects_quality.medium,Medium
 ui.options.video.effects_quality.high,High
+ui.options.video.shadow_quality,Shadow Quality
+ui.options.video.shadow_quality.low,Low
+ui.options.video.shadow_quality.medium,Medium
+ui.options.video.shadow_quality.high,High
 ui.options.controls.mouse_sensitivity_x,Mouse Sensitivity (Horizontal)
 ui.options.controls.mouse_sensitivity_y,Mouse Sensitivity (Vertical)
 ui.options.controls.ads_sensitivity,Aiming Sensitivity
@@ -2475,6 +2492,7 @@ ui.options.controls.pad_deadzone,Gamepad Deadzone
 ui.options.controls.aim_mode,Aim Down Sights
 ui.options.controls.crouch_mode,Crouch
 ui.options.controls.sprint_mode,Sprint
+ui.options.controls.interact_mode,Interact
 ui.options.mode.hold,Hold
 ui.options.mode.toggle,Toggle
 ui.options.controls.action,Action
