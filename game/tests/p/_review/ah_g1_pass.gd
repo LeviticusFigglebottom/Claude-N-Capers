@@ -57,6 +57,7 @@ const OFFICE_DOOR_AT: Vector3 = Vector3(28.0, UP, 18.0)
 const OFFICE_IN: Vector3 = Vector3(31.0, UP, 18.5)
 const HALL_SHOT_AT: Vector3 = Vector3(13.0, 0.0, 16.0)
 const SAFE_BAGS: int = 3
+const SAFE_CASH_M: float = 4.0
 const AH_GUARD_SEEN_M: float = 20.0
 const AH_GUARD_CLOSE_M: float = 10.0
 const DRILL_MAX_S: float = 600.0
@@ -501,6 +502,19 @@ func _active_escape(max_s: float) -> EscapeZone:
 
 
 ## Bag the safe's cash (its contents' LootSpawns) and carry each to the secure zone at `esc` (G at the zone).
+## Unsecured loot.cash_bricks bags within SAFE_CASH_M of the safe, nearest first.
+func _safe_cash(safe: Safe) -> Array[LootBag]:
+	var out: Array[LootBag] = []
+	for n: Node in rt.find_children("*", "LootBag", true, false):
+		var lb: LootBag = n as LootBag
+		if lb.loot_id == LOOT_MEDIUM and not lb.secured and lb.carrier == null \
+				and lb.global_position.distance_to(safe.global_position) <= SAFE_CASH_M:
+			out.append(lb)
+	var at: Vector3 = safe.global_position
+	out.sort_custom(func(a: LootBag, b: LootBag) -> bool: return a.global_position.distance_to(at) < b.global_position.distance_to(at))
+	return out
+
+
 ## The rolled van's SECURE zone (the escape group keeps only the rolled slot: SecureAlley / SecureTolley).
 func _van_secure() -> SecureZone:
 	var found: Array[Node] = rt.find_children("*", "SecureZone", true, false)
@@ -512,7 +526,13 @@ func _safe_bags_to(safe: Safe, zone: SecureZone) -> int:
 		_row("van secure zone", "FAIL", "no SecureZone in the map", "C map (escape slot)")
 		return 0
 	var n: int = 0
-	for prefab: GameplayPrefab in safe.contents():
+	# A (r305): the safe's cash is loose LootBags (loot.cash_bricks) the mission spawns at Markers/SafeLoot when the
+	# safe opens, not Safe.contents(); wait for them, then take them nearest first.
+	await wait_until(func() -> bool: return not _safe_cash(safe).is_empty(), 5.0)
+	var cash: Array[LootBag] = _safe_cash(safe)
+	_row("cash in the open safe", "PASS" if cash.size() >= SAFE_BAGS else "FAIL", "%d loot.cash_bricks bag(s) within %.0f m" % [
+		cash.size(), SAFE_CASH_M], "-" if cash.size() >= SAFE_BAGS else "A mission (safe_loot spawn)")
+	for prefab: LootBag in cash:
 		if n >= SAFE_BAGS:
 			break
 		var t0: float = rt.heist_time_s
