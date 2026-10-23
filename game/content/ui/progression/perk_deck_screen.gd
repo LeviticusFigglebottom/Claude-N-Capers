@@ -3,6 +3,8 @@
 ## pressing it equips it. Right: the previewed deck's 9 cards (name, text, cost, unlocked / next /
 ## locked), "Unlock next card" (perk points, PerkProgress) and "Equip". Equip writes
 ## Loadout.perk_deck + perk_deck_cards; every change is saved via SaveService.
+## D-164 Copycat (Understudy): a card with "choices" shows its picked bonus and a "mimic" card the deck it copies;
+## pressing such a card (accept / click) cycles the pick (Loadout.perk_choices / perk_mimic_deck), saved at once.
 class_name PerkDeckScreen
 extends UiScreen
 
@@ -32,6 +34,8 @@ var card_title_labels: Array[Label] = []
 var card_name_labels: Array[Label] = []
 var card_desc_labels: Array[Label] = []
 var card_state_labels: Array[Label] = []
+## D-164: per card, the "BONUS: … / COPIES: …" line (hidden on plain cards) (tests).
+var card_choice_labels: Array[Label] = []
 var _decks: Array[PerkDeckDef] = []
 var _card_styles: Dictionary = {}
 
@@ -142,18 +146,25 @@ func _build_deck_view() -> VBoxContainer:
 		desc.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
 		desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		var st: Label = UiBuild.caption()
+		var choice: Label = UiBuild.label()
+		choice.add_theme_color_override(&"font_color", UiTokens.CYAN)
+		choice.add_theme_font_size_override(&"font_size", UiTokens.FONT_SMALL)
+		choice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		choice.visible = false
 		# Caption row: "CARD 1 · 200 PTS" left, the state right (keeps 3 rows of cards on a 720p screen).
 		var head_row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
 		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		head_row.add_child(title)
 		head_row.add_child(st)
-		for c: Control in [head_row, nm, desc]:
+		for c: Control in [head_row, nm, choice, desc]:  # D-164: the pick sits under the name, never clipped
 			cv.add_child(c)
 		var p: PanelContainer = UiBuild.panel(cv)
 		p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		p.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		grid.add_child(UiBuild.focus_panel(p))  # readable with the pad (scrolls the grid)
+		p.gui_input.connect(_on_card_input.bind(i))
 		card_panels.append(p)
+		card_choice_labels.append(choice)
 		card_title_labels.append(title)
 		card_name_labels.append(nm)
 		card_desc_labels.append(desc)
@@ -185,6 +196,51 @@ func equip(deck_id: StringName) -> bool:
 	preview_deck = deck_id
 	_commit()
 	return true
+
+
+## D-164: whether card `index` of the previewed deck has a pick (Copycat "choices" or the "mimic" card).
+func card_choosable(index: int) -> bool:
+	var deck: PerkDeckDef = PerkProgress.deck(preview_deck)
+	if deck == null or index < 0 or index >= deck.cards.size():
+		return false
+	var card: Dictionary = deck.cards[index]
+	return not (card.get("choices", []) as Array).is_empty() or bool(card.get("mimic", false))
+
+
+## D-164: the next pick on card `index`: the next of its choices, or the next mimicable deck (wrapping). Saves.
+func cycle_choice(index: int) -> void:
+	if not card_choosable(index):
+		return
+	var deck: PerkDeckDef = PerkProgress.deck(preview_deck)
+	var card: Dictionary = deck.cards[index]
+	var choices: Array = card.get("choices", []) as Array
+	if not choices.is_empty():
+		var picks: Dictionary = profile.loadout.perk_choices.duplicate()
+		picks[index] = (LoadoutResolver.chosen_option(profile.loadout, deck, index) + 1) % choices.size()
+		profile.loadout.perk_choices = picks
+	else:
+		var ids: Array[StringName] = mimic_options(deck.id)
+		if ids.is_empty():
+			return
+		profile.loadout.perk_mimic_deck = ids[(ids.find(profile.loadout.perk_mimic_deck) + 1) % ids.size()]
+	_commit()
+
+
+## D-164: the decks a mimic card can copy, in deck-list order (mimicable, not `deck_id` itself).
+func mimic_options(deck_id: StringName) -> Array[StringName]:
+	var out: Array[StringName] = []
+	for d: PerkDeckDef in _decks:
+		if d.mimicable and d.id != deck_id:
+			out.append(d.id)
+	return out
+
+
+func _on_card_input(event: InputEvent, index: int) -> void:
+	var click: bool = event is InputEventMouseButton and (event as InputEventMouseButton).pressed \
+			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT
+	if (click or event.is_action_pressed(&"ui_accept")) and card_choosable(index):
+		cycle_choice(index)
+		card_panels[index].accept_event()
 
 
 ## Unlock the next card of a deck with perk points. Saves on success. Returns PerkProgress' dict.
@@ -242,10 +298,28 @@ func _refresh_card(i: int, deck: PerkDeckDef, unlocked: int) -> void:
 	if i == deck.cards.size() - 1:
 		desc += "\n" + UiText.t(&"perk.shared.completion.desc")
 	card_desc_labels[i].text = desc
+	_refresh_choice(i, deck, card)
 	var state: StringName = &"unlocked" if i < unlocked else (&"next" if i == unlocked else &"locked")
 	card_state_labels[i].text = UiText.t(StringName("ui.perks.state.%s" % state))
 	p.add_theme_stylebox_override(&"panel", _card_styles[state] as StyleBox)
 	p.modulate = Color.WHITE if state != &"locked" else Color.WHITE.darkened(0.3)
+
+
+## D-164: the picked bonus / copied deck under a Copycat card, with what it does.
+func _refresh_choice(i: int, deck: PerkDeckDef, card: Dictionary) -> void:
+	var l: Label = card_choice_labels[i]
+	var choices: Array = card.get("choices", []) as Array
+	l.visible = true
+	if not choices.is_empty():
+		var c: Dictionary = choices[LoadoutResolver.chosen_option(profile.loadout, deck, i)] as Dictionary
+		l.text = UiText.t(&"ui.perks.choice", {"name": UiText.t(StringName(String(c.get("name", "")))),
+				"desc": UiText.t(StringName(String(c.get("desc", ""))))})
+	elif bool(card.get("mimic", false)):
+		var m: PerkDeckDef = LoadoutResolver.mimic_deck(profile.loadout)
+		l.text = UiText.t(&"ui.perks.mimic_none") if m == null else UiText.t(&"ui.perks.mimic",
+				{"name": UiText.t(StringName("%s.name" % m.id)), "desc": UiText.t(StringName("%s.mimic.desc" % m.id))})
+	else:
+		l.visible = false
 
 
 func _commit() -> void:

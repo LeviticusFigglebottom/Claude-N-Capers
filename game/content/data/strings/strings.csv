@@ -1041,16 +1041,19 @@ perk.lifeline.card7.name,Tough Stock
 perk.lifeline.card7.desc,You get another 20% more health (40% in total).
 perk.lifeline.card9.name,Bloodbond
 perk.lifeline.card9.desc,"You can use the ampule while downed: it gets you up until it ends, and reviving a teammate or using a doctor bag before then keeps you up. Its slices shrink to 10%."
+ui.perks.choice,"BONUS: {name}. {desc} Press to change."
+ui.perks.mimic,"COPIES {name}: {desc} Press to change."
+ui.perks.mimic_none,Press to choose a deck to copy.
 perk.understudy.name,Understudy
 perk.understudy.desc,"Build your own deck: pick a bonus on every deck card, and finish by copying another deck's last card."
 perk.understudy.card1.name,Second Draw
-perk.understudy.card1.desc,"10 kills with one weapon reload the other one. Swapping to it within 3 s is near instant. Pick one bonus below."
+perk.understudy.card1.desc,"10 kills with one weapon reload the other one. Swapping to it within 3 s is near instant."
 perk.understudy.card3.name,Head Games
-perk.understudy.card3.desc,"Each headshot heals you 10 health, at most once every 2 s. Pick one bonus below."
+perk.understudy.card3.desc,"Each headshot heals you 10 health, at most once every 2 s."
 perk.understudy.card5.name,Return to Sender
-perk.understudy.card5.desc,"Bullets you dodge fly back at the shooter. Pick one bonus below."
+perk.understudy.card5.desc,"Bullets you dodge fly back at the shooter."
 perk.understudy.card7.name,Grace Period
-perk.understudy.card7.desc,"When your health drops below 50% you take no health damage for 2 s, at most once every 15 s. Pick one bonus below."
+perk.understudy.card7.desc,"When your health drops below 50% you take no health damage for 2 s, at most once every 15 s."
 perk.understudy.card9.name,Copy Cat
 perk.understudy.card9.desc,"Copy the last card of another deck you choose."
 perk.understudy.choice.health.name,Thick Skin
