@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="MeleeDef" format=3]
 
 [ext_resource type="Script" path="res://contracts/data/melee_def.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://dd6ypu8s70shk" path="res://assets/weapons/wpn_melee_claw_hammer/wpn_melee_claw_hammer.glb" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -13,5 +14,6 @@ range_m = 1.7
 knockdown = 0.5
 concealment = 29
 silent = true
-price = 30000
+unlock_level = 10
+model = ExtResource("2")
 anim_set = &"melee_blunt"
