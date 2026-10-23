@@ -2,7 +2,21 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-23 00:30 UTC; trunk r284 merged; reports to session_01XAPqmFJ32zHKLK9Sezymym)
+## To the LEAD: (updated 2026-10-23 09:40 UTC; trunk r298 merged)
+- **Resume here:** blown_confirm2 (bag-race fix, worktree acore3, `runs_ac3/blown_confirm2`) is still running under
+  llvmpipe (~70x); send the LEAD its bag count as a one-line delta. Then c4 rerun, traversal remainder, setup from the
+  car park / underpass, toggle interact (B's interact_mode), OF ghost follow-up.
+- **RT confirm (seed 4101, Hazardous, loud build, r291-equivalent):** clean PASS: T1 opened t=372.8, 3 bags at E1
+  (legs out 25.9 / 22.9 / 22.8 s, back 19.5 / 18.3 / 17.6 s), then a wave-2 crew wipe at t=556 (longshots 80 per hit
+  at 73 m). Blown: escort down +53 s, T1 opened t=294, 0 bags (harness race, fixed; rerun pending). Captures in
+  captures/rt_g1_2026-10-22/d158c_*.
+- **FP deck-item use pose DONE (r298, A's deck_item_used):** FpViewmodelDeck (`fp_viewmodel_deck.gd`, Action.DECK):
+  injector / leech ampule stab to the thigh (cap off, serum drains), flask to the mouth (cap off), pocket ECM thumb
+  press (LED blinks), gas dispenser point + canister press, smoke bomb thrown (pin at pin_pull@, gone at release@);
+  then the gun's draw. test_p_fp_deck_item 2/2 (real input G for the ampule); windowed sheet
+  captures/deck_items_2026-10-23/ (deck_items_capture.tscn).
+
+## (2026-10-23 00:30 UTC; trunk r284 merged; reports to session_01XAPqmFJ32zHKLK9Sezymym)
 - **Resume here:** c4 (magazine C4 fetched in the setup, T3 by C4) and ambush_crash (mixer row, r280 mixer) are
   running. Then: sprint-cancels-reload (A's CrewWeapons.cancel_reload, r285/286), then the traversal remainder (throws,
   underpass, kerbs, escapes, fences, lift walk-in), then setup from the car park / underpass spawns. Runs go through
