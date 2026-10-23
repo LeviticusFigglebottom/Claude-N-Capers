@@ -141,7 +141,7 @@ VARIANTS = {
 }
 
 LACQUER = "plastic_black"
-MAGENTA = "emit_neon_magenta"
+MAGENTA = "emit_neon_magenta_sign"  # C e476b33b: 1.8, the hue holds (the shared 6.0 key clips to white)
 
 
 def _hash(i: int) -> float:

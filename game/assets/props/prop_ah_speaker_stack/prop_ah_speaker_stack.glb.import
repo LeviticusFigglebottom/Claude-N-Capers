@@ -41,10 +41,10 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
-"M_pr_emit_neon_magenta": {
+"M_pr_emit_neon_magenta_sign": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_emit_neon_magenta.tres",
-"use_external/path": "res://world/props/materials/pr_emit_neon_magenta.tres"
+"use_external/fallback_path": "res://world/props/materials/pr_emit_neon_magenta_sign.tres",
+"use_external/path": "res://world/props/materials/pr_emit_neon_magenta_sign.tres"
 },
 "M_pr_metal_dark": {
 "use_external/enabled": true,
