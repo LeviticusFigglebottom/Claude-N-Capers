@@ -128,26 +128,30 @@ const ROOMS: Array = [
 ## centre; wall-hung ones on the wall face at the mounting height, the visual_slots wall pivot), yaw (deg; the
 ## station's -Z faces the user), UsePoint distance along -Z (on the floor), Interactable (local), greybox body boxes
 ## [[name, local min, local max, class]]]. Positions and UsePoints are the G0 stations table's; `profile` (hub_map
-## v1.1, the career screen) is the lounge bulletin board on wall x 8 (the LEAD's C4-02 ruling).
+## v1.1, the career screen) is the lounge bulletin board on wall x 8 (the LEAD's C4-02 ruling). Interactables sit on the
+## art a standing player looks at (P r305: PD2 stations prompt from a natural standing view): the pegboard / mask wall,
+## above the planning table, the jukebox's face, the press's upper half, the range door at chest height.
+## The interact assist radius of every station (InteractableComponent.aim_radius_m, PO6-20): the whole face counts.
+const STATION_AIM_RADIUS_M: float = 0.4
 const STATIONS: Array = [
 	["board", [15.0, 1.6, 0.2], 180.0, 1.2, [0.0, 0.0, -0.13],
 		[["Panel", [-2.0, -1.1, -0.06], [2.0, 1.1, 0.0], "prop"]]],
-	["planning", [15.0, 0.0, 6.5], 180.0, 1.25, [0.0, 0.95, 0.0],
+	["planning", [15.0, 0.0, 6.5], 180.0, 1.25, [0.0, 1.1, 0.0],
 		[["Table", [-1.5, 0.0, -0.75], [1.5, 0.86, 0.75], "counter"],
 		["Top", [-1.5, 0.86, -0.75], [1.5, 0.9, 0.75], "counter"]]],
-	["armory", [27.4, 0.0, 3.5], 90.0, 1.0, [0.0, 1.0, -0.2],
+	["armory", [27.4, 0.0, 3.5], 90.0, 1.0, [0.0, 1.6, 0.3],
 		[["Bench", [-1.2, 0.0, -0.4], [1.2, 0.9, 0.4], "counter"],
 		["Pegboard", [-1.2, 1.2, 0.36], [1.2, 2.6, 0.4], "prop"]]],
-	["masks", [27.4, 0.0, 9.5], 90.0, 0.8, [0.0, 0.85, -0.1],
+	["masks", [27.4, 0.0, 9.5], 90.0, 0.8, [0.0, 1.5, 0.3],
 		[["Bench", [-0.9, 0.0, -0.35], [0.9, 0.76, 0.35], "counter"],
 		["MaskWall", [-0.9, 1.1, 0.36], [0.9, 2.4, 0.4], "prop"]]],
-	["jukebox", [0.6, 0.0, 10.25], -90.0, 0.9, [0.0, 1.1, -0.35],
+	["jukebox", [0.6, 0.0, 10.25], -90.0, 0.9, [0.0, 1.35, -0.35],
 		[["Cabinet", [-0.45, 0.0, -0.325], [0.45, 1.6, 0.325], "prop"]]],
-	["notoriety", [11.0, 0.0, 10.4], 0.0, 1.3, [0.0, 1.2, -0.55],
+	["notoriety", [11.0, 0.0, 10.4], 0.0, 1.3, [0.0, 1.5, -0.55],
 		[["Press", [-0.7, 0.0, -0.5], [0.7, 1.9, 0.5], "prop"],
 		["Flywheel", [-0.85, 0.1, -0.55], [-0.7, 1.2, 0.55], "prop"],
 		["Clippings", [-1.5, 0.9, 1.47], [1.5, 2.4, 1.5], "prop"]]],
-	["range", [20.75, 0.0, 17.8], 0.0, 0.9, [0.0, 1.1, 0.0],
+	["range", [20.75, 0.0, 17.8], 0.0, 0.9, [0.0, 1.4, 0.0],
 		[["Door", [-0.5, 0.0, 0.17], [0.5, DOOR_H, 0.23], "door"]]],
 	["crew", [8.1, 1.4, 8.0], -90.0, 0.9, [0.0, 0.0, -0.2],
 		[["Phone", [-0.15, -0.2, -0.1], [0.15, 0.15, 0.0], "prop"],

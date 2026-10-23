@@ -196,7 +196,7 @@ def emit() -> tuple:
     s += const("VISUALS", vis, doc="Visual-only boxes (no collision): [name, min, max, class].")
     links = [["IslandLink" + p[0], p[3], p[4], False, 1] for p in S.POLICE_ISLANDS] + S.NAV_LINKS
     s += const("NAV_LINKS", links, doc="Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 "
-               "walkable, 4 vent): the street islands' one-way links, P5's rappels, the lantern rappel, the areaway vent.")
+               "walkable, 2 police-only rappels, 4 vent): the street islands' one-way links, P5's rappels, the lantern rappel, the areaway vent.")
     brs = [[nm, "window", "prop_breach_window", [float(bx), FFL["G"], round(bz - 0.2, 3)], 0.0, list(S.BREACH_SIZE),
             rid, 0.0] for nm, bx, bz, rid in S.BREACH_WINDOWS]
     brs += [[nm, "door", "", list(pos), float(yaw), list(size), rid, 0.0, door]

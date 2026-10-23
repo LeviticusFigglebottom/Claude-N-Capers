@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.22)
+# Contract: HUD data (v1.23)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -209,3 +209,9 @@ state only on change (P saw `cartel -> ACTIVE` re-emitted on every data update).
 - `perk_item.mode: StringName` (&"" | &"jam" | &"feedback"), so the pocket ECM no longer needs the v1.20 `pocket_ecm` alias;
   B drops the alias in its next HUD push (v1.20's field is then removed).
 
+
+## v1.23: ADS blend for the crosshair (PO-22; P's CrewView)
+LocalHudModel gains `ads_blend: float` (0.0 = hip, 1.0 = fully aimed down sights). The local CrewView writes its eased ADS
+weight every frame (the same weight that drives the camera zoom and the FP arms). B's HUD multiplies the crosshair's alpha
+by `1.0 - ads_blend`, so the crosshair fades out while aiming (PD2) and hip-fire bloom is unchanged. Owner: A (field), P
+(writer), B (reader).

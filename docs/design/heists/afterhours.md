@@ -531,8 +531,11 @@ work:** casing for keycards and notes, masked for doors, the safe and the bags.
 
 1. **East bar service door (FOH → BOH).** Gear at `gear_cloak`, `gear_wc` or `gear_booth` (all FOH). As casing, slip
    behind the east bar when the floor bouncer is at the stage end (his loop b), through the service
-   door into G20 (RESTRICTED: ×0.35 fill from the BOH rover and C3). Keycard in G12/G24, mask in G23
-   (no camera), staff stair → U6 → U6b → office. Risk: the BOH rover's G20 pause, C3 in `cam_b`.
+   door into G20 (RESTRICTED: ×0.35 fill from the BOH rover and C3). Keycard in G12/G24, then **mask on
+   the G22 staff stair's half landing** (an enclosed core: no camera, no civilian route; only the upper rover crosses it,
+   on his loop c, so mask while he is on loop a or b) → U6 → U6b → office. Risk: the BOH rover's G20 pause, C3 in
+   `cam_b`. (r305, P's wait-unseen: G23 is not a mask spot. The east bartender's stock runs keep it observed, with no
+   2 s unseen window in 240 s.)
 2. **Backstage.** With `dj_break` the stage is empty: up the 0.3 m step behind the speaker stack,
    the backstage door (13, 7) into G13 mid (C2 looks E from the west end: the door is 13 m in, inside
    its cone in `cam_a`). `kc_dj_booth` is on the way. With `dj_on` the DJ stands 3 m from the
@@ -556,29 +559,33 @@ is 6 m from the upper rover's U6 pause and 7 m from the operator through two wal
 drill's 12.5 m occluded radius (S4.3). The club music does not mask it.
 
 **Pager budget.** The door bouncer stands in the queue (PUBLIC, 10+ civilian witnesses): killing him
-is an alarm by witnesses, so he is never a pager. Routine/Tense: the rope bouncer, 1 rover and the
-operator (60%) are ≤ 3 pagers. Hazardous/Brutal: 4–5 touchable, so one guard must be avoided (the
-alley smoker or the floor bouncer, whose loop stays in public). Lethal+: 5–6, two must be avoided.
+is an alarm by witnesses, so he is never a pager. D-143 fixes 4 guards at load on every seed (the door and rope posts
++ 2 rovers), so the touchable carriers are the rope bouncer and the 2 rovers, plus the operator from Tense
+(`sec_staffed` is forced off on Routine). Against pager_max [4, 3, 3, 2, 2, 1]: Routine 3 touchable, all answerable;
+Tense/Hazardous 3–4 vs 3, avoid one; Brutal/Lethal vs 2, avoid one or two; Cataclysm vs 1, avoid all but one (a
+public-floor rover, `rover_floor`, is the easiest to leave alone).
 
 **The hardest roll and its ghost line** (level_standards §4 MUST). Cataclysm, `cam_a` (Titan),
-operator in, rovers `rover_boh` + `rover_upper` + `alley_smoker`, `gear_van`, `kc_bouncer_board`,
+operator in, rovers `rover_boh` + `rover_upper` (D-143: exactly 2), `gear_van`, `kc_bouncer_board`,
 `code_count_board`, `count_running`, `dj_on`, `rear_locked`, `ow_count_latched`, `gate_chained`,
 `esc_alley`, `crowd` 20 + 6 clusters, `off_duty_cop`. Solo, one ECM (2 charges), no kills, no
 pagers, no cable ties:
 1. **Civilian:** out the front, Tolley St, the alley to the van at E1; pick up the gear (→ casing;
-   the alley is PUBLIC, so neither the smoker nor C5 can fill on a casing player there).
+   the alley is PUBLIC, so C5 cannot fill on a casing player there).
 2. Back round to the foyer (public), through the crowd (civilians never detect casing) to the east
    bar; behind the bar while the bartender serves the far end → service door → G20 (C3 is not in
    `cam_a`) → G24: the key board, taken while the BOH rover is on loop a/b (casing, ×0.35) → G25
    (C6 not in `cam_a`) → staff stair → U6.
-3. U10: the counter faces the mirror (W); the whiteboard is on the south wall beside the door,
-   68° off C8's axis. Read the code (casing, 2 s) and leave.
-4. Mask in U6 (no camera). **ECM #1** for C7, then the office door: swipe (3 s) → in → keypad
-   (5 s) → bag. Stage the bags inside U9.
+3. Mask in U6 (no camera) when the upper rover reaches the balcony on his loop b (≥ 25 s from U6, plus his 10 s rail
+   pause). **ECM #1** (20 s, every camera: C8 in U10 and C7 on U6b) → lockpick the U10 door (8 s; picking a lock is
+   masked work, LEAD r305 ruling) → in: the counter faces the mirror (W) with his back to the door, the whiteboard is
+   on the south wall beside it: read the code (2 s) and step out (2 s).
+4. U6 → U6b to the office door (~6 m, 2 s): swipe (3 s) → in. That is 17 s of the 20 s jam (3 s spare) and ~17 s of
+   the rover's ≥ 35 s away (18 s spare). U9 has no camera: keypad (5 s) → bag. Stage the bags inside U9.
 5. On the upper rover's loop b (balcony, ≥ 25 s away), each bag: U9 → U6b (the 2 m from the door to
    the U6 corner is < 1 s in C7's cone at ≥ 9.6 m) → U6 → stair → G25 → G20 → G13 east half (past
-   C2's 20 m reach) → G21 (no camera in `cam_a`). Lockpick the personnel door once (8 s, in the
-   smoker's `smoke` pause at the alley mouth) and stage the 3 bags inside it. Time each G20 leg to
+   C2's 20 m reach) → G21 (no camera in `cam_a`). Lockpick the personnel door once from inside (8 s; C5 is fixed on
+   the wall beside it and looks out over the alley, not along the wall) and stage the 3 bags inside it. Time each G20 leg to
    the BOH rover's loop a (G13 west half).
 6. **ECM #2** for C5: the 3 bags out of the door into the van's SECURE zone (4 m throws, ≈ 12 s),
    then walk to the van. The off-duty cop sits in a U1 booth and never enters the staff wing.
@@ -764,7 +771,7 @@ weights use A2-08 (QC-18).
 | `product_bags` (scalar) | 3, 4, 5 | uniform | **How many LIGHT trips** the bonus is worth. |
 | `safe_bags` (scalar) | 4, 5, 6 | Routine 0.4/0.4/0.2; Brutal+ 0.2/0.4/0.4 | **Time in the office suite** beyond the 3 required. |
 | `laser_pattern` (U12 grid) | `lz_static` (3 beams; bypass gap ≥ 0.8 m crouched, QC-24), `lz_sweep` (period 6 s), `lz_timed` (off 4 s every 16 s) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | **Crouch, time or wait** for `prod_private`, inside the drill's earshot of the upper rover. |
-| `guard_post` | `rover_floor`, `rover_boh`, `rover_upper`, `alley_smoker` (+ fixed `post_door`, `post_rope` spawns) | 1 each; pick 1 (Routine/Tense), 2 (Hazardous/Brutal), 3 (Lethal+) via `difficulty_add` | **Which route is walked:** the floor rover watches the east bar and the stage; BOH covers G13/G20; upper covers the office corridor and the VIP door; the smoker shuts the alley. |
+| `guard_post` | `rover_floor`, `rover_boh`, `rover_upper`, `alley_smoker` (+ fixed `post_door`, `post_rope` spawns) | 1 each; pick exactly 2 at every difficulty (D-143: 4 guards; no `difficulty_add`) | **Which route is walked:** the floor rover watches the east bar and the stage; BOH covers G13/G20; upper covers the office corridor and the VIP door; the smoker shuts the alley. |
 | `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Hazardous+ 0.75/0.25 | **Live cameras or a pager**: the operator sits 7 m from the office, behind the U5 door on U6b. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (Sightlines) | 1, 1, 1 | **Which corridor needs ECM or timing.** C1 is in every layout. `asset.intel_cameras` reveals it. |
 | `rear_door` (`locked_door`) | `rear_propped`, `rear_locked` (lockpick 8 s) | 0.35, 0.65; `force_if` `alley_smoker` ⇒ `rear_propped` (the smoker props it) | **The cost of the alley door.** |

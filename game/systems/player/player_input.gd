@@ -339,7 +339,9 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	i.melee = Input.is_action_pressed(&"melee")
 	i.deploy = Input.is_action_pressed(&"deploy")
 	# F: interact when aiming at something usable, else shout.
-	var isys: InteractionSystem = rt.interaction if rt != null else null
+	# PO (2026-10-23, "press F in the safehouse does nothing"): the hub has no HeistRuntime; its stations are served by
+	# the walker's own HubInteraction (CrewController.spawn_for_hub). Without it F was never an interact, only a shout.
+	var isys: InteractionSystem = rt.interaction if rt != null else (_crew.hub_interaction if _crew != null else null)
 	var aimed: bool = isys != null and (isys.aimed_component(_crew) != null or not isys.session(_crew.slot).is_empty())
 	var f_held: bool = Input.is_action_pressed(&"interact") or Input.is_action_pressed(&"shout")
 	var f_pressed: bool = Input.is_action_just_pressed(&"shout") or Input.is_action_just_pressed(&"interact")

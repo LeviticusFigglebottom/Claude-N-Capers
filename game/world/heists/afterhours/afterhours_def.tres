@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="HeistDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_def.gd" id="1_ah"]
+
+[resource]
+script = ExtResource("1_ah")
+id = &"afterhours"
+display_name = "Afterhours"
+contact = &"contact.accountant"
+briefing = "heist.afterhours.briefing"
+map_scene = "res://world/heists/afterhours/afterhours.tscn"
+base_payout = 40000
+loot = Array[StringName]([&"loot.cash_bricks", &"loot.parcels", &"loot.cash", &"loot.small_valuables"])
+objectives = Array[StringName]([&"casing", &"gear", &"keycard", &"office", &"safe_code", &"safe", &"safe_loot", &"secure", &"product", &"count_room", &"escape_wait", &"escape"])
+briefing_objectives = Array[StringName]([&"casing", &"gear", &"keycard", &"ui.briefing.step.afterhours.safe", &"secure", &"ui.briefing.step.afterhours.bonus", &"escape"])
+preplanning = {
+"assets": {
+&"asset.alternate_entry": {
+"point_categories": [&"spawn"],
+"point_ids": [&"pp_spawn_vip", &"pp_spawn_alley"]
+},
+&"asset.ammo_bag_drop": {
+"point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]
+},
+&"asset.body_bag_case_drop": {
+"point_ids": [&"pp_drop_alley", &"pp_drop_tolley"]
+},
+&"asset.doctor_bag_drop": {
+"point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]
+},
+&"asset.escape_position": {
+"force_variants": {},
+"point_categories": [&"escape"]
+},
+&"asset.inside_keycard": {
+"point_ids": [&"pp_insider_keycard"]
+},
+&"asset.propped_door": {
+"point_ids": [&"pp_back_door"]
+}
+},
+"favors": 5
+}
+escape_options = Array[StringName]([&"van"])
+music_track = &"afterhours"
+start_mode = &"civilian"
+pager_max_by_difficulty = Array[int]([4, 3, 3, 2, 2, 1])

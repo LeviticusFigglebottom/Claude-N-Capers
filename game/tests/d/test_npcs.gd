@@ -13,6 +13,7 @@
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 
 const NPCS: Array[String] = [
 	"char_npc_bank_teller",
@@ -469,8 +470,9 @@ func test_materials_resolve_to_the_library() -> void:
 		if root == null:
 			continue
 		for mi: MeshInstance3D in _meshes(root):
-			for s: int in range(mi.mesh.get_surface_count()):
-				var m: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var m: Material = look[s]
 				assert_true(m != null, "%s/%s surface %d: material" % [id, mi.name, s])
 				if m == null:
 					continue
@@ -527,8 +529,9 @@ func _materials(id: String) -> Dictionary:
 		return out
 	for mi: MeshInstance3D in _meshes(root):
 		var names: Array[String] = []
-		for s: int in range(mi.mesh.get_surface_count()):
-			var m: Material = mi.get_active_material(s)
+		var look: Array[Material] = Layers.look_materials(mi)
+		for s: int in range(look.size()):
+			var m: Material = look[s]
 			if m != null and m.resource_path.begins_with(MAT_DIR):
 				names.append(m.resource_path.get_file().get_basename())
 		out[String(mi.name)] = names
@@ -686,8 +689,9 @@ func test_kessler_stands_out() -> void:
 			continue
 		heights[id] = _height(root)
 		for mi: MeshInstance3D in _meshes(root):
-			for s: int in range(mi.mesh.get_surface_count()):
-				var m: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var m: Material = look[s]
 				if m != null and TARGET_MATERIALS.has(m.resource_path) and not accent_users.has(id):
 					accent_users.append(id)
 		root.queue_free()

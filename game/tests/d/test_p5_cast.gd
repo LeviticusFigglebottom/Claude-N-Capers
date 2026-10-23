@@ -13,6 +13,7 @@
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 
 const CAST_PATH: String = "res://world/characters/p5_cast.json"
 ## Characters built for D3-01 (asset ids).
@@ -297,8 +298,9 @@ func _materials(asset_id: String) -> Array[String]:
 	if root == null:
 		return out
 	for mi: MeshInstance3D in _meshes(root):
-		for s: int in range(mi.mesh.get_surface_count()):
-			var m: Material = mi.get_active_material(s)
+		var look: Array[Material] = Layers.look_materials(mi)
+		for s: int in range(look.size()):
+			var m: Material = look[s]
 			if m != null and m.resource_path.begins_with(MAT_DIR):
 				var id: String = m.resource_path.get_file().get_basename()
 				if not out.has(id):
@@ -369,8 +371,9 @@ func test_materials_resolve_to_the_library() -> void:
 		if root == null:
 			continue
 		for mi: MeshInstance3D in _meshes(root):
-			for s: int in range(mi.mesh.get_surface_count()):
-				var m: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var m: Material = look[s]
 				assert_true(m != null, "%s/%s surface %d: material" % [id, mi.name, s])
 				if m == null:
 					continue
