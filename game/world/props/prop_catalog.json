@@ -15753,6 +15753,41 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_sh_planning_table": {
+  "aabb": [
+   -1.504,
+   0.0,
+   -0.754,
+   3.008,
+   1.4875,
+   1.508
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_sh_planning_table/prop_sh_planning_table.glb",
+  "group": "safehouse",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "table",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "LampBulb"
+  ],
+  "pin_only": true,
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/safehouse/prop_sh_planning_table.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_sh_ppe_rack": {
   "aabb": [
    -0.5,

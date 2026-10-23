@@ -45,7 +45,8 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
   only registered cues, so they are silent until B's cue rows land.
 * **Built by C (C4-03):** the green-enamel pendants (prop_sh_pendant_enamel), the work light on its stand
   (prop_sh_work_light), the crew van with its rear doors open (veh_sh_crew_van; tools/blender/props/safehouse.py).
-* **D's hero props (D-159, G3):** the Old Press, the jukebox cabinet and the Board's painted map are station art
+* **D's hero props (D-159, G3):** the Old Press, the jukebox cabinet, the Board's painted map and the planning table
+  (its brass lamp lit by `ART_LIGHTS`) are station art
   (`safehouse_layout.gd` `STATION_ART`: under each station's Visual, aligned to the greybox parts they replace); the
   bunk beds, gun cabinets, PPE rack, drying line and type cases are pinned in the kits. C's placement hints over D's
   `cat` (bunks, cabinets and type cases backed to a wall, the PPE rack at 1.5 m): `_scenes.py` `CAT_OVERRIDES`.
@@ -54,6 +55,6 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
 * **Black faces: solved (2026-10-23).** Library ORM materials carry `metallic = 1`, so ORM.b decides metalness and a
   bare metal (`steel_bare`) has no diffuse. With the environment's reflections disabled it showed only its
   ReflectionProbe, which (UPDATE_ONCE) renders ~14-20 frames after a camera first sees it: until then it read black.
-  Fixes: the planning table is `gunmetal` (painted, dielectric), the environment reflects the dim night sky, the Old
+  Fixes: the steel planning-table stand-in became painted, then D's hero table; the environment reflects the dim night sky, the Old
   Press is D's art, `review_shots` warms every UPDATE_ONCE probe first, and levelcheck `metal_reflection` (final)
   fails a metal with no reflection source.
