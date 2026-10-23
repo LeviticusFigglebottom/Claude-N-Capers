@@ -125,6 +125,9 @@ func _secure(n: int) -> void:
 func test_stealth_line_gear_to_escape() -> void:
 	var m: AfterhoursMissionProbe = await _launch({&"gear_drop": &"gear_booth"}, [], {&"safe_bags": 5, &"product_bags": 4})
 	assert_eq(m.gear_line(), &"vo.mercer.afterhours_gear_booth", "Mercer names the rolled gear slot")
+	assert_true(_lines.has(&"vo.mercer.afterhours_gear_booth"), "and says it at the start (B's run coverage: never said)")
+	for other: StringName in [&"wc", &"cloak", &"van"]:
+		assert_false(_lines.has(StringName("vo.mercer.afterhours_gear_%s" % other)), "not the %s line" % other)
 	assert_true(_lines.has(&"vo.mercer.afterhours_intro"), "intro")
 	assert_true(_lines.has(&"vo.accountant.afterhours_contact_intro"), "the Accountant's contact intro (B: vo coverage)")
 	assert_eq(_bags(&"loot.cash_bricks"), 0, "the safe's cash spawns when it opens, not before")

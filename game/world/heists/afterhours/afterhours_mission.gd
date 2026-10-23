@@ -89,6 +89,8 @@ func _on_mission_start() -> void:
 	own_last_pager_line = true
 	say(&"vo.mercer.afterhours_intro")
 	say(VO_CONTACT_INTRO, {}, SPEAKER_ACCOUNTANT)
+	if gear_line() != &"":
+		say(gear_line())  # Mercer names the rolled gear_drop slot (afterhours.md §Stealth 1)
 	add_objective(&"casing", &"objective.afterhours.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	add_objective(&"gear", &"objective.afterhours.gear", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_GEAR]})
 	add_objective(&"keycard", &"objective.afterhours.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_KEYCARD]})
