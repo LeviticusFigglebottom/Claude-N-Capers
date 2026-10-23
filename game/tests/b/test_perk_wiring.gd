@@ -72,6 +72,15 @@ const GENERIC: Dictionary = {
 	],
 	&"perk.long_odds": [[&"defense.health_mult", &"", "mult", 1.4]],
 	&"perk.overlord": [[&"defense.health_mult", &"", "mult", 1.8]],
+	&"perk.hacker": [[&"defense.health_mult", &"", "mult", 1.2], [&"defense.dodge_add", &"", "add", 0.3]],
+	&"perk.inkwork": [],
+	&"perk.road_crew": [],
+	&"perk.frenzy": [],
+	&"perk.veil": [[&"defense.dodge_add", &"", "add", 0.15]],
+	&"perk.buddy_system": [[&"defense.health_mult", &"", "mult", 1.4]],
+	&"perk.lifeline": [[&"defense.health_mult", &"", "mult", 1.4]],
+	# D-164: default choice 0 (+20% health) on cards 1/3/5/7 stacks additively to +80%.
+	&"perk.understudy": [[&"defense.health_mult", &"", "mult", 1.8]],
 }
 
 const ARMOR_IDS: Array = [&"armor.tailored_suit", &"armor.light_vest", &"armor.patrol_vest", &"armor.heavy_vest",
@@ -126,6 +135,48 @@ const PARAMS: Dictionary = {
 			"overheal_per_cooldown_s": 50.0},
 		&"perk.throwable": {"item_id": &"throwable.boss_injector"},
 	},
+	&"perk.hacker": {  # D-161: A's pocket ECM reads stealth.pocket_ecm
+		&"stealth.pocket_ecm": {"charges": 2, "duration_s": 6.0, "cooldown_s": 100.0, "kill_cooldown_reduction_s": 6.0,
+			"kill_heal": 20.0, "kill_dodge_add": 0.2, "kill_dodge_s": 30.0, "crew_kill_heal": 10.0},
+		&"perk.throwable": {"item_id": &"throwable.pocket_ecm"},
+	},
+	&"perk.inkwork": {  # D-162: A's perk.yakuza
+		&"perk.yakuza": {"low_health_threshold": 0.5, "armor_regen_max_add": 0.6, "move_speed_max_add": 0.2,
+			"blocks_regen": true},
+	},
+	&"perk.road_crew": {  # D-162: A's perk.biker
+		&"perk.biker": {"heal": 5.0, "armor": 5.0, "max_procs": 4, "window_s": 4.0, "armor_per_missing_health": 1.0,
+			"window_cut_per_missing_health": 0.1, "heal_per_missing_armor": 1.0, "window_cut_per_missing_armor": 0.1},
+	},
+	&"perk.frenzy": {  # D-162: A's perk.maniac
+		&"perk.maniac": {"conversion": 1.0, "gain_cap": 240.0, "gain_window_s": 4.0, "max_stacks": 600.0,
+			"stacks_per_absorb": 25.0, "decay_fraction": 0.6, "decay_flat": 40.0, "decay_interval_s": 8.0, "team": true,
+			"self_absorb_mult": 2.0},
+	},
+	&"perk.veil": {  # D-163: A's perk.sicario
+		&"perk.sicario": {"smoke_duration_s": 10.0, "smoke_radius_m": 4.0, "cooldown_s": 60.0,
+			"kill_cooldown_reduction_s": 1.0, "in_smoke_dodge_add": 0.5, "enemy_accuracy_mult": 0.5, "twitch_dodge_add": 0.2,
+			"twitch_lockout_s": 4.0, "dodge_restores_armor": true, "in_smoke_effect_mult": 2.0, "ally_in_smoke_dodge_add": 0.1},
+		&"perk.throwable": {"item_id": &"throwable.smoke_bomb"},
+	},
+	&"perk.buddy_system": {  # D-163: A's perk.tag_team
+		&"perk.tag_team": {"tag_range_m": 18.0, "duration_s": 11.0, "cooldown_s": 60.0, "kill_extend_s": 1.3,
+			"holder_kill_heal": 15.0, "tagged_kill_heal": 7.5, "kill_absorb": 2.0, "max_absorb": 20.0,
+			"tagged_kill_cooldown_cut_s": 2.0},
+		&"perk.throwable": {"item_id": &"throwable.gas_dispenser"},
+	},
+	&"perk.lifeline": {  # D-164: A's perk.leech
+		&"perk.leech": {"duration_s": 10.0, "cooldown_s": 40.0, "kill_cooldown_reduction_s": 1.0,
+			"activate_heal_fraction": 0.4, "armor_off": true, "segment_fraction": 0.1, "kills_per_segment": 2,
+			"team_heal_on_damage_fraction": 0.1, "no_bleedout": true, "zero_health_speed_mult": 0.2,
+			"usable_while_downed": true},
+		&"perk.throwable": {"item_id": &"throwable.leech_ampule"},
+	},
+	&"perk.understudy": {  # D-164: A's perk.copycat
+		&"perk.copycat": {"tactical_reload_kills": 10, "quick_swap_window_s": 3.0, "headshot_heal": 10.0,
+			"headshot_heal_cooldown_s": 2.0, "dodge_ricochet": true, "ricochet_cooldown_s": 0.45, "grace_health_threshold": 0.5,
+			"grace_immunity_s": 2.0, "grace_cooldown_s": 15.0},
+	},
 }
 
 ## Hook coverage (perk_decks.md "Hook coverage"): base key -> file that reads it with
@@ -172,8 +223,16 @@ const HOOKED: Dictionary = {
 	&"perk.kingpin": "res://systems/combat/perks/perk_kingpin.gd",
 	&"perk.throwable": "res://systems/combat/perks/perk_throwable.gd",
 	&"perk.rogue_dodge_stack": "res://systems/combat/perks/perk_rogue.gd",
+	&"stealth.pocket_ecm": "res://systems/combat/perks/perk_pocket_ecm.gd",  # D-161 (A 5f09d31a)
+	&"perk.yakuza": "res://systems/combat/perks/perk_yakuza.gd",  # D-162 (A 3668b28c)
+	&"perk.biker": "res://systems/combat/perks/perk_biker.gd",
+	&"perk.maniac": "res://systems/combat/perks/perk_maniac.gd",
+	&"perk.sicario": "res://systems/combat/perks/perk_sicario.gd",  # D-163 (A 36df6d56)
+	&"perk.tag_team": "res://systems/combat/perks/perk_tag_team.gd",
+	&"perk.leech": "res://systems/combat/perks/perk_leech.gd",  # D-164 (A 9c4622d6)
+	&"perk.copycat": "res://systems/combat/perks/perk_copycat.gd",  # D-164 (A 5b85146c)
 }
-## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-056.
+## Granted keys with no hook yet: filed as QBs (perk_decks.md "Hook coverage"). Empty since D-164.
 const MISSING: Array = []
 
 
@@ -260,7 +319,7 @@ func _same_array(a: Array, b: Array) -> bool:
 # --- Full deck through the real path ---------------------------------------------------------------
 
 func test_every_deck_at_nine_cards_reaches_modifiers() -> void:
-	assert_eq(GENERIC.size(), 14, "expectations cover 14 decks")
+	assert_eq(GENERIC.size(), 22, "expectations cover 22 decks")
 	for deck_id: StringName in GENERIC:
 		assert_true(_deck(deck_id) != null, "%s exists" % deck_id)
 		Modifiers.clear_all()

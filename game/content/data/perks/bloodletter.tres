@@ -110,3 +110,14 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"weapon.armor_pierce_add.all": 0.1,
+&"perk.grinder": {
+"allowed_armor_ids": [&"armor.tailored_suit", &"armor.light_vest"],
+"heal_per_tick": 4.0,
+"tick_s": 0.3,
+"duration_s": 4.2,
+"stack_cooldown_s": 1.5
+}
+}
+mimicable = true

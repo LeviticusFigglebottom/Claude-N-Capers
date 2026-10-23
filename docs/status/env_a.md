@@ -4,6 +4,229 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-51) D-158 amendment 9 (3585dce5): clean stop keeps RearStop on trucks_2 (2026-10-23)
+- Root cause of east's 33 m: trucks_2, not the route. Both routes share the stop geometry (Lead 18.5, T1 27.75,
+  T2 39, T3 51, Rear 61, RearStop2 49 along the route). _stop_marker closed the rear car up to RearStop2 on every
+  trucks_2 stop.
+- Fix: RtTweak.rear_close_up_clean (ships false). A clean stop keeps RearStop on trucks_2 too; the crash stop keeps
+  the close-up.
+- Test: test_clean_stop_rear_car_holds_back_on_both_routes_and_truck_counts pins the rear stop >= 42 m behind
+  LeadStop on north / east × trucks_2 / trucks_3 (clean), RearStop2 on the crash stop, and the knob. d158 13/13; RT
+  tests green (rt_a6 14, rt_a5 10, a5_02 4, looks 2, tactical 2, r288 2).
+- Re-run, seed 1001 east_clean trucks_2:
+  - The rear TAC Heavy is now 43 m from the crew at the stop (was 33).
+  - **Routine: PASS** (escort down t+24.8, build t+113.5, won at 522 s).
+  - **Hazardous: FAIL, unchanged** (down t+12.9, cuffed t+20.7, custody t+43.0 before build).
+  - The ESCORT hit log shows the TAC Heavy is not what downs the pilot: 30 of about 185 damage. The rest comes from
+    the T1/T2 security officers and convoy_lead at 6-15 m.
+  - Guard #102 sits 14 m from east's ambush cover. It goes ALARMED at t+2 (guard_radio springs the ambush) and is
+    shooting at 6 m by t+6.7; the column's crews join at t+8-9.5.
+
+### (-50) RT done-check harness evidence: 5 seeds × {loud, stealth prelude} × {Hazardous, Routine} (2026-10-23)
+Code: env/a-core dea7fc07..46bfd037, which equals trunk 9d4bca054 on A's side (amendment 8 knobs live: window from
+escort_down, wave 1 without stinger + phantom from Hazardous). Headless real-menu flow:
+`DIRECT=1 HEADLESS=1 run_po5.sh <flow> <seed> 3000 <out> "Rolling Thunder" <difficulty>`.
+- **auto_loud** = blown: mask up at once, loud, the pilot plays the convoy crash.
+- **rt_clean** = the stealth prelude (signals hack, padlocks, crew to the ambush spot unmasked) to the CLEAN stop, then
+  loud.
+- **No ghost run exists for RT.** It is loud-forced by design: RollingThunderMission raises the "ambush" alarm when the
+  8 s window after the stop ends (start_timer(&"window", WINDOW_S) -> raise_alarm(&"ambush")), and the trucks / cargo
+  objectives come after it. rt_clean is the stealthiest route there is.
+- "esc" / "build" / "cust" are seconds from the convoy's stop: escort down, the first assault BUILD, the human pilot's
+  custody (the harness fails on it). "end" = heist time at heist_ended or at the fail.
+
+| Flow | Diff | Seed | Route | esc | build | cust | Result | end (s) | Cause |
+|---|---|---|---|---|---|---|---|---|---|
+| auto_loud | Hazardous | 1001 | east_crash | 23.8 | 53.5 | 98.4 | FAIL | 141 | custody (pinned at the trucks by wave 1) |
+| auto_loud | Hazardous | 4101 | north_crash | 40.3 | 59.8 | 255.1 | FAIL | 296 | custody (1 truck's cargo out, bag carry under fire) |
+| auto_loud | Hazardous | 7 | north_crash | 31.0 | 59.8 | 192.0 | FAIL | 234 | custody |
+| auto_loud | Hazardous | 2024 | north_crash | 24.3 | 53.8 | 273.2 | FAIL | 314 | custody (3 crew in custody) |
+| auto_loud | Hazardous | 42 | north_crash | 22.7 | 52.6 | 87.3 | FAIL | 131 | custody (cuffed while downed) |
+| rt_clean | Hazardous | 1001 | east_clean | - | - | 42.7 | FAIL | 232 | custody BEFORE build, escort still up (TAC Heavy 33 m at the stop) |
+| rt_clean | Hazardous | 4101 | north_clean | 41.9 | 113.5 | 183.0 | FAIL | 370 | custody |
+| rt_clean | Hazardous | 7 | north_clean | 30.0 | 114.0 | 323.2 | FAIL | 495 | custody |
+| rt_clean | Hazardous | 2024 | north_clean | 27.9 | 113.6 | 293.6 | FAIL | 511 | custody |
+| rt_clean | Hazardous | 42 | north_clean | 38.2 | 113.9 | 292.9 | FAIL | 549 | all_custody |
+| auto_loud | Routine | 1001 | east_crash | 11.9 | 41.5 | - | PASS | 517 | won, 4 bags, back in the 3D hub |
+| auto_loud | Routine | 4101 | north_crash | 23.2 | 52.8 | - | PASS | 700 | won, 4 bags |
+| auto_loud | Routine | 7 | north_crash | 20.7 | 50.6 | - | PASS | 1066 | won |
+| auto_loud | Routine | 2024 | north_crash | 11.9 | 41.8 | - | PASS | 753 | won |
+| auto_loud | Routine | 42 | north_crash | 63.0 | 59.8 | - | PASS | 820 | won |
+| rt_clean | Routine | 1001 | east_clean | 27.9 | 113.9 | - | PASS | 538 | won |
+| rt_clean | Routine | 4101 | north_clean | 17.1 | 143.9 | - | PASS | 752 | won |
+| rt_clean | Routine | 7 | north_clean | 20.2 | 98.7 | - | PASS | 575 | won |
+| rt_clean | Routine | 2024 | north_clean | 14.0 | 141.6 | - | PASS | 677 | won |
+| rt_clean | Routine | 42 | north_clean | 146.7 | 143.7 | 730.7 | FAIL | 891 | custody (escort lasted 147 s) |
+
+**Summary:**
+- **Routine: 9/10 pass.** All five loud runs win end to end (payday -> the 3D safehouse). The one fail is seed 42
+  clean, where the escort fight lasted 147 s.
+- **Hazardous: 0/10.** Every seed wins the escort except 1001 east clean, then loses the truck fight after the wave-1
+  BUILD. The pilot gets downed, cuffed while downed (L2.12) and goes to custody 87-273 s after the stop.
+  - The waves include tac_heavy ×3 and bulwark / longshot. Later waves bring phantom / stinger (allowed from wave 2).
+- **Seed 1001 / route_east, clean stop, Hazardous:** still loses to the escort. The TAC Heavy stops 33 m from the stop
+  (north: 50 m). The crew is down at t+12.7 / 16.0 and in custody at t+42.7, before the escort is down.
+  - The same seed's blown run (east_crash) wins the escort at t+23.8.
+  - The same seed's clean stop at Routine wins the escort at t+27.9.
+- **STUCK:** one spot, (21.9, 0, -12.8), between Props/Dress/Streets/Forecourt/BinStreet0 and
+  Props/Dress/Direct/CarParkBarrier.
+  - The pilot wedges there in 7 runs (up to 42 STUCK lines, rauto_loud_7) and slides out. A real map snag for a player
+    too (C's dressing).
+- **"could not reach":** 0-4 per run. They are pilot targets set aside: a truck's fix_drill from the far side, a bag
+  under fire, ctrl_locked's padlock.
+- **Errors:** no game SCRIPT ERROR. One harness error: po5_pilot.use read a freed interactable after clearing threats
+  (rrt_clean_4101). Fixed in this push.
+- **Harness note:** the pilot is a bot. On Hazardous it plays the truck fight worse than a player would (it stands to
+  saw / carry under fire). These are bot-skill data next to P's windowed confirm runs.
+
+### (-49) B's mimic dicts checked (2026-10-23)
+- perk.anarchist: an empty tick_by_armor ({}) now means CrewHealth's normal delayed regen (handles_armor_regen
+  false, no ticks). It used to fall back to anarchist_fallback_tick. A missing field still takes the default table.
+- perk.ex_president (store_per_kill 0), perk.gambler (flat heal_bonus), perk.crew_chief (team_dr 0): these were
+  already off.
+- Test: test_d164_copycat 6/6 (new test_b_mimic_dicts_read_as_off). Regression: perk_armor 6, perk_combat 5,
+  perk_team 5, b/test_perk_behaviour 8 (1 skip).
+
+### (-48) A roadmap audit: the rows with no ✅ (LEAD r291) (2026-10-23)
+Evidence: the tests under game/tests/a (all green at the time of their entries) and the spec-row audit
+docs/status/env_a_fidelity.md (103 rows: S8.7 and L6.2 since built, D-161 5f09d31a and c6e78cb0).
+
+| Row | Verdict | Evidence / what is missing |
+|---|---|---|
+| A1-01 | DONE | test_a1_01_heist_runtime; test hooks (contracts/test_hooks.md) used by every heist test. |
+| A1-02 | DONE | test_a1_02_crew_controller, test_pp_a1_player_input_driver, test_s1_casing_detection (casing rules), net: test_a3_07_coop_loopback. |
+| A1-03 | DONE | test_a1_03_prefab_shapes (all P1 prefabs), test_po6_01_drill_place_once, test_po6_02_jam_schedule, test_s10_1b_ladder_bag. |
+| A1-04 | DONE | test_s2_detection_meter, test_d128_detection_pd2, test_s4_stimuli_noise, S2/S3 rows covered (fidelity). |
+| A1-05 | DONE | test_a1_05_security_officer, test_s5_1_patrol_routes, test_s3_3_guard_radio, test_s3_4_guard_investigate, test_s3_6_guard_one_shot. |
+| A1-06 | DONE | test_a1_06_civilians, test_s3_1_civilian_panic, test_s7_shout_and_ties. |
+| A1-07 | DONE | test_s5_pagers (juggling), test_po6_08_pager_freeze, test_s6_body_bags, test_s10_loot_bags. |
+| A1-08 | DONE | test_l3_weapons, test_a1_08_range_crew, test_l2_survival, test_l3_3_pellet_headshot. |
+| A1-09 | DONE | test_l1_assault_director, test_a1_09_police_ai, test_po5_police_assault_push. |
+| A1-10 | DONE | test_a1_10_crew_ai, test_l6_ai_teammates, test_l6_1_stealth_bots_wait, test_r288_bot_revive. |
+| A1-11 | DONE | test_a1_11_local_hud_model, ui_hud v1.20-v1.22 tests. |
+| A1-12 | DONE | test_a1_12_modifier_hooks; the P4 gate's ratchet is empty (UNHOOKED and UNTESTED both {}). |
+| A2-01 | DONE | test_a2_01_doors_nav (authorised keycard guard, nav link follows door), test_gn_staff_doors. |
+| A2-02 | DONE | test_s8_2_camera_operator (kill / dominate -> cameras off, dispatch to a broken camera), test_s8_1_cameras (Titan). |
+| A2-03 | GAP (small) | S8.5 ATM half: "ATMs open in 8 s (consumes the ECM)". DeployableTweak.ecm_atm_open_s exists but nothing reads it; only keycard readers take an ECM. Rest: test_s8_4_ecm, test_s8_6_ecm_feedback, test_s5_6_ecm_pager_delay. |
+| A2-04 | DONE | test_s9_7_keypads_codes, test_s9_8_safes (time locks), test_s9_4_saws, test_s9_10_lasers, test_s9_11_zipline_ladder. |
+| A2-05 | DONE | test_s3_2_guard_cuffs (cooldown, self-free), test_s3_7_misfire, test_s2_9_marking (Sixth Sense). |
+| A2-06 | DONE | test_l2_11_deployables, test_s6_2_body_bag_case, test_s8_4_ecm, test_l2_4_dodge. |
+| A2-07 | DONE | test_s6_4_hostage_stimuli, test_s11_3_stealth_only, test_c3_preplanning (spawn, drops, modifier sources). |
+| A2-08 | DONE | test_a2_08_variant_rules (force_if, requires, min_difficulty, weights), test_a2_08_prefabs (glass AABB, keycard safe, push-bar door, camera collision). |
+| A4-04 | DONE | test_a4_04_ratchet_batch1/2, test_a4_keys_phase24; the gate's UNHOOKED / UNTESTED lists are empty. |
+| A5-01 | DONE | test_a5_01_armored_truck (saw, lockdown ×1.5, cargo, QC-81 roof burn point). |
+| A5-02 | DONE | test_a5_02_convoy (path, brake / stop, layouts), test_rt_a5_ambush; replicated via HeistNetSync. |
+| A5-03 | DONE | test_a5_03_c4_item, test_s9_5_door_charges. |
+
+GAP fix order (LEAD): A2-03's ATM half is the only gap, and it is off every shipped heist's critical path (ND's ATMs
+are saw targets).
+- **Fixed in this push:** DrillPoint.ecm_atm (ecm_openable / ecm_open_s / open_by_ecm). DeployableSystem's ECM aim
+  now also takes an ATM spot; EcmSystem uses the target's own open time (ecm_atm_open_s 8 s); ND's AtmSaw1/2 are
+  flagged (generator and tscn).
+- Tests: test_s8_4_ecm 8/8 (new: test_s8_5_ecm_on_atm_spot_opens_it). Regressions green: x4_nd_stealth, po5_nd ×2,
+  nd_teller, s9_4_saws, po6_01, l2_11, s8_6, d161, qc37.
+
+### (-47) A4-02 re-measure + anim_driver profile (2026-10-23)
+- A4-02 was delivered in 26509c96 (entry -35). Re-measured on 5b85146c, Dockside, 4 crew, cap 24 enemies, headless:
+  - Frame: avg 7.4 ms, p95 12.2 ms. Process: avg 9.6 ms. Saturated: 4.84 ms per physics tick.
+  - Net: transforms 25.8 KB/s at 15 Hz, full state 6.3 KB.
+  - Same as the baseline, so D-158..D-164 added nothing measurable.
+- CI budgets (test_a4_02_dockside_perf, unchanged, about 2× the baselines): process avg 20 ms, frame p95 40 ms,
+  tick 12 ms, xform 96 KB/s, full state 64 KB.
+- FrameProf top: anim_driver 2.15 ms/frame (headless is always the FULL AnimLod band; windowed play LODs it),
+  npc_motor 0.62, everything else < 0.25.
+- anim_driver profile: turn 0.52, choose 0.45, left-hand IK 0.22, hold 0.19, apply 0.18, hint 0.11.
+  - TurnInPlace and the tick each ran choose_clip(). Now one _choose_clip_tick() per tick, invalidated when a one-shot
+    starts in between.
+  - Result: anim_driver 2.15 -> 2.06 ms (small; within noise).
+- Anim tests all green (anim_driver 30, d116 clips 21, turn 7, lod 9, ...).
+
+### (-46b) D-158 amendment 8 (4c5b9248, its own commit, sent to P)
+- rt_tweak.tres: truck_window_from escort_down; wave1_exclude [stinger, phantom] from Hazardous.
+- test_d158_rt_fairness 12/12 checks the shipped values; the tests that change the tweak restore them.
+
+### (-46) D-164 perk.copycat on B's names; item cooldowns run while down (2026-10-23)
+- PerkCopycat:
+  - Tactical reload: kills per weapon slot refill the holstered magazine from its reserve, then a near-instant swap
+    window (CrewWeapons.grant_quick_equip, equip time /10 ◇, server side).
+  - Headshot heal on any headshot hit, with its cooldown.
+  - Dodge ricochet back at the shooter (the dodged bullet's damage ◇); its cooldown is 0.35 s on LETHAL/CATACLYSM ◇.
+  - Grace: health-only immunity after the hit that crosses the threshold, with its cooldown.
+- CrewWeapons.refill_mag(ws, free).
+- PerkHooks.is_headshot(info) for the kill and damage infos.
+- on_dodge now passes {amount, type, attacker, position}.
+- Deck-item cooldowns (Stoic flask, Kingpin injector, Sicario, Leech) tick while down, via
+  tick_item_cooldown / CrewPerks.tick_item_cooldowns. TagPairs and the pocket ECM are services that already ran.
+- Contract row perk.copycat (phase 5). perk_tweak defaults (all behaviours off).
+- Tests: test_d164_copycat 5/5 (includes a partial-dict / mimic smoke test over every family's component);
+  test_d164_leech 7/7 (+ cooldowns while down, refill_mag / is_headshot).
+
+### (-45) D-164 perk.leech on B's names, ui_hud v1.22 segments, perk_item.mode (2026-10-23)
+- PerkLeech:
+  - The ampule window: activate heal, armor_off, and segmented health (a hit takes the whole top segment).
+  - kills_per_segment restores a segment; team_heal_on_damage_fraction heals teammates when the holder is hit.
+  - Cooldown from the window's end, with kill cuts.
+  - no_bleedout: the holder stays up at 0 health, at ×zero_health_speed_mult via CrewBuffs, and goes down at the end.
+  - usable_while_downed: a temporary revive. It goes back to the same down and bleed-out unless the holder revived a
+    teammate or a doctor bag reset the downs.
+- CrewHealth: a vetoed down at 0 health no longer goes down.
+- PerkItems / perk_item: optional `mode` (B's request; the pocket ECM's jam / feedback) and `segments`
+  {count, size} while active.
+- Contract row perk.leech (phase 5). perk_tweak defaults (card-1 values).
+- Tests: test_d164_leech 5/5, test_ui_hud_v1_21 3/3.
+- Known limit: CrewPerks does not tick while DOWNED, so the cooldown pauses while the holder is down.
+
+### (-44) D-164 generic Leech hooks (2026-10-23)
+- PerkHooks.veto_down: CrewHealth.take_hit asks it before a down; a component's veto_down() sets the health and keeps
+  the holder up.
+- PerkHooks.tick_downed: the deck throwable can be used while DOWNED, but only by a component whose
+  usable_while_down() is true. CrewPerks.use_throwable skips every other component while down.
+- Tests: test_d163_systems 9/9. Regression all green: l2_survival 14, l2_12 9, l2_8 6, skills_b1 8, skills_b3 5,
+  c4_last_breath 3, d163_decks 5, d161 5, perk_combat 5, l4_3 9.
+- Next: PerkLeech on B's names.
+
+### (-43) D-163 presentation hooks for C (2026-10-23)
+- EventBus smoke_cloud_fx(position, radius, duration_s): ThrownItem emits it on every peer when a smoke cloud starts,
+  with the cloud's real radius and time left.
+- crew_tether_fx(a_slot, b_slot, active): TagPairs emits it on pair form / end, on the server and on clients through
+  apply_net_state.
+- Both are emitted only when EventBus.has_signal, so the LEAD declares them in event_bus.gd.
+- Tests: test_d163_systems 7/7, test_d163_decks 5/5.
+
+### (-42) D-163 decks on B's names, ui_hud v1.21 (2026-10-23)
+- perk.sicario (PerkSicario): the smoke bomb (kind smoke_bomb) cloud carries B's params; the cooldown starts when the
+  cloud ends, and kills cut it. Twitch, dodge_restores_armor (full refill ◇), in_smoke_effect_mult (Twitch + the
+  deck's generic dodge), ally_in_smoke_dodge_add (via the new PerkComponent.ally_dodge_add_for).
+- perk.tag_team (PerkTagTeam on TagPairs): kill heals 15 / 7.5, kill_extend_s on holder kills, the Synergy absorb pool
+  (until the item is off cooldown), tagged_kill_cooldown_cut_s.
+- PerkItems service (SVC_PERK_ITEMS) -> LocalHudModel.perk_item + perk_item_changed (ui_hud v1.21). The pocket ECM
+  maps into it; pocket_ecm stays as an alias.
+- Contract rows perk.sicario and perk.tag_team (phase 5); perk_tweak defaults.
+- Tests: test_d163_decks 5/5, test_ui_hud_v1_21 2/2, plus the regressions in the push report.
+
+### (-41) D-163 name-independent systems (2026-10-23)
+- ThrownItem KIND_SMOKE (no fuse; a cloud of radius_m for smoke_s) and SmokeZones: crew inside avoid a bullet at
+  crew_bullet_avoid (a dodge), enemies inside hit at ×npc_accuracy_mult. No LOS blocking.
+- PerkHooks.on_dodge, plus the generic pooled absorb (the best offer per pool, pools add). Maniac now runs on it.
+- TagPairs service: aim-line tag, duration / extend, cooldown / cut, paired_holders, replicated as SVC_TAG_PAIRS.
+- Tests: test_d163_systems 6/6. Regression: d162 5/5, d161 5/5, d158 12/12, a3_12 4/4, perk_armor 6/6,
+  perk_combat 5/5, l3_6 4/4.
+- Next: PerkSicario and PerkTagTeam on B's names, and ui_hud v1.21.
+
+### (-40) Round 290/291 lane: escort knobs on, probe warm-up, pocket ECM, D-162, bot revive A/B (2026-10-23)
+- **e26cd387:** D-158 amendment 6, RT escort knobs on (1.5 s engage delay, ×0.7 accuracy for 10 s).
+- **788bd236:** ReflectionProbe load warm-up (HeistLauncher host and replica) and the safehouse.tscn path.
+  - Windowed: verified on 5 probes (2.3–2.6 s).
+  - Glasshouse unverified windowed (llvmpipe never finished loading the map).
+- **7e9ed5c2:** the mixer driver uses contact_hollis_rt.
+- **D-161 pocket ECM (5f09d31a):** EcmSystem jam / feedback charges and PerkPocketEcm. ui_hud v1.20 (bcdff5aa):
+  LocalHudModel.pocket_ecm and throwable_id from the deck throwable.
+- **D-162 (0ef6e4eb, 3668b28c):** perk.yakuza / biker / maniac on B's names, the CrewKillFeed, and the 3 contract rows
+  (LEAD-granted).
+- **Bot revive (47a6868f, b643bdae, 03048be7, f6b41619):**
+  - Bots reviving bots is now tested.
+  - Cuffer targeting / clear-first are knobs, shipped OFF: the headless A/B (12 + 3 runs) showed no gain anywhere and
+    the crew lasting 100–190 s less on the rt_clean seeds that diverged.
 ### (-39) RT levers as knobs + A/B data (2026-10-23)
 - **Knobs, defaults = today** (d046e039, 140c1831), test_d158_rt_fairness 12/12:
   - RtTweak: truck_window_from (stop | escort_down, max 60 s), wave1_exclude (with a minimum difficulty),

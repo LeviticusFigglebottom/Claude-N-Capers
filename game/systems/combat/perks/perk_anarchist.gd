@@ -25,8 +25,14 @@ func adjust_max_armor(value: float, raw_health: float) -> float:
 	return value + raw_health * _health_fraction() * maxf(num("health_to_armor_ratio"), 0.0)
 
 
+## D-164 (Copycat mimic): an empty tick_by_armor keeps CrewHealth's normal delayed regen.
 func handles_armor_regen() -> bool:
-	return true
+	return _ticks()
+
+
+func _ticks() -> bool:
+	var table: Variant = param("tick_by_armor", {})
+	return not (table is Dictionary and (table as Dictionary).is_empty())
 
 
 ## [armor per tick, tick interval] for the worn armor.
@@ -44,7 +50,7 @@ func tick(delta: float) -> void:
 	_tick_immunity(delta)
 	_dealt_cd = maxf(_dealt_cd - delta, 0.0)
 	var h: CrewHealth = _health()
-	if h == null or h.armor >= h.max_armor:
+	if h == null or h.armor >= h.max_armor or not _ticks():
 		_tick_acc = 0.0
 		return
 	var t: Vector2 = armor_tick()

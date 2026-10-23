@@ -87,6 +87,8 @@ var launch_button: Button
 var back_button: Button
 var skills_button: Button
 var perks_button: Button
+## The perk deck line above the nav row (PerkProgress.summary_text: deck, cards, D-164 Copycat picks) (tests).
+var perk_summary_label: Label
 var workshop_button: Button
 ## The workshop while it is open over this screen (B4-17), else null.
 var workshop: WorkshopScreen = null
@@ -166,6 +168,11 @@ func build_ui() -> void:
 	var stats_panel: PanelContainer = _build_stats_panel()
 	stats_panel.size_flags_vertical = Control.SIZE_SHRINK_BEGIN  # D-111: hugs its rows, no empty box below
 	cols.add_child(stats_panel)
+	# r292 aspect audit: on the label scrim, so the line reads over the 3D safehouse behind the screen.
+	perk_summary_label = UiBuild.scrim_label(UiBuild.label(&"", UiBuild.DIM))
+	perk_summary_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN  # one line; the scrim hugs the text
+	perk_summary_label.visible = not compact_mode
+	root.add_child(perk_summary_label)
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
 	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
@@ -395,6 +402,8 @@ func refresh() -> void:
 	if _gate_deployables(LoadoutResolver.resolve_modifiers(l)):
 		l = current_loadout()
 	var resolved: Loadout = LoadoutResolver.resolve(l)
+	if perk_summary_label != null:
+		perk_summary_label.text = PerkProgress.summary_text(l)
 	concealment_total = resolved.concealment_total
 	detection_risk = resolved.detection_risk
 	concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": concealment_total})

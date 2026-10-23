@@ -845,3 +845,68 @@ def gate_pin(hull: Hull, p: Vector, k: float, metal: str = "chrome", enamel: str
         gr.prism([outer[i], outer[i + 1], inner[i + 1], inner[i]], 0.0026 * k, 0.0040 * k, metal)
     gr.box((-0.62 * s, -0.10 * s, 0.0026 * k), (0.62 * s, 0.06 * s, 0.0036 * k), metal)
     return gr.to_mesh(mtx, anchor=loc)
+
+
+# ---------------------------------------------------------------------------------------------
+# G3 close-range detail (RT / OF / GN polish), shared by the cast scripts
+# ---------------------------------------------------------------------------------------------
+def glasses_cord(kit: Kit, mat: str = "brass") -> None:
+    """A thin cord from the glasses' temple tips round behind the neck."""
+    fit, k = kit.fit, kit.k
+    eye = fit.eye_centre()
+    nk = g.Neck(fit)
+    left, right = (Vector((sx * 0.072 * k, eye.y - 0.075 * k, eye.z - 0.004 * k)) for sx in (-1.0, 1.0))
+    # Neck angles: 0 = front, -pi/2 = the -x side, pi = behind; the cord dips round the back of the neck
+    arc = [nk.point(a * math.pi, 0.6, 0.012 * k) for a in (-0.55, -0.75, 1.0, 0.75, 0.55)]
+    m = Mesh()
+    o.tube(m, [left] + arc + [right], 0.0012 * k, mat, sides=4)
+    kit.add_gear(m)
+
+
+def front_item(kit: Kit, x: float, z: float, size: tuple[float, float, float], mat: str, lift: float = 0.004,
+               up: Vector | None = None) -> None:
+    """A flat item (w, h, d m) standing on the outermost front surface at (x, z) (before height scaling)."""
+    k = kit.k
+    hull = kit.hull()
+    p = _front_hit(hull, x * k, z * k, kit.fit.ring_centre("chest").y + 0.15 * k)
+    w, h, d = size
+    kit.add_gear(gk.bar(hull, p + Vector((0.0, lift * k, 0.0)), Vector((0.0, 1.0, 0.0)), w, h, d, mat, k=k,
+                        up=up or Vector((0.0, 0.0, 1.0))))
+
+
+def arm_band(kit: Kit, side: str, t: float, width: float, mat: str, height: float = 0.003) -> None:
+    """A closed band round the arm at arm parameter ``t`` (0 shoulder, 1 elbow, 2 wrist): an armband, tape, or a
+    napkin folded over the forearm. Rays start just outside the sleeve, so the bind-pose torso is never hit."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    sh, el, wr = (Vector(fit.J[f"{j}.{side}"]) for j in ("shoulder", "elbow", "wrist"))
+    a0, a1, tt = (sh, el, t) if t <= 1.0 else (el, wr, t - 1.0)
+    axis = (a1 - a0).normalized()
+    c = a0.lerp(a1, tt)
+    ref = Vector((0.0, 1.0, 0.0))
+    u = (ref - axis * ref.dot(axis)).normalized()
+    v = axis.cross(u)
+    ring = []
+    for i in range(20):
+        a = 2.0 * math.pi * i / 20
+        d = u * math.cos(a) + v * math.sin(a)
+        hit = hull.cast(c + d * 0.07 * k, -d, 0.07 * k)
+        ring.append((hit[0] if hit[0] is not None else c + d * 0.04 * k) + d * 0.004 * k)
+    m = Mesh()
+    o.strip(m, hull, ring, width * 0.5 * k, height * k, mat, segs_across=1, chamfer=0.001 * k, closed=True,
+            cast_back=0.03 * k)
+    kit.add_soft(m)
+
+
+def bead_necklace(kit: Kit, mat: str, beads: int = 18, r: float = 0.0045) -> None:
+    """G3: a single strand of beads (pearls, a gold chain) lying round the base of the neck, dipping at the front."""
+    fit, k = kit.fit, kit.k
+    nk = g.Neck(fit)
+    hull = kit.hull()
+    gear = Mesh()
+    for i in range(beads):
+        a = math.tau * i / beads
+        t = 0.0 if abs(math.cos(a)) < 0.3 else -0.25 * max(0.0, math.cos(a))
+        p = o.push_out(nk.point(a, t, 0.006 * k), hull, 0.004 * k)
+        gear.extend(gk.button(hull, p, mat, r=r, toward=nk.radial(a), k=k, thick=0.004))
+    kit.add_gear(gear)

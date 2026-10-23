@@ -16,5 +16,5 @@ look: Bike courier (OF-D1): black nylon bomber over a graphite knit, charcoal wo
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27748
-tris_by_mesh: {"Body": 9082, "Gear": 378, "Hair": 1200, "Headwear": 672, "Outfit": 16416}
+tris: 27880
+tris_by_mesh: {"Body": 9082, "Gear": 510, "Hair": 1200, "Headwear": 672, "Outfit": 16416}

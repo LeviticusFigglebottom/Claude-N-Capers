@@ -1,0 +1,2 @@
+eqp_gas_dispenser aabb pos (-0.0228, -0.065651, -0.052) size (0.0456, 0.163651, 0.073651) (x 0.05  y 0.16  z 0.07)  tris 1164
+  node Nozzle (Node3D) at (0.0, -0.035, -0.052)

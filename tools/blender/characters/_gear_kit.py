@@ -132,6 +132,19 @@ def pouch(belt: Belt, a: float, w: float, h: float, d: float, mat: str, flap_mat
     return g.to_mesh(mtx, anchor=belt.point(a, dz))
 
 
+def key_ring(belt: Belt, a: float, metal: str = "char_metal_silver", key_mat: str = "brass") -> Mesh:
+    """G3: a belt key clip at angle ``a`` with a ring and three keys hanging off it (unbevelled, ~150 tris)."""
+    k = belt.k
+    g = Gear()
+    g.box((-0.006 * k, -0.025 * k, 0.0), (0.006 * k, 0.012 * k, 0.004 * k), metal)              # the clip
+    g.cyl(0.011 * k, 0.0025 * k, centre=(0.0, -0.036 * k, 0.006 * k), axis="Z", segs=10, mat=metal)   # ring
+    for i, (dx, ln) in enumerate(((-0.008, 0.042), (0.0, 0.050), (0.009, 0.038))):
+        g.box(((dx - 0.0035) * k, (-0.044 - ln) * k, (0.007 + 0.002 * i) * k),
+              ((dx + 0.0035) * k, -0.044 * k, (0.0095 + 0.002 * i) * k), key_mat)
+    mtx = belt.frame(a, dz=-0.01 * k)
+    return g.to_mesh(mtx, anchor=belt.point(a))
+
+
 def radio(belt: Belt, a: float, body_mat: str = "polymer_black", dz: float = 0.0, led: str = "char_led_red") -> Mesh:
     """Handheld radio in a belt clip: body, antenna, two knobs, LED."""
     k = belt.k
@@ -659,4 +672,5 @@ def name_tag(hull: Hull, p: Vector, k: float = 1.0, mat: str = "brass") -> Mesh:
 
 
 __all__ = ["Belt", "HeadHull", "bar", "buckle", "button", "clamp", "coil_cable", "flashlight", "glasses", "helmet",
-           "holster", "knee_pads", "name_tag", "peaked_cap", "pouch", "radio", "shield_badge", "speaker_mic"]
+           "holster", "key_ring", "knee_pads", "name_tag", "peaked_cap", "pouch", "radio", "shield_badge",
+           "speaker_mic"]

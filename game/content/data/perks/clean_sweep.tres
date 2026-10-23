@@ -120,3 +120,20 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"defense.armor_regen_delay_mult": 0.9,
+&"perk.sociopath": {
+"kill_armor": 0.0,
+"kill_armor_cooldown_s": 1.0,
+"close_range_m": 18.0,
+"close_range_dr": 0.0,
+"melee_kill_health_fraction": 0.0,
+"melee_kill_cooldown_s": 1.0,
+"close_kill_armor": 0.0,
+"close_kill_panic_chance": 0.0,
+"close_kill_panic_cooldown_s": 1.0,
+"panic_radius_m": 6.0,
+"forced_regen_after_break_s": 1.5
+}
+}
+mimicable = true

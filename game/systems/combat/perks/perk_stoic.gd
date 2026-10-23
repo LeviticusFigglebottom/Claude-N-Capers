@@ -49,6 +49,11 @@ func pending_damage() -> float:
 	return total
 
 
+## Its item cooldown: also while the holder is down (CrewPerks.tick_item_cooldowns, PD2 timers keep running).
+func tick_item_cooldown(delta: float) -> void:
+	flask_cooldown_left = maxf(flask_cooldown_left - delta, 0.0)
+
+
 func tick(delta: float) -> void:
 	var h: CrewHealth = _health()
 	if h == null:
@@ -56,7 +61,7 @@ func tick(delta: float) -> void:
 	if _downs_seen >= 0 and _downs_seen != h.downs_used:  # a down clears the DoT
 		dots.clear()
 	_downs_seen = h.downs_used
-	flask_cooldown_left = maxf(flask_cooldown_left - delta, 0.0)
+	tick_item_cooldown(delta)
 	if dots.is_empty():
 		return
 	_since_damage += delta

@@ -3,7 +3,44 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 03:00)
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### RT done-check, B slice (LEAD r292 queue (1), D-115 style; trunk r292 ae834d65)
+| Check | How | Result |
+|---|---|---|
+| Heist-list entry, contract card, broker | `heist.rolling_thunder.{name,subtitle,brief,briefing}`, mode `ui.heist_select.modes_loud_ambush`, Board entry (city_map: contact.reyes = "Hollis Reyes"), accent | all present |
+| Objectives (13 keys) + HUD args | test_heist_text_audit now includes RT (def objectives, briefing, loot, escape, assets, points, blueprint, voice, every literal key in the mission/map files) | **1 finding, fixed:** `objective.rolling_thunder.trucks` uses `{opened}`, which A's mission fills (`update_objective_data(&"trucks", {opened, total})`) but the audit did not know. Documented in ALLOWED_ARGS; 5/5 green |
+| Hints | first-time heist cards (`ui.tip.heist_<id>`): GH, ND, SL, DB, GN had one, **RT had none** | **gap, fixed:** RT card "Stop the convoy" (signals / crash stop / trucks / 4 bags); windowed shot checked (1280x720) |
+| VO + subtitles | test_vo_coverage now includes RT: every line has text (the subtitle), none unsaid by A/B/C; test_voice_lines, test_subtitle_args | green (39 RT voice strings; 86 VO events in the loud run below, 60 distinct lines) |
+| Payday / achievements / music | 6 achievements x name+desc, music `music.rolling_thunder.name`, payday + Reyes payday line | present; payday screen reached in the run |
+| Missing keys at runtime | headless loud run (A's harness: `DIRECT=1 HEADLESS=1 run_po5.sh auto_loud 7 2700 <out> "Rolling Thunder" Routine`): `[WARN][strings] missing string key` count | **0**. Heist success at 655 s (achievement rt_quick). The harness then reports FAIL at payday->hub only because the main menu's SAFEHOUSE now opens C's 3D safehouse (no 2D hub buttons): a harness gap for A, not RT |
+| Board readiness flip | `heist_list.tres` delete `"hidden": true` on rolling_thunder, applied locally | 14 affected test files run with the flag off: only test_heist_readiness (hidden switch) and test_music (RT's track joins the always-owned list) change; both updated in the prepared patch and green. **Not pushed** (scratchpad rt_unhide_D160.patch: 3 files, 52 lines) |
+
+### r290-292 (env/b-content 4a4b43e5, over trunk r290 f98c8dc1)
+* 23e8b556 pocket ECM model (D's glb) + safehouse ProbeWarmup. b4ff227e/f39aebd3 D-163 Veil / Buddy System (+HOOKED,
+  a-core 36df6d56). 29a0468d/7f0a2431 D-164 Lifeline (+HOOKED, a-core 9c4622d6). 3d21f76c HUD on perk_item (v1.21/1.22:
+  deck-item chip, PAIRED tag, leech slices; pocket_ecm alias gone). 933a0999 D-163 cue rows (smoke_bomb, gas_dispenser_tag).
+* Copycat: 895f760f push 1 (Understudy deck, choices + mimic card, mimic table on 15 decks, LEAD-granted contract edits
+  PerkDeckDef / Loadout / net.md, LoadoutResolver.card_grants, profile + lobby fields), aa9ad197 HOOKED (a-core 5b85146c),
+  4a4b43e5 push 2 (deck-screen pick lines + cycling). Windowed checks noted in the LEAD reports.
+* 22 perk decks; test_perk_wiring MISSING empty.
+
+### r289-290 (env/b-content, over trunk r288 396bc109)
+* f96cd719 sentry cues on C's OGGs. ed4aac0c + ec354108 D-162 decks (Inkwork / Road Crew / Frenzy; held for A's
+  hooks, merged in the same round as A's D-162). c9c914e7 HUD pocket ECM (ui_hud v1.20 `pocket_ecm`; cherry-pick).
+* Equipment glyphs (LEAD r290): ecm, fak, sentry, trip_mine added; `EquipmentIcon.KINDS` lists every drawn kind and
+  test_equipment_glyphs keeps every catalogue deployable / throwable off the fallback dot. Windowed sheet of all 17
+  glyphs at 64 and 32 px checked under xvfb 1280x720 (2026-10-23): all distinct and readable.
+
+### D-161 (5a988303, trunk r287 merged)
+* **(1) S10.6 golden:** `test_economy_golden` (4): 18 D-120 bag values in PD2 order; 5 contracts (base_payout +
+  `HeistCatalog.contract_preview` at all 6 difficulties); `BoardBroker.cost` with the shipped BoardTweak at all 6
+  (2-25 % of a full clear); bag share of a full clear GH 55 / ND 67 / SL 39 / DB 81 / GN 53 %.
+* **(2) Hacker deck** `perk.hacker` (15th): card 1 `perk.throwable {throwable.pocket_ecm}` + `stealth.pocket_ecm`
+  {charges 2, duration_s 6, cooldown_s 100, kill_cooldown_reduction_s 6}; card 5 + kill_heal 20; card 7 +
+  kill_dodge_add 0.2 / kill_dodge_s 30; card 9 + crew_kill_heal 10; health ×1.2, dodge +0.3. `throwable.pocket_ecm`
+  def (perk-only, placeholder ECM prop model). Strings, picker (windowed shot, 15 decks, list scrolls).
+  **Held:** `stealth.pocket_ecm` is in test_perk_wiring `MISSING` + perk_decks.md "Held" until A's hook; then drop both.
+
 ### B audit (LEAD r287, like A's A4-01). Run on env/b-content over trunk round 286
 Every test file named below was run green on this tree: 69 files, 921 tests, 0 failed (+ test_fidelity_b_gaps 4). "Done" means the row's scope exists and a test asserts it.
 

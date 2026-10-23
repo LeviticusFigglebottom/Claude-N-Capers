@@ -16,5 +16,5 @@ look: Office worker i (finish swap of f): grey blazer over an ivory silk shirt, 
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26380
-tris_by_mesh: {"Body": 9196, "Gear": 292, "Hair": 1856, "Headwear": 216, "Outfit": 14820}
+tris: 26952
+tris_by_mesh: {"Body": 9196, "Gear": 724, "Hair": 1856, "Headwear": 216, "Outfit": 14960}

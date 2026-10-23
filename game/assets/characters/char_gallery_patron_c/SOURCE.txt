@@ -12,8 +12,8 @@ body_faces_culled: 3054
 body_params: {"age": 0.75, "beard_shadow": 0.0, "build": 0.4, "gender": 1.0, "hair": "side_part", "hair_color": "grey", "hair_peak": 0.0, "height": 1.68, "lip": "char_lip_rose", "skin": 1}
 bones: 52
 look: Gala guest (woman, 60s): half-sleeved black cocktail dress, gold belt, gold earrings, gold-rimmed glasses, silver chignon
-meshes: Body,Hair,Headwear,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25954
-tris_by_mesh: {"Body": 12636, "Hair": 1856, "Headwear": 2082, "Outfit": 9380}
+tris: 26006
+tris_by_mesh: {"Body": 12636, "Gear": 52, "Hair": 1856, "Headwear": 2082, "Outfit": 9380}

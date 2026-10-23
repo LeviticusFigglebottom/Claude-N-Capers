@@ -124,3 +124,17 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"perk.gambler": {
+"heal_min": 0.0,
+"heal_max": 0.0,
+"heal_bonus": 16.0,
+"cooldown_s": 3.0,
+"lowest_health_bonus_per_ally": 0.0,
+"lowest_health_max_stacks": 3,
+"team_ammo_share": 0.0,
+"team_ammo_share_cooldown_s": 5.0,
+"team_heal_fraction": 0.0
+}
+}
+mimicable = true

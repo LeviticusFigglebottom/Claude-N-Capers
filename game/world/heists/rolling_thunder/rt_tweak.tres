@@ -4,11 +4,12 @@
 
 [resource]
 script = ExtResource("1")
-truck_window_from = &"stop"
+truck_window_from = &"escort_down"
 truck_window_s = 30.0
 escort_down_max_s = 60.0
-wave1_exclude = Array[StringName]([])
+wave1_exclude = Array[StringName]([&"stinger", &"phantom"])
 wave1_exclude_min_difficulty = 2
 escort_engage_delay_s = 1.5
 escort_accuracy_mult = 0.7
 escort_accuracy_window_s = 10.0
+rear_close_up_clean = false

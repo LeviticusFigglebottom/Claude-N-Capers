@@ -42,6 +42,9 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 @export var requires_loot: StringName = &""
 ## QC-60: how many `requires_loot` bags must be delivered before the device runs.
 @export var requires_count: int = 1
+## A2-03 (S8.5, stealth.ecm_opens_doors): an ATM spot. An ECM aimed at it is consumed and opens `target` after
+## DeployableTweak.ecm_atm_open_s, like the device would (EcmSystem.attach_to_reader).
+@export var ecm_atm: bool = false
 @export_group("Interaction")
 ## -1 = InteractionTweak.drill_place_s.
 @export var interaction_time_s: float = -1.0
@@ -121,6 +124,25 @@ func saw_cut(seconds: float, _attacker_net_id: int) -> void:
 		saw_progress = 1.0
 		interactable.enabled = false
 		_on_device_finished()
+
+
+## A2-03: whether an ECM can open this spot now (an ATM spot whose device has not run or been cut).
+func ecm_openable() -> bool:
+	return ecm_atm and saw_progress < 1.0 and (runner == null or runner.state == DeviceRunner.State.IDLE)
+
+
+## A2-03: the ECM's open time here (EcmSystem).
+func ecm_open_s() -> float:
+	return DeployableTweak.data().ecm_atm_open_s
+
+
+## A2-03 (S8.5): the ECM's time is up: open `target` as a finished device would (server).
+func open_by_ecm() -> void:
+	if not Net.is_authority() or not ecm_openable():
+		return
+	saw_progress = 1.0
+	interactable.enabled = false
+	_on_device_finished()
 
 
 func _prefab_ready() -> void:

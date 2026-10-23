@@ -45,6 +45,9 @@ EXTRA_GLYPHS = {
     "H": [(0, 0, 1, 5), (2, 0, 3, 5), (1, 2, 2, 3)],
     "K": [(0, 0, 1, 5), (1, 2, 2, 3), (2, 3, 3, 5), (2, 0, 3, 2)],
     "P": [(0, 0, 1, 5), (1, 4, 2, 5), (2, 3, 3, 4), (1, 2, 2, 3)],  # D-145.3 POLICE (the R without its leg)
+    # RT-G3 (the LEAD's review): the shared N (a block high in the middle column) read as M in VAULTLINE; a two-step
+    # diagonal from the top left to the bottom right reads N
+    "N": [(0, 0, 1, 5), (2, 0, 3, 5), (1, 2.6, 1.6, 4.2), (1.4, 0.8, 2, 2.8)],
 }
 
 

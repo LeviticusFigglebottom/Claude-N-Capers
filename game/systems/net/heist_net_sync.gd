@@ -63,6 +63,14 @@ const SVC_PAGERS: String = "pagers"
 const SVC_REVEALS: String = "reveals"
 ## B1 skill keys: the live timed buffs (CrewBuffs: Inspire, Overkill, Swan Song) for client movement / HUD.
 const SVC_BUFFS: String = "buffs"
+## D-161: EcmSystem pocket ECM per holder slot.
+const SVC_POCKET_ECM: String = "pocket_ecm"
+## D-162: Maniac Hysteria stacks per holder slot (HUD).
+const SVC_MANIAC: String = "maniac"
+## D-163: TagPairs (Tag Team) per holder slot.
+const SVC_TAG_PAIRS: String = "tag_pairs"
+## D-163: PerkItems (ui_hud v1.21 perk_item) per slot.
+const SVC_PERK_ITEMS: String = "perk_items"
 ## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
 const KIND_CLOSED: StringName = &"heist_closed"
 const KIND_LEFT: StringName = &"heist_left"
@@ -359,6 +367,21 @@ func services_state() -> Dictionary:
 		out[SVC_BUFFS] = buffs.net_state()
 	if not _runtime.preplan.runtime_reveals.is_empty():
 		out[SVC_REVEALS] = _runtime.preplan.reveals_net_state()
+	var ecm: EcmSystem = _runtime.service(EcmSystem.SERVICE) as EcmSystem
+	if ecm != null and not ecm.pocket.is_empty():
+		out[SVC_POCKET_ECM] = ecm.net_state()
+	var maniac: Dictionary = {}
+	for c: CrewController in _runtime.crew_members():
+		if c.has_meta(PerkManiac.META):
+			maniac[c.slot] = snappedf(PerkManiac.stacks_of(c), 1.0)
+	if not maniac.is_empty():
+		out[SVC_MANIAC] = maniac
+	var tags: TagPairs = _runtime.service(TagPairs.SERVICE) as TagPairs
+	if tags != null and not tags.pairs.is_empty():
+		out[SVC_TAG_PAIRS] = tags.net_state()
+	var items: PerkItems = _runtime.service(PerkItems.SERVICE) as PerkItems
+	if items != null:
+		out[SVC_PERK_ITEMS] = items.net_state()  # also when empty: the clients' entries clear
 	return out
 
 
@@ -537,6 +560,18 @@ func apply_services(svc: Dictionary) -> void:
 		CrewBuffs.of(_runtime).apply_net_state(svc[SVC_BUFFS] as Dictionary)
 	if svc.has(SVC_REVEALS):
 		_runtime.preplan.apply_reveals_net_state(svc[SVC_REVEALS] as Array)
+	var ecm: EcmSystem = _runtime.service(EcmSystem.SERVICE) as EcmSystem
+	if svc.has(SVC_POCKET_ECM) and ecm != null:
+		ecm.apply_net_state(svc[SVC_POCKET_ECM] as Dictionary)
+	if svc.has(SVC_TAG_PAIRS):
+		TagPairs.of(_runtime).apply_net_state(svc[SVC_TAG_PAIRS] as Dictionary)
+	if svc.has(SVC_PERK_ITEMS):
+		PerkItems.of(_runtime).apply_net_state(svc[SVC_PERK_ITEMS] as Dictionary)
+	var maniac: Dictionary = svc.get(SVC_MANIAC, {}) as Dictionary
+	for k: Variant in maniac:
+		var mc: Node = _runtime.crew_controller(int(k))
+		if mc != null:
+			mc.set_meta(PerkManiac.META, float(maniac[k]))
 	if svc.has(SVC_RUNTIME):
 		var r: Dictionary = svc[SVC_RUNTIME] as Dictionary
 		phase_replicated.emit(int(r.get("phase", _runtime.phase)), bool(r.get("loud", _runtime.went_loud)))

@@ -207,6 +207,10 @@ def curator(kit: Kit) -> None:
     n.lanyard(kit, "char_tie_black", "char_medic_white", card_z=1.15, band_mat="brass")
     kit.add_head(gk.glasses(fit, "char_button_dark"))
     kit.add_head(cg.earrings(fit, "brass"))
+    kit.add_gear(p5.halberd_pin(kit.hull(), Vector((0.09 * k, 0.3, 1.33 * k)), k))   # GN-G3
+    _pocket_square(kit, WINE)
+    n.glasses_cord(kit, "brass")
+    n.watch(kit, "L", strap="char_leather_black", case="brass")
     kit.notes["look"] = ("Curator: bone-white tailored long jacket (black satin lapels) + trousers, black roll-neck, "
                          "heavy black glasses, gold earrings, black lanyard with keycard; the one pale suit at the gala")
     kit.notes["prop_note"] = "keycard on the lanyard is skinned (Gear); a hand-held keycard prop goes at HandR/Socket"
@@ -224,6 +228,7 @@ def attendant(kit: Kit) -> None:
     n.cull_under(kit, n0, vest, "faces_hidden_by_waistcoat")
     kit.add_soft(g.gloves(fit, GLOVE, cuff_len=0.05, base=0.0025, cuff_off=0.005))
     kit.add_gear(p5.halberd_pin(kit.hull(), Vector((-0.085 * k, 0.3, 1.31 * k)), k))
+    n.earpiece(kit, "R")                                                         # GN-G3: event radio
     kit.notes["look"] = ("Gallery attendant: white band-collar shirt, black waistcoat with gold buttons, black "
                          "trousers, white art-handling gloves, Halberd pin")
 
@@ -243,6 +248,7 @@ def attendant_b(kit: Kit) -> None:
     kit.add_gear(p5.halberd_pin(hull, Vector((-0.092 * k, 0.3, 1.33 * k)), k))
     kit.add_gear(gk.name_tag(hull, Vector((0.095 * k, 0.3, 1.30 * k)), k=k, mat="char_metal_silver"))
     kit.add_head(cg.chignon(fit, "char_hair_dark"))
+    n.earpiece(kit, "R")                                                         # GN-G3: event radio
     kit.notes["look"] = ("Gallery attendant: black jacket over a white shirt, black trousers, white gloves, Halberd "
                          "lapel pin, silver name tag, chignon")
 
@@ -276,8 +282,12 @@ def guard(kit: Kit) -> None:
         n.cull_under(kit, n0, cover, "faces_hidden_by_waistcoat")
     p5.halberd_crest(kit, -0.098, 1.305)
     hull = kit.hull()
-    kit.add_gear(gk.name_tag(hull, Vector((0.098 * k, 0.3, 1.33 * k)), k=k, mat="brass"))
+    kit.add_gear(gk.name_tag(hull, Vector((0.098 * k, 0.3, 1.33 * k)), k=k, mat="char_satin_gold"))
     n.earpiece(kit, "R")
+    n.front_item(kit, 0.0, 1.235, (0.045, 0.005, 0.003), "char_satin_gold", lift=0.0)  # GN-G3: a gold tie bar, a watch
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    if not jacket:                                                                # the belt shows: a key ring
+        kit.add_gear(gk.key_ring(b, math.radians(-25.0)))
     if "glasses" in kit.opts:
         kit.add_head(gk.glasses(fit, str(kit.opts["glasses"])))
     if "chignon" in kit.opts:
@@ -303,6 +313,7 @@ def patron(kit: Kit) -> None:
     b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.016, thick=0.003, drop=0.0)
     kit.add_soft(b.mesh("brass"))
     kit.add_head(cg.earrings(fit, "brass"))
+    _brooch(kit, -0.075, 1.385, "char_satin_gold", "char_silk_ivory")  # GN-G3: a gold brooch with a pearl
     kit.notes["look"] = "Gala guest: sleeveless wine satin midi cocktail dress, thin gold belt, gold earrings, heels"
 
 
@@ -321,6 +332,7 @@ def patron_b(kit: Kit) -> None:
              (-0.008 * k, 0.015 * k), (-0.03 * k, 0.02 * k)], 0.004 * k, WINE,
             cast_dir=Vector((-0.2, -1, 0)), rings=1, chamfer=0.002 * k)
     kit.add_soft(pk)
+    _boutonniere(kit, "char_shirt_white")  # GN-G3: a white lapel flower
     kit.notes["look"] = ("Gala guest: midnight-blue velvet dinner jacket, black satin shawl lapels, white shirt, "
                          "black bow tie, satin-striped trousers, wine pocket square")
 
@@ -340,6 +352,8 @@ def admin(kit: Kit) -> None:
     n.lanyard(kit, WINE, "char_medic_white", card_z=1.16, band_mat="brass")
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.add_head(gk.glasses(fit, "char_metal_silver"))
+    kit.add_gear(p5.halberd_pin(kit.hull(), Vector((-0.095 * k, 0.3, 1.33 * k)), k))  # GN-G3
+    n.front_item(kit, 0.10, 1.30, (0.009, 0.05, 0.009), "polymer_black", lift=0.004)     # a pen
     kit.notes["look"] = ("Admin PA (development office): teal knit cardigan over a pale-blue shirt, charcoal "
                          "trousers, low heels, silver glasses, watch, gallery staff lanyard (wine, gold)")
 
@@ -354,6 +368,18 @@ def _pocket_square(kit: Kit, mat: str) -> None:
     kit.add_soft(pk)
 
 
+def _brooch(kit: Kit, x: float, z: float, mat: str, gem: str) -> None:
+    """GN-G3: a jewelled brooch (a setting with a stone at its centre) on the left breast."""
+    n.front_item(kit, x, z, (0.022, 0.022, 0.003), mat, lift=0.0)
+    n.front_item(kit, x, z, (0.009, 0.009, 0.003), gem, lift=0.003)
+
+
+def _boutonniere(kit: Kit, mat: str) -> None:
+    """GN-G3: a lapel flower on the left lapel, with a short dark-green stem."""
+    n.front_item(kit, -0.088, 1.37, (0.006, 0.028, 0.004), "char_blazer_forest", lift=0.0)
+    n.front_item(kit, -0.088, 1.385, (0.024, 0.024, 0.008), mat, lift=0.003)
+
+
 def patron_c(kit: Kit) -> None:
     """Older woman: half-sleeved black cocktail dress, gold belt, earrings and glasses, silver chignon."""
     fit, k = kit.fit, kit.k
@@ -366,6 +392,7 @@ def patron_c(kit: Kit) -> None:
     kit.add_head(cg.chignon(fit, "char_hair_grey"))
     kit.add_head(cg.earrings(fit, "brass"))
     kit.add_head(gk.glasses(fit, "brass"))
+    n.glasses_cord(kit)                                                                     # GN-G3: a glasses cord
     kit.notes["look"] = ("Gala guest (woman, 60s): half-sleeved black cocktail dress, gold belt, gold earrings, "
                          "gold-rimmed glasses, silver chignon")
 
@@ -380,6 +407,7 @@ def patron_d(kit: Kit) -> None:
     n.jacket(kit, BLACK, 0.80 * k, 1.03 * k, lapel_mat=SATIN, button_mat=SATIN, lapel_w=0.05, neck_w=0.09)
     _pocket_square(kit, "char_silk_plum")
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    n.bead_necklace(kit, "char_satin_gold", beads=20, r=0.0036)  # GN-G3: a fine gold chain
     kit.notes["look"] = ("Gala guest (man, 30s): all-black dinner suit with satin lapels over a black open-collar "
                          "shirt (no tie), plum silk pocket square, watch")
 
@@ -394,6 +422,7 @@ def patron_e(kit: Kit) -> None:
     b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.014, thick=0.003, drop=0.0)
     kit.add_soft(b.mesh("chrome"))
     kit.add_head(cg.earrings(fit, "chrome"))
+    n.bead_necklace(kit, "char_silk_ivory")                                                 # GN-G3: pearls
     kit.notes["look"] = ("Gala guest (woman, 30s): sapphire satin cocktail dress with cap sleeves, thin silver belt, "
                          "silver drop earrings, blond bob")
 
@@ -411,6 +440,7 @@ def patron_f(kit: Kit) -> None:
              neck_w=0.09)
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.add_head(gk.glasses(fit, "char_metal_silver"))
+    n.front_item(kit, -0.098, 1.345, (0.028, 0.04, 0.002), "char_silk_ivory", lift=0.001)   # GN-G3: a programme card
     kit.notes["look"] = ("Gala guest (man, 60s, heavy): navy dinner suit with black satin lapels and stripes, white "
                          "shirt, wine bow tie, silver glasses, watch, grey beard")
 
@@ -426,6 +456,7 @@ def patron_g(kit: Kit) -> None:
     kit.add_soft(b.mesh(SATIN))
     kit.add_head(cg.chignon(fit, "char_hair_dark"))
     kit.add_head(cg.earrings(fit, "brass"))
+    _brooch(kit, -0.075, 1.385, "char_silk_ivory", "char_satin_gold")  # GN-G3: a pearl brooch
     kit.notes["look"] = ("Gala guest (woman, 40s): amethyst satin dress with short sleeves, wide black satin "
                          "belt, gold earrings, dark chignon")
 
@@ -440,6 +471,7 @@ def patron_h(kit: Kit) -> None:
     b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.014, thick=0.003, drop=0.0)
     kit.add_soft(b.mesh(SATIN))
     kit.add_head(cg.earrings(fit, "brass"))
+    n.bead_necklace(kit, "char_silk_ivory")                                                 # GN-G3: pearls
     kit.notes["look"] = ("Gala guest (woman, 20s): sleeveless gold satin cocktail dress, thin black satin belt, gold "
                          "earrings, side-parted dark hair")
 
@@ -456,6 +488,7 @@ def patron_i(kit: Kit) -> None:
     n.jacket(kit, "char_suit_plum", 0.79 * k, 1.02 * k, lapel_mat=SATIN, button_mat=SATIN, lapel_w=0.065,
              neck_w=0.09)
     n.watch(kit, "L", strap="char_leather_black", case="brass")
+    _boutonniere(kit, WINE)                                                                 # GN-G3: a wine lapel flower
     kit.notes["look"] = ("Gala guest (man, 40s): plum dinner jacket with black satin lapels, white shirt, black bow "
                          "tie, satin-striped black trousers, gold watch")
 
@@ -470,6 +503,7 @@ def patron_j(kit: Kit) -> None:
     b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.030, thick=0.003, drop=0.0)
     kit.add_soft(b.mesh("char_satin_gold"))
     kit.add_head(cg.earrings(fit, "chrome"))
+    _brooch(kit, -0.08, 1.40, "char_satin_gold", "char_silk_ivory")  # GN-G3: a gold brooch with a pearl
     kit.notes["look"] = ("Gala guest (woman, about 60): long-sleeved graphite silk dress, wide gold satin belt, "
                          "silver drop earrings, grey bob")
 
@@ -487,6 +521,8 @@ def waiter(kit: Kit) -> None:
     hull = kit.hull()
     kit.add_gear(p5.halberd_pin(hull, Vector((-0.085 * k, 0.3, 1.31 * k)), k))
     kit.add_gear(gk.name_tag(hull, Vector((0.085 * k, 0.2, 1.30 * k)), k=k, mat="brass"))
+    n.arm_band(kit, "L", 1.45, 0.10, WINE, height=0.006)          # GN-G3: a wine napkin over the forearm
+    n.front_item(kit, 0.085, 1.22, (0.012, 0.055, 0.008), "char_metal_silver")       # a wine key in the pocket
     kit.notes["look"] = ("Gala waiter: white shirt, black bow tie, Halberd-wine waistcoat with gold buttons, long "
                          "black bistro apron, Halberd pin, brass name tag")
 
@@ -508,6 +544,8 @@ def waiter_b(kit: Kit) -> None:
     kit.add_gear(gk.name_tag(hull, Vector((0.092 * k, 0.3, 1.30 * k)), k=k, mat="brass"))
     kit.add_head(cg.chignon(fit, "char_hair_brown"))
     kit.add_head(cg.earrings(fit, "brass"))
+    n.front_item(kit, -0.09, 1.24, (0.045, 0.06, 0.006), "char_prop_paper")           # GN-G3: cloakroom tickets
+    n.watch(kit, "L", strap="char_leather_black", case="brass")
     kit.notes["look"] = ("Cloakroom waitstaff (woman, 50s): short Halberd-wine waiter's jacket with gold buttons, "
                          "white shirt, black bow tie, black trousers, Halberd pin, brass name tag, brown chignon")
 
@@ -526,6 +564,7 @@ def attendant_c(kit: Kit) -> None:
     kit.add_soft(g.gloves(fit, GLOVE, cuff_len=0.05, base=0.0025, cuff_off=0.005))
     n.lanyard(kit, WINE, "char_medic_white", card_z=1.17, band_mat="brass")
     kit.add_gear(p5.halberd_pin(kit.hull(), Vector((-0.095 * k, 0.3, 1.33 * k)), k))
+    n.earpiece(kit, "R")                                                         # GN-G3: event radio
     kit.notes["look"] = ("Drawings-cabinet attendant (man, about 50): grey knit cardigan over a white band-collar "
                          "shirt, black trousers, white cotton gloves for works on paper, staff lanyard, Halberd pin")
 
@@ -542,6 +581,9 @@ def conservator(kit: Kit) -> None:
     kit.add_soft(g.gloves(fit, GLOVE, cuff_len=0.05, base=0.0025, cuff_off=0.005))
     n.lanyard(kit, WINE, "char_medic_white", card_z=1.18, band_mat="brass")
     kit.add_head(gk.glasses(fit, "char_metal_silver", loupe=True))
+    kit.add_gear(p5.halberd_pin(kit.hull(), Vector((-0.09 * k, 0.3, 1.33 * k)), k))   # GN-G3
+    for dx, ln, mat in ((-0.012, 0.11, "char_bank_red"), (0.006, 0.13, "char_rubber_yellow")):  # brushes in the
+        n.front_item(kit, 0.10 + dx, 0.98, (0.007, ln, 0.007), mat, lift=0.008)                   # apron pocket
     kit.notes["look"] = ("Paintings conservator: pale-blue shirt, grey knit sweater vest, long charcoal canvas work "
                          "apron, khaki trousers, white art-handling gloves, glasses with a loupe, staff lanyard")
 

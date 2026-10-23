@@ -1,0 +1,148 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.frenzy"
+display_name = "Frenzy"
+description = "perk.frenzy.desc"
+cards = Array[Dictionary]([{
+"name": "perk.frenzy.card1.name",
+"desc": "perk.frenzy.card1.desc",
+"cost": 200,
+"grants": {
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 30.0,
+"decay_fraction": 0.8,
+"decay_flat": 120.0,
+"decay_interval_s": 8.0,
+"team": false,
+"self_absorb_mult": 1.0
+}
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.frenzy.card3.name",
+"desc": "perk.frenzy.card3.desc",
+"cost": 400,
+"grants": {
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 30.0,
+"decay_fraction": 0.8,
+"decay_flat": 120.0,
+"decay_interval_s": 8.0,
+"team": true,
+"self_absorb_mult": 1.0
+}
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1,
+&"progression.xp_mult": 1.45,
+&"movement.armor_penalty_mult": 0.85
+}
+}, {
+"name": "perk.frenzy.card5.name",
+"desc": "perk.frenzy.card5.desc",
+"cost": 1000,
+"grants": {
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 30.0,
+"decay_fraction": 0.6,
+"decay_flat": 40.0,
+"decay_interval_s": 8.0,
+"team": true,
+"self_absorb_mult": 1.0
+}
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35,
+&"deploy.armor_bag": true
+}
+}, {
+"name": "perk.frenzy.card7.name",
+"desc": "perk.frenzy.card7.desc",
+"cost": 2400,
+"grants": {
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 25.0,
+"decay_fraction": 0.6,
+"decay_flat": 40.0,
+"decay_interval_s": 8.0,
+"team": true,
+"self_absorb_mult": 1.0
+}
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05,
+&"interaction.doctor_bag_speed_mult": 0.8333
+}
+}, {
+"name": "perk.frenzy.card9.name",
+"desc": "perk.frenzy.card9.desc",
+"cost": 4000,
+"grants": {
+&"progression.card_drop_quality_add": 0.1,
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 25.0,
+"decay_fraction": 0.6,
+"decay_flat": 40.0,
+"decay_interval_s": 8.0,
+"team": true,
+"self_absorb_mult": 2.0
+}
+}
+}])
+mimic_grants = {
+&"perk.maniac": {
+"conversion": 1.0,
+"gain_cap": 240.0,
+"gain_window_s": 4.0,
+"max_stacks": 600.0,
+"stacks_per_absorb": 30.0,
+"decay_fraction": 0.6,
+"decay_flat": 80.0,
+"decay_interval_s": 8.0,
+"team": true,
+"self_absorb_mult": 1.0
+}
+}
+mimicable = true

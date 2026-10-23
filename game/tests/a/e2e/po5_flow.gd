@@ -349,9 +349,9 @@ func payday_to_hub() -> int:
 	await shot("payday")
 	note("payday buttons: %s" % [visible_buttons()])
 	for i: int in 12:
-		if find_button("Planning Table") != null:
+		if find_button("Planning Table") != null or _in_3d_hub():
 			await shot("back_in_hub")
-			note("back in the hub")
+			note("back in the hub%s" % (" (3D safehouse, walker spawned)" if _in_3d_hub() else ""))
 			return 0
 		var clicked: bool = false
 		for label: String in ["Continue", "Skip", "Next", "Collect", "Done", "Back to Safehouse", "Safehouse", "OK"]:
@@ -370,6 +370,15 @@ func payday_to_hub() -> int:
 		await shot("payday_%d" % i)
 	note("FAIL PO-5.payday: never got back to the hub; buttons %s" % [visible_buttons()])
 	return 1
+
+
+## Since C's 3D safehouse (B6-06) the hub is MenuFlow's SafehouseHost: back home = its scene is up with our walker.
+func _in_3d_hub() -> bool:
+	for n: Node in get_tree().root.find_children("*", "SafehouseHost", true, false):
+		var h: SafehouseHost = n as SafehouseHost
+		if h != null and h.is_active() and h.walker != null and is_instance_valid(h.walker):
+			return true
+	return false
 
 
 ## The Payday card pick: three unlabelled card buttons and a disabled Continue. Click the first card like

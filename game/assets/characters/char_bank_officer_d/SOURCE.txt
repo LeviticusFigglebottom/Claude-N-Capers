@@ -16,5 +16,5 @@ look: Bank officer (OF-D1): a woman in her 30s, dark hair in a bun; grey worsted
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28262
-tris_by_mesh: {"Body": 9216, "Gear": 896, "Hair": 1856, "Headwear": 1642, "Outfit": 14652}
+tris: 28394
+tris_by_mesh: {"Body": 9216, "Gear": 1028, "Hair": 1856, "Headwear": 1642, "Outfit": 14652}

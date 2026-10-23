@@ -147,11 +147,15 @@ func test_bots_take_cover_when_the_leader_does() -> void:
 
 # --- LEAD r286 levers (tweak knobs, defaults = the shipped behaviour) ----------------------------
 
-func test_rt_tweak_defaults_are_todays_behaviour() -> void:
+## D-158 amendment 8 (P's verdict 3/4): the window counts from the escort's end, wave 1 keeps Stingers and Phantoms
+## out (Hazardous and above).
+func test_rt_tweak_shipped_values() -> void:
 	var t: RtTweak = RtTweak.data()
-	assert_eq(t.truck_window_from, RtTweak.FROM_STOP, "the window counts from the stop")
+	assert_eq(t.truck_window_from, RtTweak.FROM_ESCORT_DOWN, "the window counts from the last convoy unit's death")
 	assert_near(t.truck_window_s, RollingThunderMission.TRUCK_WINDOW_S, 0.0001, "30 s")
-	assert_eq(t.wave1_exclude, [] as Array[StringName], "no wave-1 exclusion")
+	assert_near(t.escort_down_max_s, 60.0, 0.0001, "never past stop + 60 s")
+	assert_eq(t.wave1_exclude, [&"stinger", &"phantom"] as Array[StringName], "no Stingers or Phantoms in wave 1")
+	assert_eq(t.wave1_exclude_min_difficulty, Enums.Difficulty.HAZARDOUS, "from Hazardous")
 	assert_eq((load(CrewAiBrain.TWEAK_PATH) as CrewAiTweak).cover_prefer_behind_leader_m, 0.0, "nearest cover")
 
 
@@ -161,6 +165,7 @@ func test_truck_window_from_escort_down() -> void:
 		skip("rolling_thunder map not on this branch")
 		return
 	var t: RtTweak = RtTweak.data()
+	var shipped: StringName = t.truck_window_from
 	t.truck_window_from = RtTweak.FROM_ESCORT_DOWN
 	var m: RollingThunderMission = await _rt_stop(false)
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
@@ -171,7 +176,7 @@ func test_truck_window_from_escort_down() -> void:
 			u.die()
 	assert_true(await wait_until(func() -> bool: return m.objective_state(&"escort") == Enums.ObjectiveState.COMPLETED,
 		4.0), "the escort is down")
-	t.truck_window_from = RtTweak.FROM_STOP
+	t.truck_window_from = shipped
 	assert_true(dir.first_build_hold_s <= t.truck_window_s + 0.01, "then truck_window_s from the last death (%.1f)"
 		% dir.first_build_hold_s)
 
@@ -184,8 +189,9 @@ func test_wave1_exclude_keeps_stingers_out_of_the_first_assault() -> void:
 	var g: SpawnGroupDef = load("res://systems/ai/data/groups/control_stinger.tres") as SpawnGroupDef
 	dir.wave_index = 1
 	assert_false(dir._wave1_excluded(&"enemy.stinger"), "default: nothing excluded")
-	dir.wave1_exclude = [&"stinger"] as Array[StringName]
+	dir.wave1_exclude = RtTweak.data().wave1_exclude.duplicate()
 	assert_true(dir._wave1_excluded(&"enemy.stinger"), "a bare name matches the unit id")
+	assert_true(dir._wave1_excluded(&"enemy.phantom"), "amendment 8: Phantoms too")
 	assert_false(dir._group_spawnable(g), "a Stinger-only group cannot spawn in wave 1")
 	dir.wave_index = 2
 	assert_false(dir._wave1_excluded(&"enemy.stinger"), "wave 2: allowed again")
@@ -197,11 +203,9 @@ func test_rt_sets_wave1_exclude_from_the_tweak_at_hazardous() -> void:
 		skip("rolling_thunder map not on this branch")
 		return
 	var t: RtTweak = RtTweak.data()
-	t.wave1_exclude = [&"stinger"] as Array[StringName]
 	await _rt_stop(false)
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
-	t.wave1_exclude = [] as Array[StringName]
-	assert_eq(dir.wave1_exclude, [&"stinger"] as Array[StringName], "Hazardous: the stop hands the list to the director")
+	assert_eq(dir.wave1_exclude, t.wave1_exclude, "Hazardous: the stop hands the shipped list to the director")
 
 
 func test_cover_prefer_behind_leader() -> void:
@@ -293,3 +297,43 @@ func test_rt_escort_knobs_reach_the_convoy() -> void:
 			held += 1
 	assert_true(damped >= 6, "every convoy unit hits at x0.7 after the stop (%d)" % damped)
 	assert_true(held_any and held >= 1, "the escorts that got out hold fire (%d)" % held)
+
+
+## D-158 amendment 9: at a CLEAN stop the rear car (and its TAC Heavy) stops at RearStop on both truck counts (RtTweak
+## rear_close_up_clean ships false), >= 42 m behind LeadStop on both routes; the crash stop keeps trucks_2's close-up.
+func test_clean_stop_rear_car_holds_back_on_both_routes_and_truck_counts() -> void:
+	var path: String = HeistLauncher.map_path(RT_HEIST, {})
+	if path == "" or not ResourceLoader.exists(path):
+		skip("rolling_thunder map not on this branch")
+		return
+	assert_false(RtTweak.data().rear_close_up_clean, "shipped: no close-up at a clean stop")
+	var m: RollingThunderMission = await _rt_stop(true)
+	var map: Node = (load(path) as PackedScene).instantiate()  # both routes' layouts (the variant frees the other)
+	var saved: Variant = _rt.variants.get(&"truck_count")
+	for route: String in ["north", "east"]:
+		for trucks: StringName in [&"trucks_2", &"trucks_3"]:
+			_rt.variants[&"truck_count"] = [trucks]
+			for mode: String in ["clean", "crash"]:
+				var layout: Node3D = _layout_in(map, "%s_%s" % [route, mode])
+				assert_true(layout != null, "%s_%s exists" % [route, mode])
+				var lead: Node3D = m._stop_marker(layout, "Lead")
+				var rear: Node3D = m._stop_marker(layout, "Rear")
+				var d: float = lead.position.distance_to(rear.position)
+				if mode == "clean":
+					assert_true(d >= 42.0, "%s %s clean: rear %.1f m behind LeadStop" % [route, trucks, d])
+					assert_eq(String(rear.name), "RearStop", "%s %s clean: RearStop" % [route, trucks])
+				elif trucks == &"trucks_2":
+					assert_eq(String(rear.name), "RearStop2", "%s crash keeps the close-up" % route)
+	RtTweak.data().rear_close_up_clean = true
+	_rt.variants[&"truck_count"] = [&"trucks_2"]
+	assert_eq(String(m._stop_marker(_layout_in(map, "east_clean"), "Rear").name), "RearStop2", "the knob restores it")
+	RtTweak.data().rear_close_up_clean = false
+	_rt.variants[&"truck_count"] = saved
+	map.free()
+
+
+func _layout_in(map: Node, id: String) -> Node3D:
+	for n: Node in map.find_children("*", "Node3D", true, false):
+		if String(n.get_meta(&"convoy_layout", "")) == id:
+			return n as Node3D
+	return null

@@ -93,3 +93,8 @@ NetEntityCodec key `pe` (bool) on every GameplayPrefab: its enabled state (sent 
 
 ## v1.5 (OF-A6): generic prop `height_m`
 NetEntityCodec carries `height_m` (float) on Ladder (and any prop exposing it) so late joiners get the runtime length.
+
+## D-164: Copycat loadout fields
+`Loadout.perk_choices` (card index -> option index) and `Loadout.perk_mimic_deck` ride with the loadout like
+`perk_deck` / `perk_deck_cards` (LobbyState loadout data, the host's launch loadouts), so the server's
+LoadoutResolver / ModifierPush resolves a Copycat crew member's chosen options and mimicked card the same on every peer.

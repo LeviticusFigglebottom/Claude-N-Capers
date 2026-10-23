@@ -3,6 +3,41 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## D roadmap audit: the rows with no ✅ (LEAD, 2026-10-23)
+Evidence: the tests under game/tests/d (full D suite 206/206 at 2879613c), the review sheets under
+game/assets/characters/_review, and this file's session entries.
+
+| Row | Verdict | Evidence / what is missing |
+|---|---|---|
+| D1-00 | DONE | docs/art/style_samples/{a_gsr,b_noir,c_photo}/officer.png (v1 677fdc8; GSR v2 d93751f after D-035; noir/photo stopped at v1 per D-035). |
+| D1-01 | DONE | tools/blender/characters/_rig.py (52 contract bones), _body.py (parametric build/gender/age), char_body_base{,_heavy,_fem,_old} (be6a818); test_rig (5); _review/bodies.png. |
+| D1-02 | DONE | security_officer (+b..j), civilian_{customer_a/b, sales/_b, jeweler, clerk, manager}, patrol_officer (+duty, factions), tac_light (+duty, factions), crew_body/_b; test_outfits, test_scenes. |
+| D1-03 | DONE | char_anim_humanoid (the P1 subset and far beyond), rig_arms char_arms_fp with the pistol set (now every weapon class); test_anims, test_arms, test_scenes.test_walk_moves_bones. |
+| D1-04 | DONE | tools/blender/masks/_mask_base.py + mask_gilded_heron (3059886); test_masks. |
+| D1-05 | DONE | game/tests/d (35 files); lineup _review/lineup_godot.png, crew/factions/cartel *_lineup + *_silhouette_30m. |
+| D3-01 | DONE | All four P5 casts: GN (curator, attendants a-c, guards a-l, patrons a-j, admin, waiters), OF (tellers, manager, officers, guards, customers), RT (convoy crew a-f, escorts, street, diner), Afterhours (club_bouncer/_b, club_bartender/_b, club_dj, club_patron a-d); test_p5_cast.test_cast_index_covers_every_heist_and_role / test_design_rosters_have_a_cast. |
+| D3-02 | DONE | Every characters.md v1.9 clip is in char_anim_humanoid: dance_a/b/c, bartender_wipe/pour, bouncer_idle, teller_count, curator_inspect, walk_text, cower_seated, cower_stand; test_anims. (Whether the club dances fire in game is Afterhours wiring, parked under D-144; the clips exist.) |
+| D3-03 | DONE | 34 base shapes (10 + 12 + 12) through _mask_base, all crew-envelope fit (D-073) and all listed in B's content/data/masks/parts/bases.tres; test_masks (base surface, size/symmetry, pivot, front-projected UV0, test_crew_face_envelope_matches_current_crew). |
+| D3-04 | DONE | characters.md v1.10: walk_/run_ 8-way (fl/fr/l/r/bl/br/b), walk/run start/stop, hit_react ×4 directions, death_front_b / death_back_b / death_side, downed_crawl, dozer_walk_heavy (Wrecker); test_anims, test_loco_phase. |
+| D4-01 | DONE | LOD0 100 %; LOD1 Godot auto LODs to <= 45 % on big surfaces; LOD2 Skeleton3D/CrowdLod at 8-25 %, visibility ranges, no shadow (D-146), zoom-aware (D-084); heisters / contacts / specials keep full meshes by design (D-080); test_lod (7). |
+| D4-02 | DONE (as whole looks) | Far more than +8 crowd looks (gala patrons a-j, bank customers, RT street / commuters / diner, club patrons a-d). Variety is pre-built whole looks per pool rather than runtime top/bottom mixing; "no two neighbours match" holds through A's per-pool round-robin deal (NpcVisuals.look_index). test_p5_cast.test_gallery_patron_variety / test_db_sl_pooled_variety. |
+| D4-03 | GAP | 6 of 8 heisters (rook, sable, dutch, wren, marten, jay; D-111 added +2). Missing: 2 more heisters with body, outfit, face, FP sleeve, portrait, crew-envelope + mask regen, ids to B for the roster/picker. |
+
+GAP fix order: D4-03 is the only gap and no shipped heist shows it, so it goes after anything the LEAD queues for a
+shipped heist. Nothing is Afterhours-only parked: that cast and its clips already exist.
+
+**D4-03 fixed (LEAD-approved picks):** `char_crew_juno` (woman, 1.73 m, fair, blond side part: emerald leather
+moto jacket with an asymmetric chrome zip, graphite crew-neck, black jeans, heeled moto boots, grey suede gloves) and
+`char_crew_hale` (man, 1.85 m so Dutch stays the tallest, deep skin, bald, moustache: sand canvas chore jacket, navy
+henley, dark jeans, brown work boots, yellow work gloves). 26.7k / 26.9k tris. New library materials
+char_crew_{juno_jacket,glove_suede,hale_jacket,glove_work}. Hale's moustache joins `Hair` (char_crew.py now joins any
+all-hair Headwear, Dutch unchanged). FP sleeves `char_arms_fp_{juno,hale}`; portraits `portraits/{juno,hale}.png`.
+Crew face envelope regenerated for 8 heisters (front growth <= 1 cm at the mouth from Hale's moustache) and all 36
+masks rebuilt (test_masks, test_crew mask seats green). Review: `_review/crew_lineup.png`, `crew_faces.png`,
+`crew_silhouette_30m.png` (the review script now sizes the lineup / silhouette to the roster), `heister_portraits.png`.
+Found: `char_crew_rook.glb` on trunk is stale against the current tooling (rebuilds to different bytes, same tris);
+left as is.
+
 ## To the LEAD: (2026-10-22, latest first; I read your messages, you read this)
 - **PO "inorganic" follow-up: in-motion strips from a real loud heist** (`_tools/render_motion_strips`, Glasshouse
   Routine seed 7, all-AI crew, trunk 80245b93 incl. A's v1.26(a)): `_review/d_motion/{crew_sprint,crew_strafe,

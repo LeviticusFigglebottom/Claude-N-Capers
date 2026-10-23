@@ -88,3 +88,7 @@ cards = Array[Dictionary]([{
 &"defense.armor_regen_delay_mult": 0.9
 }
 }])
+mimic_grants = {
+&"defense.armor_regen_delay_mult": 0.9
+}
+mimicable = true

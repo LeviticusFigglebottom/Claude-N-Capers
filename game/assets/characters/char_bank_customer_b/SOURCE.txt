@@ -17,5 +17,5 @@ look: Parent customer: olive nylon bomber over a cream crew knit, jeans, white t
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28068
-tris_by_mesh: {"Body": 9128, "Gear": 630, "Hair": 1856, "Outfit": 16454}
+tris: 28156
+tris_by_mesh: {"Body": 9128, "Gear": 718, "Hair": 1856, "Outfit": 16454}

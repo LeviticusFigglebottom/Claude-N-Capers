@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.19)
+# Contract: HUD data (v1.22)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -187,3 +187,25 @@ state only on change (P saw `cartel -> ACTIVE` re-emitted on every data update).
 - Strings: `ui.freshness.badge` "{pct} %", `ui.freshness.reason_repeat` "Played {n}× in your last {memory} heists",
   `ui.freshness.reason_rotation` "Not played in {since} heists", `ui.heist_select.freshness`.
 - D-140: the card's "N pagers" note shows only where the def cap is below StealthTweak's 4.
+
+## v1.20: pocket ECM (D-161; B proposal)
+- A: `LocalHudModel.pocket_ecm: Dictionary` = EcmSystem.pocket_state(local slot): `{}` when the local crew has no pocket ECM,
+  else `{charges: int, max: int, recharge_left: float (s), active_left: float (s), mode: StringName &"" | &"jam" | &"feedback"}`.
+  Signal `pocket_ecm_changed` on any field change (0.1 s snapping is fine).
+- A: `LocalHudModel.throwable_id` reports `PerkHooks.throwable_id(crew)` (a deck's replacement throwable: Composure flask,
+  Overlord injector, Hacker pocket ECM), not the raw `Loadout.throwable`.
+- B: the throwable chip shows the pocket ECM glyph + charge count (dimmed at 0); caption "JAM {s} s" / "FEEDBACK {s} s" while
+  active, "+1 in {s} s" while recharging, else hidden. Models without the field leave the HUD unchanged.
+
+## v1.21: generic perk item (D-163; B proposal, A 36df6d56)
+- A: `LocalHudModel.perk_item: Dictionary` = `{}` when the local deck has no perk item, else
+  `{kind: StringName, charges: int, max: int, cooldown_left: float (s), active_left: float (s), partner_slot: int (-1 = none)}`
+  from the replicated PerkItems service; signal `perk_item_changed`. Kinds today: &"pocket_ecm", &"smoke_bomb", &"gas_dispenser".
+- `pocket_ecm` (v1.20) stays as an alias for one round, then B migrates to perk_item and the alias is removed.
+- B: the throwable chip shows the item's glyph, charges and cooldown; Tag Team marks the partner's teammate panel "tagged".
+
+## v1.22: perk item segments + mode (D-164; A 9c4622d6)
+- `perk_item.segments: {count: int, size: float (fraction of max health)}`, present only while a Leech ampule window is active.
+- `perk_item.mode: StringName` (&"" | &"jam" | &"feedback"), so the pocket ECM no longer needs the v1.20 `pocket_ecm` alias;
+  B drops the alias in its next HUD push (v1.20's field is then removed).
+

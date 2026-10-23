@@ -12,8 +12,8 @@ body_faces_culled: 2490
 body_params: {"age": 0.25, "beard_shadow": 0.0, "build": 0.3, "gender": 1.0, "hair": "bob", "hair_color": "blond", "hair_peak": 0.0, "height": 1.74, "lip": "char_lip_rose", "skin": 2}
 bones: 52
 look: Gala guest (woman, 30s): sapphire satin cocktail dress with cap sleeves, thin silver belt, silver drop earrings, blond bob
-meshes: Body,Hair,Headwear,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 24472
-tris_by_mesh: {"Body": 13764, "Hair": 2088, "Headwear": 376, "Outfit": 8244}
+tris: 26560
+tris_by_mesh: {"Body": 13764, "Gear": 2088, "Hair": 2088, "Headwear": 376, "Outfit": 8244}

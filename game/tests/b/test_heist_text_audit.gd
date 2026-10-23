@@ -6,16 +6,17 @@
 extends TestCase
 
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
-	&"ostrander_federal"]
+	&"ostrander_federal", &"rolling_thunder"]  # RT: LEAD's D-115 done check (round 292)
 const HEIST_DIR: String = "res://world/heists/%s"
 const DEF_PATH: String = "res://world/heists/%s/%s_def.tres"
 const BLUEPRINT_PATH: String = "res://content/data/preplanning/blueprints/%s.tres"
 const VOICE_LINES_PATH: String = "res://content/data/voice/lines.tres"
 ## Format args the heist code passes (objective data and voice_line_requested context). Anything else in
 ## a heist string is an unresolved placeholder.
-## drives / drives_secured: Shadow Ledger's [secure] data (D-115 B-SL).
+## drives / drives_secured: Shadow Ledger's [secure] data (D-115 B-SL). opened: Rolling Thunder's [trucks] data
+## (rolling_thunder_mission update_objective_data(&"trucks", {opened, total})).
 const ALLOWED_ARGS: Array[String] = ["count", "total", "found", "seconds", "answered", "escape", "shutters_in_s",
-	"drives", "drives_secured"]
+	"drives", "drives_secured", "opened"]
 ## Dev tags that must never reach the player.
 const BANNED: Array[String] = ["[loud]", "[stealth]", "[tag]", "TODO", "TBD", "PLACEHOLDER", "FIXME", "XXX"]
 

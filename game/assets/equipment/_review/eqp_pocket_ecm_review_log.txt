@@ -1,0 +1,2 @@
+eqp_pocket_ecm aabb pos (-0.0405, -0.051, -0.029025) size (0.081, 0.1812, 0.045025) (x 0.08  y 0.18  z 0.05)  tris 2612
+  node Top (Node3D) at (0.0, 0.076, 0.0)

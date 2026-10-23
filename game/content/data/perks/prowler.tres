@@ -91,3 +91,11 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"movement.crouch_speed_mult": 1.1,
+&"perk.burglar": {
+"still_aggro_mult": 1.0,
+"still_regen_delay_mult": 0.8
+}
+}
+mimicable = true

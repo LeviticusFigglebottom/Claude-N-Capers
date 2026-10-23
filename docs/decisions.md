@@ -1641,3 +1641,43 @@ B's sizing ranked the pd2_fidelity "further decks" by new A behaviour. Batch 1 =
 - **Maniac** (M): Hysteria stacks from damage dealt → flat absorb, with decay; the crew shares the best holder's; replicated.
 B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac hooks + the crew-kill event. Values per PD2
 (docs/research/pd2_research.md). Next candidates: Sicario, Tag Team; then Leech, Copycat.
+7. (Amendment 2026-10-23, LEAD) Bot revive work (A r288 batch): bots already revived first in loud, and bots revive bots (now tested).
+   The two new levers (cuffer_score_mult: shoot the cop moving to cuff first; cuffer_clear_first: clear a cuffer near the patient
+   before kneeling) measured WORSE on rt_clean in every diverging A/B comparison (4/4) and equal elsewhere. Both ship OFF (1.0 / false)
+   and stay as knobs. The cuff-vs-revive race is lost on time, not targeting.
+8. (Amendment 2026-10-23, LEAD) P verdict 3/4 (blown, loud build, escort knobs on): the escort is now won and the saw placed, but
+   the crew is pinned at the open truck during the 180 s lockdown cut by wave 1's specials (2 Phantoms + 2 Stingers: each tase/kick
+   costs a revive). That is the "survives the escort, dies in the first assault" case, so: **truck_window_from = escort_down**
+   (BUILD 30 s after the last escort dies, capped at stop + 60 s) and **wave1_exclude = [stinger, phantom]** on Hazardous+ (RT only;
+   wave 2+ unchanged). Lockdown multipliers stay as they are (PD2). P's confirm run judges the result.
+9. (Amendment 2026-10-23, LEAD) A's 5-seed harness table (env_a.md -50; 20 headless real-menu runs on r294): Routine 9/10 won
+   end to end (auto_loud 5/5); Hazardous 0/10 with the bot pilot (escort won, then the truck fight lost: read as bot-skill data next
+   to P's windowed confirm pair). The one escort outlier is **route_east, clean stop**: its rear TAC Heavy halts 33 m from the stop
+   (north: 50 m on every seed) and downs the crew at t+13 s. A traced it to the truck count, not the route: on trucks_2 the rear car
+   closes up at RearStop2 (behind T2), 32 m from the crew's cover vs 49 m on trucks_3. Ruling: RtTweak.rear_close_up_clean = false
+   (a CLEAN stop always uses RearStop, so the rear stays LeadStop + 42.5 m on both routes and truck counts; the crash stop keeps its
+   close-up); a test pins both routes x both truck counts. The pilot snag at (21.9, 0, -12.8) between BinStreet0 and CarParkBarrier
+   (7/20 runs) is a dressing fix for C (widen the gap ≥ 1.2 m). RT is loud-forced by design (the 8 s window raises the ambush
+   alarm), so its D-115 ghost gate reads "n/a, loud-forced", like the PD2 original.
+
+## D-163: Further perk decks, batch 2: Sicario, Tag Team (2026-10-23, LEAD; A plan)
+- **Sicario:** Smoke Bomb = a new thrown kind `smoke` (existing thrown-item path; 10 s cloud). Crew inside avoid 50% of bullet hits
+  (a separate roll); enemies inside hit at ×0.5; no LOS blocking (PD2). Twitch (+20% dodge per hit taken until a dodge, 4 s lockout),
+  Agility Shield (a dodge refills armor, via a new PerkHooks.on_dodge), Unseen Shadow (×2 in smoke; allies in smoke +10% dodge).
+- **Tag Team:** Gas Dispenser = throwable-key tag of an aimed ally ≤ 18 m with LOS (ShoutSystem.ally_target_for). Paired kills heal
+  holder 15 / tagged 7.5 (CrewKillFeed); Synergy +2 flat absorb per paired kill (max 20) via a generic PerkComponent.absorb() summed in
+  PerkHooks.incoming_damage (Maniac moves onto it); Harmony −2 s cooldown per tagged kill.
+- Order: **B proposes the param names first** (deck data + ThrowableDefs); A builds against them (avoids the D-162 rename).
+  Truncated PD2 values (smoke cooldown, tag duration, per-kill extension) are ◇.
+- HUD: `LocalHudModel.tag_team {tagged_slot, left, cooldown}` → ui_hud v1.21 when A lands it. C: smoke-cloud VFX + cue.smoke_bomb;
+  D/C: gas-tether look + cue.gas_dispenser_tag.
+
+## D-164: Further perk decks, batch 3 (last): Leech, Copycat (2026-10-23, LEAD; A plan)
+- **Leech:** armor off deck-wide (adjust_max_armor → 0); Ampule window: heal on use, segmented health (a hit costs exactly one
+  segment, then a short invuln), kills restore segments, losing a segment heals teammates; a new PerkHooks.would_go_down veto
+  (once per window) and use-while-downed temporary revive (no down refund ◇). HUD via PerkItems (kind ampule).
+- **Copycat:** a PerkCopycat with PD2's 4 rotating behaviours (B's list) + per-card stat choices (B: choice UI + profile schema),
+  and card 9 = mimic another deck's card 9. **Mimic scheme:** every deck carries a `mimic_grants` (its card-9 delta as standalone
+  keys); Copycat card 9 grants the chosen deck's mimic_grants. A card 9 that only makes sense inside its own deck is marked
+  non-mimicable or gets a standalone variant. Component params default to 0 / off so partial dicts are safe.
+- Order: Leech first (self-contained), then Copycat. B proposes names first, as in D-163.

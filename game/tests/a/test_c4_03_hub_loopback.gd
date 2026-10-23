@@ -1,4 +1,4 @@
-## C4-03 hub check (LEAD; B6-06 + A3-11 on C's real staged safehouse_g1.tscn), host + 1 client process: with the ENet
+## C4-03 hub check (LEAD; B6-06 + A3-11 on C's real safehouse.tscn), host + 1 client process: with the ENet
 ## session up, each peer runs HubCheck (MenuFlow's 3D safehouse, ENV A's hub crew): spawn at ReturnHeist, the armory
 ## pressed through the crew's own interaction opens its screen, Back returns to its UsePoint, ReturnRange /
 ## ReturnHeist / an unknown marker (-> Spawn) on re-entry. The client is not the authority: the hub must not need it.
@@ -29,8 +29,8 @@ func after_each() -> void:
 
 
 func test_c4_03_safehouse_on_host_and_client() -> void:
-	if not ResourceLoader.exists(HubCheck.SCENE):
-		skip("safehouse_g1.tscn not on this branch")
+	if HubCheck.scene_path() == "":
+		skip("no safehouse scene on this branch")
 		return
 	var port: int = _host()
 	if port < 0:

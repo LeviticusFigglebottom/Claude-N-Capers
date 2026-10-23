@@ -189,7 +189,9 @@ def uniform(kit: Kit) -> None:
     bg.extend(gk.radio(belt, a_radio))
     bg.extend(gk.pouch(belt, math.radians(-140.0), 0.075, 0.06, 0.03, "char_leather_black", snap=GOLD))
     bg.extend(gk.flashlight(belt, math.radians(-62.0)))
+    bg.extend(gk.key_ring(belt, math.radians(-25.0)))                              # G3: the key ring
     kit.add_gear(bg)
+    kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.088 * k, 0.2, 1.345 * k)), k=k, mat=GOLD))  # G3: under the badge
     radio_top = belt.point(a_radio, dz=0.045 * k, out=0.03 * k)
     hull = kit.hull()
     mid = [exit_pt + Vector((0.01 * k, 0.02 * k, -0.08 * k)), Vector((0.165 * k, 0.07 * k, 1.20 * k)),
@@ -244,6 +246,9 @@ def bodyguard(kit: Kit) -> None:
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     kit.add_gear(halden_pin(kit.hull(), Vector((-0.090 * k, 0.3, 1.335 * k)), k))
     n.earpiece(kit, "R")
+    kit.add_head(gk.glasses(fit, "char_button_dark"))                            # G3: dark glasses, a watch
+    kit.add_head(cg.lenses(fit))
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.notes["hip_note"] = "Hip seat = the radio on the belt under the jacket (right hip); the pager rides there"
     kit.notes["look"] = ("Halden close protection (OF-D1 guard_vip): near-black suit, white shirt open at the collar, no "
                          "tie, earpiece + coiled cable (right ear), Halden shield lapel pin, belt radio bulge on "

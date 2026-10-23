@@ -148,3 +148,15 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"perk.anarchist": {
+"tick_by_armor": {},
+"break_immunity_s": 0.0,
+"break_immunity_cooldown_s": 15.0,
+"health_to_armor_fraction": 0.0,
+"health_to_armor_ratio": 0.0,
+"damage_dealt_armor": 30.0,
+"damage_dealt_armor_cooldown_s": 1.5
+}
+}
+mimicable = true

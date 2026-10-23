@@ -385,3 +385,4 @@ func test_p3_ai_shoots_the_tasing_stinger_first() -> void:
 	await wait_seconds(1.0)
 	assert_eq(brain.target_enemy, stinger, "the Stinger tasing a crew member is the target (L4.4)")
 	sb.tase_victim = null
+

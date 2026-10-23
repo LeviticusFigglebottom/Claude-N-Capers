@@ -32,6 +32,7 @@ signal changed(property: StringName)
 signal dominate_prompt_changed()  ## dominate_target, dominate_window_s (PP-A-1, S5.8 / D-079)
 signal devices_changed()         ## devices (PO6-03 proposal to ENV A)
 signal crew_stats_changed()      ## crew_stats (B6-02 proposal, QB to ENV A; content/docs/scoreboard.md)
+signal perk_item_changed()       ## perk_item (ui_hud v1.21 D-163, v1.22 segments)
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
 var health: float = 100.0:
@@ -112,6 +113,13 @@ var body_bags: int = 0:
 	set(v):
 		body_bags = v
 		inventory_changed.emit()
+## ui_hud v1.21 (D-163): the deck throwable's state. {} = none, else {kind: StringName (ThrowableDef.kind),
+## charges: int, max: int, cooldown_left: float s, active_left: float s, partner_slot: int (-1 = none),
+## mode: StringName (&"" | &"jam" | &"feedback"), segments: {count, size} (v1.22, only while a leech ampule runs)}.
+var perk_item: Dictionary = {}:
+	set(v):
+		perk_item = v
+		perk_item_changed.emit()
 ## {} = none, else { "loot_id": StringName, "weight": int (Enums.LootWeight) }
 var carried_bag: Dictionary = {}:
 	set(v):

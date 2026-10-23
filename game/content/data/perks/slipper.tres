@@ -80,3 +80,8 @@ cards = Array[Dictionary]([{
 &"weapon.swap_speed_mult.all": 1.8
 }
 }])
+mimic_grants = {
+&"weapon.armor_pierce_add.all": 0.25,
+&"weapon.swap_speed_mult.all": 1.8
+}
+mimicable = true

@@ -3,7 +3,8 @@
 ## to `EventBus.shot_fx` / `EventBus.explosion_fx` and drives the pooled effect layers:
 ##   Impacts (per-surface debris bursts), Decals (bullet holes / scorch, cap 128, 60 s), Tracers,
 ##   Muzzles (third-person flash + smoke), Lights (0.05 s flash lights, layer 1 + 21), Shells, Explosions,
-##   Blood (D-113: spray, splatter, drips, pools, smears; gore option via VfxSettings.gore).
+##   Blood (D-113: spray, splatter, drips, pools, smears; gore option via VfxSettings.gore),
+##   SmokeClouds and Tethers (D-163: `smoke_cloud_fx` / `crew_tether_fx`, connected when EventBus has them).
 ## Blood sources (no doubles): when EventBus has `blood_hit` (events.md v1.3) every blood effect comes from
 ## blood_hit / bleed_changed and flesh shot_fx only draws the small impact puff. Otherwise (older trunk) the
 ## fallback drives it from shot_fx flags on flesh (headshot 4, penetrated 8 = exit spurt, strong 16 = bigger),
@@ -41,6 +42,8 @@ const MELEE: StringName = &"melee"
 const GROUP_ORIGIN_EPS_M: float = 0.05
 const EXPLOSION_LIGHT_COLOR: Color = Color(1.0, 0.6, 0.3)
 const EXPLOSION_LIGHT_S: float = 0.2
+const SMOKE_CUE: StringName = &"cue.smoke_bomb"
+const TETHER_CUE: StringName = &"cue.gas_dispenser_tag"
 ## Minimum seconds between two impact cues of the same surface.
 const CUE_SURFACE_GAP_S: float = 0.04
 ## Impact cues started per frame at most (CuePlayer shares 32 3D voices); nearest to the camera first.
@@ -73,6 +76,8 @@ var lights: VfxLights
 var shells: ShellFx
 var explosions: ExplosionFx
 var blood: VfxBlood
+var smoke: SmokeCloudFx
+var tethers: TetherFx
 ## True once prewarm() ran: apply_settings (a quality change drops the pools) builds them again.
 var prewarmed: bool = false
 
@@ -102,8 +107,10 @@ func _init() -> void:
 	shells = ShellFx.new()
 	explosions = ExplosionFx.new()
 	blood = VfxBlood.new()
+	smoke = SmokeCloudFx.new()
+	tethers = TetherFx.new()
 	pager_outline = PagerOutline.new()
-	for n: Node in [impacts, decals, tracers, muzzles, lights, shells, explosions, blood, pager_outline]:
+	for n: Node in [impacts, decals, tracers, muzzles, lights, shells, explosions, blood, smoke, tethers, pager_outline]:
 		add_child(n)
 	apply_settings()
 
@@ -119,7 +126,7 @@ func _ready() -> void:
 			EventBus.shot_fx.connect(on_shot_fx)
 		if not EventBus.explosion_fx.is_connected(on_explosion_fx):
 			EventBus.explosion_fx.connect(on_explosion_fx)
-		for pair: Array in _blood_handlers():
+		for pair: Array in _blood_handlers() + _d163_handlers():
 			if EventBus.has_signal(pair[0]) and not EventBus.is_connected(pair[0], pair[1]):
 				EventBus.connect(pair[0], pair[1])
 		pager_outline.connect_event_bus()
@@ -135,7 +142,7 @@ func _exit_tree() -> void:
 	if EventBus.explosion_fx.is_connected(on_explosion_fx):
 		EventBus.explosion_fx.disconnect(on_explosion_fx)
 	pager_outline.disconnect_event_bus()
-	for pair: Array in _blood_handlers(true):
+	for pair: Array in _blood_handlers(true) + _d163_handlers():
 		if EventBus.has_signal(pair[0]) and EventBus.is_connected(pair[0], pair[1]):
 			EventBus.disconnect(pair[0], pair[1])
 
@@ -174,6 +181,8 @@ func apply_settings() -> void:
 	lights.set_cap(VfxSettings.scaled_cap(VfxSettings.LIGHT_CAP, 2))
 	shells.set_cap(VfxSettings.scaled_cap(VfxSettings.SHELL_CAP, 16))
 	explosions.set_cap(VfxSettings.scaled_cap(VfxSettings.EXPLOSION_CAP, 2))
+	smoke.set_cap(VfxSettings.scaled_cap(VfxSettings.SMOKE_CAP, 2))
+	tethers.set_cap(VfxSettings.TETHER_CAP)
 	blood.set_caps(VfxSettings.scaled_cap(VfxSettings.BLOOD_SPRAY_CAP),
 		VfxSettings.scaled_cap(VfxSettings.BLOOD_DECAL_CAP, VfxSettings.MIN_BLOOD_DECALS),
 		VfxSettings.scaled_cap(VfxSettings.BLOOD_POOL_CAP, 4))
@@ -198,6 +207,7 @@ func prewarm() -> void:
 	muzzles.prewarm()
 	lights.prewarm()
 	blood.prewarm()
+	smoke.prewarm()
 
 
 ## Step every effect by `delta` seconds (called from _process when auto_advance).
@@ -216,6 +226,8 @@ func advance(delta: float) -> void:
 	shells.advance(delta)
 	explosions.advance(delta)
 	blood.advance(delta)
+	smoke.advance(delta)
+	tethers.advance(delta)
 
 
 ## EventBus.shot_fx handler (events.md 1.2).
@@ -265,6 +277,44 @@ func on_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
 	var ground: Array = _ground_below(pos)
 	decals.place(&"scorch", ground[0], ground[1], clampf(radius * 0.8, 1.0, 5.0), VfxSettings.DECAL_HOLD_S,
 		_rng.randf_range(-PI, PI))
+
+
+## D-163 signals (ENV A adds them to EventBus; connected only when present).
+func _d163_handlers() -> Array[Array]:
+	return [[&"smoke_cloud_fx", on_smoke_cloud_fx], [&"crew_tether_fx", on_crew_tether_fx]]
+
+
+## EventBus.smoke_cloud_fx (D-163, Sicario's smoke bomb): the cloud and its pop + hiss.
+func on_smoke_cloud_fx(pos: Vector3, radius: float, duration_s: float) -> void:
+	smoke.fire(pos, radius, duration_s)
+	_cue(SMOKE_CUE, pos)
+
+
+## EventBus.crew_tether_fx (D-163, Tag Team): link / unlink two crew members' bodies.
+func on_crew_tether_fx(a_slot: int, b_slot: int, active: bool) -> void:
+	var key: Vector2i = Vector2i(mini(a_slot, b_slot), maxi(a_slot, b_slot))
+	if not active:
+		tethers.unlink(key)
+		return
+	var rt: HeistRuntime = HeistRuntime.current()
+	if rt == null:
+		return
+	var a: Node3D = rt.crew_controller(a_slot) as Node3D
+	var b: Node3D = rt.crew_controller(b_slot) as Node3D
+	if a == null or b == null:
+		return
+	if tethers.link(key, a, b) and a.is_inside_tree():
+		_cue(TETHER_CUE, a.global_position)
+
+
+## A one-off positional cue, when the registry has it (B's rows).
+func _cue(id: StringName, pos: Vector3) -> void:
+	if not _cue_known.has(id):
+		var reg: AudioCueRegistry = AudioCueLib.registry()
+		_cue_known[id] = reg != null and reg.has_cue(id)
+	if _cue_known[id]:
+		cues_requested += 1
+		EventBus.audio_cue_requested.emit(id, pos, 0)
 
 
 ## Flesh impact: the small puff (or a dust puff with gore Off) and, on the fallback path, the blood itself.
@@ -338,6 +388,8 @@ func clear() -> void:
 	shells.clear()
 	explosions.clear()
 	blood.clear()
+	smoke.clear()
+	tethers.clear()
 	pager_outline.clear()
 	_groups.clear()
 	_cadence.clear()
@@ -357,6 +409,8 @@ func stats() -> Dictionary:
 		"blood_sprays": blood.spray_count(), "blood_spray_cap": blood.spray_cap(),
 		"blood_decals": blood.splats.live, "blood_decal_cap": blood.splats.cap(),
 		"blood_pools": blood.pools.live, "blood_pool_cap": blood.pools.cap(),
+		"smoke_clouds": smoke.active_count(), "smoke_cap": smoke.cap(),
+		"tethers": tethers.active_count(), "tether_cap": tethers.cap(),
 	}
 
 

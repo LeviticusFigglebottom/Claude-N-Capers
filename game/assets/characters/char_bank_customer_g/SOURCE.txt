@@ -15,5 +15,5 @@ look: Student customer (OF-D1): cream hoodie (hood down), jeans, white trainers,
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27420
-tris_by_mesh: {"Body": 9120, "Gear": 312, "Hair": 2088, "Headwear": 1348, "Outfit": 14552}
+tris: 27692
+tris_by_mesh: {"Body": 9120, "Gear": 444, "Hair": 2088, "Headwear": 1348, "Outfit": 14692}

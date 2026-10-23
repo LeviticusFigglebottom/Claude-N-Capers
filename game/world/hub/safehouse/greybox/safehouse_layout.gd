@@ -133,7 +133,8 @@ const STATIONS: Array = [
 	["board", [15.0, 1.6, 0.2], 180.0, 1.2, [0.0, 0.0, -0.13],
 		[["Panel", [-2.0, -1.1, -0.06], [2.0, 1.1, 0.0], "prop"]]],
 	["planning", [15.0, 0.0, 6.5], 180.0, 1.25, [0.0, 0.95, 0.0],
-		[["Table", [-1.5, 0.0, -0.75], [1.5, 0.9, 0.75], "counter"]]],
+		[["Table", [-1.5, 0.0, -0.75], [1.5, 0.86, 0.75], "counter"],
+		["Top", [-1.5, 0.86, -0.75], [1.5, 0.9, 0.75], "counter"]]],
 	["armory", [27.4, 0.0, 3.5], 90.0, 1.0, [0.0, 1.0, -0.2],
 		[["Bench", [-1.2, 0.0, -0.4], [1.2, 0.9, 0.4], "counter"],
 		["Pegboard", [-1.2, 1.2, 0.36], [1.2, 2.6, 0.4], "prop"]]],
@@ -166,6 +167,7 @@ const STATION_ART: Dictionary = {
 	"board": ["prop_sh_board_map", ["Panel"]],
 	"jukebox": ["prop_sh_jukebox", ["Cabinet"]],
 	"notoriety": ["prop_sh_old_press", ["Press", "Flywheel"]],
+	"planning": ["prop_sh_planning_table", ["Table", "Top"]],
 }
 ## Stations whose top carries other props (levelcheck meta support: the bench lamps, G2 dressing).
 const SUPPORT_STATIONS: Array[String] = ["planning", "armory", "masks"]
@@ -200,7 +202,7 @@ const PROPS: Array = [
 ## ReviewCameras (G0 Review shots, 16): [name, caption, position, look-at]. TopDownPlan is the plan render.
 const REVIEW_CAMERAS: Array = [
 	["TopDownPlan", "plan_top", [14.0, 30.0, 9.0], [14.0, 0.0, 9.0]],
-	["SpawnView", "spawn_view", [6.0, 1.6, 4.0], [15.0, 1.2, 4.0]],
+	["SpawnView", "spawn_view", [5.5, 1.6, 5.5], [15.0, 1.2, 5.5]],   # G3: centred in the LB-hall opening (z 4-7)
 	["HallWideSW", "hall_wide_sw", [8.6, 2.4, 11.4], [20.0, 1.5, 2.0]],
 	["BoardClose", "board_close", [15.0, 1.6, 2.7], [15.0, 1.6, 0.2]],
 	["PlanningTable", "planning_table", [17.5, 2.4, 8.8], [15.0, 0.9, 6.5]],
@@ -286,6 +288,11 @@ const FIXTURES: Array = [
 const MAP_LIGHTS: Array = [
 	["LiveFireGlow", [20.75, 2.2, 17.62], Color(1.0, 0.1, 0.06), 0.8, 2.5, "Props/LiveFireLamp"],
 	["JukeboxGlow", [1.0, 1.45, 10.25], AMBER, 0.7, 3.5, "Stations/jukebox"],
+]
+## Lights at a marker inside D's hero art (D-159): [name, marker path, colour, energy, range]. The planning table's
+## brass lamp: a warm pool on the map, under the hall pendants.
+const ART_LIGHTS: Array = [
+	["PlanningLamp", "Stations/planning/Visual/Art/Model/LampBulb", K2700, 0.9, 2.6],
 ]
 ## Map-built wall fixtures under Props/ (pivot on the wall face, -Z into the room): [name, pivot, yaw, size]. The range
 ## door's red LIVE FIRE lamp over station 7 (2.3 m).

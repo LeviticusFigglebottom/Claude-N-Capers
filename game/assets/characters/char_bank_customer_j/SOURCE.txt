@@ -16,5 +16,5 @@ look: Customer (OF-D1): a woman in her 60s, short grey hair; brown suit jacket o
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26372
-tris_by_mesh: {"Body": 9162, "Gear": 116, "Hair": 1728, "Headwear": 906, "Outfit": 14460}
+tris: 26716
+tris_by_mesh: {"Body": 9162, "Gear": 460, "Hair": 1728, "Headwear": 906, "Outfit": 14460}
