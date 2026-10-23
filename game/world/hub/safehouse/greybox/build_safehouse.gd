@@ -20,7 +20,7 @@ const MUSIC_DIRECTOR: String = "res://world/audio/music_director.gd"
 const CUE_EMITTER: String = "res://world/audio/cue_emitter.gd"
 ## Staged off hub_map's `res://world/hub/safehouse/safehouse.tscn` until ENV B's 2D-hub tests pin the menu hub
 ## (SafehouseHost enters any scene at that path, so B's 2D-hub flows would turn 3D); then this becomes that path.
-const SCENE_PATH: String = "res://world/hub/safehouse/safehouse_g1.tscn"
+const SCENE_PATH: String = "res://world/hub/safehouse/safehouse.tscn"
 const DNC: GDScript = preload("res://world/heists/shared/door_nav_clearance.gd")
 ## C4-03 lighting lane: environment, fixtures, VoxelGI, probes, occluders.
 const SH_LIGHTING: GDScript = preload("res://world/hub/safehouse/greybox/sh_lighting.gd")
@@ -231,12 +231,38 @@ func build_stations(holder: Node3D) -> void:
 		up.position = Vector3(0.0, -xf.origin.y, -float(s[3]))
 		it.position = v3(s[4])
 		var body: Node3D = add(vis, node3d("Greybox")) as Node3D
+		var art: Node3D = null
+		var replaced: Array = []
+		if L.STATION_ART.has(id):
+			art = _station_art(id)
+			replaced = (L.STATION_ART[id] as Array)[1]
+		var art_box: AABB = AABB()
+		var art_solid: bool = art != null and not art.find_children("*", "CollisionShape3D", true, false).is_empty()
 		for b: Array in s[5]:
 			var mn: Vector3 = v3(b[1])
 			var mx: Vector3 = v3(b[2])
+			if art != null and String(b[0]) in replaced:
+				art_box = AABB(mn, mx - mn) if art_box.size == Vector3.ZERO else art_box.merge(AABB(mn, mx - mn))
+				if art_solid:
+					continue
+				var keep: StaticBody3D = box(body, String(b[0]), mn, mx, String(b[3]))
+				var gm: Node = keep.get_node("Mesh")
+				keep.remove_child(gm)
+				gm.free()
+				continue
 			box(body, String(b[0]), mn, mx, String(b[3]))
 			if xf.origin.y + mn.y < 0.3:   # floor-standing parts block the walker (wall-hung ones are above the agent's climb)
 				obstruct(xf, AABB(mn, mx - mn))
+		if art != null:
+			var ab: AABB = _catalog_aabb(String((L.STATION_ART[id] as Array)[0]))
+			var at: Vector3 = Vector3(art_box.get_center().x - ab.get_center().x, art_box.position.y - ab.position.y,
+				art_box.get_center().z - ab.get_center().z)
+			if id in L.WALL_MOUNTED:   # back on the wall face (the replaced parts' +Z side)
+				at.z = art_box.end.z - ab.end.z
+			art.position = at
+			add(vis, art)
+			if xf.origin.y + at.y + ab.position.y < 0.3:
+				obstruct(xf, AABB(at + ab.position, ab.size))
 		if id == "jukebox":
 			add(st, node3d("Speaker", L.JUKEBOX_SPEAKER))
 		var cam: Marker3D = Marker3D.new()
@@ -245,6 +271,24 @@ func build_stations(holder: Node3D) -> void:
 		cam.transform = Transform3D(Basis.looking_at(it.position - eye, Vector3.UP), eye)
 		cam.set_meta(&"fov", L.STATION_CAM_FOV)
 		add(st, cam)
+
+
+func _station_art(id: String) -> Node3D:
+	var asset: String = String((L.STATION_ART[id] as Array)[0])
+	var ps: PackedScene = load(String(PropCatalog.entry(StringName(asset)).get("scene", ""))) as PackedScene
+	if ps == null:
+		errors.append("station %s: no scene for %s" % [id, asset])
+		return null
+	var inst: Node3D = ps.instantiate() as Node3D
+	inst.name = "Art"
+	inst.set_meta(&"art_asset", asset)
+	return inst
+
+
+## The catalog's model AABB ([x, y, z, sx, sy, sz], Godot space).
+static func _catalog_aabb(asset: String) -> AABB:
+	var a: Array = PropCatalog.entry(StringName(asset)).get("aabb", [0, 0, 0, 0, 0, 0])
+	return AABB(Vector3(float(a[0]), float(a[1]), float(a[2])), Vector3(float(a[3]), float(a[4]), float(a[5])))
 
 
 func build_props(props: Node3D) -> void:

@@ -45,7 +45,8 @@ func environment(lighting: Node3D) -> void:
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.56, 0.52, 0.47)
 	env.ambient_light_energy = 0.45
-	env.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
+	# the dim night sky (not disabled): metals outside a probe, or before theirs first renders, keep a reflection
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
 	env.tonemap_exposure = 1.1
 	env.ssao_enabled = true

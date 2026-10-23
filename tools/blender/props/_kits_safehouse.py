@@ -7,8 +7,8 @@ fixtures: the safehouse's fixtures are explicit (sh_lighting.gd, the G0's per-ro
 required `light_fixture`. The stations (the Board, the planning table, the armory bench, the mask bench, the jukebox,
 the Old Press, the range door, the crew phone, the bulletin board) are the map's own and are kept clear (keep-outs).
 The CO / WC / ST rooms use the shared corridor_service, restroom_single and electrical_closet kits unchanged.
-Waits (new assets, D): the bunk bed (two queen beds stand in), the gun cabinet (lockers stand in), the ear-defender
-rack (a coat rail stands in), the van (the G1 box), the old type cases (plan chests stand in), the press itself.
+D's hero props (D-159) are pinned: the bunk bed, the gun cabinet, the ear-defender (PPE) rack, the drying line and the
+old type cases (the Old Press, the jukebox and the Board map are station art, build_safehouse.gd).
 """
 
 from __future__ import annotations
@@ -40,17 +40,18 @@ SAFEHOUSE_KITS = {
         "max_density": 0.4,
         "min_props": 9,
         "salt": 4802,
-        "required": ["plan_chest", "file_cabinet", "shelving", "fire_extinguisher", "picture", "bin"],
+        "required": ["type_case", "file_cabinet", "shelving", "fire_extinguisher", "picture", "bin"],
         "optional": {"crate": 0.6, "box": 0.6, "plant": 0.3, "coat_rail": 0.4},
-        "counts": {"plan_chest": (2, 3), "picture": (2, 2)},
+        "counts": {"type_case": (2, 3), "picture": (2, 2)},
         "assets": {
+            "type_case": ["prop_sh_type_case"],
             "shelving": ["prop_shelving_archive"],
             "picture": ["prop_notice_frame"],
             "bin": ["prop_bin_office"],
         },
         "ceiling": {},
-        "lone_ok": ["plan_chest", "file_cabinet", "shelving", "fire_extinguisher", "picture", "plant"],
-        "notes": "Safehouse H1 print hall (14 x 12 m): old type cases along the walls (plan chests stand in), a "
+        "lone_ok": ["type_case", "file_cabinet", "shelving", "fire_extinguisher", "picture", "plant"],
+        "notes": "Safehouse H1 print hall (14 x 12 m): old type cases along the walls, a "
         "filing cabinet, shelving, the pinned fire plans by the openings (notice frames). The Board, the planning "
         "table, the Old Press and the crew phone are stations; the hall's middle stays open.",
     },
@@ -93,13 +94,14 @@ SAFEHOUSE_KITS = {
         "max_density": 0.8,
         "min_props": 6,
         "salt": 4804,
-        "required": ["lockers", "shelving", "crate", "box"],
+        "required": ["gun_cabinet", "shelving", "crate", "box"],
         "optional": {"stool": 1, "bin": 1, "tool_wall": 0.6, "fire_extinguisher": 1},
-        "counts": {"lockers": (2, 2)},
-        "assets": {"shelving": ["prop_shelving_parts"], "stool": ["prop_stool_shop"]},
+        "counts": {"gun_cabinet": (2, 2)},
+        "assets": {"gun_cabinet": ["prop_sh_gun_cabinet"], "shelving": ["prop_shelving_parts"],
+                   "stool": ["prop_stool_shop"]},
         "ceiling": {},
-        "lone_ok": ["lockers", "shelving", "crate", "fire_extinguisher"],
-        "notes": "Safehouse WS workshop (6 x 7 m): two locked gun cabinets on the north wall (lockers stand in), "
+        "lone_ok": ["gun_cabinet", "shelving", "crate", "fire_extinguisher"],
+        "notes": "Safehouse WS workshop (6 x 7 m): two locked gun cabinets, "
         "parts shelving on wall z 7, ammo crates, a stool where it fits. The armory bench and its pegboard are the "
         "station (its approach is kept clear).",
     },
@@ -108,14 +110,15 @@ SAFEHOUSE_KITS = {
         "min_density": 0.15,
         "max_density": 0.9,
         "min_props": 5,
-        "salt": 4805,
-        "required": ["shelving", "coat_rail", "box", "bin"],
+        "salt": 4815,
+        "required": ["shelving", "drying_line", "box", "bin"],
         "optional": {"chair": 1, "plant_small": 0.4, "picture": 0.6},
-        "assets": {"shelving": ["prop_shelving_cleaning"], "chair": ["prop_chair_task"]},
+        "assets": {"shelving": ["prop_shelving_cleaning"], "drying_line": ["prop_sh_drying_line"],
+                   "chair": ["prop_chair_task"]},
         "ceiling": {},
-        "lone_ok": ["shelving", "coat_rail"],
+        "lone_ok": ["shelving", "drying_line"],
         "notes": "Safehouse MK mask room (6 x 5 m, a former darkroom): the paint / finish shelf, a drying line with "
-        "stencils (a coat rail stands in), a chair where it fits (the G0's bench chair would stand on the station's "
+        "stencils, a chair where it fits (the G0's bench chair would stand on the station's "
         "UsePoint). The mask bench and the mask wall are the station.",
     },
     "safehouse_plant": {
@@ -141,10 +144,10 @@ SAFEHOUSE_KITS = {
         "required": ["bed", "lockers", "side_table", "bag"],
         "optional": {"table_lamp": 1, "rug": 0.6, "box": 0.5},
         "counts": {"bed": (2, 2), "lockers": (2, 2), "bag": (2, 4)},
-        "assets": {"bed": ["prop_bed_queen"], "bag": ["prop_bag_floor"], "rug": ["prop_rug_rect"]},
+        "assets": {"bed": ["prop_sh_bunk_bed"], "bag": ["prop_bag_floor"], "rug": ["prop_rug_rect"]},
         "ceiling": {},
         "lone_ok": ["bed", "lockers"],
-        "notes": "Safehouse BK bunk room (5 x 4.5 m): two beds (the G0's bunk beds wait for their asset), four "
+        "notes": "Safehouse BK bunk room (5 x 4.5 m): two bunk beds (4 berths), four "
         "personal lockers (two banks), duffels, a bedside table and lamp.",
     },
     "range_vestibule": {
@@ -153,14 +156,14 @@ SAFEHOUSE_KITS = {
         "max_density": 0.8,
         "min_props": 4,
         "salt": 4807,
-        "required": ["bench", "crate", "coat_rail", "fire_extinguisher"],
+        "required": ["bench", "crate", "ppe_rack", "fire_extinguisher"],
         "optional": {"box": 0.8},
         "counts": {"crate": (2, 3)},
-        "assets": {"bench": ["prop_bench_locker"]},
+        "assets": {"bench": ["prop_bench_locker"], "ppe_rack": ["prop_sh_ppe_rack"]},
         "ceiling": {},
-        "lone_ok": ["bench", "crate", "coat_rail", "fire_extinguisher"],
-        "notes": "Safehouse RV range vestibule (3.5 x 4.5 m): the ear-defender and eye-protection rack (a coat rail "
-        "stands in), ammo crates, a bench. The range door (station 7) and its LIVE FIRE lamp are the map's.",
+        "lone_ok": ["bench", "crate", "ppe_rack", "fire_extinguisher"],
+        "notes": "Safehouse RV range vestibule (3.5 x 4.5 m): the ear-defender and eye-protection rack, ammo crates, "
+        "a bench. The range door (station 7) and its LIVE FIRE lamp are the map's.",
     },
     "kit_store": {
         "purpose": "storage",

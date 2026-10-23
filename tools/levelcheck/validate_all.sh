@@ -41,7 +41,7 @@ if [[ $HUB -eq 1 ]]; then
 	echo "== validate_level safehouse hub ($stage)"
 	out="$(mktemp)"
 	"$GODOT" --headless --path "$ROOT/game" res://world/tools/validate_level.tscn -- \
-		--scene=res://world/hub/safehouse/safehouse_g1.tscn --profile=hub --stage="$stage" \
+		--scene=res://world/hub/safehouse/safehouse.tscn --profile=hub --stage="$stage" \
 		--report="$ROOT/docs/levels/safehouse/validation.md" \
 		--walkthrough-report="$ROOT/docs/levels/safehouse/walkthrough.md" >"$out" 2>&1
 	code=$?

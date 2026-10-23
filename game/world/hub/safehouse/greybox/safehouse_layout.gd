@@ -159,6 +159,14 @@ const STATIONS: Array = [
 const JUKEBOX_SPEAKER: Vector3 = Vector3(0.0, 1.25, -0.2)
 const JUKEBOX_UNIT_SIZE: float = 4.0
 const JUKEBOX_MAX_DISTANCE: float = 30.0
+## D's hero art (D-159) in place of station greybox parts: id -> [asset, [replaced part names]]. The art goes under
+## Visual, its catalog AABB aligned to the replaced parts' (centred in x, standing on their bottom; wall-hung ones
+## back on the wall face). Parts are dropped when the art brings its own collision, else they stay collider-only.
+const STATION_ART: Dictionary = {
+	"board": ["prop_sh_board_map", ["Panel"]],
+	"jukebox": ["prop_sh_jukebox", ["Cabinet"]],
+	"notoriety": ["prop_sh_old_press", ["Press", "Flywheel"]],
+}
 ## Stations whose top carries other props (levelcheck meta support: the bench lamps, G2 dressing).
 const SUPPORT_STATIONS: Array[String] = ["planning", "armory", "masks"]
 ## Wall-hung stations (levelcheck meta mount = wall: the wall carries them, not the floor).
