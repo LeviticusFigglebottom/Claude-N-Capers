@@ -700,7 +700,8 @@ def slot_content() -> Dict[str, List[list]]:
         # product: markers only (A's mission spawns product_bags x loot.parcels, +2 with extra_product)
         "prod_stock": [M("ProductStock", [3.0, 0.1, 1.0], "product", "the stock cage (padlocked gate)")],
         "prod_green": [M("ProductGreen", [12.5, 1.0, 1.0], "product", "on the DJs' flight cases")],
-        "prod_private": [M("ProductPrivate", [35.4, U + 0.1, 23.0], "product", "the shelving behind the lasers")],
+        # on the floor in front of the shelving (x 35.1-35.7), behind the laser plane (x 34.3) (A r305: inside the shelf)
+        "prod_private": [M("ProductPrivate", [34.75, U + 0.1, 23.0], "product", "in front of the shelving, behind the lasers")],
         "lz_static": _laser("static", {"beam_count": 3}, 2.6, 22.5),   # the bypass: 1.0 m on the south side
         "lz_sweep": _laser("sweep", {"period_s": 6.0, "sweep_beams": 1}),
         "lz_timed": _laser("timed", {"period_s": 16.0, "off_s": 4.0}),

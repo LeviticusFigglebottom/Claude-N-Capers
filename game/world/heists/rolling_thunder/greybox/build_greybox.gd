@@ -124,6 +124,10 @@ func _build() -> void:
 	_build_environment(n("Lighting"))
 	preload("res://world/heists/rolling_thunder/greybox/rt_finish.gd").new(self).call(&"build")  # RT-C2 finishes (G2)
 	preload("res://world/heists/rolling_thunder/greybox/rt_skyline.gd").new(self).call(&"build")  # RT-C2 skyline (G2)
+	var marks: int = preload("res://world/heists/rolling_thunder/greybox/rt_markings.gd").new(self).call(&"build")
+	print("rt_markings: %d quads" % marks)  # RT-C2 G3 road markings (LEAD r305)
+	var fac: Dictionary = preload("res://world/heists/rolling_thunder/greybox/rt_facades.gd").new(self).call(&"build")
+	print("rt_facades: %s" % fac)  # RT-C2 G3 near facades + the Skyway soffit (LEAD r305)
 	RT_GI.new(self).call(&"build")  # RT-C2 lighting lane: fixtures, VoxelGI, probes, occluders, render policy
 	_build_audio()  # RT-C2 audio lane (D-117)
 	var polys: int = await _bake(nav)
