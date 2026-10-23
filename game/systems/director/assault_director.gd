@@ -372,6 +372,8 @@ func _log_special_spawn(npc: NpcBase, _point: Node3D) -> void:
 
 
 func _log_special_death(npc_net_id: int, _killer: int, _info: Dictionary) -> void:
+	if not Net.is_authority():  # clients run no roster: their alive count is stale
+		return
 	var npc: NpcBase = Ids.lookup(npc_net_id) as NpcBase
 	var def: EnemyDef = npc.enemy_def if npc != null else null
 	if def == null or not def.is_special or AegisCaptain.is_aegis_unit(npc):
