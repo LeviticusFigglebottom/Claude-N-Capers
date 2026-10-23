@@ -1,4 +1,4 @@
-# Contract: characters (v1.37)
+# Contract: characters (v1.39)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -434,7 +434,7 @@ u_out with no crossfade. Under 135° the 8-way switch with phase carry stays (fa
 * The shared run family (`run`, `run_fl/fr/l/r/bl/br/b`, and the `run_start` / `run_stop` /
   `hold_*_run` / `aim_*_run` / `run_reverse*` clips built from it) is a jog-height combat run.
   Hips (mean, above the root): 0.887 m forward and diagonal-forward, 0.865–0.868 m lateral and
-  backward (were 0.795–0.859 m; idle 0.912). Knees are a jog's: ≤ 65° max flex including the
+  backward (were 0.795–0.859 m; idle 0.912). Knees are a jog's: ≤ 65° max flex in D's raw probe units (≈ ≤ 30° true flex; the probe reads 34-36° on a straight leg) including the
   swing heel-kick. Slight forward lean (7°) on the forward runs; upright trunk backward.
 * Unchanged: names, speed (3.5 m/s), frames (21), loop, touch-down phases (R at 0, L at 0.5),
   the forward/back phase groups. The back group runs 0.07–0.08 of a cycle later (A's 0.10 ± 0.04
@@ -442,3 +442,22 @@ u_out with no crossfade. Under 135° the 8-way switch with phase carry stays (fa
 * Known: run_l/r sit 2.2 cm under run (target 2 cm); accepted, since closing it would push run's knee past 62°.
 * A crouched close-quarters advance, if the design wants one, is a separate clip.
 * Evidence: `game/assets/characters/_review/d_motion/run_upright_before.png` / `run_upright_after.png` (LEAD reviewed).
+* v1.37 note (D 59591203, LEAD-reviewed): the run family's weapon layers (`hold_<kind>_run*`, `aim_<fam>_run*`, including run_start /
+  run_stop) add only 0.4× the weapon class's standing forward lean: the trunk lean (hips → neck from vertical) stays ≤ 7° (rifle 6°,
+  pistol 7°; base run 3°). Walk, crouch and standing aims keep the full class lean.
+
+## v1.38: two-handed heavy melee `melee_heavy` (D-156; PD2 sledgehammer / fire axe; D fb81a04c)
+* A rig_arms set with the melee clips and events: `idle*`, `sprint*`, `draw` {ready} and `holster` {gone} (20 f), `swing` 30 f
+  {hit@13, done@30}, `charge_start` (length = MeleeDef.charge_time_s, default 1.0 s) {charged}, `charge*` (held, trembling; frame 0 =
+  charge_start's last frame), `charge_swing` 26 f {hit@9, done@26}.
+* Item frame as the other melee sets: the model hangs identity on the `weapon` bone; Godot origin on the handle axis at the right
+  hand's grip pivot (20 mm below the top of the fist), handle along +Y toward the head, striking face / edge toward −Z.
+* Two-handed: the left hand closes round the same handle at item (0, −0.28, 0) in every clip. Models put the head about 0.55 m up the
+  handle (+Y) and the butt about 0.33 m below the origin.
+* MeleeDef.anim_set = `&"melee_heavy"` (B: sledgehammer, fire_axe). No A or P wiring beyond anim_set.
+
+## v1.39: police port-arms run carry (D-153 TAC ruling; D d2a2e3fd)
+* `hold_rifle_port_run`: hold_rifle_run's port-arms variant (the rifle diagonally across the chest at the sprint carry's frame, over
+  the run with the plain run's upright trunk; same frames / loop / events as run, frame-locked; SOURCE `loco_port`).
+* Police NPC rifles (TAC Light / Heavy and their faction looks) play it instead of hold_rifle_run while running and not aiming;
+  the crew keep hold_rifle_run. A: `anim_layers.update_hold`, NPC branch, police only, when the rig has the clip.

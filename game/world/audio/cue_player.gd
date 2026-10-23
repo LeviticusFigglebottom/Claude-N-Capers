@@ -53,6 +53,13 @@ const LOOP_STOP_OWNERS: Dictionary[StringName, String] = {
 	&"cue.amb_underpass": "CueEmitter (map bed)",
 	&"cue.amb_diner": "CueEmitter (map bed)",
 	&"cue.amb_site": "CueEmitter (map bed)",
+	# C4-03 safehouse: the interior bed and the point emitters (CueEmitters SafehouseMap starts; freed with the hub)
+	&"cue.amb_safehouse_interior": "CueEmitter (map bed)",
+	&"cue.amb_fridge_hum": "CueEmitter (map bed)",
+	&"cue.amb_wall_clock": "CueEmitter (map bed)",
+	&"cue.amb_ballast_buzz": "CueEmitter (map bed)",
+	&"cue.amb_drip": "CueEmitter (map bed)",
+	&"cue.amb_range_extractor": "CueEmitter (map bed)",
 	&"cue.throwable_incendiary_fire": "CueEmitter (fire pool, freed with the pool)",
 	&"cue.assault_van_engine": "assault_event_ended (A: assault events) / heist_ended; cap",
 	&"cue.assault_heli_rotor": "assault_event_ended (A: assault events) / heist_ended; cap",

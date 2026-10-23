@@ -1,0 +1,10 @@
+asset: wpn_melee_lead_pipe
+script: tools/blender/weapons/melee_roster.py
+params: {"kind": "lead_pipe"}
+seed: 3068988495  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset wpn_melee_lead_pipe
+edit policy: generated file, never edit by hand; change the script and rebuild
+origin: handle axis, 20 mm below the top of the fist; handle +Y, edge / face -Z (Godot)
+tri_budget: 6000
+tris_lod0: 896

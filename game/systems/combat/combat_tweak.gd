@@ -99,6 +99,10 @@ static var _cached: CombatTweak = null
 @export var melee_cone_deg: float = 50.0
 ## A knockdown (MeleeDef.knockdown chance x weapon.melee_knockdown_mult) stuns the NPC this long ◇.
 @export var melee_knockdown_s: float = 1.2
+## B2 defense.armor_broken_stagger: a hit while the holder's armor is broken stuns a non-special enemy this long ◇.
+@export var armor_broken_stagger_s: float = 0.5
+## B4b weapon.stagger_chance_add (Knockdown): a hit that rolls the skill's stagger stuns a non-special enemy this long ◇.
+@export var skill_stagger_s: float = 0.5
 ## Gun bash (no melee item equipped): PD2 weapon butt ◇.
 @export var bash_damage: float = 30.0
 @export var bash_range_m: float = 1.5

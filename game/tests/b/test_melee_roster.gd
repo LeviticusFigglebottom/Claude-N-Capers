@@ -47,7 +47,7 @@ func test_values_are_pd2_shaped() -> void:
 		assert_true(d.concealment >= 15 and d.concealment <= 30, "%s: concealment within PD2's 30 cap" % d.id)
 		assert_true(d.range_m >= 1.5 and d.range_m <= 2.3, "%s: reach %.2f m" % [d.id, d.range_m])
 		assert_true(d.silent, "%s: PD2 melee kills are silent" % d.id)
-		assert_true(d.price >= 0, "%s: price" % d.id)
+		assert_true(d.unlock_level >= 0 and d.unlock_level <= 100, "%s: unlock level %d (D-155)" % [d.id, d.unlock_level])
 	# The trade-off: blunt knocks down more than blades and knives, knives keep the best concealment.
 	var avg: Dictionary = {}
 	for s: StringName in SETS:
@@ -91,13 +91,16 @@ func test_loadout_picker_lists_them() -> void:
 	for i: int in range(slot.item_count):
 		names.append(slot.get_item_text(i))
 	for d: MeleeDef in _all():
-		assert_true(names.has(d.display_name), "%s listed" % d.display_name)
+		var listed: bool = false
+		for n: String in names:
+			listed = listed or n.begins_with(d.display_name)
+		assert_true(listed, "%s listed (locked ones carry their level)" % d.display_name)
 	var ls: LoadoutScreen = flow.loadout_screen
 	assert_false(ls.melee_info.visible, "no melee card until the melee picker previews")
 	var picker: ItemPicker = slot.open_picker()
 	await wait_frames(2)
 	for i: int in range(slot.item_count):
-		if slot.get_item_text(i) == "Sledgehammer":
+		if slot.get_item_metadata(i) == &"melee.sledgehammer":  # locked at level 1: previews all the same
 			picker.tiles[i].grab_focus()
 	await wait_frames(2)
 	assert_true(ls.melee_info.visible, "the melee card shows the focused melee")

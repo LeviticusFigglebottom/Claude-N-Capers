@@ -61,6 +61,7 @@ ui.loadout.section.gear,Gear
 ui.loadout.section.crew,Mask and heister
 ui.loadout.primary_none,None yet: buy and equip one in the Workshop
 ui.loadout.weapon_locked,{name} (level {level})
+ui.loadout.melee_locked,{name} (level {level})
 ui.loadout.weapon_for_sale,{name} (buy in the Workshop)
 ui.loadout.equip,Equip
 ui.loadout.equipped,Equipped

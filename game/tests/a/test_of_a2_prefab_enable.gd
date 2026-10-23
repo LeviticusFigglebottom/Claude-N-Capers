@@ -135,6 +135,13 @@ func test_enabled_state_round_trips_through_the_codec() -> void:
 	d.set_enabled(true)
 	NetEntityCodec.apply_state(d, ds)
 	assert_false(d.is_enabled(), "applied over a custom-state prefab")
+	# A4-03: a mission hiding an enabled prefab on the host (Dockside's unrolled crate stacks) replicates it.
+	a.set_enabled(true)
+	a.visible = false
+	var hs: Dictionary = bytes_to_var(var_to_bytes(NetEntityCodec.state_of(a))) as Dictionary
+	assert_eq(hs.get("vis"), false, "state carries vis")
+	NetEntityCodec.apply_state(b, hs)
+	assert_true(b.is_enabled() and not b.visible, "replica enabled but hidden like the host")
 
 
 func test_runtime_rappel_link_opens_the_path() -> void:

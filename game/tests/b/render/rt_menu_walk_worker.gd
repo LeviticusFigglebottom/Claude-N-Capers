@@ -274,7 +274,7 @@ func _payday() -> void:
 	await get_tree().create_timer(3.5).timeout
 	await _shot("payday", 5)
 	await _press(pd.continue_button, "payday Continue")
-	if pd.cards_stage:
+	if is_instance_valid(pd) and pd.cards_stage:  # a failed run has no cards: Continue frees the screen
 		await get_tree().create_timer(PaydayScreen.INPUT_GRACE_S + 0.3).timeout
 		await _shot("payday_cards")
 		await _press(pd.card_views[0], "card 1")

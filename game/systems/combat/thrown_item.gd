@@ -163,9 +163,27 @@ func _detonate(pos: Vector3) -> void:
 	_remove()
 
 
+## Server, B5 `deploy.trip_mine_fire` (Fire Trap, Hot Floor): an incendiary pool of `radius` m burning `duration` s at
+## `pos` (the same burn rules as a thrown incendiary; attacker = the trip mine's owner). Null without a runtime.
+static func spawn_fire_pool(near: Node, pos: Vector3, radius: float, duration: float, attacker: int, owner_slot: int) -> ThrownItem:
+	var rt: HeistRuntime = HeistRuntime.of(near)
+	var parent: Node = rt.dynamic_root if rt != null and rt.dynamic_root != null else null
+	if parent == null or radius <= 0.0 or duration <= 0.0:
+		return null
+	var item: ThrownItem = ThrownItem.new()
+	item.name = "FirePool_%d" % near.get_instance_id()
+	item.params = {"velocity": Vector3.ZERO, "kind": KIND_INCENDIARY, "damage": 0.0, "radius_m": radius, "pool_s": duration,
+		"attacker": attacker, "owner_slot": owner_slot, "throwable_id": &""}
+	parent.add_child(item, true)
+	item.global_position = pos
+	NetIds.claim(item)
+	item._ignite_pool(CombatTweak.data())
+	return item
+
+
 func _ignite_pool(tw: CombatTweak) -> void:
 	landed = true
-	pool_left = tw.incendiary_pool_s
+	pool_left = float(params.get("pool_s", tw.incendiary_pool_s))  # B5: a trip mine's fire sets its own duration
 	_pool_tick = 0.0
 	_cue(CUE_INCENDIARY, global_position, int(params.get("attacker", 0)))
 	_show_pool()

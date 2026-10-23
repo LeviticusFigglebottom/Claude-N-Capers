@@ -226,6 +226,12 @@ func enter_heist() -> bool:
 	run_seed = rt.run_seed
 	note("in heist %s seed %d diff %d phase %d crew at %s" % [rt.heist_id, rt.run_seed, rt.difficulty, rt.phase,
 		Po5Pilot._v(crew.global_position)])
+	var looks: PackedStringArray = PackedStringArray()  # LEAD r281: AI crew drawn as capsules
+	for c: CrewController in rt.crew_members():
+		var v: Node = c.get_node_or_null(^"Visual")
+		var first: String = String(v.get_child(0).name) if v != null and v.get_child_count() > 0 else "-"
+		looks.append("%d%s:%s:%s" % [c.slot, "(ai)" if c.is_ai else "", c.heister, "capsule" if first == "Placeholder" else first])
+	note("crew looks: %s" % ", ".join(looks))
 	if rt.options.has("crew_damage_taken_mult"):
 		note("DEV OPTION crew_damage_taken_mult=%.2f (D-133 harness-only; assault events on)" % float(
 			rt.options["crew_damage_taken_mult"]))

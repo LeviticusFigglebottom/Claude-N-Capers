@@ -185,9 +185,9 @@ func _assert_granted(before: PlayerProfile, after: PlayerProfile, card: Dictiona
 		PaydayCards.WEAPON_MOD:
 			assert_false(before.owned_mods.has(card["item_id"]))
 			assert_has(after.owned_mods, card["item_id"], "mod card saved")
-		PaydayCards.MASK_PART:
-			assert_false(before.owned_mask_parts.has(card["item_id"]))
-			assert_has(after.owned_mask_parts, card["item_id"], "mask part card saved")
+		PaydayCards.MASK_PART:  # a part, or a whole payday preset (`mask.<name>`: owned_masks)
+			assert_false(MaskLocker.is_drop_owned(before, card["item_id"]), "%s not owned before" % card["item_id"])
+			assert_true(MaskLocker.is_drop_owned(after, card["item_id"]), "mask card %s saved" % card["item_id"])
 
 
 ## Lead round 62: each column's best crew value (kills / specials, > 0, ties shared) is marked.

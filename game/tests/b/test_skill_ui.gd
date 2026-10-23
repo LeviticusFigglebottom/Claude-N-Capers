@@ -5,6 +5,9 @@ extends TestCase
 
 const SLOT: int = 5
 const T1: StringName = &"skill.field_medic.triage"
+## Fixture: every skill is hooked today (LEAD r285: only the ungranted stealth.pocket_ecm waits), so the "Not active
+## yet" UI is checked by marking Hot Floor's parts blocked on the in-memory tree for one test.
+const BLOCKED: StringName = &"skill.breacher.hot_floor"
 const T2: StringName = &"skill.field_medic.bedside_manner"
 const T2B: StringName = &"skill.field_medic.numbing_agent"
 const T3: StringName = &"skill.field_medic.field_kit"
@@ -183,12 +186,22 @@ func test_skill_sets_are_independent() -> void:
 
 
 func test_blocked_note_and_team_tag() -> void:
+	var tree: SkillTreeDef = SkillPoints.tree_def()
+	var saved: Dictionary = tree.blocked_on_keys
+	assert_true(saved.is_empty(), "every granted key is hooked (r285): no blocked parts ship")
+	tree.blocked_on_keys = {"%s:basic" % BLOCKED: [&"deploy.trip_mine_fire"], "%s:aced" % BLOCKED: [&"deploy.trip_mine_fire"]}
 	var s: SkillTreeScreen = await _make(100)
-	s.select_skill(T1)  # LEAD r280: Triage's keys wait for ENV A's hooks (unhooked_skill_keys.md batch 3)
-	assert_true(s.detail_basic_note.visible and s.detail_aced_note.visible, "Triage's parts say they are not active yet")
-	assert_eq(SkillBuild.activity(ContentDB.by_id(ContentDB.SKILLS, T1) as SkillDef), &"inactive")
-	assert_true((s.skill_buttons[T1] as Button).text.ends_with(UiText.t(&"ui.skills.button_inactive")),
+	s.show_tree(&"wrench")
+	s.select_skill(BLOCKED)
+	assert_true(s.detail_basic_note.visible and s.detail_aced_note.visible, "Hot Floor's parts say they are not active yet")
+	assert_eq(SkillBuild.activity(ContentDB.by_id(ContentDB.SKILLS, BLOCKED) as SkillDef), &"inactive")
+	assert_true((s.skill_buttons[BLOCKED] as Button).text.ends_with(UiText.t(&"ui.skills.button_inactive")),
 			"the tree button says so too")
+	s.show_tree(&"ringleader")
+	s.select_skill(T1)
+	assert_eq(SkillBuild.activity(ContentDB.by_id(ContentDB.SKILLS, T1) as SkillDef), &"active", "Triage is hooked now")
+	assert_false(s.detail_basic_note.visible, "Triage shows no waiting note")
+	tree.blocked_on_keys = saved
 	s.show_tree(&"shade")
 	s.select_skill(&"skill.slipstream.deep_pockets")
 	assert_false(s.detail_basic_note.visible, "Deep Pockets is fully active")

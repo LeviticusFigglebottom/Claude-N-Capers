@@ -41,6 +41,9 @@ func update_hold(delta: float, tw: AnimTweak) -> void:
 		else:
 			plain = npc_hold_clip()
 			want = HoldGait.clip_for(plain, clip, player, AnimDriver.LIBRARY)  # v1.26 (a): NPCs get the crew's layer
+			if want == &"hold_rifle_run" and _d._npc != null and _d._npc.role == &"police" \
+					and player.has_animation("%s/hold_rifle_port_run" % AnimDriver.LIBRARY):
+				want = &"hold_rifle_port_run"  # v1.39 (D d2a2e3fd): TAC police run at port arms; the crew keep hold_rifle_run
 	var gait_locked: bool = want != &"" and want != plain and not moving_reload
 	if want != &"" and want != hold_layer.clip:
 		var a: Animation = player.get_animation("%s/%s" % [AnimDriver.LIBRARY, want])

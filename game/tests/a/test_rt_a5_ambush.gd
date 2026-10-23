@@ -158,8 +158,13 @@ func test_car_occupant_slides_out_over_the_exit_clip() -> void:
 	await wait_seconds(0.1)  # D: the root holds for frames 0-6 while the unit turns to the door
 	var held: Vector3 = car.to_local(u.global_position) - car.to_local(seat)
 	assert_true(Vector2(held.x, held.z).length() < 0.02, "the root holds at the start of the clip (%.3f m)" % held.x)
+	var player: AnimationPlayer = AnimDriver.of(u).player
+	assert_eq(player.process_mode, Node.PROCESS_MODE_ALWAYS, "D r283: the AnimationPlayer runs while the body is paused")
+	await wait_seconds(0.7)
+	assert_near(player.current_animation_position, 0.8, 0.12, "the exit clip advances with the slide (D: frame 24 at 0.8 s)")
 	var handed: bool = await wait_until(func() -> bool: return u.process_mode == Node.PROCESS_MODE_INHERIT, exit_s + 0.5)
 	assert_true(handed, "the brain runs after the clip")
+	assert_eq(player.process_mode, Node.PROCESS_MODE_INHERIT, "the AnimationPlayer inherits again once out")
 	var out_x: float = absf(car.to_local(u.global_position).x) - absf(car.to_local(seat).x)
 	if not curve.is_empty():
 		assert_near(out_x, curve[curve.size() - 1], 0.03, "out by exactly the clip's root travel (D: no foot skate)")

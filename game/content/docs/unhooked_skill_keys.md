@@ -33,6 +33,10 @@ Overkill, Bulletstorm, Bullseye, Kickstarter, crits and dodge). Every key is in 
 
 ---
 
+**All batches hooked (LEAD r285):** A (env/a-core 05477b73, 48608af4, f12e25ba) and P (env/p-play 67b66fd3) read every
+key below; `SkillTreeDef.blocked_on_keys` is empty. Only `stealth.pocket_ecm` (held, granted by no skill) stays in the
+ratchet's UNHOOKED. Cornered and Kickstarter behaviour are still open.
+
 ## Batch 1: core loud-build pillars (9)
 | Key | Granted by | Data | PD2 | Behaviour |
 |---|---|---|---|---|
@@ -47,8 +51,8 @@ Overkill, Bulletstorm, Bullseye, Kickstarter, crits and dodge). Every key is in 
 | `defense.self_revive_refill_on_doctor_bag` | Comeback A | `true` | Messiah (aced) | Using a doctor bag refills the self-revive charge. |
 
 ## Batch 2: crits and dodge (8)
-Batch 2 needs a crit roll first: a crit deals ×3 (PD2: crits ignore headshot rules and deal triple damage; the
-multiplier is ◇ if `CombatTweak` lacks it). Pay-off: Shade builds (stealth / hybrid), the second most common archetype.
+Batch 2 needs a crit roll first. Settled (LEAD r285, D-027 QB-29): a crit deals the headshot multiplier on any zone,
+with no extra ×3. Pay-off: Shade builds (stealth / hybrid), the second most common archetype.
 
 | Key | Granted by | Data | PD2 | Behaviour |
 |---|---|---|---|---|

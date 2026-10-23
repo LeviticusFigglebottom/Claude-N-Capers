@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"loading_bay"
+purpose = &"loading"
+required_items = Array[StringName]([&"pallet", &"crate", &"shelving", &"dolly", &"coat_rail", &"bag"])
+optional_items = {
+&"box": 1.2,
+&"fire_extinguisher": 1,
+&"gas_cylinders": 0.5,
+&"pallet": 0.8
+}
+clutter_groups = {}
+min_density = 0.12
+max_density = 0.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"pallet", &"crate", &"shelving", &"dolly", &"coat_rail", &"vehicle", &"fire_extinguisher"])
+seed_salt = 4801
+counts = {
+&"bag": Vector2i(2, 3),
+&"pallet": Vector2i(2, 2)
+}
+assets = {
+&"bag": PackedStringArray("prop_bag_floor"),
+&"pallet": PackedStringArray("prop_pallet_loaded"),
+&"shelving": PackedStringArray("prop_shelving_parts")
+}
+ceiling = {}
+notes = "Safehouse LB (8 x 8 m, the spawn room): two pallets of old paper reels (print-works legacy), a rolling tool chest (parts shelving), an empty duffel pile, the hand truck, a coat rack; the crew van is the map's (Props/CrewVan). The work light on its stand is an explicit fixture."

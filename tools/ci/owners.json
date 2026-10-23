@@ -71,7 +71,11 @@
     "game/world/materials/char_*",
     "docs/art/style_samples/*/officer*",
     "tools/blender/style_samples/officer.py",
-    "tools/blender/style_samples/head.py"
+    "tools/blender/style_samples/head.py",
+    "tools/blender/equipment/**",
+    "game/assets/equipment/**",
+    "tools/blender/props/safehouse_hero.py",
+    "game/assets/props/prop_sh_*/**"
    ]
   },
   "d": {
@@ -87,7 +91,11 @@
     "game/tests/d/**",
     "docs/status/env_d.md",
     "tools/blender/style_samples/officer.py",
-    "tools/blender/style_samples/head.py"
+    "tools/blender/style_samples/head.py",
+    "tools/blender/equipment/**",
+    "game/assets/equipment/**",
+    "tools/blender/props/safehouse_hero.py",
+    "game/assets/props/prop_sh_*/**"
    ]
   }
  },

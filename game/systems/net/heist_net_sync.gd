@@ -43,6 +43,10 @@ const SERVICE: StringName = &"net_sync"
 const NODE_NAME: String = "NetSync"
 ## Discrete-state and transform rate (net.md: 10-20 Hz).
 const SYNC_HZ: float = 15.0
+## A4-03 soak (Dockside: two cowering civilians 5 m off on every client for the whole run): transforms go out
+## unreliable and only when changed, so one lost packet, or one that reached a client still building its replica,
+## leaves a now-still NPC stale for good. Every XFORM_KEYFRAME_S the full transform set is resent once.
+const XFORM_KEYFRAME_S: float = 2.0
 const SVC_INTERACTION: String = "isys"
 const SVC_CODES: String = "codes"
 const SVC_CUSTODY: String = "custody"
@@ -57,6 +61,8 @@ const SVC_ZONES: String = "zones"
 const SVC_PAGERS: String = "pagers"
 ## QC-63: variant groups revealed at runtime (PreplanAssets.runtime_reveals).
 const SVC_REVEALS: String = "reveals"
+## B1 skill keys: the live timed buffs (CrewBuffs: Inspire, Overkill, Swan Song) for client movement / HUD.
+const SVC_BUFFS: String = "buffs"
 ## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
 const KIND_CLOSED: StringName = &"heist_closed"
 const KIND_LEFT: StringName = &"heist_left"
@@ -83,6 +89,7 @@ var _last_state: Dictionary[int, Dictionary] = {}
 var _last_xform: Dictionary[int, Variant] = {}
 var _last_services: Dictionary = {}
 var _accum: float = 0.0
+var _keyframe_left: float = XFORM_KEYFRAME_S
 ## Client: last replicated captain state (see captain_state()).
 var _captain: Dictionary = {"present": false, "resistance": 0.0}
 ## Server: peers holding a replica of this heist, the only ones replicated to: the peers connected at begin(),
@@ -347,6 +354,9 @@ func services_state() -> Dictionary:
 	var pagers: PagerSystem = _runtime.service(G.SVC_PAGERS) as PagerSystem
 	if pagers != null:
 		out[SVC_PAGERS] = pagers.net_state()
+	var buffs: CrewBuffs = _runtime.service(CrewBuffs.SERVICE) as CrewBuffs
+	if buffs != null:
+		out[SVC_BUFFS] = buffs.net_state()
 	if not _runtime.preplan.runtime_reveals.is_empty():
 		out[SVC_REVEALS] = _runtime.preplan.reveals_net_state()
 	return out
@@ -377,10 +387,14 @@ func _physics_step(delta: float) -> void:
 	_scan_spawns()
 	_scan_despawns()
 	_accum += delta
+	_keyframe_left -= delta
 	if _accum < 1.0 / SYNC_HZ:
 		return
 	_accum = 0.0
 	_send_state()
+	if _keyframe_left <= 0.0:
+		_keyframe_left = XFORM_KEYFRAME_S
+		_last_xform.clear()  # this send carries every transform
 	_send_xforms()
 
 
@@ -519,6 +533,8 @@ func apply_services(svc: Dictionary) -> void:
 	var pagers: PagerSystem = _runtime.service(G.SVC_PAGERS) as PagerSystem
 	if svc.has(SVC_PAGERS) and pagers != null:
 		pagers.apply_net_state(svc[SVC_PAGERS] as Dictionary)
+	if svc.has(SVC_BUFFS):
+		CrewBuffs.of(_runtime).apply_net_state(svc[SVC_BUFFS] as Dictionary)
 	if svc.has(SVC_REVEALS):
 		_runtime.preplan.apply_reveals_net_state(svc[SVC_REVEALS] as Array)
 	if svc.has(SVC_RUNTIME):

@@ -150,12 +150,16 @@ func _physics_step(delta: float) -> void:
 		return
 	var t: CrewController = _wanted_target()
 	if t == null or not _can_engage(t):
-		target = null
-		engaging = false
-		if spun_up:
-			_spin_idle += delta
-			if _spin_idle >= spin_down_time():
-				spun_up = false
+		var sentry: SentryGun = _wanted_sentry() if t == null else null
+		if sentry != null:
+			_tick_sentry(sentry)  # D-157: the brain chose a crew sentry
+		else:
+			target = null
+			engaging = false
+			if spun_up:
+				_spin_idle += delta
+				if _spin_idle >= spin_down_time():
+					spun_up = false
 		return
 	if t != target or not engaging:
 		target = t
@@ -236,6 +240,44 @@ func _wanted_target() -> CrewController:
 		return null
 	var ct: Variant = _brain.get(&"combat_target")
 	return ct as CrewController if ct is CrewController else null
+
+
+## D-157: the brain's combat target when it is a live crew sentry.
+func _wanted_sentry() -> SentryGun:
+	if not _npc.alive or manual_target != null or _brain == null or not is_instance_valid(_brain):
+		return null
+	var wants: Variant = _brain.get(&"wants_to_fire")
+	var ct: Variant = _brain.get(&"combat_target")
+	var s: SentryGun = ct as SentryGun if ct is SentryGun else null
+	return s if wants is bool and bool(wants) and s != null and s.alive() else null
+
+
+## D-157: engage a crew sentry like a crew member (aim delay, range, line of sight, the same hit chance).
+func _tick_sentry(s: SentryGun) -> void:
+	var from: Vector3 = _npc.eye_position()
+	var aim: Vector3 = s.aim_point()
+	if from.distance_to(aim) > CombatTweak.data().ai_target_range_max_m \
+			or not CombatSystem.has_npc_los(_npc, from, aim, [_npc, s]):
+		engaging = false
+		return
+	if not engaging or target != null:
+		target = null
+		engaging = true
+		cooldown = maxf(cooldown, aim_delay() * NpcSuppression.aim_delay_mult(_npc))
+	if cooldown > 0.0:
+		return
+	cooldown = fire_interval() * NpcSuppression.shot_delay_mult(_npc)
+	var weapon_id: StringName = _npc.enemy_def.weapon if _npc.enemy_def != null else &""
+	EventBus.weapon_fired.emit(_npc.net_id, weapon_id, false, from)
+	var tw: CombatTweak = CombatTweak.data()
+	var hit: bool = GameRng.stream(&"npc_fire").randf() < tw.npc_hit_chance(from.distance_to(aim), _npc.difficulty) \
+		* NpcSuppression.hit_chance_mult(_npc)
+	ShotFx.npc_shot(_npc, from, aim, hit, s)
+	if hit:
+		s.take_hit(Damage.info(shot_damage(), Enums.DamageType.BULLET, Enums.HitZone.BODY, weapon_id, aim,
+			(aim - from).normalized(), _npc.net_id), _npc.net_id)
+	shot.emit(s, hit)
+	_use_round(weapon_id)
 
 
 func _can_engage(c: CrewController) -> bool:

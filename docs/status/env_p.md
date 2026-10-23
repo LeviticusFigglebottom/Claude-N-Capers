@@ -2,7 +2,30 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-22 18:40 UTC, D-153 handover; reports to session_01XAPqmFJ32zHKLK9Sezymym)
+## To the LEAD: (updated 2026-10-23 00:30 UTC; trunk r284 merged; reports to session_01XAPqmFJ32zHKLK9Sezymym)
+- **Resume here:** c4 (magazine C4 fetched in the setup, T3 by C4) and ambush_crash (mixer row, r280 mixer) are
+  running. Then: sprint-cancels-reload (A's CrewWeapons.cancel_reload, r285/286), then the traversal remainder (throws,
+  underpass, kerbs, escapes, fences, lift walk-in), then setup from the car park / underpass spawns. Runs go through
+  scratchpad `rtrun2.sh <test>` (copies into captures/rt_g1_2026-10-22/<test>/ at the end). Never edit a wrapper a
+  run is executing. Parse-check `rt_g1_pass.gd` with `--test=parsecheck` before every launch.
+- **RT truck rows (r278+):** ambush_clean PASS, ambush_crash PASS, east_e1 PASS (HEAVY T1 -> E1), east_e2 PASS (HEAVY
+  T3 -> E2, 40 m, 0 STUCK). breach: T1 placed saw on the SawPoint PASS (130 s, 1 jam), T2 thermite PASS (about 36 s
+  burn). Magazine: the nav path ran through MagWallN (fixed by C, r282); loud, its padlock's place_saw failed at once
+  (c4_loud_padlock/, diagnostic added).
+- **Setup (real detection, human mask timing):** from the plaza, rig hacked at t=66 (84 s spare), but the gate guard
+  (post_site_gate) hit 1.00 at the rig 0.2 s before it finished: FAIL. A ~20 s hack doesn't fit his loop from a plain
+  wait (question to the LEAD / C).
+- **Hazardous verdicts (kit corsair_ar + kestrel + heavy_vest + doctor bag, no skills; 3 AI bots):**
+  - clean_haz: seen from T3's seated cab 1.5 s after the stop; all 4 down within 23 s at Pier-40 cover; custody;
+    no truck. UNFAIR at Hazardous.
+  - blown: escort down from cover 20 s after the crash stop (fair). Wave 1 lands 15 s after the stop; the pilot is
+    Phantom-kicked 3 s after leaving cover for T1. BORDERLINE-UNFAIR.
+  - The default kit (pistol + suit) runs were worse (blown_default_kit/, clean_haz_default_kit_partial/).
+- **A4-04 skill hooks DONE (67b66fd3, round 285):** weapon.ads_speed_mult, movement.ads_speed_penalty_mult (new PD2
+  ADS walk cap 0.53, humans only, LEAD: ungated), shoot_while_sprinting, reload_while_sprinting,
+  sprint_any_direction; test_p_a404_skill_hooks 5/5 headless + windowed.
+
+## (2026-10-22 18:40 UTC, D-153 handover)
 - **RT-P1 harness: `game/tests/p/_review/rt_g1_pass.gd/.tscn`** (extends of_g1_pass; real input only). One ROW per item
   (PASS / STUCK / FAIL + owner) and rows.md per run. Traversal: stairs, ramps, lift, site, throws, underpass, kerbs,
   escapes, fences (`--test=all`). Truck phase: ambush_clean, ambush_crash, breach, east_e1, east_e2, setup

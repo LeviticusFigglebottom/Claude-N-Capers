@@ -75,6 +75,9 @@ extends Resource
 @export var device_jam_min_gap: float = 0.2
 ## Auto-restart delay range (s) after a jam when the restart roll succeeds.
 @export var device_restart_delay_s: Vector2 = Vector2(5.0, 10.0)
+## B1 interaction.device_melee_restart (PD2 Kickstarter Aced, Percussive Maintenance): the chance that one melee hit
+## on a jammed device restarts it; one try per jam ◇.
+@export_range(0.0, 1.0) var device_melee_restart_chance: float = 0.5
 ## Seconds between NoiseEvents of a running device in stealth (S4.3).
 @export var device_noise_interval_s: float = 2.0
 ## Safe drill time by Safe.Size (SMALL, MEDIUM, LARGE) ◇.
