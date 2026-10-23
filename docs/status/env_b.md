@@ -3,8 +3,20 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 17:10)
-### LEAD r308 card ruling + AH HUD capture gaps
+## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 19:40)
+### LEAD r309 gamepad-only pass (RT + AH un-hidden on the scratch tree, 720p)
+Tool: tests/b/render/pad_flow_capture.gd -- <out> <heist>. It uses real joypad events only: d-pad, A, B, the right stick, and the pad interact / mask buttons. Shots are in content/ui/_review/r309_pad/.
+- **AH:** the full loop is clean (0 issues). Main menu > Board (pin, Take) > B > Planning Table > select > briefing (RS scroll) > pre-planning > loadout > heist (gear X-hold, Y mask-up, prompts) > payday > card pick (A) > Continue > main menu.
+- **RT:** 0 issues up to the card pick. On llvmpipe the run hit its 55 min wall there; AH covers card pick through Back.
+- Glyphs are pad glyphs on every prompt and hint strip. Every screen had a visible focus.
+- Fixed (B):
+  - aa39bfe3: the briefing intel column scrolls on RS.
+  - c85c9d91: a wide cap (D-pad Up) pushed the Stay quiet card off-screen.
+  - 11e45c66: marker labels ran under the open card.
+- Noted, not B's:
+  - RT glass door: "Press X to open / Can't do that right now" while masked in stealth (a generic reason; A).
+  - Pre-planning's caption reads "Esc / B returns…" on both devices (fine).
+
 - 6b3de312: on a civilian-start heist (player_mode civilian), the heist card shows first, ahead of Casing / Stealth, which queue behind it. Test: test_heist_tips.test_civilian_start_shows_the_heist_card_first. The capture shows "Guest list" at the civilian start.
 - Gaps closed, on the scratch tree with AH un-hidden. Seed 7 Brutal rolls sec_staffed and co_op_pickup (direct launch, `ah_hud_capture.gd -- <out> 7`). Shots are in content/ui/_review/r308_ah_gaps/ (720p + 1080p):
   - the operator desk;
