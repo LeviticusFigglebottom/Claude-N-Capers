@@ -36,7 +36,7 @@ static func scripts() -> Dictionary[StringName, GDScript]:
 		PerkGambler.KEY: PerkGambler, PerkKingpin.KEY: PerkKingpin, PerkThrowable.KEY: PerkThrowable,
 		PerkPocketEcm.KEY: PerkPocketEcm, PerkYakuza.KEY: PerkYakuza, PerkBiker.KEY: PerkBiker,
 		PerkManiac.KEY: PerkManiac, PerkSicario.KEY: PerkSicario, PerkTagTeam.KEY: PerkTagTeam,
-		PerkLeech.KEY: PerkLeech,
+		PerkLeech.KEY: PerkLeech, PerkCopycat.KEY: PerkCopycat,
 	}
 
 
@@ -147,6 +147,14 @@ func melee_damage_mult() -> float:
 func on_ammo_picked(amount: int) -> void:
 	for c: PerkComponent in components.values():
 		c.on_ammo_picked(amount)
+
+
+## D-164 (LEAD): deck-item cooldowns keep running while the holder is down (CrewHealth, through
+## PerkHooks.tick_downed): only components with tick_item_cooldown(delta), only that timer.
+func tick_item_cooldowns(delta: float) -> void:
+	for c: PerkComponent in components.values():
+		if c.has_method(&"tick_item_cooldown"):
+			c.call(&"tick_item_cooldown", delta)
 
 
 func use_throwable(kind: StringName) -> bool:

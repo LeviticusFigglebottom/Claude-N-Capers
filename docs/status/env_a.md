@@ -4,6 +4,26 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-46b) D-158 amendment 8 (4c5b9248, its own commit, sent to P)
+- rt_tweak.tres: truck_window_from escort_down; wave1_exclude [stinger, phantom] from Hazardous.
+- test_d158_rt_fairness 12/12 checks the shipped values; the tests that change the tweak restore them.
+
+### (-46) D-164 perk.copycat on B's names; item cooldowns run while down (2026-10-23)
+- PerkCopycat:
+  - Tactical reload: kills per weapon slot refill the holstered magazine from its reserve, then a near-instant swap
+    window (CrewWeapons.grant_quick_equip, equip time /10 ◇, server side).
+  - Headshot heal on any headshot hit, with its cooldown.
+  - Dodge ricochet back at the shooter (the dodged bullet's damage ◇); its cooldown is 0.35 s on LETHAL/CATACLYSM ◇.
+  - Grace: health-only immunity after the hit that crosses the threshold, with its cooldown.
+- CrewWeapons.refill_mag(ws, free).
+- PerkHooks.is_headshot(info) for the kill and damage infos.
+- on_dodge now passes {amount, type, attacker, position}.
+- Deck-item cooldowns (Stoic flask, Kingpin injector, Sicario, Leech) tick while down, via
+  tick_item_cooldown / CrewPerks.tick_item_cooldowns. TagPairs and the pocket ECM are services that already ran.
+- Contract row perk.copycat (phase 5). perk_tweak defaults (all behaviours off).
+- Tests: test_d164_copycat 5/5 (includes a partial-dict / mimic smoke test over every family's component);
+  test_d164_leech 7/7 (+ cooldowns while down, refill_mag / is_headshot).
+
 ### (-45) D-164 perk.leech on B's names, ui_hud v1.22 segments, perk_item.mode (2026-10-23)
 - PerkLeech:
   - The ampule window: activate heal, armor_off, and segmented health (a hit takes the whole top segment).

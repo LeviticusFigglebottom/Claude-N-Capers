@@ -29,6 +29,8 @@ signal ammo_changed(weapon_slot: int)
 ## D-118: a slot's laser / flashlight was switched (server toggle; clients on the replicated state).
 signal gadget_changed(weapon_slot: int, on: bool)
 
+## D-164 Copycat quick swap: the equip time divisor in its window ("nearly instant", ◇).
+const QUICK_EQUIP_DIV: float = 10.0
 ## D-118: gadgets CrewIntent.gadget toggles (WeaponStats.gadgets); angled sights are not switched here.
 const TOGGLE_GADGETS: Array[StringName] = [&"laser", &"flashlight"]
 ## PO-8: server-side marker on a claim that arrived from its owning client (_rpc_hit_claim).
@@ -54,6 +56,8 @@ class WeaponState:
 
 ## Equipped Enums.WeaponSlot (HUD).
 var equipped_slot: int = Enums.WeaponSlot.SECONDARY
+## D-164 Copycat: weapon slot -> seconds a swap to it stays near-instant (grant_quick_equip).
+var quick_equip_left: Dictionary[int, float] = {}
 var deployable_count: int = 0
 ## A2-06: current deployable id (DeployableSystem keeps it and deployable_count up to date).
 var deployable_id: StringName = &""
@@ -354,6 +358,22 @@ func set_ammo(ws: int, p_mag: int, p_reserve: int) -> void:
 	_sync_ammo(ws)
 
 
+## Server, D-164 (Copycat Tactical Reload): fill slot `ws`'s magazine; from its reserve unless `free`. Rounds added.
+func refill_mag(ws: int, free: bool = false) -> int:
+	var s: WeaponState = _states.get(ws)
+	if s == null:
+		return 0
+	var take: int = s.mag_size - s.mag if free else mini(s.mag_size - s.mag, s.reserve)
+	if take <= 0:
+		return 0
+	s.mag += take
+	if not free:
+		s.reserve -= take
+	ammo_changed.emit(ws)
+	_sync_ammo(ws)
+	return take
+
+
 func mag_size(ws: int) -> int:
 	var s: WeaponState = _states.get(ws)
 	return s.mag_size if s != null else 0
@@ -394,6 +414,10 @@ func _tick_timers(delta: float) -> void:
 		_cooldown -= delta
 	if _equip_left > 0.0:
 		_equip_left -= delta
+	for ws: int in quick_equip_left.keys():
+		quick_equip_left[ws] = float(quick_equip_left[ws]) - delta
+		if float(quick_equip_left[ws]) <= 0.0:
+			quick_equip_left.erase(ws)
 	if reloading:
 		reload_left -= delta
 		if reload_left <= 0.0:
@@ -428,7 +452,14 @@ func equip(ws: int, redraw: bool = false) -> bool:
 
 
 func _equip_time(s: WeaponState) -> float:
-	return s.stats.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult", s.qualifier), 0.01)
+	var t: float = s.stats.equip_time_s / maxf(Modifiers.mult(_crew.slot, &"weapon.swap_speed_mult", s.qualifier), 0.01)
+	return t / QUICK_EQUIP_DIV if float(quick_equip_left.get(equipped_slot, 0.0)) > 0.0 else t
+
+
+## Server, D-164 (Copycat Tactical Reload): swapping to slot `ws` within `seconds` is near-instant (equip time /
+## QUICK_EQUIP_DIV). Server-side only: a client's predicted equip may lag the server's by the normal equip time.
+func grant_quick_equip(ws: int, seconds: float) -> void:
+	quick_equip_left[ws] = maxf(float(quick_equip_left.get(ws, 0.0)), seconds)
 
 
 ## Start reloading the equipped weapon (tactical or empty time). Returns false if not possible.

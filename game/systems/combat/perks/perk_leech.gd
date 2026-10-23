@@ -73,8 +73,14 @@ func tick(delta: float) -> void:
 		if not is_active():
 			_end(h)
 	else:
-		cooldown_left = maxf(cooldown_left - delta, 0.0)
+		tick_item_cooldown(delta)
 	_publish()
+
+
+## Its item cooldown: also while the holder is down (CrewPerks.tick_item_cooldowns, PD2 timers keep running).
+func tick_item_cooldown(delta: float) -> void:
+	if not is_active():
+		cooldown_left = maxf(cooldown_left - delta, 0.0)
 
 
 func incoming(_info: Dictionary, dmg: float) -> float:

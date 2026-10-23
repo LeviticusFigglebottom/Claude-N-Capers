@@ -117,11 +117,11 @@ static func absorb(crew: CrewController) -> float:
 
 
 ## D-163: CrewHealth dodged a hit (a dodge roll or a smoke avoid). Server.
-static func on_dodge(h: CrewHealth) -> void:
+static func on_dodge(h: CrewHealth, info: Dictionary = {}) -> void:
 	var perks: CrewPerks = of(_crew_of(h))
 	if perks != null and Net.is_authority():
 		for c: PerkComponent in perks.components.values():
-			c.on_dodge()
+			c.on_dodge(info)
 
 
 ## CrewHealth.take_hit after armor / health were reduced (`out` = final DamageInfo so far).
@@ -182,6 +182,11 @@ static func throwable_id(crew: CrewController) -> StringName:
 	return t.item_id() if t != null else &""
 
 
+## D-164: whether an EventBus.npc_killed info (the killing DamageInfo) was a headshot (PerkComponent.on_kill's info).
+static func is_headshot(info: Dictionary) -> bool:
+	return int(info.get("zone", Enums.HitZone.BODY)) == Enums.HitZone.HEAD
+
+
 ## D-164 CrewHealth.take_hit: the hit took the last health; true when a perk keeps the holder up (it set the health).
 static func veto_down(h: CrewHealth) -> bool:
 	var perks: CrewPerks = of(_crew_of(h))
@@ -193,13 +198,17 @@ static func veto_down(h: CrewHealth) -> bool:
 	return false
 
 
-## D-164 CrewHealth, every tick while DOWNED: the deck throwable's input edge, for the perks that allow a use while
-## down (a component with usable_while_down() true). True when the holder is no longer DOWNED after it.
-static func tick_downed(h: CrewHealth) -> bool:
+## D-164 CrewHealth, every tick while down (DOWNED, a kick down, police-cuffed in bleed-out): the deck-item
+## cooldowns run; when DOWNED also the deck throwable's input edge, for the perks that allow a use while down (a
+## component with usable_while_down() true). True when the holder is no longer in that state after it.
+static func tick_downed(h: CrewHealth, delta: float) -> bool:
 	var crew: CrewController = _crew_of(h)
 	var perks: CrewPerks = of(crew)
-	var t: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable if perks != null else null
-	if t == null or not Net.is_authority():
+	if perks == null or not Net.is_authority():
+		return false
+	perks.tick_item_cooldowns(delta)
+	var t: PerkThrowable = perks.component(PerkThrowable.KEY) as PerkThrowable
+	if t == null or crew.crew_state != Enums.CrewState.DOWNED:
 		return false
 	t.tick(0.0)
 	return crew.crew_state != Enums.CrewState.DOWNED

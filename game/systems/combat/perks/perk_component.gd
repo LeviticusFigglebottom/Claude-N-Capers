@@ -95,8 +95,9 @@ func melee_damage_mult() -> float:
 	return 1.0
 
 
-## D-163: the holder dodged a hit (CrewHealth: dodge roll or smoke avoid).
-func on_dodge() -> void:
+## D-163: the holder dodged a hit (CrewHealth: dodge roll or smoke avoid). `info`: {amount, type, attacker (net
+## id, 0 = none), position}.
+func on_dodge(_info: Dictionary) -> void:
 	pass
 
 

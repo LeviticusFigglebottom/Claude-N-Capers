@@ -149,3 +149,36 @@ func test_not_usable_while_down_by_default() -> void:
 	_grant()
 	_crew().health.go_down()
 	assert_false(PerkHooks.use_throwable(_crew()), "card 9 not held: no use while down")
+
+
+func test_item_cooldowns_run_while_down() -> void:
+	var l: PerkLeech = _grant()
+	Modifiers.set_source(0, &"deck2", {PerkKingpin.KEY: {"cooldown_s": 30.0, "duration_s": 4.0}})
+	var perks: CrewPerks = PerkHooks.of(_crew())
+	perks.refresh()
+	var k: PerkKingpin = perks.component(PerkKingpin.KEY) as PerkKingpin
+	l.cooldown_left = 10.0
+	k.cooldown_left = 10.0
+	k.active_left = 3.0
+	_crew().health.go_down()
+	assert_eq(_crew().crew_state, Enums.CrewState.DOWNED)
+	await wait_physics_frames(30)
+	assert_true(l.cooldown_left < 9.7, "Leech's cooldown runs while down (%.2f)" % l.cooldown_left)
+	assert_true(k.cooldown_left < 9.7, "and Kingpin's injector cooldown (%.2f)" % k.cooldown_left)
+	assert_near(k.active_left, 3.0, 0.0001, "only the cooldown: the rest of the component stays paused")
+
+
+func test_d164_weapons_refill_mag_and_headshot_info() -> void:
+	var w: CrewWeapons = _crew().weapons
+	var ws: int = w.equipped_slot
+	w.set_ammo(ws, 0, 1000)
+	var size: int = w.mag_size(ws)
+	assert_eq(w.refill_mag(ws), size, "from the reserve")
+	assert_eq(w.mag(ws), size)
+	assert_eq(w.reserve(ws), 1000 - size)
+	w.set_ammo(ws, 0, 0)
+	assert_eq(w.refill_mag(ws), 0, "an empty reserve gives nothing")
+	assert_eq(w.refill_mag(ws, true), size, "free fills anyway")
+	assert_true(PerkHooks.is_headshot({"zone": Enums.HitZone.HEAD}), "headshot")
+	assert_false(PerkHooks.is_headshot({"zone": Enums.HitZone.BODY}))
+	assert_false(PerkHooks.is_headshot({}))

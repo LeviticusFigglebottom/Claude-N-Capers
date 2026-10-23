@@ -201,6 +201,17 @@ defaults = Dictionary[StringName, Dictionary]({
 "no_bleedout": false,
 "zero_health_speed_mult": 1.0,
 "usable_while_downed": false
+},
+&"perk.copycat": {
+"tactical_reload_kills": 0,
+"quick_swap_window_s": 0.0,
+"headshot_heal": 0.0,
+"headshot_heal_cooldown_s": 2.0,
+"dodge_ricochet": false,
+"ricochet_cooldown_s": 0.45,
+"grace_health_threshold": 0.0,
+"grace_immunity_s": 0.0,
+"grace_cooldown_s": 15.0
 }
 })
 panic_stun_s = 2.0
