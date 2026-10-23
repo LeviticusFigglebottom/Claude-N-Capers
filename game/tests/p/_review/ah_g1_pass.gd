@@ -111,13 +111,21 @@ func _row(item: String, verdict: String, detail: String, owner: String = "-") ->
 	print("[AHP] ROW " + line)
 
 
+## --diff=hazardous etc. (default Routine): the LEAD's difficulty fairness reads.
+func _ah_diff() -> Enums.Difficulty:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--diff="):
+			return Enums.Difficulty.get(a.trim_prefix("--diff=").to_upper(), Enums.Difficulty.ROUTINE) as Enums.Difficulty
+	return Enums.Difficulty.ROUTINE
+
+
 ## Launch the Velvet with real detection (NPCs, cameras), the civilian start (no skip_casing).
 func _ah_launch(loud_kit: bool = false) -> bool:
 	# gear_cloak (the foyer, across the counter): reachable with no door, so the gear never decides the result.
 	var opts: Dictionary = {"preplan": {"force_variants": {&"gear_drop": [&"gear_cloak"]}}}
 	if loud_kit:
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
-	if not await _launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, Enums.Difficulty.ROUTINE, opts, false):
+	if not await _launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, _ah_diff(), opts, false):
 		return false
 	var mode: StringName = pilot.crew.player_mode
 	_row("civilian start (D-065)", "PASS" if mode == &"civilian" else "FAIL", "mode %s at %s" % [mode,
@@ -135,7 +143,7 @@ func _ah_launch_bots(loud_kit: bool) -> bool:
 		"crew_ai": true}
 	if loud_kit:
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
-	rt = await HeistLauncher.launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, Enums.Difficulty.ROUTINE, self, opts)
+	rt = await HeistLauncher.launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, _ah_diff(), self, opts)
 	if rt == null:
 		return await _fail("launch")
 	var c: CrewController = rt.crew_controller(Net.local_slot()) as CrewController

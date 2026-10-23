@@ -735,7 +735,8 @@ the Co-op's product, sealed parcels in vacuum wrap; the game never names a real 
    loud) `[office]` and drill the safe (120 s, jams per S9.3) or C4 it (S9.8). `[safe]`
 3. Bag and secure ≥ 3 cash bags. `[secure]`
 4. Hold until the van arrives: at the **second assault's FADE or 300 s** after `[secure]`'s first
-   bag, whichever is later, at the rolled `escape` slot. `[escape_wait]`
+   bag, whichever is later, at the rolled `escape` slot; if a captain is active when the 300 s runs out, the van
+   comes then (D-166: a captain holds SUSTAIN, so the FADE may never come). `[escape_wait]`
 5. Escape. `[escape]`
 
 **Mission script notes** (`afterhours_mission.gd` on `HeistMission`):
