@@ -1653,8 +1653,10 @@ B: deck data, strings, docs, tests. A: perk.yakuza / perk.biker / perk.maniac ho
 9. (Amendment 2026-10-23, LEAD) A's 5-seed harness table (env_a.md -50; 20 headless real-menu runs on r294): Routine 9/10 won
    end to end (auto_loud 5/5); Hazardous 0/10 with the bot pilot (escort won, then the truck fight lost: read as bot-skill data next
    to P's windowed confirm pair). The one escort outlier is **route_east, clean stop**: its rear TAC Heavy halts 33 m from the stop
-   (north: 50 m on every seed) and downs the crew at t+13 s. Ruling: the east clean-stop TAC Heavy holds at the same 50 m as north
-   (A: route data / rt_tweak; a test pins both routes). The pilot snag at (21.9, 0, -12.8) between BinStreet0 and CarParkBarrier
+   (north: 50 m on every seed) and downs the crew at t+13 s. A traced it to the truck count, not the route: on trucks_2 the rear car
+   closes up at RearStop2 (behind T2), 32 m from the crew's cover vs 49 m on trucks_3. Ruling: RtTweak.rear_close_up_clean = false
+   (a CLEAN stop always uses RearStop, so the rear stays LeadStop + 42.5 m on both routes and truck counts; the crash stop keeps its
+   close-up); a test pins both routes x both truck counts. The pilot snag at (21.9, 0, -12.8) between BinStreet0 and CarParkBarrier
    (7/20 runs) is a dressing fix for C (widen the gap ≥ 1.2 m). RT is loud-forced by design (the 8 s window raises the ambush
    alarm), so its D-115 ghost gate reads "n/a, loud-forced", like the PD2 original.
 
