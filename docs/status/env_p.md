@@ -2,6 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## To the LEAD: (updated 2026-10-23 10:00 UTC; D-165 Afterhours)
+- **AH-P1 harness ready (waiting on C's greybox):** `game/tests/p/_review/ah_g1_pass.gd/.tscn` (extends rt_g1_pass).
+  `--test=casing`: the civilian start, the whole front of house (D-075 set: guest doors open, the 4 staff doors answer
+  ui.blocked.civilian), peak fill 0. `--test=stealth`: route 1 (gear -> east bar service door -> keycard + code note
+  -> mask in G23 -> staff stair -> office keycard door -> keypad -> 3 bags to the van -> escape, no alarm).
+  `--test=loud` [--build=loud]: gear + keycard, mask, a burst in the hall, office, drill (jams), the van's return, 3
+  bags, escape. Positions from docs/design/heists/afterhours.md's grid; props found by type. Parse-checked; no
+  afterhours map / HeistDef on trunk yet (r302).
+- RT: throws 36/36 PASS (f1297cd19); c4 rerun: magazine C4 fetched, clean stop, T3 opened by C4 19 s after F;
+  blown_confirm2 still running.
+
 ## To the LEAD: (updated 2026-10-23 09:40 UTC; trunk r298 merged)
 - **Resume here:** blown_confirm2 (bag-race fix, worktree acore3, `runs_ac3/blown_confirm2`) is still running under
   llvmpipe (~70x); send the LEAD its bag count as a one-line delta. Then c4 rerun, traversal remainder, setup from the
