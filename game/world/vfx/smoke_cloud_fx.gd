@@ -7,17 +7,17 @@
 class_name SmokeCloudFx
 extends Node3D
 
-const PUFFS: int = 18
+const PUFFS: int = 26
 const FADE_IN_S: float = 1.0
 const FADE_OUT_S: float = 2.0
-const COLOR: Color = Color(0.62, 0.62, 0.6)
+const COLOR: Color = Color(0.7, 0.7, 0.68)
 ## Peak opacity of one puff (they overlap, so the cloud's core reads near-opaque).
-const ALPHA: float = 0.55
+const ALPHA: float = 0.85
 ## Puff diameter as a fraction of the radius (min, max), and the swell over the cloud's life.
-const PUFF_SIZE: Vector2 = Vector2(0.55, 0.85)
+const PUFF_SIZE: Vector2 = Vector2(0.75, 1.15)
 const SWELL: float = 0.25
 ## The hemisphere is flattened: the cloud stands this high relative to its radius.
-const HEIGHT_FRAC: float = 0.55
+const HEIGHT_FRAC: float = 0.8
 const DRIFT_M_PER_S: float = 0.08
 
 ## Clouds fired (tests).
@@ -119,12 +119,20 @@ func _apply(i: int) -> void:
 func _layout(s: Node3D, radius: float) -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = 0x5A0C
+	var n: int = 0
 	for c: Node in s.get_children():
 		var q: MeshInstance3D = c as MeshInstance3D
 		var a: float = rng.randf() * TAU
-		var r: float = sqrt(rng.randf()) * radius * 0.8
-		var h: float = (0.25 + rng.randf() * 0.75) * radius * HEIGHT_FRAC * (1.0 - 0.5 * r / radius)
+		var r: float = sqrt(rng.randf()) * radius * 0.85
+		var h: float = (0.15 + rng.randf() * 0.85) * radius * HEIGHT_FRAC * (1.0 - 0.4 * r / radius)
 		var size: float = rng.randf_range(PUFF_SIZE.x, PUFF_SIZE.y) * radius
+		if n % 2 == 0:   # every other puff sits on the ground, so the cloud's base engulfs what stands in it
+			h = size * 0.12
+		if n == 0:   # and the first fills the centre
+			r = 0.0
+			size = PUFF_SIZE.y * radius
+			h = size * 0.12
+		n += 1
 		q.set_meta(&"home", Vector3(cos(a) * r, h, sin(a) * r))
 		q.set_meta(&"drift", Vector3(cos(a), 0.3, sin(a)).normalized())
 		q.set_meta(&"size", size)
@@ -153,7 +161,7 @@ func _build_cloud() -> Node3D:
 	mat.billboard_keep_scale = true
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.proximity_fade_enabled = true  # no hard line where a puff cuts the floor or a wall
-	mat.proximity_fade_distance = 0.6
+	mat.proximity_fade_distance = 0.2
 	root.set_meta(&"mat", mat)
 	var quad: QuadMesh = QuadMesh.new()
 	quad.size = Vector2.ONE
