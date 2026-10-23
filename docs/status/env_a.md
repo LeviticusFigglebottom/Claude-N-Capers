@@ -4,6 +4,21 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-45) D-164 perk.leech on B's names, ui_hud v1.22 segments, perk_item.mode (2026-10-23)
+- PerkLeech:
+  - The ampule window: activate heal, armor_off, and segmented health (a hit takes the whole top segment).
+  - kills_per_segment restores a segment; team_heal_on_damage_fraction heals teammates when the holder is hit.
+  - Cooldown from the window's end, with kill cuts.
+  - no_bleedout: the holder stays up at 0 health, at ×zero_health_speed_mult via CrewBuffs, and goes down at the end.
+  - usable_while_downed: a temporary revive. It goes back to the same down and bleed-out unless the holder revived a
+    teammate or a doctor bag reset the downs.
+- CrewHealth: a vetoed down at 0 health no longer goes down.
+- PerkItems / perk_item: optional `mode` (B's request; the pocket ECM's jam / feedback) and `segments`
+  {count, size} while active.
+- Contract row perk.leech (phase 5). perk_tweak defaults (card-1 values).
+- Tests: test_d164_leech 5/5, test_ui_hud_v1_21 3/3.
+- Known limit: CrewPerks does not tick while DOWNED, so the cooldown pauses while the holder is down.
+
 ### (-44) D-164 generic Leech hooks (2026-10-23)
 - PerkHooks.veto_down: CrewHealth.take_hit asks it before a down; a component's veto_down() sets the health and keeps
   the holder up.

@@ -258,12 +258,14 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.interaction != null and armor_dmg + health_dmg > 0.0:
 		rt.interaction.interrupt_on_damage(_crew.slot)  # S9.1
-	if health <= 0.0 and PerkHooks.veto_down(self):  # D-164 (Leech): a perk keeps the holder up (sets health itself)
+	# D-164 (Leech): a perk keeps the holder up (it sets the health, possibly leaving it at 0: no down).
+	var vetoed: bool = health <= 0.0 and PerkHooks.veto_down(self)
+	if vetoed:
 		out["down_vetoed"] = true
-	if health <= 0.0:
+	elif health <= 0.0:
 		out["killed"] = true
 	_publish(out, attacker_net_id)
-	if health <= 0.0 and not _swan_song():
+	if health <= 0.0 and not vetoed and not _swan_song():
 		go_down()
 	return out
 

@@ -234,7 +234,8 @@ var ecm_time_left_s: float = -1.0
 var pocket_ecm: Dictionary = {}
 # --- perk_item_changed (ui_hud v1.21, D-163)
 ## The deck throwable's state, any deck: {"kind": StringName (ThrowableDef.kind), "charges": int, "max": int,
-## "cooldown_left": s, "active_left": s, "partner_slot": int (-1 = none)}; {} = no deck item. pocket_ecm stays one
+## "cooldown_left": s, "active_left": s, "partner_slot": int (-1 = none), "mode": StringName (&"" | &"jam" |
+## &"feedback"), v1.22 "segments": {"count", "size"} while a Leech ampule runs}; {} = no deck item. pocket_ecm stays one
 ## round as an alias (the pocket ECM shows here too).
 var perk_item: Dictionary = {}
 ## Unstoppable camera alarm countdown (S3.5); < 0 = inactive.
@@ -506,7 +507,7 @@ func _poll_weapons(c: CrewController) -> void:
 	var item: Dictionary = items.state(c.slot).duplicate() if items != null and c != null else {}
 	if item.is_empty() and not pocket.is_empty():
 		item = PerkItems.entry(PerkPocketEcm.KIND, int(pocket["charges"]), int(pocket["max"]),
-			float(pocket["recharge_left"]), float(pocket["active_left"]))
+			float(pocket["recharge_left"]), float(pocket["active_left"]), -1, StringName(pocket["mode"]))
 	_assign(&"perk_item", item)
 	_assign(&"deployable_count", int(_read(w, &"deployable_count", 0)))
 	_assign(&"throwable_count", int(_read(w, &"throwable_count", 0)))

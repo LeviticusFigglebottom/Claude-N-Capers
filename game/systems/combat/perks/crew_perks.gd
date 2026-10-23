@@ -36,6 +36,7 @@ static func scripts() -> Dictionary[StringName, GDScript]:
 		PerkGambler.KEY: PerkGambler, PerkKingpin.KEY: PerkKingpin, PerkThrowable.KEY: PerkThrowable,
 		PerkPocketEcm.KEY: PerkPocketEcm, PerkYakuza.KEY: PerkYakuza, PerkBiker.KEY: PerkBiker,
 		PerkManiac.KEY: PerkManiac, PerkSicario.KEY: PerkSicario, PerkTagTeam.KEY: PerkTagTeam,
+		PerkLeech.KEY: PerkLeech,
 	}
 
 
