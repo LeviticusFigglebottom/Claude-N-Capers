@@ -435,8 +435,9 @@ Character ids are ENV D's `p5_cast.json` roles (`afterhours`): `club_bouncer`, `
 | Patrons | `club_patron` … `_d` | 12–20 | scalar `crowd` | `civ_patron` (bars, booths, foyer, WCs, passage, balcony, VIP) | `walk_text`, `queue`, `sit`, `smoke` | `civilian` |
 | Dancers | `club_patron` … `_d` | 4–6 clusters × 5 | scalar `dance_clusters` | `civ_dancer` (cluster spawns on the dance floor) | `dance_a` / `dance_b` / `dance_c` | — (stay) |
 | Queue | — | — | dressing only | — | — | — |
-| Off-duty cop | `frd_agent` (plain clothes) | 0–1 | rare `off_duty_cop` | `civ_offduty` (U1 booth) | `sit` | `civilian` |
-| Co-op couriers | cartel gunman (QC-36 model) | 0–2 | rare `co_op_pickup` (timed) | `cartel_courier` (scripted) | — | `courier` |
+| Off-duty cop | `club_offduty_cop` (plain clothes: leather jacket, belt shield + holster) | 0–1 | rare `off_duty_cop` | `civ_offduty` (U1 booth; POLICE + `scripted`, spawned by the mission) | `sit` | `civilian` |
+| Co-op couriers | `club_courier` (a bare-faced pair) | 0–2 | rare `co_op_pickup` (timed) | `cartel_courier` + `scripted` (walk in calm, A 9a335a1d) | — | `courier` |
+| VIP party guests | `club_vip` pool (gold wristbands) | +6 | rare `vip_party` | U1 / U2 | `walk_text`, `sit` | `civilian` |
 
 **Ambient-clip placement (characters.md v1.9, lead note).** Props are sized to D's clips:
 - **Bar tops are 1.05 m** (inside the 1.05–1.1 m bar band) on every bar (main, east, VIP, box
@@ -787,9 +788,9 @@ weights use A2-08 (QC-18).
 |---|---|---|---|
 | `count_left_open` | good | 3% | Mid-count, Crale's safe was left open: `force_active` safe open; `[safe_code]`/`[safe]` skipped (the keycard is still needed for the door). |
 | `extra_product` | good | 6% | +2 `loot.parcels` at the active product location. |
-| `vip_party` | bad | 8% | A birthday booking: +6 VIP patrons on U1/U2 and a second rope bouncer on the balcony (`guard_extra`, a pager); the VIP route is crowded, the bottle-service small loot doubles. |
-| `off_duty_cop` | bad | 6% (`min_difficulty` Hazardous) | A plain-clothes cop (`frd_agent` visual) in a U1 booth: a **police-preset observer** (S2.2: 0.6 s min-time) who radios the alarm on seeing a masked player (no pager; QC-76). |
-| `co_op_pickup` | bad | 8% (`min_difficulty` Brutal) | At 14:00 two Co-op couriers (cartel gunmen, QC-36) arrive at the loading door for the product (see the mission notes). In loud they fight the crew. |
+| `vip_party` | bad | 8% | A birthday booking: +6 VIP patrons (D's `club_vip` pool, gold wristbands) on U1/U2 and a second rope bouncer on the balcony (`guard_extra`, a pager); the VIP route is crowded, the bottle-service small loot doubles. |
+| `off_duty_cop` | bad | 6% (`min_difficulty` Hazardous) | A plain-clothes cop (D's `club_offduty_cop` look: leather jacket, belt shield + holster) in a U1 booth: a **police-preset observer** (S2.2: 0.6 s min-time) who radios the alarm on seeing a masked player (no pager; QC-76). |
+| `co_op_pickup` | bad | 8% (`min_difficulty` Brutal) | At 14:00 two Co-op couriers (D's bare-faced `club_courier` pair) walk in calm at the loading door for the product (see the mission notes); a missing product raises the alarm. In loud they fight the crew. |
 | `rooftop_watch` | bad | 8% | The S3 Keston Row perch is enabled in loud. |
 
 ## Escape
@@ -1033,7 +1034,7 @@ with one neon script; Afterhours is a dark violet interior where the magenta is 
   pickups are; (d) civilian players cannot carry bags (as casing).
 - **QC-76 (ENV A):** `off_duty_cop`: a stealth **police-preset observer** among the civilians (no pager,
   not dominatable in stealth, radios the alarm 3 s after a masked-player detection unless killed
-  first; fights in loud), using ENV D's `frd_agent` visual. Also confirm that `enemy.cartel_gunman`
+  first; fights in loud), using ENV D's `club_offduty_cop` look (not `frd_agent` / the FRD windbreaker). Also confirm that `enemy.cartel_gunman`
   (QC-36) works in a STEALTH phase as an observer for `co_op_pickup` (spawned by the QC-25 timed
   hook).
 
