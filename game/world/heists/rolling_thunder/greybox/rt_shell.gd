@@ -208,6 +208,9 @@ func build_review_cameras(cams: Node3D) -> void:
 		else:
 			m.set_meta(&"fov", 70.0)
 		m.set_meta(&"caption", "%s (%s)" % [nm, String(c[1])])
+		if c.size() > 4:   # optional metas (stage_convoy: the review tool's convoy staging)
+			for k: Variant in (c[4] as Dictionary):
+				m.set_meta(StringName(String(k)), c[4][k])
 		add(cams, m)
 		paths.append(NodePath("ReviewCameras/" + nm))
 	map_root.review_cameras = paths

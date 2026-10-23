@@ -152,6 +152,25 @@ func _warm_probes(frames: int, filt: PackedStringArray = PackedStringArray()) ->
 		print("  warmed %d reflection probe(s), %d frames each" % [probes.size(), frames])
 
 
+## A review camera's meta `stage_convoy` (a convoy layout id, e.g. "north_clean"): that layout is applied
+## (ConvoyLayouts) and every mover of its route parked on its `<Veh>Stop`, so the shot shows the convoy at the stop
+## (LEAD r305 G3: the convoy shots showed an empty road). Review only: the map's own state is the start state.
+func _stage_convoy(id: String) -> void:
+	var layout: Node3D = ConvoyLayouts.find(_map, id)
+	if layout == null:
+		push_warning("review_shots: no convoy layout %s" % id)
+		return
+	ConvoyLayouts.apply(_map, id, ConvoyLayouts.group_of(layout))
+	var movers: Node = layout.get_parent().get_node_or_null("Movers")
+	if movers != null:
+		for v: Node in movers.get_children():
+			var stop: Node3D = layout.get_node_or_null(NodePath(String(v.name) + "Stop")) as Node3D
+			if v is Node3D and stop != null:
+				(v as Node3D).global_transform = Transform3D(stop.global_basis.orthonormalized(), stop.global_position)
+				(v as Node3D).visible = true
+	await get_tree().process_frame
+
+
 ## True when `eyes` is empty (every probe) or one eye is inside the probe's box grown by PROBE_NEAR_M.
 static func _probe_near(rp: ReflectionProbe, eyes: Array[Vector3]) -> bool:
 	if eyes.is_empty():
@@ -212,6 +231,8 @@ func _render_shots(out_dir: String, warm: int, filt: PackedStringArray, label: S
 		if n == null or (not filt.is_empty() and not (String(n.name) in filt)):
 			continue
 		_apply_camera(n)
+		if n.has_meta(&"stage_convoy"):
+			await _stage_convoy(String(n.get_meta(&"stage_convoy")))
 		var img: Image = await _grab(warm)
 		var file: String = "%s.jpg" % String(n.name).to_snake_case()
 		var size: int = save_jpg(img, out_dir.path_join(file))

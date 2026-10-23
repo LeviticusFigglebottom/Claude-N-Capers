@@ -1371,8 +1371,11 @@ def review_cameras() -> List[list]:
         # GPU-22: from Tannery's south sidewalk at the junction corner, east along the diner's Tannery face to the
         # HALFWAY pole sign's W face (32.5, 4.6-6.4, 10)
         ["rc_diner_neon", "X1", [12.0, 1.7, 9.6], [32.5, 4.6, 10.6]],
-        ["rc_convoy_cash", "X1", [-6.0, 1.7, -34.5], [-6.0, 1.5, -28.0]],
-        ["rc_convoy_bullion", "X1", [-6.0, 1.7, -47.0], [-6.0, 1.5, -40.0]],
+        # (stage_convoy: review_shots parks the convoy at that layout's stops for the shot, LEAD r305 G3)
+        # 3/4 views from the west sidewalk of the convoy stopped in the west lane (x -6: Lead z -18.5, T1 -27.75,
+        # T2 -39, T3 -51, Rear -61)
+        ["rc_convoy_cash", "X1", [-12.6, 2.2, -19.5], [-6.0, 1.3, -31.0], {"stage_convoy": "north_clean"}],
+        ["rc_convoy_bullion", "X1", [-12.6, 2.2, -32.0], [-6.0, 1.3, -48.0], {"stage_convoy": "north_clean"}],
         ["rc_carpark_ground", "CP-G", [24.0, 1.7, -15.5], [20.0, 1.0, -40.0]],
         ["rc_carpark_deck2", "CP-2", [47.5, 5.2, -16.5], [16.0, 4.5, -48.0]],
         ["rc_carpark_ramp", "CP-G", [46.0, 1.7, -16.0], [46.0, 2.5, -40.0]],
