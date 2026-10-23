@@ -179,7 +179,7 @@ def manager(kit: Kit) -> None:
                          flare=0.07)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     hull = kit.hull()
-    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k))
+    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k, mat="char_satin_gold"))
     kit.add_gear(n.bank_badge(hull, Vector((-0.10 * k, 0.2, 1.345 * k)), Vector((0, 1, 0.1)), 0.024, 0.028, k,
                               rim="brass", fill=SLATE, glyph="brass", depth=0.003))
     # OF-G3: the keycard rides a retractable reel clipped low on the waistcoat, not a lanyard: the red lanyard straps
@@ -194,7 +194,7 @@ def manager(kit: Kit) -> None:
     kit.add_gear(gk.bar(hull, n._front_hit(hull, -0.115 * k, 1.27 * k, cy + 0.12 * k), Vector((0.0, 1.0, 0.0)),
                         0.048, 0.020, 0.006, "char_shirt_white", k=k))
     kit.add_gear(gk.bar(hull, n._front_hit(hull, 0.0, 1.235 * k, cy + 0.12 * k), Vector((0.0, 1.0, 0.0)), 0.045,
-                        0.005, 0.003, "brass", k=k))
+                        0.005, 0.003, "char_satin_gold", k=k))  # reads gold, not near-black
     kit.notes["look"] = ("Day manager (keycard carrier): navy three-piece suit, cream shirt, bank-red tie, white "
                          "keycard on a waistcoat reel, keyhole lapel badge, brass name tag, silver glasses, watch")
     kit.notes["prop_note"] = "keycard on the waistcoat reel is skinned (Gear); a hand-held keycard prop goes at HandR/Socket"
@@ -212,7 +212,7 @@ def officer(kit: Kit) -> None:
                          flare=0.06)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     hull = kit.hull()
-    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k))
+    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k, mat="char_satin_gold"))
     kit.add_gear(n.bank_badge(hull, Vector((-0.10 * k, 0.2, 1.34 * k)), Vector((0, 1, 0.1)), 0.022, 0.026, k,
                               rim="brass", fill=SLATE, glyph="brass", depth=0.003))
     n.lanyard(kit, RED, "char_medic_white", card_z=1.17, band_mat=SLATE)
@@ -297,7 +297,7 @@ def officer_c(kit: Kit) -> None:
                          flare=0.07)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     hull = kit.hull()
-    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k))
+    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k, mat="char_satin_gold"))
     kit.add_gear(n.bank_badge(hull, Vector((-0.10 * k, 0.2, 1.345 * k)), Vector((0, 1, 0.1)), 0.022, 0.026, k,
                               rim="brass", fill=SLATE, glyph="brass", depth=0.003))
     n.lanyard(kit, RED, "char_medic_white", card_z=1.15, band_mat=SLATE)

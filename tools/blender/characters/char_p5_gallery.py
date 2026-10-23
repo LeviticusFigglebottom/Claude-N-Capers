@@ -282,9 +282,9 @@ def guard(kit: Kit) -> None:
         n.cull_under(kit, n0, cover, "faces_hidden_by_waistcoat")
     p5.halberd_crest(kit, -0.098, 1.305)
     hull = kit.hull()
-    kit.add_gear(gk.name_tag(hull, Vector((0.098 * k, 0.3, 1.33 * k)), k=k, mat="brass"))
+    kit.add_gear(gk.name_tag(hull, Vector((0.098 * k, 0.3, 1.33 * k)), k=k, mat="char_satin_gold"))
     n.earpiece(kit, "R")
-    n.front_item(kit, 0.0, 1.235, (0.045, 0.005, 0.003), "brass", lift=0.0)        # GN-G3: a gold tie bar, a watch
+    n.front_item(kit, 0.0, 1.235, (0.045, 0.005, 0.003), "char_satin_gold", lift=0.0)  # GN-G3: a gold tie bar, a watch
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
     if not jacket:                                                                # the belt shows: a key ring
         kit.add_gear(gk.key_ring(b, math.radians(-25.0)))
