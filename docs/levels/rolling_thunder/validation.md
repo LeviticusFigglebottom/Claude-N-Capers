@@ -55,14 +55,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 705 props checked
+- 715 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 705 props, 49 doors checked
+- 715 props, 49 doors checked
 
 
 ## orientation: Flush and oriented
@@ -148,7 +148,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 3813 polygons, cell 0.10/0.10 m
+- navmesh: 3812 polygons, cell 0.10/0.10 m
 - 218 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -239,28 +239,28 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3033 surfaces checked
+- 3061 surfaces checked
 
 
 ## metal_reflection: Metal surfaces have a reflection source
 
 - environment reflections: on; 23 probe(s), 2 baked VoxelGI
-- 453 metal surface(s); 267 covered only by UPDATE_ONCE probes (black until the probe first renders)
+- 426 metal surface(s); 257 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
 
-- 563557 triangles checked
+- 571649 triangles checked
 
 
 ## lights: Lighting is deliberate
 
-- 150 lights, 179 fixture meshes
+- 160 lights, 189 fixture meshes
 
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 143 interior key light(s) in 25 room(s); 0 lack `viewmodel_lit`
+- 153 interior key light(s) in 27 room(s); 0 lack `viewmodel_lit`
 
 
 ## density: Dressing density
@@ -348,34 +348,34 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` (plan, exempt) | 1721 | 381 | 2340 | 0 | 4442 | 705032 | 6 | Sun 1615, LightFixture_7 265, LightFixture_9 197, UnderpassBatten1 102, LightFixture_7 85, UnderpassBatten0 76 |
-| `rc_ext_junction` | 1141 | 367 | 1772 | 0 | 3280 | 492212 | 6 | Sun 1097, LightFixture_7 265, LightFixture_9 147, UnderpassBatten1 102, LightFixture_7 85, UnderpassBatten0 76 |
-| `rc_ext_north_arm` | 618 | 80 | 1025 | 0 | 1723 | 231214 | 3 | Sun 809, LightFixture_7 150, LightFixture_7 66 |
-| `rc_ext_east_arm` | 283 | 127 | 1010 | 0 | 1420 | 96898 | 3 | Sun 832, UnderpassBatten1 102, UnderpassBatten0 76 |
+| `TopDownPlan` (plan, exempt) | 1729 | 385 | 2352 | 0 | 4466 | 712696 | 6 | Sun 1623, LightFixture_7 265, LightFixture_9 197, UnderpassBatten1 104, LightFixture_7 85, UnderpassBatten0 78 |
+| `rc_ext_junction` | 1149 | 371 | 1778 | 0 | 3298 | 499876 | 6 | Sun 1099, LightFixture_7 265, LightFixture_9 147, UnderpassBatten1 104, LightFixture_7 85, UnderpassBatten0 78 |
+| `rc_ext_north_arm` | 622 | 80 | 1027 | 0 | 1729 | 235046 | 3 | Sun 811, LightFixture_7 150, LightFixture_7 66 |
+| `rc_ext_east_arm` | 260 | 131 | 1184 | 0 | 1575 | 93638 | 3 | Sun 1002, UnderpassBatten1 104, UnderpassBatten0 78 |
 | `rc_ext_plaza` | 143 | 0 | 157 | 0 | 300 | 61686 | 1 | Sun 157 |
 | `rc_ext_tannery_west` | 498 | 0 | 512 | 0 | 1010 | 155108 | 1 | Sun 512 |
-| `rc_diner_neon` | 791 | 287 | 1293 | 0 | 2371 | 299728 | 4 | Sun 942, LightFixture_9 173, UnderpassBatten1 102, UnderpassBatten0 76 |
-| `rc_convoy_cash` | 561 | 164 | 1446 | 0 | 2171 | 263888 | 3 | Sun 1203, LightFixture_7 177, LightFixture_7 66 |
-| `rc_convoy_bullion` | 405 | 0 | 944 | 0 | 1349 | 158264 | 1 | Sun 944 |
-| `rc_carpark_ground` | 649 | 234 | 1197 | 0 | 2080 | 269558 | 3 | Sun 929, LightFixture_7 192, LightFixture_7 76 |
-| `rc_carpark_deck2` | 1091 | 253 | 1388 | 0 | 2732 | 418294 | 3 | Sun 1069, LightFixture_7 238, LightFixture_7 81 |
-| `rc_carpark_ramp` | 503 | 103 | 1284 | 0 | 1890 | 229700 | 3 | Sun 1101, LightFixture_7 142, LightFixture_7 41 |
-| `rc_carpark_roof` | 916 | 241 | 1290 | 0 | 2447 | 343006 | 3 | Sun 1004, LightFixture_7 205, LightFixture_7 81 |
-| `rc_carpark_booth` | 818 | 135 | 1071 | 0 | 2024 | 262398 | 3 | Sun 852, LightFixture_7 167, LightFixture_7 52 |
-| `rc_carpark_plant` | 455 | 194 | 1038 | 0 | 1687 | 161908 | 5 | Sun 767, UnderpassBatten1 102, UnderpassBatten0 76, LightFixture_7 62, LightFixture_7 31 |
-| `rc_carpark_stair` | 238 | 0 | 699 | 0 | 937 | 81768 | 1 | Sun 699 |
-| `rc_diner_dining` | 1232 | 483 | 2058 | 0 | 3773 | 513742 | 6 | Sun 1369, LightFixture_7 265, LightFixture_9 161, UnderpassBatten1 102, LightFixture_7 85, UnderpassBatten0 76 |
-| `rc_diner_kitchen` | 1321 | 292 | 1468 | 0 | 3081 | 520902 | 4 | Sun 984, LightFixture_7 259, LightFixture_9 140, LightFixture_7 85 |
-| `rc_diner_function` | 1246 | 299 | 1343 | 0 | 2888 | 444076 | 4 | Sun 896, LightFixture_7 230, LightFixture_9 140, LightFixture_7 77 |
+| `rc_diner_neon` | 795 | 291 | 1299 | 0 | 2385 | 303560 | 4 | Sun 944, LightFixture_9 173, UnderpassBatten1 104, UnderpassBatten0 78 |
+| `rc_convoy_cash` | 565 | 164 | 1450 | 0 | 2179 | 267720 | 3 | Sun 1207, LightFixture_7 177, LightFixture_7 66 |
+| `rc_convoy_bullion` | 409 | 0 | 948 | 0 | 1357 | 162096 | 1 | Sun 948 |
+| `rc_carpark_ground` | 653 | 234 | 1199 | 0 | 2086 | 273390 | 3 | Sun 931, LightFixture_7 192, LightFixture_7 76 |
+| `rc_carpark_deck2` | 1095 | 253 | 1390 | 0 | 2738 | 422126 | 3 | Sun 1071, LightFixture_7 238, LightFixture_7 81 |
+| `rc_carpark_ramp` | 507 | 103 | 1286 | 0 | 1896 | 233532 | 3 | Sun 1103, LightFixture_7 142, LightFixture_7 41 |
+| `rc_carpark_roof` | 920 | 241 | 1292 | 0 | 2453 | 346838 | 3 | Sun 1006, LightFixture_7 205, LightFixture_7 81 |
+| `rc_carpark_booth` | 822 | 135 | 1075 | 0 | 2032 | 266230 | 3 | Sun 856, LightFixture_7 167, LightFixture_7 52 |
+| `rc_carpark_plant` | 469 | 198 | 1044 | 0 | 1711 | 168680 | 5 | Sun 769, UnderpassBatten1 104, UnderpassBatten0 78, LightFixture_7 62, LightFixture_7 31 |
+| `rc_carpark_stair` | 242 | 0 | 703 | 0 | 945 | 84272 | 1 | Sun 703 |
+| `rc_diner_dining` | 1240 | 487 | 2066 | 0 | 3793 | 521406 | 6 | Sun 1373, LightFixture_7 265, LightFixture_9 161, UnderpassBatten1 104, LightFixture_7 85, UnderpassBatten0 78 |
+| `rc_diner_kitchen` | 1325 | 292 | 1468 | 0 | 3085 | 524734 | 4 | Sun 984, LightFixture_7 259, LightFixture_9 140, LightFixture_7 85 |
+| `rc_diner_function` | 1250 | 299 | 1343 | 0 | 2892 | 447908 | 4 | Sun 896, LightFixture_7 230, LightFixture_9 140, LightFixture_7 77 |
 | `rc_diner_office` | 304 | 46 | 409 | 0 | 759 | 104316 | 2 | Sun 276, LightFixture_9 133 |
 | `rc_diner_staff` | 314 | 37 | 382 | 0 | 733 | 93926 | 2 | Sun 223, LightFixture_9 159 |
 | `rc_site_controller` | 589 | 116 | 673 | 0 | 1378 | 272228 | 2 | Sun 476, LightFixture_9 197 |
-| `rc_site_frame` | 1490 | 381 | 1386 | 0 | 3257 | 651124 | 6 | Sun 683, LightFixture_7 243, LightFixture_9 197, UnderpassBatten1 102, LightFixture_7 85, UnderpassBatten0 76 |
-| `rc_site_slab` | 346 | 0 | 460 | 0 | 806 | 105670 | 1 | Sun 460 |
+| `rc_site_frame` | 1494 | 385 | 1390 | 0 | 3269 | 654956 | 6 | Sun 683, LightFixture_7 243, LightFixture_9 197, UnderpassBatten1 104, LightFixture_7 85, UnderpassBatten0 78 |
+| `rc_site_slab` | 350 | 0 | 464 | 0 | 814 | 109502 | 1 | Sun 464 |
 | `rc_site_cabins` | 368 | 0 | 246 | 0 | 614 | 121278 | 1 | Sun 246 |
-| `rc_site_welfare` | 546 | 0 | 363 | 0 | 909 | 145736 | 1 | Sun 363 |
-| `rc_underpass` | 209 | 131 | 1305 | 0 | 1645 | 70804 | 3 | Sun 1127, UnderpassBatten1 102, UnderpassBatten0 76 |
-| `rc_sniper_skyway` | 693 | 331 | 1618 | 0 | 2642 | 292826 | 5 | Sun 1199, LightFixture_7 166, UnderpassBatten1 102, UnderpassBatten0 76, LightFixture_7 75 |
+| `rc_site_welfare` | 692 | 0 | 496 | 0 | 1188 | 181830 | 1 | Sun 496 |
+| `rc_underpass` | 213 | 135 | 1315 | 0 | 1663 | 74636 | 3 | Sun 1133, UnderpassBatten1 104, UnderpassBatten0 78 |
+| `rc_sniper_skyway` | 697 | 335 | 1624 | 0 | 2656 | 296658 | 5 | Sun 1201, LightFixture_7 166, UnderpassBatten1 104, UnderpassBatten0 78, LightFixture_7 75 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
