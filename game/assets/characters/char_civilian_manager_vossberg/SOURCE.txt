@@ -16,5 +16,5 @@ look: Greta Vossberg (owner-manager): deep-plum trouser suit with brass buttons,
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28166
-tris_by_mesh: {"Body": 9200, "Gear": 648, "Hair": 1856, "Headwear": 1858, "Outfit": 14604}
+tris: 28254
+tris_by_mesh: {"Body": 9200, "Gear": 736, "Hair": 1856, "Headwear": 1858, "Outfit": 14604}

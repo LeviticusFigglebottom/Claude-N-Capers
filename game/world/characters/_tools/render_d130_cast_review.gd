@@ -34,6 +34,7 @@ const OUT_DIRS: Dictionary = {
 	"rt_street": "res://assets/characters/_review/rt_g3_cast/",
 	"gn_staff": "res://assets/characters/_review/gn_g3_cast/",
 	"gn_patrons": "res://assets/characters/_review/gn_g3_cast/",
+	"gh_staff": "res://assets/characters/_review/gh_g3_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
 	"d145_factions": "res://assets/characters/_review/d145_police/",
@@ -123,6 +124,11 @@ const POOLS: Dictionary = {
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
 	],
 	# GN-G3: the gallery staff, the guards and the gala guests (written to _review/gn_g3_cast/)
+	# GH-G3: the Vossberg Jewelers staff (shop floor, workshop, office, the owner)
+	"gh_staff": [
+		"char_civilian_sales", "char_civilian_sales_b", "char_civilian_jeweler", "char_civilian_clerk",
+		"char_civilian_manager_vossberg",
+	],
 	"gn_staff": [
 		"char_gallery_curator", "char_gallery_admin", "char_gallery_conservator", "char_gallery_attendant",
 		"char_gallery_attendant_b", "char_gallery_attendant_c", "char_gallery_waiter", "char_gallery_waiter_b",
