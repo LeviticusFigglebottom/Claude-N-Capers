@@ -4,8 +4,9 @@
 ## are completed through the mission, the alarm is raised through the StealthDirector, the heist ends through the
 ## runtime).
 ##   xvfb-run -a -s "-screen 0 1920x1080x24" /opt/godot/godot --audio-driver Dummy --path game --resolution 1280x720 \
-##       --script res://tests/b/render/ah_hud_capture.gd -- <out_dir>
+##       --script res://tests/b/render/ah_hud_capture.gd -- <out_dir> [seed]
 ## Needs Afterhours offered (the un-hide). PNGs <out_dir>/afterhours/NN_<step>_<w>x<h>.png; "AH ..." lines on stdout.
+## With a seed: a direct Brutal launch (seed 7 staffs the security room and rolls co_op_pickup; LEAD r308 gaps).
 extends SceneTree
 
 
