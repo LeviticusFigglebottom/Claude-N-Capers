@@ -15,5 +15,5 @@ look: IT contractor: rust hoodie (hood down), jeans, trainers, glasses, blue lan
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26434
-tris_by_mesh: {"Body": 9080, "Gear": 444, "Hair": 1728, "Headwear": 498, "Outfit": 14684}
+tris: 26734
+tris_by_mesh: {"Body": 9080, "Gear": 744, "Hair": 1728, "Headwear": 498, "Outfit": 14684}

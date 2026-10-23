@@ -146,6 +146,10 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_crew_jay_jacket": ("#2A559C", 0.55, 0.0, "cloth"),  # D-111 Jay: cobalt racing jacket (nylon)
     "char_crew_jay_stripe": ("#E8E6E0", 0.55, 0.0, "cloth"),  # D-111 Jay: white racing stripes
     "char_crew_glove_driving": ("#9C6B3E", 0.50, 0.0, "leather"),  # D-111 Jay: cognac driving gloves
+    "char_crew_juno_jacket": ("#2F5D4A", 0.58, 0.0, "leather"),  # D4-03 Juno: emerald leather moto jacket
+    "char_crew_glove_suede": ("#6A6560", 0.85, 0.0, "leather"),  # D4-03 Juno: grey suede gloves
+    "char_crew_hale_jacket": ("#B49A6E", 0.92, 0.0, "cloth"),  # D4-03 Hale: sand canvas chore jacket
+    "char_crew_glove_work": ("#A8893E", 0.80, 0.0, "leather"),  # D4-03 Hale: yellow work gloves
     # D-115 lead call (pistol framing shows only the glove): Wren's own sage-olive tactical gloves (were the black
     # char_tac_glove, identical to Rook's black leather with the pistol out)
     "char_crew_glove_sage": ("#6B7556", 0.72, 0.0, "leather"),

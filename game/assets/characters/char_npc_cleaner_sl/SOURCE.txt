@@ -15,5 +15,5 @@ look: Calder Tower night cleaner: glass-teal tabard, graphite binding and top (c
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 29472
-tris_by_mesh: {"Body": 7340, "Gear": 44, "Hair": 1200, "Outfit": 20888}
+tris: 29560
+tris_by_mesh: {"Body": 7340, "Gear": 132, "Hair": 1200, "Outfit": 20888}

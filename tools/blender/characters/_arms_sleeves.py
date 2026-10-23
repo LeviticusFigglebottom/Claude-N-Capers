@@ -135,6 +135,35 @@ VARIANTS: dict[str, Variant] = {
         ),
         note="slim cobalt racing-jacket sleeve (white stripes on the body only: they run down the outside of the "
              "upper arm, off screen in first person) into a ribbed cuff, cognac driving gloves"),
+    "juno": Variant(
+        "juno", "char_crew_glove_suede",
+        (
+            Layer("char_crew_glove_suede", ((-0.036, 0.0034), (-0.022, 0.0032), (-0.009, 0.0030), (0.0, 0.0028)),
+                  hems=("start",), hem=0.0016, glove=True),
+            Layer("char_crew_juno_jacket", ((-0.044, 0.0072), (-0.034, 0.0075), (-0.024, 0.0075), (-0.016, 0.0072),
+                                            (-0.011, 0.0068)),
+                  hems=("end",), hem=0.0028),
+            Layer("char_crew_juno_jacket", ((U_SHOULDER, 0.012, 0.0), (-0.30, 0.011, 0.0), (-0.22, 0.010, 0.0),
+                                            (-0.15, 0.0095, 0.0), (-0.090, 0.0095, 0.0003), (-0.060, 0.0092, 0.0006),
+                                            (-0.046, 0.0084, 0.0004)),
+                  hems=("end",), hem=0.0025, pleats=3),
+        ),
+        note="fitted emerald leather moto sleeve into a plain leather cuff, grey suede gloves"),
+    "hale": Variant(
+        "hale", "char_crew_glove_work",
+        (
+            Layer("char_crew_glove_work", ((-0.056, 0.0046), (-0.040, 0.0044), (-0.024, 0.0040), (-0.010, 0.0036),
+                                           (0.0, 0.0033)),
+                  hems=("start",), hem=0.0020, glove=True),
+            Layer("char_crew_hale_jacket", ((-0.062, 0.0140), (-0.052, 0.0145), (-0.042, 0.0145), (-0.034, 0.0140),
+                                            (-0.028, 0.0134)),
+                  hems=("end",), hem=0.004),
+            Layer("char_crew_hale_jacket", ((U_SHOULDER, 0.024, 0.0), (-0.30, 0.023, 0.0), (-0.22, 0.022, 0.0),
+                                            (-0.15, 0.021, 0.0006), (-0.10, 0.021, 0.0014), (-0.076, 0.020, 0.0018),
+                                            (-0.066, 0.018, 0.0014), (-0.060, 0.016, 0.0008)),
+                  hems=("end",), hem=0.003, pleats=5),
+        ),
+        note="boxy sand canvas chore-jacket sleeve into a plain cuff band, long-gauntlet yellow work gloves"),
     "wren": Variant(
         "wren", "char_crew_glove_sage",
         (

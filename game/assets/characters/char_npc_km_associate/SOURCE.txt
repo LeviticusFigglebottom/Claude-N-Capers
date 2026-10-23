@@ -15,5 +15,5 @@ look: K&M junior associate (D-130 late_staff): no jacket, pale-blue shirt with t
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25536
-tris_by_mesh: {"Body": 9560, "Gear": 548, "Hair": 1728, "Outfit": 13700}
+tris: 25580
+tris_by_mesh: {"Body": 9560, "Gear": 592, "Hair": 1728, "Outfit": 13700}

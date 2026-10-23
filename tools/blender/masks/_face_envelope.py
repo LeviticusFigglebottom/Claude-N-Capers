@@ -28,7 +28,8 @@ from mathutils.bvhtree import BVHTree
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parents[2]
 OUT = HERE / "_crew_face_envelope.json"
-CREW = ["char_crew_rook", "char_crew_sable", "char_crew_dutch", "char_crew_wren", "char_crew_marten", "char_crew_jay", "char_crew_body",
+CREW = ["char_crew_rook", "char_crew_sable", "char_crew_dutch", "char_crew_wren", "char_crew_marten", "char_crew_jay",
+        "char_crew_juno", "char_crew_hale", "char_crew_body",
         "char_crew_body_b"]
 MESHES = ("Body", "Hair")   # skin and hair: the mask goes over the hairline, not under it
 HAIR_MAT = "M_char_hair_"   # + hair-material faces of any other mesh (Dutch's beard on Headwear)

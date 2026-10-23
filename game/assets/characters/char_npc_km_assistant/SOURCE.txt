@@ -16,5 +16,5 @@ look: K&M executive assistant (D-130 late_staff): open slate-green knit cardigan
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27296
-tris_by_mesh: {"Body": 9186, "Gear": 432, "Hair": 1856, "Headwear": 1144, "Outfit": 14678}
+tris: 27456
+tris_by_mesh: {"Body": 9186, "Gear": 432, "Hair": 1856, "Headwear": 1144, "Outfit": 14838}

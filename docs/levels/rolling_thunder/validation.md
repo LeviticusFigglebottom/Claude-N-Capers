@@ -27,6 +27,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | hide_los | skipped | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
+| metal_reflection | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
 | viewmodel_lit | PASS | 0 | 0 |
@@ -147,7 +148,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 3806 polygons, cell 0.10/0.10 m
+- navmesh: 3807 polygons, cell 0.10/0.10 m
 - 218 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -241,6 +242,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - 3009 surfaces checked
 
 
+## metal_reflection: Metal surfaces have a reflection source
+
+- environment reflections: on; 23 probe(s), 2 baked VoxelGI
+- 452 metal surface(s); 266 covered only by UPDATE_ONCE probes (black until the probe first renders)
+
+
 ## zfight: Z-fighting
 
 - 556325 triangles checked
@@ -332,7 +339,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 313 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 300 eye samples, 24300 rays, sky yes, 0 void ray(s)
+- 296 eye samples, 23976 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
@@ -347,19 +354,19 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_ext_east_arm` | 271 | 127 | 994 | 0 | 1392 | 90290 | 3 | Sun 814, UnderpassBatten1 103, UnderpassBatten0 77 |
 | `rc_ext_plaza` | 131 | 0 | 139 | 0 | 270 | 55056 | 1 | Sun 139 |
 | `rc_ext_tannery_west` | 486 | 0 | 494 | 0 | 980 | 148478 | 1 | Sun 494 |
-| `rc_diner_neon` | 782 | 287 | 1258 | 0 | 2327 | 293514 | 4 | Sun 924, LightFixture_9 154, UnderpassBatten1 103, UnderpassBatten0 77 |
-| `rc_convoy_cash` | 699 | 116 | 801 | 0 | 1616 | 313222 | 2 | Sun 623, LightFixture_9 178 |
+| `rc_diner_neon` | 779 | 287 | 1258 | 0 | 2324 | 293120 | 4 | Sun 924, LightFixture_9 154, UnderpassBatten1 103, UnderpassBatten0 77 |
+| `rc_convoy_cash` | 701 | 116 | 803 | 0 | 1620 | 313586 | 2 | Sun 625, LightFixture_9 178 |
 | `rc_convoy_bullion` | 782 | 173 | 1258 | 0 | 2213 | 374334 | 4 | Sun 854, LightFixture_9 178, LightFixture_7 159, LightFixture_7 67 |
-| `rc_carpark_ground` | 637 | 234 | 1170 | 0 | 2041 | 262928 | 3 | Sun 908, LightFixture_7 185, LightFixture_7 77 |
+| `rc_carpark_ground` | 637 | 234 | 1173 | 0 | 2044 | 262928 | 3 | Sun 911, LightFixture_7 185, LightFixture_7 77 |
 | `rc_carpark_deck2` | 1075 | 253 | 1360 | 0 | 2688 | 411072 | 3 | Sun 1047, LightFixture_7 231, LightFixture_7 82 |
 | `rc_carpark_ramp` | 491 | 103 | 1260 | 0 | 1854 | 223070 | 3 | Sun 1083, LightFixture_7 135, LightFixture_7 42 |
 | `rc_carpark_roof` | 904 | 241 | 1262 | 0 | 2407 | 336376 | 3 | Sun 982, LightFixture_7 198, LightFixture_7 82 |
 | `rc_carpark_booth` | 802 | 135 | 1043 | 0 | 1980 | 255176 | 3 | Sun 830, LightFixture_7 160, LightFixture_7 53 |
-| `rc_carpark_plant` | 454 | 194 | 1026 | 0 | 1674 | 161614 | 5 | Sun 751, UnderpassBatten1 103, UnderpassBatten0 77, LightFixture_7 63, LightFixture_7 32 |
+| `rc_carpark_plant` | 451 | 194 | 1024 | 0 | 1669 | 161220 | 5 | Sun 749, UnderpassBatten1 103, UnderpassBatten0 77, LightFixture_7 63, LightFixture_7 32 |
 | `rc_carpark_stair` | 226 | 0 | 677 | 0 | 903 | 75138 | 1 | Sun 677 |
 | `rc_diner_dining` | 1216 | 483 | 2013 | 0 | 3712 | 506542 | 6 | Sun 1347, LightFixture_7 258, LightFixture_9 142, UnderpassBatten1 103, LightFixture_7 86, UnderpassBatten0 77 |
 | `rc_diner_kitchen` | 1305 | 292 | 1425 | 0 | 3022 | 513702 | 4 | Sun 966, LightFixture_7 252, LightFixture_9 121, LightFixture_7 86 |
-| `rc_diner_function` | 1227 | 299 | 1294 | 0 | 2820 | 436460 | 4 | Sun 875, LightFixture_7 220, LightFixture_9 121, LightFixture_7 78 |
+| `rc_diner_function` | 1230 | 299 | 1300 | 0 | 2829 | 436854 | 4 | Sun 878, LightFixture_7 223, LightFixture_9 121, LightFixture_7 78 |
 | `rc_diner_office` | 304 | 46 | 396 | 0 | 746 | 104220 | 2 | Sun 258, LightFixture_9 138 |
 | `rc_diner_staff` | 306 | 37 | 345 | 0 | 688 | 87888 | 2 | Sun 205, LightFixture_9 140 |
 | `rc_site_controller` | 577 | 116 | 640 | 0 | 1333 | 265598 | 2 | Sun 462, LightFixture_9 178 |

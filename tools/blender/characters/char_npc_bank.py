@@ -38,6 +38,7 @@ No blend shapes (baked at the params below).
 
 import math
 
+import _cartel_gear as cgr
 import _contact_gear as cg
 import _gear_kit as gk
 import _npc as n
@@ -210,17 +211,24 @@ def manager(kit: Kit) -> None:
     kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k))
     kit.add_gear(n.bank_badge(hull, Vector((-0.10 * k, 0.2, 1.34 * k)), Vector((0, 1, 0.1)), 0.026, 0.030, k,
                               rim="brass", fill=SLATE, glyph="brass", depth=0.003))
+    kit.add_head(gk.glasses(kit.fit, "char_satin_gold"))                            # ND-G3: gold reading glasses
 
 
-def cleaner(kit: Kit) -> None:
+def _cleaner(kit: Kit) -> None:
     n.cleaner_outfit(kit, "char_knit_grey", SLATE_DARK, "char_cleaner_tabard", CREAM, "char_rubber_yellow",
                      "char_bank_cream")
 
 
+def cleaner(kit: Kit) -> None:
+    _cleaner(kit)
+    kit.add_head(cgr.beanie(kit.fit, "char_knit_navy"))                               # ND-G3: a night-shift beanie
+
+
 def cleaner_b(kit: Kit) -> None:
     """D-130: the second night cleaner, same contractor uniform, another person (woman, brown bun)."""
-    cleaner(kit)
+    _cleaner(kit)
     kit.add_head(cg.chignon(kit.fit, "char_hair_brown", size=0.85))
+    n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.20)                  # ND-G3: a contractor's pass
     kit.notes["look"] = ("Night cleaner, second face (D-130): same blue-grey tabard uniform; a woman about 50, mid "
                          "skin, brown hair pinned up in a bun")
 

@@ -146,8 +146,9 @@ TINTED: dict[str, dict] = {
     "ice_blue": {"source": "plastic_matte", "color": "#5F86A8", "roughness": 0.7},
     "trailer_white": {"source": "metal_painted", "color": "#CFCDC6", "roughness": 0.9},
     # RT-C2 (Rolling Thunder, §3c): the Vaultline armoured-truck livery (deep green, a brass band), the lorry cab red
-    "rt_vaultline": {"source": "metal_painted", "color": "#2F4A42", "roughness": 0.7},
-    "rt_vaultline_band": {"source": "metal_painted", "color": "#B89448", "roughness": 0.6},
+    # (RT done check, P's first sight: the trucks read matte; a glossy clearcoat sheen, still a dielectric paint)
+    "rt_vaultline": {"source": "metal_painted", "color": "#2F4A42", "roughness": 0.3},
+    "rt_vaultline_band": {"source": "metal_painted", "color": "#B89448", "roughness": 0.3},
     "rt_lorry_red": {"source": "metal_painted", "color": "#8A2E26", "roughness": 0.7},
     "rt_skyway_green": {"source": "metal_painted", "color": "#4D805C", "roughness": 0.7},
     "laminate_grey": {"source": "plastic_matte", "color": "#8E9090", "roughness": 0.6},

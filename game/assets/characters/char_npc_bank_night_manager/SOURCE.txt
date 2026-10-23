@@ -11,8 +11,8 @@ attach_Hip: bone hips, local [0.1781, 0.0491, 0.0408] (model [0.1781, 0.9645, 0.
 body_faces_culled: 3907
 body_params: {"age": 0.7, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "bob", "hair_color": "grey", "hair_peak": 0.0, "height": 1.71, "lip": "auto", "skin": 1}
 bones: 52
-meshes: Body,Gear,Hair,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 32786
-tris_by_mesh: {"Body": 10930, "Gear": 488, "Hair": 2088, "Outfit": 19280}
+tris: 33284
+tris_by_mesh: {"Body": 10930, "Gear": 488, "Hair": 2088, "Headwear": 498, "Outfit": 19280}

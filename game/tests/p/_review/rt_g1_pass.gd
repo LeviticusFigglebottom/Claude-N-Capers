@@ -499,7 +499,7 @@ func _site_in() -> bool:
 			await _wait_unseen("man-gate")
 		await _mask()  # interactions need the mask (InteractableComponent: casing_allowed only); mask at the gate
 		var used: bool = await pilot.use(_comp(lock), 40.0, func() -> bool: return gate.is_open or not gate.locked)
-		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "gate open %s" % gate.is_open,
+		_row("man-gate padlock (lockpick)", "PASS" if used else "FAIL", "padlock off %s, gate open %s" % [not gate.locked, gate.is_open],
 			"-" if used else "A padlock / C placement")
 		if not gate.is_open:
 			await pilot.use(_comp(gate), 20.0, func() -> bool: return gate.is_open)
@@ -1442,6 +1442,8 @@ func _hazard_run(clean: bool) -> bool:
 func _haz_bags(t: ArmoredTruck) -> int:
 	var zone: SecureZone = _secure_zone_near(E1_AT)
 	var secured: int = 0
+	# The mission spawns the cargo on its 1 s poll after the doors open (blown_confirm: the loop ran first and saw none).
+	await wait_until(func() -> bool: return _bag_near(_truck_use(t), 4.0) != null, 5.0)
 	var t_end: float = rt.heist_time_s + HAZ_BAGS_S
 	while rt.heist_time_s < t_end and not _in_custody() and zone != null:
 		if pilot.crew.crew_state != Enums.CrewState.NORMAL:

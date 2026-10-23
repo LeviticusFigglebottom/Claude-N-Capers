@@ -13,7 +13,7 @@ body_params: {"age": 0.72, "beard_shadow": 0.95, "build": 0.95, "gender": 0.0, "
 bones: 52
 faces_hidden_by_bomber: 2445
 fp_sleeve: {"cuff": "char_knit_graphite", "glove": "char_crew_glove_tan", "sleeve": "char_crew_dutch_bomber"}
-hair_note: beard + moustache (2894 tris) joined into Hair
+hair_note: facial hair (2894 tris) joined into Hair
 head_note: hat-free; the crew mask attaches at Head (face centre)
 look: Dutch: brown leather bomber, cream shearling collar, ribbed waist/cuffs, zipped to mid-chest over shirt + black tie, suit trousers, brown boots, tan gloves, full beard
 meshes: Body,Gear,Hair,Outfit

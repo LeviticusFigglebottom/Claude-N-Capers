@@ -1,0 +1,14 @@
+asset: char_arms_fp_hale
+script: tools/blender/characters/arms_fp_heisters.py
+params: {"heister": "hale", "skin": 6}
+seed: 325344564  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_arms_fp_hale
+edit policy: generated file, never edit by hand; change the script and rebuild
+fp.variant: mesh-only sleeve variant of char_arms_fp (no AnimationPlayer): <root>/rig_arms/Skeleton3D/Arms, same rig_arms bones / rest / bind poses; ENV A puts this Arms' mesh + skin on char_arms_fp's Arms (the clips stay in char_arms_fp); the hands are glove-material hands (no skin under the glove)
+heister: hale
+layers: char_crew_glove_work u=-0.056..0.000 m; char_crew_hale_jacket u=-0.062..-0.028 m; char_crew_hale_jacket u=-0.389..-0.060 m pleats=5
+look: boxy sand canvas chore-jacket sleeve into a plain cuff band, long-gauntlet yellow work gloves
+materials: char_crew_glove_work,char_crew_hale_jacket
+tri_budget: 12000
+tris: 9816

@@ -11,7 +11,7 @@
 extends TestCase
 
 const CONTACTS: Array[String] = ["odile", "hollis", "accountant"]
-const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren", "marten", "jay"]
+const HEISTERS: Array[String] = ["rook", "sable", "dutch", "wren", "marten", "jay", "juno", "hale"]
 const BONES: int = 52
 const TRI_BUDGET: int = 35000
 const SIZE: int = 1024

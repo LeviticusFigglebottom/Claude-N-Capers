@@ -58,6 +58,10 @@ ORANGE = "char_crew_glove_orange"
 COBALT = "char_crew_jay_jacket"
 STRIPE = "char_crew_jay_stripe"
 DRIVING = "char_crew_glove_driving"
+MOTO = "char_crew_juno_jacket"
+SUEDE = "char_crew_glove_suede"
+CHORE = "char_crew_hale_jacket"
+WORK = "char_crew_glove_work"
 
 #: What the first-person arms should wear per heister (sleeve, cuff/under-sleeve, glove). Recorded in
 #: SOURCE.txt (``fp_sleeve``) for the per-heister FP arm variants (a later task).
@@ -69,6 +73,8 @@ FP_SLEEVES = {
              "glove": "char_crew_glove_sage"},
     "marten": {"sleeve": PARKA, "cuff": PARKA, "glove": ORANGE},
     "jay": {"sleeve": COBALT + " with two " + STRIPE + " stripes", "cuff": COBALT, "glove": DRIVING},
+    "juno": {"sleeve": MOTO, "cuff": MOTO + " with a chrome cuff zip", "glove": SUEDE},
+    "hale": {"sleeve": CHORE, "cuff": CHORE, "glove": WORK},
 }
 
 
@@ -685,4 +691,131 @@ def jay(kit: Kit) -> None:
                          "each sleeve; white tee, black jeans, white sneakers, cognac driving gloves")
 
 
-LOOKS = {"rook": rook, "sable": sable, "dutch": dutch, "wren": wren, "marten": marten, "jay": jay}
+# =============================================================================================
+# Juno (D4-03): the moto jacket
+# =============================================================================================
+def _line(hull: Hull, a: tuple[float, float], b: tuple[float, float], fallback_y: float, n_pts: int = 12) -> list:
+    """Points on the outer front surface along the straight (x, z) line a -> b."""
+    return [_front_hit(hull, lerp(a[0], b[0], i / (n_pts - 1)), lerp(a[1], b[1], i / (n_pts - 1)), fallback_y)
+            for i in range(n_pts)]
+
+
+def moto_jacket(kit: Kit, bottom_z: float) -> Mesh:
+    """A fitted, waist-length emerald leather moto jacket: a band collar, an asymmetric chrome zip from the
+    left collarbone down to the right hip, a hem belt with a chrome buckle on the right, a zipped chest
+    pocket and zipped cuffs."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    sh = g.upper_shell(fit, MOTO, bottom_z=bottom_z, sleeve=1.92, base=0.008, waist_blouse=0.004, hull=hull,
+                       iters=6, min_off=0.004 * k)
+    m = sh.mesh
+    loops = g.classify_loops(m)
+    g.bottom_tuck(m, loops["hem"], bottom_z)
+    for key in ("cuff.L", "cuff.R"):
+        o.straighten_loop(m, loops[key], iters=2)
+    mh = Hull(fit, [m])
+    g.cuff_band(m, loops["hem"], mh, 0.045 * k, 0.003 * k, MOTO)                    # the hem belt
+    for key in ("cuff.L", "cuff.R"):
+        g.cuff_band(m, loops[key], mh, 0.030 * k, 0.003 * k, MOTO)
+    g.band_collar(m, fit, sh.ring("neck"), MOTO, height=0.80, rad=0.010)
+    o.hem_all(m, thick=0.004 * k, depth=0.014 * k)
+    kit.add_soft(m)
+    jh = Hull(fit, [m])
+    nk = g.Neck(fit)
+    cy = fit.ring_centre("chest").y
+    neck_z = nk.point(0.0, 0.0).z
+    zp = Mesh()
+    zip_pts = _line(jh, (-0.075 * k, neck_z - 0.045 * k), (0.07 * k, bottom_z + 0.05 * k), cy + 0.15 * k, 16)
+    o.strip(zp, jh, zip_pts, 0.005 * k, 0.0022 * k, "chrome", segs_across=1, chamfer=0.001 * k)
+    pocket = _line(jh, (-0.115 * k, 1.29 * k), (-0.06 * k, 1.25 * k), cy + 0.15 * k, 6)          # chest pocket
+    o.strip(zp, jh, pocket, 0.004 * k, 0.0018 * k, "chrome", segs_across=1, chamfer=0.001 * k)
+    kit.add_gear(zp)
+    buckle = o.Gear()                                                                        # hem belt buckle
+    buckle.box((-0.017 * k, -0.013 * k, 0.0), (0.017 * k, 0.013 * k, 0.004 * k), "chrome")
+    buckle.bevel(0.002 * k, 1, 30.0)
+    bp = _front_hit(jh, 0.13 * k, bottom_z + 0.02 * k, cy + 0.15 * k)
+    kit.add_gear(buckle.to_mesh(o.frame_from(bp, Vector((0.35, 1.0, 0.0)).normalized()), anchor=bp))
+    return m
+
+
+def juno(kit: Kit) -> None:
+    """An emerald leather moto jacket over a graphite crew-neck, black jeans, heeled black moto boots, grey
+    suede gloves, a blond side part."""
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    boots = g.shoes(fit, "char_shoe_black", "rubber_black", top_z=0.15, base=0.007, heel=0.03, boot=True)
+    kit.add_soft(boots)
+    knit = g.knit_top(fit, kit.hull(), "char_knit_graphite", belt_z - 0.01 * k, neck="crew", base=0.004)
+    kit.add_soft(knit)
+    n.trousers(kit, "char_trousers_black", boots, belt_z + 0.022 * k, hem_r=0.056)
+    _gloves(kit, SUEDE, cuff_len=0.030, cuff_off=0.004)
+    n0 = len(kit.soft.f)
+    jk = moto_jacket(kit, hips_z + 0.03 * k)
+    _cull_under(kit, n0, jk, "faces_hidden_by_moto_jacket")
+    kit.notes["look"] = ("Juno: fitted emerald leather moto jacket, asymmetric chrome zip, band collar, hem belt; "
+                         "graphite crew-neck, black jeans, heeled black moto boots, grey suede gloves, blond side part")
+
+
+# =============================================================================================
+# Hale (D4-03): the chore jacket
+# =============================================================================================
+def chore_jacket(kit: Kit, bottom_z: float) -> Mesh:
+    """A boxy hip-length sand canvas chore jacket buttoned to the collar: a point collar, a button placket,
+    two big hip patch pockets and a chest pocket."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    sh = g.upper_shell(fit, CHORE, bottom_z=bottom_z, sleeve=1.95, base=0.010, hull=hull, iters=6, min_off=0.005 * k)
+    m = sh.mesh
+    loops = g.classify_loops(m)
+    o.straighten_loop(m, loops["hem"], iters=3)
+    for key in ("cuff.L", "cuff.R"):
+        o.straighten_loop(m, loops[key], iters=2)
+    mh = Hull(fit, [m])
+    for key in ("cuff.L", "cuff.R"):
+        g.cuff_band(m, loops[key], mh, 0.045 * k, 0.003 * k, CHORE)
+    g.shirt_collar(m, fit, sh.ring("neck"), kit.hull(), CHORE, point_len=0.062, spread=0.30)
+    o.hem_all(m, thick=0.005 * k, depth=0.016 * k)
+    kit.add_soft(m)
+    jh = Hull(fit, [m])
+    nk = g.Neck(fit)
+    top_z = nk.point(0.0, 0.0).z - 0.05 * k
+    det = Mesh()
+    path = g.front_path(jh, 0.0, top_z, bottom_z + 0.02 * k, step=0.02 * k)
+    o.strip(det, jh, path, 0.024 * k, 0.0016 * k, CHORE, segs_across=1)                       # placket
+    o.patch(det, jh, Vector((-0.10 * k, 0.0, 1.27 * k)), Vector((1, 0, 0)), UP,
+            o.rounded_rect(0.10 * k, 0.11 * k, 0.008 * k, 2), 0.004 * k, CHORE, cast_dir=Vector((-0.2, -1, 0)),
+            rings=2, chamfer=0.003 * k)                                                       # chest pocket
+    kit.add_soft(det)
+    ph = kit.hull()
+    btn = Mesh()
+    z = top_z - 0.01 * k
+    while z > bottom_z + 0.06 * k:
+        btn.extend(gk.button(ph, Vector((0.0, 0.2, z)), "char_button_dark", r=0.0065, k=k, thick=0.004))
+        z -= 0.095 * k
+    kit.add_gear(btn)
+    _bomber_pockets(kit, CHORE, bottom_z + 0.02 * k)
+    return m
+
+
+def hale(kit: Kit) -> None:
+    """A sand canvas chore jacket over a navy henley, dark jeans, brown work boots, yellow work gloves; bald,
+    a dark moustache."""
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    boots = g.shoes(fit, "char_shoe_brown", "rubber_black", top_z=0.16, base=0.007, boot=True)
+    kit.add_soft(boots)
+    knit = g.knit_top(fit, kit.hull(), "char_knit_navy", belt_z - 0.01 * k, neck="crew", base=0.005)
+    kit.add_soft(knit)
+    n.trousers(kit, "char_denim", boots, belt_z + 0.022 * k, hem_r=0.064)
+    _gloves(kit, WORK, cuff_len=0.050, cuff_off=0.005)
+    n0 = len(kit.soft.f)
+    jk = chore_jacket(kit, hips_z - 0.11 * k)
+    _cull_under(kit, n0, jk, "faces_hidden_by_chore_jacket")
+    hair = f"char_hair_{fit.params['hair_color']}"
+    kit.add_head(cg.moustache(fit, hair, z_off=-0.066, half_w=0.036, thick=0.0064, sides=12))
+    kit.notes["look"] = ("Hale: boxy sand canvas chore jacket buttoned to the point collar, patch pockets; navy "
+                         "henley, dark jeans, brown work boots, yellow work gloves; bald, dark moustache")
+
+
+LOOKS = {"rook": rook, "sable": sable, "dutch": dutch, "wren": wren, "marten": marten, "jay": jay, "juno": juno,
+         "hale": hale}

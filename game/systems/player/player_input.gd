@@ -5,7 +5,7 @@
 ##
 ## Contextual keys (PD2 style):
 ##   F (`interact` / `shout`): hold to interact when an interactable is aimed at, otherwise a
-##     press is a shout (intimidate / mark).
+##     press is a shout (intimidate / mark). Options interact_mode = toggle: a press latches it (see _toggle_interact).
 ##   G (`mask_up` / `throw_item` / `drop_bag`): hold to mask up while unmasked; while masked and
 ##     carrying a bag a press throws the bag; otherwise a press throws the throwable.
 ##   T (`order_menu`, A3-05): tap = contextual AI teammate order (CrewOrders.contextual_order):
@@ -20,6 +20,8 @@ extends Node
 const RESUME_GATED: Array[StringName] = [&"fire", &"melee", &"throw_item", &"mask_up", &"drop_bag", &"deploy",
 	&"interact", &"shout", &"reload", &"jump", &"aim", &"slot_primary", &"slot_secondary",
 	&"swap_weapon", &"gadget_toggle"]
+## Toggle interact: physics ticks a latched F waits for a session before it drops (instant or refused use).
+const LATCH_START_TICKS: int = 3
 
 ## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
 ## Never set by game code: the real capture is MouseCapture's (D-087).
@@ -66,6 +68,10 @@ var _pitch: float = 0.0
 var _crew: CrewController = null
 var _toggled: Dictionary[StringName, bool] = {}
 var _held_prev: Dictionary[StringName, bool] = {}
+## Toggle interact (GameSettings interact_mode): F latched on, the physics ticks it has been on, a session seen.
+var _interact_latched: bool = false
+var _latch_ticks: int = 0
+var _latch_session: bool = false
 ## Slot to restore when `swap_weapon` toggles.
 var _last_slot: int = Enums.WeaponSlot.SECONDARY
 ## A3-05: the order being sent (latched for a few ticks) and the last follow/hold given per AI net id.
@@ -336,8 +342,15 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 	var isys: InteractionSystem = rt.interaction if rt != null else null
 	var aimed: bool = isys != null and (isys.aimed_component(_crew) != null or not isys.session(_crew.slot).is_empty())
 	var f_held: bool = Input.is_action_pressed(&"interact") or Input.is_action_pressed(&"shout")
-	i.interact = f_held and aimed
-	i.shout = not i.interact and (Input.is_action_just_pressed(&"shout") or Input.is_action_just_pressed(&"interact"))
+	var f_pressed: bool = Input.is_action_just_pressed(&"shout") or Input.is_action_just_pressed(&"interact")
+	var gs: GameSettings = GameSettings.current()
+	if gs != null and gs.is_toggle(&"interact"):
+		i.interact = _toggle_interact(isys, aimed, f_held)
+		i.shout = not i.interact and f_pressed and not _suppressed.has(&"interact")
+	else:
+		_interact_latched = false
+		i.interact = f_held and aimed
+		i.shout = not i.interact and f_pressed
 	# G: mask up (hold) / throw bag / throwable.
 	var g_held: bool = Input.is_action_pressed(&"mask_up")
 	var g_pressed: bool = Input.is_action_just_pressed(&"mask_up") or Input.is_action_just_pressed(&"throw_item") \
@@ -416,6 +429,27 @@ func _order_input(rt: HeistRuntime, i: CrewIntent) -> void:
 	i.order = _order["order"]
 	i.order_target_net_id = int(_order["target"])
 	i.order_position = _order["position"]
+
+
+## LEAD (B's interact_mode = toggle): a press of F at something usable latches the interaction on; another press
+## cancels it (that press is not a shout), and the latch drops when the session ends (completed, or cancelled by
+## moving / looking away: InteractionSystem) or none started within LATCH_START_TICKS (instant / refused).
+func _toggle_interact(isys: InteractionSystem, aimed: bool, f_held: bool) -> bool:
+	var pressed: bool = f_held and not bool(_held_prev.get(&"interact", false))  # own edge (physics-tick intents)
+	_held_prev[&"interact"] = f_held
+	var in_session: bool = isys != null and not isys.session(_crew.slot).is_empty()
+	if _interact_latched:
+		_latch_ticks += 1
+		_latch_session = _latch_session or in_session
+		if pressed or (_latch_session and not in_session) or (not _latch_session and _latch_ticks > LATCH_START_TICKS):
+			_interact_latched = false
+			if pressed:
+				_suppressed[&"interact"] = true  # the cancelling press is not a shout (cleared on release)
+	elif pressed and aimed:
+		_interact_latched = true
+		_latch_ticks = 0
+		_latch_session = in_session
+	return _interact_latched
 
 
 ## B5-01: hold (default) or toggle (GameSettings.is_toggle) for aim / crouch / sprint.

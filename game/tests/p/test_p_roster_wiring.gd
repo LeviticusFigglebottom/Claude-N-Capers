@@ -1,7 +1,10 @@
 ## Roster wiring (lead round 186, Marten): every playable heister (B's roster, Heisters.ids()) has both a
 ## third-person body (CrewTweak.body_scenes) and first-person sleeves (FpViewmodelTweak.sleeve_scenes), and a
-## teammate playing Marten or Jay spawns that body, animated. Owner: ENV P.
+## teammate playing Marten, Jay, Juno or Hale spawns that body, animated. D4-03: the roster is 8 (Juno and Hale added).
+## Owner: ENV P.
 extends TestCase
+
+const ROSTER_8: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale"]
 
 var _rt: HeistRuntime = null
 
@@ -22,8 +25,9 @@ func _loadout(heister: StringName) -> Loadout:
 func test_bodies_and_sleeves_match() -> void:
 	var bodies: Dictionary[StringName, PackedScene] = Tweak.crew().body_scenes
 	var sleeves: Dictionary[StringName, PackedScene] = FpViewmodelTweak.data().sleeve_scenes
-	for h: StringName in [&"marten", &"jay"]:
+	for h: StringName in ROSTER_8:
 		assert_true(bodies.has(h) and sleeves.has(h), "%s wired (body + sleeves)" % h)
+	assert_eq(sleeves.size(), ROSTER_8.size(), "8 heisters have sleeves (D4-03)")
 	for h: StringName in Heisters.ids():
 		assert_true(bodies.has(h) and sleeves.has(h), "roster heister %s has a body and sleeves" % h)
 	for h: StringName in bodies:
@@ -41,6 +45,14 @@ func test_marten_teammate_body() -> void:
 
 func test_jay_teammate_body() -> void:
 	await _teammate_body(&"jay", 19101)
+
+
+func test_juno_teammate_body() -> void:
+	await _teammate_body(&"juno", 40301)
+
+
+func test_hale_teammate_body() -> void:
+	await _teammate_body(&"hale", 40302)
 
 
 func _teammate_body(heister: StringName, run_seed: int) -> void:
