@@ -17,5 +17,5 @@ look: Halberd Gallery Security (in-house): bottle-green blazer, gold buttons, wi
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26517
-tris_by_mesh: {"Body": 9000, "Gear": 916, "Hair": 1728, "Outfit": 14873}
+tris: 26861
+tris_by_mesh: {"Body": 9000, "Gear": 1260, "Hair": 1728, "Outfit": 14873}

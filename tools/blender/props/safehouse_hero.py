@@ -16,6 +16,10 @@ the footprint centre with the bottom at z = 0; wall pivots on the wall face (the
 * ``prop_sh_ppe_rack``: a wall rack of ear defenders and safety glasses (the range vestibule).
 * ``prop_sh_drying_line``: a floor frame with two lines of pegged paint-masking stencils (the mask room).
 * ``prop_sh_type_case``: an old compositor's type-case cabinet: drawers under a slanted top with an open case tray.
+* ``prop_sh_planning_table``: the planning station (C's stand-in footprint: 3.0 x 1.5 m, the top at 0.90 m, the
+  player at the +Y long side). A heavy dark-steel frame with a lower shelf of rolled plans under a light oak top; a
+  blueprint and a street map with push pins and red string, a ruler and a pencil, an angled lamp at the back corner
+  with a warm bulb, and a coffee mug. Box ``Collision`` = the stand-in's box.
 """
 
 from __future__ import annotations
@@ -43,6 +47,7 @@ VARIANTS = {
     },
     "prop_sh_drying_line": {"fn": "drying_line", "cat": dict(_FLOOR, kind="drying_line", surface="wood")},
     "prop_sh_type_case": {"fn": "type_case", "cat": dict(_FLOOR, kind="type_case", surface="wood")},
+    "prop_sh_planning_table": {"fn": "planning_table", "cat": dict(_FLOOR, kind="table", surface="wood")},
 }
 
 
@@ -456,6 +461,99 @@ def _type_case(k: Kit, p: dict) -> None:
     t.rod(on_slant(0.40, 0.30, 0.03), on_slant(0.60, 0.30, 0.03), 0.02, "steel_bare", square=True)      # stick
     body.build()
     k.collision([((-hx, -hy, 0.0), (hx, hy, 1.0))])
+
+
+# ------------------------------------------------------------------------------------------- planning table
+
+def _planning_table(k: Kit, p: dict) -> None:
+    """3.0 (x) x 1.5 (y) x 0.90 m (C's stand-in): a dark-steel frame, a light oak top, the plans on it."""
+    hx, hy, top = 1.5, 0.75, 0.90
+    body = k.obj("Body")
+    f = body.part(bevel=0.004)
+    t = body.part(bevel=0.0)
+    # the frame: four 80 mm square legs, an apron under the top, a stretcher shelf at 0.18 m
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (hx - 0.10), sy * (hy - 0.10)
+            f.bx((x - 0.04, y - 0.04, 0.0), (x + 0.04, y + 0.04, top - 0.05), "powder_charcoal")
+            f.bx((x - 0.06, y - 0.06, 0.0), (x + 0.06, y + 0.06, 0.012), "metal_dark")               # foot plate
+    for sy in (-1, 1):
+        f.bx((-hx + 0.06, sy * (hy - 0.10) - 0.03, top - 0.17), (hx - 0.06, sy * (hy - 0.10) + 0.03, top - 0.05),
+             "powder_charcoal")                                                                       # long apron
+    for sx in (-1, 1):
+        f.bx((sx * (hx - 0.10) - 0.03, -hy + 0.06, top - 0.17), (sx * (hx - 0.10) + 0.03, hy - 0.06, top - 0.05),
+             "powder_charcoal")                                                                       # short apron
+    f.bx((-hx + 0.10, -hy + 0.10, 0.16), (hx - 0.10, hy - 0.10, 0.19), "metal_dark")                  # the shelf
+    # the top: light oak with a steel edge band
+    f.bx((-hx, -hy, top - 0.05), (hx, hy, top), "wood_oak")
+    t.bx((-hx - 0.004, -hy - 0.004, top - 0.05), (hx + 0.004, -hy, top - 0.01), "steel_bare")
+    t.bx((-hx - 0.004, hy, top - 0.05), (hx + 0.004, hy + 0.004, top - 0.01), "steel_bare")
+    # rolled plans on the shelf
+    for i, (x, key) in enumerate(((-0.9, "paper"), (-0.75, "art_blue"), (-0.6, "paper"), (0.5, "art_blue"),
+                                  (0.66, "paper"))):
+        t.cyl(0.045, 1.0 - 0.08 * (i % 3), (x, 0.0, 0.19 + 0.045), key, axis="Y", segs=10)
+    z = top + 0.001
+    # the blueprint (viewer's left, +X): blue sheet, white plan lines (rooms, a corridor, a vault)
+    bx0, bx1, by0, by1 = 0.15, 1.35, -0.55, 0.35
+    t.bx((bx0, by0, z), (bx1, by1, z + 0.002), "art_blue")
+    zl = z + 0.002
+    for x0, y0, x1, y1 in ((0.25, -0.45, 1.25, -0.44), (0.25, 0.24, 1.25, 0.25), (0.25, -0.45, 0.26, 0.25),
+                           (1.24, -0.45, 1.25, 0.25), (0.62, -0.45, 0.63, 0.25), (0.25, -0.12, 0.62, -0.11),
+                           (0.95, -0.45, 0.96, -0.05), (0.95, -0.06, 1.25, -0.05), (0.63, 0.05, 1.24, 0.06)):
+        t.bx((x0, y0, zl), (x1, y1, zl + 0.001), "paper")
+    t.cyl(0.07, 0.001, (1.10, -0.25, zl + 0.0005), "paper", segs=16)                                   # the vault
+    t.cyl(0.062, 0.0012, (1.10, -0.25, zl + 0.0006), "art_blue", segs=16)
+    # the street map (viewer's right, -X): paper, a dark street grid, coloured blocks, the river
+    mx0, mx1, my0, my1 = -1.35, -0.10, -0.50, 0.40
+    t.bx((mx0, my0, z), (mx1, my1, z + 0.002), "paper")
+    for i in range(7):
+        x = mx0 + 0.12 + i * 0.17
+        t.bx((x - 0.004, my0 + 0.04, zl), (x + 0.004, my1 - 0.04, zl + 0.001), "metal_dark")
+    for i in range(5):
+        y = my0 + 0.10 + i * 0.18
+        t.bx((mx0 + 0.04, y - 0.004, zl), (mx1 - 0.04, y + 0.004, zl + 0.001), "metal_dark")
+    for x, y, key in ((-1.15, -0.30, "art_ochre"), (-0.80, 0.12, "metal_green"), (-0.45, -0.12, "art_rust"),
+                      (-0.97, 0.30, "art_ochre"), (-0.30, 0.28, "metal_green")):
+        t.bx((x, y, zl), (x + 0.13, y + 0.14, zl + 0.0012), key)
+    for (x0, y0), (x1, y1) in (((-1.35, -0.42), (-0.95, -0.26)), ((-0.95, -0.26), (-0.55, -0.34)),
+                               ((-0.55, -0.34), (-0.10, -0.18))):
+        dx, dy = x1 - x0, y1 - y0
+        ln = math.hypot(dx, dy)
+        nx, ny = -dy / ln * 0.025, dx / ln * 0.025
+        t.slab([(x0 + nx, y0 + ny), (x1 + nx, y1 + ny), (x1 - nx, y1 - ny), (x0 - nx, y0 - ny)], zl, zl + 0.0015,
+               "art_blue")
+    # push pins and the red string between them (across both sheets)
+    pins = [(-1.08, -0.23, "metal_red"), (-0.40, -0.05, "metal_red"), (-0.86, 0.18, "metal_yellow"),
+            (1.10, -0.25, "metal_red"), (0.40, 0.10, "metal_yellow")]
+    heads = []
+    for x, y, key in pins:
+        t.cyl(0.0015, 0.012, (x, y, zl + 0.006), "steel_bare", segs=6)
+        t.sphere(0.009, (x, y, zl + 0.016), key, segs=8, rings=4)
+        heads.append((x, y, zl + 0.012))
+    for a, b in ((0, 1), (1, 3), (2, 1), (3, 4)):
+        t.rod(heads[a], heads[b], 0.0012, "metal_red", segs=4)
+    # a steel rule and a pencil on the blueprint, a mug on the front right corner
+    t.bx((0.30, 0.42, z), (0.90, 0.45, z + 0.003), "paper")                  # a scale rule
+    t.rod((0.15, 0.48, z + 0.004), (0.33, 0.55, z + 0.004), 0.004, "metal_yellow", segs=6)
+    t.rod((0.33, 0.55, z + 0.004), (0.35, 0.558, z + 0.004), 0.0035, "metal_dark", segs=6)
+    t.lathe([(0.0, 0.0), (0.040, 0.0), (0.042, 0.095), (0.036, 0.095), (0.034, 0.012), (0.0, 0.012)],
+            "ceramic", centre=(-1.15, 0.52, top), segs=16)
+    t.cyl(0.034, 0.002, (-1.15, 0.52, top + 0.080), "wood_dark", segs=16)                              # the coffee
+    t.torus(0.025, 0.006, (-1.15 + 0.05, 0.52, top + 0.050), "ceramic", segs=12, rsegs=6, axis="Y",
+            arc=math.pi)
+    # the lamp: a weighted base at the back corner, a post, an arm over the plans, a green enamel shade
+    lx, ly = -1.30, -0.62
+    f.cyl(0.09, 0.03, (lx, ly, top + 0.015), "metal_dark", segs=16)
+    f.rod((lx, ly, top + 0.03), (lx + 0.05, ly + 0.05, top + 0.50), 0.012, "steel_bare", segs=8)
+    f.sphere(0.02, (lx + 0.05, ly + 0.05, top + 0.50), "metal_dark", segs=8, rings=4)                 # the joint
+    sx_, sy_ = lx + 0.30, ly + 0.30
+    f.rod((lx + 0.05, ly + 0.05, top + 0.50), (sx_, sy_, top + 0.58), 0.010, "steel_bare", segs=8)
+    t.lathe([(0.012, 0.12), (0.03, 0.10), (0.12, 0.0), (0.115, -0.004), (0.026, 0.09), (0.0, 0.10)],
+            "sh_enamel_green", centre=(sx_, sy_, top + 0.46), segs=20)
+    t.sphere(0.035, (sx_, sy_, top + 0.47), "emit_warm", segs=10, rings=5)                             # the bulb
+    body.build()
+    k.empty("LampBulb", (sx_, sy_, top + 0.45))
+    k.collision([((-hx, -hy, 0.0), (hx, hy, top))])
 
 
 def build(ctx) -> None:

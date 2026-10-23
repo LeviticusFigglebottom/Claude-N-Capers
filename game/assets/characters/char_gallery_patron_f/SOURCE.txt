@@ -15,5 +15,5 @@ look: Gala guest (man, 60s, heavy): navy dinner suit with black satin lapels and
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31486
-tris_by_mesh: {"Body": 8972, "Gear": 600, "Hair": 580, "Headwear": 498, "Outfit": 20836}
+tris: 31530
+tris_by_mesh: {"Body": 8972, "Gear": 644, "Hair": 580, "Headwear": 498, "Outfit": 20836}

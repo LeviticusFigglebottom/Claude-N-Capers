@@ -896,3 +896,17 @@ def arm_band(kit: Kit, side: str, t: float, width: float, mat: str, height: floa
     o.strip(m, hull, ring, width * 0.5 * k, height * k, mat, segs_across=1, chamfer=0.001 * k, closed=True,
             cast_back=0.03 * k)
     kit.add_soft(m)
+
+
+def bead_necklace(kit: Kit, mat: str, beads: int = 18, r: float = 0.0045) -> None:
+    """G3: a single strand of beads (pearls, a gold chain) lying round the base of the neck, dipping at the front."""
+    fit, k = kit.fit, kit.k
+    nk = g.Neck(fit)
+    hull = kit.hull()
+    gear = Mesh()
+    for i in range(beads):
+        a = math.tau * i / beads
+        t = 0.0 if abs(math.cos(a)) < 0.3 else -0.25 * max(0.0, math.cos(a))
+        p = o.push_out(nk.point(a, t, 0.006 * k), hull, 0.004 * k)
+        gear.extend(gk.button(hull, p, mat, r=r, toward=nk.radial(a), k=k, thick=0.004))
+    kit.add_gear(gear)

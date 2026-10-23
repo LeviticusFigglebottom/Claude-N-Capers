@@ -100,7 +100,7 @@ func _place(i: int) -> void:
 	line.visible = length > 0.05
 	if line.visible:
 		var up: Vector3 = Vector3.UP if absf(span.normalized().dot(Vector3.UP)) < 0.99 else Vector3.FORWARD
-		line.global_transform = Transform3D(Basis.looking_at(span, up).scaled(Vector3(1.0, 1.0, length)),
+		line.global_transform = Transform3D(Basis.looking_at(span, up) * Basis.from_scale(Vector3(1.0, 1.0, length)),
 			(pa + pb) * 0.5)
 	for m: int in range(MOTES):
 		var t: float = fposmod(_time_s / PULSE_S + float(m) / float(MOTES), 1.0)
