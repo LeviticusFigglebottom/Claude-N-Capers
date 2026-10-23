@@ -137,7 +137,7 @@ func _on_pager_answered(total: int) -> void:
 func gear_line() -> StringName:
 	for slot: StringName in [&"gear_wc", &"gear_cloak", &"gear_booth", &"gear_van"]:
 		if _slot_active(&"gear_drop", slot):
-			return StringName("vo.mercer.afterhours_" + String(slot))
+			return StringName("vo.mercer.afterhours_%s" % slot)
 	return &""
 
 

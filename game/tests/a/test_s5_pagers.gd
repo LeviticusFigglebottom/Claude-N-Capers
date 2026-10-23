@@ -285,3 +285,36 @@ func test_s5_2_dominated_guard_gets_a_pager() -> void:
 	g.die({}, 0)
 	await wait_seconds(Tweak.stealth().pager_delay_max_s + 0.3)
 	assert_eq(_of(&"pager_started").size(), 1, "one pager per guard")
+
+
+## GH sweep (r299): a body folded over a desk (the camera operator) had its hips inside the desk's collision; the pager
+## prompt there had no line of sight from anywhere. It is kept on the root's side of any static geometry in between.
+func test_pager_prompt_kept_out_of_geometry() -> void:
+	var host: Node3D = Node3D.new()
+	add_child(host)
+	var guard: Node3D = Node3D.new()
+	host.add_child(guard)
+	guard.global_position = Vector3(50, 0, 50)
+	var skel: Skeleton3D = Skeleton3D.new()
+	skel.name = "Skeleton3D"
+	guard.add_child(skel)
+	var hips: int = skel.add_bone("hips")
+	skel.set_bone_pose_position(hips, Vector3(-1.0, 0.9, 0))  # folded 1 m forward, over the "desk"
+	var desk: StaticBody3D = StaticBody3D.new()
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	var box: BoxShape3D = BoxShape3D.new()
+	box.size = Vector3(0.8, 2.0, 1.6)
+	shape.shape = box
+	desk.add_child(shape)
+	host.add_child(desk)
+	desk.global_position = Vector3(49.0, 0.5, 50)  # x 48.6..49.4: the hips (x 49.0) are inside, the root is not
+	await wait_physics_frames(2)
+	var ps: PagerSystem = PagerSystem.new()
+	ps._tw = Tweak.stealth()
+	var comp: InteractableComponent = InteractableComponent.new()
+	guard.add_child(comp)
+	ps._follow_body({"guard": guard}, comp)
+	assert_true(comp.global_position.x > 49.4, "the prompt stays outside the desk (x %.2f)" % comp.global_position.x)
+	assert_true(comp.global_position.x <= 50.0, "between the root and the desk")
+	ps.free()
+	host.queue_free()

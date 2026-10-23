@@ -357,7 +357,19 @@ func _follow_body(p: Dictionary, comp: InteractableComponent) -> void:
 		if hips >= 0:
 			at = skel.global_transform * skel.get_bone_global_pose(hips).origin
 			at.y = guard.global_position.y
-	comp.global_position = at + Vector3.UP * _tw.pager_prompt_up_m
+	var up: Vector3 = Vector3.UP * _tw.pager_prompt_up_m
+	# GH sweep (r299): a body that folds over a desk (the camera operator at his station) put its hips inside the
+	# desk's collision, so no eye anywhere had line of sight and the pager could not be answered. Keep the prompt on
+	# this side of any static geometry between the body's root and its hips.
+	var space: PhysicsDirectSpaceState3D = guard.get_world_3d().direct_space_state if guard.is_inside_tree() else null
+	if space != null and at.distance_to(guard.global_position) > 0.05:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(guard.global_position + up, at + up, 1)
+		var hit: Dictionary = space.intersect_ray(q)
+		if not hit.is_empty() and not (hit["collider"] as Node == guard or guard.is_ancestor_of(hit["collider"] as Node)):
+			var back: Vector3 = (guard.global_position - at)
+			back.y = 0.0
+			at = Vector3(hit["position"]) - up + back.normalized() * 0.15
+	comp.global_position = at + up
 
 
 ## Best current answer hold: Vector2(seconds left, progress 0..1) (the holder closest to done).
