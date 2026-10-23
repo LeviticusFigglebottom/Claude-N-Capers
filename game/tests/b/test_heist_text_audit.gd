@@ -17,6 +17,11 @@ const VOICE_LINES_PATH: String = "res://content/data/voice/lines.tres"
 ## (rolling_thunder_mission update_objective_data(&"trucks", {opened, total})).
 const ALLOWED_ARGS: Array[String] = ["count", "total", "found", "seconds", "answered", "escape", "shutters_in_s",
 	"drives", "drives_secured", "opened"]
+## Interaction prompts (ui.prompt.*): InteractionPanel.refresh() always fills {key} (the input's key cap) and
+## {mask_key}, so a map may reference "Hold {key} to …" prompts (RT's GoodsLift sends, A 451c8bff, LEAD r305).
+const PROMPT_PREFIX: String = "ui.prompt."
+const PROMPT_ARGS: Array[String] = ["key", "mask_key"]
+const NO_ARGS: Array[String] = []
 ## Dev tags that must never reach the player.
 const BANNED: Array[String] = ["[loud]", "[stealth]", "[tag]", "TODO", "TBD", "PLACEHOLDER", "FIXME", "XXX"]
 
@@ -153,6 +158,8 @@ func test_checker_rejects_raw_text() -> void:
 	assert_true(_problem("[loud] Drill the safe") != "", "dev tag")
 	assert_true(_problem("G0 placeholder room") != "", "gate tag")
 	assert_true(_problem("Secure {bags}") != "", "undocumented placeholder")
+	assert_true(_problem("Hold {key} to send the lift") != "", "{key} outside a prompt key")
+	assert_eq(_problem("Hold {key} to send the lift", PROMPT_ARGS), "", "an interaction prompt's {key} (the HUD fills it)")
 	assert_true(_problem("Secure {count/{total}") != "", "unbalanced braces")
 	assert_eq(_problem("Bag the loot. Then secure the bags ({count}/{total})"), "", "plain text passes")
 
@@ -161,12 +168,12 @@ func _check(h: StringName, key: String, where: String) -> void:
 	if not _table.has(key):
 		fail("%s: missing string %s (from %s)" % [h, key, where])
 		return
-	var p: String = _problem(String(_table[key]))
+	var p: String = _problem(String(_table[key]), PROMPT_ARGS if key.begins_with(PROMPT_PREFIX) else NO_ARGS)
 	assert_eq(p, "", "%s: %s = \"%s\" (from %s)" % [h, key, _table[key], where])
 
 
 ## "" when `text` is fine, else what is wrong with it.
-func _problem(text: String) -> String:
+func _problem(text: String, extra_args: Array[String] = []) -> String:
 	var out: Array[String] = []
 	if text.strip_edges() == "":
 		out.append("empty")
@@ -181,7 +188,7 @@ func _problem(text: String) -> String:
 	if text.count("{") != text.count("}"):
 		out.append("unbalanced braces")
 	for a: RegExMatch in _arg_rx.search_all(text):
-		if not ALLOWED_ARGS.has(a.get_string(1)):
+		if not ALLOWED_ARGS.has(a.get_string(1)) and not extra_args.has(a.get_string(1)):
 			out.append("placeholder {%s}" % a.get_string(1))
 	return ", ".join(out)
 
