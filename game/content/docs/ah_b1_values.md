@@ -88,19 +88,22 @@ work is needed.** Favors 5.
 ## 6. Cast tag rows (A / D own `npc_visual_tweak.tres`; proposed `heist_tag_characters[&"afterhours"]`)
 
 ```
-&"guard_door": [&"club_bouncer"]          &"guard_rope": [&"club_bouncer_b"]
-&"guard_floor": [&"club_bouncer"]         &"guard_upper": [&"club_bouncer"]
-&"guard_boh": [&"club_bouncer_b"]         &"guard_alley": [&"club_bouncer_b"]
-&"civ_bar_main": [&"club_bartender", &"club_bartender_b"]
-&"civ_bar_east": [&"club_bartender"]      &"civ_bar_vip": [&"club_bartender_b"]
-&"civ_box_office": [&"club_bartender_b"]  &"civ_count": [&"club_bartender"]
+# D batch 1 (env/d-art 9dad4f12): 6 bouncer looks (b = woman / bun, d = older head doorman, e = young / hoodie,
+# f = polo + glasses: the camera-operator type), 4 bartender looks.
+&"guard_door": [&"club_bouncer_d", &"club_bouncer"]   &"guard_rope": [&"club_bouncer_b", &"club_bouncer_c"]
+&"guard_floor": [&"club_bouncer", &"club_bouncer_e"]  &"guard_upper": [&"club_bouncer_c", &"club_bouncer"]
+&"guard_boh": [&"club_bouncer_e", &"club_bouncer_b"]  &"guard_alley": [&"club_bouncer_e", &"club_bouncer_b"]
+&"guard_camera": [&"club_bouncer_f"]
+&"civ_bar_main": [&"club_bartender", &"club_bartender_b", &"club_bartender_c"]
+&"civ_bar_east": [&"club_bartender_c", &"club_bartender"]   &"civ_bar_vip": [&"club_bartender_d"]
+&"civ_box_office": [&"club_bartender_b"]  &"civ_count": [&"club_bartender_d"]
 &"civ_dj_stage": [&"club_dj"]             &"civ_dj_green": [&"club_dj"]
 &"civ_patron": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d"]
 &"civ_dancer": [&"club_patron", &"club_patron_b", &"club_patron_c", &"club_patron_d"]
 &"civ_offduty": [&"frd_agent"]
 ```
-These are the doc's roster (D's `p5_cast.json` roles). The camera operator uses the CAMERA_OPERATOR spawn's own
-look (`club_bouncer_b`). B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
+These are the doc's roster (D's `p5_cast.json` roles). The camera operator uses `club_bouncer_f` (the tag name `guard_camera` is a proposal: A / D pick the real
+CAMERA_OPERATOR tag). Patrons e-l and the `club_dancer` pool a-l come in D's batches 2 and 3. B only needs the tags to exist so BriefingIntel counts staff and patrons as civilians.
 
 ## 7. Strings (new rows; written when the gate opens)
 
