@@ -116,11 +116,15 @@ def _cleaner_sl(kit: Kit) -> None:
 
 def cleaner_sl(kit: Kit) -> None:
     _cleaner_sl(kit)
+    n.front_item(kit, 0.085, 1.300, (0.054, 0.084, 0.004), "char_medic_white", lift=0.003)  # SL-G3: an ID badge
+    n.front_item(kit, 0.085, 1.350, (0.014, 0.020, 0.005), "char_metal_silver", lift=0.004)  # and its clip
     kit.notes["look"] = "Calder Tower night cleaner: glass-teal tabard, graphite binding and top (cleaner colour variant)"
 
 
 def cleaner_sl_b(kit: Kit) -> None:
     _cleaner_sl(kit)
+    n.front_item(kit, -0.090, 1.290, (0.008, 0.075, 0.007), "polymer_black", lift=0.003)   # SL-G3: a pen and
+    n.front_item(kit, -0.074, 1.285, (0.012, 0.085, 0.010), "char_rubber_yellow", lift=0.003)  # a marker
     kit.add_head(cg.chignon(kit.fit, "char_hair_grey", size=0.85))
     kit.notes["look"] = ("Calder Tower night cleaner, second face (D-SL-2): same glass-teal tabard uniform; a sturdy "
                          "woman, late 50s, light skin, grey hair pinned up in a bun")
@@ -128,6 +132,7 @@ def cleaner_sl_b(kit: Kit) -> None:
 
 def cleaner_sl_c(kit: Kit) -> None:
     _cleaner_sl(kit)
+    n.watch(kit, "L", strap="polymer_black", case="polymer_black")                    # SL-G3: a watch
     kit.add_head(gk.glasses(kit.fit, "char_button_dark"))
     kit.notes["look"] = ("Calder Tower night cleaner, third face (D-116): same glass-teal tabard uniform; a slim "
                          "young man, olive skin, dark short hair, glasses")
@@ -135,6 +140,8 @@ def cleaner_sl_c(kit: Kit) -> None:
 
 def cleaner_sl_d(kit: Kit) -> None:
     _cleaner_sl(kit)
+    n.front_item(kit, 0.125, 0.985, (0.060, 0.110, 0.004), "char_rubber_yellow", lift=0.002,
+                 up=Vector((0.15, 0.0, 1.0)))                                         # SL-G3: a cloth at the waist
     kit.notes["look"] = ("Calder Tower night cleaner, fourth face (D-130): same glass-teal tabard uniform; a woman in "
                          "her late 30s, mid-deep skin, dark bob")
 
@@ -149,6 +156,7 @@ def it(kit: Kit) -> None:
     n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.20)
     n.messenger_bag(kit, "char_tac_gear", "char_tac_gear")
     kit.add_head(gk.glasses(fit, "char_button_dark"))
+    n.watch(kit, "L", strap="polymer_black", case="polymer_black")                    # SL-G3: a smartwatch
     kit.notes["look"] = ("IT contractor: rust hoodie (hood down), jeans, trainers, glasses, blue lanyard + white "
                          "visitor badge, messenger tool/laptop bag on the left hip (Gear)")
 
@@ -181,47 +189,56 @@ def _northgate(kit: Kit) -> None:
 
 def northgate(kit: Kit) -> None:
     _northgate(kit)
+    n.front_item(kit, 0.0, 1.235, (0.045, 0.005, 0.003), "char_satin_gold", lift=0.0)   # SL-G3: a gold tie bar
 
 
 def northgate_b(kit: Kit) -> None:
     _northgate(kit)
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")                      # SL-G3: a watch
     kit.add_head(cg.chignon(kit.fit, "char_hair_brown"))
 
 
 def northgate_c(kit: Kit) -> None:
     _northgate(kit)
+    n.front_item(kit, 0.0, 1.235, (0.045, 0.005, 0.003), "char_satin_gold", lift=0.0)   # SL-G3: a gold tie bar
     kit.add_head(gk.glasses(kit.fit, "char_metal_silver"))
     kit.notes["face"] = "D-116: older heavy-set man, bald, mid-deep skin, silver-rimmed glasses"
 
 
 def northgate_d(kit: Kit) -> None:
     _northgate(kit)
+    n.watch(kit, "L", strap="char_leather_black", case="brass")                       # SL-G3: a gold watch
     kit.notes["face"] = "D-116: tall young man, light skin, short blond hair, heavy stubble"
 
 
 def northgate_e(kit: Kit) -> None:
     _northgate(kit)
+    kit.add_head(cg.earrings(kit.fit, "char_satin_gold", drop=False))                 # SL-G3: gold studs
     kit.notes["face"] = "D-116: woman in her 50s, deep skin, dark bob"
 
 
 def northgate_f(kit: Kit) -> None:
     _northgate(kit)
+    n.front_item(kit, 0.0, 1.235, (0.045, 0.005, 0.003), "char_satin_gold", lift=0.0)   # SL-G3: a gold tie bar
     kit.notes["face"] = "D-116: man in his 40s, olive skin, side-parted brown hair, heavy stubble"
 
 
 def northgate_g(kit: Kit) -> None:
     _northgate(kit)
+    kit.add_head(cg.earrings(kit.fit, "char_satin_gold", drop=False))                 # SL-G3: gold studs
     kit.add_head(cg.chignon(kit.fit, "char_hair_dark"))
     kit.notes["face"] = "D-130: young woman, mid-deep skin, dark hair in a chignon"
 
 
 def northgate_h(kit: Kit) -> None:
     _northgate(kit)
+    kit.add_head(gk.glasses(kit.fit, "char_button_dark"))                            # SL-G3: dark-rimmed glasses
     kit.notes["face"] = "D-130: man in his late 60s, light skin, short grey hair, grey stubble"
 
 
 def northgate_i(kit: Kit) -> None:
     _northgate(kit)
+    n.watch(kit, "L", strap="polymer_black", case="polymer_black")                    # SL-G3: a black sports watch
     kit.notes["face"] = "D-130: big man in his 30s, deep skin, shaved bald head"
 
 
@@ -234,6 +251,7 @@ def helena(kit: Kit) -> None:
     n.belt(kit, tr, belt_z, buckle="chrome", height=0.024)
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.add_head(gk.glasses(fit, "char_metal_silver"))
+    n.glasses_cord(kit, "char_satin_gold")                                         # SL-G3: a glasses cord
     kit.notes["look"] = ("Helena Moor: ivory silk blouse with rolled sleeves, charcoal trousers, slim belt, low "
                          "heels, slim watch (left), reading glasses on, silver bob; jacket off")
     kit.notes["prop_note"] = "phone in hand is a prop: attach at HandR/Socket (not skinned)"
@@ -254,6 +272,7 @@ def km_assistant(kit: Kit) -> None:
     n.lanyard(kit, "char_dress_black", "char_medic_white", card_z=1.15, band_mat="chrome")
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
     kit.add_head(cg.chignon(fit, "char_hair_dark", size=0.9))
+    n.arm_band(kit, "R", 1.88, 0.008, "char_satin_gold", height=0.003)              # SL-G3: a gold bangle
     kit.notes["look"] = ("K&M executive assistant (D-130 late_staff): open slate-green knit cardigan over a plum silk "
                          "blouse, black trousers, low heels, watch, K&M staff lanyard (black strap, chrome band, white "
                          "ID card); early 30s, deep skin, dark low chignon")
@@ -288,6 +307,7 @@ def km_associate(kit: Kit) -> None:
     _loose_tie(kit, "char_tie_burgundy", belt_z + 0.06 * k)
     n.belt(kit, tr, belt_z, buckle="chrome", height=0.030)
     n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    n.front_item(kit, -0.095, 1.300, (0.008, 0.075, 0.007), "polymer_black", lift=0.003)  # SL-G3: a pen
     kit.notes["look"] = ("K&M junior associate (D-130 late_staff): no jacket, pale-blue shirt with the sleeves rolled, "
                          "burgundy tie pulled loose under an open collar, navy suit trousers, black belt, brown shoes, "
                          "watch; late 20s, olive skin, short dark hair, late-night stubble")
