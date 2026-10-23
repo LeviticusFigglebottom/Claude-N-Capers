@@ -8281,10 +8281,10 @@ slot_id = &"prod_private"
 metadata/room = "U12"
 
 [node name="ProductPrivate" type="Marker3D" parent="Variants/Group_product_location/Slot_prod_private" unique_id=101343]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10000038, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6500015, 0.10000038, 0)
 script = ExtResource("59_ah")
 objective_tag = &"product"
-metadata/todo = "the shelving behind the lasers"
+metadata/todo = "in front of the shelving, behind the lasers"
 
 [node name="Group_laser_pattern" type="Node3D" parent="Variants" unique_id=101344]
 
