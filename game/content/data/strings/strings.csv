@@ -1493,6 +1493,8 @@ ui.loadout.perk_deck,Perk Deck
 ui.loadout.skills_summary,Skill points spent: {spent} of {total}
 ui.loadout.perk_summary,Perk deck: {deck} ({cards}/9 cards)
 ui.loadout.perk_none,Perk deck: none
+ui.loadout.perk_copies,copies {deck}
+ui.loadout.perk_copies_none,copies nothing yet
 ui.skills.points_left,{points} of {total}
 ui.skills.level_caption,Level
 ui.skills.points_caption,Skill points

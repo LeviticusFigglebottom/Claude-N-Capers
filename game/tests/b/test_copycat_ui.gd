@@ -87,3 +87,39 @@ func test_plain_decks_have_no_picks() -> void:
 		assert_false(s.card_choosable(i) or s.card_choice_labels[i].visible)
 	s.cycle_choice(0)
 	assert_true(s.profile.loadout.perk_choices.is_empty(), "no pick on a plain deck")
+
+
+## LEAD r292 queue (2): the loadout screen's perk line names the deck and, for Understudy, the picks and the copy.
+func test_loadout_summary_line() -> void:
+	var l: Loadout = Loadout.new()
+	assert_eq(PerkProgress.summary_text(l), UiText.t(&"ui.loadout.perk_none"))
+	l.perk_deck = &"perk.bulk"
+	l.perk_deck_cards = 9
+	var plain: String = PerkProgress.summary_text(l)
+	assert_true(plain.contains(UiText.t(&"perk.bulk.name")) and not plain.contains("·"), plain)
+	l.perk_deck = DECK
+	l.perk_choices = {0: 1, 6: 3}
+	var none: String = PerkProgress.summary_text(l)
+	assert_true(none.contains(UiText.t(&"ui.loadout.perk_copies_none")), none)
+	l.perk_mimic_deck = &"perk.frenzy"
+	var text: String = PerkProgress.summary_text(l)
+	for want: String in [UiText.t(&"perk.understudy.choice.armor.name"), UiText.t(&"perk.understudy.choice.health.name"),
+			UiText.t(&"perk.understudy.choice.speed.name"), UiText.t(&"perk.frenzy.name")]:
+		assert_true(text.contains(want), "%s in %s" % [want, text])
+	# On the real loadout screen (armory station).
+	OnboardingTips.persist = false
+	var p: PlayerProfile = PlayerProfile.new_default()
+	p.loadout = l
+	SaveService.save_profile(p, 0)
+	var flow: MenuFlow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
+	add_child(flow)
+	await wait_frames(4)
+	flow.show_hub()
+	flow.open_station(&"armory")
+	await wait_frames(4)
+	var label: Label = flow.loadout_screen.perk_summary_label
+	assert_true(label != null and label.visible and label.text.contains(UiText.t(&"perk.frenzy.name")),
+			"loadout screen: %s" % (label.text if label != null else "<none>"))
+	flow.queue_free()
+	await wait_frames(2)
+	SaveService.delete_profile(0)
