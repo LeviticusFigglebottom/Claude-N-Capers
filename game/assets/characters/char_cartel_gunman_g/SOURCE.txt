@@ -18,5 +18,5 @@ meshes: Body,Hair,Headwear,Outfit,Slung
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 slung_gun: non-weapon Gear on the back (chest-rigid), muzzle model [0.207, 1.660, 0.160], butt [-0.143, 0.746, 0.169] (Godot axes), 21 deg from vertical
 tri_budget: 35000
-tris: 27194
-tris_by_mesh: {"Body": 8150, "Hair": 1200, "Headwear": 960, "Outfit": 16320, "Slung": 564}
+tris: 27692
+tris_by_mesh: {"Body": 8150, "Hair": 1200, "Headwear": 1458, "Outfit": 16320, "Slung": 564}

@@ -39,7 +39,40 @@ import_script/path="res://world/tools/import/glb_post_import.gd"
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
+_subresources={
+"materials": {
+"M_pr_fabric_charcoal": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_fabric_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_fabric_charcoal.tres"
+},
+"M_pr_fabric_ivory": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_fabric_ivory.tres",
+"use_external/path": "res://world/props/materials/pr_fabric_ivory.tres"
+},
+"M_pr_fabric_sage": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_fabric_sage.tres",
+"use_external/path": "res://world/props/materials/pr_fabric_sage.tres"
+},
+"M_pr_linen_white": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_linen_white.tres",
+"use_external/path": "res://world/props/materials/pr_linen_white.tres"
+},
+"M_pr_metal_green_worn": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_green_worn.tres",
+"use_external/path": "res://world/props/materials/pr_metal_green_worn.tres"
+},
+"M_pr_wood_pine": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_wood_pine.tres",
+"use_external/path": "res://world/props/materials/pr_wood_pine.tres"
+}
+}
+}
 gltf/naming_version=2
 gltf/embedded_image_handling=1
 gltf/texture_map_mode=0

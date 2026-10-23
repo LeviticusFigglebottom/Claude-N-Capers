@@ -114,7 +114,7 @@ func test_card_never_shows_for_another_heist() -> void:
 		assert_false(OnboardingTips.is_seen(t), "%s untouched by a Glasshouse run" % t)
 	# A heist without a card (and the HUD demo, no heist) only ever shows the situation cards.
 	OnboardingTips.reset()
-	await _start_run(&"afterhours")
+	await _start_run(&"no_card_heist")  # every listed heist has a card since Afterhours (r299)
 	_model.player_mode = &"casing"
 	_card.dismiss()
 	assert_eq(_card.shown, &"", "no heist card for a heist without one")

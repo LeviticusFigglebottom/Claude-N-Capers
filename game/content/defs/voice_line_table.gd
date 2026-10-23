@@ -24,6 +24,7 @@ extends Resource
 ## &"guard" = any guard NPC (ENV A requests guard lines by id, e.g. StealthTweak.cuff_yell_line).
 const SPEAKERS: Array[StringName] = [
 	&"mercer", &"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale", &"crew", &"vance", &"reyes", &"accountant", &"guard",
+	&"dj",  # Afterhours: the club DJ on the mic (diegetic, 3D at the stage)
 ]
 ## The heisters: the only speakers that &"crew" lines stand in for.
 const HEISTERS: Array[StringName] = [&"rook", &"sable", &"dutch", &"wren", &"marten", &"jay", &"juno", &"hale"]

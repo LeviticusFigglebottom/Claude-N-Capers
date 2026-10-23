@@ -172,6 +172,11 @@ ui.tip.heist_ostrander_federal.keycard,"Ashgrove, the day manager, carries the v
 ui.tip.heist_ostrander_federal.code,"Hack the right officer's computer, or the server rack, for the vault code. It starts a long time lock."
 ui.tip.heist_ostrander_federal.drill,"Go loud and the vault locks down: call in the thermal drill and burn through from the teller floor."
 ui.tip.heist_ostrander_federal.hoist,Bags go up the hoist. Nobody climbs the ladder carrying one.
+ui.tip.heist_afterhours.title,Guest list
+ui.tip.heist_afterhours.guest,"You walk in as a guest, with no mask and no gear. Look around freely: you need the insider's bag before you can mask up."
+ui.tip.heist_afterhours.keycard,Crale's office takes a keycard. The staff keep one somewhere in the club.
+ui.tip.heist_afterhours.safe,"Find the combination and the safe opens in seconds. Without it, drill it: slower, and it jams."
+ui.tip.heist_afterhours.bags,Three bags of the safe's cash call the van. Go loud and the crowd stampedes for the doors.
 ui.hud.hint.click_resume,Click to resume
 ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
 ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
@@ -3082,6 +3087,19 @@ achievement.rt_quick.name,Green Light
 achievement.rt_quick.desc,"Clear Rolling Thunder in under 15 minutes."
 achievement.rt_cataclysm.name,End of the Line
 achievement.rt_cataclysm.desc,"Clear Rolling Thunder on Cataclysm."
+ui.achievements.category.afterhours,Afterhours
+achievement.ah_no_witnesses.name,Nobody Saw a Thing
+achievement.ah_no_witnesses.desc,Clear Afterhours in stealth without killing anyone.
+achievement.ah_dead_air.name,Dead Air
+achievement.ah_dead_air.desc,Clear Afterhours in stealth without answering a pager.
+achievement.ah_just_looking.name,Just Looking
+achievement.ah_just_looking.desc,Clear Afterhours in stealth after casing the club as a guest and opening the safe with its combination.
+achievement.ah_bottle_service.name,Bottle Service
+achievement.ah_bottle_service.desc,Clear Afterhours with at least 3 bags of the Co-op's product and the count room's cash.
+achievement.ah_closing_time.name,Closing Time
+achievement.ah_closing_time.desc,Clear Afterhours loud in under 12 minutes.
+achievement.ah_cataclysm.name,Last Dance
+achievement.ah_cataclysm.desc,Clear Afterhours on Cataclysm.
 ui.briefing.step.rolling_thunder.setup,"Rig the junction signals, and raid the site stores if there is time"
 ui.briefing.step.rolling_thunder.trucks,Open the trucks and bag the cargo
 ui.briefing.sec.event.rolling_thunder.marshal_early,the route marshal is early and walks two checks
@@ -3106,8 +3124,8 @@ ui.preplan.point.rolling_thunder.pp_perch_frame,Sniper perch: the building frame
 ui.preplan.point.rolling_thunder.pp_signals,Junction signal cabinet
 heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
-heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. The Accountant wants its books and its count room emptied before the doors close."
-heist.afterhours.briefing,"The Velvet on Keston Row washes the Co-op's week through a velvet rope and a cash bar. Crale counts it upstairs and locks it in his office safe until the pickup. You walk in as guests: an insider leaves your gear front of house, and nothing you do out there can get you seen. Once the gear is on, it is the usual rules: find the office keycard, the safe combination or a drill, and get three bags of the Co-op's cash to the van. The product and the count room are a bonus. Never mask up in front of the crowd."
+heist.afterhours.brief,The Velvet launders the Co-op's money behind a velvet rope. The Accountant wants the float in Crale's office safe before the doors close.
+heist.afterhours.briefing,"The Velvet on Marlin Avenue washes the Co-op's money through a velvet rope and a cash bar, and since Pier 9 the float sits upstairs in Crale's office safe. You walk in as guests: an insider leaves your gear front of house, and nobody minds a guest looking around. Once the gear is on, it is the usual rules: find the office keycard, then the safe combination or a drill, and get three bags of the Co-op's cash to the van. The product and the count room are a bonus. Never mask up in front of the crowd."
 objective.afterhours.casing,Look around the club
 objective.afterhours.gear,Get the gear the insider left
 objective.afterhours.keycard,Find the office keycard
@@ -3120,6 +3138,70 @@ objective.afterhours.product,Take the product
 objective.afterhours.count_room,Take the count room's cash
 objective.afterhours.escape_wait,Hold until the van arrives
 objective.afterhours.escape,Get to the van
+ui.briefing.step.afterhours.safe,"Get into Crale's office and open the safe: find the combination, or drill it"
+ui.briefing.step.afterhours.bonus,Optional: the product and the count room's cash
+ui.briefing.sec.event.afterhours.vip_party,a birthday party in VIP (6 more guests and a second rope bouncer)
+ui.briefing.sec.event.afterhours.off_duty_cop,an off-duty cop in a VIP booth: he calls it in if he sees a mask
+ui.briefing.sec.event.afterhours.co_op_pickup,two armed Co-op couriers come for the product
+ui.briefing.sec.event.afterhours.rooftop_watch,a police marksman on a Keston Row roof once it goes loud
+ui.preplan.point.afterhours.pp_spawn_foyer,Foyer: inside the main doors
+ui.preplan.point.afterhours.pp_spawn_vip,VIP balcony: on the guest list
+ui.preplan.point.afterhours.pp_spawn_alley,Alley: the delivery door
+ui.preplan.point.afterhours.pp_gear_wc,Gear: patrons' restroom duct
+ui.preplan.point.afterhours.pp_gear_cloak,Gear: behind the cloakroom counter
+ui.preplan.point.afterhours.pp_gear_booth,Gear: under the reserved booth
+ui.preplan.point.afterhours.pp_gear_van,Gear: in the van
+ui.preplan.point.afterhours.pp_insider_keycard,Insider: staff-room keycard
+ui.preplan.point.afterhours.pp_back_door,Insider: alley door propped open
+ui.preplan.point.afterhours.pp_count_window,Insider: count-room window unlatched
+ui.preplan.point.afterhours.pp_drop_alley,Alley: by the dumpsters
+ui.preplan.point.afterhours.pp_drop_roof,Back-of-house roof: by the ladder
+ui.preplan.point.afterhours.pp_drop_tolley,Tolley Street: the staff-door recess
+ui.preplan.point.afterhours.pp_escape_alley,Van: the alley
+ui.preplan.point.afterhours.pp_escape_tolley,Van: Tolley Street
+voice.vo.accountant.briefing_afterhours_1,"The Co-op washes its money through a dance floor. Door take, bar receipts, bottle service. I've read their books, and the numbers dance better than the customers."
+voice.vo.accountant.briefing_afterhours_2,"Since Pier 9 the float sits in Crale's office safe, upstairs at the Velvet. Crale isn't in tonight. His office runs itself."
+voice.vo.accountant.briefing_afterhours_3,"Walk in like you came to dance, and bring me the safe. Whatever else you carry out is your own business, and your own risk."
+voice.vo.mercer.briefing_afterhours_1,"You go in through the front door as guests: no masks, no gear. A bartender of ours stashed a bag for you before the doors opened."
+voice.vo.mercer.briefing_afterhours_2,"Keycard for the office, then the combination or the drill. Three bags of cash to the van and we're done. If it goes loud, the crowd runs, and so does the clock."
+voice.vo.accountant.afterhours_contact_intro,You're inside. Enjoy the music. Briefly.
+voice.vo.accountant.afterhours_payday,"Crale's float, counted twice. The Co-op will notice on Monday. By then it will have moved through four accounts and a car wash."
+voice.vo.mercer.afterhours_intro,"You're in. Look around, buy a drink, touch nothing. Nobody looks twice at a guest."
+voice.vo.mercer.afterhours_gear_wc,"Gear's in the patrons' restroom, behind a duct panel. Go in like you need to."
+voice.vo.mercer.afterhours_gear_cloak,Gear's behind the cloakroom counter. Wait for the attendant to look away.
+voice.vo.mercer.afterhours_gear_booth,Gear's under the banquette in the reserved booth. Sit down like you belong there.
+voice.vo.mercer.afterhours_gear_van,"Gear's in the van. Walk out, suit up, and find another way back in."
+voice.vo.mercer.afterhours_gear_picked,"Got it. Masks on when nobody's looking, not before."
+voice.vo.mercer.afterhours_keycard_found,"That's the office keycard. Upstairs, Crale's door."
+voice.vo.mercer.afterhours_office_open,You're in Crale's office. Find the safe.
+voice.vo.mercer.afterhours_code_found,That's the combination. Punch it in.
+voice.vo.mercer.afterhours_safe_open,Safe's open. Bag the cash.
+voice.vo.mercer.afterhours_drill_started,Drill's on the safe. Somebody keep it company.
+voice.vo.mercer.afterhours_drill_jam,Drill's jammed. Get it going.
+voice.vo.mercer.afterhours_drill_done,Drill's through. Bag the cash.
+voice.vo.mercer.afterhours_product_found,"That's the Co-op's product. Not on the Accountant's list, but it'll sell."
+voice.vo.mercer.afterhours_count_room,Count room's still counting. That cash is yours if you want it.
+voice.vo.mercer.afterhours_last_pager,That was the last pager I can talk us through. One more and the whole club hears about it.
+voice.vo.mercer.afterhours_lasers,Laser grid in the private room. Time it or crawl under it.
+voice.vo.mercer.afterhours_music_cut,"Music's off, lights are up, and the safe just locked itself. Drill it."
+voice.vo.mercer.afterhours_crowd_out,Crowd's out on the street. Now it's just you and whoever's coming.
+voice.vo.mercer.afterhours_required_secured,Three bags in. That's the job. Anything else is a bonus.
+voice.vo.mercer.afterhours_van_eta,Van's coming back around. Hold the club until it's here.
+voice.vo.mercer.afterhours_escape,Van's here. Everybody in.
+voice.vo.mercer.afterhours_couriers,"Two Co-op couriers at the loading door. They're here for the product, and they're armed."
+voice.vo.mercer.afterhours_off_duty_cop,"Off-duty cop in a VIP booth. He's not working, but he'll call it in if he sees a mask."
+voice.vo.dj.afterhours_alarm,"Lights! Everybody out, out, OUT!"
+voice.vo.dj.afterhours_shoutout_1,"Velvet, are you still with me? Hands up for the bar staff!"
+voice.vo.dj.afterhours_shoutout_2,Big love to the balcony. Don't drop your drinks on us down here!
+voice.vo.dj.afterhours_shoutout_3,"Last train's long gone, people. Might as well dance!"
+voice.vo.accountant.afterhours_radio_gear,Equipped. Try not to look it.
+voice.vo.accountant.afterhours_radio_keycard,The keycard. Crale should keep better track of his staff.
+voice.vo.accountant.afterhours_radio_office,Crale's office. Don't read his mail. I already have.
+voice.vo.accountant.afterhours_radio_safe,The safe is open. Now the numbers start to dance.
+voice.vo.accountant.afterhours_radio_secure,That is what I asked for. The rest is your own greed.
+voice.vo.accountant.afterhours_radio_loot_cash_bricks,Another brick for the ledger.
+voice.vo.accountant.afterhours_radio_loot_parcels,"The product. I don't want to know, and I won't be buying it."
+voice.vo.accountant.afterhours_radio_loot_cash,The count room's cash. Crale's books will never balance again.
 item.asset.gear_drop.name,Insider: gear drop
 item.asset.gear_drop.desc,"You choose where the insider leaves the crew's gear: the WC duct, the cloakroom or the reserved booth."
 item.asset.count_window.name,Insider: count room window
@@ -3498,6 +3580,7 @@ voice.vo.reyes.dockside_burn_radio_loot_weapons,Co-op rifles in my lockup. Beaut
 voice.vo.reyes.dockside_burn_radio_loot_cash,"Co-op cash. Smells like fish, spends fine."
 voice.vo.reyes.dockside_burn_radio_loot_product,Product's out. My buyer says thanks. I say burn the rest.
 ui.subtitle.speaker,{name}:
+ui.subtitle.name.dj,DJ
 ui.options.accessibility.subtitles_all_speakers,Subtitles for Guards and Crew
 ui.options.accessibility.reduce_motion,Reduce Motion
 ui.options.accessibility.screen_shake,Screen Shake

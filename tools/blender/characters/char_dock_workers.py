@@ -222,6 +222,8 @@ def worker(kit: Kit) -> None:
     kit.add_head(hard_hat(fit, "char_hardhat_white"))
     kit.notes["hat"] = "white hard hat (Headwear)"
     kit.notes["headwear_class"] = "hard_hat"   # Headwear meta for A's HardHatHandLift (assemble_characters)
+    n.front_item(kit, -0.090, 1.250, (0.070, 0.095, 0.010), "char_medic_white", lift=0.003)  # DB-G3: a notepad
+    n.front_item(kit, -0.060, 1.270, (0.008, 0.080, 0.007), "polymer_black", lift=0.006)  # and a pen
     kit.notes["look"] = ("forklift driver: orange hi-vis vest (silver tape hoops + braces) over a navy canvas work "
                          "jacket, charcoal cargo work trousers, brown safety boots, white hard hat")
 
@@ -236,6 +238,7 @@ def worker_b(kit: Kit) -> None:
     kit.add_head(hard_hat(fit, "char_hardhat_blue"))
     kit.notes["hat"] = "blue hard hat (Headwear)"
     kit.notes["headwear_class"] = "hard_hat"   # Headwear meta for A's HardHatHandLift (assemble_characters)
+    n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.17)                  # DB-G3: a port pass
     kit.notes["look"] = ("forklift driver B: yellow hi-vis vest (silver tape) over a charcoal canvas work jacket, "
                          "black cargo trousers, black safety boots, blue hard hat")
 
@@ -252,6 +255,8 @@ def worker_c(kit: Kit) -> None:
     hivis_vest(kit, ORANGE, stand=0.016)
     kit.add_head(cgear.beanie(fit, "char_knit_navy"))
     kit.notes["hat"] = "navy knit beanie (Headwear)"
+    n.front_item(kit, 0.125, 0.975, (0.055, 0.100, 0.012), "char_apron_leather", lift=0.003,
+                 up=Vector((0.2, 0.0, 1.0)))                                         # DB-G3: gloves at the waist
     kit.notes["look"] = ("dock hand C: orange hi-vis vest (silver tape hoops + braces) over a maroon fleece, blue "
                          "denim work jeans, brown safety boots, navy beanie")
 
@@ -270,6 +275,8 @@ def packer(kit: Kit) -> None:
     kit.add_soft(g.apron(fit, kit.hull(), "char_rubber_yellow", 1.33 * k, 0.50 * k, strap_mat="char_rubber_yellow"))
     kit.add_head(cgear.beanie(fit, "char_shirt_white", front_el=14.0, back_el=-10.0, cuff=0.05))
     kit.notes["hat"] = "white hygiene cap over the hair (Headwear)"
+    n.front_item(kit, -0.085, 1.300, (0.007, 0.120, 0.007), "char_metal_silver", lift=0.003)  # DB-G3: a probe
+    n.front_item(kit, -0.085, 1.345, (0.016, 0.030, 0.012), "char_rubber_yellow", lift=0.004)  # thermometer
     kit.notes["look"] = ("packer (D-116): processing whites: white smock, yellow rubber bib apron and long gloves, "
                          "charcoal work trousers, white boots, white hygiene cap (packing wing, no hi-vis)")
 

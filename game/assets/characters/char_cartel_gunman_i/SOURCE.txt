@@ -14,9 +14,9 @@ bones: 52
 hat: bare head (grey short hair, grey beard shadow)
 insignia: none (plain work wear; no police/faction material ids)
 look: drab_bib: slate roll-neck under drab canvas bib overalls, green rubber boots, bare grey head; sling and shell bandolier crossed, slung pump-gun
-meshes: Body,Gear,Hair,Outfit,Slung
+meshes: Body,Gear,Hair,Headwear,Outfit,Slung
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 slung_gun: non-weapon Gear on the back (chest-rigid), muzzle model [-0.210, 1.659, 0.173], butt [0.145, 0.735, 0.183] (Godot axes), 21 deg from vertical
 tri_budget: 35000
-tris: 28392
-tris_by_mesh: {"Body": 9016, "Gear": 2912, "Hair": 1728, "Outfit": 14156, "Slung": 580}
+tris: 28412
+tris_by_mesh: {"Body": 9016, "Gear": 2912, "Hair": 1728, "Headwear": 20, "Outfit": 14156, "Slung": 580}

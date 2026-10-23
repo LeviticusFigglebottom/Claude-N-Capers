@@ -46,6 +46,9 @@ const ROWS: Dictionary = {
 	&"heist_ostrander_federal": [[&"interact", &"ui.tip.heist_ostrander_federal.keycard"],
 			[&"", &"ui.tip.heist_ostrander_federal.code"], [&"", &"ui.tip.heist_ostrander_federal.drill"],
 			[&"", &"ui.tip.heist_ostrander_federal.hoist"]],
+	&"heist_afterhours": [[&"", &"ui.tip.heist_afterhours.guest"],
+			[&"interact", &"ui.tip.heist_afterhours.keycard"], [&"", &"ui.tip.heist_afterhours.safe"],
+			[&"", &"ui.tip.heist_afterhours.bags"]],
 }
 
 ## Tip on screen (&"" = none) and the situation the model is in now (tests).

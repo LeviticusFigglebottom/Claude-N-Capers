@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.ah_just_looking"
+name_key = &"achievement.ah_just_looking.name"
+desc_key = &"achievement.ah_just_looking.desc"
+condition = {"event": &"heist_completed", "heist": &"afterhours", "stealth": true, "objectives_completed": [&"casing", &"safe_code"], "count": 1}
+unlock = &""
+order = 792
+category = &"afterhours"
+rewards = Array[StringName]([&"mask_base.moth"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

@@ -17,5 +17,5 @@ look: hood: grey hoodie with the hood up, gaiter over the nose, black puffer ves
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31748
-tris_by_mesh: {"Body": 7826, "Gear": 674, "Hair": 1200, "Headwear": 1632, "Outfit": 20416}
+tris: 31792
+tris_by_mesh: {"Body": 7826, "Gear": 718, "Hair": 1200, "Headwear": 1632, "Outfit": 20416}
