@@ -98,7 +98,7 @@ const UNDERPASS_WEST_X: float = 30.0
 const KERB_LINES: Array = [
 	["Orchard z -20 (W -> E)", Vector3(-12.5, 0.0, -20.0), Vector3(12.5, 0.0, -20.0)],
 	["Orchard z 20 (E -> W)", Vector3(12.5, 0.0, 20.0), Vector3(-12.5, 0.0, 20.0)],
-	["Tannery x -30 (N -> S)", Vector3(-30.0, 0.0, -10.5), Vector3(-30.0, 0.0, 10.5)],
+	["Tannery x -36 (N -> S)", Vector3(-36.0, 0.0, -10.5), Vector3(-36.0, 0.0, 10.5)],  # clear of StreetCarTW1 (x -30, z 7)
 	["Tannery x 24 (S -> N)", Vector3(24.0, 0.0, 10.5), Vector3(24.0, 0.0, -10.5)],
 ]
 const KERB_MAX_M: float = 0.15
