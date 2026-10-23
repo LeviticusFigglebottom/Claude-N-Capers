@@ -38,6 +38,7 @@ const OUT_DIRS: Dictionary = {
 	"sl_guards": "res://assets/characters/_review/sl_g3_cast/",
 	"sl_late_staff": "res://assets/characters/_review/sl_g3_cast/",
 	"sl_cleaners": "res://assets/characters/_review/sl_g3_cast/",
+	"nd_staff": "res://assets/characters/_review/nd_g3_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
 	"d145_factions": "res://assets/characters/_review/d145_police/",
@@ -127,6 +128,8 @@ const POOLS: Dictionary = {
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
 	],
 	# GN-G3: the gallery staff, the guards and the gala guests (written to _review/gn_g3_cast/)
+	# ND-G3: the night bank's own staff (the night manager and the two contract cleaners)
+	"nd_staff": ["char_npc_bank_night_manager", "char_npc_bank_cleaner", "char_npc_bank_cleaner_b"],
 	# SL-G3: the Calder Tower night cleaners
 	"sl_cleaners": ["char_npc_cleaner_sl", "char_npc_cleaner_sl_b", "char_npc_cleaner_sl_c", "char_npc_cleaner_sl_d"],
 	# GH-G3: the Vossberg Jewelers staff (shop floor, workshop, office, the owner)
