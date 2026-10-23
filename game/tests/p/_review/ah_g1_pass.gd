@@ -55,6 +55,8 @@ const OFFICE_DOOR_AT: Vector3 = Vector3(28.0, UP, 18.0)
 const OFFICE_IN: Vector3 = Vector3(31.0, UP, 18.5)
 const HALL_SHOT_AT: Vector3 = Vector3(13.0, 0.0, 16.0)
 const SAFE_BAGS: int = 3
+const AH_GUARD_SEEN_M: float = 20.0
+const AH_GUARD_CLOSE_M: float = 10.0
 const DRILL_MAX_S: float = 600.0
 const VAN_MAX_S: float = 900.0
 
@@ -122,6 +124,39 @@ func _worst_peak() -> float:
 	for id: int in _peaks:
 		worst = maxf(worst, float(_peaks[id]["max"]))
 	return worst
+
+
+## Indoor version of rt's _wait_unseen (tuned for RT's open site: any guard within 30 m, seen or merely closing through
+## walls, blocked the club's back of house for the whole 240 s). Here: a guard SEEN within AH_GUARD_SEEN_M or closing
+## within AH_GUARD_CLOSE_M, a civilian seen within UNSEEN_CIV_M. The row names what last held the window shut.
+func _wait_unseen(label: String, max_s: float = 240.0) -> float:
+	var t0: float = rt.heist_time_s
+	var clear_s: float = 0.0
+	var last: Dictionary = {}
+	var last_why: String = ""
+	while rt.heist_time_s - t0 < max_s and clear_s < UNSEEN_HOLD_S:
+		var why: String = ""
+		for n: Node in rt.npcs():
+			var npc: NpcBase = n as NpcBase
+			var d: float = npc.global_position.distance_to(pilot.crew.global_position)
+			var seen: bool = pilot.has_los(npc.head_position(), npc)
+			if npc.role == &"civilian":
+				if seen and d < UNSEEN_CIV_M:
+					why = "%s (civilian) seen at %.0f m" % [npc.name, d]
+			elif (seen and d < AH_GUARD_SEEN_M) or (d < AH_GUARD_CLOSE_M and d < float(last.get(npc, INF)) - 0.2):
+				why = "%s (%s) %s at %.0f m" % [npc.name, npc.role, "seen" if seen else "closing", d]
+			last[npc] = d
+			if why != "":
+				break
+		if why != "":
+			last_why = why
+		clear_s = clear_s + 0.5 if why == "" else 0.0
+		await wait_s(0.5)
+	var waited: float = rt.heist_time_s - t0
+	var ok: bool = clear_s >= UNSEEN_HOLD_S
+	_row("%s: wait unseen before masking" % label, "PASS" if ok else "FAIL", "%.0f s%s" % [waited,
+		"" if ok else ", last blocker: " + last_why], "-" if ok else "C patrol (no window) / P route")
+	return waited
 
 
 # --- casing (civilian walk) -----------------------------------------------------------------------------------------
