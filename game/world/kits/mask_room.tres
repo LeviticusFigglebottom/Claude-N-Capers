@@ -6,7 +6,7 @@
 script = ExtResource("1_kit")
 id = &"mask_room"
 purpose = &"office"
-required_items = Array[StringName]([&"shelving", &"coat_rail", &"box", &"bin"])
+required_items = Array[StringName]([&"shelving", &"drying_line", &"box", &"bin"])
 optional_items = {
 &"chair": 1,
 &"picture": 0.6,
@@ -16,12 +16,13 @@ clutter_groups = {}
 min_density = 0.15
 max_density = 0.9
 min_props = 5
-lone_ok_kinds = Array[StringName]([&"shelving", &"coat_rail"])
-seed_salt = 4805
+lone_ok_kinds = Array[StringName]([&"shelving", &"drying_line"])
+seed_salt = 4815
 counts = {}
 assets = {
 &"chair": PackedStringArray("prop_chair_task"),
+&"drying_line": PackedStringArray("prop_sh_drying_line"),
 &"shelving": PackedStringArray("prop_shelving_cleaning")
 }
 ceiling = {}
-notes = "Safehouse MK mask room (6 x 5 m, a former darkroom): the paint / finish shelf, a drying line with stencils (a coat rail stands in), a chair where it fits (the G0's bench chair would stand on the station's UsePoint). The mask bench and the mask wall are the station."
+notes = "Safehouse MK mask room (6 x 5 m, a former darkroom): the paint / finish shelf, a drying line with stencils, a chair where it fits (the G0's bench chair would stand on the station's UsePoint). The mask bench and the mask wall are the station."

@@ -150,7 +150,7 @@ func test_every_skill_aced_and_deck_resolves_with_typed_known_keys() -> void:
 		l.skills[sid] = 2
 	Log.capture = true
 	var decks: Array = ContentDB.all_of(ContentDB.PERKS)
-	assert_eq(decks.size(), 14)
+	assert_eq(decks.size(), 15)
 	for d: Variant in decks:
 		l.perk_deck = (d as PerkDeckDef).id
 		l.perk_deck_cards = 9

@@ -110,6 +110,8 @@ static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty
 	await tree.physics_frame
 	await tree.physics_frame
 	await _await_navigation(rt)
+	if ProbeWarmup.wanted(options) and is_instance_valid(rt) and rt.map != null:
+		await ProbeWarmup.warm(rt.map)  # LEAD r287: no dark metals on a probe's first view
 	return rt
 
 
@@ -268,6 +270,8 @@ static func launch_client(parent: Node = null, options: Dictionary = {}, timeout
 	var rt: HeistRuntime = v as HeistRuntime
 	await tree.physics_frame
 	await tree.physics_frame
+	if is_instance_valid(rt) and rt.map != null and ProbeWarmup.wanted(rt.options):
+		await ProbeWarmup.warm(rt.map)  # LEAD r287: the replica's probes too (every rendering peer)
 	return rt if is_instance_valid(rt) else null
 
 
