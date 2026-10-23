@@ -39,7 +39,60 @@ import_script/path="res://world/tools/import/glb_post_import.gd"
 materials/extract=0
 materials/extract_format=0
 materials/extract_path=""
-_subresources={}
+_subresources={
+"materials": {
+"M_pr_armor_charcoal": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_armor_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_armor_charcoal.tres"
+},
+"M_pr_bag_coyote": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_bag_coyote.tres",
+"use_external/path": "res://world/props/materials/pr_bag_coyote.tres"
+},
+"M_pr_emit_led_cold": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_emit_led_cold.tres",
+"use_external/path": "res://world/props/materials/pr_emit_led_cold.tres"
+},
+"M_pr_emit_led_green": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_emit_led_green.tres",
+"use_external/path": "res://world/props/materials/pr_emit_led_green.tres"
+},
+"M_pr_grenade_olive": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_grenade_olive.tres",
+"use_external/path": "res://world/props/materials/pr_grenade_olive.tres"
+},
+"M_pr_metal_dark": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_metal_dark.tres",
+"use_external/path": "res://world/props/materials/pr_metal_dark.tres"
+},
+"M_pr_paint_hazard_orange": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_paint_hazard_orange.tres",
+"use_external/path": "res://world/props/materials/pr_paint_hazard_orange.tres"
+},
+"M_pr_plastic_black": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_plastic_black.tres",
+"use_external/path": "res://world/props/materials/pr_plastic_black.tres"
+},
+"M_pr_powder_charcoal": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_powder_charcoal.tres",
+"use_external/path": "res://world/props/materials/pr_powder_charcoal.tres"
+},
+"M_pr_steel_galv": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://world/props/materials/pr_steel_galv.tres",
+"use_external/path": "res://world/props/materials/pr_steel_galv.tres"
+}
+}
+}
 gltf/naming_version=2
 gltf/embedded_image_handling=1
 gltf/texture_map_mode=0
