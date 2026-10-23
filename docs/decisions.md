@@ -1739,3 +1739,6 @@ shooting from cover never draws fire while a closer bot is visible. PD2 weighs a
 Also from A's AH co-op soak (PASS 3/3, 0 desync): A splits HeistNetSync._send_xforms into ≤ MTU chunks with a lower rate for
 far or calm civilians (the AH crowd sent 4340 B unreliable packets), then gates per-peer NetSync sends until that peer's
 runtime is ready (the join race behind the session-start "Node not found" spam).
+- (Amendment 2026-10-23, LEAD) P retracted the trigger: in an open leg the human took hits on par with the bots, so the 0-hit legs were
+  geometry (bots body-blocking the storefront spawn). The threat term stays on PD2-fidelity grounds; A's balance guard showed no
+  win-rate move (RT 4/4, AH 5/5 with the 6501 A/B re-run; human intake 0.71 → 0.71 dmg/s).
