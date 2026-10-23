@@ -53,11 +53,11 @@ const CLUB_EMITTERS: Array = [
 ## house work lights (club state 3 shadowed, house 6: <= 8, §Budgets). The washes hang from the stage-front truss
 ## (y 7.25, its underside) onto the dance floor; violet, magenta, UV blue (never the interactable cyan).
 const CLUB_LIGHT_ROWS: Array = [
-	["ClubWashW", "spot", Vector3(10.8, 7.2, 10.6), Vector3(10.5, 0.0, 14.0), Color(0.55, 0.25, 0.85), 9.0, 12.0, 32.0,
+	["ClubWashW", "spot", Vector3(10.8, 7.2, 10.6), Vector3(10.5, 0.0, 14.0), Color(0.55, 0.25, 0.85), 18.0, 14.0, 40.0,
 		false],
-	["ClubWashC", "spot", Vector3(14.0, 7.2, 10.6), Vector3(14.0, 0.0, 14.5), Color(0.97, 0.42, 0.83), 9.0, 12.0, 32.0,
+	["ClubWashC", "spot", Vector3(14.0, 7.2, 10.6), Vector3(14.0, 0.0, 14.5), Color(0.97, 0.42, 0.83), 18.0, 14.0, 40.0,
 		false],
-	["ClubWashE", "spot", Vector3(17.2, 7.2, 10.6), Vector3(17.5, 0.0, 14.0), Color(0.36, 0.29, 1.0), 9.0, 12.0, 32.0,
+	["ClubWashE", "spot", Vector3(17.2, 7.2, 10.6), Vector3(17.5, 0.0, 14.0), Color(0.36, 0.29, 1.0), 18.0, 14.0, 40.0,
 		false],
 	["ClubKeyDJ", "spot", Vector3(15.0, 7.2, 10.6), Vector3(15.5, 1.5, 8.2), Color(1.0, 0.62, 0.25), 7.0, 10.0, 18.0,
 		true],

@@ -11618,28 +11618,28 @@ script = ExtResource("198_ah")
 transform = Transform3D(-0.9961299, -0.07942157, 0.03765034, 0, 0.42836133, 0.90360755, -0.08789388, 0.9001105, -0.4267035, 10.8, 7.2, 10.6)
 layers = 1048577
 light_color = Color(0.55, 0.25, 0.85, 1)
-light_energy = 9.0
-spot_range = 12.0
+light_energy = 18.0
+spot_range = 14.0
 spot_attenuation = 1.2
-spot_angle = 32.0
+spot_angle = 40.0
 
 [node name="ClubWashC" type="SpotLight3D" parent="Lighting/ClubLights" unique_id=101615]
 transform = Transform3D(-1, 0, 0, 0, 0.47628313, 0.879292, 0, 0.879292, -0.47628313, 14, 7.2, 10.6)
 layers = 1048577
 light_color = Color(0.97, 0.42, 0.83, 1)
-light_energy = 9.0
-spot_range = 12.0
+light_energy = 18.0
+spot_range = 14.0
 spot_attenuation = 1.2
-spot_angle = 32.0
+spot_angle = 40.0
 
 [node name="ClubWashE" type="SpotLight3D" parent="Lighting/ClubLights" unique_id=101616]
 transform = Transform3D(-0.9961299, 0.07942133, -0.03765022, 0, 0.42836133, 0.90360755, 0.087893605, 0.9001105, -0.4267035, 17.2, 7.2, 10.6)
 layers = 1048577
 light_color = Color(0.36, 0.29, 1, 1)
-light_energy = 9.0
-spot_range = 12.0
+light_energy = 18.0
+spot_range = 14.0
 spot_attenuation = 1.2
-spot_angle = 32.0
+spot_angle = 40.0
 
 [node name="ClubKeyDJ" type="SpotLight3D" parent="Lighting/ClubLights" unique_id=101617]
 transform = Transform3D(0.9789804, 0.18736014, -0.0805823, 0, 0.3950999, 0.91863817, 0.20395422, -0.89932877, 0.3867951, 15, 7.2, 10.6)
@@ -16410,6 +16410,7 @@ metadata/caption = "rc_hall_club (G7)"
 transform = Transform3D(0.85189795, 0.029209904, 0.52289253, 0, 0.99844337, -0.0557752, -0.52370775, 0.047514778, 0.85057193, 19.5, 1.7, 20.2)
 metadata/fov = 70.0
 metadata/caption = "rc_hall_house (G7)"
+metadata/club_lights = "house"
 
 [node name="rc_hall_crowd" type="Marker3D" parent="ReviewCameras" unique_id=102295]
 transform = Transform3D(0.40613848, -0.01855288, -0.9136232, 0, 0.9997939, -0.020302743, 0.91381156, 0.008245725, 0.40605476, 7, 1, 16)
