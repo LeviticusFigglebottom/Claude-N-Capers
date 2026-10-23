@@ -33,7 +33,8 @@ static func add(src: NavigationMeshSourceGeometryData3D, root: Node3D, nm: Navig
 		if width <= 0.0:
 			continue
 		var xf: Transform3D = _xform(d, root)
-		for box: AABB in jamb_boxes(width, _grid_shift(xf, -1.0, width), _grid_shift(xf, 1.0, width)):
+		var fd: float = frame_half_depth(d)
+		for box: AABB in jamb_boxes(width, _grid_shift(xf, -1.0, width), _grid_shift(xf, 1.0, width), fd):
 			var pts: PackedVector3Array = PackedVector3Array()
 			for c: Vector3 in [Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(1, 0, 1), Vector3(0, 0, 1)]:
 				pts.append(xf * (box.position + box.size * c))
@@ -44,16 +45,48 @@ static func add(src: NavigationMeshSourceGeometryData3D, root: Node3D, nm: Navig
 
 ## The two door-local jamb boxes for a leaf `width` (x across the opening, z across the wall); `shift_lo` / `shift_hi`
 ## move the -x / +x throat edge toward the centre (>= 0, see _grid_shift).
-static func jamb_boxes(width: float, shift_lo: float = 0.0, shift_hi: float = 0.0) -> Array[AABB]:
+static func jamb_boxes(width: float, shift_lo: float = 0.0, shift_hi: float = 0.0, frame_d: float = FRAME_D) -> Array[AABB]:
 	var w2: float = width * 0.5
 	var half: float = throat_half(width)
-	var depth: float = ceilf((FRAME_D + CREW_R) / NAV_CELL - 0.001) * NAV_CELL
+	var depth: float = ceilf((maxf(frame_d, FRAME_D) + CREW_R) / NAV_CELL - 0.001) * NAV_CELL
 	var hi: float = half - shift_hi
 	var lo: float = half - shift_lo
 	var reach_hi: float = w2 + CREW_R + NAV_CELL - hi   # over the jamb into the wall's own margin
 	var reach_lo: float = w2 + CREW_R + NAV_CELL - lo
 	return [AABB(Vector3(hi, BOX_LO, -depth), Vector3(reach_hi, BOX_H, depth * 2.0)),
 		AABB(Vector3(-lo - reach_lo, BOX_LO, -depth), Vector3(reach_lo, BOX_H, depth * 2.0))]
+
+
+## Half the depth of the door's frame (its visual's `Collision` bodies across the wall, door-local z), at least
+## FRAME_D: a 0.4 m frame (t40, AH's hall doors in 0.4 m walls) needs a deeper throat than the 0.1 m default, or a
+## path turning past the jamb's far edge puts the capsule on the frame (P r305: HallDoorsE).
+static func frame_half_depth(door: Node3D) -> float:
+	var out: float = _collision_half_depth(door, door)
+	var vs: PackedScene = door.get(&"visual_scene") as PackedScene
+	if vs != null:   # a generator bakes before the prefab instances its visual: read the visual scene itself
+		var v: Node3D = vs.instantiate() as Node3D
+		if v != null:
+			out = maxf(out, _collision_half_depth(v, v))
+			v.free()
+	return out
+
+
+static func _collision_half_depth(root_n: Node, top: Node) -> float:
+	var out: float = FRAME_D
+	for body: Node in root_n.find_children("Collision", "StaticBody3D", true, false):
+		for c: Node in body.find_children("*", "CollisionShape3D", true, false):
+			var cs: CollisionShape3D = c as CollisionShape3D
+			if cs.shape == null:
+				continue
+			var t: Transform3D = Transform3D.IDENTITY
+			var n: Node = cs
+			while n != null and n != top:
+				if n is Node3D:
+					t = (n as Node3D).transform * t
+				n = n.get_parent()
+			var bb: AABB = t * cs.shape.get_debug_mesh().get_aabb()
+			out = maxf(out, maxf(absf(bb.position.z), absf(bb.end.z)))
+	return out
 
 
 ## The nominal throat half width for a leaf `width`.
