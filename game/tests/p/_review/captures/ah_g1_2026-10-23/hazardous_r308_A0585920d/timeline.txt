@@ -1,0 +1,71 @@
+[AHP] ROW loud | civilian start (D-065) | PASS | mode civilian, 3 AI bots | -
+[AHP] ROW loud | gear (GearBag) -> casing | PASS | 3 s from the spawn, mode casing, at (22.4, 1.0, 25.5) | -
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[AHP] ROW loud | behind the east bar | PASS | 6.8 s, 0 STUCK row(s) | -
+[AHP] ROW loud | east bar service door (casing) | PASS | availability '', open true | -
+[AHP] ROW loud | into G20 | PASS | 1.1 s, 0 STUCK row(s) | -
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[AHP] ROW loud | keycard (Keycard, 41 m walk) | PASS | 14 s, peak 1.00 | -
+[AHP] ROW loud | the alarm (a burst in the hall) | PASS | loud true after 0.0 s, alarm 'guard_radio' | -
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[INFO][director][p1] special spawn enemy.bulwark net 157 wave 1 BUILD: alive 1 / cap 4
+[INFO][director][p1] special spawn enemy.longshot net 160 wave 1 BUILD: alive 1 / cap 2
+[INFO][director][p1] special spawn enemy.longshot net 161 wave 1 BUILD: alive 2 / cap 2
+[AHP] ROW loud | staff stair (G22) -> U6 | PASS | 15.6 s, 0 STUCK row(s) | -
+[AHP] ROW loud | office keycard door | PASS | reader true, open true | -
+[AHP] ROW loud | into the office (U9) | PASS | 1.7 s, 0 STUCK row(s) | -
+[INFO][director][p1] special spawn enemy.stinger net 168 wave 1 BUILD: alive 1 / cap 2
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[INFO][director][p1] special death enemy.bulwark net 157: alive 0 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 170 wave 1 SUSTAIN: alive 1 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 172 wave 1 SUSTAIN: alive 2 / cap 4
+[INFO][combat][p1] slot 2 crew_tased by 168
+[INFO][director][p1] special death enemy.stinger net 168: alive 0 / cap 2
+[INFO][director][p1] special spawn enemy.bulwark net 176 wave 1 SUSTAIN: alive 3 / cap 4
+[INFO][director][p1] special death enemy.bulwark net 170: alive 2 / cap 4
+[INFO][director][p1] special death enemy.bulwark net 172: alive 1 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 182 wave 1 SUSTAIN: alive 2 / cap 4
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[INFO][director][p1] special death enemy.bulwark net 176: alive 1 / cap 4
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][director][p1] special spawn enemy.bulwark net 194 wave 2 BUILD: alive 1 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 198 wave 2 BUILD: alive 2 / cap 4
+[INFO][director][p1] special spawn enemy.stinger net 202 wave 2 BUILD: alive 1 / cap 2
+[AHP] ROW loud | safe by drill | PASS | opened true after 187 s heist time, 1 jam(s) fixed | -
+[AHP] ROW loud | cash in the open safe | PASS | 5 loot.cash_bricks bag(s) within 4 m | -
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 156 s)
+[INFO][director][p1] special death enemy.bulwark net 194: alive 1 / cap 4
+[INFO][director][p1] special spawn enemy.wrecker_g net 216 wave 2 SUSTAIN: alive 1 / cap 2
+[INFO][combat][p1] slot 2 crew_tased by 202
+[INFO][director][p1] special death enemy.bulwark net 198: alive 0 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 222 wave 2 SUSTAIN: alive 1 / cap 4
+[INFO][combat][p1] slot 2 crew_tased by 202
+[INFO][director][p1] special death enemy.stinger net 202: alive 0 / cap 2
+[INFO][director][p1] special spawn enemy.bulwark net 225 wave 2 SUSTAIN: alive 2 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 233 wave 2 SUSTAIN: alive 3 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 235 wave 2 SUSTAIN: alive 4 / cap 4
+[INFO][director][p1] special death enemy.bulwark net 222: alive 3 / cap 4
+[INFO][director][p1] special death enemy.bulwark net 225: alive 2 / cap 4
+[INFO][director][p1] special spawn enemy.phantom net 243 wave 2 SUSTAIN: alive 1 / cap 1
+[INFO][combat][p1] slot 2 crew_cloaker_downed by 243
+[INFO][director][p1] special death enemy.phantom net 243: alive 0 / cap 1
+[INFO][director][p1] special death enemy.bulwark net 233: alive 1 / cap 4
+[INFO][director][p1] special spawn enemy.bulwark net 247 wave 2 SUSTAIN: alive 2 / cap 4
+[AHP] ROW loud | pick up Bag_cash_bricks2 | FAIL | no aim from two stands (bag at (33.6, 4.2, 20.8)) | A SafeLoot marker / C safe collision
+[INFO][director][p1] special spawn enemy.phantom net 253 wave 2 SUSTAIN: alive 1 / cap 1
+[INFO][director][p1] special death enemy.bulwark net 235: alive 1 / cap 4
+[INFO][combat][p1] slot 2 downed (2/3)
+[INFO][director][p1] special spawn enemy.bulwark net 259 wave 2 SUSTAIN: alive 2 / cap 4
+[INFO][combat][p1] slot 0 downed (1/4)
+[AHP] ROW loud | carry 1 (secured 0): safe -> van (SecureTolley) | DOWNED | bagged in 4 s, carried in 20 s, 0 STUCK row(s), secured false, carrier DOWNED mid-carry | -
+[INFO][combat][p1] slot 3 downed (1/3)
+[INFO][combat][p1] slot 0 (downed) cuffed by police 216
+[INFO][combat][p1] slot 2 downed (3/3)
+[INFO][combat][p1] slot 1 downed (1/3)
+[INFO][combat][p1] slot 0 in custody
+[INFO][combat][p1] slot 3 in custody
+[INFO][combat][p1] slot 2 in custody
+[INFO][combat][p1] slot 1 in custody
+[INFO][combat][p1] all humans in custody, no release path: heist failed
