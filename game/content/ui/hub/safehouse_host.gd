@@ -122,6 +122,10 @@ func enter() -> bool:
 		return false
 	map = root
 	add_child(map)
+	# A's ProbeWarmup (r290): render the safehouse's UPDATE_ONCE reflection probes once, in its own SubViewport,
+	# so metals don't read dark the first time they come into view. Fire-and-forget: enter() stays synchronous.
+	if ProbeWarmup.wanted({}) and map is Node3D:
+		ProbeWarmup.warm(map as Node3D)
 	var marker: StringName = return_marker if return_marker != &"" else tweak.entry_marker
 	return_marker = &""
 	walker = _spawn_walker(spawn_transform(marker))
