@@ -98,7 +98,7 @@ func aimed_component(crew: CrewController) -> InteractableComponent:
 	var cone: float = deg_to_rad(tw.assist_cone_deg)
 	for n: Node in get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
-		if c == null or not c.enabled or not c.is_visible_in_tree():
+		if c == null or not c.enabled or not c.is_visible_in_tree() or (c.aim_filter.is_valid() and not c.aim_filter.call(crew)):
 			continue
 		var to: Vector3 = c.global_position - eye
 		var d: float = to.length()

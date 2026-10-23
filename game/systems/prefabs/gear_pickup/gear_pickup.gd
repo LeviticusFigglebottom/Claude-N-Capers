@@ -38,6 +38,7 @@ func _prefab_ready() -> void:
 	interactable.extra_check = func(crew: Node) -> StringName:
 		return InteractableComponent.BLOCK_NONE if crew != null and crew.get(&"civilian") == true \
 			else InteractableComponent.BLOCK_STATE  # only crew still without their gear
+	interactable.aim_filter = func(crew: Node) -> bool: return crew != null and crew.get(&"civilian") == true
 	interactable.completed.connect(_on_completed)
 
 
@@ -53,3 +54,14 @@ func _on_completed(crew: Node) -> void:
 		for m: CrewController in (rt.crew_members() if rt != null else []):
 			if m.is_ai and m.civilian:
 				m.civilian = false
+	_off_when_all_geared()
+
+
+## B r308 HUD pass: once nobody in the crew still needs gear the bag is no longer an interactable for anyone (each
+## geared member already stops targeting it through the aim filter).
+func _off_when_all_geared() -> void:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	for m: CrewController in (rt.crew_members() if rt != null else []):
+		if m.civilian:
+			return
+	interactable.enabled = false

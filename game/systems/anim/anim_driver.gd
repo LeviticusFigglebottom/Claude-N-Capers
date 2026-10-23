@@ -625,7 +625,7 @@ func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1
 ## downed_arrested until its `disarm` event, in crew_cuffed_free from its `free` event (AnimTweak event times).
 func weapon_shown(c: StringName) -> bool:
 	if _death_clip != &"" or (crew_action != null and crew_action.holsters_weapon()) \
-			or c == &"sit_vehicle" or c == &"sit_vehicle_drive":
+			or c == &"sit_vehicle" or c == &"sit_vehicle_drive" or HeldVisuals.plain_clothes_holstered(_npc):
 		return false  # v1.23: none while casing (PD2), drawn when mask_on has finished; RT shot review (D 38b3a924):
 		# holstered in a vehicle seat, not held on the wheel
 	var tw: AnimTweak = AnimTweak.data()

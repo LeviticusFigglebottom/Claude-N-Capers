@@ -102,6 +102,8 @@ var _cuff_left: float = 0.0
 var _cuff_origin: Vector3 = Vector3.ZERO
 ## QC-57: a scripted post set by walk_to_post (kept by _start, no patrol route).
 var _scripted_post: bool = false
+## Seconds the current walk back to the post has taken (GuardTweak.post_walk_give_up_s).
+var _post_walk_t: float = 0.0
 
 
 func _ready() -> void:
@@ -383,7 +385,11 @@ func _reach_point() -> void:
 
 func _tick_post(delta: float) -> void:
 	if _walking:
-		if _motor.arrived:
+		_post_walk_t += delta
+		if _motor.arrived or (_post_walk_t >= tweak.post_walk_give_up_s and not _scripted_post):
+			if not _motor.arrived:  # unreachable exact point: this spot is the post now (no walking on the spot)
+				_motor.stop()
+				_post_pos = _npc.global_position
 			_walking = false
 			_motor.face(_post_fwd)
 			anim_hint = &"idle"
@@ -391,6 +397,7 @@ func _tick_post(delta: float) -> void:
 	if _flat(_npc.global_position - _post_pos).length() > tweak.post_return_m:
 		_motor.go_to(_post_pos, _walk_speed())
 		_walking = true
+		_post_walk_t = 0.0
 		anim_hint = &"walk"
 		return
 	_look_left -= delta
