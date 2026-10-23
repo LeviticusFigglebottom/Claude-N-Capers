@@ -28,6 +28,17 @@ func test_table_entries() -> void:
 			assert_eq(t.find(k).unlock, UNLOCKS[k], "%s unlock id" % k)
 	for h: StringName in HEIST_TRACKS:
 		assert_true(t.load_track(h) != null, "%s stems load through the table (D-117)" % h)
+	# C5-01: the three unlockables have their own stems (every stem and both stingers).
+	for k2: StringName in UNLOCKS:
+		var tr: MusicTrack = t.load_track(k2)
+		assert_true(tr != null, "unlockable %s stems load" % k2)
+		if tr == null:
+			continue
+		for stem: StringName in [MusicTrack.STEM_STEALTH, MusicTrack.STEM_CONTROL, MusicTrack.STEM_ANTICIPATION,
+				MusicTrack.STEM_ASSAULT, MusicTrack.STEM_FADE]:
+			assert_true(tr.stem(stem) != null, "%s has its %s stem" % [k2, stem])
+		for st: StringName in [MusicTrack.STINGER_WIN, MusicTrack.STINGER_LOSE]:
+			assert_true(tr.stingers.has(st), "%s has its %s stinger" % [k2, st])
 
 
 func test_heist_defs_use_table_tracks() -> void:
