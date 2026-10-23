@@ -130,6 +130,9 @@ const UNSEEN_GUARD_M: float = 30.0
 const UNSEEN_CIV_M: float = 15.0
 const UNSEEN_HOLD_S: float = 2.0
 const SIGNAL_RIG_AT: Vector3 = Vector3(-16.25, 0.75, -13.45)
+const MIXER_START: Vector3 = Vector3(-33.5, 0.0, -16.6)
+const MIXER_GATE_OUT: Vector3 = Vector3(-33.5, 0.0, -9.0)
+const MIXER_GATE_IN: Vector3 = Vector3(-33.5, 0.0, -13.5)
 const MAGAZINE_DOOR_AT: Vector3 = Vector3(-23.0, 0.0, -49.0)
 const MAGAZINE_BOXES_AT: Vector3 = Vector3(-23.0, 0.0, -51.0)
 const C4_NEEDED: int = 4
@@ -838,7 +841,7 @@ func _rt_breach() -> bool:
 		ok = await _c4_truck(trucks[2]) and ok
 	else:
 		_c4_row(trucks)
-	_mixer_row()
+	await _mixer_row()
 	# The cargo: a T1 bag on foot to E1.
 	ok = await _carry_to_escape("T1 cargo -> E1", trucks[0], E1_AT, LOOT_MEDIUM, true) and ok
 	return ok
@@ -997,7 +1000,7 @@ func _ambush_test(clean: bool, route: StringName) -> bool:
 	var ok: bool = await _stop(clean)
 	_clear_npcs()
 	if ok:
-		_mixer_row()
+		await _mixer_row()
 	return ok
 
 
@@ -1174,18 +1177,22 @@ func _c4_row(trucks: Array[ArmoredTruck]) -> void:
 		trucks.size()], "-" if boxes > 0 else "A5-03 (A) / C markers")
 
 
+## r280 phase 2: at _mixer_move the SiteTanneryGate (opens_with mixer_move) swings open and the Mixer drives from
+## the site to the layout's MixerStop. Waits for both, then walks the gate from the site to the Tannery sidewalk.
 func _mixer_row() -> void:
-	var gates: PackedStringArray = PackedStringArray()
-	for nm: String in ["SiteTanneryGateW", "SiteTanneryGateE"]:
-		var d: Door = rt.find_child(nm, true, false) as Door
-		gates.append("%s %s" % [nm, "missing" if d == null else ("open" if d.is_open else ("locked" if d.locked
-			else "closed"))])
-	var mixer: Node3D = rt.find_child("MixerTruck", true, false) as Node3D
-	var passable: bool = gates.size() > 0 and ", ".join(gates).contains("open")
-	# LEAD r276: mixer phase 2 (C's Mixer / MixerStop / gates) is held from trunk until r277.
-	_row("the mixer leaves / the Tannery gate passable (§7.6, QC-RT1)", "PASS" if passable else "BLOCKED: C r277",
-		"%s; MixerTruck at %s; layout '%s'" % [", ".join(gates), Po5Pilot._v(mixer.global_position) if mixer != null
-		else "-", _mission().layout_id], "-" if passable else "A mission (_mixer_move layouts) / C map")
+	var gate: Door = rt.find_child("SiteTanneryGate", true, false) as Door
+	var mixer: Node3D = rt.find_child("Mixer", true, false) as Node3D
+	var moved: Callable = func() -> bool: return mixer != null and pilot.flat_dist(mixer.global_position, MIXER_START) > 5.0
+	await wait_until(func() -> bool: return gate != null and gate.is_open and moved.call(), 60.0)
+	var walked: bool = false
+	if gate != null and gate.is_open:
+		walked = await _go(MIXER_GATE_OUT, 0.5, 240.0) and await _walk_straight(MIXER_GATE_IN, 15.0) >= 0.0
+	var ok: bool = gate != null and gate.is_open and moved.call() and walked
+	_row("the mixer leaves / the Tannery gate passable (§7.6, QC-RT1)", "PASS" if ok else "FAIL",
+		"gate %s, Mixer at %s (moved %s), walked through %s; layout '%s'" % ["missing" if gate == null else ("open"
+		if gate.is_open else "closed"), Po5Pilot._v(mixer.global_position) if mixer != null else "-", moved.call(),
+		walked, _mission().layout_id], "-" if ok else "A mission (_mixer_move) / C map")
+	await shot("mixer")
 
 
 ## Carry a bag of `loot` from `t`'s rear step to the escape at `esc`: real cargo when the truck is open, else
