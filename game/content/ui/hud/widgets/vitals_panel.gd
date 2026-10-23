@@ -8,6 +8,10 @@ var health_label: Label
 var armor_label: Label
 var downs_label: Label
 var state_label: Label
+## ui_hud v1.22 (D-164): while a leech ampule runs, tick marks split the health bar into its slices (tests).
+var segment_ticks: Control
+## {count, size} of the running ampule; {} = none.
+var _segments: Dictionary = {}
 
 
 func build() -> void:
@@ -25,6 +29,12 @@ func build() -> void:
 	health_label = _row(v, &"ui.hud.health")
 	health_bar = UiBuild.bar(tweak.health_color, Vector2(300, 6))
 	v.add_child(health_bar)
+	segment_ticks = Control.new()
+	segment_ticks.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	segment_ticks.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	segment_ticks.visible = false
+	segment_ticks.draw.connect(_draw_segments)
+	health_bar.add_child(segment_ticks)
 	downs_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.DIM))
 	v.add_child(downs_label)
 
@@ -46,7 +56,7 @@ func _row(parent: Container, key: StringName) -> Label:
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"vitals_changed"]
+	return [&"vitals_changed", &"perk_item_changed"]
 
 
 func refresh() -> void:
@@ -68,3 +78,18 @@ func refresh() -> void:
 	elif st != Enums.CrewState.NORMAL and bleed >= 0.0 and not DownedOverlay.is_helpless(st):  # downed: the big timer
 		state_label.text = UiText.t(&"ui.hud.bleedout", {"seconds": ceili(bleed)})
 	state_label.visible = state_label.text != ""
+	var seg: Dictionary = (prop(&"perk_item", {}) as Dictionary).get("segments", {}) as Dictionary
+	if seg != _segments:
+		_segments = seg.duplicate()
+		segment_ticks.visible = int(seg.get("size", 0)) > 1
+		segment_ticks.queue_redraw()
+
+
+## One dark notch between slices (size - 1 lines), so a hit visibly takes a whole slice.
+func _draw_segments() -> void:
+	var n: int = int(_segments.get("size", 0))
+	var w: float = segment_ticks.size.x
+	var h: float = segment_ticks.size.y
+	for i: int in range(1, n):
+		var x: float = roundf(w * float(i) / float(n))
+		segment_ticks.draw_line(Vector2(x, -1.0), Vector2(x, h + 1.0), UiTokens.INK_0, 2.0)

@@ -90,9 +90,14 @@ ui.hud.reloading,Reloading
 ui.hud.cable_ties,Cable ties: {count}
 ui.hud.body_bags,Body bags: {count}
 ui.hud.cable_ties_name,Cable ties
-ui.hud.pocket_ecm.jam,JAM {s} s
-ui.hud.pocket_ecm.feedback,FEEDBACK {s} s
-ui.hud.pocket_ecm.recharge,+1 in {s} s
+ui.hud.perk_item.jam,JAM {s} s
+ui.hud.perk_item.feedback,FEEDBACK {s} s
+ui.hud.perk_item.recharge,+1 in {s} s
+ui.hud.perk_item.active,ACTIVE {s} s
+ui.hud.perk_item.smoke_bomb,SMOKE {s} s
+ui.hud.perk_item.gas_dispenser,PAIRED {s} s
+ui.hud.perk_item.leech_ampule,AMPULE {s} s
+ui.hud.paired,PAIRED
 ui.hud.body_bags_name,Body bags
 ui.hud.hostages,Hostages: {count}
 ui.hud.trade_ready,Trade ready
