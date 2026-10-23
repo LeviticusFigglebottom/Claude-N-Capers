@@ -4,6 +4,24 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-51) D-158 amendment 9 (3585dce5): clean stop keeps RearStop on trucks_2 (2026-10-23)
+- Root cause of east's 33 m: trucks_2, not the route. Both routes share the stop geometry (Lead 18.5, T1 27.75,
+  T2 39, T3 51, Rear 61, RearStop2 49 along the route). _stop_marker closed the rear car up to RearStop2 on every
+  trucks_2 stop.
+- Fix: RtTweak.rear_close_up_clean (ships false). A clean stop keeps RearStop on trucks_2 too; the crash stop keeps
+  the close-up.
+- Test: test_clean_stop_rear_car_holds_back_on_both_routes_and_truck_counts pins the rear stop >= 42 m behind
+  LeadStop on north / east × trucks_2 / trucks_3 (clean), RearStop2 on the crash stop, and the knob. d158 13/13; RT
+  tests green (rt_a6 14, rt_a5 10, a5_02 4, looks 2, tactical 2, r288 2).
+- Re-run, seed 1001 east_clean trucks_2:
+  - The rear TAC Heavy is now 43 m from the crew at the stop (was 33).
+  - **Routine: PASS** (escort down t+24.8, build t+113.5, won at 522 s).
+  - **Hazardous: FAIL, unchanged** (down t+12.9, cuffed t+20.7, custody t+43.0 before build).
+  - The ESCORT hit log shows the TAC Heavy is not what downs the pilot: 30 of about 185 damage. The rest comes from
+    the T1/T2 security officers and convoy_lead at 6-15 m.
+  - Guard #102 sits 14 m from east's ambush cover. It goes ALARMED at t+2 (guard_radio springs the ambush) and is
+    shooting at 6 m by t+6.7; the column's crews join at t+8-9.5.
+
 ### (-50) RT done-check harness evidence: 5 seeds × {loud, stealth prelude} × {Hazardous, Routine} (2026-10-23)
 Code: env/a-core dea7fc07..46bfd037, which equals trunk 9d4bca054 on A's side (amendment 8 knobs live: window from
 escort_down, wave 1 without stinger + phantom from Hazardous). Headless real-menu flow:
