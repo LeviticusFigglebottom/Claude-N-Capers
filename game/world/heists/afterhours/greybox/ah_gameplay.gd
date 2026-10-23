@@ -290,6 +290,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		props["push_bar"] = true
 	if extra.has("npc"):
 		props["npc_authorized_tags"] = extra["npc"]
+	if bool(extra.get("guest", false)):
+		props["civilian_allowed"] = true   # D-075 guest doors: civilians (and the cased crew) pass
 	if extra.has("tag"):
 		props["objective_tag"] = String(extra["tag"])
 	if extra.has("leaf"):

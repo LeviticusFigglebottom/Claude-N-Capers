@@ -7367,7 +7367,7 @@ visual_scene = ExtResource("28_ah")
 metadata/kind = "door"
 metadata/swing_side = "back"
 metadata/service = true
-metadata/todo = "VIP rope gate: a guest door, civilian_allowed"
+metadata/todo = "the VIP rope gate"
 
 [node name="StockCageGate" type="Node3D" parent="Gameplay/Doors" unique_id=101245 instance=ExtResource("22_ah")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 3, 0, 2.55)
