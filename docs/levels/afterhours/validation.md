@@ -55,14 +55,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 418 props checked
+- 607 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_alley/EscapeAlley` @ (25.00, 0.00, -3.60): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_tolley/EscapeTolley` @ (40.00, 0.00, 22.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 418 props, 44 doors checked
+- 607 props, 44 doors checked
 
 - WARN `Props/MapBuilt/RollerShutter` @ (31.00, 0.00, 0.00): door has no Leaf node; swing arc not checked
 
@@ -117,47 +117,47 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 345 x 329 columns (0.25 m), 69209 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 345 x 329 columns (0.25 m), 69662 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1306 polygons, cell 0.10/0.10 m
+- navmesh: 1519 polygons, cell 0.10/0.10 m
 - 234 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomG10` | 88 | 88 | 100% |
-| `Rooms/RoomG11` | 74 | 74 | 100% |
+| `Rooms/RoomG10` | 54 | 54 | 100% |
+| `Rooms/RoomG11` | 47 | 47 | 100% |
 | `Rooms/RoomG12` | 33 | 33 | 100% |
 | `Rooms/RoomG14` | 51 | 51 | 100% |
 | `Rooms/RoomG16` | 3 | 3 | 100% |
 | `Rooms/RoomG15` | 6 | 6 | 100% |
-| `Rooms/RoomG21` | 123 | 123 | 100% |
+| `Rooms/RoomG21` | 95 | 95 | 100% |
 | `Rooms/RoomG13` | 138 | 138 | 100% |
-| `Rooms/RoomG6` | 585 | 585 | 100% |
-| `Rooms/RoomG7` | 466 | 466 | 100% |
+| `Rooms/RoomG6` | 583 | 583 | 100% |
+| `Rooms/RoomG7` | 457 | 457 | 100% |
 | `Rooms/RoomG20` | 56 | 56 | 100% |
-| `Rooms/RoomG23` | 117 | 117 | 100% |
+| `Rooms/RoomG23` | 78 | 78 | 100% |
 | `Rooms/RoomG22` | 15 | 15 | 100% |
-| `Rooms/RoomG25` | 75 | 75 | 100% |
-| `Rooms/RoomG24` | 96 | 96 | 100% |
+| `Rooms/RoomG25` | 72 | 72 | 100% |
+| `Rooms/RoomG24` | 74 | 74 | 100% |
 | `Rooms/RoomG3a` | 45 | 45 | 100% |
 | `Rooms/RoomG3b` | 47 | 47 | 100% |
 | `Rooms/RoomG8` | 30 | 30 | 100% |
-| `Rooms/RoomG1` | 299 | 299 | 100% |
-| `Rooms/RoomG2` | 69 | 69 | 100% |
+| `Rooms/RoomG1` | 269 | 269 | 100% |
+| `Rooms/RoomG2` | 53 | 53 | 100% |
 | `Rooms/RoomG26` | 59 | 59 | 100% |
 | `Rooms/RoomG27` | 60 | 60 | 100% |
 | `Rooms/RoomU10` | 78 | 78 | 100% |
 | `Rooms/RoomU6` | 57 | 57 | 100% |
-| `Rooms/RoomU1` | 515 | 515 | 100% |
+| `Rooms/RoomU1` | 507 | 507 | 100% |
 | `Rooms/RoomU6b` | 61 | 61 | 100% |
 | `Rooms/RoomU9` | 72 | 72 | 100% |
 | `Rooms/RoomU4a` | 39 | 39 | 100% |
 | `Rooms/RoomU4b` | 50 | 50 | 100% |
-| `Rooms/RoomU2` | 164 | 164 | 100% |
+| `Rooms/RoomU2` | 159 | 159 | 100% |
 | `Rooms/RoomU5` | 48 | 48 | 100% |
-| `Rooms/RoomU12` | 91 | 91 | 100% |
+| `Rooms/RoomU12` | 62 | 62 | 100% |
 | `Rooms/RoomU13` | 52 | 52 | 100% |
 | `Rooms/RoomX1` | 670 | 670 | 100% |
 | `Rooms/RoomX1R` | 716 | 716 | 100% |
@@ -209,7 +209,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 89 interior key light(s) in 19 room(s); 0 lack `viewmodel_lit`
+- 185 interior key light(s) in 30 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -230,7 +230,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: chair 3, counter 2, desk 7, table 5, wall_unit 22, visitor_chair 1, desk_chair 5, monitor 1
-- 9 seats, 14 tables/desks/counters, 44 doors checked
+- classified: chair 3, counter 2, desk 8, table 5, low_table 1, wall_unit 29, visitor_chair 1, desk_chair 6, monitor 1
+- 10 seats, 16 tables/desks/counters, 44 doors checked
 
 - WARN `Gameplay/Ladders/DropLadder` @ (30.00, 0.00, -0.60): door_clear: in the clear zone of door `Props/MapBuilt/RollerShutter` (1.0 / 1.0 m each side, leaf width 3.00 m) by 0.76 m (gameplay prefab / variant content: review)

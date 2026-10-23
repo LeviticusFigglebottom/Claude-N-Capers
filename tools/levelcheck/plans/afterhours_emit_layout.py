@@ -25,12 +25,13 @@ OUT_DIR = os.path.join(ROOT, "game", "world", "heists", "afterhours", "greybox")
 OUT = os.path.join(OUT_DIR, "afterhours_layout.gd")
 OUT_CONTENT = os.path.join(OUT_DIR, "afterhours_layout_content.gd")
 
-# Room list kits (◇ = new club kits, built at G2).
+# Room list kits (◇ = new club kits, built at G2: tools/blender/props/_kits_afterhours.py; G21 / G23 keep the shared
+# loading_bay / storage_supplies).
 ROOM_KIT = {
     "G1": "club_foyer", "G2": "club_box_office", "G3a": "restroom_multi", "G3b": "restroom_multi", "G6": "club_hall",
     "G7": "club_lounge", "G10": "storage_bar_stock", "G11": "green_room", "G12": "break_room",
     "G13": "corridor_service", "G14": "locker_room", "G15": "janitor_closet", "G16": "electrical_closet",
-    "G20": "corridor_service", "G21": "loading_bar", "G23": "storage_ice", "G24": "door_team_room",
+    "G20": "corridor_service", "G21": "loading_bay", "G23": "storage_supplies", "G24": "door_team_room",
     "G25": "staff_entrance", "G26": "count_room", "G27": "storage_supplies", "U1": "vip_balcony", "U2": "vip_lounge",
     "U4a": "restroom_multi", "U4b": "restroom_multi", "U5": "security_office", "U6": "corridor_office",
     "U6b": "corridor_office", "U9": "office_manager", "U10": "count_room", "U12": "private_lounge",
