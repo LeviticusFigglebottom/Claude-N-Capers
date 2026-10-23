@@ -55,6 +55,8 @@ const OFFICE_DOOR_AT: Vector3 = Vector3(28.0, UP, 18.0)
 const OFFICE_IN: Vector3 = Vector3(31.0, UP, 18.5)
 const HALL_SHOT_AT: Vector3 = Vector3(13.0, 0.0, 16.0)
 const SAFE_BAGS: int = 3
+const AH_GUARD_SEEN_M: float = 20.0
+const AH_GUARD_CLOSE_M: float = 10.0
 const DRILL_MAX_S: float = 600.0
 const VAN_MAX_S: float = 900.0
 
@@ -105,7 +107,8 @@ func _row(item: String, verdict: String, detail: String, owner: String = "-") ->
 
 ## Launch the Velvet with real detection (NPCs, cameras), the civilian start (no skip_casing).
 func _ah_launch(loud_kit: bool = false) -> bool:
-	var opts: Dictionary = {}
+	# gear_cloak (the foyer, across the counter): reachable with no door, so the gear never decides the result.
+	var opts: Dictionary = {"preplan": {"force_variants": {&"gear_drop": [&"gear_cloak"]}}}
 	if loud_kit:
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
 	if not await _launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, Enums.Difficulty.ROUTINE, opts, false):
@@ -121,6 +124,39 @@ func _worst_peak() -> float:
 	for id: int in _peaks:
 		worst = maxf(worst, float(_peaks[id]["max"]))
 	return worst
+
+
+## Indoor version of rt's _wait_unseen (tuned for RT's open site: any guard within 30 m, seen or merely closing through
+## walls, blocked the club's back of house for the whole 240 s). Here: a guard SEEN within AH_GUARD_SEEN_M or closing
+## within AH_GUARD_CLOSE_M, a civilian seen within UNSEEN_CIV_M. The row names what last held the window shut.
+func _wait_unseen(label: String, max_s: float = 240.0) -> float:
+	var t0: float = rt.heist_time_s
+	var clear_s: float = 0.0
+	var last: Dictionary = {}
+	var last_why: String = ""
+	while rt.heist_time_s - t0 < max_s and clear_s < UNSEEN_HOLD_S:
+		var why: String = ""
+		for n: Node in rt.npcs():
+			var npc: NpcBase = n as NpcBase
+			var d: float = npc.global_position.distance_to(pilot.crew.global_position)
+			var seen: bool = pilot.has_los(npc.head_position(), npc)
+			if npc.role == &"civilian":
+				if seen and d < UNSEEN_CIV_M:
+					why = "%s (civilian) seen at %.0f m" % [npc.name, d]
+			elif (seen and d < AH_GUARD_SEEN_M) or (d < AH_GUARD_CLOSE_M and d < float(last.get(npc, INF)) - 0.2):
+				why = "%s (%s) %s at %.0f m" % [npc.name, npc.role, "seen" if seen else "closing", d]
+			last[npc] = d
+			if why != "":
+				break
+		if why != "":
+			last_why = why
+		clear_s = clear_s + 0.5 if why == "" else 0.0
+		await wait_s(0.5)
+	var waited: float = rt.heist_time_s - t0
+	var ok: bool = clear_s >= UNSEEN_HOLD_S
+	_row("%s: wait unseen before masking" % label, "PASS" if ok else "FAIL", "%.0f s%s" % [waited,
+		"" if ok else ", last blocker: " + last_why], "-" if ok else "C patrol (no window) / P route")
+	return waited
 
 
 # --- casing (civilian walk) -----------------------------------------------------------------------------------------
@@ -200,6 +236,11 @@ func _ah_stealth() -> bool:
 	var have_code: bool = await _code_note(safe)
 	if not have_card:
 		return false
+	# Upstairs (kc_vip_bar / U-side slots): the nav's shortest line runs through the masked-only VIP staff door, so a
+	# casing player goes back the guest way: grand stair -> foyer -> behind the east bar -> G20.
+	if pilot.crew.global_position.y > 2.0 and not await _leg("back down the guest way to G20 (casing)",
+			[Vector3(8.0, UP, 26.0), Vector3(18.0, 0.0, 25.0), EAST_BAR_BEHIND, G20_IN], 0.8, 180.0):
+		return false
 	if not await _go(G23_MASK, 0.6, 90.0):
 		_row("G23 (mask spot)", "FAIL", "not reached", _owner_for(G23_MASK))
 		return false
@@ -208,12 +249,17 @@ func _ah_stealth() -> bool:
 		return await _fail("mask")
 	if not await _office():
 		return false
+	if not have_code:
+		have_code = await _code_note(safe, "masked, in the office")
 	var opened: bool = await _open_safe(safe, have_code)
 	if not opened:
 		return false
+	# afterhours.md Escape: [secure] (3 bags at the van's SECURE zone) activates the escape: bags first, then the van.
+	var bags: int = await _safe_bags_to(safe, _van_secure())
 	var esc: EscapeZone = await _active_escape(60.0)
-	var bags: int = await _safe_bags_to(safe, esc)
-	var escaped: bool = bags >= SAFE_BAGS and await _escape(esc)
+	_row("escape active after [secure]", "PASS" if esc != null else "FAIL", "escape %s, %d bags" % [esc, bags],
+		"-" if esc != null else "A mission (escape on secure)")
+	var escaped: bool = bags >= SAFE_BAGS and esc != null and await _escape(esc)
 	_peaks_table()
 	_row("stealth: no alarm", "PASS" if not rt.went_loud else "FAIL", "alarm '%s', peak %.2f over %d observers" % [
 		_alarm, _worst_peak(), _peaks.size()], "-" if not rt.went_loud else "C patrols / P route")
@@ -227,14 +273,46 @@ func _gear() -> bool:
 		_row("gear (gear_drop)", "FAIL", "no GearPickup", "C map")
 		return false
 	var t0: float = rt.heist_time_s
-	if not await _go(pilot.stand_point(gp.global_position), 0.6, 240.0):
-		_row("gear (%s)" % gp.name, "FAIL", "not reached at %s" % Po5Pilot._v(gp.global_position),
+	# gear_cloak is taken ACROSS the counter from the foyer (D-075): stand where a path from the crew actually ends,
+	# within reach of the gear, then press F from there (pilot.use would walk to the navmesh point behind the counter).
+	var stand: Vector3 = _reach_stand(gp.global_position)
+	if stand == Vector3.INF or not await _go(stand, 0.4, 240.0):
+		_row("gear (%s)" % gp.name, "FAIL", "no reachable stand within reach of %s" % Po5Pilot._v(gp.global_position),
 			_owner_for(gp.global_position))
 		return false
-	var got: bool = await pilot.use(_comp(gp), 20.0, func() -> bool: return pilot.crew.player_mode == &"casing")
+	var got: bool = await pilot.use(_comp(gp), 20.0, func() -> bool: return pilot.crew.player_mode == &"casing", false)
 	_row("gear (%s) -> casing" % gp.name, "PASS" if got else "FAIL", "%.0f s from the spawn, mode %s, at %s" % [
 		rt.heist_time_s - t0, pilot.crew.player_mode, Po5Pilot._v(gp.global_position)], "-" if got else "A gear / C slot")
 	return got
+
+
+## A floor point within reach (<= 1.6 m flat) of `target` that the nav path from the crew really ends at: rings of
+## 0.6 / 1.0 / 1.4 m, 16 bearings, the shortest walk wins. Vector3.INF when none.
+func _reach_stand(target: Vector3) -> Vector3:
+	var best: Vector3 = Vector3.INF
+	var best_m: float = INF
+	for r: float in [0.6, 1.0, 1.4]:
+		for k: int in 16:
+			var a: float = TAU * float(k) / 16.0
+			var cand: Vector3 = pilot.stand_point(target + Vector3(cos(a), 0.0, sin(a)) * r)
+			if Po5Pilot.flat_dist(cand, target) > 1.6:
+				continue
+			var p: PackedVector3Array = pilot.nav_path(cand)
+			if p.is_empty() or Po5Pilot.flat_dist(p[p.size() - 1], cand) > 0.3 or absf(p[p.size() - 1].y - cand.y) > 0.5:
+				continue
+			var m: float = 0.0
+			for i: int in range(1, p.size()):
+				m += p[i - 1].distance_to(p[i])
+			if m < best_m:
+				best = cand
+				best_m = m
+	return best
+
+
+## Walk within reach of `target` (_reach_stand; the plain nearest navmesh point when no ring candidate is reachable).
+func _go_reach(target: Vector3, arrive: float = 0.6, timeout: float = 240.0) -> bool:
+	var stand: Vector3 = _reach_stand(target)
+	return await _go(stand if stand != Vector3.INF else pilot.stand_point(target), arrive, timeout)
 
 
 ## Route 1: behind the east bar while the floor bouncer is away, through the service door into G20 (casing).
@@ -269,15 +347,17 @@ func _keycard() -> bool:
 		_row("keycard", "FAIL", "no reachable KeycardPickup", "C map / bake")
 		return false
 	var t0: float = rt.heist_time_s
-	var ok: bool = await _go(pilot.stand_point(best.global_position), 0.6, 180.0) \
+	var kc_name: String = String(best.name)  # the pickup frees itself when taken
+	var ok: bool = await _go_reach(best.global_position, 0.6, 180.0) \
 		and await pilot.use(_comp(best), 20.0, func() -> bool: return pilot.crew.item_count(&"item.keycard") > 0)
-	_row("keycard (%s, %.0f m walk)" % [best.name, best_m], "PASS" if ok else "FAIL", "%.0f s, peak %.2f" % [
+	_row("keycard (%s, %.0f m walk)" % [kc_name, best_m], "PASS" if ok else "FAIL", "%.0f s, peak %.2f" % [
 		rt.heist_time_s - t0, _worst_peak()], "-" if ok else "C map / A keycard")
 	return ok
 
 
-## The safe's code note (CodeNote with the safe's code_group), read as casing. False = drill instead (no row FAIL).
-func _code_note(safe: Safe) -> bool:
+## The safe's code note (CodeNote with the safe's code_group). `phase` labels the row. A note out of reach now (the
+## office blotter behind the masked-only VIP staff door while casing) is a NOTE, read later; false = not read.
+func _code_note(safe: Safe, phase: String = "casing") -> bool:
 	if safe.code_group == &"":
 		_row("safe code note", "NOTE", "the safe has no code_group: drill only", "-")
 		return false
@@ -285,9 +365,15 @@ func _code_note(safe: Safe) -> bool:
 		var cn: CodeNote = n as CodeNote
 		if cn.code_group != safe.code_group or pilot.nav_path(cn.global_position).is_empty():
 			continue
-		var ok: bool = await _go(pilot.stand_point(cn.global_position), 0.6, 180.0) and await pilot.use(_comp(cn), 15.0)
-		_row("safe code (%s)" % cn.name, "PASS" if ok else "FAIL", "read %s, code '%s'" % [ok, cn.code_text()],
-			"-" if ok else "C map / A code note")
+		var reached: bool = await _go_reach(cn.global_position, 0.6, 180.0)
+		if not reached and pilot.last_blocked_door != null:
+			_row("safe code (%s, %s)" % [cn.name, phase], "NOTE", "not reachable now: %s (%s); read later" % [
+				pilot.last_blocked_door.name, _comp(pilot.last_blocked_door).availability(pilot.crew)
+				if _comp(pilot.last_blocked_door) != null else "-"], "-")
+			return false
+		var ok: bool = reached and await pilot.use(_comp(cn), 15.0)
+		_row("safe code (%s, %s)" % [cn.name, phase], "PASS" if ok else "FAIL", "read %s, code '%s'" % [ok,
+			cn.code_text()], "-" if ok else "C map / A code note")
 		return ok
 	_row("safe code note", "NOTE", "none reachable for group %s: drill" % safe.code_group, "-")
 	return false
@@ -323,7 +409,7 @@ func _open_safe(safe: Safe, have_code: bool) -> bool:
 	if comp == null:
 		_row("safe", "FAIL", "no interactable", "A safe / C map")
 		return false
-	if not await _go(pilot.stand_point(safe.global_position), 0.6, 60.0):
+	if not await _go_reach(safe.global_position, 0.6, 60.0):
 		_row("safe", "FAIL", "not reached", _owner_for(safe.global_position))
 		return false
 	var t0: float = rt.heist_time_s
@@ -363,24 +449,29 @@ func _active_escape(max_s: float) -> EscapeZone:
 
 
 ## Bag the safe's cash (its contents' LootSpawns) and carry each to the secure zone at `esc` (G at the zone).
-func _safe_bags_to(safe: Safe, esc: EscapeZone) -> int:
-	var zone: SecureZone = _secure_zone_near(esc.global_position) if esc != null else null
+## The rolled van's SECURE zone (the escape group keeps only the rolled slot: SecureAlley / SecureTolley).
+func _van_secure() -> SecureZone:
+	var found: Array[Node] = rt.find_children("*", "SecureZone", true, false)
+	return found[0] as SecureZone if not found.is_empty() else null
+
+
+func _safe_bags_to(safe: Safe, zone: SecureZone) -> int:
 	if zone == null:
-		_row("van secure zone", "FAIL", "escape %s, no SecureZone near it" % esc, "A escape / C map")
+		_row("van secure zone", "FAIL", "no SecureZone in the map", "C map (escape slot)")
 		return 0
 	var n: int = 0
 	for prefab: GameplayPrefab in safe.contents():
 		if n >= SAFE_BAGS:
 			break
 		var t0: float = rt.heist_time_s
-		if not await _go(pilot.stand_point(prefab.global_position), 0.6, 300.0):
+		if not await _go_reach(prefab.global_position, 0.6, 300.0):
 			break
 		if not await pilot.use(_comp(prefab), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 			continue
 		var id: int = (pilot.crew.carried_bag as LootBag).net_id
 		var t1: float = rt.heist_time_s
 		var s0: int = pilot.stuck_spots.size()
-		var ok: bool = await _go(pilot.stand_point(zone.global_position), 1.5, 400.0)
+		var ok: bool = await _go_reach(zone.global_position, 1.5, 400.0)
 		if ok:
 			await pilot.face(zone.global_position + Vector3.UP * 0.5, 0.05, 1.5)
 			await pilot.inp.tap(&"drop_bag")
@@ -388,7 +479,7 @@ func _safe_bags_to(safe: Safe, esc: EscapeZone) -> int:
 		var sec: bool = _secured_ids.has(id)
 		var stuck: int = pilot.stuck_spots.size() - s0
 		n += 1 if sec else 0
-		_row("bag %d: safe -> van (%s)" % [n, esc.name], "PASS" if sec and stuck == 0 else ("STUCK" if sec else "FAIL"),
+		_row("bag %d: safe -> van (%s)" % [n, zone.name], "PASS" if sec and stuck == 0 else ("STUCK" if sec else "FAIL"),
 			"bagged in %.0f s, carried in %.0f s, %d STUCK row(s), secured %s" % [t1 - t0, rt.heist_time_s - t1, stuck,
 			sec], "-" if sec and stuck == 0 else ("C map" if stuck > 0 else "A secure zone"))
 	return n
@@ -409,10 +500,13 @@ func _escape(esc: EscapeZone) -> bool:
 func _ah_loud() -> bool:
 	if not await _ah_launch(_build() == "loud"):
 		return false
-	if not await _gear() or not await _behind_east_bar() or not await _keycard():
+	# Masked straight after the gear (the alarm comes next anyway): a masked crew is not door-gated as casing is.
+	if not await _gear():
 		return false
 	if not await _mask():
 		return await _fail("mask")
+	if not await _behind_east_bar() or not await _keycard():
+		return false
 	pilot.combat = true
 	if not await _go(HALL_SHOT_AT, 0.8, 120.0):
 		_row("hall (the alarm shot)", "FAIL", "not reached", _owner_for(HALL_SHOT_AT))
@@ -431,10 +525,10 @@ func _ah_loud() -> bool:
 	if safe == null or not await _office() or not await _open_safe(safe, false):
 		_danger_rows("loud")
 		return false
+	var bags: int = await _safe_bags_to(safe, _van_secure())
 	var esc: EscapeZone = await _active_escape(VAN_MAX_S)
-	_row("van back (2nd FADE or 300 s)", "PASS" if esc != null else "FAIL", "escape %s at t=%.0f" % [esc,
-		rt.heist_time_s], "-" if esc != null else "A mission (escape_wait)")
-	var bags: int = await _safe_bags_to(safe, esc) if esc != null else 0
-	var out: bool = bags >= SAFE_BAGS and await _escape(esc)
+	_row("van back (2nd FADE or 300 s after the first bag)", "PASS" if esc != null else "FAIL", "escape %s at t=%.0f" % [
+		esc, rt.heist_time_s], "-" if esc != null else "A mission (escape_wait)")
+	var out: bool = bags >= SAFE_BAGS and esc != null and await _escape(esc)
 	_danger_rows("loud")
 	return out

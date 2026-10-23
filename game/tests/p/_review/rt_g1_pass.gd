@@ -424,13 +424,20 @@ func _rt_lift() -> bool:
 			return await _fail("bag %d into the car" % k)
 	_row("lift: 2 bags in the car (HEAVY + MEDIUM)", "PASS" if lift.bags_in_car().size() >= 2 else "FAIL",
 		"%d bags" % lift.bags_in_car().size(), "-")
+	# BagLift (A): a send goes to the NEXT landing ((i + 1) % count), so ground -> roof is two sends: from the ground
+	# (0 -> 1), then from Deck 2 (1 -> 2) after walking up stair A to meet the car, as a player would.
 	var t0: float = rt.heist_time_s
-	if not await _lift_to(lift, 2, g_stand):
-		return await _fail("send to the roof")
-	_row("lift: ground -> roof", "PASS" if lift.bags_in_car().size() >= 2 else "FAIL", "%.1f s, %d bags rode up" % [
-		rt.heist_time_s - t0, lift.bags_in_car().size()], "-")
+	if not await _lift_to(lift, 1, g_stand):
+		return await _fail("send ground -> Deck 2")
+	var d2_stand: Vector3 = Vector3(LIFT_AT.x, 3.5, LIFT_STAND_Z)
+	if not await _leg("lift: ground -> Deck 2 by stair A to meet the car", STAIR_A.slice(0, 3) + [d2_stand]):
+		return false
+	if not await _lift_to(lift, 2, d2_stand):
+		return await _fail("send Deck 2 -> roof")
+	_row("lift: ground -> roof (2 sends, via Deck 2)", "PASS" if lift.bags_in_car().size() >= 2 else "FAIL",
+		"%.1f s heist time, %d bags rode up" % [rt.heist_time_s - t0, lift.bags_in_car().size()], "-")
 	var r_stand: Vector3 = Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)
-	if not await _leg("lift: ground -> roof by stair A to meet the car", STAIR_A.duplicate() + [r_stand]):
+	if not await _leg("lift: Deck 2 -> roof by stair A to meet the car", STAIR_A.slice(3) + [r_stand]):
 		return false
 	var got: int = 0
 	for k: int in 2:
