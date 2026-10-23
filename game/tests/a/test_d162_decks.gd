@@ -60,35 +60,39 @@ func test_crew_kill_feed_reports_any_teammate() -> void:
 
 # --- Yakuza ------------------------------------------------------------------------------------
 
-func test_yakuza_scales_below_the_threshold_and_replicates() -> void:
-	var y: PerkYakuza = _grant(0, &"perk.yakuza", {"threshold": 0.25, "armor_regen_bonus": 0.6,
-		"move_speed_bonus": 0.2, "blocks_regen": true}) as PerkYakuza
+func test_yakuza_scales_as_health_falls_and_replicates() -> void:
+	var y: PerkYakuza = _grant(0, &"perk.yakuza", {"low_health_threshold": 0.25, "armor_regen_max_add": 0.6,
+		"move_speed_max_add": 0.2, "blocks_regen": true}) as PerkYakuza
 	var h: CrewHealth = _crew().health
 	y.tick(0.1)
-	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.0, 0.0001, "full health: nothing")
-	h.health = h.max_health * 0.125  # half way below 25 %
+	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.0, 0.0001, "full health: s = 0, nothing")
+	h.health = h.max_health * 0.625  # s = 0.375 / 0.75 = 0.5
 	y.tick(0.1)
-	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.1, 0.0001, "move speed +0.2 x 0.5")
-	assert_near(Modifiers.mult(0, &"defense.armor_regen_rate_mult"), 1.3, 0.0001, "armor regen +0.6 x 0.5")
+	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.1, 0.0001, "half way to the threshold: +0.2 x 0.5")
+	assert_near(Modifiers.mult(0, &"defense.armor_regen_delay_mult"), 1.0 / 1.3, 0.0001,
+		"the regen delay counts down 1.3x as fast")
+	h.health = h.max_health * 0.1
+	y.tick(0.1)
+	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.2, 0.0001, "below the threshold: s = 1, the full bonus")
 	var buffs: Dictionary = CrewBuffs.of(_rt).net_state()
 	assert_true(buffs.has(0), "replicated through CrewBuffs (clients' movement prediction)")
 	Modifiers.set_source(0, &"regen", {&"defense.health_regen_per_sec": 0.1})
 	var before: float = h.health
 	h._tick_health_regen(1.0)
-	assert_near(h.health, before, 0.001, "blocks_regen: no third-party regen below the threshold")
+	assert_near(h.health, before, 0.001, "blocks_regen: no other health regen while s > 0")
 	h.health = h.max_health
 	y.tick(0.1)
 	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.0, 0.0001, "back to full health: the buff ends")
-	_grant(0, &"perk.yakuza", {"threshold": 0.5, "armor_regen_bonus": 0.6, "move_speed_bonus": 0.2})
-	h.health = h.max_health * 0.4
+	_grant(0, &"perk.yakuza", {"low_health_threshold": 0.5, "armor_regen_max_add": 0.6, "move_speed_max_add": 0.2})
+	h.health = h.max_health * 0.75  # s = 0.25 / 0.5
 	y.tick(0.1)
-	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.04, 0.0001, "card 9: threshold 50 % (0.2 x 0.2)")
+	assert_near(Modifiers.mult(0, &"movement.speed_mult"), 1.1, 0.0001, "card 9: peaks at 50 % health")
 
 
 # --- Biker -------------------------------------------------------------------------------------
 
 func test_biker_heals_on_any_crew_kill_rate_limited() -> void:
-	var b: PerkBiker = _grant(0, &"perk.biker", {"heal": 5.0, "armor": 5.0, "max_per_window": 4, "window_s": 4.0})
+	var b: PerkBiker = _grant(0, &"perk.biker", {"heal": 5.0, "armor": 5.0, "max_procs": 4, "window_s": 4.0})
 	b.tick(0.0)
 	var h: CrewHealth = _crew().health
 	h.health = h.max_health - 100.0
@@ -105,9 +109,9 @@ func test_biker_heals_on_any_crew_kill_rate_limited() -> void:
 
 
 func test_biker_missing_stat_scaling() -> void:
-	var b: PerkBiker = _grant(0, &"perk.biker", {"heal": 5.0, "armor": 5.0, "max_per_window": 4, "window_s": 4.0,
-		"armor_per_10pct_health_missing": 1.0, "window_cut_per_10pct_health_missing": 0.1,
-		"heal_per_10pct_armor_missing": 1.0, "window_cut_per_10pct_armor_missing": 0.1}) as PerkBiker
+	var b: PerkBiker = _grant(0, &"perk.biker", {"heal": 5.0, "armor": 5.0, "max_procs": 4, "window_s": 4.0,
+		"armor_per_missing_health": 1.0, "window_cut_per_missing_health": 0.1,
+		"heal_per_missing_armor": 1.0, "window_cut_per_missing_armor": 0.1}) as PerkBiker
 	b.tick(0.0)
 	var h: CrewHealth = _crew().health
 	h.health = h.max_health * 0.5
@@ -121,9 +125,9 @@ func test_biker_missing_stat_scaling() -> void:
 # --- Maniac ------------------------------------------------------------------------------------
 
 func test_maniac_stacks_absorb_share_and_decay() -> void:
-	var m: PerkManiac = _grant(0, &"perk.maniac", {"stack_per_damage": 1.0, "gain_cap": 240.0, "gain_window_s": 4.0,
-		"max_stacks": 600.0, "stacks_per_absorb": 30.0, "decay_frac": 0.75, "decay_flat": 30.0, "decay_interval_s": 8.0,
-		"crew_share": false, "self_absorb_mult": 1.0}) as PerkManiac
+	var m: PerkManiac = _grant(0, &"perk.maniac", {"conversion": 1.0, "gain_cap": 240.0, "gain_window_s": 4.0,
+		"max_stacks": 600.0, "stacks_per_absorb": 30.0, "decay_fraction": 0.75, "decay_flat": 30.0, "decay_interval_s": 8.0,
+		"team": false, "self_absorb_mult": 1.0}) as PerkManiac
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
 	var npc: NpcBase = dir.spawn_enemy(dir.enemy_def_for(&"enemy.patrol_officer"),
 		Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -20)), null)
@@ -137,9 +141,13 @@ func test_maniac_stacks_absorb_share_and_decay() -> void:
 	_hit(_crew(), 20.0)
 	assert_near(h.health, h.max_health - 12.0, 0.01, "a 20 hit takes 12")
 	assert_near(PerkManiac.absorb_for(_crew(1)), 0.0, 0.001, "no Outburst: the teammate gets nothing")
-	_grant(0, &"perk.maniac", {"crew_share": true, "self_absorb_mult": 2.0})
+	_grant(0, &"perk.maniac", {"team": true, "self_absorb_mult": 2.0})
 	assert_near(PerkManiac.absorb_for(_crew(1)), 8.0, 0.001, "Outburst: the teammate gets the holder's 8")
 	assert_near(PerkManiac.absorb_for(_crew()), 16.0, 0.001, "Insanity: x2 on the holder")
 	assert_near(PerkManiac.stacks_of(_crew()), 240.0, 0.01, "stacks published for replication")
 	m.tick(8.1)
-	assert_near(m.stacks, 240.0 - 180.0 - 30.0, 0.01, "decay: -75 % - 30 every 8 s")
+	assert_near(m.stacks, 0.0, 0.01, "card-1 decay (B's 80 % + 120 every 8 s) empties 240 stacks")
+	_grant(0, &"perk.maniac", {"decay_fraction": 0.6, "decay_flat": 40.0})
+	m.stacks = 240.0
+	m.tick(8.1)
+	assert_near(m.stacks, 240.0 - 144.0 - 40.0, 0.01, "Fervor: -60 % - 40")

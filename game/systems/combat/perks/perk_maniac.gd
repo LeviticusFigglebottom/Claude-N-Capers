@@ -1,8 +1,8 @@
-## D-162 perk.maniac (PD2 Maniac). Owner: ENV A. Damage the holder deals becomes Hysteria stacks (stack_per_damage per
-## point, at most gain_cap per gain_window_s, up to max_stacks); every decay_interval_s the stacks lose decay_frac of
-## themselves + decay_flat. Every stacks_per_absorb stacks give 1 flat damage absorption (display units) off each hit
-## taken: the holder x self_absorb_mult (Insanity); with crew_share (Outburst) every teammate gets the best sharing
-## holder's absorb (they do not stack). absorb_for(crew) is the CrewHealth hook. Stacks replicate per holder (META on
+## D-162 perk.maniac (Frenzy; PD2 Maniac). Owner: ENV A. Schema: B's perk_decks.md. Damage the holder deals becomes
+## Hysteria stacks (x conversion, at most gain_cap per gain_window_s, up to max_stacks); every decay_interval_s the stacks
+## lose decay_fraction of themselves + decay_flat. Every stacks_per_absorb stacks give 1 flat damage absorption (display
+## units) off each hit taken: the holder x self_absorb_mult (Insanity); with `team` (Outburst) every teammate gets the
+## best sharing holder's absorb (they do not stack). absorb_for(crew) is the CrewHealth hook. Stacks replicate per holder (META on
 ## the CrewController, HeistNetSync SVC_MANIAC) for the HUD.
 class_name PerkManiac
 extends PerkComponent
@@ -17,7 +17,7 @@ var _decay_left: float = 0.0
 
 
 func on_damage_dealt(_victim: Node, info: Dictionary) -> void:
-	var gain: float = float(info.get("amount", 0.0)) * num("stack_per_damage")
+	var gain: float = float(info.get("amount", 0.0)) * num("conversion")
 	gain = minf(gain, maxf(num("gain_cap") - _gained, 0.0))
 	if gain <= 0.0:
 		return
@@ -39,7 +39,7 @@ func tick(delta: float) -> void:
 	_decay_left -= delta
 	if _decay_left <= 0.0:
 		_decay_left = num("decay_interval_s")
-		stacks = maxf(stacks - stacks * num("decay_frac") - num("decay_flat"), 0.0)
+		stacks = maxf(stacks - stacks * num("decay_fraction") - num("decay_flat"), 0.0)
 		crew.set_meta(META, stacks)
 
 
@@ -62,7 +62,7 @@ static func absorb_for(c: CrewController) -> float:
 			continue
 		if m == c:
 			best = maxf(best, p.base_absorb() * p.num("self_absorb_mult"))
-		elif bool(p.param("crew_share", false)):
+		elif bool(p.param("team", false)):
 			best = maxf(best, p.base_absorb())
 	return best
 
