@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/p/_review/ah_g1_pass.gd" id="1"]
+
+[node name="AhG1Pass" type="Node"]
+script = ExtResource("1")
