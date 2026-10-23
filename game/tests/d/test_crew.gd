@@ -9,6 +9,7 @@
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 
 const CREW: Array[String] = [
 	"char_crew_rook",
@@ -98,12 +99,8 @@ func _height(root: Node3D) -> float:
 func _surface_min_y(root: Node3D, material_path: String) -> float:
 	var low: float = INF
 	for mi: MeshInstance3D in _meshes(root):
-		for s: int in range(mi.mesh.get_surface_count()):
-			var m: Material = mi.get_active_material(s)
-			if m == null or m.resource_path != material_path:
-				continue
-			for v: Vector3 in mi.mesh.surface_get_arrays(s)[Mesh.ARRAY_VERTEX] as PackedVector3Array:
-				low = minf(low, (mi.transform * v).y)
+		for v: Vector3 in Layers.material_vertices(mi, material_path):
+			low = minf(low, (mi.transform * v).y)
 	return low
 
 
@@ -158,8 +155,9 @@ func test_materials_resolve_to_the_library() -> void:
 		if root == null:
 			continue
 		for mi: MeshInstance3D in _meshes(root):
-			for s: int in range(mi.mesh.get_surface_count()):
-				var m: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var m: Material = look[s]
 				assert_true(m != null, "%s/%s surface %d: material" % [id, mi.name, s])
 				if m == null:
 					continue
@@ -259,8 +257,9 @@ func test_heisters_read_apart() -> void:
 			continue
 		heights[id] = _height(root)
 		for mi: MeshInstance3D in _meshes(root):
-			for s: int in range(mi.mesh.get_surface_count()):
-				var m: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var m: Material = look[s]
 				if m == null:
 					continue
 				var arr: Array = users.get(m.resource_path, [])
