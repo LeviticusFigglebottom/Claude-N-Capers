@@ -11,7 +11,7 @@
 ## Each: the alarm by a burst (real input), the deck's moment with ONE shot (HUD + FP pose), FIGHT_S of fighting, rows
 ## with numbers and a PD2 judgement line. Stated shortcuts: direct HeistLauncher.launch (seed, Routine), the
 ## hazard kit (corsair_ar + kestrel + heavy vest + doctor bag), the alarm by gunfire.
-##     --out=/abs/dir [--seed=N]
+##     --out=/abs/dir [--seed=N] [--open (advance on the nearest enemy, no holding at the spawn)]
 ## Output: "[DKF ...]" notes and "[DKF] ROW <deck> | <item> | PASS|FAIL|NOTE | <detail> | <owner>"; "[DKF] RESULT".
 ## Owner: ENV P.
 extends "res://tests/p/_review/rt_g1_pass.gd"
@@ -25,7 +25,11 @@ const DECKS: Dictionary = {&"hacker": &"perk.hacker", &"lifeline": &"perk.lifeli
 	&"buddy": &"perk.buddy_system", &"copycat": &"perk.understudy"}
 const COPYCAT_CHOICES: Dictionary = {0: 1, 2: 2, 4: 2, 6: 3}
 
+## --open: the pilot advances on the nearest enemy instead of fighting from where it stands.
+const OPEN_STOP_M: float = 7.0
+
 var _kills: int = 0
+var _open: bool = OS.get_cmdline_user_args().has("--open")
 var _heal_events: Array[String] = []
 
 
@@ -155,6 +159,12 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 	while rt.heist_time_s < t_end and not _in_custody() and not (done.is_valid() and bool(done.call())):
 		await _hold_cover(func() -> bool: return true, 1.0)
 		var foe: NpcBase = pilot.nearest_enemy(BLOWN_PEEK_M)
+		if _open and foe == null and pilot.crew.crew_state == Enums.CrewState.NORMAL:
+			# --open (LEAD): fight in the open, no holding at the spawn: walk toward the nearest enemy until one is near.
+			var far: NpcBase = pilot.nearest_enemy(60.0)
+			if far != null:
+				await pilot.goto(far.global_position, OPEN_STOP_M, 4.0)
+				foe = pilot.nearest_enemy(BLOWN_PEEK_M)
 		if foe != null and pilot.crew.crew_state == Enums.CrewState.NORMAL:
 			await pilot.engage(foe, 1.5)
 		else:
