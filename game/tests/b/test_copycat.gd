@@ -60,6 +60,19 @@ func test_mimic_merges_the_chosen_deck() -> void:
 		assert_true(LoadoutResolver.mimic_deck(_loadout({}, bad)) == null, "%s is not a mimic" % bad)
 
 
+## LEAD r304 (P's windowed today_regress): a mimicked MULT bonus adds to the picks like PD2's summed multipliers.
+func test_mimic_mult_adds_to_the_picks() -> void:
+	var m: Dictionary = LoadoutResolver.resolve_modifiers(_loadout({0: 1}, &"perk.ironclad"))
+	assert_near(float(m[&"defense.armor_mult"]), 1.10, 0.0001, "card-1 armor 5% + Ironclad 5% = 10%, not 1.1025")
+	m = LoadoutResolver.resolve_modifiers(_loadout({0: 1, 2: 1, 4: 1}, &"perk.ironclad"))
+	assert_near(float(m[&"defense.armor_mult"]), 1.20, 0.0001, "3 armor picks + Ironclad: +20%")
+	m = LoadoutResolver.resolve_modifiers(_loadout({}, &"perk.ironclad"))
+	assert_near(float(m[&"defense.armor_mult"]), 1.05, 0.0001, "no armor pick: Ironclad's 5% alone")
+	var team: Dictionary = LoadoutResolver.team_modifier_sources(_loadout({0: 1}, &"perk.ironclad"))
+	assert_near(float((team[LoadoutResolver.team_perk_source(DECK)] as Dictionary)[&"team.armor_regen_delay_mult"]), 0.9,
+			0.0001, "team keys still go to the TEAM source")
+
+
 func test_mimic_table_is_complete() -> void:
 	for d: Variant in ContentDB.all_of(ContentDB.PERKS):
 		var deck: PerkDeckDef = d as PerkDeckDef

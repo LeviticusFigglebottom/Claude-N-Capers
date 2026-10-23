@@ -370,6 +370,9 @@ Bulk (the card's own +60% health and regen), Clean Sweep, Foreman, Knuckles, Inc
 only a duration), and the standalone variants Frenzy (PD2's Hysteria Stacks mimic), Inkwork ◇ and Road Crew ◇.
 Not mimicable (their card 9 needs the deck's own item, as in PD2): Composure, Overlord, Hacker, Veil, Buddy System,
 Lifeline, and Understudy itself. `perk.<deck>.mimic.desc` describes each mimic for the deck screen.
+A mimicked MULT bonus **adds** to the picks (LEAD r304, PD2 sums armor / health multipliers): card-1 armor +5% plus
+Ironclad's +5% is ×1.10, not 1.05 × 1.05. LoadoutResolver grants (total + m) / total, where total is the key's
+running product (1 + the summed bonuses). Crew-wide `team.*` keys go to the TEAM source unchanged.
 
 ### `perk.throwable` (Composure, Overlord)
 | Field | Type | Semantics |

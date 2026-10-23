@@ -12,8 +12,8 @@ body_faces_culled: 4592
 body_params: {"age": 0.3, "beard_shadow": 0.95, "build": 0.5, "gender": 0.0, "hair": "side_part", "hair_color": "brown", "hair_peak": 0.0, "height": 1.8, "lip": "auto", "skin": 1}
 bones: 52
 look: Velvet bartender: black shirt with rolled sleeves, dark denim bib apron with leather straps
-meshes: Body,Hair,Outfit
+meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25340
-tris_by_mesh: {"Body": 9560, "Hair": 1856, "Outfit": 13924}
+tris: 25384
+tris_by_mesh: {"Body": 9560, "Gear": 44, "Hair": 1856, "Outfit": 13924}

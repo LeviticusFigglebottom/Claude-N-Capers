@@ -88,14 +88,17 @@ const THROW_SPOTS: Array = [
 ]
 const THROW_BACKS: Array[float] = [0.0, 0.8, 1.6]
 ## Underpass legs (the ramp x 34..66, the bridge x 66..84, the east cut to x 104): carriageway, north and south lanes.
-const UNDERPASS_LANES: Array[float] = [0.0, -9.5, 9.5]
+## [z, label, east end x]. The east end is the designed closure (rolling_thunder.md §Play-space closure): LorryE across
+## the eastbound lanes (x 96-100, z 0-8) and BarrierES on the south sidewalk (x 97.5-98.5): the carriageway runs in the
+## open westbound lanes (z -4) to x 101, the south sidewalk ends at x 96.5 (C, round 302 relay).
+const UNDERPASS_LANES: Array = [[-4.0, "carriageway", 101.0], [-9.5, "north sidewalk", 101.0],
+	[9.5, "south sidewalk", 96.5]]
 const UNDERPASS_WEST_X: float = 30.0
-const UNDERPASS_EAST_X: float = 101.0
 ## Kerb crossings: [label, from, to].
 const KERB_LINES: Array = [
 	["Orchard z -20 (W -> E)", Vector3(-12.5, 0.0, -20.0), Vector3(12.5, 0.0, -20.0)],
 	["Orchard z 20 (E -> W)", Vector3(12.5, 0.0, 20.0), Vector3(-12.5, 0.0, 20.0)],
-	["Tannery x -30 (N -> S)", Vector3(-30.0, 0.0, -10.5), Vector3(-30.0, 0.0, 10.5)],
+	["Tannery x -36 (N -> S)", Vector3(-36.0, 0.0, -10.5), Vector3(-36.0, 0.0, 10.5)],  # clear of StreetCarTW1 (x -30, z 7)
 	["Tannery x 24 (S -> N)", Vector3(24.0, 0.0, 10.5), Vector3(24.0, 0.0, -10.5)],
 ]
 const KERB_MAX_M: float = 0.15
@@ -205,6 +208,9 @@ func _run() -> void:
 	RenderingServer.render_loop_enabled = true
 	print("[RTP] RESULT %s (%s)" % ["PASS" if ok else "FAIL", ", ".join(_results)])
 	get_tree().quit(0 if ok else 1)
+	# Finished runs sometimes hang in shutdown under llvmpipe (3 GB held, the run queue blocked): force the exit.
+	await get_tree().create_timer(10.0, true, false, true).timeout
+	OS.kill(OS.get_process_id())
 
 
 func _fail(step: String) -> bool:
@@ -421,20 +427,54 @@ func _rt_lift() -> bool:
 			return await _fail("bag %d into the car" % k)
 	_row("lift: 2 bags in the car (HEAVY + MEDIUM)", "PASS" if lift.bags_in_car().size() >= 2 else "FAIL",
 		"%d bags" % lift.bags_in_car().size(), "-")
+	# LEAD r304 / A (round 305): 3+ landings get one "Send to <landing>" button per other landing (send_buttons[i][j]):
+	# ground -> roof in ONE send, then stair A all the way up. Fallback (older BagLift: a send goes to the NEXT landing):
+	# two sends, ground (0 -> 1), then Deck 2 (1 -> 2) after walking up to meet the car.
 	var t0: float = rt.heist_time_s
-	if not await _lift_to(lift, 2, g_stand):
-		return await _fail("send to the roof")
-	_row("lift: ground -> roof", "PASS" if lift.bags_in_car().size() >= 2 else "FAIL", "%.1f s, %d bags rode up" % [
-		rt.heist_time_s - t0, lift.bags_in_car().size()], "-")
-	var r_stand: Vector3 = Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)
-	if not await _leg("lift: ground -> roof by stair A to meet the car", STAIR_A.duplicate() + [r_stand]):
+	var sends: Dictionary = lift.send_buttons.get(0, {}) as Dictionary
+	if sends.has(2):
+		var btn: InteractableComponent = sends[2]
+		await _go(g_stand, 0.3, 30.0)
+		_diag_hold.call_deferred(btn, 8.0)
+		await pilot.use(btn, 30.0, func() -> bool: return lift.is_moving(), false)
+		var up: bool = await wait_until(func() -> bool: return not lift.is_moving() and lift.landing == 2, lift.travel_s * 2.0 + 5.0)
+		_row("lift: ground -> roof in ONE send (\"Send to Roof\")", "PASS" if up and lift.bags_in_car().size() >= 2 else "FAIL",
+			"at the roof %s, %.1f s heist time, %d bags rode up" % [up, rt.heist_time_s - t0, lift.bags_in_car().size()],
+			"-" if up else "A lift send buttons / C panel")
+		if not up or not await _leg("lift: ground -> roof by stair A to meet the car", STAIR_A.duplicate() +
+				[Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)]):
+			return false
+		return await _roof_bags_out(lift) and ok
+	if not await _lift_to(lift, 1, g_stand):
+		return await _fail("send ground -> Deck 2")
+	var d2_stand: Vector3 = Vector3(LIFT_AT.x, 3.5, LIFT_STAND_Z)
+	if not await _leg("lift: ground -> Deck 2 by stair A to meet the car", STAIR_A.slice(0, 3) + [d2_stand]):
 		return false
+	if not await _lift_to(lift, 2, d2_stand):
+		return await _fail("send Deck 2 -> roof")
+	_row("lift: ground -> roof (2 sends, via Deck 2)", "PASS" if lift.bags_in_car().size() >= 2 else "FAIL",
+		"%.1f s heist time, %d bags rode up" % [rt.heist_time_s - t0, lift.bags_in_car().size()], "-")
+	var r_stand: Vector3 = Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)
+	if not await _leg("lift: Deck 2 -> roof by stair A to meet the car", STAIR_A.slice(3) + [r_stand]):
+		return false
+	return await _roof_bags_out(lift) and ok
+
+
+## On the roof: into the car from the landing door, F each bag there, carry it out (both bags).
+func _roof_bags_out(lift: BagLift) -> bool:
+	var r_stand: Vector3 = Vector3(LIFT_AT.x, 7.0, LIFT_STAND_Z)
 	var got: int = 0
 	for k: int in 2:
 		var bags: Array[LootBag] = lift.bags_in_car()
 		if bags.is_empty():
 			break
-		if await pilot.use(_comp(bags[0]), 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+		# Into the car from the roof landing door, then F there: pilot.use's own stand (the nearest navmesh point to a
+		# bag with no UsePoint) was east of the shaft, outside it (r305: the LOS hit the shaft wall's outer face).
+		note("roof: bag %s at %s, car at %s" % [bags[0].name, Po5Pilot._v(bags[0].global_position),
+			Po5Pilot._v(lift.car_transform().origin)])
+		await _go(r_stand, 0.3, 30.0)
+		await _straight("lift: into the car on the roof for bag %d" % k, Vector3(LIFT_AT.x, 7.0, LIFT_IN_Z + 0.4), 10.0)
+		if await pilot.use(_comp(bags[0]), 30.0, func() -> bool: return pilot.crew.is_carrying_bag(), false):
 			got += 1
 			await _go(Vector3(LIFT_AT.x + 2.5, 7.0, LIFT_STAND_Z + 2.0), 0.5, 20.0)
 			await pilot.inp.tap(&"drop_bag")
@@ -442,7 +482,7 @@ func _rt_lift() -> bool:
 	_row("lift: both bags out on the roof", "PASS" if got == 2 else "FAIL", "%d of 2 taken out by F" % got,
 		"-" if got == 2 else "C car / A lift")
 	await shot("lift_roof")
-	return ok and got == 2
+	return got == 2
 
 
 # --- site -----------------------------------------------------------------------------------------------------------
@@ -646,14 +686,15 @@ func _rt_underpass() -> bool:
 	if not await _rt_launch():
 		return false
 	var ok: bool = true
-	for z: float in UNDERPASS_LANES:
-		var lane: String = "carriageway" if z == 0.0 else ("north sidewalk" if z < 0.0 else "south sidewalk")
+	for ln: Array in UNDERPASS_LANES:
+		var z: float = float(ln[0])
+		var lane: String = String(ln[1])
 		if not await _leg("junction -> west mouth (%s)" % lane, [Vector3(UNDERPASS_WEST_X, 0.0, z)], 0.6, 240.0):
 			ok = false
 			continue
 		ok = await _straight("ramp down + under the bridge (%s)" % lane, Vector3(85.0, -5.0, z), 60.0) and ok
-		ok = await _straight("east cut to its end (%s)" % lane, Vector3(UNDERPASS_EAST_X, -5.0, z), 30.0) and ok
-		if z == 0.0:
+		ok = await _straight("east cut to its end (%s)" % lane, Vector3(float(ln[2]), -5.0, z), 30.0) and ok
+		if lane == "carriageway":
 			await shot("underpass_east_end")
 		ok = await _straight("east end -> back up the ramp (%s)" % lane, Vector3(UNDERPASS_WEST_X, 0.0, z), 90.0) and ok
 	ok = await _leg("underpass spawn row (71, -5, -9.3) on foot", [Vector3(73.0, -5.0, -9.3)], 0.6, 120.0) and ok

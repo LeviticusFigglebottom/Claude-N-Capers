@@ -17241,6 +17241,40 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_thermal_drill_down": {
+  "aabb": [
+   -0.5163,
+   -0.33,
+   -0.0144,
+   1.0326,
+   0.92,
+   1.2544
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_thermal_drill_down/prop_thermal_drill_down.glb",
+  "group": "drill",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "thermal_drill",
+  "mount": "",
+  "nodes": [
+   "Bit",
+   "Body"
+  ],
+  "place": "none",
+  "prefab": "drill",
+  "scene": "res://world/props/drill/prop_thermal_drill_down.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_thermite_lock": {
   "aabb": [
    -0.2,

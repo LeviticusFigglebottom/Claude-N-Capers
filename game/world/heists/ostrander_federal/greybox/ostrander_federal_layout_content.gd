@@ -276,7 +276,7 @@ const ALWAYS: Dictionary = {
 			{"mount": "wall"}, "prop_keypad",
 		],
 		[
-			"prefab", "drill_point", "LidDrill", [23.75, 1.0, 14.6], -90.0,
+			"prefab", "drill_point", "LidDrill", [24.0, 0.0, 14.0], 0.0,
 			{
 				"device": "enum:THERMAL",
 				"duration_s": 360.0,
@@ -284,8 +284,10 @@ const ALWAYS: Dictionary = {
 				"objective_tag": "vault_drill",
 				"requires_loot": "loot.thermal_drill_part",
 				"requires_count": 2,
+				"device_scene": "prop_thermal_drill_down",
 			},
-			[25.6, 0.0, 14.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2}, "prop_thermal_drill_device",
+			[25.7, 0.0, 14.0], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2, "pitch": -90.0, "tilted": true},
+			"res://world/heists/glasshouse/art/gh_empty.tscn",
 		],
 		[
 			"prefab", "alarm_button", "AlarmSR", [18.2, 1.1, 0.2], 180.0, {}, [18.2, 0.0, 0.9], {"mount": "wall"},

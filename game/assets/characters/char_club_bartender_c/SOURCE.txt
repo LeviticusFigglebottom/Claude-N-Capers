@@ -1,0 +1,19 @@
+asset: char_club_bartender_c
+script: tools/blender/characters/char_p5_club.py
+params: {"age": 0.22, "build": 0.3, "gender": 1.0, "hair": "short", "hair_color": "dark", "height": 1.68, "look": "bartender_c", "skin": 6}
+seed: 3143672626  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_club_bartender_c
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0838, 0.0870] (model [0.0000, 1.2270, 0.1044], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1647, 0.0483, 0.0411] (model [0.1647, 0.9476, 0.0434], Godot axes, rest pose)
+body_faces_culled: 3590
+body_params: {"age": 0.22, "beard_shadow": 0.0, "build": 0.3, "gender": 1.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 6}
+bones: 52
+look: Velvet bartender (east bar): black sleeveless knit top, short black waist apron, black trousers, short dark hair, stacked gold bangles
+meshes: Body,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 25836
+tris_by_mesh: {"Body": 11564, "Hair": 1728, "Outfit": 12544}

@@ -13,6 +13,7 @@
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 
 const CAST_PATH: String = "res://world/characters/p5_cast.json"
 ## Characters built for D3-01 (asset ids).
@@ -92,7 +93,8 @@ const ROLES: Dictionary = {
 		"gallery_patron", "gallery_waitstaff", "gallery_inspector", "gallery_vaultline"],
 	"ostrander_federal": ["bank_teller", "bank_manager", "bank_officer", "bank_guard", "bank_customer"],
 	"rolling_thunder": ["armored_car_crew", "convoy_escort"],
-	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron"],
+	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron", "club_dancer", "club_offduty", "club_vip",
+		"club_courier"],
 }
 ## D-115: the pre-P5 heists whose roster is read from docs/design/heists/<heist>.md, section
 ## "### ... roster (spawn data)": every spawn tag in its "Spawn tags" column is a cast role.
@@ -297,8 +299,9 @@ func _materials(asset_id: String) -> Array[String]:
 	if root == null:
 		return out
 	for mi: MeshInstance3D in _meshes(root):
-		for s: int in range(mi.mesh.get_surface_count()):
-			var m: Material = mi.get_active_material(s)
+		var look: Array[Material] = Layers.look_materials(mi)
+		for s: int in range(look.size()):
+			var m: Material = look[s]
 			if m != null and m.resource_path.begins_with(MAT_DIR):
 				var id: String = m.resource_path.get_file().get_basename()
 				if not out.has(id):
@@ -369,8 +372,9 @@ func test_materials_resolve_to_the_library() -> void:
 		if root == null:
 			continue
 		for mi: MeshInstance3D in _meshes(root):
-			for s: int in range(mi.mesh.get_surface_count()):
-				var m: Material = mi.get_active_material(s)
+			var look: Array[Material] = Layers.look_materials(mi)
+			for s: int in range(look.size()):
+				var m: Material = look[s]
 				assert_true(m != null, "%s/%s surface %d: material" % [id, mi.name, s])
 				if m == null:
 					continue

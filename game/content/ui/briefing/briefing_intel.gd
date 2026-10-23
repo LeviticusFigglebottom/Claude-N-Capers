@@ -68,10 +68,12 @@ const PASSAGE_PURPOSES: Array[StringName] = [&"corridor", &"stair", &"exterior",
 const ROOM_REACH_M: float = 0.75
 ## Rare-event effect keys that add hostiles, move timers or harden devices (see is_surprise). RT-B1: also an armoured
 ## car's timed arrival (OF armored_car_early), a sniper perch (OF tower_sniper, RT crane_sniper), the route marshal or
-## the convoy coming early, a Wrecker escort, and more civilians on the street (more witnesses).
+## the convoy coming early, a Wrecker escort, and more civilians on the street (more witnesses). AH-B1: Afterhours'
+## second rope bouncer and VIP guests (vip_party), the off-duty cop, and the Co-op couriers.
 const THREAT_EFFECTS: Array[StringName] = [
 	&"extra_guards", &"gunmen", &"timed_spawn", &"time_lock_add_s", &"police_delay_s", &"extra_hack_interruptions",
 	&"timed_spawn_s", &"perch_s3", &"marshal_lead_s", &"convoy_eta_add_s", &"wrecker_escort", &"civilians",
+	&"guard_extra", &"vip_patrons", &"off_duty_cop", &"couriers",
 ]
 ## SpawnPoint.Kind values that are hostile (GUARD, POLICE, SNIPER_PERCH, CAMERA_OPERATOR).
 const HOSTILE_SPAWNS: Array[int] = [1, 3, 4, 5]

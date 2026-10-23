@@ -114,7 +114,7 @@ func build_ui() -> void:
 	body.add_child(_build_details())
 	# PO-4 footer: Back and Reset (ghost) left, the refund / tree keys, then Refund and the invest
 	# button (the screen's primary) bottom right.
-	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
+	back_button = UiBuild.back(UiBuild.button(&"ui.menu.back"))
 	respec_button = UiBuild.ghost(UiBuild.button(&"ui.skills.respec"))
 	back_button.pressed.connect(back_requested.emit)
 	respec_button.pressed.connect(_on_respec_pressed)

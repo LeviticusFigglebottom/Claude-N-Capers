@@ -40,6 +40,10 @@ const OUT_DIRS: Dictionary = {
 	"sl_cleaners": "res://assets/characters/_review/sl_g3_cast/",
 	"nd_staff": "res://assets/characters/_review/nd_g3_cast/",
 	"db_cartel": "res://assets/characters/_review/db_g3_cast/",
+	"ah_staff": "res://assets/characters/_review/ah_cast/",
+	"ah_patrons": "res://assets/characters/_review/ah_cast/",
+	"ah_dancers": "res://assets/characters/_review/ah_cast/",
+	"ah_special": "res://assets/characters/_review/ah_cast/",
 	"db_workers": "res://assets/characters/_review/db_g3_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
@@ -130,6 +134,29 @@ const POOLS: Dictionary = {
 		"char_street_pedestrian_f", "char_street_pedestrian_i",
 	],
 	# GN-G3: the gallery staff, the guards and the gala guests (written to _review/gn_g3_cast/)
+	# D-165 Afterhours: the dance-floor pool (civ_dancer clusters)
+	"ah_dancers": [
+		"char_club_dancer", "char_club_dancer_b", "char_club_dancer_c", "char_club_dancer_d", "char_club_dancer_e",
+		"char_club_dancer_f", "char_club_dancer_g", "char_club_dancer_h", "char_club_dancer_i", "char_club_dancer_j",
+		"char_club_dancer_k", "char_club_dancer_l",
+	],
+	# D-165 Afterhours: the patrons (bars, booths, foyer, VIP, queue)
+	"ah_patrons": [
+		"char_club_patron", "char_club_patron_b", "char_club_patron_c", "char_club_patron_d", "char_club_patron_e",
+		"char_club_patron_f", "char_club_patron_g", "char_club_patron_h", "char_club_patron_i", "char_club_patron_j",
+		"char_club_patron_k", "char_club_patron_l",
+	],
+	# D-165 Afterhours: the door team + bar staff + DJ
+	"ah_staff": [
+		"char_club_bouncer", "char_club_bouncer_b", "char_club_bouncer_c", "char_club_bouncer_d",
+		"char_club_bouncer_e", "char_club_bouncer_f", "char_club_bartender", "char_club_bartender_b",
+		"char_club_bartender_c", "char_club_bartender_d", "char_club_dj",
+	],
+	# D-165 AH special roles: the off-duty cop, the vip_party pool and the two courier looks most often drawn
+	"ah_special": [
+		"char_club_offduty_cop", "char_club_vip", "char_club_vip_b", "char_club_vip_c", "char_club_vip_d",
+		"char_club_vip_e", "char_club_vip_f", "char_cartel_gunman", "char_cartel_gunman_h",
+	],
 	# DB-G3: Dockside's cartel crews and the dock / packing-wing workers
 	"db_cartel": [
 		"char_cartel_gunman", "char_cartel_gunman_b", "char_cartel_gunman_c", "char_cartel_gunman_d",
@@ -172,6 +199,9 @@ const LINEUP_DIST: float = 30.0
 const LINEUP_MIN_HALF_H: float = 1.25
 
 var _pool: String = "gn_guards"
+## D-165: ``--light=neon`` lights the pool like the Velvet's floor (dark room, magenta key, violet fill) and suffixes the
+## files ``_neon``, to prove the club palette still reads under coloured light.
+var _neon: bool = false
 var _out: String = OUT_DIR
 var _chars: Array[String] = []
 var _vp: SubViewport
@@ -192,6 +222,8 @@ func _run() -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--pool="):
 			_pool = arg.trim_prefix("--pool=")
+		elif arg == "--light=neon":
+			_neon = true
 	if not POOLS.has(_pool):
 		push_error("render_d130_cast_review: unknown pool %s (%s)" % [_pool, POOLS.keys()])
 		quit(2)
@@ -362,6 +394,8 @@ func _short(id: String) -> String:
 
 
 func _save(img: Image, file: String) -> void:
+	if _neon:
+		file = file.get_basename() + "_neon.png"
 	var err: Error = img.save_png(_out + file)
 	if err != OK:
 		_errors += 1
@@ -404,6 +438,14 @@ func _stage() -> void:
 	fill.rotation_degrees = Vector3(-20.0, -30.0, 0.0)
 	fill.light_energy = 0.5
 	_vp.add_child(fill)
+	if _neon:
+		env.environment.background_color = Color(0.05, 0.04, 0.07)
+		env.environment.ambient_light_color = Color(0.35, 0.25, 0.55)
+		env.environment.ambient_light_energy = 0.35
+		key.light_color = Color(1.0, 0.35, 0.75)
+		key.light_energy = 1.3
+		fill.light_color = Color(0.45, 0.38, 1.0)
+		fill.light_energy = 0.8
 	var vis: MeshInstance3D = MeshInstance3D.new()
 	var plane: PlaneMesh = PlaneMesh.new()
 	plane.size = Vector2(40.0, 12.0)

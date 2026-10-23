@@ -43,6 +43,11 @@ VARIANTS = {
     "prop_thermal_drill_device": {"fn": "thermal_drill", "floor": 1.0,
                                   "cat": {"prefab": "drill", "kind": "thermal_drill", "surface": "metal",
                                           "fx": {"tip": [0.0, 0.0, 0.01]}}},
+    # OF's lid (A r305, the PO): the same rig burning DOWN, its tripod's feet in the tip plane round the lance, so
+    # with -Z pitched down (DrillPoint meta pitch -90) it stands on the slab it burns through
+    "prop_thermal_drill_down": {"fn": "thermal_drill", "down": True, "floor": 0.0,
+                                "cat": {"prefab": "drill", "kind": "thermal_drill", "surface": "metal",
+                                        "fx": {"tip": [0.0, 0.0, 0.01]}}},
     "prop_saw_device": {"fn": "saw", "cat": {"prefab": "drill", "kind": "saw", "surface": "metal"}},
     "prop_ammo_pickup": {"fn": "ammo_pickup", "cat": {"prefab": "pickup", "kind": "ammo_pickup", "surface": "wood"}},
     "prop_zipline_anchor": {"fn": "zipline_anchor",
@@ -335,8 +340,11 @@ def _armor_bag(k: Kit, p: dict) -> None:
 def _thermal_drill(k: Kit, p: dict) -> None:
     """Thermic lance rig: origin = the lance tip on the door face, +Y into it. A burner head with a round heat
     shield, a long red canister body with steel bands and a status box, two thermite bottles with gauges and
-    hoses on its back, all on a tripod whose rubber feet stand ``floor`` m below the tip."""
+    hoses on its back, all on a tripod whose rubber feet stand ``floor`` m below the tip. ``down``: the drill-down
+    variant (pitched lance-down on a floor): the tripod's feet lie in the tip plane (Blender y 0) round the lance, the
+    legs rising to a collar on the canister."""
     fl = p["floor"]
+    down = bool(p.get("down", False))
     body = k.obj("Body")
     hard = body.part(bevel=0.008, segments=2)
     trim = body.part(bevel=0.0)
@@ -357,8 +365,9 @@ def _thermal_drill(k: Kit, p: dict) -> None:
     trim.bx((0.204, -0.78, 0.0), (0.206, -0.76, 0.02), "emit_led_red")
     # carry handle over the top
     trim.tube([(0.0, -0.62, 0.14), (0.0, -0.62, 0.22), (0.0, -1.06, 0.22), (0.0, -1.06, 0.14)], 0.014, "rubber", segs=8)
-    # thermite bottles (two, on the left back), gauges, hoses into the burner head
-    for i, y in enumerate((-0.98, -0.72)):
+    # thermite bottles (two, on the left back), gauges, hoses into the burner head (the drill-down rig stands them
+    # along the canister instead, below)
+    for i, y in enumerate(() if down else (-0.98, -0.72)):
         x, zb = -0.26, -0.42
         trim.lathe([(0.0, 0.0), (0.075, 0.0), (0.075, 0.42), (0.06, 0.47), (0.02, 0.5), (0.02, 0.53), (0.0, 0.53)],
                    "metal_red" if i == 0 else "metal_grey", centre=(x, y, zb), segs=20)
@@ -367,9 +376,35 @@ def _thermal_drill(k: Kit, p: dict) -> None:
         trim.tube([(x, y, zb + 0.53), (x + 0.03, y, zb + 0.6), (-0.12, y + 0.1, 0.12), (-0.05, -0.42, 0.08)], 0.009,
                   "rubber", segs=6)
     # bottle cradle tying the bottles to the body
-    hard.bx((-0.34, -1.07, -0.44), (-0.18, -0.63, -0.42), "metal_dark")
-    for y in (-1.0, -0.7):
-        trim.rod((-0.2, y, -0.3), (-0.12, y, -0.05), 0.012, "steel", segs=8)
+    if not down:
+        hard.bx((-0.34, -1.07, -0.44), (-0.18, -0.63, -0.42), "metal_dark")
+        for y in (-1.0, -0.7):
+            trim.rod((-0.2, y, -0.3), (-0.12, y, -0.05), 0.012, "steel", segs=8)
+    if down:
+        # the thermite pack stands along the canister (LEAD r305: upright once pitched, clear of the legs): two bottles
+        # in the tripod's gap at 270 deg, necks up (Blender -Y), a strap to the canister, hoses into the burner head
+        for i, x in enumerate((-0.085, 0.085)):
+            zc = -0.245
+            trim.cyl(0.075, 0.42, (x, -0.86, zc), "metal_red" if i == 0 else "metal_grey", axis="Y", segs=20)
+            trim.cyl(0.04, 0.04, (x, -1.09, zc), "metal_dark", axis="Y", segs=16)
+            trim.cyl(0.02, 0.05, (x, -1.135, zc), "chrome", axis="Y", segs=12)
+            trim.torus(0.075, 0.006, (x, -0.98, zc), "metal_yellow", segs=20, rsegs=4, axis="Y")
+            trim.tube([(x, -1.16, zc), (x * 0.6, -1.2, zc + 0.08), (x * 0.4, -0.6, -0.17), (0.0, -0.42, -0.08)], 0.009,
+                      "rubber", segs=6)
+        for y in (-1.0, -0.72):
+            hard.bx((-0.17, y - 0.02, -0.33), (0.17, y + 0.02, -0.31), "metal_dark")
+            trim.rod((0.0, y, -0.31), (0.0, y, -0.14), 0.012, "steel", segs=8)
+        # three legs from a collar round the canister (y -0.9) down to feet in the tip plane, 120 deg apart
+        trim.torus(0.16, 0.02, (0.0, -0.9, 0.0), "metal_dark", segs=28, rsegs=6, axis="Y")
+        for ang in (90.0, 210.0, 330.0):
+            a = math.radians(ang)
+            c = (0.16 * math.cos(a), -0.9, 0.16 * math.sin(a))
+            f = (0.55 * math.cos(a), 0.0, 0.55 * math.sin(a))
+            trim.rod(c, (f[0], f[1] - 0.03, f[2]), 0.018, "steel", segs=8)
+            trim.cyl(0.04, 0.03, (f[0], -0.015, f[2]), "rubber", axis="Y", segs=12)
+        body.build()
+        _thermal_bit(k)
+        return
     # tripod: hub under the body, three legs to the floor, rubber feet
     hub = (0.0, -0.84, -0.17)
     trim.cyl(0.05, 0.06, hub, "metal_dark", segs=16)
@@ -383,6 +418,10 @@ def _thermal_drill(k: Kit, p: dict) -> None:
                  0.008, "steel", segs=6)
     trim.cyl(0.03, 0.2, (hub[0], hub[1], hub[2] - 0.12), "steel", segs=12)
     body.build()
+    _thermal_bit(k)
+
+
+def _thermal_bit(k: Kit) -> None:
     # Bit: the lance from the burner head to the door face, glowing towards the tip (spins about its axis)
     bit = k.obj("Bit", location=(0.0, -0.12, 0.0))
     bp = bit.part(bevel=0.0)

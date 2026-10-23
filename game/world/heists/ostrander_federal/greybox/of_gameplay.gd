@@ -71,6 +71,9 @@ func place_prefab(parent: Node3D, it: Array) -> Node3D:
 	var inst: Node3D = ps.instantiate() as Node3D
 	inst.name = String(it[2])
 	var xf: Transform3D = Transform3D(yaw_basis(float(it[4])), v3(it[3]))
+	var pitch: float = float((it[7] as Dictionary).get("pitch", 0.0))
+	if pitch != 0.0:   # a drill-down spot: -Z (the bit) pitched towards the floor (the OF lid, A r305)
+		xf.basis = xf.basis * Basis(Vector3.RIGHT, deg_to_rad(pitch))
 	inst.transform = global_xform(parent).affine_inverse() * xf
 	var vis: String = String(it[8])
 	if vis != "":

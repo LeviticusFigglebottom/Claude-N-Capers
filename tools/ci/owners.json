@@ -75,7 +75,9 @@
     "tools/blender/equipment/**",
     "game/assets/equipment/**",
     "tools/blender/props/safehouse_hero.py",
-    "game/assets/props/prop_sh_*/**"
+    "game/assets/props/prop_sh_*/**",
+    "tools/blender/props/club_hero.py",
+    "game/assets/props/prop_ah_*/**"
    ]
   },
   "d": {
@@ -95,7 +97,9 @@
     "tools/blender/equipment/**",
     "game/assets/equipment/**",
     "tools/blender/props/safehouse_hero.py",
-    "game/assets/props/prop_sh_*/**"
+    "game/assets/props/prop_sh_*/**",
+    "tools/blender/props/club_hero.py",
+    "game/assets/props/prop_ah_*/**"
    ]
   }
  },

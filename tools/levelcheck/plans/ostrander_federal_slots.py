@@ -278,10 +278,14 @@ POLICE_ISLANDS = [
 # P5's roof island: the Corvino setback (+16), police only; one-way rappel links to the main roof at rp and the terrace's
 # west end (QC-68), and the terrace -> hall rappel through the lantern (QC-41 shape).
 P5_ISLAND = [-20.0, 0.0, -0.2, 22.0]
+# The rappels are police-only (A's r303 sweep: OF seed 1's crew pilot pathed down the 8.6 m lantern link and wedged on
+# CurbW): they sit on Door.NAV_LAYER_BREACH (2), which only loud police agents and the assault director query (D-122);
+# crew, guards and civilians path on layer 1.
+RAPPEL_LAYER = 2
 NAV_LINKS = [
-    ["RappelSetbackRoof", [-1.2, 16.0, 14.0], [1.6, 12.2, 14.0], False, 1],
-    ["RappelSetbackTerrace", [-1.2, 16.0, 20.0], [1.6, 8.6, 20.0], False, 1],
-    ["RappelLantern", [13.3, 8.6, 26.0], [16.0, 0.0, 26.0], False, 1],
+    ["RappelSetbackRoof", [-1.2, 16.0, 14.0], [1.6, 12.2, 14.0], False, RAPPEL_LAYER],
+    ["RappelSetbackTerrace", [-1.2, 16.0, 20.0], [1.6, 8.6, 20.0], False, RAPPEL_LAYER],
+    ["RappelLantern", [13.3, 8.6, 26.0], [16.0, 0.0, 26.0], False, RAPPEL_LAYER],
     ["AreawayVent", [30.0, 0.0, -1.6], [30.0, -4.0, 3.5], True, 4],
 ]
 # Closures and neighbour massing: [name, [x0, y0, z0, x1, y1, z1], surface]. Every top a player could reach is
