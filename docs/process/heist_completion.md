@@ -66,10 +66,10 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | PO-19 | all | B + A | PO: bots need regen + per-slot buyable weapon/armor loadout | open: D-145.4 |
 | PO-20 | all | P | PO: run too wobbly, gun bob odd | open: D-145.5 |
 | PO-21 | OF (all?) | P (+ owner) | PO 2026-10-23: can't move the cursor / look around in Ostrander | FIXED + CONFIRMED (P windowed on trunk r305, real mouse: yaw changes) round 305: SafehouseHost.leave() held the &"station" mouse release into every heist launched from the 3D safehouse (P root cause; B 0a9429fb; test_p_hub_launch_capture) |
-| PO-22 | all | P + B | PO: crosshair still shows while ADS (PD2 hides it) | NOT yet fixed on trunk r305 (LEAD mis-marked it): B's fade + P's writer landed but A's LocalHudModel.ads_blend field (6a8932cc) did not, so the fade reads null (P windowed confirm). Lands with round 306; P re-confirms |
+| PO-22 | all | P + B | PO: crosshair still shows while ADS (PD2 hides it) | FIXED round 306 (A's ads_blend field 6a8932cc now on trunk with B's fade + P's writer; r305 was mis-marked); P re-confirms windowed |
 | PO-23 | safehouse | P → C/A | PO: safehouse 'press F' station buttons don't work | FIXED round 305: PlayerInput gated F on rt.interaction (null in the hub); falls back to the walker's HubInteraction (P 8e0c6ad4, test_p_hub_station_f; P windowed 9/9 stations) |
 | PO-24 | menus | B | PO: main-menu buttons to the Board / heist select / hub screens without walking the safehouse | FIXED round 305: THE BOARD / PLANNING TABLE / ARMORY & WORKSHOP / ALL STATIONS open 2D screens (B 661d5d2d, test_main_menu_direct; LEAD-reviewed shot) |
-| PO-25 | OF (all heists' drills) | A (C/D) | PO: the drill is visible before it's grabbed (stealth too) and stands upright instead of mounting into its target | code FIXED (A f80c19d4 + audit 3a3fbba1, all 8 maps); art + LidDrill facing down C 0872cf0c (LEAD-reviewed) lands round 306 |
+| PO-25 | OF (all heists' drills) | A (C/D) | PO: the drill is visible before it's grabbed (stealth too) and stands upright instead of mounting into its target | FIXED round 306: nothing at rest (A f80c19d4), every drill spot faces its target (audit 3a3fbba1, all 8 maps), OF LidDrill faces DOWN with C's prop_thermal_drill_down (0872cf0c, LEAD-reviewed; A windowed 1c2e4886) |
 
 ## D-115 assessment at the D-135 close (2026-10-17 11:45, LEAD)
 All five envs reported QUEUE CLEAR (A 9a7df142, B da559160, C e8ec593d, D 6316e628, P 8774a733), merged in rounds 240a/240b.
