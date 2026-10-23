@@ -444,7 +444,13 @@ func _rt_lift() -> bool:
 		var bags: Array[LootBag] = lift.bags_in_car()
 		if bags.is_empty():
 			break
-		if await pilot.use(_comp(bags[0]), 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+		# Into the car from the roof landing door, then F there: pilot.use's own stand (the nearest navmesh point to a
+		# bag with no UsePoint) was east of the shaft, outside it (r305: the LOS hit the shaft wall's outer face).
+		note("roof: bag %s at %s, car at %s" % [bags[0].name, Po5Pilot._v(bags[0].global_position),
+			Po5Pilot._v(lift.car_transform().origin)])
+		await _go(r_stand, 0.3, 30.0)
+		await _straight("lift: into the car on the roof for bag %d" % k, Vector3(LIFT_AT.x, 7.0, LIFT_IN_Z + 0.4), 10.0)
+		if await pilot.use(_comp(bags[0]), 30.0, func() -> bool: return pilot.crew.is_carrying_bag(), false):
 			got += 1
 			await _go(Vector3(LIFT_AT.x + 2.5, 7.0, LIFT_STAND_Z + 2.0), 0.5, 20.0)
 			await pilot.inp.tap(&"drop_bag")
