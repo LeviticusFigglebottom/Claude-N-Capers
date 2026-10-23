@@ -662,11 +662,11 @@
  "prop_ah_key_hooks": {
   "aabb": [
    -0.35,
-   -0.2528,
+   -0.25,
    -0.44,
-   0.554,
-   0.5068,
-   0.444
+   0.55,
+   0.5,
+   0.44
   ],
   "clear": 0.0,
   "fixture": false,
@@ -701,7 +701,7 @@
    -2.845,
    12.14,
    0.96,
-   2.849
+   2.844
   ],
   "clear": 0.0,
   "fixture": false,
@@ -711,13 +711,13 @@
   "hosts": [],
   "keepout": [],
   "kind": "sign",
-  "mount": "",
+  "mount": "wall",
   "nodes": [
    "Body",
    "Mount"
   ],
   "pin_only": true,
-  "place": "wall",
+  "place": "wall_mount",
   "prefab": "",
   "scene": "res://world/props/afterhours/prop_ah_marquee.tscn",
   "seat_side": "front",
@@ -727,7 +727,7 @@
   "top": 0.0,
   "visibility_range_end": 0.0,
   "weight": 1.0,
-  "z": 0.0
+  "z": 4.0
  },
  "prop_ah_mirror_ball": {
   "aabb": [
@@ -976,7 +976,7 @@
    -0.755,
    -0.175,
    2.012,
-   0.76,
+   0.755,
    0.35
   ],
   "clear": 0.0,
