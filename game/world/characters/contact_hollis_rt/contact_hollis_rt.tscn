@@ -88,7 +88,7 @@ bone_name = "hips"
 bone_idx = 1
 
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=342002393]
-transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.20179999, 0.0504, 0.034399997)
+transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.20349999, 0.050499998, 0.0347)
 
 [node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="10" unique_id=696584069]
 active = false
