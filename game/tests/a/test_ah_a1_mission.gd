@@ -73,6 +73,12 @@ func _map(pins: Dictionary, rares: Array[StringName] = [], scalars: Dictionary =
 	courier.position = Vector3(-4, 0.05, -10)
 	courier.tags = [&"cartel_courier", HeistRuntime.SCRIPTED_SPAWN_TAG] as Array[StringName]
 	root.get_node("Spawns").add_child(courier)
+	var cop: SpawnPoint = SpawnPoint.new()  # off_duty_cop (a mission unit point)
+	cop.name = "OffDuty0"
+	cop.kind = SpawnPoint.Kind.POLICE
+	cop.position = Vector3(10, 0.05, 6)
+	cop.tags = [&"civ_offduty", HeistRuntime.SCRIPTED_SPAWN_TAG] as Array[StringName]
+	root.get_node("Spawns").add_child(cop)
 	var flee: PatrolPoint = PatrolPoint.new()  # the stampede's exit (civilians_flee)
 	flee.name = "CivFlee"
 	flee.position = Vector3(-20, 0.05, -20)
@@ -208,3 +214,13 @@ func test_couriers_alarm_only_when_the_product_is_gone() -> void:
 	m.mission._check_couriers()
 	await wait_physics_frames(2)
 	assert_true(m.mission.went_loud, "the product is gone: they raise the alarm")
+
+
+func test_off_duty_cop_is_a_calm_police_observer_without_a_pager() -> void:
+	var m: AfterhoursMissionProbe = await _launch({}, [&"off_duty_cop"], {}, Enums.Difficulty.HAZARDOUS)
+	var cop: NpcBase = m.mission.off_duty_cop
+	assert_true(cop != null and cop.alive, "spawned in the booth")
+	assert_true(_lines.has(&"vo.mercer.afterhours_off_duty_cop"), "Mercer warns")
+	assert_ne(cop.role, &"guard", "police role: no pager")
+	assert_ne(cop.alert_state, Enums.AlertState.COMBAT, "calm until he sees a masked crew member")
+	assert_eq(StringName(cop.get_meta(StealthDirector.META_ALARM_REASON, &"")), &"off_duty_cop", "his alarm reason")

@@ -66,6 +66,7 @@ const OFF_DUTY_ENEMY: StringName = &"enemy.patrol_officer"
 
 var safe_open: bool = false
 var couriers: Array[NpcBase] = []
+var off_duty_cop: NpcBase = null
 var lockdown: bool = false
 var escape_open: bool = false
 var _van_fade: bool = false
@@ -327,8 +328,13 @@ func _rare_start() -> void:
 	if _rare(&"count_left_open"):
 		open_safe(&"left_open")
 	if _rare(&"off_duty_cop"):
-		spawn_units(OFF_DUTY_ENEMY, 1, TAG_OFF_DUTY)
-		say(&"vo.mercer.afterhours_off_duty_cop")
+		# QC-76: a police-role unit (no pager), CALM in the booth: a police-preset observer who radios the alarm on a
+		# masked crew member (StealthDirector, as RT's convoy escorts); the look comes off the spawn tag (D).
+		for u: NpcBase in spawn_units(OFF_DUTY_ENEMY, 1, TAG_OFF_DUTY):
+			u.set_meta(StealthDirector.META_ALARM_REASON, &"off_duty_cop")
+			off_duty_cop = u
+		if off_duty_cop != null:
+			say(&"vo.mercer.afterhours_off_duty_cop")
 	if _rare(&"co_op_pickup"):
 		schedule_at(COURIER_TIME_S, &"couriers", _couriers_arrive)
 
