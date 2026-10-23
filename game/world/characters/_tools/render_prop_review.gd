@@ -21,6 +21,7 @@ var _focus: Vector4 = Vector4.ZERO
 var _lift: float = 0.0
 ## --light=night: a dark stage (dim ambient, a weak cool key): emissive signs and lamps read in their own hue
 var _night: bool = false
+var _sun: DirectionalLight3D = null
 var _log: PackedStringArray = []
 
 
@@ -67,6 +68,7 @@ func _stage() -> void:
 	sun.rotation_degrees = Vector3(-50, 35, 0)
 	sun.shadow_enabled = true
 	add_child(sun)
+	_sun = sun
 	if _night:
 		env.environment.background_color = Color(0.03, 0.03, 0.05)
 		env.environment.ambient_light_color = Color(0.12, 0.12, 0.16)
@@ -119,7 +121,10 @@ func _review(path: String) -> void:
 	var c: Vector3 = model.position + aabb.get_center()
 	# small props (under 1 m across) are framed on their own AABB; the reference post then stands out of frame
 	var diag: float = aabb.size.length()
-	var r: float = maxf(diag * 1.15, 1.6) if diag >= 1.0 else maxf(diag * 1.9, 0.25)
+	# wall pieces are flat and seen from the front: closer still
+	var r: float = maxf(diag * 1.15, 1.6) if diag >= 1.0 else maxf(diag * (1.3 if wall else 1.5), 0.25)
+	# the default key comes from behind the backdrop: a wall piece would sit in the wall's shadow, so light its face
+	_sun.rotation_degrees = Vector3(-35, 200, 0) if wall else Vector3(-50, 35, 0)
 	post.visible = diag >= 1.0  # beside a small prop, at close range the post blocks the side views
 	if _focus.w > 0.0:
 		c = model.position + Vector3(_focus.x, _focus.y, _focus.z)
