@@ -70,6 +70,22 @@ G2 batch 3 (C's club list):
 * ``prop_ah_tip_jar`` (TipJarCloak): a glass jar with folded notes and a plain ivory label.
 * ``prop_ah_till`` (TillMainBar / TillEastBar / TillVIPBar / TillBoxOffice): a POS till: cash drawer, a tilted touch
   screen on a stalk, a receipt printer; the operator side is -Y.
+
+G2 batch 4 (back of house, C's list). Wall pieces: pivot ``Mount`` at the back centre, the back flush with the wall
+(y = 0), everything in +Y; the catalog ``z`` is the centre height.
+
+* ``prop_ah_bulb_mirror`` (G11 green room, 1.2 x 0.9, centre 1.5): a dressing-room mirror in a black frame ringed with
+  lamp bulbs, a narrow shelf under it with a make-up case and a water bottle.
+* ``prop_ah_cigarette_machine`` (G7 alcove, 0.75 x 0.5, 1.8 high, floor): a vintage cabinet machine in oxblood and
+  chrome-grey, a lit display window of packet faces, a row of pull knobs, a coin plate and a tray.
+* ``prop_ah_projector`` (U5, 0.5 x 0.9, 1.4 high, floor): an old 35 mm projector on its pedestal: twin reel arms with
+  reels, the lamp house, the lens facing +Y (Godot -Z).
+* ``prop_ah_radio_charger`` (G24, 0.6 x 0.15 x 0.25, centre 1.2): a wall gang charger, six handsets in their cups,
+  green charge LEDs.
+* ``prop_ah_clock_in`` (G25, 0.75 x 0.12 x 0.6, centre 1.4): the clock-in terminal (keypad, display, card slot) with a
+  card rack of staff cards beside it (+X), one prop.
+* ``prop_ah_key_hooks`` (G12, 0.4 x 0.08 x 0.5, centre 1.5): a small steel key cabinet, its door open to the left,
+  three rows of hooks with keys and tags.
 """
 
 from __future__ import annotations
@@ -82,6 +98,9 @@ TRI_BUDGET = 20000
 _FLOOR = {"place": "floor", "group": "afterhours", "pin_only": True}
 _HUNG = {"place": "ceiling", "group": "afterhours", "pin_only": True}
 _ON = {"place": "on", "group": "afterhours", "pin_only": True}
+
+#: wall pieces (build.py reads the table from plain assignments, no functions): the catalog z is the centre height
+_WALL = {"place": "wall_mount", "group": "afterhours", "pin_only": True}
 VARIANTS = {
     "prop_ah_dj_booth": {"fn": "dj_booth", "cat": dict(_FLOOR, kind="dj_booth", surface="wood")},
     "prop_ah_back_bar": {"fn": "back_bar", "cat": dict(_FLOOR, kind="back_bar", surface="wood")},
@@ -112,6 +131,13 @@ VARIANTS = {
     "prop_ah_ice_bucket": {"fn": "ice_bucket", "cat": dict(_ON, kind="loot_visual", surface="metal")},
     "prop_ah_tip_jar": {"fn": "tip_jar", "cat": dict(_ON, kind="loot_visual", surface="glass")},
     "prop_ah_till": {"fn": "till", "cat": dict(_ON, kind="loot_visual", surface="plastic")},
+    # G2 batch 4
+    "prop_ah_bulb_mirror": {"fn": "bulb_mirror", "cat": dict(_WALL, z=1.5, kind="mirror", surface="glass")},
+    "prop_ah_cigarette_machine": {"fn": "cigarette_machine", "cat": dict(_FLOOR, kind="vending", surface="metal")},
+    "prop_ah_projector": {"fn": "projector", "cat": dict(_FLOOR, kind="projector", surface="metal")},
+    "prop_ah_radio_charger": {"fn": "radio_charger", "cat": dict(_WALL, z=1.2, kind="charger", surface="plastic")},
+    "prop_ah_clock_in": {"fn": "clock_in", "cat": dict(_WALL, z=1.4, kind="terminal", surface="plastic")},
+    "prop_ah_key_hooks": {"fn": "key_hooks", "cat": dict(_WALL, z=1.5, kind="key_cabinet", surface="metal")},
 }
 
 LACQUER = "plastic_black"
@@ -736,6 +762,148 @@ def _till(k: Kit, p: dict) -> None:
     t.bx((0.10, 0.04, 0.10), (0.20, 0.18, 0.18), "plastic_grey")                              # receipt printer
     t.bx((0.12, 0.06, 0.18), (0.18, 0.062, 0.24), "paint_ivory")                              # receipt
     body.build()
+
+
+# ------------------------------------------------------------------------------------------- G2 batch 4
+
+def _bulb_mirror(k: Kit, p: dict) -> None:
+    hw, hh = 0.6, 0.45
+    body = k.obj("Body")
+    c = body.part(bevel=0.004)
+    t = body.part(bevel=0.0)
+    c.bx((-hw, 0.0, -hh), (hw, 0.04, hh), LACQUER)                                           # frame
+    t.bx((-hw + 0.10, 0.04, -hh + 0.10), (hw - 0.10, 0.044, hh - 0.08), "metal_grey")       # the mirror (chrome reads
+    #                                                                                          black here)
+    # the bulbs: along the top and both sides of the frame
+    n = 7
+    for i in range(n):
+        x = -hw + 0.10 + i * (2 * hw - 0.20) / (n - 1)
+        t.sphere(0.028, (x, 0.07, hh - 0.04), "emit_warm", segs=8, rings=5)
+    for sx in (-1, 1):
+        for j in range(5):
+            z = -hh + 0.12 + j * (2 * hh - 0.24) / 4
+            t.sphere(0.028, (sx * (hw - 0.05), 0.07, z), "emit_warm", segs=8, rings=5)
+    c.bx((-hw, 0.0, -hh - 0.03), (hw, 0.16, -hh), "walnut")                                  # the shelf
+    t.bx((-0.42, 0.04, -hh), (-0.18, 0.13, -hh + 0.09), "plastic_black")                    # make-up case
+    t.cyl(0.03, 0.20, (0.35, 0.10, -hh + 0.10), "glass_teal", segs=10)                       # water bottle
+    body.build()
+    k.empty("Mount", (0.0, 0.0, 0.0))
+
+
+def _cigarette_machine(k: Kit, p: dict) -> None:
+    hx, hy, h = 0.375, 0.25, 1.8
+    body = k.obj("Body")
+    c = body.part(bevel=0.01, segments=2)
+    t = body.part(bevel=0.0015)
+    c.bx((-hx, -hy, 0.06), (hx, hy - 0.02, h), "metal_red")                                  # the cabinet
+    t.bx((-hx + 0.02, -hy + 0.02, 0.0), (hx - 0.02, hy - 0.06, 0.06), "metal_dark")         # plinth
+    t.bx((-hx, hy - 0.02, h - 0.10), (hx, hy, h - 0.06), "metal_grey")                      # top trim
+    # the display window: packet faces behind glass, lit
+    t.bx((-hx + 0.05, hy - 0.02, 0.95), (hx - 0.05, hy - 0.012, 1.62), "emit_neutral")
+    faces = ("paint_ivory", "metal_red", "metal_blue", "art_ochre", "metal_green", "paint_ivory")
+    for row in range(2):
+        for col in range(6):
+            x = -hx + 0.08 + col * 0.105
+            z = 1.02 + row * 0.30
+            t.bx((x, hy - 0.012, z), (x + 0.08, hy - 0.006, z + 0.22), faces[(col + row * 2) % len(faces)])
+    t.bx((-hx + 0.04, hy - 0.02, 0.94), (hx - 0.04, hy - 0.004, 0.95), "metal_grey")       # window frame
+    t.bx((-hx + 0.04, hy - 0.02, 1.62), (hx - 0.04, hy - 0.004, 1.63), "metal_grey")
+    for col in range(6):                                                                     # pull knobs
+        x = -hx + 0.12 + col * 0.105
+        t.bx((x - 0.03, hy - 0.02, 0.80), (x + 0.03, hy - 0.004, 0.86), "metal_grey")
+        t.cyl(0.012, 0.04, (x, hy + 0.01, 0.83), "metal_grey", segs=8, axis="Y")
+    t.bx((0.12, hy - 0.02, 0.56), (0.30, hy - 0.006, 0.72), "metal_grey")                  # coin plate
+    t.bx((0.17, hy - 0.006, 0.66), (0.25, hy - 0.004, 0.67), "plastic_black")               # slot
+    t.bx((-0.25, hy - 0.06, 0.25), (0.05, hy, 0.36), "metal_grey")                          # delivery tray
+    body.build()
+
+
+def _projector(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    c = body.part(bevel=0.006)
+    t = body.part(bevel=0.0015)
+    c.bx((-0.20, -0.40, 0.0), (0.20, 0.40, 0.08), "metal_dark")                              # base plate
+    c.bx((-0.10, -0.15, 0.08), (0.10, 0.15, 0.75), "metal_graphite")                         # the pedestal
+    c.bx((-0.18, -0.30, 0.75), (0.18, 0.38, 1.02), "metal_graphite")                         # the head
+    c.bx((-0.16, -0.42, 0.80), (0.16, -0.12, 1.12), "metal_dark")                            # lamp house (back)
+    t.rod((-0.08, -0.42, 1.12), (-0.08, -0.42, 1.20), 0.03, "metal_dark", segs=8)            # chimney
+    t.cyl(0.055, 0.16, (0.0, 0.44, 0.90), "metal_dark", segs=16, axis="Y")                   # the lens barrel (+Y)
+    t.cyl(0.040, 0.01, (0.0, 0.525, 0.90), "glass", segs=14, axis="Y")
+    for y, z in ((0.25, 1.30), (-0.20, 1.22)):                                               # reel arms and reels
+        t.rod((0.0, y * 0.5, 1.02), (0.0, y, z), 0.012, "metal_grey", segs=6)
+        t.cyl(0.17, 0.035, (0.0, y, z), "metal_grey", segs=24, axis="X")
+        t.cyl(0.05, 0.04, (0.0, y, z), "metal_dark", segs=12, axis="X")
+    body.build()
+
+
+def _radio_charger(k: Kit, p: dict) -> None:
+    hw, hh, d = 0.30, 0.125, 0.15
+    body = k.obj("Body")
+    c = body.part(bevel=0.004)
+    t = body.part(bevel=0.0015)
+    c.bx((-hw, 0.0, -hh), (hw, 0.03, hh), "metal_dark")                                       # backplate
+    c.bx((-hw + 0.01, 0.03, -hh), (hw - 0.01, d, -hh + 0.07), "plastic_black")                # the charger bar
+    for i in range(6):
+        x = -hw + 0.06 + i * 0.096
+        t.bx((x - 0.032, 0.06, -hh + 0.07), (x + 0.032, 0.115, hh - 0.04), "plastic_black")  # handset
+        t.rod((x + 0.018, 0.09, hh - 0.04), (x + 0.018, 0.09, hh + 0.0), 0.006, "rubber", segs=6)  # antenna
+        t.bx((x - 0.02, 0.115, 0.0), (x + 0.02, 0.117, 0.04), "metal_grey")                 # speaker grille
+        t.bx((x - 0.006, d, -hh + 0.03), (x + 0.006, d + 0.003, -hh + 0.042), "emit_led_green")
+    body.build()
+    k.empty("Mount", (0.0, 0.0, 0.0))
+
+
+def _clock_in(k: Kit, p: dict) -> None:
+    body = k.obj("Body")
+    c = body.part(bevel=0.004)
+    t = body.part(bevel=0.0015)
+    # the terminal (-X part): 0.3 wide, 0.4 high, 0.12 deep, centred on z 0
+    x0 = -0.225
+    c.bx((x0 - 0.15, 0.0, -0.20), (x0 + 0.15, 0.12, 0.20), "plastic_grey")
+    t.bx((x0 - 0.11, 0.12, 0.04), (x0 + 0.11, 0.122, 0.15), "emit_screen")                  # display
+    for r in range(4):                                                                        # keypad
+        for q in range(3):
+            t.bx((x0 - 0.06 + q * 0.045, 0.12, -0.04 - r * 0.035), (x0 - 0.03 + q * 0.045, 0.126, -0.015 - r * 0.035),
+                 "plastic_black")
+    t.bx((x0 + 0.06, 0.12, -0.16), (x0 + 0.12, 0.124, -0.15), "plastic_black")              # card slot
+    # the card rack (+X part): 0.35 wide, 0.6 high, 0.05 deep, with staff cards in its pockets
+    x1 = 0.20
+    c.bx((x1 - 0.175, 0.0, -0.30), (x1 + 0.175, 0.05, 0.30), "metal_grey")
+    for r in range(5):
+        for q in range(3):
+            x = x1 - 0.13 + q * 0.105
+            z = -0.25 + r * 0.11
+            t.bx((x - 0.04, 0.05, z), (x + 0.04, 0.054, z + 0.04), "metal_dark")             # pocket
+            if (r * 3 + q) % 4 != 1:
+                t.bx((x - 0.035, 0.052, z + 0.02), (x + 0.035, 0.056, z + 0.085), "paint_ivory")  # a card
+    body.build()
+    k.empty("Mount", (0.0, 0.0, 0.0))
+
+
+def _key_hooks(k: Kit, p: dict) -> None:
+    hw, hh, d = 0.2, 0.25, 0.08
+    body = k.obj("Body")
+    c = body.part(bevel=0.003)
+    t = body.part(bevel=0.001)
+    c.bx((-hw, 0.0, -hh), (hw, d, -hh + 0.012), "metal_grey")                                 # the box: bottom,
+    c.bx((-hw, 0.0, hh - 0.012), (hw, d, hh), "metal_grey")                                   #  top,
+    for sx in (-1, 1):                                                                         #  sides
+        c.bx((sx * hw - (0.012 if sx > 0 else 0.0), 0.0, -hh), (sx * hw + (0.0 if sx > 0 else 0.012), d, hh),
+             "metal_grey")
+    c.bx((-hw, 0.0, -hh), (hw, 0.008, hh), "paint_greige")                                    # back (light: keys read)
+    # the door, open to the left (hinged on the -X edge, swung ~110 deg out)
+    c.bx((-hw - 0.15, d, -hh), (-hw - 0.14, d + 0.36, hh), "metal_grey")
+    for r in range(3):                                                                         # hooks, keys, tags
+        z = hh - 0.10 - r * 0.15
+        for q in range(5):
+            x = -hw + 0.05 + q * 0.075
+            t.rod((x, 0.008, z), (x, 0.04, z), 0.003, "steel_bare", segs=4)
+            if (r + q) % 3 != 2:
+                t.bx((x - 0.006, 0.035, z - 0.06), (x + 0.006, 0.040, z - 0.01), "brass")      # key
+                t.bx((x - 0.014, 0.036, z - 0.095), (x + 0.014, 0.039, z - 0.06),
+                     ("metal_red", "metal_yellow", "metal_blue")[(r + q) % 3])                 # tag
+    body.build()
+    k.empty("Mount", (0.0, 0.0, 0.0))
 
 
 def build(ctx) -> None:

@@ -20,3 +20,13 @@ prop_ah_tip_jar aabb pos (-0.058496, 0.0, -0.062) size (0.116991, 0.18, 0.122) (
 prop_ah_till aabb pos (-0.2, 0.0, -0.2) size (0.4, 0.42, 0.405) (x 0.40  y 0.42  z 0.41)  tris 356
 prop_ah_marquee aabb pos (-6.07, -0.02, -2.845) size (12.14, 0.96, 2.849) (x 12.14  y 0.96  z 2.85)  tris 4844
   node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_bulb_mirror aabb pos (-0.6, -0.48, -0.16) size (1.2, 0.93, 0.16) (x 1.20  y 0.93  z 0.16)  tris 1236
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_cigarette_machine aabb pos (-0.375, 0.0, -0.28) size (0.75, 1.8, 0.53) (x 0.75  y 1.80  z 0.53)  tris 1804
+prop_ah_projector aabb pos (-0.2, 0.0, -0.53) size (0.4, 1.47, 0.979426) (x 0.40  y 1.47  z 0.98)  tris 1244
+prop_ah_radio_charger aabb pos (-0.3, -0.125, -0.153) size (0.6, 0.25, 0.153) (x 0.60  y 0.25  z 0.15)  tris 1288
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_clock_in aabb pos (-0.375, -0.3, -0.126) size (0.75, 0.6, 0.126) (x 0.75  y 0.60  z 0.13)  tris 1848
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
+prop_ah_key_hooks aabb pos (-0.35, -0.252828, -0.44) size (0.554, 0.506828, 0.444) (x 0.55  y 0.51  z 0.44)  tris 1802
+  node Mount (Node3D) at (0.0, 0.0, 0.0)
