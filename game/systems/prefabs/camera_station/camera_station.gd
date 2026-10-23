@@ -29,6 +29,10 @@ const STAFFED_GROUP: StringName = &"security_room_staffed"
 const OPERATOR_GROUP: StringName = &"camera_operator"
 const RNG_STREAM: StringName = &"cameras"
 const LOOP_FLAG: StringName = &"stealth.camera_loop"
+## The loop needs the skill (was BLOCK_DISABLED = "Out of order", B r308 05_camera_operator).
+const BLOCK_NEED_SKILL: StringName = &"ui.blocked.need_skill"
+## The operator is down and every feed with him (B aa39bfe3).
+const BLOCK_CAMERAS_DOWN: StringName = &"ui.blocked.cameras_down"
 ## Operator states that take him off duty (S8.2 "killed or dominated").
 const OFF_DUTY_STATES: Array[int] = [
 	Enums.AlertState.DOMINATED, Enums.AlertState.TIED, Enums.AlertState.SURRENDERED,
@@ -81,6 +85,8 @@ func _default_interaction_time() -> float:
 func _prefab_ready() -> void:
 	interactable.kind = &"loop_cameras"
 	interactable.extra_check = _loop_check
+	# PD2: nobody touches the console while the operator sits at it: no prompt at all until he is off duty.
+	interactable.aim_filter = func(_crew: Node) -> bool: return not operator_on_duty()
 	interactable.completed.connect(_on_loop_completed)
 	EventBus.camera_disabled.connect(_on_camera_disabled)
 	EventBus.cameras_loop_disabled.connect(_on_cameras_loop_disabled)
@@ -250,10 +256,10 @@ func _dispatch(cam: SecurityCamera) -> void:
 
 func _loop_check(crew: Node) -> StringName:
 	if cameras_off:
-		return InteractableComponent.BLOCK_STATE
+		return BLOCK_CAMERAS_DOWN
 	var slot: int = int(crew.get(&"slot")) if crew != null else -1
 	if slot < 0 or not Modifiers.flag(slot, LOOP_FLAG):
-		return InteractableComponent.BLOCK_DISABLED
+		return BLOCK_NEED_SKILL
 	return InteractableComponent.BLOCK_NONE
 
 

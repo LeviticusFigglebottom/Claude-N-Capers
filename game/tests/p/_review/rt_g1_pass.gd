@@ -1630,7 +1630,13 @@ func _downs_text() -> String:
 
 
 func _in_custody() -> bool:
-	return _downs.has("custody_%d" % pilot.crew.slot)
+	# _downs is filled only where the custody signal is connected (the blown flow): also read the live state, and treat
+	# an ended heist (a solo wipe: "all humans in custody") the same, so no wait loop outlives the run.
+	if rt != null and is_instance_valid(rt) and rt.phase == Enums.HeistPhase.ENDED:
+		return true
+	if pilot != null and is_instance_valid(pilot.crew) and pilot.crew.crew_state == Enums.CrewState.CUSTODY:
+		return true
+	return pilot != null and _downs.has("custody_%d" % pilot.crew.slot)
 
 
 func _objective_done(id: StringName) -> bool:

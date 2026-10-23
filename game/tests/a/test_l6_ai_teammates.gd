@@ -386,3 +386,34 @@ func test_p3_ai_shoots_the_tasing_stinger_first() -> void:
 	assert_eq(brain.target_enemy, stinger, "the Stinger tasing a crew member is the target (L4.4)")
 	sb.tase_victim = null
 
+
+## PD2 parity (LEAD, P's AH Hazardous read): a tasing Stinger far off and a Phantom on a downed teammate beat a cop
+## right in front of the bot (the old 0.25 x distance lost to anything 4x closer).
+func test_rescue_targets_are_top_priority_over_a_close_cop() -> void:
+	await _go_loud()
+	var brain: CrewAiBrain = CrewAiBrain.of(_crew(1))
+	var near: NpcBase = ACombatSpecials.spawn(_rt, "patrol_officer", _crew(1).global_position + Vector3(0, 0, -2.5))
+	var stinger: NpcBase = ACombatSpecials.spawn(_rt, "stinger", _crew(1).global_position + Vector3(0, 0, -20))
+	for n: NpcBase in [near, stinger]:
+		n.max_health = 100000.0
+		n.health = 100000.0
+		var g: Node = n.get_node_or_null("Gunner")
+		if g != null:
+			g.set_physics_process(false)
+		n.get_node("Brain").set_physics_process(false)
+	await wait_seconds(1.0)
+	assert_eq(brain.target_enemy, near, "nothing to rescue: the closest threat")
+	(stinger.get_node("Brain") as StingerBrain).tase_victim = _crew(0)
+	await wait_seconds(1.0)
+	assert_eq(brain.target_enemy, stinger, "a tasing Stinger 20 m off beats the cop at 2.5 m")
+	(stinger.get_node("Brain") as StingerBrain).tase_victim = null
+	var phantom: NpcBase = ACombatSpecials.spawn(_rt, "phantom", _crew(0).global_position + Vector3(1.2, 0, 0))
+	phantom.max_health = 100000.0
+	phantom.health = 100000.0
+	phantom.get_node("Brain").set_physics_process(false)
+	_crew(0).health.incapacitate(Enums.CrewState.CLOAKER_DOWNED)
+	(phantom.get_node("Brain") as PhantomBrain).victim = _crew(0)
+	await wait_seconds(1.0)
+	assert_eq(brain.target_enemy, phantom, "a Phantom on a downed teammate beats the cop too")
+	(phantom.get_node("Brain") as PhantomBrain).victim = null
+

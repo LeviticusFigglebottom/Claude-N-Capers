@@ -55,14 +55,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 139 props checked
+- 140 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_alley/EscapeAlley` @ (25.00, 0.00, -3.60): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_tolley/EscapeTolley` @ (40.00, 0.00, 22.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 139 props, 44 doors checked
+- 140 props, 44 doors checked
 
 - WARN `Props/MapBuilt/RollerShutter` @ (31.00, 0.00, 0.00): door has no Leaf node; swing arc not checked
 
@@ -117,17 +117,17 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 345 x 329 columns (0.25 m), 68516 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 345 x 329 columns (0.25 m), 68543 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1070 polygons, cell 0.10/0.10 m
+- navmesh: 1066 polygons, cell 0.10/0.10 m
 - 234 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomG10` | 88 | 88 | 100% |
-| `Rooms/RoomG11` | 84 | 84 | 100% |
+| `Rooms/RoomG11` | 74 | 74 | 100% |
 | `Rooms/RoomG12` | 79 | 79 | 100% |
 | `Rooms/RoomG14` | 81 | 81 | 100% |
 | `Rooms/RoomG16` | 6 | 6 | 100% |
@@ -230,7 +230,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: desk 4, table 6, wall_unit 8
+- classified: desk 4, table 6, wall_unit 9
 - 0 seats, 10 tables/desks/counters, 44 doors checked
 
 - WARN `Gameplay/Ladders/DropLadder` @ (30.00, 0.00, -0.60): door_clear: in the clear zone of door `Props/MapBuilt/RollerShutter` (1.0 / 1.0 m each side, leaf width 3.00 m) by 0.76 m (gameplay prefab / variant content: review)

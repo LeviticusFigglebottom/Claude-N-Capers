@@ -1,0 +1,46 @@
+[AHP] ROW loud | civilian start (D-065) | PASS | mode civilian, 3 AI bots | -
+[AHP] ROW loud | gear (GearBag) -> casing | PASS | 3 s from the spawn, mode casing, at (22.4, 1.0, 25.5) | -
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[AHP] ROW loud | behind the east bar | PASS | 7.1 s, 0 STUCK row(s) | -
+[AHP] ROW loud | east bar service door (casing) | PASS | availability '', open true | -
+[AHP] ROW loud | into G20 | PASS | 1.2 s, 0 STUCK row(s) | -
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[AHP] ROW loud | keycard (Keycard, 41 m walk) | PASS | 14 s, peak 1.00 | -
+[AHP] ROW loud | the alarm (a burst in the hall) | PASS | loud true after 0.0 s, alarm 'guard_radio' | -
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[AHP] ROW loud | staff stair (G22) -> U6 | PASS | 16.2 s, 0 STUCK row(s) | -
+[AHP] ROW loud | office keycard door | PASS | reader true, open true | -
+[AHP] ROW loud | into the office (U9) | PASS | 1.7 s, 0 STUCK row(s) | -
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[INFO][combat][p1] slot 2 crew_tased by 170
+[INFO][combat][p1] slot 1 crew_tased by 172
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][combat][p1] slot 1 crew_cloaker_downed by 207
+[AHP] ROW loud | safe by drill | PASS | opened true after 186 s heist time, 1 jam(s) fixed | -
+[AHP] ROW loud | cash in the open safe | PASS | 5 loot.cash_bricks bag(s) within 4 m | -
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 156 s)
+[INFO][combat][p1] slot 0 crew_cloaker_downed by 242
+[AHP] ROW loud | bag 0: safe -> van (SecureTolley) | FAIL | bagged in 3 s, carried in 10 s, 0 STUCK row(s), secured false | A secure zone
+[INFO][combat][p1] slot 1 crew_tased by 247
+[INFO][combat][p1] slot 3 crew_tased by 248
+[INFO][combat][p1] slot 1 downed (2/3)
+[INFO][combat][p1] slot 0 crew_tased by 254
+[AHP] ROW loud | bag 0: safe -> van (SecureTolley) | FAIL | bagged in 24 s, carried in 8 s, 0 STUCK row(s), secured false | A secure zone
+[INFO][combat][p1] slot 1 crew_tased by 256
+[INFO][combat][p1] slot 3 crew_cloaker_downed by 258
+[INFO][combat][p1] slot 0 downed (2/4)
+[INFO][combat][p1] slot 2 crew_tased by 256
+[INFO][combat][p1] slot 1 crew_tased by 254
+[INFO][combat][p1] slot 1 downed (3/3)
+[INFO][combat][p1] slot 2 crew_cloaker_downed by 258
+[INFO][combat][p1] slot 3 in custody
+[INFO][combat][p1] slot 2 downed (2/3)
+[INFO][combat][p1] slot 0 downed (3/4)
+[AHP] ROW loud | bag 0: safe -> van (SecureTolley) | FAIL | bagged in 34 s, carried in 8 s, 0 STUCK row(s), secured false | A secure zone
+[INFO][combat][p1] slot 1 in custody
+[INFO][combat][p1] slot 2 in custody
+[INFO][combat][p1] slot 0 in custody
+[INFO][combat][p1] all humans in custody, no release path: heist failed

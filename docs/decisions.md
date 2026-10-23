@@ -1710,3 +1710,32 @@ Ruling, both parts:
 - **Harness (A):** once the required loot is secured, the pilot targets an active captain. This tests the human answer too.
 - Re-run seeds 1 and 4242 on loud Hazardous with both parts. The other Hazardous losses (2 and 7: wave-1 wipes; 6501:
   old-map parcels) are bot skill, read the same as RT. Re-run 6501 on the fixed map. Routine and stealth are already PASS.
+
+## D-167: police cuffing on Hazardous+: who cuffs, and when solo fails (2026-10-23, LEAD; P AH Hazardous read #3)
+P's done-check read (env/p-play b81fb51a9, AH Hazardous, A's taser fix in): the specials are no longer the cause. The run
+ended when a **Wrecker** cuffed the downed pilot seconds after its FIRST down (1/4), and the solo heist failed at once.
+Rulings (L2.12 / D-108 / D-145 stand otherwise):
+1. **Only regular police cuff.** Specials (Wrecker, Bulwark, Phantom, Stinger, Corpsman, Longshot) and Brandt/Aegis never
+   start a police cuff; they fight. PD2's dozers and specials do not arrest (◇ where no source). A: a tested filter in the
+   cuff-start check.
+2. **Cuffed is not custody.** Per L2.12 a police-cuffed heister stays down with the bleed-out running; a teammate (bot
+   included) uncuffs back to DOWNED. Custody comes only when the bleed-out ends. The solo "all humans in custody" fail must
+   count custody, not cuffed. A: verify the fail check and the bots' uncuff path, with a test (solo human cuffed + bot alive
+   → no fail until the bleed-out ends; a bot uncuffs).
+3. **Solo custody = fail stays** (PD2 offline: no trade without another human).
+4. Bot cuffer targeting: the D-158.7 levers measured worse on RT and stay off. Re-measure them only after 1 and 2; no change
+   now.
+P re-reads AH Hazardous (#4) after A's fix; that read is the done-check read.
+
+## D-168: enemy target picking gets a threat term (2026-10-23, LEAD; P deck-feel observation, A analysis)
+P saw 0 hits on the human in two Glasshouse legs (a peeking pilot behind cover; all fire on a forward bot). A: there is no bot
+bias. PoliceBrain._pick_target is pure nearest-visible (distance² / PerkHooks.aggro_weight), with no threat term, so a human
+shooting from cover never draws fire while a closer bot is visible. PD2 weighs attention by distance, visibility and threat
+(who is hurting the unit), with stickiness. Ruling:
+- A adds a **threat term**: a crew member who damaged this unit (or its squad) within ~3 s scores distance² × 0.5 (◇), plus a
+  small retarget stickiness (◇). Both live in a tweak, with tests. Perk aggro weights are unchanged and still multiply.
+- Balance guard: re-run the RT and AH Routine loud harness seeds after it lands. Expect at most a small change; if the
+  win rate moves, report before tuning.
+Also from A's AH co-op soak (PASS 3/3, 0 desync): A splits HeistNetSync._send_xforms into ≤ MTU chunks with a lower rate for
+far or calm civilians (the AH crowd sent 4340 B unreliable packets), then gates per-peer NetSync sends until that peer's
+runtime is ready (the join race behind the session-start "Node not found" spam).

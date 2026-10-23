@@ -128,3 +128,29 @@ func test_l4_11_aegis_squad_not_counted() -> void:
 	assert_true(d.roster.can_spawn_special(def), "Aegis squad members do not use the special limit")
 	npc.remove_meta(AegisCaptain.META_AEGIS)
 	assert_false(d.roster.can_spawn_special(def), "a normal one does")
+
+
+## P's AH Hazardous read (LEAD): many distinct Stinger ids within a minute. The cap is on ALIVE specials: with the
+## queue refilled again and again and the capped specials killed as soon as they appear (fresh ids every time), the
+## alive count sampled every physics frame never exceeds the cap, and a dead one is replaced (more ids than the cap).
+func test_l4_11_alive_never_exceeds_the_cap_under_churn() -> void:
+	await _launch({&"enemy.aegis": 2})
+	var d: AssaultDirector = _director()
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	var worst: int = 0
+	var ids: Dictionary = {}
+	for round_i: int in 6:
+		d._enqueue(_group([&"enemy.aegis"], PackedInt32Array([6])))
+		for f: int in 90:
+			await wait_physics_frames(1)
+			var n: int = _count("enemy.aegis")
+			worst = maxi(worst, n)
+			for npc: NpcBase in d.alive_units():
+				if npc.enemy_def != null and npc.enemy_def.id == &"enemy.aegis":
+					ids[npc.net_id] = true
+		for npc: NpcBase in d.alive_units():
+			if npc.enemy_def != null and npc.enemy_def.id == &"enemy.aegis":
+				npc.die()
+	assert_true(worst <= 2, "alive capped specials never above the cap (max %d)" % worst)
+	assert_true(ids.size() > 2, "dead ones are replaced: %d distinct ids over the churn (the cap counts the alive)" % ids.size())

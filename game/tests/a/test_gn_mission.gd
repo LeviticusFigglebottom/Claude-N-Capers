@@ -120,7 +120,18 @@ func test_gn_stayer_trespasses_after_last_call() -> void:
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, p + Vector3(0, 0.05, 0)))
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	assert_false(c.masked, "an unmasked guest")
-	var g: NpcBase = ATestMaps.add_npc_observer(_rt, &"guard", p + Vector3(0, 0.05, 4.5), Vector3.FORWARD)
+	# The observer stands 4.5 m off on a side with a clear view of the guest (the old fixed +Z placement looked through
+	# C's CourtWallN closure, 0.8 m +Z of this spot: LOS false, fill 0).
+	var space: PhysicsDirectSpaceState3D = _rt.map.get_world_3d().direct_space_state
+	var at: Vector3 = Vector3.INF
+	for off: Vector3 in [Vector3(0, 0, 4.5), Vector3(0, 0, -4.5), Vector3(4.5, 0, 0), Vector3(-4.5, 0, 0)]:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(p + off + Vector3(0, 1.8, 0), p + Vector3.UP)
+		q.exclude = [c.get_rid()]
+		if space.intersect_ray(q).is_empty():
+			at = p + off
+			break
+	assert_ne(at, Vector3.INF, "a clear observer spot around %s" % p)
+	var g: NpcBase = ATestMaps.add_npc_observer(_rt, &"guard", at + Vector3(0, 0.05, 0), (p - at).normalized())
 	await wait_physics_frames(3)
 	assert_near(_rt.stealth.fill_rate(g, c), 0.0, 0.0001, "PUBLIC during the gala: no fill")
 	_rt.mission.call(&"_on_last_call")

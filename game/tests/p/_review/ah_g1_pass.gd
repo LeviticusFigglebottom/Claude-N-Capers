@@ -124,6 +124,8 @@ func _ah_launch(loud_kit: bool = false) -> bool:
 	# gear_cloak (the foyer, across the counter): reachable with no door, so the gear never decides the result.
 	var opts: Dictionary = {"preplan": {"force_variants": {&"gear_drop": [&"gear_cloak"]}}}
 	if loud_kit:
+		if Net.crew.is_empty():
+			Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
 	if not await _launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, _ah_diff(), opts, false):
 		return false
@@ -142,6 +144,8 @@ func _ah_launch_bots(loud_kit: bool) -> bool:
 	var opts: Dictionary = {"preplan": {"force_variants": {&"gear_drop": [&"gear_cloak"]}}, "ai_teammates": 3,
 		"crew_ai": true}
 	if loud_kit:
+		if Net.crew.is_empty():
+			Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
 		opts["loadouts"] = {Net.local_slot(): _hazard_loadout()}
 	rt = await HeistLauncher.launch(AH_HEIST, _seed if _seed >= 0 else AH_SEED, _ah_diff(), self, opts)
 	if rt == null:
@@ -550,6 +554,7 @@ func _safe_bags_to(safe: Safe, zone: SecureZone) -> int:
 		_row("van secure zone", "FAIL", "no SecureZone in the map", "C map (escape slot)")
 		return 0
 	var n: int = 0
+	var tries: int = 0
 	# A (r305): the safe's cash is loose LootBags (loot.cash_bricks) the mission spawns at Markers/SafeLoot when the
 	# safe opens, not Safe.contents(); wait for them, then take them nearest first.
 	await wait_until(func() -> bool: return not _safe_cash(safe).is_empty(), 5.0)
@@ -559,19 +564,35 @@ func _safe_bags_to(safe: Safe, zone: SecureZone) -> int:
 	for prefab: LootBag in cash:
 		if n >= SAFE_BAGS:
 			break
+		if rt.phase == Enums.HeistPhase.ENDED or _in_custody():
+			_row("bag carries", "NOTE", "stopped: %s" % ("heist ended" if rt.phase == Enums.HeistPhase.ENDED else
+				"the pilot is in custody"), "-")
+			break
+		if not is_instance_valid(prefab):
+			continue
 		var t0: float = rt.heist_time_s
 		if rt.went_loud:
 			await _wait_lull(60.0)
 		if not await _go_reach(prefab.global_position, 0.6, 300.0):
 			break
 		if not await pilot.use(_comp(prefab), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
-			continue
+			# The bag can sit where the safe body blocks the aim ray from the first stand: try the side away from it.
+			var away: Vector3 = prefab.global_position - safe.global_position
+			away.y = 0.0
+			var alt: Vector3 = prefab.global_position + (away.normalized() if away.length() > 0.05 else Vector3.BACK) * 0.9
+			note("pick_bag %s failed from the first stand: retry from %s" % [prefab.name, Po5Pilot._v(alt)])
+			if not await _go_reach(alt, 0.5, 60.0) or not await pilot.use(_comp(prefab), 20.0,
+					func() -> bool: return pilot.crew.is_carrying_bag()):
+				_row("pick up %s" % prefab.name, "FAIL", "no aim from two stands (bag at %s)" % Po5Pilot._v(
+					prefab.global_position), "A SafeLoot marker / C safe collision")
+				continue
 		var id: int = (pilot.crew.carried_bag as LootBag).net_id
 		var t1: float = rt.heist_time_s
 		if rt.went_loud:
 			await _wait_lull(30.0)
 		var s0: int = pilot.stuck_spots.size()
 		var ok: bool = await _go_reach(zone.global_position, 1.5, 400.0)
+		var down_state: int = pilot.crew.crew_state  # a carry ends early when the carrier is downed / tased / kicked
 		if ok:
 			await pilot.face(zone.global_position + Vector3.UP * 0.5, 0.05, 1.5)
 			await pilot.inp.tap(&"drop_bag")
@@ -579,9 +600,13 @@ func _safe_bags_to(safe: Safe, zone: SecureZone) -> int:
 		var sec: bool = _secured_ids.has(id)
 		var stuck: int = pilot.stuck_spots.size() - s0
 		n += 1 if sec else 0
-		_row("bag %d: safe -> van (%s)" % [n, zone.name], "PASS" if sec and stuck == 0 else ("STUCK" if sec else "FAIL"),
-			"bagged in %.0f s, carried in %.0f s, %d STUCK row(s), secured %s" % [t1 - t0, rt.heist_time_s - t1, stuck,
-			sec], "-" if sec and stuck == 0 else ("C map" if stuck > 0 else "A secure zone"))
+		tries += 1
+		var downed: bool = not sec and down_state != Enums.CrewState.NORMAL
+		var owner: String = "-" if (sec and stuck == 0) or downed else ("C map" if stuck > 0 else "A secure zone")
+		_row("carry %d (secured %d): safe -> van (%s)" % [tries, n, zone.name], "PASS" if sec and stuck == 0 else (
+			"STUCK" if sec else ("DOWNED" if downed else "FAIL")),
+			"bagged in %.0f s, carried in %.0f s, %d STUCK row(s), secured %s%s" % [t1 - t0, rt.heist_time_s - t1, stuck,
+			sec, ", carrier %s mid-carry" % Enums.CrewState.keys()[down_state] if downed else ""], owner)
 	return n
 
 
@@ -626,6 +651,11 @@ func _ah_loud() -> bool:
 		_danger_rows("loud")
 		return false
 	var bags: int = await _safe_bags_to(safe, _van_secure())
+	if rt.phase == Enums.HeistPhase.ENDED or _in_custody():
+		_row("loud outcome", "NOTE", "crew wiped at t=%.0f (%s), %d bag(s) secured" % [rt.heist_time_s, _downs_text(), bags],
+			"-")
+		_danger_rows("loud")
+		return false
 	var esc: EscapeZone = await _active_escape(VAN_MAX_S)
 	_row("van back (2nd FADE or 300 s after the first bag)", "PASS" if esc != null else "FAIL", "escape %s at t=%.0f" % [
 		esc, rt.heist_time_s], "-" if esc != null else "A mission (escape_wait)")
