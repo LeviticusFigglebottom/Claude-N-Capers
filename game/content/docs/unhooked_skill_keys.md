@@ -33,9 +33,9 @@ Overkill, Bulletstorm, Bullseye, Kickstarter, crits and dodge). Every key is in 
 
 ---
 
-**Hooked by A (env/a-core 05477b73), markers dropped (LEAD r285):** batches 1, 2, 3, 4b, and 4a except the five ADS /
-sprint keys (`weapon.ads_speed_mult`, `movement.ads_speed_penalty_mult`, `movement.shoot_while_sprinting`,
-`movement.reload_while_sprinting`, `movement.sprint_any_direction`). Cornered and Kickstarter behaviour are still open.
+**All batches hooked (LEAD r285):** A (env/a-core 05477b73, 48608af4, f12e25ba) and P (env/p-play 67b66fd3) read every
+key below; `SkillTreeDef.blocked_on_keys` is empty. Only `stealth.pocket_ecm` (held, granted by no skill) stays in the
+ratchet's UNHOOKED. Cornered and Kickstarter behaviour are still open.
 
 ## Batch 1: core loud-build pillars (9)
 | Key | Granted by | Data | PD2 | Behaviour |

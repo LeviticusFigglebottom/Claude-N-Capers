@@ -41,30 +41,6 @@ respec_cost = 0
 team_key_prefix = "team."
 team_source_prefix = "team_skill."
 blocked_on_keys = {
-"skill.breacher.hot_floor:aced": [&"deploy.trip_mine_fire"],
-"skill.breacher.hot_floor:basic": [&"deploy.trip_mine_fire"],
-"skill.gunnery.run_and_gun:basic": [&"movement.shoot_while_sprinting"],
-"skill.marksman.snap_shot:basic": [&"movement.ads_speed_penalty_mult", &"weapon.ads_speed_mult"],
-"skill.persuader.accomplice:aced": [&"ability.convert_owner_buff"],
-"skill.persuader.accomplice:basic": [&"ability.convert_owner_buff"],
-"skill.persuader.captive_audience:aced": [&"ability.stockholm"],
-"skill.persuader.captive_audience:basic": [&"stealth.noise_intimidates_civilians"],
-"skill.persuader.leverage:aced": [&"ability.hostage_regen"],
-"skill.persuader.leverage:basic": [&"ability.hostage_regen"],
-"skill.quiet_professional.hushed_hands:basic": [&"weapon.ads_speed_mult"],
-"skill.quiet_professional.price_tag:aced": [&"stealth.mark_by_aim", &"stealth.mark_far_damage_mult"],
-"skill.quiet_professional.price_tag:basic": [&"stealth.mark_damage_bonus_mult"],
-"skill.sapper.calibrated:aced": [&"deploy.sentry_turn_speed_mult"],
-"skill.sapper.calibrated:basic": [&"deploy.sentry_accuracy_mult"],
-"skill.sapper.lean_build:aced": [&"deploy.sentry_health_mult"],
-"skill.sapper.lean_build:basic": [&"deploy.sentry_cost_mult"],
-"skill.sapper.mount_up:aced": [&"deploy.sentry_shield"],
-"skill.sapper.mount_up:basic": [&"deploy.sentry_cost_mult"],
-"skill.sapper.silent_partner:aced": [&"deploy.sentry_modes"],
-"skill.sapper.silent_partner:basic": [&"deploy.sentry_modes"],
-"skill.scattergun.hip_fire:basic": [&"movement.shoot_while_sprinting"],
-"skill.scattergun.pump_action:aced": [&"weapon.ads_speed_mult"],
-"skill.slipstream.free_running:aced": [&"movement.reload_while_sprinting", &"movement.sprint_any_direction"]
 }
 unlocks = {
 "skill.juggernaut.plated:aced": &"armor.breacher_plate"
