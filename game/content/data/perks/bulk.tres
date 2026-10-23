@@ -93,3 +93,15 @@ cards = Array[Dictionary]([{
 }
 }
 }])
+mimic_grants = {
+&"defense.health_mult": 1.6,
+&"perk.muscle": {
+"aggro_near_crew_mult": 1.0,
+"near_crew_m": 8.0,
+"panic_chance": 0.0,
+"panic_radius_m": 6.0,
+"regen_fraction": 0.03,
+"regen_interval_s": 5.0
+}
+}
+mimicable = true
