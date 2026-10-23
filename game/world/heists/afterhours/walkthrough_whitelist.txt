@@ -55,8 +55,8 @@ PlayerFoyer4 Gameplay/Loot/BottleServiceU2/UsePoint
 PlayerFoyer4 Gameplay/Loot/DeskDrawerU9/UsePoint
 PlayerFoyer4 Gameplay/Loot/OfficeSafe
 PlayerFoyer4 Gameplay/Loot/OfficeSafe/UsePoint
-PlayerFoyer4 Gameplay/Loot/SafeDrill
-PlayerFoyer4 Gameplay/Loot/SafeDrill/UsePoint
+PlayerFoyer4 Gameplay/Loot/OfficeSafe/SafeDrill
+PlayerFoyer4 Gameplay/Loot/OfficeSafe/SafeDrill/UsePoint
 PlayerFoyer4 Gameplay/Loot/TillVIPBar/UsePoint
 PlayerFoyer4 Variants/Group_security_room_staffed/Slot_sec_empty/CameraStation/UsePoint
 PlayerVIP1 Gameplay/Doors/HallDoorsE/UsePoint
