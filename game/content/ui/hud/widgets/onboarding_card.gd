@@ -11,7 +11,8 @@
 ## D-115: each built heist (OnboardingTips.HEISTS) also has one card for its own mechanics. It queues behind the
 ## situation cards: it shows once a heist situation is up and that situation's card is already seen (so on a first run
 ## right after the casing / loud card, on later runs at heist start). No situation replaces it; the counter slot names
-## the heist instead of "n/4". Owner: ENV B.
+## the heist instead of "n/4". LEAD r308: on a civilian-start heist (player_mode &"civilian") the heist card shows
+## FIRST, at the civilian start, ahead of the casing / stealth cards (they queue behind it). Owner: ENV B.
 class_name OnboardingCard
 extends HudWidget
 
@@ -149,12 +150,14 @@ func refresh() -> void:
 
 ## The card to show next (&"" = none): the situation's card while unseen, else the heist's card while unseen.
 func wanted_tip() -> StringName:
+	var heist_tip: StringName = OnboardingTips.heist_tip(heist_id)
+	if player_mode() == &"civilian" and heist_tip != &"" and not OnboardingTips.is_seen(heist_tip):
+		return heist_tip  # LEAD r308: the civilian-start explainer before anything else
 	var sit: StringName = current_situation()
 	if sit == &"":
 		return &""  # the heist card waits for the heist to be under way too
 	if not OnboardingTips.is_seen(sit):
 		return sit
-	var heist_tip: StringName = OnboardingTips.heist_tip(heist_id)
 	if heist_tip != &"" and not OnboardingTips.is_seen(heist_tip):
 		return heist_tip
 	return &""

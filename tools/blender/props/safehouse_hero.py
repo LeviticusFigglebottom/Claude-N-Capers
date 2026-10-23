@@ -348,7 +348,7 @@ def _gun_cabinet(k: Kit, p: dict) -> None:
 
 def _ppe_rack(k: Kit, p: dict) -> None:
     """A 1.0 x 0.8 m pine board on the wall (the back at y = 0, centred), 0.2 m deep with its pegs: four ear
-    defenders on the top rail, four pairs of safety glasses on hooks below, a painted label strip."""
+    defenders on the top rail, four pairs of safety glasses on hooks below, a plain orange label strip."""
     body = k.obj("Body")
     b = body.part(bevel=0.004)
     t = body.part(bevel=0.002)
@@ -356,7 +356,7 @@ def _ppe_rack(k: Kit, p: dict) -> None:
     b.bx((-0.5, 0.025, 0.28), (0.5, 0.045, 0.34), "wood_oak")                                         # top rail
     b.bx((-0.5, 0.025, -0.08), (0.5, 0.045, -0.03), "wood_oak")                                       # hook rail
     t.bx((-0.42, 0.025, 0.36), (0.42, 0.028, 0.39), "paint_hazard_orange")                             # label strip
-    lettering(t, "EARS EYES", 0.022, 0.0, 0.028, 0.365, "metal_dark", stroke=0.004, depth=0.002, inlay=True)
+    # (no lettering on it: 2 cm text cost ~2.5k tris and read as noise; c/test_props' 8k budget, LEAD r308)
     for i in range(4):
         x = -0.36 + i * 0.24
         t.rod((x, 0.045, 0.30), (x, 0.13, 0.31), 0.008, "steel_bare", segs=8)                          # peg

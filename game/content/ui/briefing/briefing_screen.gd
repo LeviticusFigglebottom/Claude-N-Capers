@@ -18,6 +18,9 @@ extends UiScreen
 signal continue_requested(heist_id: StringName, difficulty: int)
 
 const SOURCE: StringName = &"briefing"
+## LEAD r309 pad pass: the right stick scrolls the intel column (its labels take no focus, so the d-pad cannot).
+const STICK_SCROLL_PX_S: float = 900.0
+const STICK_DEADZONE: float = 0.2
 
 var heist_id: StringName = &""
 var difficulty: int = Enums.Difficulty.ROUTINE
@@ -54,6 +57,8 @@ var intel_scroll: ScrollContainer
 ## LEAD r307 (720p: KNOWN SECURITY cut mid-line): a fade over the column's foot while more lies below, with the
 ## column's scroll bar shown; hidden at the end of the column or when it all fits.
 var intel_fade: TextureRect
+## The fade's "More below" caption; on a pad it names the right stick (LEAD r309).
+var more_below: Label
 var play_button: Button
 var continue_button: Button
 var back_button: Button
@@ -63,6 +68,8 @@ var accent_strip: ColorRect
 var _line_index: int = -1
 var _timer: Timer
 var _speaker_names: Dictionary = {}
+var _stick_y: float = 0.0
+var _stick_carry: float = 0.0  # sub-pixel remainder between frames
 
 
 func setup(new_heist_id: StringName, new_difficulty: int) -> void:
@@ -198,6 +205,7 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	wrap.add_child(intel_fade)
 	var more: Label = UiBuild.caption(&"ui.briefing.more_below")
 	more.name = "MoreBelow"
+	more_below = more
 	more.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	more.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	more.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
@@ -226,12 +234,35 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	col.add_child(security_box)
 
 
+func _input(event: InputEvent) -> void:
+	super._input(event)
+	if intel_fade != null and intel_fade.visible:
+		_update_intel_fade()  # the caption follows the device used last
+	var m: InputEventJoypadMotion = event as InputEventJoypadMotion
+	if m == null or m.axis != JOY_AXIS_RIGHT_Y or not is_visible_in_tree():
+		return
+	_stick_y = m.axis_value if absf(m.axis_value) > STICK_DEADZONE else 0.0
+	set_process(_stick_y != 0.0)
+
+
+func _process(delta: float) -> void:
+	if _stick_y == 0.0 or intel_scroll == null or not is_visible_in_tree():
+		set_process(false)
+		return
+	_stick_carry += _stick_y * STICK_SCROLL_PX_S * delta
+	var step: int = int(_stick_carry)
+	_stick_carry -= float(step)
+	intel_scroll.scroll_vertical += step
+
+
 ## The fade shows while the intel column has more below its visible part (see intel_fade).
 func _update_intel_fade() -> void:
 	if intel_scroll == null:
 		return
 	var bar: VScrollBar = intel_scroll.get_v_scroll_bar()
 	intel_fade.visible = bar.max_value - bar.page > float(intel_scroll.scroll_vertical) + 2.0
+	more_below.text = UiText.t(&"ui.briefing.more_below_pad", {"key": UiText.t(&"ui.key.pad.rs")}) \
+			if InteractionPanel.pad_active else UiText.t(&"ui.briefing.more_below")
 
 
 ## True when the intel column is taller than its view (it scrolls; the fade / scroll bar say so).

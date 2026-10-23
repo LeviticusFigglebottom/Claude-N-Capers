@@ -193,18 +193,21 @@ def furniture() -> List[list]:
         B("DJBooth", [15.5, 0.3, 8.85], [3.0, 1.0, 1.0], 0.0, "counter", True, "counter"),
         B("SpeakerStackW", [8.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
         B("SpeakerStackE", [18.0, 0.3, 8.0], [1.2, 2.2, 1.0], 0.0, "speaker"),
-        # G7 booths: banquettes (1.1 m backs) along the circle's south wall and the reserved corner booth (east end)
-        B("BoothW1", [6.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),   # clear of the WC door (x 4)
-        B("BoothW2", [9.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
-        B("BoothE1", [22.0, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
+        # G7 booths: banquettes (1.1 m backs) along the circle's south wall and the reserved corner booth (east end);
+        # W1 clear of the WC door (x 4)
+        # seats (A PO6-06 seat_near): each sitter's root, 0.75 in front of the greybox block's centre (G2: D's booths)
+        B("BoothW1", [6.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
+        B("BoothW2", [9.6, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
+        B("BoothE1", [22.0, 0.0, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
         B("BoothReserved", [24.6, 0.0, 19.8], [1.6, 1.1, 1.6], 0.0, "sofa"),
         B("HighTable1", [6.5, 0.0, 17.5], [0.7, 1.05, 0.7], 0.0, "table", True),
         B("HighTable2", [21.0, 0.0, 17.5], [0.7, 1.05, 0.7], 0.0, "table", True),
         # U1 VIP booths along the rail, U2 sofas
-        B("VIPBooth1", [6.6, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
+        B("VIPBooth1", [6.6, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa",
+          metas={"seats": [[0.0, 0.45, -0.75], [1.0, 0.45, -0.75]]}),
         B("VIPBooth2", [9.6, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
         B("VIPTable2", [9.6, U, 19.5], [0.8, 0.75, 0.6], 0.0, "table", True),
-        B("VIPBooth3", [20.0, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa"),
+        B("VIPBooth3", [20.0, U, 20.35], [2.4, 1.1, 0.6], 0.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
         B("VIPSofa", [16.0, U, 22.4], [3.0, 0.9, 0.9], 0.0, "sofa"),
         B("VIPCoffeeTable", [16.0, U, 23.3], [1.2, 0.45, 0.6], 0.0, "table", True),
         # G13: crate stacks at x 9 and x 24 (1.4 m crouch cover) and keg trolleys
@@ -222,6 +225,8 @@ def furniture() -> List[list]:
         B("OfficeDesk", [31.0, U, 18.0], [1.8, 0.75, 0.9], 0.0, "desk", True),
         B("PrivateShelving", [35.4, U, 23.0], [0.6, 2.0, 3.0], 0.0, "shelving", True),
         B("FlightCases", [12.5, 0.0, 1.0], [1.6, 1.0, 0.8], 0.0, "crate"),
+        # the DJ's break seat, its back to the north wall
+        B("GreenRoomSofa", [10.5, 0.0, 0.52], [2.2, 1.0, 0.6], 180.0, "sofa", metas={"seats": [[0.0, 0.45, -0.75]]}),
         # Marlin Ave: the queue barriers (posts), parked cars on Tolley St
         B("QueueRail", [8.0, 0.0, 30.5], [6.0, 1.0, 0.1], 0.0, "barrier"),
         B("CarTolley1", [44.5, 0.0, 6.0], [1.9, 1.45, 4.6], 0.0, "car", False, "prop"),
@@ -357,9 +362,11 @@ def fixed_spawns() -> List[list]:
     out.append(S("OffDutyCop", "POLICE", [20.0, U, 19.6], 180.0, ["civ_offduty", "scripted"], "sit"))
     # rare vip_party: +6 guests in the VIP lounge (U2), tag civ_vip (+ scripted: A's mission spawns them with the event,
     # D's club_vip a-f looks); clear of the sofa, the coffee table, the bar and the regular VIP patrons
-    for i, (x, z, yaw) in enumerate([(12.0, 22.5, 90.0), (12.5, 24.2, 90.0), (19.5, 22.5, -90.0), (19.0, 24.3, -90.0),
-                                     (14.2, 24.6, 180.0), (17.8, 24.6, 180.0)]):
-        out.append(S("VIPGuest%d" % (i + 1), "CIVILIAN", [x, U, z], yaw, ["civ_vip", "scripted"], "walk_text"))
+    # a party, not six phones (LEAD r308): standing about with drinks, looking round the lounge, one on the phone
+    for i, (x, z, yaw, act) in enumerate([(12.0, 22.5, 90.0, "mug"), (12.5, 24.2, 90.0, "idle"),
+                                          (19.5, 22.5, -90.0, "look"), (19.0, 24.3, -90.0, "mug"),
+                                          (14.2, 24.6, 180.0, "phone"), (17.8, 24.6, 180.0, "idle")]):
+        out.append(S("VIPGuest%d" % (i + 1), "CIVILIAN", [x, U, z], yaw, ["civ_vip", "scripted"], act))
     for nm, pos, yaw, idle in PATRONS:
         out.append(S(nm, "CIVILIAN", pos, yaw, ["civ_patron"], idle, "Patrons"))
     for c, (cx, cz) in enumerate(CLUSTERS):
@@ -585,7 +592,7 @@ SLOTS: List[list] = [
     ["gear_drop", "gear_booth", 1.0, "G7", [24.6, 0.0, 18.8], 0.0, "under the reserved booth's banquette"],
     ["gear_drop", "gear_van", 1.0, "X1", [26.6, 0.0, -4.0], 0.0, "the van (E1)"],
     ["dj_set", "dj_on", 0.65, "G6", [15.5, 0.3, 8.05], 0.0, "the DJ on stage"],
-    ["dj_set", "dj_break", 0.35, "G11", [11.0, 0.0, 2.5], 0.0, "the DJ in the green room"],
+    ["dj_set", "dj_break", 0.35, "G11", [10.5, 0.0, 1.27], 0.0, "the DJ in the green room"],
     ["keycard", "kc_staff_room", 1.0, "G12", [18.0, 0.75, 2.6], 0.0, "the staff-room table under the rota"],
     ["keycard", "kc_bouncer_board", 1.0, "G24", [30.4, 1.0, 20.55], 0.0, "the door-log desk"],
     ["keycard", "kc_vip_bar", 1.0, "U2", [12.5, U + BAR_TOP, 25.9], 0.0, "behind the VIP register"],
@@ -687,7 +694,7 @@ def slot_content() -> Dict[str, List[list]]:
         "gear_van": _gear([26.6, 0.0, -4.0], 90.0, [25.8, 0.0, -4.0]),
         # behind the booth (z 8.35-9.35), its front edge 0.30 m ahead of the root (D's ah_dj_placement), facing the crowd
         "dj_on": [S("DJ", "CIVILIAN", [15.5, 0.3, 8.05], 180.0, ["civ_dj_stage", STAFF, "staff_dj"], "dj_mix")],
-        "dj_break": [S("DJ", "CIVILIAN", [11.0, 0.0, 2.5], 0.0, ["civ_dj_green", STAFF, "staff_dj"], "sit")],
+        "dj_break": [S("DJ", "CIVILIAN", [10.5, 0.0, 1.27], 0.0, ["civ_dj_green", STAFF, "staff_dj"], "sit")],
         "kc_staff_room": _keycard([18.0, 0.75, 2.6], 0.0, [18.0, 0.0, 3.4]),
         "kc_bouncer_board": _keycard([30.4, 1.0, 20.55], 0.0, [30.4, 0.0, 19.8]),
         "kc_vip_bar": _keycard([12.5, U + BAR_TOP, 25.9], 0.0, [12.5, U, 26.6]),

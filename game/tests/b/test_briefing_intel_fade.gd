@@ -35,3 +35,36 @@ func test_no_fade_when_it_fits() -> void:
 	assert_false(s.intel_fade.visible)
 	s.get_parent().queue_free()
 	await wait_frames(1)
+
+
+func _stick(value: float) -> void:
+	var m: InputEventJoypadMotion = InputEventJoypadMotion.new()
+	m.axis = JOY_AXIS_RIGHT_Y
+	m.axis_value = value
+	Input.parse_input_event(m)
+	await wait_frames(2)
+
+
+func test_right_stick_scrolls_the_column_and_the_cue_names_it() -> void:
+	# LEAD r309 pad pass: the intel labels take no focus, so the right stick scrolls the column.
+	var s: BriefingScreen = _screen(Vector2(1280, 560))
+	await wait_frames(6)
+	assert_eq(s.intel_scroll.scroll_vertical, 0)
+	await _stick(1.0)
+	await wait_frames(10)
+	await _stick(0.0)
+	var down: int = s.intel_scroll.scroll_vertical
+	assert_true(down > 0, "stick down scrolls down")
+	assert_true(InteractionPanel.pad_active, "the stick counts as pad input")
+	assert_true(s.more_below.text.contains(UiText.t(&"ui.key.pad.rs")), "the cue names the stick: %s" % s.more_below.text)
+	await wait_frames(5)
+	assert_eq(s.intel_scroll.scroll_vertical, down, "the stick at rest: no drift")
+	await _stick(-0.1)
+	await wait_frames(5)
+	assert_eq(s.intel_scroll.scroll_vertical, down, "inside the dead zone: no scroll")
+	await _stick(-1.0)
+	await wait_frames(30)
+	await _stick(0.0)
+	assert_eq(s.intel_scroll.scroll_vertical, 0, "stick up scrolls back to the top")
+	s.get_parent().queue_free()
+	await wait_frames(1)

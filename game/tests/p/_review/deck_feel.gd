@@ -95,6 +95,8 @@ func _deck_launch(deck: StringName) -> bool:
 		await wait_s(0.5)
 	_kills = 0
 	_heal_events.clear()
+	if Net.crew.is_empty():
+		Net.start_solo("Player", 3)  # before keying the loadout: Net.local_slot() is -1 with no crew (offline is already authority)
 	rt = await HeistLauncher.launch(GH_HEIST, _seed if _seed >= 0 else DECK_SEED, Enums.Difficulty.ROUTINE, self,
 		{"skip_casing": true, "ai_teammates": 3, "crew_ai": true, "loadouts": {Net.local_slot(): _deck_loadout(deck)}})
 	if rt == null:
@@ -108,7 +110,19 @@ func _deck_launch(deck: StringName) -> bool:
 	pilot.combat = true
 	if not EventBus.npc_killed.is_connected(_on_kill):
 		EventBus.npc_killed.connect(_on_kill)
+	_hits.clear()
+	_crew_ids.clear()
+	for s: int in 4:
+		var cc: Node = rt.crew_controller(s)
+		if cc != null:
+			_crew_ids[NetIds.of(cc)] = s
+	if not EventBus.damage_applied.is_connected(_on_blown_hit):
+		EventBus.damage_applied.connect(_on_blown_hit)
 	note("launched %s deck %s, spawn %s" % [GH_HEIST, deck, Po5Pilot._v(c.global_position)])
+	var eff: Loadout = rt.crew_loadouts.get(c.slot) as Loadout
+	note("deck check: local_slot %d, crew.slot %d, effective deck %s, perks %s, perk.throwable %s" % [Net.local_slot(),
+		c.slot, eff.perk_deck if eff != null else &"-", PerkHooks.of(c).components.keys(),
+		Modifiers.params(c.slot, &"perk.throwable")])
 	if not await _mask():
 		return await _fail("mask")
 	if _fast:
@@ -136,6 +150,7 @@ func _max_health() -> float:
 ## Fight from where the crew stands until `done` or `max_s`; logs every heal (a health rise not from a revive).
 func _fight(max_s: float, done: Callable = Callable()) -> void:
 	var t_end: float = rt.heist_time_s + max_s
+	var t_start: float = rt.heist_time_s
 	var last: float = _health()
 	while rt.heist_time_s < t_end and not _in_custody() and not (done.is_valid() and bool(done.call())):
 		await _hold_cover(func() -> bool: return true, 1.0)
@@ -148,6 +163,8 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 		if h > last + 0.5 and pilot.crew.crew_state == Enums.CrewState.NORMAL:
 			_heal_events.append("+%.0f at t=%.0f (kills %d)" % [h - last, rt.heist_time_s, _kills])
 		last = h
+	note("fight %.0f s (t=%.0f..%.0f), custody %s, kills %d" % [rt.heist_time_s - t_start, t_start, rt.heist_time_s,
+		_in_custody(), _kills])
 
 
 ## Enemies (alive) within `r` of the crew.
@@ -199,7 +216,8 @@ func _dk_hacker() -> bool:
 	await _use_deck_item()
 	await shot("hacker_feedback")
 	var ecm: Node = rt.service(&"ecm")
-	var e: Dictionary = (ecm.get(&"pocket") as Dictionary).get(pilot.crew.slot, {}) if ecm != null else {}
+	var e: Dictionary = ((ecm.get(&"pocket") as Dictionary).get(pilot.crew.slot, {}) as Dictionary).duplicate() \
+		if ecm != null else {}  # a copy: EcmSystem resets the live entry's mode when the feedback ends
 	await wait_s(1.5)
 	var stunned: int = 0
 	for npc: NpcBase in near:
