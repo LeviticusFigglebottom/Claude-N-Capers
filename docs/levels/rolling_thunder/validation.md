@@ -33,7 +33,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
-| perf | PASS | 0 | 1 |
+| perf | PASS | 0 | 0 |
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
@@ -238,12 +238,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 2995 surfaces checked
+- 3009 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 549341 triangles checked
+- 556325 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -341,36 +341,35 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` | 1683 | 378 | 2276 | 0 | 4337 | 687000 | 6 | Sun 1578, LightFixture_7 258, LightFixture_9 178, UnderpassBatten1 101, LightFixture_7 86, UnderpassBatten0 75 |
-| `rc_ext_junction` | 1117 | 364 | 1722 | 0 | 3203 | 479348 | 6 | Sun 1074, LightFixture_7 258, LightFixture_9 128, UnderpassBatten1 101, LightFixture_7 86, UnderpassBatten0 75 |
-| `rc_ext_north_arm` | 602 | 80 | 994 | 0 | 1676 | 221752 | 3 | Sun 784, LightFixture_7 143, LightFixture_7 67 |
-| `rc_ext_east_arm` | 267 | 124 | 986 | 0 | 1377 | 87458 | 3 | Sun 810, UnderpassBatten1 101, UnderpassBatten0 75 |
-| `rc_ext_plaza` | 130 | 0 | 138 | 0 | 268 | 54348 | 1 | Sun 138 |
-| `rc_ext_tannery_west` | 481 | 0 | 489 | 0 | 970 | 145202 | 1 | Sun 489 |
-| `rc_diner_neon` | 778 | 284 | 1252 | 0 | 2314 | 290682 | 4 | Sun 922, LightFixture_9 154, UnderpassBatten1 101, UnderpassBatten0 75 |
-| `rc_convoy_cash` | 694 | 116 | 794 | 0 | 1604 | 309946 | 2 | Sun 616, LightFixture_9 178 |
-| `rc_convoy_bullion` | 777 | 173 | 1253 | 0 | 2203 | 371058 | 4 | Sun 849, LightFixture_9 178, LightFixture_7 159, LightFixture_7 67 |
-| `rc_carpark_ground` | 633 | 234 | 1163 | 0 | 2030 | 260096 | 3 | Sun 901, LightFixture_7 185, LightFixture_7 77 |
-| `rc_carpark_deck2` | 1067 | 253 | 1351 | 0 | 2671 | 405672 | 3 | Sun 1038, LightFixture_7 231, LightFixture_7 82 |
-| `rc_carpark_ramp` | 487 | 103 | 1252 | 0 | 1842 | 220238 | 3 | Sun 1075, LightFixture_7 135, LightFixture_7 42 |
-| `rc_carpark_roof` | 898 | 241 | 1254 | 0 | 2393 | 332392 | 3 | Sun 974, LightFixture_7 198, LightFixture_7 82 |
-| `rc_carpark_booth` | 794 | 135 | 1034 | 0 | 1963 | 249776 | 3 | Sun 821, LightFixture_7 160, LightFixture_7 53 |
-| `rc_carpark_plant` | 450 | 191 | 1018 | 0 | 1659 | 158782 | 5 | Sun 747, UnderpassBatten1 101, UnderpassBatten0 75, LightFixture_7 63, LightFixture_7 32 |
-| `rc_carpark_stair` | 223 | 0 | 673 | 0 | 896 | 73014 | 1 | Sun 673 |
-| `rc_diner_dining` | 1208 | 480 | 2001 | 0 | 3689 | 500878 | 6 | Sun 1339, LightFixture_7 258, LightFixture_9 142, UnderpassBatten1 101, LightFixture_7 86, UnderpassBatten0 75 |
-| `rc_diner_kitchen` | 1296 | 292 | 1420 | 0 | 3008 | 507594 | 4 | Sun 961, LightFixture_7 252, LightFixture_9 121, LightFixture_7 86 |
-| `rc_diner_function` | 1218 | 299 | 1289 | 0 | 2806 | 430352 | 4 | Sun 870, LightFixture_7 220, LightFixture_9 121, LightFixture_7 78 |
-| `rc_diner_office` | 304 | 46 | 395 | 0 | 745 | 104220 | 2 | Sun 257, LightFixture_9 138 |
-| `rc_diner_staff` | 306 | 37 | 344 | 0 | 687 | 87888 | 2 | Sun 204, LightFixture_9 140 |
-| `rc_site_controller` | 576 | 116 | 640 | 0 | 1332 | 264890 | 2 | Sun 462, LightFixture_9 178 |
-| `rc_site_frame` | 1465 | 378 | 1336 | 0 | 3179 | 637816 | 6 | Sun 660, LightFixture_7 236, LightFixture_9 178, UnderpassBatten1 101, LightFixture_7 86, UnderpassBatten0 75 |
-| `rc_site_slab` | 330 | 0 | 443 | 0 | 773 | 96208 | 1 | Sun 443 |
+| `TopDownPlan` (plan, exempt) | 1697 | 381 | 2294 | 0 | 4372 | 696648 | 6 | Sun 1592, LightFixture_7 258, LightFixture_9 178, UnderpassBatten1 103, LightFixture_7 86, UnderpassBatten0 77 |
+| `rc_ext_junction` | 1125 | 367 | 1731 | 0 | 3223 | 485012 | 6 | Sun 1079, LightFixture_7 258, LightFixture_9 128, UnderpassBatten1 103, LightFixture_7 86, UnderpassBatten0 77 |
+| `rc_ext_north_arm` | 606 | 80 | 1001 | 0 | 1687 | 224584 | 3 | Sun 791, LightFixture_7 143, LightFixture_7 67 |
+| `rc_ext_east_arm` | 271 | 127 | 994 | 0 | 1392 | 90290 | 3 | Sun 814, UnderpassBatten1 103, UnderpassBatten0 77 |
+| `rc_ext_plaza` | 131 | 0 | 139 | 0 | 270 | 55056 | 1 | Sun 139 |
+| `rc_ext_tannery_west` | 486 | 0 | 494 | 0 | 980 | 148478 | 1 | Sun 494 |
+| `rc_diner_neon` | 782 | 287 | 1258 | 0 | 2327 | 293514 | 4 | Sun 924, LightFixture_9 154, UnderpassBatten1 103, UnderpassBatten0 77 |
+| `rc_convoy_cash` | 699 | 116 | 801 | 0 | 1616 | 313222 | 2 | Sun 623, LightFixture_9 178 |
+| `rc_convoy_bullion` | 782 | 173 | 1258 | 0 | 2213 | 374334 | 4 | Sun 854, LightFixture_9 178, LightFixture_7 159, LightFixture_7 67 |
+| `rc_carpark_ground` | 637 | 234 | 1170 | 0 | 2041 | 262928 | 3 | Sun 908, LightFixture_7 185, LightFixture_7 77 |
+| `rc_carpark_deck2` | 1075 | 253 | 1360 | 0 | 2688 | 411072 | 3 | Sun 1047, LightFixture_7 231, LightFixture_7 82 |
+| `rc_carpark_ramp` | 491 | 103 | 1260 | 0 | 1854 | 223070 | 3 | Sun 1083, LightFixture_7 135, LightFixture_7 42 |
+| `rc_carpark_roof` | 904 | 241 | 1262 | 0 | 2407 | 336376 | 3 | Sun 982, LightFixture_7 198, LightFixture_7 82 |
+| `rc_carpark_booth` | 802 | 135 | 1043 | 0 | 1980 | 255176 | 3 | Sun 830, LightFixture_7 160, LightFixture_7 53 |
+| `rc_carpark_plant` | 454 | 194 | 1026 | 0 | 1674 | 161614 | 5 | Sun 751, UnderpassBatten1 103, UnderpassBatten0 77, LightFixture_7 63, LightFixture_7 32 |
+| `rc_carpark_stair` | 226 | 0 | 677 | 0 | 903 | 75138 | 1 | Sun 677 |
+| `rc_diner_dining` | 1216 | 483 | 2013 | 0 | 3712 | 506542 | 6 | Sun 1347, LightFixture_7 258, LightFixture_9 142, UnderpassBatten1 103, LightFixture_7 86, UnderpassBatten0 77 |
+| `rc_diner_kitchen` | 1305 | 292 | 1425 | 0 | 3022 | 513702 | 4 | Sun 966, LightFixture_7 252, LightFixture_9 121, LightFixture_7 86 |
+| `rc_diner_function` | 1227 | 299 | 1294 | 0 | 2820 | 436460 | 4 | Sun 875, LightFixture_7 220, LightFixture_9 121, LightFixture_7 78 |
+| `rc_diner_office` | 304 | 46 | 396 | 0 | 746 | 104220 | 2 | Sun 258, LightFixture_9 138 |
+| `rc_diner_staff` | 306 | 37 | 345 | 0 | 688 | 87888 | 2 | Sun 205, LightFixture_9 140 |
+| `rc_site_controller` | 577 | 116 | 640 | 0 | 1333 | 265598 | 2 | Sun 462, LightFixture_9 178 |
+| `rc_site_frame` | 1474 | 381 | 1345 | 0 | 3200 | 643924 | 6 | Sun 665, LightFixture_7 236, LightFixture_9 178, UnderpassBatten1 103, LightFixture_7 86, UnderpassBatten0 77 |
+| `rc_site_slab` | 334 | 0 | 446 | 0 | 780 | 99040 | 1 | Sun 446 |
 | `rc_site_cabins` | 356 | 0 | 228 | 0 | 584 | 114648 | 1 | Sun 228 |
-| `rc_site_welfare` | 530 | 0 | 342 | 0 | 872 | 136274 | 1 | Sun 342 |
-| `rc_underpass` | 201 | 128 | 1276 | 0 | 1605 | 67284 | 3 | Sun 1100, UnderpassBatten1 101, UnderpassBatten0 75 |
-| `rc_sniper_skyway` | 677 | 328 | 1582 | 0 | 2587 | 283386 | 5 | Sun 1171, LightFixture_7 159, UnderpassBatten1 101, LightFixture_7 76, UnderpassBatten0 75 |
+| `rc_site_welfare` | 534 | 0 | 345 | 0 | 879 | 139106 | 1 | Sun 345 |
+| `rc_underpass` | 205 | 131 | 1285 | 0 | 1621 | 70116 | 3 | Sun 1105, UnderpassBatten1 103, UnderpassBatten0 77 |
+| `rc_sniper_skyway` | 681 | 331 | 1592 | 0 | 2604 | 286218 | 5 | Sun 1177, LightFixture_7 159, UnderpassBatten1 103, UnderpassBatten0 77, LightFixture_7 76 |
 
-- WARN `ReviewCameras/TopDownPlan` @ (12.00, 160.00, -9.00): 4337 draw calls in view (main 1683 + lit 378 + shadow 2276 + cast 0) > 4000
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
