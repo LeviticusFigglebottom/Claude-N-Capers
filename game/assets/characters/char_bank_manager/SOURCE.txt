@@ -13,10 +13,10 @@ body_params: {"age": 0.5, "beard_shadow": 0.4, "build": 0.55, "gender": 0.0, "ha
 bones: 52
 faces_hidden_by_jacket: 2841
 faces_hidden_by_waistcoat: 1238
-look: Day manager (keycard carrier): navy three-piece suit, cream shirt, bank-red tie, bank-red lanyard + white keycard, keyhole lapel badge, brass name tag, silver glasses, watch
+look: Day manager (keycard carrier): navy three-piece suit, cream shirt, bank-red tie, white keycard on a waistcoat reel, keyhole lapel badge, brass name tag, silver glasses, watch
 meshes: Body,Gear,Hair,Headwear,Outfit
-prop_note: keycard on the lanyard is skinned (Gear); a hand-held keycard prop goes at HandR/Socket
+prop_note: keycard on the waistcoat reel is skinned (Gear); a hand-held keycard prop goes at HandR/Socket
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28686
-tris_by_mesh: {"Body": 8932, "Gear": 1696, "Hair": 1728, "Headwear": 498, "Outfit": 15832}
+tris: 28546
+tris_by_mesh: {"Body": 8932, "Gear": 1696, "Hair": 1728, "Headwear": 498, "Outfit": 15692}

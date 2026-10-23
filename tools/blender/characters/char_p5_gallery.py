@@ -284,6 +284,10 @@ def guard(kit: Kit) -> None:
     hull = kit.hull()
     kit.add_gear(gk.name_tag(hull, Vector((0.098 * k, 0.3, 1.33 * k)), k=k, mat="brass"))
     n.earpiece(kit, "R")
+    n.front_item(kit, 0.0, 1.235, (0.045, 0.005, 0.003), "brass", lift=0.0)        # GN-G3: a gold tie bar, a watch
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    if not jacket:                                                                # the belt shows: a key ring
+        kit.add_gear(gk.key_ring(b, math.radians(-25.0)))
     if "glasses" in kit.opts:
         kit.add_head(gk.glasses(fit, str(kit.opts["glasses"])))
     if "chignon" in kit.opts:

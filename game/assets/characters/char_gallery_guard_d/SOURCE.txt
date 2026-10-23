@@ -17,5 +17,5 @@ look: Halberd Gallery Security (in-house), shirtsleeve order: bottle-green waist
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26731
-tris_by_mesh: {"Body": 8940, "Gear": 1380, "Hair": 1728, "Outfit": 14683}
+tris: 27159
+tris_by_mesh: {"Body": 8940, "Gear": 1808, "Hair": 1728, "Outfit": 14683}
