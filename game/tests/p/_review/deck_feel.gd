@@ -322,6 +322,8 @@ func _dk_buddy() -> bool:
 	if mate == null:
 		_row("tag a bot", "FAIL", "no bot", "A bots")
 		return false
+	# Tag when the fight is on (the pair lasts duration_s, kills extend it): enemies near first.
+	await _fight(120.0, func() -> bool: return _enemies_within(NEAR_M).size() >= 2)
 	pilot.combat = false
 	await pilot.face(mate.global_position + Vector3.UP * 1.2, 0.02, 2.0)
 	await _use_deck_item()
@@ -331,10 +333,35 @@ func _dk_buddy() -> bool:
 	await shot("buddy_tagged")
 	_row("G tags the aimed bot", "PASS" if tagged == mate.slot else "FAIL", "tagged slot %d (aimed %d, %.0f m)" % [tagged,
 		mate.slot, mate.global_position.distance_to(pilot.crew.global_position)], "A TagPairs")
-	await _fight(FIGHT_S)
+	# Sample the pair while it lasts: its length (kills extend it), the kills by the pair (CrewKillFeed: each heals the
+	# holder holder_kill_heal and the mate tagged_kill_heal), the holder's Synergy absorb.
 	var tt: PerkTagTeam = PerkHooks.of(pilot.crew).component(PerkTagTeam.KEY) as PerkTagTeam
-	_row("paired kills: heals + Synergy absorb", "NOTE", "kills %d, heals %s, absorb %s" % [_kills,
-		", ".join(_heal_events), tt.get(&"absorb") if tt != null else "-"])
+	var paired: Array[int] = [0, 0]  # holder kills, mate kills while paired
+	var feed: CrewKillFeed = CrewKillFeed.of(rt)
+	var on_kill: Callable = func(k: int, _v: int, _i: Dictionary) -> void:
+		if tp != null and tp.tagged_of(pilot.crew.slot) >= 0:
+			paired[0 if k == pilot.crew.slot else 1] += 1 if k == pilot.crew.slot or k == tagged else 0
+	if feed != null:
+		feed.crew_kill.connect(on_kill)
+	var t_tag: float = rt.heist_time_s
+	var absorb_max: float = 0.0
+	var pair_s: float = 0.0
+	var t_end: float = rt.heist_time_s + FIGHT_S
+	while rt.heist_time_s < t_end and not _in_custody():
+		await _fight(1.0)
+		if tp != null and tp.tagged_of(pilot.crew.slot) >= 0:
+			pair_s = rt.heist_time_s - t_tag
+		absorb_max = maxf(absorb_max, float(tt.get(&"absorb")) if tt != null else 0.0)
+	if feed != null:
+		feed.crew_kill.disconnect(on_kill)
+	var heal_h: float = float(tt.params.get("holder_kill_heal", 0.0)) if tt != null else 0.0
+	var heal_m: float = float(tt.params.get("tagged_kill_heal", 0.0)) if tt != null else 0.0
+	var pk: int = paired[0] + paired[1]
+	_row("paired kills: heals + Synergy absorb", "PASS" if pk > 0 else "NOTE",
+		("pair lasted ~%.0f s (base %.0f s), paired kills %d (holder %d, mate %d) = holder +%.0f / mate +%.0f health, "
+		+ "absorb max %.1f, kills %d") % [
+		pair_s, float(tt.params.get("duration_s", 0.0)) if tt != null else 0.0, pk, paired[0], paired[1], pk * heal_h,
+		pk * heal_m, absorb_max, _kills], "-")
 	_danger_rows("buddy")
 	return tagged == mate.slot
 
