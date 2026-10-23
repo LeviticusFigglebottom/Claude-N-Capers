@@ -757,8 +757,10 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	comp.completed.connect(cb)
 	if combat and await _clear_threats():  # S9.1: damage cancels a hold, so clear the area first like a player
 		await face(target, 0.03, 1.0)
-	inp.press(&"interact")
-	var kind: StringName = comp.kind
+	# The target may be freed while clearing threats (a bag picked up, a door blown by someone else): the loop ends.
+	var kind: StringName = comp.kind if is_instance_valid(comp) else &""
+	if kind != &"":
+		inp.press(&"interact")
 	var t: float = 0.0
 	var idle_ticks: int = 0
 	while t < timeout_s and not completed[0] and is_instance_valid(comp) and not (done.is_valid() and bool(done.call())):
