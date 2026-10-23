@@ -5,6 +5,8 @@ claw hammer, lead pipe, crowbar, sledgehammer, machete, fire axe, meat cleaver.
 
 Item contract (contracts/visual_slots.md "Items", D-069), as folding_knife.py, in Blender axes:
 * origin on the handle axis 20 mm below the top of the fist (the fist spans about z -0.075 .. +0.020);
+* the two-handed sledgehammer and fire axe (melee_heavy, characters v1.38): the left hand 0.28 m below the origin on
+  a straight round handle, the head centre about HEAVY_HEAD_Z above, the butt about 0.33 m below;
 * handle along Godot +Y = Blender +Z (the head / blade points up from the fist);
 * cutting edge / striking face toward Godot -Z = Blender +Y;
 * Blender +X = Godot +X = the blade flat normal.
@@ -20,6 +22,8 @@ import bmesh
 import _common as c
 
 TRI_BUDGET = 6000
+#: characters v1.38 melee_heavy (sledgehammer, fire axe): the head centre this far above the right hand's grip pivot
+HEAVY_HEAD_Z = 0.55
 VARIANTS = {
     "wpn_melee_combat_dagger": {"kind": "combat_dagger"},
     "wpn_melee_prison_shank": {"kind": "prison_shank"},
@@ -299,16 +303,18 @@ def crowbar(ctx, mats):
 
 
 def sledgehammer(ctx, mats):
-    _wood_handle(ctx, mats, -0.102, 0.640, 0.0170, 0.0150, 0.72, grip_to=0.090, wood="oak")
+    # characters v1.38 melee_heavy grip: the right hand at the origin, the left 0.28 m lower on a straight handle
+    _wood_handle(ctx, mats, -0.330, 0.570, 0.0170, 0.0150, 0.72, grip_to=0.060, wood="oak")
     hd = ctx.builder()
     st = hd.material(mats.steel())
     face = hd.material(mats.bare())
     octo = [(0.030, 0.012), (0.030, -0.012), (0.012, -0.030), (-0.012, -0.030), (-0.030, -0.012), (-0.030, 0.012),
             (-0.012, 0.030), (0.012, 0.030)]
-    sect = [(x, z + 0.632) for x, z in octo]
+    sect = [(x, z + HEAVY_HEAD_Z) for x, z in octo]
     hd.prism(sect, axis="Y", start=-0.072, end=0.072, mat=st)
     for y0, y1 in ((0.072, 0.080), (-0.080, -0.072)):
-        hd.prism([(x * 0.94, (z - 0.632) * 0.94 + 0.632) for x, z in sect], axis="Y", start=y0, end=y1, mat=face)
+        hd.prism([(x * 0.94, (z - HEAVY_HEAD_Z) * 0.94 + HEAVY_HEAD_Z) for x, z in sect], axis="Y", start=y0, end=y1,
+                 mat=face)
     c.finish(hd, "Head", bevel=0.0012)
 
 
@@ -336,25 +342,25 @@ def machete(ctx, mats):
 
 
 def fire_axe(ctx, mats):
-    _wood_handle(ctx, mats, -0.104, 0.650, 0.0175, 0.0160, 0.70, grip_to=None, wood="oak")
+    _wood_handle(ctx, mats, -0.330, 0.580, 0.0175, 0.0160, 0.70, grip_to=None, wood="oak")  # melee_heavy grip
     hd = ctx.builder()
     paint = hd.material(ctx.material("paint_safety_orange", "#C8341E", roughness=0.45))
     bare = hd.material(mats.bare())
     bm = hd.bm
     # blade: XZ sections lofted toward +Y, flaring into a long bare edge
-    secs = [(-0.022, 0.018, 0.590, 0.665), (0.010, 0.014, 0.592, 0.662), (0.045, 0.008, 0.575, 0.676),
-            (0.080, 0.004, 0.556, 0.692), (0.094, 0.0018, 0.550, 0.698), (0.100, 0.0003, 0.548, 0.700)]
+    secs = [(-0.022, 0.018, 0.520, 0.595), (0.010, 0.014, 0.522, 0.592), (0.045, 0.008, 0.505, 0.606),
+            (0.080, 0.004, 0.486, 0.622), (0.094, 0.0018, 0.480, 0.628), (0.100, 0.0003, 0.478, 0.630)]
     rings = []
     for y, hx, z0, z1 in secs:
         rings.append([bm.verts.new(p) for p in ((-hx, y, z0), (hx, y, z0), (hx, y, z1), (-hx, y, z1))])
     _faces(bm, rings, paint, mats=[paint, paint, paint, bare, bare])
     # pick: toward -Y, a square section closing to a point
-    picks = [(-0.022, 0.015, 0.600, 0.655), (-0.052, 0.010, 0.612, 0.646), (-0.080, 0.005, 0.620, 0.638)]
+    picks = [(-0.022, 0.015, 0.530, 0.585), (-0.052, 0.010, 0.542, 0.576), (-0.080, 0.005, 0.550, 0.568)]
     prs = []
     for y, hx, z0, z1 in picks:
         prs.append([bm.verts.new(p) for p in ((-hx, y, z0), (-hx, y, z1), (hx, y, z1), (hx, y, z0))])
     _faces(bm, prs, paint, cap1=False)
-    _fan(bm, prs[-1], (0.0, -0.094, 0.626), paint)
+    _fan(bm, prs[-1], (0.0, -0.094, 0.556), paint)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     c.finish(hd, "Head")
 

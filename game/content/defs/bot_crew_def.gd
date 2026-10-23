@@ -2,6 +2,8 @@
 ## id `bot_ability.<name>` / `bot_boost.<name>` (ContentDB kind `bot_crew`). Text: strings.csv `item.<id>.name` / `.desc`.
 ## Runtime (ENV A, BotCrew): an ability's `grants` land on the bot's own slot; a boost's are crew-wide while the bot is
 ## in play (not in custody). `params` are behaviour numbers (bot_ability.inspire: {range, cooldown}).
+## ◇ Values (LEAD r286): A's placeholders, sanity-checked against PD2's modest scale (boosts about +10-25 %, ability
+## cooldowns 30-60 s); PD2's exact Crew Management numbers are not in docs/research yet. Inspire's 9 m is PD2's.
 class_name BotCrewDef
 extends Resource
 

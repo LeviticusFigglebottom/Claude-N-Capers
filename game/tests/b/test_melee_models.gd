@@ -6,6 +6,10 @@ extends TestCase
 ## The longest models (bat, axe, sledgehammer) reach furthest (MeleeDef.range_m); knives and hammers stay short.
 const LONG_M: float = 0.7
 const SHORT_M: float = 0.35
+## characters v1.38 melee_heavy: the left hand closes round the handle this far below the origin; the head centre sits
+## about HEAVY_HEAD_Y above it.
+const HEAVY_LEFT_Y: float = -0.28
+const HEAVY_HEAD_Y: float = 0.55
 
 
 func before_all() -> void:
@@ -63,7 +67,8 @@ func test_models_have_materials_and_budget() -> void:
 func test_models_follow_the_item_contract() -> void:
 	await _each(func(d: MeleeDef, n: Node3D) -> void:
 		var box: AABB = _bounds(n)
-		assert_true(box.position.y < -0.06 and box.position.y > -0.16, "%s: butt 6-16 cm below the fist origin: %s" % [d.id, box])
+		var butt_max: float = -0.36 if d.anim_set == &"melee_heavy" else -0.16  # two-handed: the butt 0.33 m down
+		assert_true(box.position.y < -0.06 and box.position.y > butt_max, "%s: butt below the fist origin: %s" % [d.id, box])
 		assert_true(box.end.y > 0.08, "%s: extends up from the fist: %s" % [d.id, box])
 		assert_true(box.position.x < 0.0 and box.end.x > 0.0, "%s: origin centred in thickness" % d.id)
 		assert_true(box.position.z < 0.0 and box.end.z > 0.0, "%s: origin on the handle axis" % d.id)
@@ -78,6 +83,10 @@ func test_models_follow_the_item_contract() -> void:
 		# rightly outreaches its face)
 		if d.anim_set != &"melee_blunt":
 			assert_true(-head.position.z >= head.end.z - 0.002, "%s: edge side (-Z) is the long side: %s" % [d.id, head])
+		if d.anim_set == &"melee_heavy":
+			assert_true(handle.position.y < HEAVY_LEFT_Y - 0.04, "%s: the handle runs past the left hand: %s" % [d.id, handle])
+			assert_true(handle.size.x < 0.045 and handle.size.z < 0.045, "%s: a round handle the hands close on" % d.id)
+			assert_near(head.get_center().y, HEAVY_HEAD_Y, 0.04, "%s: head centre about %.2f m up" % [d.id, HEAVY_HEAD_Y])
 		var length: float = box.size.y
 		if length > LONG_M:
 			assert_true(d.range_m >= 2.0, "%s (%.2f m long) reaches 2 m+ (%.2f)" % [d.id, length, d.range_m])

@@ -31,39 +31,39 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A3-10 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Shadow Ledger needs: per-difficulty weights for slot-group rules (QC-18; Night Deposit too), escape_type heli/zipline/lift with `arrival_delay_s`, `bag_only` (QC-19), no ladder climbing with a bag (QC-17) | D-042 |
 | A3-08 | ✅ DONE (A4-01 audit, docs/status/env_a_fidelity.md). Pending follow-ups: A2-08, QB-46..49 (input pause, camera/weapon visual ownership, HUD tracked_crew, gamepad look), D-038 (ECM feedback ungated, cuffed events, fail_reason, PreplanResult apply) | — |
 
-| B4-05 | Payday card pick (1 of 3, 30 s auto-pick, card types) | P9 |
-| B4-06 | The Board + contract broker (contacts, rotating contracts, pro jobs) | C1 |
-| B4-07 | Safehouse hub UI layer (screens the 3D hub will host) + GSR accent UI theme pass | C9, D-035 |
-| B4-09 | Loot `loot.cash_bricks` (MEDIUM, PD2 money-bag value shape) + strings for Night Deposit objectives (from the G0 `[tag]`s) | QC-13 |
-| B4-10 | Shadow Ledger data: loot `loot.ledger_laptop` (LIGHT), `loot.ledger_drives` (MEDIUM), `loot.ledger_books` (MEDIUM), `loot.painting` (LIGHT, PD2 painting shape; was MEDIUM); preplan library assets `asset.intel_laptop`, `asset.gondola_left_hung`, `asset.riser_panel`; objective strings from the G0 `[tag]`s | QC-15/16 |
-| B4-08 | D-038 follow-ups: strings for QA-14, `ui.blocked.*` rename, drop `stealth.ecm_feedback` grants, PreplanResult per preplanning.md (+ `resolve_ids`, points read from the map) | — |
-| B4-11 | Co-op lobby UI on the Net API: host/join (IP + loopback), 4 crew slots incl. AI fill, ready states, loadout/mask summary per slot, plan vote + Board contract over `Net.lobby_send`; host's contract is the lobby's job (QB-BRD2) | P3 gate test_coop_loopback, net.md |
-| B4-12 | Armory batch 2 toward 36 weapons: 10 weapons across AR, SMG, LMG, sniper, second shotgun, akimbo pistol pair, revolver, with mods + model scripts (ENV D FP sets follow) | P4 armory |
-| B4-13 | Firing range full: moving targets, armoured dummies (body armor, shield, Wrecker plate) for A3-06 piercing, damage-falloff graph, DPS readout | P4 range |
-| B4-14 | Perk decks complete: every card's modifier keys wired and behaviour-tested with ENV A hooks (P4 gate "every modifier key ≤ P4 has a behaviour test"); report missing hooks as QB | P4 |
-| B4-15 | Masks batch: +12 base shapes requested from ENV D, +16 patterns, +10 materials; mask unlock sources (payday cards, achievements stub) | P8 |
-| B4-16 | Save v2 + v1→v2 migration (armory batch 2, masks/unlocks, payday cards, Board locks, perk/skill progress), golden migration tests, corrupt-file fallback | P4 gate |
-| B4-17 | Workshop 3D orbit view: live mod swap, attach-marker previews, stat diff, gamepad orbit | P4 workshop |
-| B4-18 | Armory batch 3: last 16 weapons to 36 (incl. special weapons), mods, models; list to lead early for ENV D FP sets | P4 armory |
-| B4-19 | Stamina HUD widget (ui_hud v1.4) | QB-60 |
-| B4-20 | Achievements stub: data-driven conditions, MaskLocker.grant_unlock, small screen | P8 |
-| B5-01 | Options menu: key/pad rebinding (all InputMap actions incl. look_*), audio buses (Master/Music/SFX/Voice/Ambience), video (resolution, vsync, FOV 60–110, quality presets), gameplay (hold vs toggle for ADS/crouch/interact), accessibility (colour-blind-safe detection/HUD palettes, subtitle size); persisted in the profile | P6 polish (pulled forward) |
-| B5-02 | Notoriety ranks (PD2 infamy analog): at level 100 reset to 0 for a rank (I–XXV), rank XP bonus, rank-gated cosmetic unlocks (masks/patterns/materials), skill-point refund on rank-up; save v6 + migration; rank UI in the hub | P6 |
-| B5-03 | Music selection: per-heist track choice in pre-planning/lobby (host decides), hub jukebox; data-driven track list (ENV C supplies the stems) | P5 music |
-| B5-04 | Dockside Burn content data (P3 loud-only heist): HeistDef skeleton, contract/briefing/strings, loot defs; objective ids from ENV C's G0 `[tag]`s once its design doc lands | P3 gate |
-| B5-05 | Civilian-mode UI (S1.3): HUD civilian state, gear-pickup prompt, briefing flag display (ENV A owns `start_mode = civilian` + the gear prefab) | P5 |
-| B6-01 | P5 loot + contract catalogue: PD2-shaped LootDefs the P5 heists need (gold HEAVY, money MEDIUM, coke LIGHT, painting variants, bearer bonds LIGHT, server drives MEDIUM, deposit-box valuables), values/weights per pd2_fidelity S10; Board contract stubs for gallery_night / ostrander_federal / rolling_thunder / afterhours hidden until a HeistDef ships | P5 |
-| B6-02 | Heist stats: Tab scoreboard overlay (per crew: kills, specials, civilians, downs, accuracy, headshots) over HeistRuntime crew stats + end-of-heist awards on payday (PD2 "best of" lines); missing counters (shots/hits/headshots) → QB to ENV A | P6 |
-| B6-03 | Chat: lobby + in-heist text chat UI (open/close key, history, fade), over `Net.lobby_send` in the lobby; in-heist transport → QB to ENV A if absent | P6 |
-| B6-04 | Drop-in + kick UI: host join-request dialog (accept/deny, PD2 drop-in), joining player's loadout pick + "joining" progress, host kick menu; on mocks until ENV A's drop-in lands | P6 |
-| B6-05 | Lobby codes (game_overview §9): short shareable code ⇄ address:port (no service), join-by-code field in the lobby; LAN host list if A exposes discovery | P6 |
-| B6-06 | 3D hub mode (QC-45..49): MenuFlow loads the safehouse from data, connects `station_requested`, pauses while a screen is open, returns to the station marker, 2D hub fallback + walk/menu toggle; `notoriety` and `crew` station ids; `ui.prompt.station.<id>`; minimal hub HUD + pause menu with a quick-stations list; jukebox previews through the safehouse jukebox | C4-01 |
-| B6-07 | Heister choice (D-073): `Loadout.heister` picker, unique per lobby (first come keeps it, conflicts fall back to the next free heister), every launch slot gets a distinct heister | D-073 |
-| B6-08 | Throwable data (D-073): `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` ThrowableDefs for A3-12 + picker | A3-12 |
-| B7-01 | Career stats + profile screen: lifetime counters from HeistResult (heists by difficulty, stealth/loud, kills, specials, accuracy, downs, cash), per-heist best times, favourite weapon; save v7 + migration | P6 |
-| B7-02 | Achievements expansion: 8 → ~40 PD2-style data-driven achievements (heist/difficulty/stealth/weapon/special/crew feats) with mask/material/colour unlocks | P8 |
-| B7-03 | Contact radio (PD2 "Bain" analog): data-driven contact lines keyed by mission facts (objective_updated, alarm, assault phases, escape, loot secured), subtitle overlay (accessibility subtitle size), `vo.<contact>.<line>` keys; lines for the 4 existing heists | P5 charm |
-| B7-04 | Weapon finishes: earned cosmetic finishes (colour/material/pattern) from payday cards and achievements, applied through WeaponVisual material overrides; workshop preview | P8 |
+| B4-05 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Payday card pick (1 of 3, 30 s auto-pick, card types) | P9 |
+| B4-06 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). The Board + contract broker (contacts, rotating contracts, pro jobs) | C1 |
+| B4-07 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Safehouse hub UI layer (screens the 3D hub will host) + GSR accent UI theme pass | C9, D-035 |
+| B4-09 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Loot `loot.cash_bricks` (MEDIUM, PD2 money-bag value shape) + strings for Night Deposit objectives (from the G0 `[tag]`s) | QC-13 |
+| B4-10 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Shadow Ledger data: loot `loot.ledger_laptop` (LIGHT), `loot.ledger_drives` (MEDIUM), `loot.ledger_books` (MEDIUM), `loot.painting` (LIGHT, PD2 painting shape; was MEDIUM); preplan library assets `asset.intel_laptop`, `asset.gondola_left_hung`, `asset.riser_panel`; objective strings from the G0 `[tag]`s | QC-15/16 |
+| B4-08 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). D-038 follow-ups: strings for QA-14, `ui.blocked.*` rename, drop `stealth.ecm_feedback` grants, PreplanResult per preplanning.md (+ `resolve_ids`, points read from the map) | — |
+| B4-11 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Co-op lobby UI on the Net API: host/join (IP + loopback), 4 crew slots incl. AI fill, ready states, loadout/mask summary per slot, plan vote + Board contract over `Net.lobby_send`; host's contract is the lobby's job (QB-BRD2) | P3 gate test_coop_loopback, net.md |
+| B4-12 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Armory batch 2 toward 36 weapons: 10 weapons across AR, SMG, LMG, sniper, second shotgun, akimbo pistol pair, revolver, with mods + model scripts (ENV D FP sets follow) | P4 armory |
+| B4-13 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Firing range full: moving targets, armoured dummies (body armor, shield, Wrecker plate) for A3-06 piercing, damage-falloff graph, DPS readout | P4 range |
+| B4-14 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Perk decks complete: every card's modifier keys wired and behaviour-tested with ENV A hooks (P4 gate "every modifier key ≤ P4 has a behaviour test"); report missing hooks as QB | P4 |
+| B4-15 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Masks batch: +12 base shapes requested from ENV D, +16 patterns, +10 materials; mask unlock sources (payday cards, achievements stub) | P8 |
+| B4-16 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Save v2 + v1→v2 migration (armory batch 2, masks/unlocks, payday cards, Board locks, perk/skill progress), golden migration tests, corrupt-file fallback | P4 gate |
+| B4-17 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Workshop 3D orbit view: live mod swap, attach-marker previews, stat diff, gamepad orbit | P4 workshop |
+| B4-18 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Armory batch 3: last 16 weapons to 36 (incl. special weapons), mods, models; list to lead early for ENV D FP sets | P4 armory |
+| B4-19 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Stamina HUD widget (ui_hud v1.4) | QB-60 |
+| B4-20 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Achievements stub: data-driven conditions, MaskLocker.grant_unlock, small screen | P8 |
+| B5-01 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Options menu: key/pad rebinding (all InputMap actions incl. look_*), audio buses (Master/Music/SFX/Voice/Ambience), video (resolution, vsync, FOV 60–110, quality presets), gameplay (hold vs toggle for ADS/crouch/interact), accessibility (colour-blind-safe detection/HUD palettes, subtitle size); persisted in the profile | P6 polish (pulled forward) |
+| B5-02 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Notoriety ranks (PD2 infamy analog): at level 100 reset to 0 for a rank (I–XXV), rank XP bonus, rank-gated cosmetic unlocks (masks/patterns/materials), skill-point refund on rank-up; save v6 + migration; rank UI in the hub | P6 |
+| B5-03 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Music selection: per-heist track choice in pre-planning/lobby (host decides), hub jukebox; data-driven track list (ENV C supplies the stems) | P5 music |
+| B5-04 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Dockside Burn content data (P3 loud-only heist): HeistDef skeleton, contract/briefing/strings, loot defs; objective ids from ENV C's G0 `[tag]`s once its design doc lands | P3 gate |
+| B5-05 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Civilian-mode UI (S1.3): HUD civilian state, gear-pickup prompt, briefing flag display (ENV A owns `start_mode = civilian` + the gear prefab) | P5 |
+| B6-01 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). P5 loot + contract catalogue: PD2-shaped LootDefs the P5 heists need (gold HEAVY, money MEDIUM, coke LIGHT, painting variants, bearer bonds LIGHT, server drives MEDIUM, deposit-box valuables), values/weights per pd2_fidelity S10; Board contract stubs for gallery_night / ostrander_federal / rolling_thunder / afterhours hidden until a HeistDef ships | P5 |
+| B6-02 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Heist stats: Tab scoreboard overlay (per crew: kills, specials, civilians, downs, accuracy, headshots) over HeistRuntime crew stats + end-of-heist awards on payday (PD2 "best of" lines); missing counters (shots/hits/headshots) → QB to ENV A | P6 |
+| B6-03 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Chat: lobby + in-heist text chat UI (open/close key, history, fade), over `Net.lobby_send` in the lobby; in-heist transport → QB to ENV A if absent | P6 |
+| B6-04 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Drop-in + kick UI: host join-request dialog (accept/deny, PD2 drop-in), joining player's loadout pick + "joining" progress, host kick menu; on mocks until ENV A's drop-in lands | P6 |
+| B6-05 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Lobby codes (game_overview §9): short shareable code ⇄ address:port (no service), join-by-code field in the lobby; LAN host list if A exposes discovery | P6 |
+| B6-06 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). 3D hub mode (QC-45..49): MenuFlow loads the safehouse from data, connects `station_requested`, pauses while a screen is open, returns to the station marker, 2D hub fallback + walk/menu toggle; `notoriety` and `crew` station ids; `ui.prompt.station.<id>`; minimal hub HUD + pause menu with a quick-stations list; jukebox previews through the safehouse jukebox | C4-01 |
+| B6-07 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Heister choice (D-073): `Loadout.heister` picker, unique per lobby (first come keeps it, conflicts fall back to the next free heister), every launch slot gets a distinct heister | D-073 |
+| B6-08 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Throwable data (D-073): `throwable.frag` / `concussion` / `incendiary` / `throwing_knife` ThrowableDefs for A3-12 + picker | A3-12 |
+| B7-01 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Career stats + profile screen: lifetime counters from HeistResult (heists by difficulty, stealth/loud, kills, specials, accuracy, downs, cash), per-heist best times, favourite weapon; save v7 + migration | P6 |
+| B7-02 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Achievements expansion: 8 → ~40 PD2-style data-driven achievements (heist/difficulty/stealth/weapon/special/crew feats) with mask/material/colour unlocks | P8 |
+| B7-03 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Contact radio (PD2 "Bain" analog): data-driven contact lines keyed by mission facts (objective_updated, alarm, assault phases, escape, loot secured), subtitle overlay (accessibility subtitle size), `vo.<contact>.<line>` keys; lines for the 4 existing heists | P5 charm |
+| B7-04 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Weapon finishes: earned cosmetic finishes (colour/material/pattern) from payday cards and achievements, applied through WeaponVisual material overrides; workshop preview | P8 |
 
 | C2-00 | G0 design docs: Night Deposit and Shadow Ledger (stealth-only) | level_standards §9 |
 | C4-01 | 3D safehouse hub (fidelity C9): explorable safehouse whose stations are interactables calling `MenuFlow.open_station` (Board, planning table, armory/workshop bench, mask bench, jukebox, Notoriety, firing-range door); B's 2D hub stays as the menu fallback | P4 hub |
@@ -101,9 +101,9 @@ Task ids such as `A1-03` are referenced in status files, commits and messages.
 | A2-08 | Glasshouse feedback from ENV C (D-037): VariantResolver conditional forcing (`force_if`), per-slot `requires`, `min_difficulty` on rare events, per-difficulty scalar weights; window prefab glass sized from the visual's `Glass` AABB; safe KEYCARD method (reader-bound); one-way push-bar door (fire exits); security_camera collision kept in front of its wall-mount pivot | (QC-7) |
 | A2-07 | Restrained/hostage stimuli, stealth-only heist mode (alarm = fail), pre-planning asset hooks (spawn choice, asset drops, modifier assets) | S6.4, S11.3, C3 |
 
-| B2-01 | Pre-planning + assets UI: HeistDef.preplanning, favors budget, location choice on the map blueprint, asset purchase, plan vote stub | C3 |
-| B2-02 | Briefing screen: contact portrait slot, objectives, loot, escape options | C2 |
-| B2-03 | Mask customization data/UI (base shapes from ENV D, colours/patterns/materials) | P8 |
+| B2-01 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Pre-planning + assets UI: HeistDef.preplanning, favors budget, location choice on the map blueprint, asset purchase, plan vote stub | C3 |
+| B2-02 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Briefing screen: contact portrait slot, objectives, loot, escape options | C2 |
+| B2-03 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Mask customization data/UI (base shapes from ENV D, colours/patterns/materials) | P8 |
 
 ## P1: Vertical slice (detailed)
 
@@ -134,14 +134,14 @@ Routine and Brutal. Solo-first, with every system written authority-correct.
 ### ENV B: Content & Progression
 | Id | Task | Depends |
 |---|---|---|
-| B1-01 | Data: `weapon.kestrel_p9` pistol + mods (suppressor, reflex sight, extended mag), melee knife, 2 armors (Tailored Suit, Patrol Vest), deployables (doctor bag, ammo bag, body bag case), loot defs (jewelry, cash, body bag), difficulty defs (Routine, Brutal), concealment curve | — |
-| B1-02 | `LoadoutResolver` (stats, concealment, DR) + display-stat calculator + golden tests | B1-01 |
-| B1-03 | Weapon model scripts for the pistol and its mods (`tools/blender/weapons/`), using ENV C's `tools/blender/lib` once C1-01 lands (until then, a thin local shim that will be deleted) | C1-01 |
-| B1-04 | UI: main menu → heist select (difficulty) → loadout screen (simple) → launch; in-heist HUD bound to LocalHudModel (detection chevrons, interaction bar, ammo, health/armor, pager timer, bag, objectives, assault banner, teammates); payday/results screen (cash, XP breakdown) | A1-11 |
-| B1-05 | Firing range v1 (`content/range/`): greybox lanes using ENV C greybox kit, distance markers, static targets, damage numbers, live stat panel, loadout swap | C1-02 |
-| B1-06 | `SaveService` v1 (profile: cash, stash, xp, level, owned weapons/mods, loadout), migration scaffold | — |
-| B1-07 | Strings table + P1 voice-line text (Mercer + crew barks) + payout calculator (S10.4) | — |
-| B1-08 | Mask v1: one procedural mask (ENV C mesh request) + mask equip data | — |
+| B1-01 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Data: `weapon.kestrel_p9` pistol + mods (suppressor, reflex sight, extended mag), melee knife, 2 armors (Tailored Suit, Patrol Vest), deployables (doctor bag, ammo bag, body bag case), loot defs (jewelry, cash, body bag), difficulty defs (Routine, Brutal), concealment curve | — |
+| B1-02 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). `LoadoutResolver` (stats, concealment, DR) + display-stat calculator + golden tests | B1-01 |
+| B1-03 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Weapon model scripts for the pistol and its mods (`tools/blender/weapons/`), using ENV C's `tools/blender/lib` once C1-01 lands (until then, a thin local shim that will be deleted) | C1-01 |
+| B1-04 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). UI: main menu → heist select (difficulty) → loadout screen (simple) → launch; in-heist HUD bound to LocalHudModel (detection chevrons, interaction bar, ammo, health/armor, pager timer, bag, objectives, assault banner, teammates); payday/results screen (cash, XP breakdown) | A1-11 |
+| B1-05 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Firing range v1 (`content/range/`): greybox lanes using ENV C greybox kit, distance markers, static targets, damage numbers, live stat panel, loadout swap | C1-02 |
+| B1-06 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). `SaveService` v1 (profile: cash, stash, xp, level, owned weapons/mods, loadout), migration scaffold | — |
+| B1-07 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Strings table + P1 voice-line text (Mercer + crew barks) + payout calculator (S10.4) | — |
+| B1-08 | ✅ DONE (B audit c2ebc7a0, docs/status/env_b.md). Mask v1: one procedural mask (ENV C mesh request) + mask equip data | — |
 
 ### ENV C: Worlds & Art
 | Id | Task | Depends |

@@ -107,6 +107,23 @@ static func choice(parent: Container, s: GameSettings, section: StringName, key:
 	return ob
 
 
+## Shows the setting's current value on its row control `c` (built by slider / toggle / choice) after the draft
+## changed under it (a quality preset rewrites several video rows). Writing the same value back is a no-op.
+static func sync(c: Control, s: GameSettings, section: StringName, key: StringName) -> void:
+	var v: Variant = s.get_value(section, key)
+	if c is HSlider:
+		if not is_equal_approx((c as HSlider).value, float(v)):
+			(c as HSlider).value = float(v)
+	elif c is CheckButton:
+		if (c as CheckButton).button_pressed != bool(v):
+			(c as CheckButton).button_pressed = bool(v)
+	elif c is OptionButton:
+		var ob: OptionButton = c as OptionButton
+		for i: int in range(ob.item_count):
+			if ob.get_item_metadata(i) == v and ob.selected != i:
+				ob.select(i)
+
+
 ## Deferred grab_focus that skips controls freed or removed in the meantime (pages are rebuilt).
 static func focus_later(c: Control) -> void:
 	var grab: Callable = func() -> void:

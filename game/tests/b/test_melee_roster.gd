@@ -2,13 +2,14 @@
 ## (L3.9: charge, knockdown, silent; concealment counts, S2.4), strings, and the loadout picker lists them all.
 extends TestCase
 
-const SETS: Array[StringName] = [&"melee_knife", &"melee_blunt", &"melee_blade"]
+const SETS: Array[StringName] = [&"melee_knife", &"melee_blunt", &"melee_blade", &"melee_heavy"]
 ## ENV D's arms rigs pick each set's charge_start length from the first def whose id holds one of these fragments
 ## (tools/blender/characters/_arms_sets.py MELEE_MATCH); every def must be found under its own set.
 const MELEE_MATCH: Dictionary = {
 	&"melee_knife": ["knife", "dagger", "shank"],
 	&"melee_blunt": ["baton", "bat", "club", "hammer", "pipe", "crowbar", "wrench"],
 	&"melee_blade": ["machete", "sword", "katana", "axe", "cleaver"],
+	&"melee_heavy": ["sledge", "fire_axe"],
 }
 
 
@@ -35,7 +36,9 @@ func test_twelve_melees_cover_every_set() -> void:
 			hit = hit or String(d.id).contains(String(frag))
 		assert_true(hit, "%s: the id names its set (the arms rigs match by id fragment)" % d.id)
 	for s: StringName in SETS:
-		assert_true(int(per_set.get(s, 0)) >= 3, "%s has at least 3 melees (%d)" % [s, int(per_set.get(s, 0))])
+		assert_true(int(per_set.get(s, 0)) >= 2, "%s has at least 2 melees (%d)" % [s, int(per_set.get(s, 0))])
+	assert_eq((ContentDB.melee(&"melee.sledgehammer") as MeleeDef).anim_set, &"melee_heavy", "two-handed (D-156)")
+	assert_eq((ContentDB.melee(&"melee.fire_axe") as MeleeDef).anim_set, &"melee_heavy")
 
 
 func test_values_are_pd2_shaped() -> void:
