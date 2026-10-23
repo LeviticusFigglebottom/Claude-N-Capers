@@ -35,6 +35,7 @@ func test_links_built_one_way_to_the_floor() -> void:
 		return
 	assert_false(link.bidirectional, "one-way: police come down only")
 	assert_true(link.has_meta(RappelLinks.META), "marked for NpcMotor")
+	assert_eq(link.navigation_layers, Door.NAV_LAYER_BREACH, "police / specials only: the crew never paths down it")
 	var end: Vector3 = link.global_transform * link.end_position
 	assert_near(end.y, 0.0, 0.1, "ends on the floor 8 m below")
 	assert_eq(RappelLinks.build(_rt.map), 0, "idempotent")
