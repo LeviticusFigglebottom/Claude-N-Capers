@@ -39,8 +39,6 @@ const KEYS: Dictionary = {
 	"plywood": ["plywood_painted", null],
 	"polymer": ["polymer_black", null],
 	"red": ["metal_painted", Color(0.7, 0.08, 0.06)],
-	"gunmetal": ["metal_painted", Color(0.42, 0.43, 0.44)],
-	"tabletop": ["metal_painted", Color(0.7, 0.69, 0.66)],
 	"terrazzo": ["terrazzo", null],
 	"tile": ["tile_ceramic_white", null],
 	"van": ["metal_painted", Color(0.32, 0.34, 0.35)],
@@ -68,8 +66,6 @@ const EXTERIOR: Array = [
 ## The stations' and props' greybox stand-ins (and any other non-box greybox mesh): [path prefix, finish key].
 const OVERRIDES: Array = [
 	["Stations/board/", "plywood"],
-	["Stations/planning/Visual/Greybox/Top", "tabletop"],   # G3: a light top, so the pendant pool reads on it
-	["Stations/planning/", "gunmetal"],   # not steel_bare: a bare metal reads black until its probe renders
 	["Stations/armory/", "oak"],
 	["Stations/masks/", "oak"],
 	["Stations/jukebox/", "walnut"],

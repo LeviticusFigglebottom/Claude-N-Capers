@@ -78,12 +78,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 119 x 83 columns (0.25 m), 16621 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 119 x 83 columns (0.25 m), 16549 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 474 polygons, cell 0.10/0.10 m
+- navmesh: 473 polygons, cell 0.10/0.10 m
 - 16 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -112,28 +112,28 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 923 surfaces checked
+- 936 surfaces checked
 
 
 ## metal_reflection: Metal surfaces have a reflection source
 
 - environment reflections: on; 10 probe(s), 1 baked VoxelGI
-- 74 metal surface(s); 73 covered only by UPDATE_ONCE probes (black until the probe first renders)
+- 75 metal surface(s); 74 covered only by UPDATE_ONCE probes (black until the probe first renders)
 
 
 ## zfight: Z-fighting
 
-- 101687 triangles checked
+- 103226 triangles checked
 
 
 ## lights: Lighting is deliberate
 
-- 26 lights, 30 fixture meshes
+- 27 lights, 31 fixture meshes
 
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 26 interior key light(s) in 11 room(s); 0 lack `viewmodel_lit`
+- 27 interior key light(s) in 11 room(s); 0 lack `viewmodel_lit`
 
 
 ## density: Dressing density
@@ -171,7 +171,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 29 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 223 eye samples, 18063 rays, sky yes, 0 void ray(s)
+- 222 eye samples, 17982 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
@@ -180,12 +180,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` (plan, exempt) | 765 | 275 | 1156 | 0 | 2196 | 164092 | 5 | TablePendantE 387, PressPendant 374, TablePendantW 340, LbWorkLight 45, WsBenchLamp 10 |
-| `SpawnView` | 612 | 291 | 1029 | 0 | 1932 | 115870 | 5 | TablePendantE 381, TablePendantW 310, PressPendant 300, LbWorkLight 28, WsBenchLamp 10 |
-| `HallWideSW` | 438 | 251 | 878 | 0 | 1567 | 86492 | 5 | TablePendantE 367, TablePendantW 269, PressPendant 204, LbWorkLight 28, WsBenchLamp 10 |
+| `TopDownPlan` (plan, exempt) | 778 | 301 | 1234 | 0 | 2313 | 166898 | 5 | TablePendantE 413, PressPendant 400, TablePendantW 366, LbWorkLight 45, WsBenchLamp 10 |
+| `SpawnView` | 625 | 317 | 1107 | 0 | 2049 | 118676 | 5 | TablePendantE 407, TablePendantW 336, PressPendant 326, LbWorkLight 28, WsBenchLamp 10 |
+| `HallWideSW` | 451 | 277 | 956 | 0 | 1684 | 89298 | 5 | TablePendantE 393, TablePendantW 295, PressPendant 230, LbWorkLight 28, WsBenchLamp 10 |
 | `BoardClose` | 44 | 34 | 327 | 0 | 405 | 13194 | 3 | TablePendantE 160, TablePendantW 143, LbWorkLight 24 |
-| `PlanningTable` | 259 | 139 | 512 | 0 | 910 | 69702 | 4 | TablePendantW 182, PressPendant 163, TablePendantE 122, LbWorkLight 45 |
-| `OldPress` | 291 | 126 | 644 | 0 | 1061 | 70192 | 4 | PressPendant 254, TablePendantW 182, TablePendantE 179, LbWorkLight 29 |
+| `PlanningTable` | 272 | 165 | 590 | 0 | 1027 | 72508 | 4 | TablePendantW 208, PressPendant 189, TablePendantE 148, LbWorkLight 45 |
+| `OldPress` | 291 | 126 | 670 | 0 | 1087 | 70192 | 4 | PressPendant 254, TablePendantE 205, TablePendantW 182, LbWorkLight 29 |
 | `LoungeFromHall` | 197 | 40 | 380 | 0 | 617 | 47574 | 3 | TablePendantW 185, PressPendant 164, LbWorkLight 31 |
 | `LoungeKitchen` | 106 | 0 | 207 | 0 | 313 | 19876 | 1 | PressPendant 207 |
 | `ArmoryBench` | 52 | 0 | 10 | 0 | 62 | 6092 | 1 | WsBenchLamp 10 |

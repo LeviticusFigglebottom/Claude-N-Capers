@@ -115,3 +115,26 @@ static func equip(p: PlayerProfile, deck_id: StringName, tw: ProgressionUiTweak)
 ## Loadout.perk_deck_cards = the active deck's unlocked count.
 static func sync(p: PlayerProfile, tw: ProgressionUiTweak) -> void:
 	p.loadout.perk_deck_cards = cards_unlocked(p, p.loadout.perk_deck, tw)
+
+
+## One line for loadout summaries: "Perk deck: Bulk (9/9 cards)", "Perk deck: none". D-164: an Understudy (Copycat)
+## loadout adds its picks per choice card and the deck its card 9 copies.
+static func summary_text(l: Loadout) -> String:
+	var d: PerkDeckDef = deck(l.perk_deck) if l != null else null
+	if d == null:
+		return UiText.t(&"ui.loadout.perk_none")
+	var text: String = UiText.t(&"ui.loadout.perk_summary", {"deck": UiText.t(StringName("%s.name" % d.id)),
+			"cards": l.perk_deck_cards})
+	var picks: PackedStringArray = PackedStringArray()
+	for i: int in range(d.cards.size()):
+		var choices: Array = d.cards[i].get("choices", []) as Array
+		if not choices.is_empty():
+			var c: Dictionary = choices[LoadoutResolver.chosen_option(l, d, i)] as Dictionary
+			picks.append(UiText.t(StringName(String(c.get("name", "")))))
+	if not picks.is_empty():
+		text += " · " + " / ".join(picks)
+	if d.cards.any(func(c: Dictionary) -> bool: return bool(c.get("mimic", false))):
+		var m: PerkDeckDef = LoadoutResolver.mimic_deck(l)
+		text += " · " + (UiText.t(&"ui.loadout.perk_copies", {"deck": UiText.t(StringName("%s.name" % m.id))}) if m != null
+				else UiText.t(&"ui.loadout.perk_copies_none"))
+	return text

@@ -136,7 +136,26 @@ func map_lights(parent: Node3D) -> int:
 		o.shadow_enabled = false
 		o.layers = 1 | VIEWMODEL_LIT_LAYER
 		_add(parent, o)
-	return L.MAP_LIGHTS.size()
+	for a: Array in L.ART_LIGHTS:
+		var marker: Node3D = root.get_node_or_null(String(a[1])) as Node3D
+		if marker == null:
+			errors.append("art light %s: no marker %s" % [a[0], a[1]])
+			continue
+		var host: Node = marker
+		while host != null and not host.has_meta(&"art_asset"):
+			host = host.get_parent()
+		if host != null:   # as MAP_LIGHTS' hosts: the art carrying the lamp is the light's fixture
+			host.set_meta(&"fixture", true)
+		var al: OmniLight3D = OmniLight3D.new()
+		al.name = String(a[0])
+		al.position = (b.call(&"global_xform", marker) as Transform3D).origin
+		al.light_color = a[2]
+		al.light_energy = float(a[3])
+		al.omni_range = float(a[4])
+		al.shadow_enabled = false
+		al.layers = 1 | VIEWMODEL_LIT_LAYER
+		_add(parent, al)
+	return L.MAP_LIGHTS.size() + L.ART_LIGHTS.size()
 
 
 ## The building's VoxelGI; its data is the baked file (bake_safehouse_gi.gd), an empty VoxelGIData until baked.

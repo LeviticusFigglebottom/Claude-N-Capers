@@ -163,6 +163,8 @@ func _build_deck_view() -> VBoxContainer:
 		p.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		grid.add_child(UiBuild.focus_panel(p))  # readable with the pad (scrolls the grid)
 		p.gui_input.connect(_on_card_input.bind(i))
+		# r292 21:9 audit: scroll again after layout, so a tall card (Copycat's mimic text) shows whole.
+		p.focus_entered.connect(func() -> void: grid_scroll.ensure_control_visible.call_deferred(p))
 		card_panels.append(p)
 		card_choice_labels.append(choice)
 		card_title_labels.append(title)
@@ -295,8 +297,11 @@ func _refresh_card(i: int, deck: PerkDeckDef, unlocked: int) -> void:
 			{"n": i + 1, "cost": UiText.group_digits(int(card.get("cost", 0)))})
 	card_name_labels[i].text = UiText.t(StringName(String(card.get("name", ""))))
 	var desc: String = UiText.t(StringName(String(card.get("desc", ""))))
+	# D-164: once a deck is copied, its COPIES line says what the card does (keeps card 9 whole at 720p, r292 audit).
+	if bool(card.get("mimic", false)) and LoadoutResolver.mimic_deck(profile.loadout) != null:
+		desc = ""
 	if i == deck.cards.size() - 1:
-		desc += "\n" + UiText.t(&"perk.shared.completion.desc")
+		desc = (desc + "\n" if desc != "" else "") + UiText.t(&"perk.shared.completion.desc")
 	card_desc_labels[i].text = desc
 	_refresh_choice(i, deck, card)
 	var state: StringName = &"unlocked" if i < unlocked else (&"next" if i == unlocked else &"locked")
