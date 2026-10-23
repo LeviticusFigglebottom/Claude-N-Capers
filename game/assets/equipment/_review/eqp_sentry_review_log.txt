@@ -24,7 +24,7 @@ OK   Yaw pivot 0.550 m above the floor (~0.55)
 OK   Muzzle -Z faces the front (-Z), level: (0.0, 0.0, -1.0)
 OK   barrel reach 0.600 m in front of the pitch pivot (~0.6)
 OK   stand footprint 0.50 x 0.44 m, nothing below the floor (0.000)
-sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/eqp/eqp_sentry_turntable.png
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/sentry2/eqp_sentry_turntable.png
 OK   AnimationPlayer with a `deploy` clip
 clip deploy 0.80 s, 3 tracks
 OK   deploy animates only under Base/Legs (not Base / Yaw / Pitch) []
@@ -33,6 +33,6 @@ OK   fold animates only under Base/Legs (not Base / Yaw / Pitch) []
 OK   deploy lasts 0.80 s (~0.8)
 OK   the legs stay above the floor through deploy (lowest -0.000 m)
 OK   deploy ends standing (0.50 x 0.44 m)
-sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/eqp/eqp_sentry_deploy.png
-sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/eqp/eqp_sentry_ingame.png
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/sentry2/eqp_sentry_deploy.png
+sheet /tmp/claude-0/-home-user-Claude-N-Capers/696800e7-ce74-56b7-b272-25a65cee83e1/scratchpad/sentry2/eqp_sentry_ingame.png
 in-game: sentry at (0.8, 0.0, 14.4)

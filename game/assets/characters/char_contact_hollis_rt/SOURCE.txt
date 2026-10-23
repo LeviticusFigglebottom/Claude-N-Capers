@@ -7,7 +7,7 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_conta
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0897, 0.1274] (model [0.0000, 1.2927, 0.1458], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0805, -0.0882] (model [0.0000, 1.6566, -0.0763], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.2018, 0.0505, 0.0344] (model [0.2018, 0.9983, 0.0369], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2035, 0.0505, 0.0347] (model [0.2035, 0.9983, 0.0372], Godot axes, rest pose)
 body_faces_culled: 5806
 body_params: {"age": 0.85, "beard_shadow": 0.8, "build": 0.85, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "hair_peak": 0.0, "height": 1.77, "lip": "auto", "skin": 2}
 bones: 52
@@ -16,5 +16,5 @@ look: Hollis 'Hammer' Reyes at the mixer's wheel (RT-G3): orange hi-vis work jac
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 33804
-tris_by_mesh: {"Body": 7216, "Gear": 926, "Hair": 1200, "Headwear": 808, "Outfit": 23654}
+tris: 33932
+tris_by_mesh: {"Body": 7216, "Gear": 926, "Hair": 1200, "Headwear": 808, "Outfit": 23782}
