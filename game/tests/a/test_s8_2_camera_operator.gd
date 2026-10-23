@@ -135,6 +135,15 @@ func test_s8_2_kill_operator_disables_all_cameras() -> void:
 	assert_true(screens.material_override != null, "Screens material off")
 
 
+## B r308 05_camera_operator: PD2, no prompt on the console while the operator sits at it; it targets again once he
+## is off duty.
+func test_s8_2_no_console_prompt_while_the_operator_is_on_duty() -> void:
+	var s: CameraStation = _station()
+	assert_false(s.interactable.aim_filter.call(_crew()), "operator at the desk: no prompt at all")
+	_kill(s.operator)
+	assert_true(s.interactable.aim_filter.call(_crew()), "operator down: the console targets again")
+
+
 func test_s8_2_dominate_operator_disables_cameras() -> void:
 	var s: CameraStation = _station()
 	s.operator.set_alert_state(Enums.AlertState.DOMINATED)
