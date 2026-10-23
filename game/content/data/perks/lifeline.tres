@@ -1,0 +1,130 @@
+[gd_resource type="Resource" script_class="PerkDeckDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/perk_deck_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"perk.lifeline"
+display_name = "Lifeline"
+description = "perk.lifeline.desc"
+cards = Array[Dictionary]([{
+"name": "perk.lifeline.card1.name",
+"desc": "perk.lifeline.card1.desc",
+"cost": 200,
+"grants": {
+&"perk.throwable": {
+"item_id": &"throwable.leech_ampule"
+},
+&"perk.leech": {
+"duration_s": 6.0,
+"cooldown_s": 40.0,
+"kill_cooldown_reduction_s": 0.0,
+"activate_heal_fraction": 0.4,
+"armor_off": true,
+"segment_fraction": 0.2,
+"kills_per_segment": 2,
+"team_heal_on_damage_fraction": 0.05,
+"no_bleedout": false,
+"zero_health_speed_mult": 1.0,
+"usable_while_downed": false
+}
+}
+}, {
+"name": "perk.shared.card2.name",
+"desc": "perk.shared.card2.desc",
+"cost": 300,
+"grants": {
+&"weapon.headshot_mult.all": 1.25
+}
+}, {
+"name": "perk.lifeline.card3.name",
+"desc": "perk.lifeline.card3.desc",
+"cost": 400,
+"grants": {
+&"defense.health_mult": 1.2,
+&"perk.leech": {
+"duration_s": 6.0,
+"cooldown_s": 40.0,
+"kill_cooldown_reduction_s": 0.0,
+"activate_heal_fraction": 0.4,
+"armor_off": true,
+"segment_fraction": 0.2,
+"kills_per_segment": 2,
+"team_heal_on_damage_fraction": 0.05,
+"no_bleedout": true,
+"zero_health_speed_mult": 0.2,
+"usable_while_downed": false
+}
+}
+}, {
+"name": "perk.shared.card4.name",
+"desc": "perk.shared.card4.desc",
+"cost": 600,
+"grants": {
+&"stealth.concealment_add.all": 1,
+&"progression.xp_mult": 1.45,
+&"movement.armor_penalty_mult": 0.85
+}
+}, {
+"name": "perk.lifeline.card5.name",
+"desc": "perk.lifeline.card5.desc",
+"cost": 1000,
+"grants": {
+&"perk.leech": {
+"duration_s": 10.0,
+"cooldown_s": 40.0,
+"kill_cooldown_reduction_s": 1.0,
+"activate_heal_fraction": 0.4,
+"armor_off": true,
+"segment_fraction": 0.2,
+"kills_per_segment": 2,
+"team_heal_on_damage_fraction": 0.1,
+"no_bleedout": true,
+"zero_health_speed_mult": 0.2,
+"usable_while_downed": false
+}
+}
+}, {
+"name": "perk.shared.card6.name",
+"desc": "perk.shared.card6.desc",
+"cost": 1600,
+"grants": {
+&"weapon.ammo_pickup_mult.all": 1.35,
+&"deploy.armor_bag": true
+}
+}, {
+"name": "perk.lifeline.card7.name",
+"desc": "perk.lifeline.card7.desc",
+"cost": 2400,
+"grants": {
+&"defense.health_mult": 1.1666667
+}
+}, {
+"name": "perk.shared.card8.name",
+"desc": "perk.shared.card8.desc",
+"cost": 3200,
+"grants": {
+&"weapon.damage_mult.all": 1.05,
+&"interaction.doctor_bag_speed_mult": 0.8333
+}
+}, {
+"name": "perk.lifeline.card9.name",
+"desc": "perk.lifeline.card9.desc",
+"cost": 4000,
+"grants": {
+&"progression.card_drop_quality_add": 0.1,
+&"perk.leech": {
+"duration_s": 10.0,
+"cooldown_s": 40.0,
+"kill_cooldown_reduction_s": 1.0,
+"activate_heal_fraction": 0.4,
+"armor_off": true,
+"segment_fraction": 0.1,
+"kills_per_segment": 2,
+"team_heal_on_damage_fraction": 0.1,
+"no_bleedout": true,
+"zero_health_speed_mult": 0.2,
+"usable_while_downed": true
+}
+}
+}])

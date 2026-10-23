@@ -10,6 +10,8 @@ var list_box: VBoxContainer
 var name_labels: Dictionary = {}
 ## slot -> CrewStateBadge (lead queue b; hidden while the teammate is fine) (tests).
 var badges: Dictionary = {}
+## slot -> "PAIRED" Label, shown on the teammate your gas dispenser tagged (ui_hud v1.21 perk_item.partner_slot) (tests).
+var paired_labels: Dictionary = {}
 ## slot -> heister id (Hud.set_crew_heisters); unknown slots use the model's name.
 var heisters: Dictionary = {}
 
@@ -24,7 +26,7 @@ func build() -> void:
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"crew_changed"]
+	return [&"crew_changed", &"perk_item_changed"]
 
 
 func refresh() -> void:
@@ -43,11 +45,16 @@ func refresh() -> void:
 			c.queue_free()
 		name_labels.clear()
 		badges.clear()
+		paired_labels.clear()
 		_rows.clear()
 		for m: Dictionary in crew:
 			list_box.add_child(_panel(m))
+	var partner: int = int((prop(&"perk_item", {}) as Dictionary).get("partner_slot", -1))
 	for m: Dictionary in crew:
 		_update_row(m)
+		var slot: int = int(m.get("slot", -1))
+		if paired_labels.has(slot):
+			(paired_labels[slot] as Label).visible = partner >= 0 and slot == partner
 
 
 ## PO-4 frameless row (lead note 1): the heister's colour as a thin edge, the heister's name (the model
@@ -67,8 +74,18 @@ func _panel(m: Dictionary) -> PanelContainer:
 	var name_label: Label = UiBuild.scrim_label(UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD)))
 	name_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
 	name_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN  # the scrim hugs the name (r249 contrast)
-	v.add_child(name_label)
+	var name_row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+	name_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	name_row.add_child(name_label)
+	var paired: Label = UiBuild.scrim_label(UiBuild.float_text(UiBuild.label(&"ui.hud.paired", UiBuild.HUD)))
+	paired.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
+	paired.add_theme_color_override(&"font_color", UiTokens.CYAN)
+	paired.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	paired.visible = false
+	name_row.add_child(paired)
+	v.add_child(name_row)
 	name_labels[slot] = name_label
+	paired_labels[slot] = paired
 	var armor_bar: ProgressBar = UiBuild.bar(tweak.armor_color, Vector2(160, 3))
 	v.add_child(armor_bar)
 	var health_bar: ProgressBar = UiBuild.bar(tweak.health_color, Vector2(160, 5))
