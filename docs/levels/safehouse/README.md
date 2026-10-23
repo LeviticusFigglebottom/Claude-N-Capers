@@ -45,7 +45,8 @@ Design: docs/design/heists/safehouse.md (G0 approved, D-070). Contract: docs/con
   only registered cues, so they are silent until B's cue rows land.
 * **Built by C (C4-03):** the green-enamel pendants (prop_sh_pendant_enamel), the work light on its stand
   (prop_sh_work_light), the crew van with its rear doors open (veh_sh_crew_van; tools/blender/props/safehouse.py).
-* **D's hero props (D-159, G3):** the Old Press, the jukebox cabinet and the Board's painted map are station art
+* **D's hero props (D-159, G3):** the Old Press, the jukebox cabinet, the Board's painted map and the planning table
+  (its brass lamp lit by `ART_LIGHTS`) are station art
   (`safehouse_layout.gd` `STATION_ART`: under each station's Visual, aligned to the greybox parts they replace); the
   bunk beds, gun cabinets, PPE rack, drying line and type cases are pinned in the kits. C's placement hints over D's
   `cat` (bunks, cabinets and type cases backed to a wall, the PPE rack at 1.5 m): `_scenes.py` `CAT_OVERRIDES`.
