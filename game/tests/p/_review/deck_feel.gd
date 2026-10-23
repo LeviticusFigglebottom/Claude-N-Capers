@@ -30,6 +30,7 @@ const OPEN_STOP_M: float = 7.0
 
 var _kills: int = 0
 var _open: bool = OS.get_cmdline_user_args().has("--open")
+var _open_moves: int = 0
 var _heal_events: Array[String] = []
 
 
@@ -159,12 +160,14 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 	while rt.heist_time_s < t_end and not _in_custody() and not (done.is_valid() and bool(done.call())):
 		await _hold_cover(func() -> bool: return true, 1.0)
 		var foe: NpcBase = pilot.nearest_enemy(BLOWN_PEEK_M)
-		if _open and foe == null and pilot.crew.crew_state == Enums.CrewState.NORMAL:
-			# --open (LEAD): fight in the open, no holding at the spawn: walk toward the nearest enemy until one is near.
-			var far: NpcBase = pilot.nearest_enemy(60.0)
-			if far != null:
-				await pilot.goto(far.global_position, OPEN_STOP_M, 4.0)
-				foe = pilot.nearest_enemy(BLOWN_PEEK_M)
+		if _open and pilot.crew.crew_state == Enums.CrewState.NORMAL:
+			# --open (LEAD): fight in the open, no holding at the spawn behind the bots: close to OPEN_STOP_M of the
+			# nearest enemy (seen or not) before every engagement.
+			var near: NpcBase = pilot.nearest_enemy(60.0)
+			if near != null and near.global_position.distance_to(pilot.crew.global_position) > OPEN_STOP_M + 0.5:
+				await pilot.goto(near.global_position, OPEN_STOP_M, 4.0)
+				_open_moves += 1
+			foe = pilot.nearest_enemy(BLOWN_PEEK_M)
 		if foe != null and pilot.crew.crew_state == Enums.CrewState.NORMAL:
 			await pilot.engage(foe, 1.5)
 		else:
@@ -173,8 +176,10 @@ func _fight(max_s: float, done: Callable = Callable()) -> void:
 		if h > last + 0.5 and pilot.crew.crew_state == Enums.CrewState.NORMAL:
 			_heal_events.append("+%.0f at t=%.0f (kills %d)" % [h - last, rt.heist_time_s, _kills])
 		last = h
-	note("fight %.0f s (t=%.0f..%.0f), custody %s, kills %d" % [rt.heist_time_s - t_start, t_start, rt.heist_time_s,
-		_in_custody(), _kills])
+	note("fight %.0f s (t=%.0f..%.0f), custody %s, kills %d, health %.0f/%.0f armor %.0f, at %s%s" % [
+		rt.heist_time_s - t_start, t_start, rt.heist_time_s, _in_custody(), _kills, _health(), _max_health(),
+		pilot.crew.health.armor if pilot.crew.health != null else 0.0, Po5Pilot._v(pilot.crew.global_position),
+		", open moves %d" % _open_moves if _open else ""])
 
 
 ## Enemies (alive) within `r` of the crew.
