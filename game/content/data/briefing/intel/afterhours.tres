@@ -1,0 +1,149 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_64jmu"]
+
+[resource]
+script = ExtResource("1_64jmu")
+heist_id = &"afterhours"
+map_path = "res://world/heists/afterhours/afterhours.tscn"
+variants_path = "res://world/heists/afterhours/afterhours_variants.tres"
+fixed = {
+&"code_safe": 1,
+&"guard": 2,
+&"keycard_door": 1,
+&"padlock": 1,
+&"safe": 2
+}
+groups = {
+&"camera": {
+&"cam_a": {
+"counts": {
+&"camera": 5
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_b": {
+"counts": {
+&"camera": 5
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c": {
+"counts": {
+&"camera": 5
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"guard_post": {
+&"alley_smoker": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_boh": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_floor": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_upper": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"laser_pattern": {
+&"lz_static": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"U12": 1
+}
+},
+"weight": 0.5
+},
+&"lz_sweep": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"U12": 1
+}
+},
+"weight": 0.2
+},
+&"lz_timed": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"U12": 1
+}
+},
+"weight": 0.3
+}
+},
+&"security_room_staffed": {
+&"sec_empty": {
+"counts": {},
+"rooms": {},
+"weight": 0.4
+},
+&"sec_staffed": {
+"counts": {
+&"operator": 1
+},
+"rooms": {},
+"weight": 0.6
+}
+},
+&"side_gate": {
+&"gate_chained": {
+"counts": {
+&"padlock": 1
+},
+"rooms": {},
+"weight": 0.6
+},
+&"gate_open": {
+"counts": {
+&"padlock": 1
+},
+"rooms": {},
+"weight": 0.4
+}
+}
+}
+fixed_rooms = {
+&"code_safe": {
+&"U9": 1
+},
+&"keycard_door": {
+&"U9": 1
+},
+&"safe": {
+&"G26": 1,
+&"U9": 1
+}
+}
+surprises = Array[StringName]([&"vip_party", &"off_duty_cop", &"co_op_pickup", &"rooftop_watch"])

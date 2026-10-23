@@ -140,6 +140,9 @@ var _briefing_back: Control = null
 var _range_return: Control = null
 ## True once the safehouse was entered: "home" after a heist / stub is the hub, else the main menu.
 var _in_safehouse: bool = false
+## PO r305: the 2D home of a path opened from the main menu's direct entries (main_menu, or hub for All Stations);
+## null = the safehouse path. While set, show_hub() returns there and never enters the 3D safehouse.
+var _direct_home: Control = null
 
 
 func _ready() -> void:
@@ -175,7 +178,9 @@ func _ready() -> void:
 	safehouse.pause_menu.main_menu_requested.connect(_on_hub_back)
 	heist_select = _add(SELECT_SCENE) as HeistSelect
 	stub_screen = _add(STUB_SCENE) as StubScreen
-	main_menu.safehouse_requested.connect(show_hub)
+	main_menu.safehouse_requested.connect(_enter_safehouse)
+	main_menu.station_requested.connect(_open_from_main)
+	main_menu.stations_requested.connect(_open_stations_from_main)
 	main_menu.continue_requested.connect(_quick_play)
 	hub.continue_requested.connect(_quick_play)
 	hub.station_requested.connect(open_station)
@@ -211,12 +216,17 @@ func show_screen(screen: Control) -> void:
 ## safehouse when available and picked in Options (B6-06, SafehouseHost), else the 2D HubMenu.
 ## In a co-op session the lobby is shown instead (B4-11).
 func show_hub() -> void:
-	_in_safehouse = true
 	if is_coop():
 		show_lobby()
 		return
 	profile = SaveService.load_profile(profile_slot)
 	HeistCatalog.progress_profile = profile  # D-139: the heist select freshness note reads the fresh profile
+	if _direct_home != null:  # PO r305: a path from the main menu returns to its 2D home
+		if _direct_home == hub:
+			hub.refresh_profile(profile)
+		show_screen(_direct_home)
+		return
+	_in_safehouse = true
 	if safehouse.show_home(profile):
 		return
 	hub.refresh_profile(profile)
@@ -231,7 +241,32 @@ func show_home() -> void:
 		show_screen(main_menu)
 
 
+## Main menu "Safehouse": the hub (3D when available), leaving any direct path.
+func _enter_safehouse() -> void:
+	_direct_home = null
+	show_hub()
+
+
+## PO r305: main menu entry for station `station_id` (the Board, Planning Table, Armory): the station's 2D screen with
+## no safehouse walk; Back (every station's show_hub) returns to the main menu. Returns open_station's result.
+func _open_from_main(station_id: StringName) -> bool:
+	_direct_home = main_menu
+	_in_safehouse = false
+	safehouse.leave()
+	return open_station(station_id)
+
+
+## PO r305: main menu "All Stations": the 2D HubMenu (every station, the profile panel); its stations come back to
+## it and its Back to the main menu.
+func _open_stations_from_main() -> void:
+	_direct_home = hub
+	_in_safehouse = false
+	safehouse.leave()
+	show_hub()
+
+
 func _on_hub_back() -> void:
+	_direct_home = null
 	_in_safehouse = false
 	safehouse.leave()
 	show_screen(main_menu)
@@ -246,7 +281,7 @@ func open_station(station_id: StringName) -> bool:
 	if st == null or not TARGETS.has(st.target):
 		Log.error(&"ui", "open_station: unknown station '%s'" % station_id)
 		return false
-	_in_safehouse = true
+	_in_safehouse = _direct_home == null
 	refund_preplan()
 	safehouse.station_opened(station_id)  # ducks the 3D cabinet under every screen but the jukebox
 	match st.target:

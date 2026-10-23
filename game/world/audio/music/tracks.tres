@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="MusicTrackTable" load_steps=13 format=3]
+[gd_resource type="Resource" script_class="MusicTrackTable" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://world/audio/music_track_table.gd" id="1_tbl"]
 [ext_resource type="Script" path="res://world/audio/music_track_entry.gd" id="2_ent"]
@@ -73,6 +73,13 @@ stems = "res://world/audio/music/rolling_thunder"
 unlock = &""
 default_for_heists = Array[StringName]([&"rolling_thunder"])
 
+[sub_resource type="Resource" id="e11"]
+script = ExtResource("2_ent")
+id = &"afterhours"
+stems = "res://world/audio/music/afterhours"
+unlock = &""
+default_for_heists = Array[StringName]([&"afterhours"])
+
 [resource]
 script = ExtResource("1_tbl")
-entries = Array[ExtResource("2_ent")]([SubResource("e1"), SubResource("e2"), SubResource("e3"), SubResource("e4"), SubResource("e5"), SubResource("e6"), SubResource("e7"), SubResource("e8"), SubResource("e9"), SubResource("e10")])
+entries = Array[ExtResource("2_ent")]([SubResource("e1"), SubResource("e2"), SubResource("e3"), SubResource("e4"), SubResource("e5"), SubResource("e6"), SubResource("e7"), SubResource("e8"), SubResource("e9"), SubResource("e10"), SubResource("e11")])

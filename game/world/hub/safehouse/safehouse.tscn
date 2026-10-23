@@ -11712,6 +11712,7 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.6, -1.2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/board" unique_id=101049]
 transform = Transform3D(-1, 0, 0, 0, 0.9979777, 0.06356547, 0, 0.06356547, -0.9979777, 0, 0.100000024, -1.7)
@@ -11736,12 +11737,13 @@ metadata/fixture = true
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1.25)
 
 [node name="Interactable" parent="Stations/planning" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/planning" unique_id=101053]
-transform = Transform3D(-1, 0, 0, 0, 0.91914505, 0.39391932, 0, 0.39391932, -0.91914505, 0, 1.7, -1.75)
+transform = Transform3D(-1, 0, 0, 0, 0.9459459, 0.32432434, 0, 0.32432434, -0.9459459, 0, 1.7, -1.75)
 metadata/fov = 55.0
 
 [node name="armory" parent="Stations" unique_id=101054 instance=ExtResource("120_sh")]
@@ -11782,12 +11784,13 @@ mesh = SubResource("sh_605")
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1)
 
 [node name="Interactable" parent="Stations/armory" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0.3)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/armory" unique_id=101062]
-transform = Transform3D(-1, 0, 0, 0, 0.8804711, 0.47409987, 0, 0.47409987, -0.8804711, 0, 1.7, -1.5)
+transform = Transform3D(-1, 0, 0, 0, 0.99846035, 0.055470034, 0, 0.055470034, -0.99846035, 0, 1.7, -1.5)
 metadata/fov = 55.0
 
 [node name="masks" parent="Stations" unique_id=101063 instance=ExtResource("120_sh")]
@@ -11828,12 +11831,13 @@ mesh = SubResource("sh_609")
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.8)
 
 [node name="Interactable" parent="Stations/masks" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -0.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.3)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/masks" unique_id=101071]
-transform = Transform3D(-1, 0, 0, 0, 0.8160244, 0.57801735, 0, 0.57801735, -0.8160244, 0, 1.7, -1.3)
+transform = Transform3D(-1, 0, 0, 0, 0.99227786, 0.12403477, 0, 0.12403477, -0.99227786, 0, 1.7, -1.3)
 metadata/fov = 55.0
 
 [node name="jukebox" parent="Stations" unique_id=101072 instance=ExtResource("120_sh")]
@@ -11855,15 +11859,16 @@ metadata/art_asset = "prop_sh_jukebox"
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.9)
 
 [node name="Interactable" parent="Stations/jukebox" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -0.35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.35, -0.35)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="Speaker" type="Node3D" parent="Stations/jukebox" unique_id=101075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -0.2)
 
 [node name="StationCam" type="Marker3D" parent="Stations/jukebox" unique_id=101076]
-transform = Transform3D(-1, 0, 0, 0, 0.86824316, 0.49613902, 0, 0.49613902, -0.86824316, 0, 1.7, -1.4)
+transform = Transform3D(-1, 0, 0, 0, 0.9486833, 0.31622782, 0, 0.31622782, -0.9486833, 0, 1.7, -1.4)
 metadata/fov = 55.0
 
 [node name="notoriety" parent="Stations" unique_id=101077 instance=ExtResource("120_sh")]
@@ -11896,12 +11901,13 @@ metadata/art_asset = "prop_sh_old_press"
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1.3)
 
 [node name="Interactable" parent="Stations/notoriety" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -0.55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.55)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/notoriety" unique_id=101083]
-transform = Transform3D(-1, 0, 0, 0, 0.9284767, 0.37139067, 0, 0.37139067, -0.9284767, 0, 1.7, -1.8)
+transform = Transform3D(-1, 0, 0, 0, 0.9874407, 0.15799055, 0, 0.15799055, -0.9874407, 0, 1.7, -1.8)
 metadata/fov = 55.0
 
 [node name="range" parent="Stations" unique_id=101084 instance=ExtResource("120_sh")]
@@ -11929,12 +11935,13 @@ mesh = SubResource("sh_614")
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.9)
 
 [node name="Interactable" parent="Stations/range" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/range" unique_id=101089]
-transform = Transform3D(-1, 0, 0, 0, 0.919145, 0.39391932, 0, 0.39391932, -0.919145, 0, 1.7, -1.4)
+transform = Transform3D(-1, 0, 0, 0, 0.9778024, 0.20952913, 0, 0.20952913, -0.9778024, 0, 1.7, -1.4)
 metadata/fov = 55.0
 
 [node name="crew" parent="Stations" unique_id=101090 instance=ExtResource("120_sh")]
@@ -11978,6 +11985,7 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.4, -0.9)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/crew" unique_id=101098]
 transform = Transform3D(-1, 0, 0, 0, 0.9701424, 0.24253568, 0, 0.24253568, -0.9701424, 0, 0.30000007, -1.4)
@@ -12012,6 +12020,7 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.4, -1.1)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
 script = ExtResource("124_sh")
 kind = &"hub_station"
+aim_radius_m = 0.4
 
 [node name="StationCam" type="Marker3D" parent="Stations/profile" unique_id=101104]
 transform = Transform3D(-1, 0, 0, 0, 0.9805807, 0.19611618, 0, 0.19611618, -0.9805807, 0, 0.30000007, -1.6)

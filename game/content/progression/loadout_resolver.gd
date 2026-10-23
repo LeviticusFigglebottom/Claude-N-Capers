@@ -289,7 +289,27 @@ static func card_grants(loadout: Loadout, deck: PerkDeckDef, index: int) -> Dict
 	if bool(card.get("mimic", false)):
 		var mimic: PerkDeckDef = mimic_deck(loadout)
 		if mimic != null:
-			_merge(out, mimic.mimic_grants, String(card_source(deck, index)))
+			_merge(out, _mimic_ratios(loadout, deck, index, out, mimic.mimic_grants), String(card_source(deck, index)))
+	return out
+
+
+## LEAD r304 (PD2 sums armor / health multipliers): a mimicked MULT bonus adds to the deck's running total instead of
+## multiplying it. With `total` the product of this key over cards 0..index-1 and this card so far (1 + the summed
+## bonuses, authoring rule 2), a mimic step m grants (total + m) / total, so card-1 armor 1.05 + Ironclad 1.05 = 1.10.
+## Crew-wide (`team.*`) keys pass through unchanged to the TEAM source.
+static func _mimic_ratios(loadout: Loadout, deck: PerkDeckDef, index: int, own: Dictionary,
+		mimic_grants: Dictionary) -> Dictionary:
+	var tree: SkillTreeDef = SkillPoints.tree_def()
+	var out: Dictionary = {}
+	for key: Variant in mimic_grants:
+		var k: StringName = StringName(key)
+		var v: Variant = mimic_grants[key]
+		if ModifierKeys.type_of(k) == ModifierKeys.Type.MULT and not tree.is_team_key(k):
+			var total: float = float(own.get(k, 1.0))
+			for j: int in range(index):
+				total *= float(card_grants(loadout, deck, j).get(k, 1.0))
+			v = (total + float(v) - 1.0) / total
+		out[key] = v
 	return out
 
 

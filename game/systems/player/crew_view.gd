@@ -234,6 +234,7 @@ func _process(delta: float) -> void:
 	# P1-03: arms' rate
 	_ads_weight = move_toward(_ads_weight, 1.0 if CrewView.is_aiming(_crew) else 0.0, delta * CrewView.ads_rate(_crew))
 	cam.fov = gs.fov() / lerpf(1.0, mag, ads_blend)
+	_publish_ads()
 	_update_viewmodel_camera(cam)
 	_update_scope(st, mag)
 	_local_view = self
@@ -262,6 +263,16 @@ func _update_scope(st: WeaponStats, mag: float) -> void:
 	_publish_scope(t > 0.5)
 	if _vm_image != null and is_instance_valid(_vm_image):
 		_vm_image.visible = t < tw.scope_hide_gun_at
+
+
+## PO (2026-10-23): PD2 hides the crosshair while aiming down sights. The local HUD model carries `ads_blend` (0 hip
+## .. 1 ADS, this view's eased weight), written here every frame like `scoped_ads`; ENV B fades the crosshair by it.
+## Duck-typed until ENV A's field is on this branch.
+func _publish_ads() -> void:
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	var hm: Object = rt.hud_model if rt != null else null
+	if hm != null and &"ads_blend" in hm:
+		hm.set(&"ads_blend", ads_blend)
 
 
 ## ui_hud.md v1.16 (ENV A e308d22e): the local HUD model carries `scoped_ads` and `scope_ring` (the ocular's

@@ -134,6 +134,13 @@ static func keycap_variation(text: String) -> StringName:
 
 
 ## Marks `b` as a tertiary action (Back, Reset): no fill until hovered. Returns `b`.
+## Marks `b` as a Back / Cancel / Leave button: the standard panelled Button (LEAD r299 / r304: a ghost reads faint
+## over the 3D safehouse and the briefing backdrops) with the back click. Returns `b`.
+static func back(b: Button) -> Button:
+	sfx(b, UiSfx.KIND_BACK)
+	return b
+
+
 static func ghost(b: Button) -> Button:
 	b.theme_type_variation = GHOST
 	sfx(b, UiSfx.KIND_BACK)
@@ -193,12 +200,12 @@ static func spacer() -> Control:
 	return c
 
 
-## PO-4 footer band (style.md §2): `back` (made ghost) on the left, `middle` controls after it, then
-## `primary_button` (made primary) pushed to the right. Either may be null.
-static func footer(back: Button, primary_button: Button = null, middle: Array[Control] = []) -> HBoxContainer:
+## PO-4 footer band (style.md §2): `back_button` (made back(): panelled, LEAD r304) on the left, `middle` controls
+## after it, then `primary_button` (made primary) pushed to the right. Either may be null.
+static func footer(back_button: Button, primary_button: Button = null, middle: Array[Control] = []) -> HBoxContainer:
 	var h: HBoxContainer = hbox(UiTokens.S3)
-	if back != null:
-		h.add_child(ghost(back))
+	if back_button != null:
+		h.add_child(back(back_button))
 	for c: Control in middle:
 		h.add_child(c)
 	h.add_child(spacer())

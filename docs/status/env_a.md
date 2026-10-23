@@ -4,6 +4,46 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-55) Door.civilian_allowed for AH guest doors (LEAD r305, P G1 casing blocker) (2026-10-23)
+- `door.gd`: `@export var civilian_allowed: bool = false` (Interaction group), passed to the interactable in
+  `_apply_lock_interaction` (so `relock()` keeps it). Default false = staff door (`ui.blocked.civilian`). C sets it on
+  the guest doors (c6589729).
+- Tests: new a/test_ah_door_civilian 2/2 (civilian opens a guest door, staff door refused; relock keeps the flag);
+  a/test_s1_3_civilian_mode 5/5, a/test_gn_staff_doors 2/2, a/test_a2_01_doors_nav 11/11, a/test_gn_door_relock 4/4,
+  a/test_d116_door_breach 2/2, a/test_a1_03_prefab_shapes 7/7. gdlint, ownership, banned clean.
+
+### (-54) BagLift: a send to every other landing on 3+ landing lifts (LEAD r304) (2026-10-23)
+- `bag_lift.gd`: with 3+ landings each landing gets one `send_lift` button per other landing (`LandingSend<i>_<j>`,
+  stacked above its panel, in `send_buttons[i][j]`), enabled only while the car stands there; the landing panel then
+  only calls the car (enabled while the car is elsewhere). 2-landing lifts are unchanged. Same replicated state and
+  lockdown gating (`_availability`). Labels: `send_prompt_keys` per landing, fallback `ui.prompt.send_lift_to_<j>`.
+- RT `GoodsLift`: `ui.prompt.send_lift_ground` / `ui.prompt.send_lift_deck2` / `ui.prompt.send_lift_roof` (B owns the strings).
+- PO-5 auto_loud pilot sends to the landing nearest the secure zone through the send button (`_lift_send`, `_lift_top`).
+- `test_of_a2_prefab_enable`: the rappel-link path query now uses the breach layer (follow-up to 88c955bc; was red).
+- Tests: a/test_a3_09_bag_lift 9/9 (new `test_three_landings_send_straight_to_the_roof`: ground → roof, 2 bags, one
+  send), a/test_rt_a6_mission 14/14, a/test_po6_14_bot_catch_bag 7/7, a/test_of_mission_loud 6/6,
+  a/test_of_a2_prefab_enable 5/5, a/test_d105_prefab_surfaces 6/6, c/test_rt_goods_lift_throw 1/1,
+  c/test_of_hoist_panel 1/1, c/test_of_cash_lift_throw 1/1. gdlint, ownership, banned clean.
+
+### (-53) AH-A1..A3 on C's G1, the rappel-link nav fix, the VO-coverage fix (2026-10-23)
+- **AH-A1 (d7f88cf2, 6b24b1dd, f7b40fd8):** AfterhoursMission (world/heists/afterhours/afterhours_mission.gd).
+  - Objectives casing → … → escape, the loud lockdown, escape_wait (2nd FADE + 300 s), rare events, VO hooks on B's ids.
+  - test_ah_a1_mission on a synthetic map.
+  - f7b40fd8: the gear line is built with "%s" so B's vo_coverage scanner sees it.
+- **AH-A2:**
+  - 9a335a1d: the co_op_pickup couriers are calm guards on their route and alarm when the product is gone.
+  - cef43029: off_duty_cop is a calm police observer with no pager.
+  - test_ah_a1_mission 6/6.
+- **AH-A3 (63a1e372):** test_ah_mission_map on C's real map.
+  - Covers markers, D-143 data, 4 guards, the stealth line by facts, and the loud lockdown on ClubLights / ClubSound.
+  - 4/4 on C's env/c-worlds 17b2bf29, after C fixed the courier tags + graph and OffDutyCop POLICE + scripted, both per
+    my contract. SKIPs without the map.
+- **Rappel links (88c955bc):** the runtime RappelLinks (rappel_links.gd) were on nav layer 1, so the crew pathed down
+  skylight drops (OF lantern, 8.6 m).
+  - C traced it. Now on Door.NAV_LAYER_BREACH (police / specials only).
+  - test_qc41_rappel asserts it.
+  - OF auto_loud seed 1: was a timeout with 336 STUCK at the lantern; now PASS at 1250 s, 9 STUCK, none there.
+
 ### (-52) All-shipped-heists harness sweep (LEAD r296..299), Routine, headless, real menus (2026-10-23)
 Code: env/a-core (trunk r294..299 + A). `DIRECT=1 HEADLESS=1 run_po5.sh <flow> <seed> 3000 <out> "<Heist>" Routine`, plus
 the X4 stealth tests.

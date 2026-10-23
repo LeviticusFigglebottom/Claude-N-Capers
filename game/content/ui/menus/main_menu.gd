@@ -1,16 +1,31 @@
-## Main menu: Safehouse (the hub, B4-07), Firing Range, Settings (stub), Quit. Owner: ENV B.
+## Main menu: Safehouse (the hub, B4-07), the direct stations (PO r305: the Board, the Planning Table, the Armory and
+## All Stations open as 2D screens without walking the 3D safehouse; Back returns here), Firing Range, Settings, Quit.
+## Owner: ENV B.
 ## Shows the profile's level and money. Signals are handled by MenuFlow.
 class_name MainMenu
 extends UiScreen
 
 signal safehouse_requested()
+## PO r305: a hub station straight from the main menu (HubStation.id: board, planning, armory).
+signal station_requested(station_id: StringName)
+## PO r305: the 2D station list (HubMenu) straight from the main menu.
+signal stations_requested()
 signal firing_range_requested()
 signal settings_requested()
 signal quit_requested()
 ## Lead: relaunch the last job (QuickPlay).
 signal continue_requested()
 
+## PO r305: the stations with their own main-menu entry, in list order (the rest are under All Stations).
+const DIRECT_STATIONS: Array[StringName] = [&"board", &"planning", &"armory"]
+## Their entry labels (the safehouse station names, data/ui/hub_stations.tres).
+const STATION_KEYS: Dictionary = {&"board": &"ui.hub.station.board", &"planning": &"ui.hub.station.planning",
+	&"armory": &"ui.hub.station.armory_workshop"}
+
 var safehouse_button: Button
+## PO r305: station id -> its direct entry Button (DIRECT_STATIONS order).
+var station_buttons: Dictionary = {}
+var stations_button: Button
 var range_button: Button
 var settings_button: Button
 var quit_button: Button
@@ -25,9 +40,12 @@ var hero_name: Label
 ## PO-4 layout (docs/design/ui/style.md): the wordmark and tagline over a short list of big caps
 ## entries on the left third, the crew's level / money as caption + value pairs along the bottom.
 func build_ui() -> void:
-	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
+	var root: VBoxContainer = UiBuild.vbox(UiTokens.S2)
 	root.alignment = BoxContainer.ALIGNMENT_CENTER
-	UiBuild.screen_margin(self, root, UiTokens.MARGIN + UiTokens.S5)
+	var frame: MarginContainer = UiBuild.screen_margin(self, root, UiTokens.MARGIN + UiTokens.S5)
+	# PO r305: nine entries (with Continue) and the profile line fit 720p: a shorter top / bottom margin, a tight list.
+	for side: String in ["margin_top", "margin_bottom"]:
+		frame.add_theme_constant_override(side, UiTokens.S6)
 	var title: Label = UiBuild.label(&"ui.menu.title", UiBuild.DISPLAY)
 	title.uppercase = true
 	root.add_child(title)
@@ -39,26 +57,37 @@ func build_ui() -> void:
 	root.add_child(rule)
 	root.add_child(UiBuild.caption(&"ui.menu.tagline"))
 	var spacer: Control = Control.new()
-	spacer.custom_minimum_size = Vector2(0, UiTokens.S6)
+	spacer.custom_minimum_size = Vector2(0, UiTokens.S3)
 	root.add_child(spacer)
+	var list: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	root.add_child(list)
 	continue_button = UiBuild.button(&"ui.menu.continue")
 	continue_button.pressed.connect(continue_requested.emit)
 	safehouse_button = UiBuild.button(&"ui.menu.safehouse")
+	var entries: Array[Button] = [continue_button, safehouse_button]
+	for id: StringName in DIRECT_STATIONS:
+		var sb: Button = UiBuild.button(STATION_KEYS[id] as StringName)
+		sb.pressed.connect(station_requested.emit.bind(id))
+		station_buttons[id] = sb
+		entries.append(sb)
+	stations_button = UiBuild.button(&"ui.menu.stations")
+	stations_button.pressed.connect(stations_requested.emit)
 	range_button = UiBuild.button(&"ui.menu.firing_range")
 	settings_button = UiBuild.button(&"ui.menu.options")
 	quit_button = UiBuild.button(&"ui.menu.quit")
-	for b: Button in [continue_button, safehouse_button, range_button, settings_button, quit_button]:
+	entries.append_array([stations_button, range_button, settings_button, quit_button])
+	for b: Button in entries:
 		b.theme_type_variation = UiBuild.MENU_ITEM  # D-090: focus + confirm cues come with UiBuild.button
 		b.text = b.text.to_upper()
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		b.custom_minimum_size = Vector2(440, 0)
 		b.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		root.add_child(b)
+		list.add_child(b)
 		focus_chain.append(b)
 	safehouse_button.add_theme_color_override(&"font_color", UiTokens.PAPER)
 	continue_button.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
 	var foot: Control = Control.new()
-	foot.custom_minimum_size = Vector2(0, UiTokens.S7)
+	foot.custom_minimum_size = Vector2(0, UiTokens.S3)
 	root.add_child(foot)
 	profile_label = UiBuild.label(&"", UiBuild.DIM)
 	root.add_child(profile_label)

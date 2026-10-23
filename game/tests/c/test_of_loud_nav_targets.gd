@@ -20,6 +20,9 @@ const OFF_V_M: float = 1.2
 const REACH_M: float = 0.5
 ## A breach's room-side approach: this far into the room along the marker's -Z.
 const BREACH_IN_M: float = 1.0
+## Police agents' layers in loud (NpcMotor D-122; the assault director queries the same): walkable + the breach layer,
+## which carries the police-only rappel links (P5's roof island reaches the street only through them).
+const POLICE_LAYERS: int = 1 | Door.NAV_LAYER_BREACH
 
 var _rt: HeistRuntime = null
 
@@ -140,7 +143,7 @@ func _targets() -> Array[Array]:
 	return out
 
 
-## The end of the navmesh path a -> b, searched without Godot's default 4096-polygon cap (OF's navmesh has ~4,165
+## The end of the police navmesh path a -> b (POLICE_LAYERS), searched without Godot's default 4096-polygon cap (OF's navmesh has ~4,165
 ## polygons, so a long capped search stops at the "most reachable" polygon; that is GPU-10's error, a query setting,
 ## not a map fault).
 static func _path_end(nav: RID, a: Vector3, b: Vector3) -> Vector3:
@@ -148,6 +151,7 @@ static func _path_end(nav: RID, a: Vector3, b: Vector3) -> Vector3:
 	qp.map = nav
 	qp.start_position = a
 	qp.target_position = b
+	qp.navigation_layers = POLICE_LAYERS
 	qp.path_search_max_polygons = 0
 	var qr: NavigationPathQueryResult3D = NavigationPathQueryResult3D.new()
 	NavigationServer3D.query_path(qp, qr)

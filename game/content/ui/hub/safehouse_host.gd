@@ -164,7 +164,11 @@ func leave(marker: StringName = &"") -> void:
 	station_id = &""
 	input_paused = false
 	_set_backdrop(false, false)
-	_release_mouse(true)
+	# PO-21 (P's root cause): the 2D MenuFlow keeps eating clicks, but the station release must not outlive the
+	# safehouse: a held &"station" release kept every heist / range launched from here on a free cursor (no mouse look).
+	mouse_released = true
+	flow.mouse_filter = Control.MOUSE_FILTER_STOP
+	MouseCapture.pop_release(&"station")
 
 
 ## The root's `spawn_transform(id)` (which falls back to `Spawn` itself, hub_map.md), else marker_transform().

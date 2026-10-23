@@ -33,7 +33,7 @@ const SCAN_DIRS: Array[String] = ["world", "systems", "content", "core"]
 const SCAN_EXT: Array[String] = ["gd", "tres", "tscn"]
 ## Heists grouped in the report (the shipping five); every other id is "shared".
 const REPORT_HEISTS: Array[StringName] = [
-	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night", &"rolling_thunder",
+	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night", &"rolling_thunder", &"afterhours",
 ]
 const SHARED: StringName = &"shared"
 ## Owner codes. R = B's generic radio reserve: a contact's generic radio line that the current heists never reach

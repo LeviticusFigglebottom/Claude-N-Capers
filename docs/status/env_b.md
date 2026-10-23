@@ -4,6 +4,19 @@ Owner: ENV B. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD (D-153: session_01XAPqmFJ32zHKLK9Sezymym; updated 2026-10-23 05:30)
+### Afterhours items 8-10 (D-165; built against C's map + def, env/c-worlds 46512e5e; PAIR with it)
+- **8 assets:** asset.gear_drop and asset.count_window get `heists = [afterhours]` (D-143 allow-list, like the intel assets).
+  The insider keycard needs no new asset: C's def points the library asset.inside_keycard at pp_insider_keycard.
+  alternate_entry and escape_position rows were sent to C (00e1a1e9) and are in C's def.
+- **9 briefing / blueprint:**
+  - preplanning/blueprints/afterhours.tres from blueprint_export: Ground + Balcony (new ui.preplan.floor.balcony), 22 + 14 rooms, 15 points.
+  - 36 ui.preplan.bp.afterhours.* room labels.
+  - briefing/intel/afterhours.tres from intel_export: 4 surprises. BriefingIntel.THREAT_EFFECTS gains C's effect keys guard_extra / vip_patrons / off_duty_cop / couriers.
+  - Windowed: the briefing renders at 1920x1080 (scratchpad shot).
+- **10 audit rows:** afterhours is in test_heist_text_audit.HEISTS, test_vo_coverage.HEISTS and vo_coverage.REPORT_HEISTS.
+  Still waiting for the un-hide: heist_list "hidden", test_heist_readiness / test_music rows.
+- These need C's map and def on the same trunk: test_heist_text_audit and the blueprint/intel tests read them.
+
 ### Afterhours items 1-7 built (LEAD r299 go; on env/b-content only, held off trunk until the RT ruling, D-144)
 | # | Item | Done |
 |---|---|---|
