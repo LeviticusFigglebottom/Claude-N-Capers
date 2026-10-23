@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/equipment/eqp_sentry/eqp_sentry.glb" id="1_glb"]
+
+[node name="eqp_sentry" instance=ExtResource("1_glb")]
+
+[node name="Shield" parent="Base/Yaw/Pitch" index="2"]
+visible = false

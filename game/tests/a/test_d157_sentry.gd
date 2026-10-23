@@ -82,10 +82,18 @@ func _max_ammo() -> int:
 ## Deploy costs ammo_cost_frac of the owner's ammo; it shoots the nearest visible enemy; pickup refunds and restocks.
 func test_deploy_shoot_pickup() -> void:
 	var before: int = _total_ammo()
+	var cues: Array[StringName] = []
+	var on_cue: Callable = func(id: StringName, _p: Vector3, _s: int) -> void: cues.append(id)
+	EventBus.audio_cue_requested.connect(on_cue)
 	var sg: SentryGun = _place()
 	assert_true(sg != null, "a sentry placed (fallback def until B's .tres)")
 	if sg == null:
 		return
+	await wait_frames(2)
+	EventBus.audio_cue_requested.disconnect(on_cue)
+	assert_true(cues.has(&"cue.sentry_deploy"), "B's deploy cue (%s)" % [cues])
+	var comp: InteractableComponent = sg.get_parent().get(&"interactable") as InteractableComponent
+	assert_eq(comp.prompt_key, SentryGun.PROMPT_PICKUP, "no mode skill: B's pickup prompt")
 	var paid: int = before - _total_ammo()
 	assert_near(float(paid), float(_max_ammo()) * float(SentryGun.DEFAULTS["ammo_cost_frac"]), 2.0, "40 % of the ammo")
 	var npc: NpcBase = _enemy(sg.global_position + (-sg.global_basis.z) * 8.0)
@@ -138,6 +146,10 @@ func test_sentry_modes() -> void:
 	_grant(SILENT_PARTNER, true)
 	var sg: SentryGun = _place()
 	assert_eq(sg.modes(), [SentryGun.MODE_NORMAL, SentryGun.MODE_QUIET, SentryGun.MODE_AP] as Array[StringName], "modes")
+	await wait_frames(2)
+	var comp: InteractableComponent = sg.get_parent().get(&"interactable") as InteractableComponent
+	assert_eq(comp.prompt_key, SentryGun.PROMPT_MODE, "B's mode prompt")
+	assert_eq(StringName(comp.prompt_args.get("mode", &"")), &"ui.sentry.mode.quiet", "names the next mode")
 	assert_false(sg.interact(_crew()), "a tap cycles (no pickup)")
 	assert_eq(sg.mode, SentryGun.MODE_QUIET, "quiet")
 	assert_near(sg.threat_mult(), float(p["quiet_threat_mult"]), 0.0001, "quiet: x quiet_threat_mult as a target")

@@ -7,6 +7,10 @@ extends Node
 
 signal session_changed(slot: int)
 
+## C4-03: a LOCAL system (the safehouse crew's HubInteraction): no server behind it, so it runs its own sessions on
+## any peer, also on a client connected to a session (Net.is_authority() false). Heist systems leave it false.
+var local: bool = false
+
 
 ## slot -> { "comp": InteractableComponent, "progress": float, "duration": float,
 ##           "start_pos": Vector3, "aimed": bool }
@@ -20,7 +24,7 @@ var _remote: Dictionary[int, Array] = {}
 
 
 func tick(crew: CrewController, intent: CrewIntent, delta: float) -> void:
-	if not Net.is_authority():
+	if not _authority():
 		return
 	var slot: int = crew.slot
 	if intent == null or not intent.interact:
@@ -134,20 +138,20 @@ func holders_of(comp: InteractableComponent) -> Array[int]:
 ## Active session of `slot` ({} = none). On a client: the replicated mirror
 ## {"comp", "progress" (0..1), "duration": 1.0, "remote": true} (A3-07).
 func session(slot: int) -> Dictionary:
-	if not Net.is_authority():
+	if not _authority():
 		return _remote_session(slot)
 	return _sessions.get(slot, {})
 
 
 func blocked_reason(slot: int) -> StringName:
-	if not Net.is_authority():
+	if not _authority():
 		return StringName((_remote[slot] as Array)[3]) if _remote.has(slot) else &""
 	return _blocked.get(slot, &"")
 
 
 ## Progress 0..1 of slot's active interaction (0 if none).
 func progress(slot: int) -> float:
-	if not Net.is_authority():
+	if not _authority():
 		return float((_remote[slot] as Array)[2]) if _remote.has(slot) and int((_remote[slot] as Array)[0]) != 0 else 0.0
 	if not _sessions.has(slot):
 		return 0.0
@@ -320,4 +324,9 @@ static func _container_hit(col: Node, owner: Node) -> bool:
 
 func _emit(sig: StringName, args: Array) -> void:
 	EventBus.emit_signal.callv([sig] + args)
-	Net.replicate_event(sig, args)
+	if not local:
+		Net.replicate_event(sig, args)  # a local (hub) interaction is this peer's own
+
+
+func _authority() -> bool:
+	return local or Net.is_authority()
