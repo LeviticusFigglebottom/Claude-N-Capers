@@ -90,7 +90,7 @@ func update(delta: float, tw: AnimTweak) -> void:
 		_d._prev_body_yaw = body_yaw
 	var standing: bool = _d.horizontal_speed() <= tw.move_threshold_mps
 	var held: bool = (_d._npc != null and not _d._npc.alive) or _d._interact_kind != &""
-	var now: StringName = _d.choose_clip() if standing and not held else &""
+	var now: StringName = _d._choose_clip_tick() if standing and not held else &""
 	if held:
 		pass
 	elif not standing or AnimDriver.POSE_CLIPS.has(now) or AnimDriver.ACTION_CLIPS.has(now):

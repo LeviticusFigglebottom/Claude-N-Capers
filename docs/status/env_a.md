@@ -4,6 +4,21 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-47) A4-02 re-measure + anim_driver profile (2026-10-23)
+- A4-02 was delivered in 26509c96 (entry -35). Re-measured on 5b85146c, Dockside, 4 crew, cap 24 enemies, headless:
+  - Frame: avg 7.4 ms, p95 12.2 ms. Process: avg 9.6 ms. Saturated: 4.84 ms per physics tick.
+  - Net: transforms 25.8 KB/s at 15 Hz, full state 6.3 KB.
+  - Same as the baseline, so D-158..D-164 added nothing measurable.
+- CI budgets (test_a4_02_dockside_perf, unchanged, about 2× the baselines): process avg 20 ms, frame p95 40 ms,
+  tick 12 ms, xform 96 KB/s, full state 64 KB.
+- FrameProf top: anim_driver 2.15 ms/frame (headless is always the FULL AnimLod band; windowed play LODs it),
+  npc_motor 0.62, everything else < 0.25.
+- anim_driver profile: turn 0.52, choose 0.45, left-hand IK 0.22, hold 0.19, apply 0.18, hint 0.11.
+  - TurnInPlace and the tick each ran choose_clip(). Now one _choose_clip_tick() per tick, invalidated when a one-shot
+    starts in between.
+  - Result: anim_driver 2.15 -> 2.06 ms (small; within noise).
+- Anim tests all green (anim_driver 30, d116 clips 21, turn 7, lod 9, ...).
+
 ### (-46b) D-158 amendment 8 (4c5b9248, its own commit, sent to P)
 - rt_tweak.tres: truck_window_from escort_down; wave1_exclude [stinger, phantom] from Hazardous.
 - test_d158_rt_fairness 12/12 checks the shipped values; the tests that change the tweak restore them.
