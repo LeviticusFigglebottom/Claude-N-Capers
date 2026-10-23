@@ -88,9 +88,12 @@ const THROW_SPOTS: Array = [
 ]
 const THROW_BACKS: Array[float] = [0.0, 0.8, 1.6]
 ## Underpass legs (the ramp x 34..66, the bridge x 66..84, the east cut to x 104): carriageway, north and south lanes.
-const UNDERPASS_LANES: Array[float] = [0.0, -9.5, 9.5]
+## [z, label, east end x]. The east end is the designed closure (rolling_thunder.md §Play-space closure): LorryE across
+## the eastbound lanes (x 96-100, z 0-8) and BarrierES on the south sidewalk (x 97.5-98.5): the carriageway runs in the
+## open westbound lanes (z -4) to x 101, the south sidewalk ends at x 96.5 (C, round 302 relay).
+const UNDERPASS_LANES: Array = [[-4.0, "carriageway", 101.0], [-9.5, "north sidewalk", 101.0],
+	[9.5, "south sidewalk", 96.5]]
 const UNDERPASS_WEST_X: float = 30.0
-const UNDERPASS_EAST_X: float = 101.0
 ## Kerb crossings: [label, from, to].
 const KERB_LINES: Array = [
 	["Orchard z -20 (W -> E)", Vector3(-12.5, 0.0, -20.0), Vector3(12.5, 0.0, -20.0)],
@@ -646,14 +649,15 @@ func _rt_underpass() -> bool:
 	if not await _rt_launch():
 		return false
 	var ok: bool = true
-	for z: float in UNDERPASS_LANES:
-		var lane: String = "carriageway" if z == 0.0 else ("north sidewalk" if z < 0.0 else "south sidewalk")
+	for ln: Array in UNDERPASS_LANES:
+		var z: float = float(ln[0])
+		var lane: String = String(ln[1])
 		if not await _leg("junction -> west mouth (%s)" % lane, [Vector3(UNDERPASS_WEST_X, 0.0, z)], 0.6, 240.0):
 			ok = false
 			continue
 		ok = await _straight("ramp down + under the bridge (%s)" % lane, Vector3(85.0, -5.0, z), 60.0) and ok
-		ok = await _straight("east cut to its end (%s)" % lane, Vector3(UNDERPASS_EAST_X, -5.0, z), 30.0) and ok
-		if z == 0.0:
+		ok = await _straight("east cut to its end (%s)" % lane, Vector3(float(ln[2]), -5.0, z), 30.0) and ok
+		if lane == "carriageway":
 			await shot("underpass_east_end")
 		ok = await _straight("east end -> back up the ramp (%s)" % lane, Vector3(UNDERPASS_WEST_X, 0.0, z), 90.0) and ok
 	ok = await _leg("underpass spawn row (71, -5, -9.3) on foot", [Vector3(73.0, -5.0, -9.3)], 0.6, 120.0) and ok
