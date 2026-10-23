@@ -196,13 +196,18 @@ func _box_row(parent: Node3D, it: Array) -> StaticBody3D:
 
 
 ## Seat markers (local positions) on a bench / catalog seat: `Seat` for one, `Seat0`.. for several (ENV D's seated
-## roots: the sitter's root on the marker's xz, its height the cushion top).
+## roots: the sitter's root on the marker's xz, its height the cushion top). Each of several also carries a `Seat`
+## child at its origin: CivilianTargets.seat_near (PO6-06) only finds nodes named exactly `Seat`.
 func _seats(host: Node3D, rows: Array) -> void:
 	for i: int in range(rows.size()):
 		var m: Marker3D = Marker3D.new()
 		m.name = "Seat" if rows.size() == 1 else "Seat%d" % i
 		m.position = v3(rows[i])
 		add(host, m)
+		if rows.size() > 1:
+			var c: Marker3D = Marker3D.new()
+			c.name = "Seat"
+			add(m, c)
 
 
 ## ["catalog", name, pos, yaw, asset, metas, seats]: a catalog prop as furniture (Props/MapBuilt) + its nav obstruction.
