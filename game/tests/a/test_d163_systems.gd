@@ -155,3 +155,54 @@ func test_tag_needs_a_teammate_in_reach() -> void:
 	await wait_physics_frames(2)
 	assert_eq(TagPairs.of(_rt).tag(holder, 18.0, 11.0, 60.0), -1, "30 m: out of reach")
 	assert_eq(TagPairs.of(_rt).cooldown_left(0), 0.0, "a miss costs no cooldown")
+
+
+# --- Presentation hooks (C's VfxDirector) ------------------------------------------------------
+
+## The signals are the LEAD's on EventBus; until they are declared there the test adds them as user signals.
+func _ensure_signal(sig: StringName, args: Array[Dictionary]) -> bool:
+	if EventBus.has_signal(sig):
+		return false
+	EventBus.add_user_signal(sig, args)
+	return true
+
+
+func test_fx_hooks_smoke_cloud_and_tether() -> void:
+	var added: Array[StringName] = []
+	if _ensure_signal(ThrownItem.SIGNAL_SMOKE_FX, [{"name": "position", "type": TYPE_VECTOR3},
+			{"name": "radius", "type": TYPE_FLOAT}, {"name": "duration_s", "type": TYPE_FLOAT}]):
+		added.append(ThrownItem.SIGNAL_SMOKE_FX)
+	if _ensure_signal(TagPairs.SIGNAL_TETHER_FX, [{"name": "a_slot", "type": TYPE_INT},
+			{"name": "b_slot", "type": TYPE_INT}, {"name": "active", "type": TYPE_BOOL}]):
+		added.append(TagPairs.SIGNAL_TETHER_FX)
+	var smoke: Array = []
+	var tether: Array = []
+	var on_smoke: Callable = func(p: Vector3, r: float, d: float) -> void: smoke.append([p, r, d])
+	var on_tether: Callable = func(a: int, b: int, on: bool) -> void: tether.append([a, b, on])
+	EventBus.connect(ThrownItem.SIGNAL_SMOKE_FX, on_smoke)
+	EventBus.connect(TagPairs.SIGNAL_TETHER_FX, on_tether)
+	var pos: Vector3 = _crew().global_position
+	_smoke(pos, {"radius_m": 4.0, "smoke_s": 10.0})
+	assert_eq(smoke.size(), 1, "smoke_cloud_fx once on landing")
+	assert_near(float(smoke[0][1]), 4.0, 0.0001, "the cloud's radius (B's 4 m)")
+	assert_near(float(smoke[0][2]), 10.0, 0.0001, "its duration")
+	assert_true((smoke[0][0] as Vector3).distance_to(pos) < 0.01, "at the cloud")
+	var mirror: TagPairs = TagPairs.new()
+	mirror.apply_net_state({0: [1, 11.0, 60.0]})
+	assert_eq(tether, [[0, 1, true]], "a client sees the pair form")
+	mirror.apply_net_state({0: [-1, 0.0, 50.0]})
+	assert_eq(tether[-1], [0, 1, false], "and end")
+	mirror.free()
+	var holder: CrewController = _crew()
+	_crew(1).global_position = holder.global_position + holder.aim_direction().normalized() * 6.0
+	await wait_physics_frames(2)
+	tether.clear()
+	var tp: TagPairs = TagPairs.of(_rt)
+	tp.tag(holder, 18.0, 0.1, 60.0)
+	assert_eq(tether, [[0, 1, true]], "the server: on tag")
+	await wait_physics_frames(10)
+	assert_eq(tether[-1], [0, 1, false], "the server: on expiry")
+	EventBus.disconnect(ThrownItem.SIGNAL_SMOKE_FX, on_smoke)
+	EventBus.disconnect(TagPairs.SIGNAL_TETHER_FX, on_tether)
+	for sig: StringName in added:
+		EventBus.remove_user_signal(sig)

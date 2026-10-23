@@ -4,6 +4,14 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-43) D-163 presentation hooks for C (2026-10-23)
+- EventBus smoke_cloud_fx(position, radius, duration_s): ThrownItem emits it on every peer when a smoke cloud starts,
+  with the cloud's real radius and time left.
+- crew_tether_fx(a_slot, b_slot, active): TagPairs emits it on pair form / end, on the server and on clients through
+  apply_net_state.
+- Both are emitted only when EventBus.has_signal, so the LEAD declares them in event_bus.gd.
+- Tests: test_d163_systems 7/7, test_d163_decks 5/5.
+
 ### (-42) D-163 decks on B's names, ui_hud v1.21 (2026-10-23)
 - perk.sicario (PerkSicario): the smoke bomb (kind smoke_bomb) cloud carries B's params; the cooldown starts when the
   cloud ends, and kills cut it. Twitch, dodge_restores_armor (full refill ◇), in_smoke_effect_mult (Twitch + the

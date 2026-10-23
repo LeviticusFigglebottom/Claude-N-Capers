@@ -20,6 +20,8 @@ const KIND_CONCUSSION: StringName = &"concussion"
 const KIND_INCENDIARY: StringName = &"incendiary"
 const KIND_KNIFE: StringName = &"throwing_knife"
 const KIND_SMOKE: StringName = &"smoke_bomb"  # D-163: B's ThrowableDef kind
+## EventBus smoke_cloud_fx(position: Vector3, radius: float, duration_s: float) (D-163, C's VFX).
+const SIGNAL_SMOKE_FX: StringName = &"smoke_cloud_fx"
 const KINDS: Array[StringName] = [KIND_FRAG, KIND_CONCUSSION, KIND_INCENDIARY, KIND_KNIFE, KIND_SMOKE]
 ## D-163 smoke cloud defaults ◇ (params override: radius_m, smoke_s, crew_bullet_avoid, npc_accuracy_mult).
 const SMOKE_RADIUS_M: float = 6.0
@@ -271,6 +273,9 @@ func _show_pool() -> void:
 		return
 	if kind() == KIND_SMOKE:
 		_show_smoke()
+		# D-163 presentation hook (C's VfxDirector), every peer once: the cloud's actual radius and time left.
+		if EventBus.has_signal(SIGNAL_SMOKE_FX):
+			EventBus.emit_signal(SIGNAL_SMOKE_FX, global_position, smoke_radius(), pool_left)
 		return
 	var fire: CueEmitter = CueEmitter.new()
 	fire.name = "FireLoop"

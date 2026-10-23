@@ -11,6 +11,8 @@ signal unpaired(holder_slot: int)
 
 const SERVICE: StringName = &"tag_pairs"
 const NODE_NAME: String = "TagPairs"
+## EventBus crew_tether_fx(a_slot: int, b_slot: int, active: bool) (D-163, C's VFX), every peer on pair form / end.
+const SIGNAL_TETHER_FX: StringName = &"crew_tether_fx"
 
 ## holder slot -> {"tagged": slot (-1 = none), "left": s, "cooldown": s}
 var pairs: Dictionary[int, Dictionary] = {}
@@ -36,7 +38,9 @@ func tag(holder: CrewController, max_m: float, duration_s: float, cooldown_s: fl
 	var target: CrewController = ShoutSystem.ensure(rt).ally_target_for(holder, max_m) if rt != null else null
 	if target == null:
 		return -1
+	var old: int = tagged_of(holder.slot)
 	pairs[holder.slot] = {"tagged": target.slot, "left": duration_s, "cooldown": cooldown_s}
+	_tether(holder.slot, old, target.slot)
 	paired.emit(holder.slot, target.slot)
 	return target.slot
 
@@ -81,6 +85,7 @@ func _physics_process(delta: float) -> void:
 		if float(e["left"]) > 0.0:
 			e["left"] = maxf(float(e["left"]) - delta, 0.0)
 			if float(e["left"]) <= 0.0:
+				_tether(h, int(e["tagged"]), -1)
 				e["tagged"] = -1
 				unpaired.emit(h)
 
@@ -97,4 +102,16 @@ func net_state() -> Dictionary:
 func apply_net_state(d: Dictionary) -> void:
 	for k: Variant in d:
 		var a: Array = d[k] as Array
+		var old: int = tagged_of(int(k))
 		pairs[int(k)] = {"tagged": int(a[0]), "left": float(a[1]), "cooldown": float(a[2])}
+		_tether(int(k), old, tagged_of(int(k)))
+
+
+## The tether FX for holder's pair going from tagged slot `old` to `now` (-1 = none).
+func _tether(holder: int, old: int, now: int) -> void:
+	if old == now or not EventBus.has_signal(SIGNAL_TETHER_FX):
+		return
+	if old >= 0:
+		EventBus.emit_signal(SIGNAL_TETHER_FX, holder, old, false)
+	if now >= 0:
+		EventBus.emit_signal(SIGNAL_TETHER_FX, holder, now, true)
