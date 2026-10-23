@@ -96,7 +96,7 @@ DOOR_SPECS: Dict[tuple, list] = {
     ("U", "d_u10"): ["CountRoomDoor", "LOCKPICK", "S", "steel", {"npc": NPC_STAFF}],
     ("U", "d_u7"): ["StaffStairDoorU", "NONE", "S", "steel", {}],
     ("U", "d_vip_staff"): ["VIPStaffDoor", "LOCKPICK", "W", "walnut", {"npc": NPC_STAFF}],
-    ("U", "d_office"): ["OfficeDoor", "KEYCARD", "W", "walnut", {"tag": "office"}],
+    ("U", "d_office"): ["OfficeDoor", "KEYCARD", "W", "walnut", {"tag": "office_door"}],
     ("U", "d_u12"): ["PrivateRoomDoor", "NONE", "N", "walnut", {}],
     ("U", "d_u5"): ["SecurityRoomDoor", "LOCKPICK", "E", "steel", {"npc": NPC_STAFF}],
     ("U", "d_u13"): ["StaffWCDoor", "NONE", "W", "ivory", {}],
@@ -224,10 +224,10 @@ def _escape(kind: str, sec_pos: list, sec_yaw: float, sec_size: list, esc_pos: l
             label: str) -> list:
     """The escape slot's SECURE_LOOT zone (the van), ESCAPE zone and wait marker (OF / RT pattern)."""
     m = M("EscapeWait" + kind, [esc_pos[0], 0.0, esc_pos[2]], "escape_wait", "loud: hold until the van arrives")
-    return [Pf("secure_zone", "Secure" + kind, sec_pos, sec_yaw, {"objective_tag": "secure", "zone_size_m": sec_size},
+    return [Pf("secure_zone", "Secure" + kind, sec_pos, sec_yaw, {"objective_tag": "loot_secure", "zone_size_m": sec_size},
                None, {"kind": "vehicle", "escape_label": label}, "veh_van_secure"),
             Pf("escape_zone", "Escape" + kind, esc_pos, 0.0,
-               {"objective_tag": "escape", "escape_type": "van", "zone_size_m": esc_size}, None,
+               {"objective_tag": "escape_van", "escape_type": "van", "zone_size_m": esc_size}, None,
                {"escape_label": label}, "res://world/heists/shared/escape_van_marker.tscn"), m]
 
 
@@ -248,16 +248,18 @@ def always() -> Dict[str, List[list]]:
     return {
         "Gameplay/Devices": [
             Pf("keycard_reader", "OfficeReader", [27.9, U + 1.2, 17.2], 90.0,
-               {"objective_tag": "office", "@targets": ["OfficeDoor"]}, [27.3, U, 17.2], {"mount": "wall"},
+               {"objective_tag": "office_reader", "@targets": ["OfficeDoor"]}, [27.3, U, 17.2], {"mount": "wall"},
                "prop_keycard_reader"),
         ],
         "Gameplay/Loot": [
-            # Crale's safe (LARGE, against U9's internal south wall): code / drill / C4; holds `safe_bags` (4-6)
+            # Crale's safe (LARGE, against U9's internal south wall): code / drill (A's afterhours_mission: the mission
+            # spawns `safe_bags` loot.cash_bricks at the SafeLoot marker; loud it disables the CODE method)
             Pf("safe", "OfficeSafe", [33.5, U, 20.35], 0.0,
-               {"size": "enum:LARGE", "methods": ["code", "drill", "c4"], "code_group": "office", "objective_tag": "safe",
-                "@contents": [["loot_spawn", "SafeCash", [0.0, 0.3, 0.0],
-                               {"loot_id": "loot.cash_bricks", "count": 6, "objective_tag": "safe_loot"}]]},
-               [33.5, U, 19.2], {"count_scalar": "safe_bags"}, "prop_safe_large"),
+               {"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe"},
+               [33.5, U, 19.2], {}, "prop_safe_large"),
+            Pf("drill_point", "SafeDrill", [33.5, U + 1.0, 19.9], 0.0, {"objective_tag": "safe_drill",
+                                                                        "@target": "OfficeSafe"},
+               [33.5, U, 19.2], {}, ""),
             # the door take: G26's drop safe (SMALL, drill / saw; saw 60 s), small loot x3 inside
             Pf("safe", "DropSafe", [28.0, 0.0, 27.45], 0.0,
                {"size": "enum:SMALL", "methods": ["drill", "saw"], "saw_duration_s": 60.0,
@@ -272,9 +274,8 @@ def always() -> Dict[str, List[list]]:
         ],
         "Gameplay/Markers": [
             M("CasingFoyer", [16.0, 0.0, 24.5], "casing", "casing objective marker: the foyer"),
-            M("SafeLockdown", [33.5, U, 19.5], "safe_lockdown", "loud: the mission disables the safe's CODE method"),
-            M("DJMic", [13.0, 1.3, 8.2], "dj_mic", "vo.dj.afterhours_alarm plays here (3D, the stage)"),
-            M("CourierArrival", [34.0, 0.0, -2.0], "co_op_pickup", "rare co_op_pickup: 2 couriers at the loading door"),
+            M("SafeLoot", [33.5, U + 0.3, 20.35], "safe_loot", "safe_bags x loot.cash_bricks (+1 on count_done)"),
+            M("DJStage", [13.0, 1.3, 8.2], "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"),
         ] + [M("Holdout" + h, [x, y, z], "holdout_" + h.lower(), "doc Loud holdout " + h)
              for h, x, y, z in [("H1", 31.0, U, 18.0), ("H2", 13.0, U, 20.0), ("H3", 31.0, 0.0, 4.0),
                                 ("H4", 32.0, 0.0, 17.0)]],
@@ -326,6 +327,12 @@ def fixed_spawns() -> List[list]:
         S("BoxOffice", "CIVILIAN", [23.2 + BAR_BEHIND, 0.0, 23.5], 90.0, ["civ_box_office", STAFF, "staff_front"],
           "desk_work"),
     ]
+    # rare co_op_pickup (A: 14:00): two cartel couriers at the loading door, held back (HeistRuntime's scripted tag)
+    for i, x in enumerate([33.6, 36.4]):
+        out.append(S("Courier%d" % (i + 1), "GUARD", [x, 0.0, -2.4], 0.0, ["cartel_courier", "cartel", "scripted"],
+                     "", "Courier"))
+    # rare off_duty_cop: a patron in a U1 booth (A spawns enemy.patrol_officer here)
+    out.append(S("OffDutyCop", "CIVILIAN", [20.0, U, 19.6], 180.0, ["civ_offduty"], "sit"))
     for nm, pos, yaw, idle in PATRONS:
         out.append(S(nm, "CIVILIAN", pos, yaw, ["civ_patron"], idle, "Patrons"))
     for c, (cx, cz) in enumerate(CLUSTERS):
@@ -371,7 +378,12 @@ COWER = [  # 0.21 m off walls (cower_stand), facing away from the wall
     ("CowerFoyerW", [10.31, 0.0, 23.5], -90.0), ("CowerFoyerE", [21.69, 0.0, 22.5], 90.0),
     ("CowerVIP", [11.0, U, 21.31], 180.0),
 ]
-FLEE = [("FleeMainW", [15.0, 0.0, 31.0]), ("FleeMainE", [18.0, 0.0, 31.0]), ("FleePassageS", [-1.5, 0.0, 30.0])]
+# just outside each crowd exit: the main doors (Marlin Ave) and the hall's two west fire exits (the passage)
+FLEE = [("FleeMainW", [15.0, 0.0, 31.0]), ("FleeMainE", [18.0, 0.0, 31.0]), ("FleeFireN", [-1.5, 0.0, 8.3]),
+        ("FleeFireS", [-1.5, 0.0, 19.0]), ("FleePassageS", [-1.5, 0.0, 30.0])]
+# the couriers' walk: the loading door -> G21 -> G13 -> the product rooms
+COURIER = {"Door": [35.0, 0.0, -1.6], "G21": [33.0, 0.0, 3.0], "G13E": [31.0, 0.0, 6.0], "G13Mid": [13.0, 0.0, 6.0],
+           "G10": [4.0, 0.0, 3.6], "G11": [11.0, 0.0, 3.6]}
 
 
 def graphs() -> Dict[str, list]:
@@ -403,7 +415,10 @@ def graphs() -> Dict[str, list]:
         "Cower": ["cower", 0, {nm: [p, [0.0, 0.0], "cower_stand", ["cower"], y] for nm, p, y in COWER},
                   [[COWER[i][0], COWER[i + 1][0]] for i in range(len(COWER) - 1)]],
         "CivFlee": ["civ_flee", 0, {nm: [p, [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], None] for nm, p in FLEE},
-                    [["FleeMainW", "FleeMainE"], ["FleeMainW", "FleePassageS"]]],
+                    [["FleeMainW", "FleeMainE"], ["FleeMainW", "FleePassageS"], ["FleePassageS", "FleeFireS"],
+                     ["FleeFireS", "FleeFireN"]]],
+        "Courier": ["courier", 0, pts(COURIER, [3.0, 6.0], ["courier"]),
+                    [["Door", "G21"], ["G21", "G13E"], ["G13E", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"]]],
     }
 
 
@@ -591,8 +606,7 @@ def _camera(cid: str) -> list:
 
 
 def _gear(pos: list, yaw: float, use: list) -> list:
-    return [Pf("item_pickup", "GearBag", pos, yaw, {"item_id": "item.gear", "count": 1, "objective_tag": "gear",
-                                                    "casing_allowed": True}, use, {}, "prop_bag_floor")]
+    return [Pf("gear_pickup", "GearBag", pos, yaw, {"objective_tag": "gear"}, use, {}, "prop_bag_floor")]
 
 
 def _keycard(pos: list, yaw: float, use: list) -> list:
@@ -636,23 +650,13 @@ def slot_content() -> Dict[str, List[list]]:
         "code_office_blotter": _code([31.0, U + 0.75, 18.0], 0.0, [31.0, U, 17.2]),
         "count_running": [
             S("Counter", "CIVILIAN", [29.0, U, 11.3], 0.0, ["civ_count", STAFF, "staff_upper"], "desk_work"),
-            Pf("loot_spawn", "CountCash", [28.4, U + 0.9, 10.5], 0.0,
-               {"loot_id": "loot.cash", "count": 2, "objective_tag": "count_room"}, [28.4, U, 11.3], {},
-               "prop_cash_stack"),
+            M("CountCash", [28.4, U + 0.9, 10.5], "count_cash", "2 x loot.cash (the mission spawns them)"),
         ],
         "count_done": [],
-        "prod_stock": [Pf("loot_spawn", "Product", [3.0, 0.0, 1.0], 0.0,
-                          {"loot_id": "loot.parcels", "count": 3, "objective_tag": "product"}, [3.0, 0.0, 1.8],
-                          {"count_scalar": "product_bags"}, "prop_cash_bags")],
-        "prod_green": [Pf("loot_spawn", "Product", [12.5, 1.0, 1.0], 0.0,
-                          {"loot_id": "loot.parcels", "count": 3, "objective_tag": "product"}, [12.5, 0.0, 1.8],
-                          {"count_scalar": "product_bags"}, "prop_cash_bags")],
-        "prod_private": [Pf("safe", "LockBox%d" % (i + 1), [35.4, U + 0.6 + 0.6 * i, 22.0 + 1.0 * i], 90.0,
-                            {"size": "enum:SMALL", "methods": ["lockpick", "saw"], "saw_duration_s": 15.0,
-                             "objective_tag": "product",
-                             "@contents": [["loot_spawn", "Product%d" % (i + 1), [0.0, 0.05, 0.0],
-                                            {"loot_id": "loot.parcels", "count": 1, "objective_tag": "product"}]]},
-                            [34.6, U, 22.0 + 1.0 * i], {"saw_target": True}, "prop_safe_wall_small") for i in range(3)],
+        # product: markers only (A's mission spawns product_bags x loot.parcels, +2 with extra_product)
+        "prod_stock": [M("ProductStock", [3.0, 0.1, 1.0], "product", "the stock cage (padlocked gate)")],
+        "prod_green": [M("ProductGreen", [12.5, 1.0, 1.0], "product", "on the DJs' flight cases")],
+        "prod_private": [M("ProductPrivate", [35.4, U + 0.1, 23.0], "product", "the shelving behind the lasers")],
         "lz_static": _laser("static", {"beam_count": 3}),
         "lz_sweep": _laser("sweep", {"period_s": 6.0, "sweep_beams": 1}),
         "lz_timed": _laser("timed", {"period_s": 16.0, "off_s": 4.0}),

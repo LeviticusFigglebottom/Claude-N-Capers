@@ -19,6 +19,8 @@ const PLAN_CUT: float = 1.5
 const PLAN_DEPTH: float = 2.5
 const BP_MAX_BYTES: int = 1000000
 const PROBE_WARM_FRAMES: int = 24
+## A --cameras run warms only the UPDATE_ONCE probes whose box (grown by this) holds a chosen camera.
+const PROBE_NEAR_M: float = 8.0
 const BP_GROUND: Color = Color(0.09, 0.22, 0.42)
 const BP_FLOOR: Color = Color(0.13, 0.29, 0.52)
 const BP_LINE: Color = Color(0.93, 0.96, 1.0)
@@ -79,7 +81,8 @@ func _main() -> void:
 	add_child(_cam)
 	_cam.make_current()
 	var warm: int = int(args.get("warmup", "12"))
-	await _warm_probes(int(args.get("probe-warmup", str(PROBE_WARM_FRAMES))))
+	await _warm_probes(int(args.get("probe-warmup", str(PROBE_WARM_FRAMES))),
+		String(args.get("cameras", "")).split(",", false))
 	if blueprint:
 		var label: String = heist if heist != "" else String(_map.name)
 		var extra: String = ""
@@ -124,14 +127,21 @@ func _ensure_lighting(plan: bool) -> void:
 ## UPDATE_ONCE ReflectionProbes render only once a camera sees them, over ~14-20 frames. Library metals
 ## (ORM metallic) have no diffuse, so until their probe has rendered they read black whenever the
 ## environment's reflected light source is disabled. Visit every such probe from its own centre first so
-## the first shot never catches it unrendered (black-faces root cause, LEAD approval (a)).
-func _warm_probes(frames: int) -> void:
+## the first shot never catches it unrendered (black-faces root cause, LEAD approval (a)). With --cameras only the
+## probes holding (within PROBE_NEAR_M of) a chosen camera are warmed: a large map's every probe x frames is hours on
+## lavapipe.
+func _warm_probes(frames: int, filt: PackedStringArray = PackedStringArray()) -> void:
 	if frames <= 0:
 		return
+	var eyes: Array[Vector3] = []
+	for np: NodePath in _map.review_cameras:
+		var c: Node3D = _map.get_node_or_null(np) as Node3D
+		if c != null and String(c.name) in filt:
+			eyes.append(c.global_position)
 	var probes: Array[ReflectionProbe] = []
 	for n: Node in _map.find_children("*", "ReflectionProbe", true, false):
 		var rp: ReflectionProbe = n as ReflectionProbe
-		if rp.visible and rp.update_mode == ReflectionProbe.UPDATE_ONCE:
+		if rp.visible and rp.update_mode == ReflectionProbe.UPDATE_ONCE and _probe_near(rp, eyes):
 			probes.append(rp)
 	for rp: ReflectionProbe in probes:
 		_cam.projection = Camera3D.PROJECTION_PERSPECTIVE
@@ -140,6 +150,17 @@ func _warm_probes(frames: int) -> void:
 			await get_tree().process_frame
 	if not probes.is_empty():
 		print("  warmed %d reflection probe(s), %d frames each" % [probes.size(), frames])
+
+
+## True when `eyes` is empty (every probe) or one eye is inside the probe's box grown by PROBE_NEAR_M.
+static func _probe_near(rp: ReflectionProbe, eyes: Array[Vector3]) -> bool:
+	if eyes.is_empty():
+		return true
+	var box: AABB = AABB(rp.global_position - rp.size * 0.5, rp.size).grow(PROBE_NEAR_M)
+	for e: Vector3 in eyes:
+		if box.has_point(e):
+			return true
+	return false
 
 
 func _apply_camera(n: Node3D) -> void:

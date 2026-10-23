@@ -144,7 +144,10 @@ const DOORS: Array = [
 		"VIPStaffDoor", "U", [26.0, 4.2, 18.0], 90.0, "service", "LOCKPICK", "prop_door_service_walnut_t40", 1.1,
 		{"npc": ["staff", "guard"]},
 	],
-	["OfficeDoor", "U", [28.0, 4.2, 18.0], 90.0, "service", "KEYCARD", "prop_door_service_walnut_t20", 1.1, {"tag": "office"}],
+	[
+		"OfficeDoor", "U", [28.0, 4.2, 18.0], 90.0, "service", "KEYCARD", "prop_door_service_walnut_t20", 1.1,
+		{"tag": "office_door"},
+	],
 	["PrivateRoomDoor", "U", [32.0, 4.2, 21.0], 0.0, "service", "NONE", "prop_door_service_walnut_t20", 1.1, {}],
 	[
 		"SecurityRoomDoor", "U", [26.0, 4.2, 26.0], -90.0, "service", "LOCKPICK", "prop_door_service_steel_t20", 1.1,
@@ -221,20 +224,19 @@ const ALWAYS: Dictionary = {
 	"Gameplay/Devices": [
 		[
 			"prefab", "keycard_reader", "OfficeReader", [27.9, 5.4, 17.2], 90.0,
-			{"objective_tag": "office", "@targets": ["OfficeDoor"]}, [27.3, 4.2, 17.2], {"mount": "wall"}, "prop_keycard_reader",
+			{"objective_tag": "office_reader", "@targets": ["OfficeDoor"]}, [27.3, 4.2, 17.2], {"mount": "wall"},
+			"prop_keycard_reader",
 		],
 	],
 	"Gameplay/Loot": [
 		[
 			"prefab", "safe", "OfficeSafe", [33.5, 4.2, 20.35], 0.0,
-			{
-				"size": "enum:LARGE",
-				"methods": ["code", "drill", "c4"],
-				"code_group": "office",
-				"objective_tag": "safe",
-				"@contents": [["loot_spawn", "SafeCash", [0.0, 0.3, 0.0], {"loot_id": "loot.cash_bricks", "count": 6, "objective_tag": "safe_loot"}]],
-			},
-			[33.5, 4.2, 19.2], {"count_scalar": "safe_bags"}, "prop_safe_large",
+			{"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe"}, [33.5, 4.2, 19.2],
+			{}, "prop_safe_large",
+		],
+		[
+			"prefab", "drill_point", "SafeDrill", [33.5, 5.2, 19.9], 0.0, {"objective_tag": "safe_drill", "@target": "OfficeSafe"},
+			[33.5, 4.2, 19.2], {}, "",
 		],
 		[
 			"prefab", "safe", "DropSafe", [28.0, 0.0, 27.45], 0.0,
@@ -291,9 +293,8 @@ const ALWAYS: Dictionary = {
 	],
 	"Gameplay/Markers": [
 		["marker", "CasingFoyer", [16.0, 0.0, 24.5], 0.0, "casing", "casing objective marker: the foyer"],
-		["marker", "SafeLockdown", [33.5, 4.2, 19.5], 0.0, "safe_lockdown", "loud: the mission disables the safe's CODE method"],
-		["marker", "DJMic", [13.0, 1.3, 8.2], 0.0, "dj_mic", "vo.dj.afterhours_alarm plays here (3D, the stage)"],
-		["marker", "CourierArrival", [34.0, 0.0, -2.0], 0.0, "co_op_pickup", "rare co_op_pickup: 2 couriers at the loading door"],
+		["marker", "SafeLoot", [33.5, 4.5, 20.35], 0.0, "safe_loot", "safe_bags x loot.cash_bricks (+1 on count_done)"],
+		["marker", "DJStage", [13.0, 1.3, 8.2], 0.0, "dj_stage", "the DJ's alarm / shout-out lines play here (3D, the stage)"],
 		["marker", "HoldoutH1", [31.0, 4.2, 18.0], 0.0, "holdout_h1", "doc Loud holdout H1"],
 		["marker", "HoldoutH2", [13.0, 4.2, 20.0], 0.0, "holdout_h2", "doc Loud holdout H2"],
 		["marker", "HoldoutH3", [31.0, 0.0, 4.0], 0.0, "holdout_h3", "doc Loud holdout H3"],
@@ -346,6 +347,9 @@ const FIXED_SPAWNS: Array = [
 		"spawn", "BoxOffice", "CIVILIAN", [23.48, 0.0, 23.5], 90.0, ["civ_box_office", "staff", "staff_front"], "desk_work", "",
 		"",
 	],
+	["spawn", "Courier1", "GUARD", [33.6, 0.0, -2.4], 0.0, ["cartel_courier", "cartel", "scripted"], "", "Courier", ""],
+	["spawn", "Courier2", "GUARD", [36.4, 0.0, -2.4], 0.0, ["cartel_courier", "cartel", "scripted"], "", "Courier", ""],
+	["spawn", "OffDutyCop", "CIVILIAN", [20.0, 4.2, 19.6], 180.0, ["civ_offduty"], "sit", "", ""],
 	["spawn", "PatronMainBar1", "CIVILIAN", [3.0, 0.0, 11.5], -90.0, ["civ_patron"], "walk_text", "Patrons", ""],
 	["spawn", "PatronMainBar2", "CIVILIAN", [3.0, 0.0, 15.0], -90.0, ["civ_patron"], "walk_text", "Patrons", ""],
 	["spawn", "PatronEastBar1", "CIVILIAN", [22.8, 0.0, 9.5], 90.0, ["civ_patron"], "walk_text", "Patrons", ""],
@@ -460,29 +464,25 @@ const SLOTS: Array = [
 const SLOT_ITEMS: Dictionary = {
 	"gear_wc": [
 		[
-			"prefab", "item_pickup", "GearBag", [4.5, 1.0, 27.3], 0.0,
-			{"item_id": "item.gear", "count": 1, "objective_tag": "gear", "casing_allowed": true}, [4.5, 0.0, 26.5], {},
+			"prefab", "gear_pickup", "GearBag", [4.5, 1.0, 27.3], 0.0, {"objective_tag": "gear"}, [4.5, 0.0, 26.5], {},
 			"prop_bag_floor",
 		],
 	],
 	"gear_cloak": [
 		[
-			"prefab", "item_pickup", "GearBag", [22.9, 1.05, 25.5], 90.0,
-			{"item_id": "item.gear", "count": 1, "objective_tag": "gear", "casing_allowed": true}, [22.0, 0.0, 25.5], {},
+			"prefab", "gear_pickup", "GearBag", [22.9, 1.05, 25.5], 90.0, {"objective_tag": "gear"}, [22.0, 0.0, 25.5], {},
 			"prop_bag_floor",
 		],
 	],
 	"gear_booth": [
 		[
-			"prefab", "item_pickup", "GearBag", [24.6, 0.0, 20.0], 0.0,
-			{"item_id": "item.gear", "count": 1, "objective_tag": "gear", "casing_allowed": true}, [24.6, 0.0, 19.0], {},
+			"prefab", "gear_pickup", "GearBag", [24.6, 0.0, 20.0], 0.0, {"objective_tag": "gear"}, [24.6, 0.0, 19.0], {},
 			"prop_bag_floor",
 		],
 	],
 	"gear_van": [
 		[
-			"prefab", "item_pickup", "GearBag", [28.3, 0.0, -4.0], 90.0,
-			{"item_id": "item.gear", "count": 1, "objective_tag": "gear", "casing_allowed": true}, [27.4, 0.0, -4.0], {},
+			"prefab", "gear_pickup", "GearBag", [28.3, 0.0, -4.0], 90.0, {"objective_tag": "gear"}, [27.4, 0.0, -4.0], {},
 			"prop_bag_floor",
 		],
 	],
@@ -546,61 +546,12 @@ const SLOT_ITEMS: Dictionary = {
 	],
 	"count_running": [
 		["spawn", "Counter", "CIVILIAN", [29.0, 4.2, 11.3], 0.0, ["civ_count", "staff", "staff_upper"], "desk_work", "", ""],
-		[
-			"prefab", "loot_spawn", "CountCash", [28.4, 5.1, 10.5], 0.0,
-			{"loot_id": "loot.cash", "count": 2, "objective_tag": "count_room"}, [28.4, 4.2, 11.3], {}, "prop_cash_stack",
-		],
+		["marker", "CountCash", [28.4, 5.1, 10.5], 0.0, "count_cash", "2 x loot.cash (the mission spawns them)"],
 	],
 	"count_done": [],
-	"prod_stock": [
-		[
-			"prefab", "loot_spawn", "Product", [3.0, 0.0, 1.0], 0.0,
-			{"loot_id": "loot.parcels", "count": 3, "objective_tag": "product"}, [3.0, 0.0, 1.8], {"count_scalar": "product_bags"},
-			"prop_cash_bags",
-		],
-	],
-	"prod_green": [
-		[
-			"prefab", "loot_spawn", "Product", [12.5, 1.0, 1.0], 0.0,
-			{"loot_id": "loot.parcels", "count": 3, "objective_tag": "product"}, [12.5, 0.0, 1.8], {"count_scalar": "product_bags"},
-			"prop_cash_bags",
-		],
-	],
-	"prod_private": [
-		[
-			"prefab", "safe", "LockBox1", [35.4, 4.8, 22.0], 90.0,
-			{
-				"size": "enum:SMALL",
-				"methods": ["lockpick", "saw"],
-				"saw_duration_s": 15.0,
-				"objective_tag": "product",
-				"@contents": [["loot_spawn", "Product1", [0.0, 0.05, 0.0], {"loot_id": "loot.parcels", "count": 1, "objective_tag": "product"}]],
-			},
-			[34.6, 4.2, 22.0], {"saw_target": true}, "prop_safe_wall_small",
-		],
-		[
-			"prefab", "safe", "LockBox2", [35.4, 5.4, 23.0], 90.0,
-			{
-				"size": "enum:SMALL",
-				"methods": ["lockpick", "saw"],
-				"saw_duration_s": 15.0,
-				"objective_tag": "product",
-				"@contents": [["loot_spawn", "Product2", [0.0, 0.05, 0.0], {"loot_id": "loot.parcels", "count": 1, "objective_tag": "product"}]],
-			},
-			[34.6, 4.2, 23.0], {"saw_target": true}, "prop_safe_wall_small",
-		],
-		[
-			"prefab", "safe", "LockBox3", [35.4, 6.0, 24.0], 90.0,
-			{
-				"size": "enum:SMALL",
-				"methods": ["lockpick", "saw"],
-				"saw_duration_s": 15.0,
-				"objective_tag": "product",
-				"@contents": [["loot_spawn", "Product3", [0.0, 0.05, 0.0], {"loot_id": "loot.parcels", "count": 1, "objective_tag": "product"}]],
-			},
-			[34.6, 4.2, 24.0], {"saw_target": true}, "prop_safe_wall_small",
-		],
-	],
+	"prod_stock": [["marker", "ProductStock", [3.0, 0.1, 1.0], 0.0, "product", "the stock cage (padlocked gate)"]],
+	"prod_green": [["marker", "ProductGreen", [12.5, 1.0, 1.0], 0.0, "product", "on the DJs' flight cases"]],
+	"prod_private": [["marker", "ProductPrivate", [35.4, 4.3, 23.0], 0.0, "product", "the shelving behind the lasers"]],
 	"lz_static": [
 		[
 			"prefab", "laser_grid", "PrivateLasers", [34.3, 4.2, 23.0], 90.0,
@@ -654,12 +605,12 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_alley": [
 		[
 			"prefab", "secure_zone", "SecureAlley", [30.5, 0.0, -4.0], 90.0,
-			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 7.0]}, null, {"kind": "vehicle", "escape_label": "E1"},
+			{"objective_tag": "loot_secure", "zone_size_m": [4.0, 3.0, 7.0]}, null, {"kind": "vehicle", "escape_label": "E1"},
 			"veh_van_secure",
 		],
 		[
 			"prefab", "escape_zone", "EscapeAlley", [25.0, 0.0, -3.6], 0.0,
-			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {"escape_label": "E1"},
+			{"objective_tag": "escape_van", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {"escape_label": "E1"},
 			"res://world/heists/shared/escape_van_marker.tscn",
 		],
 		["marker", "EscapeWaitAlley", [25.0, 0.0, -3.6], 0.0, "escape_wait", "loud: hold until the van arrives"],
@@ -667,12 +618,12 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_tolley": [
 		[
 			"prefab", "secure_zone", "SecureTolley", [40.0, 0.0, 17.0], 0.0,
-			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 7.0]}, null, {"kind": "vehicle", "escape_label": "E2"},
+			{"objective_tag": "loot_secure", "zone_size_m": [4.0, 3.0, 7.0]}, null, {"kind": "vehicle", "escape_label": "E2"},
 			"veh_van_secure",
 		],
 		[
 			"prefab", "escape_zone", "EscapeTolley", [40.0, 0.0, 22.5], 0.0,
-			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {"escape_label": "E2"},
+			{"objective_tag": "escape_van", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {"escape_label": "E2"},
 			"res://world/heists/shared/escape_van_marker.tscn",
 		],
 		["marker", "EscapeWaitTolley", [40.0, 0.0, 22.5], 0.0, "escape_wait", "loud: hold until the van arrives"],
@@ -859,9 +810,23 @@ const GRAPHS: Dictionary = {
 		{
 			"FleeMainW": [[15.0, 0.0, 31.0], [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], null],
 			"FleeMainE": [[18.0, 0.0, 31.0], [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], null],
+			"FleeFireN": [[-1.5, 0.0, 8.3], [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], null],
+			"FleeFireS": [[-1.5, 0.0, 19.0], [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], null],
 			"FleePassageS": [[-1.5, 0.0, 30.0], [0.0, 0.0], "", ["civ_flee", "civ_exit", "exit"], null],
 		},
-		[["FleeMainW", "FleeMainE"], ["FleeMainW", "FleePassageS"]],
+		[["FleeMainW", "FleeMainE"], ["FleeMainW", "FleePassageS"], ["FleePassageS", "FleeFireS"], ["FleeFireS", "FleeFireN"]],
+	],
+	"Courier": [
+		"courier", 0,
+		{
+			"Door": [[35.0, 0.0, -1.6], [3.0, 6.0], "", ["courier"], null],
+			"G21": [[33.0, 0.0, 3.0], [3.0, 6.0], "", ["courier"], null],
+			"G13E": [[31.0, 0.0, 6.0], [3.0, 6.0], "", ["courier"], null],
+			"G13Mid": [[13.0, 0.0, 6.0], [3.0, 6.0], "", ["courier"], null],
+			"G10": [[4.0, 0.0, 3.6], [3.0, 6.0], "", ["courier"], null],
+			"G11": [[11.0, 0.0, 3.6], [3.0, 6.0], "", ["courier"], null],
+		},
+		[["Door", "G21"], ["G21", "G13E"], ["G13E", "G13Mid"], ["G13Mid", "G11"], ["G13Mid", "G10"]],
 	],
 }
 ## TacticalPoints: police entries, flanks, shield anchors, perches S1-S3, COVER.
