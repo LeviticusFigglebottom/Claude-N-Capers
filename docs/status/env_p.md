@@ -15,6 +15,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   press (LED blinks), gas dispenser point + canister press, smoke bomb thrown (pin at pin_pull@, gone at release@);
   then the gun's draw. test_p_fp_deck_item 2/2 (real input G for the ampule); windowed sheet
   captures/deck_items_2026-10-23/ (deck_items_capture.tscn).
+- **Toggle interact DONE (B's interact_mode):** PlayerInput._toggle_interact: a tap of F at something usable latches it;
+  a second tap cancels it (no shout); it drops when the session ends (done / moved or looked away) or none starts in
+  3 ticks. test_p_toggle_interact 4/4 headless + windowed; core_loop 16/16, a404 5/5.
 
 ## (2026-10-23 00:30 UTC; trunk r284 merged; reports to session_01XAPqmFJ32zHKLK9Sezymym)
 - **Resume here:** c4 (magazine C4 fetched in the setup, T3 by C4) and ambush_crash (mixer row, r280 mixer) are
