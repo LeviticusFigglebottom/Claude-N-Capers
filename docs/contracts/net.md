@@ -1,4 +1,4 @@
-# Contract: networking (v1.5)
+# Contract: networking (v1.6)
 
 API: `game/core/net.gd`. Architecture: architecture.md §3.
 
@@ -98,3 +98,32 @@ NetEntityCodec carries `height_m` (float) on Ladder (and any prop exposing it) s
 `Loadout.perk_choices` (card index -> option index) and `Loadout.perk_mimic_deck` ride with the loadout like
 `perk_deck` / `perk_deck_cards` (LobbyState loadout data, the host's launch loadouts), so the server's
 LoadoutResolver / ModifierPush resolves a Copycat crew member's chosen options and mimicked card the same on every peer.
+
+## v1.6: Client snapshot interpolation and the remote-shooter claim window (D-170, P6)
+
+**Interpolation (client, render-only).** `HeistNetSync` stamps every `_rpc_xforms` batch with its send tick (`SYNC_HZ` 15 Hz).
+A client's `NetInterp` buffers each entity (live NPCs, loose bags, remote crew members) and renders it `NetInterp.DELAY_S`
+(0.1 s, 1.5 send intervals) behind the newest server time it has heard of. It lerps between the two samples around that
+time (Transform3D: position lerp + rotation slerp; crew: position, yaw the short way, pitch). Past the newest sample (a
+lost or late packet) it extrapolates along the last segment for at most `EXTRAP_MAX_S` (0.15 s), then holds. A jump over
+`SNAP_M` (3 m) snaps (teleport / warp). The playout clock advances with the frame and eases toward its target
+(`CLOCK_EASE_S` 0.5 s; it snaps past `CLOCK_SNAP_S` 0.25 s), so arrival jitter doesn't jump render time. Never buffered: the
+local crew member (client-predicted), corpses (anchor-owned), ragdolls and carried bags. Clients never simulate these
+bodies, so authority and physics are unchanged (the host owns them).
+
+**Claim window (server, gameplay).** Clients claim hits from their own view (A1-08). With interpolation that view is
+`DELAY_S` + RTT/2 old, so a running target sits up to ~0.5–0.7 m from where the server has it now. That is past the head
+tolerance (0.45 m) and sometimes the body tolerance (1.6 m). `NetRewind` (a child of the authority's `HeistNetSync`, live
+sessions only) samples every NPC root position at the transform rate and keeps 0.6 s. For a **remote human shooter
+only**, `CombatSystem`'s body-centre and head checks also accept a claim against any sampled position inside
+`DELAY_S + RTT/2 + MARGIN_S` (0.1 s) of now, capped at 0.6 s (RTT from the shooter's ENet peer). Host shooters and AI crew
+check against the present only. Every other claim check (origin, distance, rate of fire, LOS, pellets) is unchanged.
+
+**Why.** PD2's feel is client-authoritative: a hit where you saw the enemy counts. Without the window, interpolation would
+quietly turn a remote player's headshots on runners into body shots. The window is co-op PvE only and capped at 0.6 s of
+past positions, which is generous but bounded; there is no PvP to exploit.
+
+**Evidence.** a/test_p6_net_interp (sampling, extrapolation, snap, late chunks, the playout clock, non-buffered entities,
+and the claim window for remote, host and AI shooters). A4-03 soak with `CAPER_SOAK_RELAY` (LossyRelay: latency, jitter,
+loss) and `CAPER_SOAK_NO_INTERP`, MotionStats per client: frame pops > 0.25 m drop from ~180 to 0.2 per NPC-minute on
+loopback and from ~275 to 0.6–0.8 at 120 ms / 5 % loss; jerks drop 94–96 %; 0 desync (env_a.md -66).
