@@ -19,6 +19,8 @@ func _ready() -> void:
 			var kv: PackedStringArray = a.substr(2).split("=", true, 1)
 			args[kv[0]] = kv[1] if kv.size() > 1 else "1"
 	var port: int = int(args.get("port", str(Net.DEFAULT_PORT)))
+	if args.has("no-interp"):
+		NetInterp.enabled = false  # P6: the "before" measurement (transforms applied as they arrive)
 	_deadline_ms = Time.get_ticks_msec() + int(float(args.get("timeout", "120")) * 1000.0)
 	var probe: Node = PROBE.new()
 	probe.name = PROBE.NODE_NAME

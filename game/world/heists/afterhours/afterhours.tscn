@@ -4817,7 +4817,7 @@ heist_def = ExtResource("2_ah")
 variant_table = ExtResource("3_ah")
 floor_heights = PackedFloat32Array(0, 4.2)
 floor_names = PackedStringArray("Ground", "Balcony")
-review_cameras = Array[NodePath]([NodePath("ReviewCameras/TopDownPlan"), NodePath("ReviewCameras/rc_ext_marquee"), NodePath("ReviewCameras/rc_ext_tolley"), NodePath("ReviewCameras/rc_ext_alley"), NodePath("ReviewCameras/rc_ext_passage"), NodePath("ReviewCameras/rc_boh_roof"), NodePath("ReviewCameras/rc_foyer"), NodePath("ReviewCameras/rc_hall_club"), NodePath("ReviewCameras/rc_hall_house"), NodePath("ReviewCameras/rc_hall_crowd"), NodePath("ReviewCameras/rc_main_bar"), NodePath("ReviewCameras/rc_east_bar"), NodePath("ReviewCameras/rc_under_circle"), NodePath("ReviewCameras/rc_balcony"), NodePath("ReviewCameras/rc_vip_lounge"), NodePath("ReviewCameras/rc_projection_box"), NodePath("ReviewCameras/rc_office"), NodePath("ReviewCameras/rc_private_room"), NodePath("ReviewCameras/rc_count_room"), NodePath("ReviewCameras/rc_upper_corridor"), NodePath("ReviewCameras/rc_back_corridor"), NodePath("ReviewCameras/rc_east_corridor"), NodePath("ReviewCameras/rc_stock_room"), NodePath("ReviewCameras/rc_green_room"), NodePath("ReviewCameras/rc_staff_room"), NodePath("ReviewCameras/rc_loading"), NodePath("ReviewCameras/rc_door_team")])
+review_cameras = Array[NodePath]([NodePath("ReviewCameras/TopDownPlan"), NodePath("ReviewCameras/rc_ext_marquee"), NodePath("ReviewCameras/rc_ext_tolley"), NodePath("ReviewCameras/rc_ext_alley"), NodePath("ReviewCameras/rc_ext_passage"), NodePath("ReviewCameras/rc_boh_roof"), NodePath("ReviewCameras/rc_foyer"), NodePath("ReviewCameras/rc_hall_club"), NodePath("ReviewCameras/rc_hall_house"), NodePath("ReviewCameras/rc_hall_crowd"), NodePath("ReviewCameras/rc_hall_crowd_house"), NodePath("ReviewCameras/rc_main_bar"), NodePath("ReviewCameras/rc_east_bar"), NodePath("ReviewCameras/rc_under_circle"), NodePath("ReviewCameras/rc_balcony"), NodePath("ReviewCameras/rc_vip_lounge"), NodePath("ReviewCameras/rc_projection_box"), NodePath("ReviewCameras/rc_office"), NodePath("ReviewCameras/rc_private_room"), NodePath("ReviewCameras/rc_count_room"), NodePath("ReviewCameras/rc_upper_corridor"), NodePath("ReviewCameras/rc_back_corridor"), NodePath("ReviewCameras/rc_east_corridor"), NodePath("ReviewCameras/rc_stock_room"), NodePath("ReviewCameras/rc_green_room"), NodePath("ReviewCameras/rc_staff_room"), NodePath("ReviewCameras/rc_loading"), NodePath("ReviewCameras/rc_door_team")])
 metadata/camera_layout_group = "camera"
 
 [node name="Geometry" type="Node3D" parent="." unique_id=100002]
@@ -17657,97 +17657,105 @@ metadata/club_lights = "house"
 transform = Transform3D(0.40613848, -0.01855288, -0.9136232, 0, 0.9997939, -0.020302743, 0.91381156, 0.008245725, 0.40605476, 7, 1, 16)
 metadata/fov = 70.0
 metadata/caption = "rc_hall_crowd (G6)"
+metadata/stage_crowd = true
 
-[node name="rc_main_bar" type="Marker3D" parent="ReviewCameras" unique_id=102489]
+[node name="rc_hall_crowd_house" type="Marker3D" parent="ReviewCameras" unique_id=102489]
+transform = Transform3D(0.33871946, -0.04244964, 0.93992937, 0, 0.9989818, 0.0451166, -0.9408874, -0.01528187, 0.33837456, 20.5, 1.8, 14.5)
+metadata/fov = 70.0
+metadata/caption = "rc_hall_crowd_house (G6)"
+metadata/stage_crowd = true
+metadata/club_lights = "house"
+
+[node name="rc_main_bar" type="Marker3D" parent="ReviewCameras" unique_id=102490]
 transform = Transform3D(-0.7432941, -0.049586963, 0.6671244, 0, 0.9972489, 0.07412493, -0.6689647, 0.055096626, -0.7412493, 6, 1.7, 9)
 metadata/fov = 70.0
 metadata/caption = "rc_main_bar (G6)"
 
-[node name="rc_east_bar" type="Marker3D" parent="ReviewCameras" unique_id=102490]
+[node name="rc_east_bar" type="Marker3D" parent="ReviewCameras" unique_id=102491]
 transform = Transform3D(0.4190582, 0.063260525, -0.9057529, 0, 0.99756986, 0.0696733, 0.9079594, -0.029197168, 0.4180398, 19, 1.7, 13.5)
 metadata/fov = 70.0
 metadata/caption = "rc_east_bar (G6)"
 
-[node name="rc_under_circle" type="Marker3D" parent="ReviewCameras" unique_id=102491]
+[node name="rc_under_circle" type="Marker3D" parent="ReviewCameras" unique_id=102492]
 transform = Transform3D(-0.17888544, -0.030784922, 0.9833882, 0, 0.99951035, 0.031289626, -0.9838699, 0.0055972585, -0.17879786, 24, 1.7, 16)
 metadata/fov = 70.0
 metadata/caption = "rc_under_circle (G7)"
 
-[node name="rc_balcony" type="Marker3D" parent="ReviewCameras" unique_id=102492]
+[node name="rc_balcony" type="Marker3D" parent="ReviewCameras" unique_id=102493]
 transform = Transform3D(-0.1066838, -0.029687759, 0.99384975, 0, 0.9995542, 0.029858159, -0.994293, 0.0031853819, -0.10663624, 25.3, 5.9, 16)
 metadata/fov = 70.0
 metadata/caption = "rc_balcony (U1)"
 
-[node name="rc_vip_lounge" type="Marker3D" parent="ReviewCameras" unique_id=102493]
+[node name="rc_vip_lounge" type="Marker3D" parent="ReviewCameras" unique_id=102494]
 transform = Transform3D(-0.4338157, -0.052527457, 0.89946926, 0, 0.99829924, 0.05829896, -0.90100163, 0.025291003, -0.43307787, 21.3, 5.9, 21.8)
 metadata/fov = 70.0
 metadata/caption = "rc_vip_lounge (U2)"
 
-[node name="rc_projection_box" type="Marker3D" parent="ReviewCameras" unique_id=102494]
+[node name="rc_projection_box" type="Marker3D" parent="ReviewCameras" unique_id=102495]
 transform = Transform3D(-0.9670746, 0.030013606, -0.25271726, 0, 0.99302137, 0.11793476, 0.2544933, 0.114051715, -0.96032566, 23, 5.9, 21.8)
 metadata/fov = 70.0
 metadata/caption = "rc_projection_box (U5)"
 
-[node name="rc_office" type="Marker3D" parent="ReviewCameras" unique_id=102495]
+[node name="rc_office" type="Marker3D" parent="ReviewCameras" unique_id=102496]
 transform = Transform3D(-0.5444711, 0.11012544, -0.8315189, 0, 0.99134374, 0.13129245, 0.8387797, 0.07148494, -0.5397579, 28.8, 5.9, 16.8)
 metadata/fov = 70.0
 metadata/caption = "rc_office (U9)"
 
-[node name="rc_private_room" type="Marker3D" parent="ReviewCameras" unique_id=102496]
+[node name="rc_private_room" type="Marker3D" parent="ReviewCameras" unique_id=102497]
 transform = Transform3D(-0.3119705, 0.09384807, -0.9454453, 0, 0.99510944, 0.0987779, 0.9500918, 0.03081579, -0.3104448, 28.8, 5.9, 21.8)
 metadata/fov = 70.0
 metadata/caption = "rc_private_room (U12)"
 
-[node name="rc_count_room" type="Marker3D" parent="ReviewCameras" unique_id=102497]
+[node name="rc_count_room" type="Marker3D" parent="ReviewCameras" unique_id=102498]
 transform = Transform3D(0.42288548, -0.09527201, 0.901161, 0, 0.9944579, 0.10513549, -0.9061831, -0.044460274, 0.42054182, 32.5, 5.9, 13.3)
 metadata/fov = 70.0
 metadata/caption = "rc_count_room (U10)"
 
-[node name="rc_upper_corridor" type="Marker3D" parent="ReviewCameras" unique_id=102498]
+[node name="rc_upper_corridor" type="Marker3D" parent="ReviewCameras" unique_id=102499]
 transform = Transform3D(1, 0, 0, 0, 0.99891, 0.046678033, 0, -0.046678033, 0.99891, 27, 5.9, 27.2)
 metadata/fov = 70.0
 metadata/caption = "rc_upper_corridor (U6b)"
 
-[node name="rc_back_corridor" type="Marker3D" parent="ReviewCameras" unique_id=102499]
+[node name="rc_back_corridor" type="Marker3D" parent="ReviewCameras" unique_id=102500]
 transform = Transform3D(0, 0.014923711, -0.99988866, 0, 0.99988866, 0.014923711, 1, 0, 0, 2.5, 1.7, 6)
 metadata/fov = 70.0
 metadata/caption = "rc_back_corridor (G13)"
 
-[node name="rc_east_corridor" type="Marker3D" parent="ReviewCameras" unique_id=102500]
+[node name="rc_east_corridor" type="Marker3D" parent="ReviewCameras" unique_id=102501]
 transform = Transform3D(-1, 0, 0, 0, 0.9992497, 0.03873061, 0, 0.03873061, -0.9992497, 27, 1.7, 7.6)
 metadata/fov = 70.0
 metadata/caption = "rc_east_corridor (G20)"
 
-[node name="rc_stock_room" type="Marker3D" parent="ReviewCameras" unique_id=102501]
+[node name="rc_stock_room" type="Marker3D" parent="ReviewCameras" unique_id=102502]
 transform = Transform3D(0.6585046, -0.0982665, 0.7461336, 0, 0.9914386, 0.13057339, -0.7525767, -0.08598318, 0.6528669, 6.5, 1.7, 4.5)
 metadata/fov = 70.0
 metadata/caption = "rc_stock_room (G10)"
 
-[node name="rc_green_room" type="Marker3D" parent="ReviewCameras" unique_id=102502]
+[node name="rc_green_room" type="Marker3D" parent="ReviewCameras" unique_id=102503]
 transform = Transform3D(0.6351054, -0.09214805, 0.7669093, 0, 0.9928586, 0.11929701, -0.7724255, -0.075766176, 0.6305699, 13.5, 1.7, 4.5)
 metadata/fov = 70.0
 metadata/caption = "rc_green_room (G11)"
 
-[node name="rc_staff_room" type="Marker3D" parent="ReviewCameras" unique_id=102503]
+[node name="rc_staff_room" type="Marker3D" parent="ReviewCameras" unique_id=102504]
 transform = Transform3D(0.6351054, -0.09214805, 0.7669093, 0, 0.9928586, 0.11929701, -0.7724255, -0.075766176, 0.6305699, 19.5, 1.7, 4.5)
 metadata/fov = 70.0
 metadata/caption = "rc_staff_room (G12)"
 
-[node name="rc_loading" type="Marker3D" parent="ReviewCameras" unique_id=102504]
+[node name="rc_loading" type="Marker3D" parent="ReviewCameras" unique_id=102505]
 transform = Transform3D(-0.4201236, 0.1060185, -0.90125257, 0, 0.993152, 0.11682905, 0.9074669, 0.049082644, -0.4172466, 28.6, 1.7, 1)
 metadata/fov = 70.0
 metadata/caption = "rc_loading (G21)"
 
-[node name="rc_door_team" type="Marker3D" parent="ReviewCameras" unique_id=102505]
+[node name="rc_door_team" type="Marker3D" parent="ReviewCameras" unique_id=102506]
 transform = Transform3D(-0.3874596, 0.0858446, -0.91788113, 0, 0.99565506, 0.093118384, 0.9218867, 0.03607961, -0.3857761, 28.6, 1.7, 17.6)
 metadata/fov = 70.0
 metadata/caption = "rc_door_team (G24)"
 
-[node name="AssaultEvents" type="Node3D" parent="." unique_id=102506 groups=["assault_events"]]
+[node name="AssaultEvents" type="Node3D" parent="." unique_id=102507 groups=["assault_events"]]
 
-[node name="Audio" type="Node3D" parent="." unique_id=102507]
+[node name="Audio" type="Node3D" parent="." unique_id=102508]
 
-[node name="CuePlayer" type="Node" parent="Audio" unique_id=102508]
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=102509]
 script = ExtResource("302_ah")
 device_cues = Dictionary[StringName, PackedStringArray]({
 &"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
@@ -17756,62 +17764,62 @@ device_cues = Dictionary[StringName, PackedStringArray]({
 &"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
 })
 
-[node name="MusicDirector" type="Node" parent="Audio" unique_id=102509]
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=102510]
 script = ExtResource("303_ah")
 track_id = &"afterhours"
 
-[node name="BedBohCorridor" type="Node3D" parent="Audio" unique_id=102510]
+[node name="BedBohCorridor" type="Node3D" parent="Audio" unique_id=102511]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 1.5, 6)
 script = ExtResource("304_ah")
 cue_id = &"cue.amb_afterhours_boh"
 autoplay = true
 
-[node name="BedBohUpper" type="Node3D" parent="Audio" unique_id=102511]
+[node name="BedBohUpper" type="Node3D" parent="Audio" unique_id=102512]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 5.7, 15)
 script = ExtResource("304_ah")
 cue_id = &"cue.amb_afterhours_boh"
 autoplay = true
 volume_offset_db = -2.0
 
-[node name="BedStreetMarlin" type="Node3D" parent="Audio" unique_id=102512]
+[node name="BedStreetMarlin" type="Node3D" parent="Audio" unique_id=102513]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.5, 33)
 script = ExtResource("304_ah")
 cue_id = &"cue.amb_street_wet_night"
 autoplay = true
 
-[node name="BedStreetAlley" type="Node3D" parent="Audio" unique_id=102513]
+[node name="BedStreetAlley" type="Node3D" parent="Audio" unique_id=102514]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 1.5, -3)
 script = ExtResource("304_ah")
 cue_id = &"cue.amb_street_wet_night"
 autoplay = true
 volume_offset_db = -2.0
 
-[node name="BedStreetTolley" type="Node3D" parent="Audio" unique_id=102514]
+[node name="BedStreetTolley" type="Node3D" parent="Audio" unique_id=102515]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 1.5, 14)
 script = ExtResource("304_ah")
 cue_id = &"cue.amb_street_wet_night"
 autoplay = true
 volume_offset_db = -2.0
 
-[node name="ClubSound" type="Node3D" parent="Audio" unique_id=102515]
+[node name="ClubSound" type="Node3D" parent="Audio" unique_id=102516]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2, 13)
 script = ExtResource("305_ah")
 
-[node name="BedClubMusic" type="Node3D" parent="Audio/ClubSound" unique_id=102516]
+[node name="BedClubMusic" type="Node3D" parent="Audio/ClubSound" unique_id=102517]
 script = ExtResource("304_ah")
 cue_id = &"cue.amb_afterhours_club_music"
 autoplay = true
 
-[node name="BedClub" type="Node3D" parent="Audio/ClubSound" unique_id=102517]
+[node name="BedClub" type="Node3D" parent="Audio/ClubSound" unique_id=102518]
 script = ExtResource("304_ah")
 cue_id = &"cue.amb_afterhours_club"
 autoplay = true
 
-[node name="PowerDown" type="Node3D" parent="Audio/ClubSound" unique_id=102518]
+[node name="PowerDown" type="Node3D" parent="Audio/ClubSound" unique_id=102519]
 script = ExtResource("304_ah")
 cue_id = &"cue.club_power_down"
 
-[node name="Stampede" type="Node3D" parent="Audio/ClubSound" unique_id=102519]
+[node name="Stampede" type="Node3D" parent="Audio/ClubSound" unique_id=102520]
 script = ExtResource("304_ah")
 cue_id = &"cue.crowd_stampede"
 

@@ -10,6 +10,7 @@ enum Procedural {
 	SCALES, CIRCUIT, PROWL, HALFTONE, CRACKLE, STARBURST,
 	GUILLOCHE, VAULT_BOLTS, ACANTHUS, FACETS, TIME_LOCK_DIAL, STENCIL,  # round 244 achievement parts (append-only)
 	ROAD_LINES, TREAD,  # RT-B1 achievement parts (append-only)
+	VINYL_LABEL,  # AH-B1 achievement part (append-only)
 }
 
 ## Texture id requested from ENV D (e.g. &"tex_mask_pattern_split"); a reference only.

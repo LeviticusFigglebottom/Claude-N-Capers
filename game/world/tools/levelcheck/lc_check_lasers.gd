@@ -8,7 +8,8 @@
 ##    min over rays at 5 heights x 3 depths (capsule depth band +-0.35 m);
 ##  * the player capsule (r 0.35) must fit standing (1.8 m) or crouched (1.2 m) centred 0.4 m past
 ##    the edge (physics intersect_shape against everything solid).
-## The grid passes when one side has clear width >= 0.8 m and a fitting capsule.
+## The grid passes when one side has clear width >= 0.8 m and a fitting capsule. Every grid's `pattern` must be one
+## laser_grid.gd runs (KNOWN_PATTERNS; an unknown one fails).
 ## QC-29: a grid with meta crouch_under = true may instead (or additionally) be passed underneath:
 ## the lowest beam's underside (grid-local BeamArea shapes) must be >= floor + 1.2 m + 0.02 m and a
 ## crouched capsule (r 0.35, h 1.2, 2 cm off the floor) must fit, colliding with nothing, along a
@@ -23,6 +24,8 @@ class_name LcCheckLasers
 extends LcCheck
 
 const MIN_CLEAR: float = 0.8
+## The patterns laser_grid.gd runs (LaserGrid.PATTERN_*; G3: AH wrote "sweep" / "timed", silently static grids).
+const KNOWN_PATTERNS: Array[StringName] = [LaserGrid.PATTERN_STATIC, LaserGrid.PATTERN_SWEEPING, LaserGrid.PATTERN_TIMED_OFF]
 const CAPSULE_R: float = 0.35
 const STAND_H: float = 1.8
 const CROUCH_H: float = 1.2
@@ -50,6 +53,7 @@ static func is_laser_grid(n: Node) -> bool:
 		return true
 	var sc: Script = n.get_script() as Script
 	return sc != null and sc.resource_path.get_file().begins_with("laser_grid")
+
 
 
 ## Grids whose bypass gap is asserted.
@@ -81,6 +85,9 @@ func run(ctx: LcContext) -> void:
 		_beams.append_array(beam_boxes(g0))
 	var checked: int = 0
 	for g: Node3D in grids:
+		if "pattern" in g and not (StringName(str(g.get("pattern"))) in KNOWN_PATTERNS):
+			fail(ctx, g, null, "unknown laser pattern `%s` (laser_grid.gd knows %s; an unknown one runs as a static grid)"
+				% [g.get("pattern"), KNOWN_PATTERNS])
 		if not needs_gap(g):
 			note("`%s`: pattern `%s`, bypass gap not required" % [ctx.node_path(g), g.get("pattern") if "pattern" in g else "?"])
 			continue

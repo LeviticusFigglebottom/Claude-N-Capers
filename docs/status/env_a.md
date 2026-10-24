@@ -4,6 +4,16 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-66) P6: client interpolation + claim window (D-170 pending), lossy soak numbers, aim / door harness, lasers (2026-10-24)
+- NetInterp (client, render-only: 0.1 s behind, lerp, <= 0.15 s extrapolation, snap > 3 m, smoothed playout clock) +
+  NetRewind (server: a remote shooter's body / head claim also matches where the target was over DELAY + RTT/2 +
+  0.1 s, cap 0.6 s). Kit: LossyRelay, MotionStats, soak env CAPER_SOAK_RELAY / CAPER_SOAK_NO_INTERP. a/test_p6_net_interp.
+- AH loud 4-peer soak, per NPC-min: loopback off 180 pops / 703 jerks -> on 0.2 / 30; 120 ms + 5 % loss off 275 / 846
+  -> on 0.7 / 46. of_coop_loopback 4/4 head, 4/4 trunk.
+- Harness: aim at a loose bag's live position (the r312 'aimed <none>'), stop when taken / walk again when out of
+  reach, explain_miss diagnostics; open_door no walk inside a frame. AH D-115 table on r313: Routine 6/6.
+- LaserGrid unknown pattern = Log.error (c5e3cb926). Bots step out of a human's view (c96da89b8).
+
 ### (-65) AH perf with shadows (C lit G2), r310/r311 blockers, door prompts (2026-10-23)
 - D-146 on C's lit G2 25860084 (shadows on): PASS, worst total 2014 (rc_balcony loud, house: 261 main + 1753 shadow),
   club max 991; main max 570. House state carries the shadow cost (6 shadowed spots). ah_perf_capture: C's review

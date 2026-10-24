@@ -8,11 +8,6 @@
 ## Payday cards are not a source here: their pool already leaves out every part above (PaydayCards.pool).
 extends TestCase
 
-## LEAD r314: these AH achievements move to ENV D's bespoke club parts (Disco and Vinyl bases, a sequin / velvet
-## material) when D's ids land; until then their old shared reward is the only duplicate allowed. Remove each line
-## with its repoint (Velvet Rope, Mirror Ball and House Lights already replaced the other three).
-const PENDING_D: Array[String] = ["ach:achievement.ah_dead_air", "ach:achievement.ah_bottle_service",
-	"ach:achievement.ah_closing_time"]
 ## The AH achievements (each must grant something exclusive).
 const AH: Array[StringName] = [&"achievement.ah_no_witnesses", &"achievement.ah_dead_air",
 	&"achievement.ah_just_looking", &"achievement.ah_bottle_service", &"achievement.ah_closing_time",
@@ -73,22 +68,10 @@ func test_every_cosmetic_has_at_most_one_unlock_source() -> void:
 	var keys: Array = src.keys()
 	keys.sort()
 	for id: Variant in keys:
-		var counted: Array = (src[id] as Array).filter(func(x: Variant) -> bool: return not PENDING_D.has(String(x)))
-		if counted.size() > 1:
+		if (src[id] as Array).size() > 1:
 			dups.append("%s <- %s" % [id, ", ".join(PackedStringArray(src[id] as Array))])
 	assert_true(dups.is_empty(), "%d cosmetics with two unlock sources:\n  %s" % [dups.size(), "\n  ".join(dups)])
 	assert_true(src.size() > 20, "the walk found the catalogue (%d cosmetics)" % src.size())
-
-
-func test_pending_d_list_is_still_needed() -> void:
-	# A repointed achievement must leave PENDING_D, so the allowance cannot outlive its reason.
-	var src: Dictionary = sources()
-	for pending: String in PENDING_D:
-		var shared: bool = false
-		for id: Variant in src:
-			if (src[id] as Array).has(pending) and (src[id] as Array).size() > 1:
-				shared = true
-		assert_true(shared, "%s no longer shares a reward: drop it from PENDING_D" % pending)
 
 
 func test_each_ah_achievement_grants_something() -> void:
@@ -108,3 +91,17 @@ func test_no_two_presets_share_a_look() -> void:
 				md.material_id, md.color_a.to_html(), md.color_b.to_html(), md.pattern_id]
 		assert_false(seen.has(look), "%s looks exactly like %s" % [md.id, seen.get(look, "")])
 		seen[look] = md.id
+
+
+func test_ah_rewards_are_their_own() -> void:
+	# LEAD r316: each AH achievement's exclusive cosmetics (D's bespoke parts and B's club presets).
+	var want: Dictionary = {
+		&"mask_base.vinyl": "ach:achievement.ah_dead_air", &"mask_pattern.vinyl_label": "ach:achievement.ah_dead_air",
+		&"mask.dead_air": "ach:achievement.ah_dead_air", &"mask_base.disco": "ach:achievement.ah_closing_time",
+		&"mask_material.sequin": "ach:achievement.ah_bottle_service",
+		&"mask.velvet_rope": "ach:achievement.ah_no_witnesses", &"mask.mirror_ball": "ach:achievement.ah_just_looking",
+		&"mask.house_lights": "ach:achievement.ah_cataclysm",
+	}
+	var src: Dictionary = sources()
+	for id: StringName in want:
+		assert_eq(src.get(id, []), [want[id]], "%s comes only from %s" % [id, want[id]])

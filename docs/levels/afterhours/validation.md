@@ -45,7 +45,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## cameras: Review camera placement
 
-- 26 perspective review camera(s) checked
+- 27 perspective review camera(s) checked
 
 
 ## secure_zones: Secure zones reach the ground
@@ -328,6 +328,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_hall_club` | 534 | 12 | 126 | 0 | 672 | 206190 | 2 | BarBackMain 102, ClubKeyDJ 24 |
 | `rc_hall_house` | 516 | 12 | 123 | 0 | 651 | 199438 | 2 | BarBackMain 99, ClubKeyDJ 24 |
 | `rc_hall_crowd` | 925 | 13 | 176 | 0 | 1114 | 370548 | 3 | BarBackVIP 133, ClubKeyDJ 24, DeskLamp_1 19 |
+| `rc_hall_crowd_house` | 472 | 12 | 128 | 0 | 612 | 198422 | 2 | BarBackMain 104, ClubKeyDJ 24 |
 | `rc_main_bar` | 244 | 0 | 100 | 0 | 344 | 98474 | 1 | BarBackMain 100 |
 | `rc_east_bar` | 726 | 6 | 37 | 0 | 769 | 273532 | 2 | ClubKeyDJ 20, DeskLamp_1 17 |
 | `rc_under_circle` | 607 | 19 | 262 | 0 | 888 | 251132 | 3 | BarBackVIP 137, BarBackMain 104, ClubKeyDJ 21 |

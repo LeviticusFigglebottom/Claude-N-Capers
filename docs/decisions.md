@@ -1761,3 +1761,11 @@ B pushes the RT un-hide patch (rt_unhide_D160) now; it lands in the next round. 
 - (Amendment 2026-10-24, LEAD) Un-hidden in round 311 (9f82f912f). P's windowed main-menu smoke on r311 PASS with real clicks: main menu →
   Board → Contract Broker → briefing → pre-planning → loadout → Start Heist → first-person start → a minute in (env/p-play 647caebe6). Cosmetic
   follow-ups: crew spawn lines (C 3fe9a5d6) and casing bots idling in front of the player (A).
+
+## D-170: client snapshot interpolation + remote-shooter claim window (2026-10-24, LEAD; A P6 co-op hardening)
+Accepted as specified in docs/contracts/net.md v1.6. NetInterp renders replicated NPCs, loose bags and remote crew 0.1 s
+behind the server with short extrapolation; it is render-only, and authority is unchanged. NetRewind lets a **remote human
+shooter's** hit claims match any NPC position within DELAY_S + RTT/2 + 0.1 s (cap 0.6 s), which is PD2's
+client-authoritative feel, co-op PvE only. Host and AI shooters are unchanged. Evidence: A4-03 soak, before vs after,
+loopback and 120 ms / 5 % loss: ~99.6 % fewer frame pops, 94–96 % fewer jerks, 0 desync. of_coop_loopback 4/4 with and
+without the change.
