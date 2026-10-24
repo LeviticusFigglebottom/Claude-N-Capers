@@ -794,6 +794,13 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 				break
 			# Re-aim before pressing again: an F press with the crosshair on a cop is a shout (ND attempts 15-18).
 			target = _live(comp, target)
+			if not comp.enabled:  # a bot took the bag (carried: disabled) or it was secured: nothing to press
+				d.note("pilot: use %s target taken / disabled meanwhile: stop" % comp.kind)
+				break
+			if crew.eye_position().distance_to(target) > Tweak.interaction().reach_m + 0.3:
+				d.note("pilot: use %s target moved out of reach (%.2f m): walk again" % [comp.kind,
+					crew.eye_position().distance_to(target)])
+				break
 			await face(target, 0.03, 1.0)
 			if not is_instance_valid(comp) or (no_blind_press and not await _aim_on(comp, target)):
 				break
