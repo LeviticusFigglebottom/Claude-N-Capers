@@ -160,6 +160,8 @@ func _warm_probes(frames: int, filt: PackedStringArray = PackedStringArray()) ->
 		print("  warmed %d reflection probe(s), %d frames each" % [probes.size(), frames])
 
 
+## A review camera's meta `club_lights` (Afterhours: "club" | "house"): Lighting/ClubLights is set to that state for
+## the shot (default "club", so a house shot never leaks into the next one).
 ## A review camera's meta `stage_convoy` (a convoy layout id, e.g. "north_clean"): that layout is applied
 ## (ConvoyLayouts) and every mover of its route parked on its `<Veh>Stop`, so the shot shows the convoy at the stop
 ## (LEAD r305 G3: the convoy shots showed an empty road). Review only: the map's own state is the start state.
@@ -241,6 +243,9 @@ func _render_shots(out_dir: String, warm: int, filt: PackedStringArray, label: S
 		_apply_camera(n)
 		if n.has_meta(&"stage_convoy"):
 			await _stage_convoy(String(n.get_meta(&"stage_convoy")))
+		var lights: Node = _map.get_node_or_null("Lighting/ClubLights")
+		if lights != null and lights.has_method(&"set_state"):
+			lights.call(&"set_state", StringName(String(n.get_meta(&"club_lights", "club"))))
 		var img: Image = await _grab(warm)
 		var file: String = "%s.jpg" % String(n.name).to_snake_case()
 		var size: int = save_jpg(img, out_dir.path_join(file))
