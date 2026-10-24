@@ -15637,7 +15637,7 @@ width_m = 1.1
 push_bar = true
 visual_scene = ExtResource("232_ah")
 metadata/kind = "door"
-metadata/swing_side = "back"
+metadata/swing_side = "front"
 metadata/fire_exit = true
 metadata/service = true
 
@@ -15649,18 +15649,19 @@ width_m = 1.1
 push_bar = true
 visual_scene = ExtResource("232_ah")
 metadata/kind = "door"
-metadata/swing_side = "back"
+metadata/swing_side = "front"
 metadata/fire_exit = true
 metadata/service = true
 
 [node name="BackstageDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102260 instance=ExtResource("228_ah")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, 7)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 13, 0, 7)
 script = ExtResource("229_ah")
+swing = 1
 width_m = 1.1
 casing_allowed = true
 visual_scene = ExtResource("232_ah")
 metadata/kind = "door"
-metadata/swing_side = "back"
+metadata/swing_side = "front"
 metadata/service = true
 
 [node name="HallFireExitN" type="Node3D" parent="Gameplay/Doors" unique_id=102261 instance=ExtResource("228_ah")]
@@ -15673,7 +15674,7 @@ casing_allowed = true
 civilian_allowed = true
 visual_scene = ExtResource("233_ah")
 metadata/kind = "door"
-metadata/swing_side = "back"
+metadata/swing_side = "front"
 metadata/fire_exit = true
 
 [node name="HallFireExitS" type="Node3D" parent="Gameplay/Doors" unique_id=102262 instance=ExtResource("228_ah")]
@@ -15686,17 +15687,18 @@ casing_allowed = true
 civilian_allowed = true
 visual_scene = ExtResource("233_ah")
 metadata/kind = "door"
-metadata/swing_side = "back"
+metadata/swing_side = "front"
 metadata/fire_exit = true
 
 [node name="EastBarServiceDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102263 instance=ExtResource("228_ah")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 26, 0, 11)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 26, 0, 11)
 script = ExtResource("229_ah")
+swing = 1
 width_m = 1.1
 casing_allowed = true
 visual_scene = ExtResource("232_ah")
 metadata/kind = "door"
-metadata/swing_side = "back"
+metadata/swing_side = "front"
 metadata/service = true
 
 [node name="BarStoreDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102264 instance=ExtResource("228_ah")]
@@ -15885,15 +15887,16 @@ metadata/swing_side = "back"
 metadata/service = true
 
 [node name="VIPStaffDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102281 instance=ExtResource("228_ah")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 26, 4.2, 18)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 26, 4.2, 18)
 script = ExtResource("229_ah")
 lock = 1
+swing = 1
 width_m = 1.1
 npc_authorized_tags = Array[StringName]([&"staff", &"guard"])
 interaction_time_s = 8.0
 visual_scene = ExtResource("239_ah")
 metadata/kind = "door"
-metadata/swing_side = "back"
+metadata/swing_side = "front"
 metadata/service = true
 
 [node name="OfficeDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102282 instance=ExtResource("228_ah")]

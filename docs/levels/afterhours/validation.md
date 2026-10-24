@@ -17,6 +17,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | slopes | PASS | 0 | 0 |
 | navmesh | PASS | 0 | 0 |
 | barred_doors | PASS | 0 | 0 |
+| door_access | PASS | 0 | 0 |
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
@@ -171,6 +172,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - 1 BARRED door(s) checked
 - variant-slot BARRED doors not checked (one bake for every variant): `Variants/Group_side_gate/Slot_gate_chained/PassageGateN`
+
+
+## door_access: door interactables usable from the sides they open from
+
+- 41 door(s) checked (reach 2.35 m, eye 1.6 m)
 
 
 ## reachability: Reachability (per variant)

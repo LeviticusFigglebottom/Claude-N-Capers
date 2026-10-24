@@ -108,7 +108,10 @@ const DOORS: Array = [
 		"RearDoor", "G", [35.0, 0.0, 0.0], 0.0, "service", "", "prop_door_service_steel_t40", 1.1,
 		{"casing": true, "npc": ["staff", "guard"]},
 	],
-	["BackstageDoor", "G", [13.0, 0.0, 7.0], 0.0, "service", "NONE", "prop_door_service_steel_t40", 1.1, {"casing": true}],
+	[
+		"BackstageDoor", "G", [13.0, 0.0, 7.0], 180.0, "service", "NONE", "prop_door_service_steel_t40", 1.1,
+		{"casing": true, "outward": true},
+	],
 	[
 		"HallFireExitN", "G", [0.0, 0.0, 8.3], -90.0, "double", "NONE", "prop_door_double_steel_t40", 1.8,
 		{"guest": true, "push_bar": true},
@@ -118,8 +121,8 @@ const DOORS: Array = [
 		{"guest": true, "push_bar": true},
 	],
 	[
-		"EastBarServiceDoor", "G", [26.0, 0.0, 11.0], -90.0, "service", "NONE", "prop_door_service_steel_t40", 1.1,
-		{"casing": true},
+		"EastBarServiceDoor", "G", [26.0, 0.0, 11.0], 90.0, "service", "NONE", "prop_door_service_steel_t40", 1.1,
+		{"casing": true, "outward": true},
 	],
 	["BarStoreDoor", "G", [28.0, 0.0, 10.0], 90.0, "service", "NONE", "prop_door_service_steel_t20", 1.1, {"casing": true}],
 	["StaffStairDoorG", "G", [34.0, 0.0, 14.0], 180.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {"casing": true}],
@@ -157,8 +160,8 @@ const DOORS: Array = [
 	],
 	["StaffStairDoorU", "U", [34.0, 4.2, 14.0], 180.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {"casing": true}],
 	[
-		"VIPStaffDoor", "U", [26.0, 4.2, 18.0], -90.0, "service", "LOCKPICK", "prop_door_service_walnut_t40", 1.1,
-		{"npc": ["staff", "guard"]},
+		"VIPStaffDoor", "U", [26.0, 4.2, 18.0], 90.0, "service", "LOCKPICK", "prop_door_service_walnut_t40", 1.1,
+		{"npc": ["staff", "guard"], "outward": true},
 	],
 	[
 		"OfficeDoor", "U", [28.0, 4.2, 18.0], 90.0, "service", "KEYCARD", "prop_door_service_walnut_t20", 1.1,

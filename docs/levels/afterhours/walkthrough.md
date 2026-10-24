@@ -16,10 +16,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 26.9 | 28.9 | 1.07 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 25.1 | 29.3 | 1.17 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 28.9 | 32.1 | 1.11 | ok |
-| `Spawns/PlayerFoyer1` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 20.4 | 21.5 | 1.05 | ok |
+| `Spawns/PlayerFoyer1` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 19.0 | 20.1 | 1.06 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 23.2 | 24.8 | 1.07 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 16.2 | 19.0 | 1.17 | ok |
-| `Spawns/PlayerFoyer1` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 19.5 | 20.2 | 1.04 | ok |
+| `Spawns/PlayerFoyer1` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 18.7 | 19.0 | 1.01 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 20.7 | 21.3 | 1.03 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 22.4 | 28.4 | 1.27 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 16.9 | 21.9 | 1.30 | ok |
@@ -37,7 +37,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 3.7 | 4.1 | 1.11 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 19.6 | 43.9 | 2.24 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 22.8 | 42.7 | 1.87 | ok |
-| `Spawns/PlayerFoyer1` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 15.1 | 39.1 | 2.58 | ok |
+| `Spawns/PlayerFoyer1` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 14.1 | 37.7 | 2.68 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/OfficeDoor` | objective | 15.6 | 39.7 | 2.54 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 15.6 | 39.7 | 2.54 | ok |
 | `Spawns/PlayerFoyer1` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 18.6 | 45.1 | 2.42 | ok |
@@ -90,10 +90,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 25.7 | 27.9 | 1.08 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 26.3 | 30.2 | 1.15 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 27.6 | 31.1 | 1.13 | ok |
-| `Spawns/PlayerFoyer2` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 20.7 | 22.4 | 1.08 | ok |
+| `Spawns/PlayerFoyer2` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 19.3 | 21.0 | 1.09 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 24.5 | 25.8 | 1.05 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 18.0 | 20.0 | 1.11 | ok |
-| `Spawns/PlayerFoyer2` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 18.4 | 19.3 | 1.05 | ok |
+| `Spawns/PlayerFoyer2` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 17.7 | 18.0 | 1.02 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 19.5 | 20.3 | 1.04 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 20.8 | 26.4 | 1.27 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 15.5 | 20.0 | 1.29 | ok |
@@ -111,7 +111,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 2.3 | 2.4 | 1.01 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 18.1 | 44.6 | 2.46 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 21.2 | 40.7 | 1.92 | ok |
-| `Spawns/PlayerFoyer2` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 13.6 | 41.1 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerFoyer2` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 12.7 | 39.7 | 3.13 | detour (whitelisted) |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/OfficeDoor` | objective | 14.1 | 41.7 | 2.96 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 14.1 | 41.7 | 2.96 | ok |
 | `Spawns/PlayerFoyer2` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 16.8 | 47.1 | 2.80 | ok |
@@ -164,10 +164,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 24.6 | 27.5 | 1.12 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 27.6 | 31.6 | 1.15 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 26.3 | 30.7 | 1.17 | ok |
-| `Spawns/PlayerFoyer3` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 21.2 | 23.8 | 1.12 | ok |
+| `Spawns/PlayerFoyer3` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 19.8 | 22.3 | 1.13 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 25.9 | 27.1 | 1.05 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 19.8 | 21.3 | 1.08 | ok |
-| `Spawns/PlayerFoyer3` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 17.4 | 18.8 | 1.08 | ok |
+| `Spawns/PlayerFoyer3` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 16.8 | 17.6 | 1.04 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 18.6 | 19.9 | 1.07 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 19.1 | 24.4 | 1.27 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 14.3 | 18.0 | 1.26 | ok |
@@ -185,7 +185,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 2.3 | 2.4 | 1.01 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 16.7 | 42.6 | 2.55 | ok |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 19.6 | 38.7 | 1.98 | ok |
-| `Spawns/PlayerFoyer3` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 12.3 | 43.1 | 3.50 | detour (whitelisted) |
+| `Spawns/PlayerFoyer3` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 11.5 | 41.7 | 3.64 | detour (whitelisted) |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/OfficeDoor` | objective | 12.7 | 43.7 | 3.45 | detour (whitelisted) |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 12.7 | 43.7 | 3.45 | detour (whitelisted) |
 | `Spawns/PlayerFoyer3` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 15.0 | 49.1 | 3.26 | detour (whitelisted) |
@@ -238,10 +238,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 23.6 | 28.8 | 1.22 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 28.9 | 33.2 | 1.15 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 25.1 | 32.0 | 1.28 | ok |
-| `Spawns/PlayerFoyer4` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 21.8 | 22.1 | 1.01 | ok |
+| `Spawns/PlayerFoyer4` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 20.5 | 20.7 | 1.01 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 27.3 | 28.7 | 1.05 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 21.7 | 22.9 | 1.06 | ok |
-| `Spawns/PlayerFoyer4` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 16.6 | 20.1 | 1.21 | ok |
+| `Spawns/PlayerFoyer4` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 16.2 | 17.9 | 1.10 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 17.8 | 21.1 | 1.19 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 17.6 | 22.5 | 1.28 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 13.2 | 16.1 | 1.22 | ok |
@@ -259,7 +259,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 3.7 | 4.1 | 1.11 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 15.5 | 40.8 | 2.63 | ok |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 18.1 | 36.9 | 2.04 | ok |
-| `Spawns/PlayerFoyer4` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 11.1 | 45.7 | 4.10 | detour (whitelisted) |
+| `Spawns/PlayerFoyer4` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 10.5 | 43.7 | 4.16 | detour (whitelisted) |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/OfficeDoor` | objective | 11.5 | 45.5 | 3.97 | detour (whitelisted) |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 11.5 | 45.5 | 3.97 | detour (whitelisted) |
 | `Spawns/PlayerFoyer4` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 13.4 | 50.8 | 3.80 | detour (whitelisted) |
@@ -312,10 +312,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 26.7 | 50.8 | 1.90 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 22.2 | 47.3 | 2.13 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 29.0 | 54.0 | 1.86 | ok |
-| `Spawns/PlayerVIP1` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 18.2 | 39.6 | 2.17 | ok |
+| `Spawns/PlayerVIP1` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 16.8 | 38.1 | 2.27 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 20.4 | 42.8 | 2.10 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 13.9 | 37.0 | 2.66 | ok |
-| `Spawns/PlayerVIP1` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 19.3 | 42.1 | 2.18 | ok |
+| `Spawns/PlayerVIP1` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 18.4 | 40.9 | 2.22 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 20.4 | 43.2 | 2.11 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 23.3 | 39.5 | 1.69 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 17.4 | 44.7 | 2.57 | ok |
@@ -333,7 +333,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 8.0 | 26.8 | 3.33 | detour (whitelisted) |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 19.4 | 21.2 | 1.09 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 23.0 | 25.1 | 1.09 | ok |
-| `Spawns/PlayerVIP1` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 15.0 | 16.4 | 1.09 | ok |
+| `Spawns/PlayerVIP1` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 13.7 | 15.0 | 1.09 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/OfficeDoor` | objective | 15.5 | 17.0 | 1.09 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 15.5 | 17.0 | 1.09 | ok |
 | `Spawns/PlayerVIP1` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 19.4 | 22.4 | 1.16 | ok |
@@ -386,10 +386,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 25.7 | 52.2 | 2.03 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 23.1 | 48.7 | 2.11 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 27.8 | 52.0 | 1.87 | ok |
-| `Spawns/PlayerVIP2` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 18.3 | 41.0 | 2.25 | ok |
+| `Spawns/PlayerVIP2` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 16.9 | 39.6 | 2.34 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 21.3 | 44.2 | 2.07 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 15.3 | 38.4 | 2.52 | ok |
-| `Spawns/PlayerVIP2` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 18.3 | 43.6 | 2.38 | ok |
+| `Spawns/PlayerVIP2` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 17.4 | 42.3 | 2.43 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 19.4 | 44.6 | 2.30 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 22.0 | 39.3 | 1.79 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 16.2 | 46.2 | 2.85 | ok |
@@ -407,7 +407,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 7.2 | 28.2 | 3.92 | detour (whitelisted) |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 18.1 | 21.0 | 1.16 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 21.6 | 24.9 | 1.15 | ok |
-| `Spawns/PlayerVIP2` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 13.6 | 16.2 | 1.19 | ok |
+| `Spawns/PlayerVIP2` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 12.4 | 14.8 | 1.20 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/OfficeDoor` | objective | 14.1 | 16.8 | 1.19 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 14.1 | 16.8 | 1.19 | ok |
 | `Spawns/PlayerVIP2` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 17.9 | 22.2 | 1.24 | ok |
@@ -460,10 +460,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 23.7 | 48.7 | 2.05 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 25.0 | 51.7 | 2.07 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 25.7 | 48.1 | 1.87 | ok |
-| `Spawns/PlayerVIP3` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 18.7 | 44.0 | 2.35 | ok |
+| `Spawns/PlayerVIP3` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 17.4 | 42.6 | 2.44 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 23.4 | 47.2 | 2.02 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 18.0 | 41.4 | 2.30 | ok |
-| `Spawns/PlayerVIP3` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 16.5 | 45.9 | 2.78 | ok |
+| `Spawns/PlayerVIP3` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 15.7 | 45.3 | 2.88 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 17.6 | 46.8 | 2.66 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 19.4 | 35.5 | 1.83 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 14.0 | 42.1 | 3.02 | detour (whitelisted) |
@@ -481,7 +481,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 6.3 | 31.2 | 4.94 | detour (whitelisted) |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 15.6 | 17.2 | 1.10 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 18.9 | 21.0 | 1.11 | ok |
-| `Spawns/PlayerVIP3` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 11.0 | 12.3 | 1.12 | ok |
+| `Spawns/PlayerVIP3` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 9.8 | 10.9 | 1.11 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/OfficeDoor` | objective | 11.5 | 12.9 | 1.12 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 11.5 | 12.9 | 1.12 | ok |
 | `Spawns/PlayerVIP3` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 15.0 | 18.3 | 1.22 | ok |
@@ -534,10 +534,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 22.8 | 48.5 | 2.12 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 26.0 | 53.2 | 2.04 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 24.6 | 47.9 | 1.94 | ok |
-| `Spawns/PlayerVIP4` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 19.2 | 45.5 | 2.37 | ok |
+| `Spawns/PlayerVIP4` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 17.9 | 44.1 | 2.47 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 24.5 | 48.7 | 1.99 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 19.4 | 42.9 | 2.21 | ok |
-| `Spawns/PlayerVIP4` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 15.7 | 45.7 | 2.91 | ok |
+| `Spawns/PlayerVIP4` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 15.0 | 46.8 | 3.11 | detour (whitelisted) |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 16.8 | 46.6 | 2.77 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 18.1 | 35.3 | 1.94 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 12.9 | 41.9 | 3.24 | detour (whitelisted) |
@@ -555,7 +555,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 6.4 | 32.7 | 5.13 | detour (whitelisted) |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 14.4 | 17.0 | 1.18 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 17.6 | 20.8 | 1.18 | ok |
-| `Spawns/PlayerVIP4` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 9.8 | 12.1 | 1.24 | ok |
+| `Spawns/PlayerVIP4` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 8.7 | 10.7 | 1.23 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/OfficeDoor` | objective | 10.2 | 12.7 | 1.24 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 10.2 | 12.7 | 1.24 | ok |
 | `Spawns/PlayerVIP4` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 13.5 | 18.1 | 1.34 | ok |
@@ -608,10 +608,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 11.9 | 18.6 | 1.56 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 25.7 | 34.2 | 1.33 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 14.4 | 21.6 | 1.50 | ok |
-| `Spawns/PlayerAlley1` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 15.2 | 37.5 | 2.47 | ok |
+| `Spawns/PlayerAlley1` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 16.1 | 38.9 | 2.41 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 26.6 | 36.2 | 1.36 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 32.8 | 46.9 | 1.43 | ok |
-| `Spawns/PlayerAlley1` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 14.8 | 27.3 | 1.85 | ok |
+| `Spawns/PlayerAlley1` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 14.6 | 28.6 | 1.95 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 13.9 | 26.3 | 1.89 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 20.6 | 33.8 | 1.64 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 18.8 | 31.2 | 1.66 | ok |
@@ -629,7 +629,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 32.9 | 48.2 | 1.46 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 19.6 | 25.1 | 1.28 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 21.0 | 29.0 | 1.38 | ok |
-| `Spawns/PlayerAlley1` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 22.1 | 29.9 | 1.35 | ok |
+| `Spawns/PlayerAlley1` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 22.0 | 31.3 | 1.42 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/OfficeDoor` | objective | 22.2 | 29.7 | 1.34 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 22.2 | 29.7 | 1.34 | ok |
 | `Spawns/PlayerAlley1` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 25.4 | 35.0 | 1.38 | ok |
@@ -682,10 +682,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 12.9 | 20.1 | 1.55 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 24.3 | 32.7 | 1.35 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 15.6 | 23.1 | 1.48 | ok |
-| `Spawns/PlayerAlley2` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 14.1 | 39.0 | 2.77 | ok |
+| `Spawns/PlayerAlley2` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 15.1 | 40.3 | 2.67 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 25.3 | 34.7 | 1.37 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 31.7 | 45.4 | 1.43 | ok |
-| `Spawns/PlayerAlley2` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 15.1 | 28.8 | 1.91 | ok |
+| `Spawns/PlayerAlley2` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 14.8 | 30.0 | 2.03 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 14.3 | 27.7 | 1.94 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 21.4 | 35.2 | 1.65 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 19.1 | 32.7 | 1.71 | ok |
@@ -703,7 +703,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 32.7 | 49.7 | 1.52 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 20.0 | 26.5 | 1.32 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 21.8 | 30.4 | 1.40 | ok |
-| `Spawns/PlayerAlley2` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 22.3 | 31.3 | 1.40 | ok |
+| `Spawns/PlayerAlley2` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 22.1 | 32.6 | 1.48 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/OfficeDoor` | objective | 22.4 | 31.1 | 1.39 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 22.4 | 31.1 | 1.39 | ok |
 | `Spawns/PlayerAlley2` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 25.9 | 36.4 | 1.41 | ok |
@@ -756,10 +756,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 14.0 | 21.5 | 1.53 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 22.9 | 31.2 | 1.36 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 16.8 | 24.5 | 1.46 | ok |
-| `Spawns/PlayerAlley3` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 13.0 | 40.4 | 3.10 | detour (whitelisted) |
+| `Spawns/PlayerAlley3` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 14.1 | 41.8 | 2.95 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 24.0 | 33.2 | 1.39 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 30.7 | 43.9 | 1.43 | ok |
-| `Spawns/PlayerAlley3` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 15.5 | 30.2 | 1.95 | ok |
+| `Spawns/PlayerAlley3` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 15.1 | 31.5 | 2.09 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 14.8 | 29.2 | 1.97 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 22.2 | 36.6 | 1.65 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 19.5 | 34.1 | 1.75 | ok |
@@ -777,7 +777,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 32.5 | 51.1 | 1.57 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 20.6 | 27.9 | 1.36 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 22.6 | 31.8 | 1.41 | ok |
-| `Spawns/PlayerAlley3` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 22.6 | 32.7 | 1.45 | ok |
+| `Spawns/PlayerAlley3` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 22.3 | 34.1 | 1.53 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/OfficeDoor` | objective | 22.8 | 32.5 | 1.43 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 22.8 | 32.5 | 1.43 | ok |
 | `Spawns/PlayerAlley3` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 26.4 | 37.8 | 1.43 | ok |
@@ -830,10 +830,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 15.2 | 23.0 | 1.51 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/BackCorridorDoorW/UsePoint` | use_point | 21.6 | 29.7 | 1.38 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/BackCorridorDoorE/UsePoint` | use_point | 18.1 | 26.0 | 1.44 | ok |
-| `Spawns/PlayerAlley4` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 12.1 | 41.9 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerAlley4` | `Gameplay/Doors/BackstageDoor/UsePoint` | use_point | 13.3 | 43.2 | 3.25 | detour (whitelisted) |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/HallFireExitN/UsePoint` | use_point | 22.7 | 31.7 | 1.40 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/HallFireExitS/UsePoint` | use_point | 29.7 | 42.4 | 1.43 | ok |
-| `Spawns/PlayerAlley4` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 16.1 | 31.7 | 1.97 | ok |
+| `Spawns/PlayerAlley4` | `Gameplay/Doors/EastBarServiceDoor/UsePoint` | use_point | 15.5 | 32.9 | 2.12 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/BarStoreDoor/UsePoint` | use_point | 15.4 | 30.6 | 1.98 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/StaffStairDoorG/UsePoint` | use_point | 23.0 | 38.1 | 1.65 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/StaffEntranceDoor/UsePoint` | use_point | 20.0 | 35.6 | 1.78 | ok |
@@ -851,7 +851,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/MainDoorsE/UsePoint` | use_point | 32.4 | 52.6 | 1.62 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 21.3 | 29.4 | 1.38 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/StaffStairDoorU/UsePoint` | use_point | 23.4 | 33.3 | 1.42 | ok |
-| `Spawns/PlayerAlley4` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 23.0 | 34.2 | 1.49 | ok |
+| `Spawns/PlayerAlley4` | `Gameplay/Doors/VIPStaffDoor/UsePoint` | use_point | 22.6 | 35.5 | 1.57 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/OfficeDoor` | objective | 23.2 | 34.0 | 1.47 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/OfficeDoor/UsePoint` | use_point | 23.2 | 34.0 | 1.47 | ok |
 | `Spawns/PlayerAlley4` | `Gameplay/Doors/PrivateRoomDoor/UsePoint` | use_point | 27.1 | 39.3 | 1.45 | ok |
