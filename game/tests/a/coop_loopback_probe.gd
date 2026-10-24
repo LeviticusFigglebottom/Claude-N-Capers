@@ -105,6 +105,21 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 			ms.name = "MotionStats"
 			add_child(ms)
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd, "interp": NetInterp.enabled})
+		"npc_info":  # P6 churn diagnostics: what this replica holds for the given net ids
+			var info: Dictionary = {}
+			for id: Variant in args.get("ids", []):
+				var nid: int = int(id)
+				var look: Node = Ids.lookup(nid)
+				var holders: Array = []
+				if rt != null:
+					for n: Node in rt.npcs():
+						if NetIds.of(n) == nid:
+							var npc: NpcBase = n as NpcBase
+							holders.append({"path": String(n.get_path()), "pos": npc.global_position, "alive": npc.alive,
+								"pm": int(npc.process_mode), "ragdoll": NpcRagdoll.owns_pose(npc), "vis": npc.visible})
+				info[nid] = {"lookup": String(look.get_path()) if look != null else "", "lookup_cls": look.get_class() if look != null else "",
+					"holders": holders, "interp": NetInterp.enabled}
+			_rpc_report.rpc_id(1, "npc_info", info)
 		"motion_report":
 			var m: MotionStats = get_node_or_null(^"MotionStats") as MotionStats
 			_rpc_report.rpc_id(1, "motion", m.report() if m != null else {})
