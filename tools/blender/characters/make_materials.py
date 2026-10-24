@@ -67,7 +67,10 @@ FORBIDDEN = {"#4FD1E8"}
 EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0), "char_prop_ember": ("#FF6A2A", 1.6),
             # D-165: white screen-print fluoresces under the club's UV wash, so the door team's back print reads at
             # 10 m under the magenta / violet floor light
-            "char_club_print": ("#D6D2FF", 0.6)}
+            "char_club_print": ("#D6D2FF", 0.6),
+            # D-165 (LEAD): TAC Heavy's back stripes + helmet band, real retroreflective tape: a faint return so the
+            # near-black heavy reads from behind on dark maps; subtle, never a light source, no emissive on the front
+            "char_retro_tape": ("#E8ECEF", 0.3)}
 
 
 #: D-116: open long garments (robe, long coats, below the knee) show their inside where they part, a front split

@@ -182,6 +182,7 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_gallery_green": ("#2C463B", 0.80, 0.0, "cloth"),  # D3-01 gallery: Halberd Gallery Security blazer
     "char_gallery_wine": ("#6E2A3A", 0.60, 0.0, "cloth"),  # D3-01 gallery: Halberd wine (crest, ties, pin enamel)
     "char_glove_white": ("#D3D1C9", 0.75, 0.0, "cloth"),  # D3-01 gallery: attendants' cotton art-handling gloves
+    "char_retro_tape": ("#D8D9D4", 0.55, 0.0, "plastic"),  # D-165: retroreflective tape (+ emission, make_materials)
     "char_satin_wine": ("#6A2433", 0.40, 0.0, "cloth"),  # D3-01 gallery: patron's wine satin cocktail dress
     "char_velvet_midnight": ("#313A5C", 0.95, 0.0, "cloth"),  # D3-01 gallery: patron's velvet dinner jacket
     "char_chino_navy": ("#343D52", 0.86, 0.0, "cloth"),  # D3-01 meridian_federal: customer's navy chinos

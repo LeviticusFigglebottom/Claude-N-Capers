@@ -287,6 +287,9 @@ def visor(kit, helm_hull: Hull, down: bool, frame: str, glass: str = LENS) -> No
 # =============================================================================================
 # recipes
 # =============================================================================================
+#: D-165: TAC Heavy back stripes + helmet band (faint emission, make_materials.EMISSION)
+RETRO_TAPE = "char_retro_tape"
+
 def tac_heavy(kit) -> None:
     heavy(kit, ARMOR, TAC_GEAR, TAC_GEAR, shoulder_plates=False)
     # PP-D-1: matte white pauldron trim (metallic steel read too dark at 40 m) so the near-black heavy keeps a readable shoulder line at 30-40 m
@@ -294,14 +297,15 @@ def tac_heavy(kit) -> None:
     pauldrons(kit, ARMOR, accent, size=1.3, lift=1.7, trim_scale=0.92, arm_mat=accent)
     _helm, hh = big_helmet(kit, ARMOR, gap=0.05, cup_r=0.048)
     visor(kit, hh, down=False, frame="polymer_black")
-    _silhouette_accent(kit, hh, accent)
+    _silhouette_accent(kit, hh, RETRO_TAPE)
     kit.notes["hat"] = "heavy helmet, visor up (Headwear)"
 
 
 def _silhouette_accent(kit, helm_hull: Hull, accent: str) -> None:
     """D-165 dark-map read: the near-black heavy vanished from behind past ~30 m (the white pauldrons only carry the
     front and sides). A light band round the sides and back of the helmet, below the flipped-up visor, and two
-    reflective stripes across the upper back of the armour, in the pauldron accent (faction-neutral: no lettering)."""
+    reflective stripes across the upper back of the armour (faction-neutral: no lettering). LEAD: retroreflective tape
+    (char_retro_tape, a faint emission) on these only, never on the front."""
     fit, k = kit.fit, kit.k
     c = fit.head_centre()
     z = fit.eye_centre().z + 0.035 * k
