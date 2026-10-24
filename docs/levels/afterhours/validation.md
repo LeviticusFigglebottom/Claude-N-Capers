@@ -55,14 +55,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 625 props checked
+- 628 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_alley/EscapeAlley` @ (25.00, 0.00, -3.60): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_tolley/EscapeTolley` @ (40.00, 0.00, 22.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 625 props, 44 doors checked
+- 628 props, 44 doors checked
 
 - WARN `Props/MapBuilt/RollerShutter` @ (31.00, 0.00, 0.00): door has no Leaf node; swing arc not checked
 
@@ -117,12 +117,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 345 x 329 columns (0.25 m), 69723 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 345 x 329 columns (0.25 m), 69736 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1613 polygons, cell 0.10/0.10 m
+- navmesh: 1619 polygons, cell 0.10/0.10 m
 - 234 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -152,7 +152,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomU6` | 57 | 57 | 100% |
 | `Rooms/RoomU1` | 507 | 507 | 100% |
 | `Rooms/RoomU6b` | 61 | 61 | 100% |
-| `Rooms/RoomU9` | 72 | 72 | 100% |
+| `Rooms/RoomU9` | 71 | 71 | 100% |
 | `Rooms/RoomU4a` | 39 | 39 | 100% |
 | `Rooms/RoomU4b` | 50 | 50 | 100% |
 | `Rooms/RoomU2` | 135 | 135 | 100% |
@@ -209,7 +209,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 193 interior key light(s) in 30 room(s); 0 lack `viewmodel_lit`
+- 194 interior key light(s) in 30 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -230,8 +230,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: chair 3, counter 2, desk 8, table 5, low_table 1, wall_unit 29, visitor_chair 1, desk_chair 6, stool 10, monitor 1
-- 20 seats, 16 tables/desks/counters, 44 doors checked
+- classified: chair 3, counter 2, desk 8, table 5, low_table 1, wall_unit 29, visitor_chair 1, desk_chair 7, stool 10, monitor 1
+- 21 seats, 16 tables/desks/counters, 44 doors checked
 
 - WARN `Gameplay/Ladders/DropLadder` @ (30.00, 0.00, -0.60): door_clear: in the clear zone of door `Props/MapBuilt/RollerShutter` (1.0 / 1.0 m each side, leaf width 3.00 m) by 0.76 m (gameplay prefab / variant content: review)
 - WARN `Props/Dress/Streets/MarlinN/StreetLamp0` @ (-10.00, 0.00, 32.20): overlap: bounds interpenetrate `Props/MapBuilt/CarMarlin2` by 0.46 m (not a stack or a tucked seat)

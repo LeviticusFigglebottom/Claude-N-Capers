@@ -76,7 +76,11 @@ const PLACER_EXTERIOR: Array[String] = []
 ## Per-room placer seeds (default 7100).
 const KIT_SEEDS: Dictionary = {}
 ## Extra keep-outs per room: [x0, y0, z0, x1, y1, z1] (world).
-const KEEP_OUT: Dictionary = {}
+const KEEP_OUT: Dictionary = {
+	# U9: the turn inside the office door (x 28, z 17.45-18.55; P's G2 runs stuck at (28.7, 17.9) with the kit's
+	# credenza 0.3 m off the jamb): 1.6 m deep, the door's width plus 0.75 m each side, kept clear
+	"U9": [[28.0, 4.2, 16.7, 29.6, 6.4, 19.3]],
+}
 ## Rooms without the kit's ceiling grid: the hall and the bars under the lacquer (their light is the club rig).
 const NO_CEILING_GRID: Array[String] = ["G6"]
 
