@@ -132,7 +132,10 @@ func _content(host: Node3D, c: Array) -> void:
 	if c.size() > 4:   # optional yaw in the host's frame (a drill spot on the door face turns into it, GH's pattern)
 		inst.basis = yaw_basis(float(c[4]))
 	for k: Variant in (c[3] as Dictionary):
-		set_prop(inst, String(k), c[3][k])
+		if String(k) == "visual_path":   # a scene for the prefab's visual_scene (an empty one where the host shows it)
+			inst.set(&"visual_scene", load(String(c[3][k])))
+		else:
+			set_prop(inst, String(k), c[3][k])
 	inst.set_meta(&"kind", String(c[0]))
 	inst.set_meta(&"inside", true)
 	host.add_child(inst)

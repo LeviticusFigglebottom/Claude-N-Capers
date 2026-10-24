@@ -281,7 +281,8 @@ def always() -> Dict[str, List[list]]:
             Pf("safe", "OfficeSafe", [33.5, U, 20.35], 0.0,
                {"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe",
                 "@contents": [["drill_point", "SafeDrill", [0.2, 1.0, -0.36],
-                               {"objective_tag": "safe_drill", "target": ".."}, 180.0]]},
+                               {"objective_tag": "safe_drill", "target": "..",
+                                "visual_path": "res://world/heists/glasshouse/art/gh_empty.tscn"}, 180.0]]},
                [33.5, U, 19.2], {}, "prop_safe_large"),
             # the door take: G26's drop safe (SMALL, drill / saw; saw 60 s), small loot x3 inside
             Pf("safe", "DropSafe", [28.0, 0.0, 27.45], 0.0,
@@ -674,10 +675,10 @@ def _code(pos: list, yaw: float, use: list, mount: str = "", vis: str = "prop_no
                vis)]
 
 
-def _laser(pattern: str, props: Dict, width: float = 3.6, z: float = 23.0) -> list:
+def _laser(pattern: str, props: Dict, width: float = 3.6, z: float = 23.0, vis: str = "") -> list:
     p = {"pattern": pattern, "size_m": [width, 2.2, 0.1], "objective_tag": "lasers"}
     p.update(props)
-    return [Pf("laser_grid", "PrivateLasers", [34.3, U, z], 90.0, p, None, {}, "")]
+    return [Pf("laser_grid", "PrivateLasers", [34.3, U, z], 90.0, p, None, {}, vis)]
 
 
 def _rover(nm: str, graph: str, tag: str, pos: list) -> list:
@@ -717,9 +718,12 @@ def slot_content() -> Dict[str, List[list]]:
         "prod_green": [M("ProductGreen", [12.5, 1.0, 1.0], "product", "on the DJs' flight cases")],
         # on the floor in front of the shelving (x 35.1-35.7), behind the laser plane (x 34.3) (A r305: inside the shelf)
         "prod_private": [M("ProductPrivate", [34.75, U + 0.1, 23.0], "product", "in front of the shelving, behind the lasers")],
-        "lz_static": _laser("static", {"beam_count": 3}, 2.6, 22.5),   # the bypass: 1.0 m on the south side
-        "lz_sweep": _laser("sweep", {"period_s": 6.0, "sweep_beams": 1}),
-        "lz_timed": _laser("timed", {"period_s": 16.0, "off_s": 4.0}),
+        "lz_static": _laser("static", {"beam_count": 3}, 2.6, 22.5,
+                            "prop_laser_beams_h215x3"),   # the bypass: 1.0 m on the south side
+        "lz_sweep": _laser("sweep", {"period_s": 6.0, "sweep_beams": 1},
+                           vis="prop_laser_beams_v260x2"),
+        "lz_timed": _laser("timed", {"period_s": 16.0, "off_s": 4.0},
+                           vis="prop_laser_beams_h330x4"),
         "rover_floor": _rover("RoverFloor", "Foh", "guard_floor", FOH["Foyer"]),
         "rover_boh": _rover("RoverBoh", "Boh", "guard_boh", BOH["G13W"]),
         "rover_upper": _rover("RoverUpper", "Upper", "guard_upper", UPPER["U6E"]),

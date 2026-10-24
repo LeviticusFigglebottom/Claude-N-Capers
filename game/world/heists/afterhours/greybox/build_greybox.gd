@@ -252,7 +252,9 @@ func _build_club_lights(lighting: Node3D) -> void:
 		l.light_color = r[4]
 		l.light_energy = float(r[5])
 		l.shadow_enabled = bool(r[8])
-		l.light_bake_mode = Light3D.BAKE_DYNAMIC  # doc GI: the house switch re-lights GI without a re-bake
+		# doc GI: the shadowed key / work lights re-light GI on the house switch (DYNAMIC); the unshadowed accents
+		# inject nothing (an unshadowed light reaches the GI through the walls: G3, the BOH colour bleed)
+		l.light_bake_mode = Light3D.BAKE_DYNAMIC if bool(r[8]) else Light3D.BAKE_DISABLED
 		l.layers = 1 | VIEWMODEL_LIT_LAYER
 		l.visible = not String(r[0]).begins_with("Work")   # the default state is club
 		add(cl, l)
