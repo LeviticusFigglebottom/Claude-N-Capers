@@ -1,0 +1,20 @@
+[AHP] ROW loud | civilian start (D-065) | PASS | mode civilian, 3 AI bots | -
+[AHP] ROW loud | gear (GearBag) -> casing | PASS | 3 s from the spawn, mode casing, at (22.4, 1.0, 25.5) | -
+[AHP] ROW loud | behind the east bar | PASS | 6.7 s, 0 STUCK row(s) | -
+[AHP] ROW loud | east bar service door (casing) | PASS | availability '', open true | -
+[AHP] ROW loud | into G20 | PASS | 1.0 s, 0 STUCK row(s) | -
+[AHP] ROW loud | keycard (Keycard, 40 m walk) | PASS | 14 s, peak 1.00 | -
+[AHP] ROW loud | the alarm (a burst in the hall) | PASS | loud true after 0.0 s, alarm 'guard_radio' | -
+[AHP] ROW loud | staff stair (G22) -> U6 | PASS | 16.3 s, 0 STUCK row(s) | -
+[AHP] ROW loud | office keycard door | PASS | reader true, open true | -
+[AHP] ROW loud | into the office (U9) | PASS | 2.2 s, 0 STUCK row(s) | -
+[AHP] ROW loud | safe by drill | PASS | opened true after 186 s heist time, 1 jam(s) fixed | -
+[AHP] ROW loud | cash in the open safe | PASS | 5 loot.cash_bricks bag(s) within 4 m | -
+[AHP 2545.3s t=276.7] pilot: STUCK at (30.9, 4.2, 14.5) heading to (33.9, 4.4, 14.5); rays: slide:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police20@(31.1, 5.1, 14.7) n=(-0.6, 0.0, -0.8), slide:/root/AhG1Pass/HeistRuntime/Afterhours/Geometry/Building/Walls/WallsU/UX10140_0_02@(30.9, 4.6, 14.1) n=(0.0,
+[AHP] ROW loud | carry 1 (secured 1): safe -> van (SecureTolley) | STUCK | bagged in 4 s, carried in 30 s, 1 STUCK row(s), secured true | C map
+[AHP 2965.9s t=328.0] pilot: STUCK at (33.5, 4.2, 12.8) heading to (33.6, 4.2, 11.8); rays: h0.05:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police13@(33.6, 4.3, 12.1), h0.20:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police13@(33.6, 4.4, 12.2), h0.40:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police13@(33.6
+[AHP 3016.2s t=332.5] pilot: STUCK at (33.9, 4.2, 11.9) heading to (33.9, 4.1, 11.4); rays: h0.05:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police13/Visual/TacLightDuty/Skeleton3D/Ragdoll/Hips@(33.9, 4.2, 11.7), vel=(0.0, 0.0, -2.4) floor=true state=0
+[AHP] ROW loud | carry 2 (secured 2): safe -> van (SecureTolley) | STUCK | bagged in 19 s, carried in 33 s, 2 STUCK row(s), secured true | C map
+[AHP] ROW loud | carry 3 (secured 3): safe -> van (SecureTolley) | PASS | bagged in 16 s, carried in 27 s, 0 STUCK row(s), secured true | -
+[AHP] ROW loud | van back (2nd FADE or 300 s after the first bag) | PASS | escape EscapeTolley:<Node3D#680030908180> at t=596 | -
+[AHP] ROW loud | escape (EscapeTolley) | PASS | reached true, escaping true | -

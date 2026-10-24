@@ -50,7 +50,10 @@ height = 0.4834
 
 [node name="Corpsman" unique_id=653532467 instance=ExtResource("1_glb")]
 
-[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=37249569]
+[node name="Marks" parent="Skeleton3D" index="4" unique_id=168555502]
+lod_bias = 64.0
+
+[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=37249569]
 transform = Transform3D(1, 1.5543122e-15, 1.1057274e-07, 4.4193738e-09, 0.999201, -0.039968044, -1.1048439e-07, 0.039968044, 0.999201, 1.2347653e-15, 1.221826, 0.0150842825)
 bone_name = "chest"
 bone_idx = 3
@@ -58,7 +61,7 @@ bone_idx = 3
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=982437849]
 transform = Transform3D(0.643, 0, 0.766, -0.76539, -0.03997, 0.64248997, 0.03062, -0.9992, -0.0257, 0.0503, 0.0117999995, 0.6727)
 
-[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=162621271]
+[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=162621271]
 transform = Transform3D(0.07391277, -0.7032336, -0.70710677, 0.07391294, -0.7032331, 0.7071072, -0.9945216, -0.1045284, 2.4732358e-07, -0.5625282, 1.0534999, -0.008703351)
 bone_name = "hand.L"
 bone_idx = 9
@@ -66,7 +69,7 @@ bone_idx = 9
 [node name="Socket" type="Marker3D" parent="Skeleton3D/HandL" index="0" unique_id=519248975]
 transform = Transform3D(0, 0.95106, -0.30901998, 0, -0.30901998, -0.95106, -1, 0, 0, 0.0121, 0.072399996, -0.030199999)
 
-[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=162621277]
+[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=162621277]
 transform = Transform3D(0.07391274, 0.7032334, 0.70710665, -0.07391285, -0.70323306, 0.70710707, 0.99452186, -0.10452839, 1.3936094e-07, 0.56252795, 1.0534999, -0.008703344)
 bone_name = "hand.R"
 bone_idx = 28
@@ -74,7 +77,7 @@ bone_idx = 28
 [node name="Socket" type="Marker3D" parent="Skeleton3D/HandR" index="0" unique_id=679352725]
 transform = Transform3D(0, -0.95106, 0.30901998, 0, -0.30901998, -0.95106, 1, 0, 0, -0.0121, 0.072399996, -0.030199999)
 
-[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=37469474]
+[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="9" unique_id=37469474]
 transform = Transform3D(1, 8.881784e-16, -2.842171e-14, -3.5527137e-15, 0.99999994, 2.2351742e-08, -7.1054274e-15, -2.2351742e-08, 0.9999998, -8.264909e-16, 1.5939044, 0.0120674195)
 bone_name = "head"
 bone_idx = 5
@@ -82,7 +85,7 @@ bone_idx = 5
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Head" index="0" unique_id=203399098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0815, -0.0892)
 
-[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="9" unique_id=489200049]
+[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="10" unique_id=489200049]
 transform = Transform3D(1, 2.220446e-16, 7.823111e-08, 3.9066776e-09, 0.99875236, -0.04993765, -7.813351e-08, 0.04993765, 0.99875236, 0, 0.9603652, 0)
 bone_name = "hips"
 bone_idx = 1
@@ -90,7 +93,7 @@ bone_idx = 1
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=826467689]
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.1255, 0.0713, 0.1516)
 
-[node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="10" unique_id=1022422037]
+[node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="11" unique_id=1022422037]
 active = false
 
 [node name="Hips" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="0" unique_id=109535512]

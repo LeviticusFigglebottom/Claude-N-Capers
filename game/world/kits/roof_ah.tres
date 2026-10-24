@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"roof_ah"
+purpose = &"exterior"
+required_items = Array[StringName]([&"ahu", &"hvac", &"wall_lamp"])
+optional_items = {
+&"ahu": 1,
+&"hvac": 2
+}
+clutter_groups = {}
+min_density = 0.008
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"ahu", &"hvac", &"bmu", &"garage", &"anchor_frame", &"wall_lamp"])
+seed_salt = 334
+seed_id = &"exterior_roof_tower"
+counts = {}
+assets = {}
+ceiling = {}
+notes = "Afterhours (exterior), from exterior_roof_tower: AH X1R the BOH roof: two air handlers and the condensers against the upper wing's north wall (direct props), the sodium lamp over the flank route."

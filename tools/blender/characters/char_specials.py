@@ -518,7 +518,10 @@ def corpsman(kit) -> None:
         d = Vector((math.sin(az), math.cos(az), 0.25))
         mtx, _loc = o.surface_frame(hh, Vector((c.x, c.y, zz)), d, up=o.UP, reach=0.4)
         em.extend(sg.emblem(mtx, k, 0.024, weights=sg.HEAD_W))
-    kit.add_head(em)
+    # D-165: every medic mark in its own `Marks` mesh, which the assembler keeps at full detail (lod_bias): merged
+    # into the helmet / armband / pack surfaces, the renderer's automatic LODs ate the white plus from 20 m on
+    marks = Mesh()
+    marks.extend(em)
     # white armbands with the mark on both upper arms
     hull = kit.hull()
     arms = Mesh()
@@ -539,11 +542,12 @@ def corpsman(kit) -> None:
                 side_hint=ax, cast_back=0.05)
         ah = kit.hull(arms)
         mtx, loc = o.surface_frame(ah, ctr, Vector((sx, 0.0, 0.25)), up=-ax)
-        arms.extend(sg.emblem(mtx, k, 0.022, anchor=loc))
+        marks.extend(sg.emblem(mtx, k, 0.022, anchor=loc))
     kit.add_gear(arms)
     # medic pack (white, mark on the back, red lid stripe); its top shows above the shoulders
     pack, mtx, anchor = sg.backpack(kit, 0.46, 0.50, 0.16, 1.42, WHITE, trim="char_medic_red")
-    pack.extend(sg.emblem(mtx @ o.Matrix.Translation((0.0, -0.02 * k, 0.166 * k)), k, 0.07, anchor=anchor))
+    marks.extend(sg.emblem(mtx @ o.Matrix.Translation((0.0, -0.02 * k, 0.166 * k)), k, 0.07, anchor=anchor))
+    kit.extra["Marks"] = marks
     gp = o.Gear()
     for sx in (-1.0, 1.0):
         gp.box((sx * 0.23 * k - 0.025 * k, -0.17 * k, 0.02 * k), (sx * 0.23 * k + 0.025 * k, 0.08 * k, 0.13 * k), TAC_GEAR)

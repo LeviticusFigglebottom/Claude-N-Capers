@@ -91,7 +91,8 @@ const NO_CEILING_GRID: Array[String] = ["G6"]
 ## 4000 K LED street).
 const ROWS: Array = [
 	["X2", "MarlinN", [-14.0, 0.0, 32.2], [36.0, 0.0, 32.2], 180.0, [
-		["prop_street_lamp", 4.0, 16.0, 3, 0.0], ["prop_bin_street", 4.7, 32.0, 2, 0.0]]],
+		["prop_street_lamp", 4.0, 16.0, 3, 0.0], ["prop_bin_street", 4.7, 32.0, 2, 0.0],
+		["prop_bollard_steel", 26.0, 1.6, 5, 0.0]]],
 	["X2", "TolleyW", [38.0, 0.0, -10.0], [38.0, 0.0, 26.0], -90.0, [
 		["prop_street_lamp", 2.0, 12.0, 3, 0.0]]],
 ]
@@ -109,7 +110,6 @@ const DIRECT_PROPS: Array = [
 	["StoolMain4", "prop_stool_teller", Vector3(3.0, 0.0, 13.7), 90.0, {}],
 	["StoolMain5", "prop_stool_teller", Vector3(3.0, 0.0, 14.5), 90.0, {}],
 	["StoolMain6", "prop_stool_teller", Vector3(3.0, 0.0, 15.3), 90.0, {}],
-	["StoolMain7", "prop_stool_teller", Vector3(3.0, 0.0, 16.1), 90.0, {}],
 	["StoolEast0", "prop_stool_teller", Vector3(23.0, 0.0, 8.6), -90.0, {}],
 	["StoolEast1", "prop_stool_teller", Vector3(23.0, 0.0, 9.4), -90.0, {}],
 	["StoolEast2", "prop_stool_teller", Vector3(23.0, 0.0, 10.2), -90.0, {}],
@@ -134,6 +134,30 @@ const DIRECT_PROPS: Array = [
 	["PassageLamp0", "prop_wall_lamp", Vector3(-0.2, 3.0, 10.0), 90.0, {}],
 	["PassageLamp1", "prop_wall_lamp", Vector3(-0.2, 3.0, 22.0), 90.0, {}],
 	["RoofLamp", "prop_wall_lamp_sodium", Vector3(30.0, 6.4, 6.8), 0.0, {}],
+	# the alley's service clutter against the club's north facade (validate final: the alley kit's condensers, pallets,
+	# crates), clear of the loading roller (x 29.5-32.5) and the escape run; the pallets keep the drop ladder company
+	["CondAlley0", "prop_hvac_condenser", Vector3(7.0, 0.0, -0.45), 0.0, {}],
+	["CondAlley1", "prop_hvac_condenser", Vector3(8.4, 0.0, -0.45), 0.0, {}],
+	["PalletAlley0", "prop_pallet_loaded", Vector3(28.0, 0.0, -0.65), 0.0, {}],
+	["PalletAlley1", "prop_pallet", Vector3(26.6, 0.0, -0.65), 0.0, {}],
+	["CratesAlley", "prop_ah_crates", Vector3(10.0, 0.0, -0.55), 0.0, {}],
+	# the kit items the placer finds no room for in the small rooms (validate final, the kits' required kinds): the box
+	# office teller's chair behind the counter, the cash office's chair at its counter, U10's count-table and desk
+	# chairs (the south side is the counter's NPC post), U2's armchairs by the side table on the west wall (clear of
+	# the patrons' posts round the sofa, x 13-19) and a plant by the bar's east end
+	["ChairBoxOffice", "prop_chair_task", Vector3(23.2, 0.0, 24.8), 90.0, {}],
+	["ChairCashG26", "prop_chair_office", Vector3(29.75, 0.0, 24.3), -90.0, {}],
+	["ChairCountN", "prop_chair_office", Vector3(29.0, 4.2, 9.45), 180.0, {}],
+	["ChairCountDesk", "prop_chair_office", Vector3(32.0, 4.2, 10.6), 180.0, {}],
+	["ArmchairVIPN", "prop_armchair_club", Vector3(10.6, 4.2, 23.4), -90.0, {}],
+	["ArmchairVIPS", "prop_armchair_club", Vector3(10.6, 4.2, 24.3), -90.0, {}],
+	["PlantVIP", "prop_plant_tall", Vector3(21.5, 4.2, 25.3), 0.0, {}],
+	# the BOH roof's plant against the upper wing's north wall (outer face z 6.8), west of the flank route's ladder
+	["AhuRoof0", "prop_ahu_roof", Vector3(6.0, 4.2, 5.95), 0.0, {}],
+	["AhuRoof1", "prop_ahu_roof", Vector3(10.0, 4.2, 5.95), 0.0, {}],
+	["CondRoof0", "prop_hvac_condenser", Vector3(14.0, 4.2, 6.54), 0.0, {}],
+	["CondRoof1", "prop_hvac_condenser", Vector3(15.4, 4.2, 6.54), 0.0, {}],
+	["CondRoof2", "prop_hvac_condenser", Vector3(16.8, 4.2, 6.54), 0.0, {}],
 	# G13's west end (the kit's grid starts further east: the back-corridor shot opened on an unlit stretch)
 	["CorridorG13West", "prop_ceiling_panel_neutral", Vector3(2.0, 3.0, 6.0), 0.0, {}],
 	# exit signs over the hall's exits (the west fire exits, inner face x 0.2; the hall doors, inner face z 20.8)
@@ -142,10 +166,11 @@ const DIRECT_PROPS: Array = [
 	["ExitHallDoorsW", "prop_exit_sign", Vector3(13.0, 2.36, 20.8), 0.0, {}],
 	["ExitHallDoorsE", "prop_exit_sign", Vector3(19.0, 2.36, 20.8), 0.0, {}],
 	# G6: the mirror ball over the dance floor and the truss along the stage front, from the hall roof (8.0); the 2.01 m
-	# units on a 2.12 m pitch (placed footprints keep 5 cm apart, _place_ext)
+	# units on a 2.12 m pitch (placed footprints keep 5 cm apart, _place_ext); the washes and the DJ key hang in it
+	# (the rig's fixture, build_greybox.gd TRUSS_LIT)
 	["MirrorBall", "prop_ah_mirror_ball", Vector3(14.0, 8.0, 12.5), 0.0, {}],
-	["TrussStage0", "prop_ah_truss_2m", Vector3(10.82, 8.0, 10.6), 0.0, {}],
-	["TrussStage1", "prop_ah_truss_2m", Vector3(12.94, 8.0, 10.6), 0.0, {}],
-	["TrussStage2", "prop_ah_truss_2m", Vector3(15.06, 8.0, 10.6), 0.0, {}],
-	["TrussStage3", "prop_ah_truss_2m", Vector3(17.18, 8.0, 10.6), 0.0, {}],
+	["TrussStage0", "prop_ah_truss_2m", Vector3(10.82, 8.0, 10.6), 0.0, {"fixture": true}],
+	["TrussStage1", "prop_ah_truss_2m", Vector3(12.94, 8.0, 10.6), 0.0, {"fixture": true}],
+	["TrussStage2", "prop_ah_truss_2m", Vector3(15.06, 8.0, 10.6), 0.0, {"fixture": true}],
+	["TrussStage3", "prop_ah_truss_2m", Vector3(17.18, 8.0, 10.6), 0.0, {"fixture": true}],
 ]

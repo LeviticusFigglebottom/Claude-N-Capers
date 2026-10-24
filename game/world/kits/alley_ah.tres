@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"alley_ah"
+purpose = &"exterior"
+required_items = Array[StringName]([&"hvac", &"pallet", &"wall_lamp", &"crate"])
+optional_items = {
+&"box": 1,
+&"crate": 1,
+&"hvac": 1.5,
+&"pallet": 1.5
+}
+clutter_groups = {}
+min_density = 0.02
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"ladder"])
+seed_salt = 25
+seed_id = &"exterior_alley"
+counts = {
+&"hvac": Vector2i(2, 3)
+}
+assets = {
+&"pallet": PackedStringArray("prop_pallet", "prop_pallet_loaded")
+}
+ceiling = {}
+notes = "Afterhours (exterior), from exterior_alley: AH X1 service alley: the condensers, pallets and bottle crates are direct props (ah_dress_data.gd DIRECT_PROPS, clear of the escape run); the drop ladder stands alone under the roof edge."

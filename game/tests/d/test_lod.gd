@@ -232,3 +232,17 @@ func test_one_zoom_watcher_per_tree() -> void:
 	assert_false(get_tree().root.has_meta(zoom_script.PENDING_META), "pending marker cleared once added")
 	for r: Node in crowd:
 		r.queue_free()
+
+
+## D-165: the Corpsman's medic marks are their own `Marks` mesh with a high lod_bias, so the renderer's automatic LODs
+## (LOD1) keep the white plus on the red disc; merged into the pack / helmet / armbands they were decimated from 20 m on.
+func test_corpsman_marks_stay_at_full_detail() -> void:
+	for id: String in ["corpsman", "corpsman_frd", "corpsman_sentinel", "corpsman_zero"]:
+		var root: Node3D = (load("res://world/characters/%s/%s.tscn" % [id, id]) as PackedScene).instantiate() as Node3D
+		add_child(root)
+		var marks: MeshInstance3D = root.get_node_or_null("Skeleton3D/Marks") as MeshInstance3D
+		assert_true(marks != null, "%s has a Skeleton3D/Marks mesh" % id)
+		if marks != null:
+			assert_true(marks.lod_bias >= 32.0, "%s Marks lod_bias %.1f (kept at full detail)" % [id, marks.lod_bias])
+			assert_true(marks.mesh != null and marks.mesh.get_surface_count() >= 2, "%s Marks: disc + plus" % id)
+		root.queue_free()

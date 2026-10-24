@@ -917,7 +917,8 @@ func _link_faces() -> void:
 			var ft: AABB = _footprint(t)
 			if absf(ft.position.y - cx.origin.y) > 0.5:
 				continue
-			if not ft.grow(1.0).has_point(Vector3(cx.origin.x, ft.position.y + 0.01, cx.origin.z)):
+			# 1.3 m from the chair's origin: levelcheck's 1.0 m is from its footprint (U9's visitor chair, G3)
+			if not ft.grow(1.3).has_point(Vector3(cx.origin.x, ft.position.y + 0.01, cx.origin.z)):
 				continue
 			var dist: float = ft.get_center().distance_to(cx.origin)
 			if dist < best_d:

@@ -514,7 +514,7 @@ def patron_h(kit: Kit) -> None:
 def patron_i(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     n.shoes(kit, heel=True)
-    d = g.dress(fit, "char_club_satin_black", 0.42 * k, sleeve=0.40, scoop=0.06, flare=0.08)
+    d = g.dress(fit, "char_club_satin_black", 0.42 * k, sleeve=0.40, scoop=0.06, flare=0.12)  # D-165: stride room
     kit.add_soft(d)
     waist = fit.ring_centre("waist").z
     b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.020, thick=0.003, drop=0.0)
@@ -843,7 +843,7 @@ def vip_e(kit: Kit) -> None:
     top = g.knit_top(fit, kit.hull(), LIME, tuck, sleeve=0.0, neck="crew", base=0.004, rib=0.025)
     kit.add_soft(top)
     n0 = len(kit.soft.f)
-    sk = n.skirt(kit, "char_club_satin_black", belt_z + 0.02 * k, 0.40 * k, flare=0.06)
+    sk = n.skirt(kit, "char_club_satin_black", belt_z + 0.02 * k, 0.40 * k, flare=0.10)  # D-165: stride room
     n.cull_under(kit, n0, sk, "faces_hidden_by_skirt")
     kit.add_head(cg.earrings(fit, "char_satin_gold", drop=False))                    # AH-G3: gold studs
     _vip_band(kit)

@@ -36,6 +36,9 @@
 ## re-runs produce identical bytes. Exit code 1 on any error.
 extends SceneTree
 
+## D-165: the telegraph mesh kept at full detail (see _pin_marks)
+const MARKS_NODE: String = "Marks"
+const MARKS_LOD_BIAS: float = 64.0
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 const RagdollBuilder: GDScript = preload("res://world/characters/_tools/ragdoll_builder.gd")
@@ -268,6 +271,7 @@ func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> b
 	_add_markers(skel, source, asset_id)
 	_add_extra_markers(skel, source, asset_id)
 	_apply_overrides(skel, source, asset_id, scene_path)
+	_pin_marks(skel)
 	_apply_headwear_class(skel, source, asset_id)
 	var switch_m: float = _add_crowd_lod(skel, source, asset_id, scene_path)
 	_merge_layers(skel, asset_id, scene_path, switch_m)
@@ -424,6 +428,14 @@ func _add_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) -> voi
 		socket.name = Spec.SOCKET_NAME
 		socket.transform = _rounded(local)
 		att.add_child(socket)
+
+
+## D-165: a `Marks` mesh (the Corpsman's medic marks, char_specials.py) is a gameplay telegraph: a high lod_bias keeps
+## it at full detail where the renderer's automatic LODs ate the white plus from 20 m on (a few hundred tris).
+func _pin_marks(skel: Skeleton3D) -> void:
+	var mi: MeshInstance3D = skel.get_node_or_null(NodePath(MARKS_NODE)) as MeshInstance3D
+	if mi != null:
+		mi.lod_bias = MARKS_LOD_BIAS
 
 
 ## SOURCE.txt `extra_markers`: Marker3D nodes under existing nodes of the skeleton (e.g. the Longshot's
