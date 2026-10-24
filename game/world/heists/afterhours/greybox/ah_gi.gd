@@ -39,10 +39,13 @@ const LAMPS_OFF: Array = []
 const SHADOW_FIXTURES: Array[String] = ["Props/Dress/U9/DeskLamp_1"]
 
 ## VoxelGI (doc GI: the club interior; the hall lights in DYNAMIC bake mode, so the house-lights switch re-lights GI
-## without a re-bake): [node name, data file, AABB min, AABB max, subdiv, interior]. The footprint plus 0.3 m.
+## without a re-bake): [node name, data file, AABB min, AABB max, subdiv, interior]. The footprint plus 0.3 m. Not
+## `interior` (as RT's volumes): an interior volume drops the environment's ambient inside it, so every surface out of
+## a fixture's cone went black (the LEAD's G2 review: scalloped black bands at the wall tops under black ceilings in the
+## BOH rooms, the kit downlights' cone edges; gone with the volume hidden, unchanged without SSAO).
 const GI_VOLUMES: Array = [
 	["VoxelGIClub", "afterhours_voxelgi_club.res", Vector3(-0.5, -0.3, -0.5), Vector3(36.5, 8.9, 28.5),
-		VoxelGI.SUBDIV_128, true],
+		VoxelGI.SUBDIV_128, false],
 ]
 
 ## Rooms (purposes) without a reflection probe: the exteriors and the roof (sky), the stairs, the electrical and
