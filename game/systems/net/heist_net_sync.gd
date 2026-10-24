@@ -45,8 +45,12 @@ const NODE_NAME: String = "NetSync"
 const SYNC_HZ: float = 15.0
 ## A4-03 soak (Dockside: two cowering civilians 5 m off on every client for the whole run): transforms go out
 ## unreliable and only when changed, so one lost packet, or one that reached a client still building its replica,
-## leaves a now-still NPC stale for good. Every XFORM_KEYFRAME_S the full transform set is resent once.
+## leaves a now-still NPC stale for good. Every transform is resent at least every XFORM_KEYFRAME_S, staggered: each
+## tick refreshes the 1 / KEYFRAME_TICKS of the unchanged ones whose id comes up (P6 churn soak: a whole-set keyframe was
+## a burst of unreliable chunks in a fixed order; ENet throttling a fresh peer dropped the same late chunk every time, so
+## a cop holding still in it stayed stale on a late joiner).
 const XFORM_KEYFRAME_S: float = 2.0
+const KEYFRAME_TICKS: int = 30
 ## D-168 (AH soak: 56 civilians made one 4.3 kB unreliable transform packet, 3x the ENet MTU of 1392, so one lost
 ## fragment dropped the whole update): `_rpc_xforms` goes out in chunks of at most this many encoded bytes (payload;
 ## the RPC header and ENet framing fit in the rest of the MTU).
@@ -103,6 +107,8 @@ var token: int = 0
 ## Server: diagnostics for tests: the chunk count and largest payload (bytes) of the last _send_xforms.
 var last_xform_chunks: int = 0
 var last_xform_max_bytes: int = 0
+## Server diagnostics: transforms in the last _send_xforms.
+var last_xform_sent: int = 0
 
 var _runtime: HeistRuntime = null
 var _begun: bool = false
@@ -114,7 +120,6 @@ var _last_state: Dictionary[int, Dictionary] = {}
 var _last_xform: Dictionary[int, Variant] = {}
 var _last_services: Dictionary = {}
 var _accum: float = 0.0
-var _keyframe_left: float = XFORM_KEYFRAME_S
 ## Server: transform sends so far (staggers the slow far-civilian rate by net id).
 var _xform_tick: int = 0
 ## Client (P6): the snapshot interpolation buffer transforms go through (NetInterp).
@@ -456,14 +461,10 @@ func _physics_step(delta: float) -> void:
 	_scan_spawns()
 	_scan_despawns()
 	_accum += delta
-	_keyframe_left -= delta
 	if _accum < 1.0 / SYNC_HZ:
 		return
 	_accum = 0.0
 	_send_state()
-	if _keyframe_left <= 0.0:
-		_keyframe_left = XFORM_KEYFRAME_S
-		_last_xform.clear()  # this send carries every transform
 	_send_xforms()
 
 
@@ -531,6 +532,7 @@ func _send_xforms() -> void:
 	_xform_tick += 1
 	last_xform_chunks = 0
 	last_xform_max_bytes = 0
+	last_xform_sent = 0
 	var keyframe: bool = _last_xform.is_empty()
 	var crew_pos: Array[Vector3] = []
 	for c: CrewController in _runtime.crew_members():
@@ -544,9 +546,10 @@ func _send_xforms() -> void:
 		var x: Variant = NetEntityCodec.xform_of(n)
 		if x == null:
 			continue
-		if _last_xform.has(id) and _last_xform[id] == x:
+		var refresh: bool = (_xform_tick + id) % KEYFRAME_TICKS == 0  # its staggered keyframe slot
+		if _last_xform.has(id) and _last_xform[id] == x and not refresh:
 			continue
-		if not keyframe and (_xform_tick + id) % CIV_SLOW_DIV != 0 and _slow_civilian(n, crew_pos):
+		if not keyframe and not refresh and (_xform_tick + id) % CIV_SLOW_DIV != 0 and _slow_civilian(n, crew_pos):
 			continue  # sent on a later tick (its _last_xform stays old, so the move is not lost)
 		_last_xform[id] = x
 		var size: int = var_to_bytes(x).size() + 8  # + the int key
@@ -556,6 +559,7 @@ func _send_xforms() -> void:
 			bytes = 0
 		out[id] = x
 		bytes += size
+		last_xform_sent += 1
 	if not out.is_empty():
 		_flush_xforms(out, bytes)
 
@@ -610,8 +614,7 @@ func _on_peer_ready(peer_id: int) -> void:
 			Log.warn(&"net", "peer %d: more than %d messages while loading; the rest were dropped" % [peer_id, PENDING_MAX])
 			continue
 		callv(&"rpc_id", [peer_id, m] + ((e as Array)[1] as Array))
-	_members[peer_id] = true
-	_last_xform.clear()  # the next transform send is a keyframe for everyone
+	_members[peer_id] = true  # its still entities arrive through the staggered refresh within XFORM_KEYFRAME_S (no burst)
 	Log.info(&"net", "peer %d ready: %d queued messages sent" % [peer_id, q.size()])
 
 

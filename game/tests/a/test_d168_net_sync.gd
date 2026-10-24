@@ -72,3 +72,27 @@ func test_d168_far_calm_civilians_send_at_a_third_of_the_rate() -> void:
 	assert_eq(total, far.size(), "each far civilian goes out once per CIV_SLOW_DIV ticks (%s)" % [sent_far])
 	far[0].set_alert_state(Enums.AlertState.ALARMED)
 	assert_false(HeistNetSync._slow_civilian(far[0], crew_pos), "a panicking civilian goes back to full rate")
+
+
+## P6 churn: no whole-set keyframe burst. With nothing moving, every tracked transform is resent exactly once per
+## KEYFRAME_TICKS sends (its staggered slot), a small slice per tick.
+func test_p6_static_transforms_refresh_staggered() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 1683, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0, "crew_ai": false, "skip_casing": true})
+	await wait_physics_frames(2)
+	var crowd: Array[NpcBase] = _crowd(45, Vector3(-20, 0, -20))
+	await wait_physics_frames(3)
+	for n: NpcBase in crowd:
+		n.process_mode = Node.PROCESS_MODE_DISABLED  # nothing moves
+	var ns: HeistNetSync = _rt.net_sync
+	ns.begin()
+	ns._send_xforms()  # the first send carries everything
+	var total: int = 0
+	var max_per_tick: int = 0
+	for t: int in HeistNetSync.KEYFRAME_TICKS:
+		ns._send_xforms()
+		total += ns.last_xform_sent
+		max_per_tick = maxi(max_per_tick, ns.last_xform_sent)
+	assert_eq(total, ns._last_xform.size(), "every tracked transform resent once per %d ticks (%d of %d)" % [
+		HeistNetSync.KEYFRAME_TICKS, total, ns._last_xform.size()])
+	assert_true(max_per_tick <= 4, "a small slice per tick, no burst (%d of %d)" % [max_per_tick, ns._last_xform.size()])
