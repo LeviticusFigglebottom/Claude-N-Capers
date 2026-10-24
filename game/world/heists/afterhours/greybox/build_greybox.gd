@@ -44,14 +44,13 @@ const CLUB_EMITTERS: Array = [
 	["PowerDown", &"cue.club_power_down", false, 0.0],
 	["Stampede", &"cue.crowd_stampede", false, 0.0],
 ]
-## ClubLights' children: [name, position, colour, energy, range] (club_lights.gd: `Club*` the club state, `Work*` the
-## house state). Club: violet / magenta / amber / UV blue over the dance floor and the stage (never the interactable
-## cyan, doc §Audio/lighting), low energy; house: 4000 K work lights on the truss line.
 ## The hall rig (afterhours.md §Audio/lighting; AH-C2): [name, "spot" | "omni", position, aim (spots), colour,
 ## energy, range, spot angle, shadow]. `Club*` = the club state (stealth), `Work*` = the house state (loud), others in
 ## both. Shadows only on the key lights that read (LEAD r307): the DJ's amber key, the main and VIP bar backs, the four
 ## house work lights (club state 3 shadowed, house 6: <= 8, §Budgets). The washes hang from the stage-front truss
-## (y 7.25, its underside) onto the dance floor; violet, magenta, UV blue (never the interactable cyan).
+## (y 7.25, its underside) onto the dance floor; violet, magenta, UV blue (never the interactable cyan). The house
+## work lights carry the loud state (16: at 6 the house state read dark in the G2 review); the balcony's rail uplights
+## (doc zones) light both states.
 const CLUB_LIGHT_ROWS: Array = [
 	["ClubWashW", "spot", Vector3(10.8, 7.2, 10.6), Vector3(10.5, 0.0, 14.0), Color(0.55, 0.25, 0.85), 18.0, 14.0, 40.0,
 		false],
@@ -66,11 +65,19 @@ const CLUB_LIGHT_ROWS: Array = [
 	["BarBackMain", "omni", Vector3(1.2, 2.2, 13.5), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
 	["BarBackVIP", "omni", Vector3(16.0, 6.4, 27.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
 	["BarBackEast", "omni", Vector3(25.0, 2.2, 11.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.2, 4.0, 0.0, false],
-	["WorkNW", "spot", Vector3(6.0, 7.9, 9.5), Vector3(6.0, 0.0, 10.5), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0, true],
-	["WorkNE", "spot", Vector3(20.0, 7.9, 9.5), Vector3(20.0, 0.0, 10.5), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0, true],
-	["WorkSW", "spot", Vector3(8.0, 7.9, 13.5), Vector3(8.0, 0.0, 14.0), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0, true],
-	["WorkSE", "spot", Vector3(19.0, 7.9, 13.5), Vector3(19.0, 0.0, 14.0), Color(1.0, 0.92, 0.82), 6.0, 12.0, 60.0,
+	["RailUp0", "omni", Vector3(3.0, 4.35, 15.45), Vector3.ZERO, Color(1.0, 0.66, 0.4), 1.5, 5.0, 0.0, false],
+	["RailUp1", "omni", Vector3(9.0, 4.35, 15.45), Vector3.ZERO, Color(1.0, 0.66, 0.4), 1.5, 5.0, 0.0, false],
+	["RailUp2", "omni", Vector3(15.0, 4.35, 15.45), Vector3.ZERO, Color(1.0, 0.66, 0.4), 1.5, 5.0, 0.0, false],
+	["RailUp3", "omni", Vector3(21.0, 4.35, 15.45), Vector3.ZERO, Color(1.0, 0.66, 0.4), 1.5, 5.0, 0.0, false],
+	["WorkNW", "spot", Vector3(6.0, 7.9, 9.5), Vector3(6.0, 0.0, 10.5), Color(1.0, 0.92, 0.82), 16.0, 14.0, 60.0, true],
+	["WorkNE", "spot", Vector3(20.0, 7.9, 9.5), Vector3(20.0, 0.0, 10.5), Color(1.0, 0.92, 0.82), 16.0, 14.0, 60.0,
 		true],
+	["WorkSW", "spot", Vector3(8.0, 7.9, 13.5), Vector3(8.0, 0.0, 14.0), Color(1.0, 0.92, 0.82), 16.0, 14.0, 60.0,
+		true],
+	["WorkSE", "spot", Vector3(19.0, 7.9, 13.5), Vector3(19.0, 0.0, 14.0), Color(1.0, 0.92, 0.82), 16.0, 14.0, 60.0,
+		true],
+	# the stage's house fill (P's G2 loud pass: the stage read dim purple in house lights), unshadowed (A's D-146 note)
+	["WorkStageFill", "omni", Vector3(13.0, 4.2, 9.2), Vector3.ZERO, Color(1.0, 0.92, 0.82), 3.0, 9.0, 0.0, false],
 ]
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the closures' barriers and gates).
 const THIN_GROUPS: Array[String] = ["Closures"]
