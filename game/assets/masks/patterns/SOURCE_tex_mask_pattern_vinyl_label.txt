@@ -1,0 +1,10 @@
+asset: tex_mask_pattern_vinyl_label
+generator: python3 tools/blender/masks/make_mask_patterns.py --only vinyl_label
+motif: record label for mask_base_vinyl (its own UV bounds): a B paper disc (r 18.5 mm) on the raised centre label, a thin A print ring and the A spindle hole; A record
+size_px: 1024 x 1024 (supersampled 2x, box filtered); grey PNG, RED channel = pattern mask
+mapping: once over mask UV0 (x 0..1 viewer's left..right, y 0..1 forehead..chin, front-planar); drawn in physical units over 0.17 x 0.235 m
+values: 0 = MaskDef colour A, 1 = colour B (mask_surface.gdshader)
+share_b (red >= 0.5): 0.027
+import: lossless, mipmaps (filter_linear_mipmap)
+deterministic: no randomness; PNG via tools/texgen io (ENV C, read-only)
+edit policy: generated, never edit by hand

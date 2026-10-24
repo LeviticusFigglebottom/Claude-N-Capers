@@ -33,19 +33,19 @@ PARAMS = {
     "eye_spacing": 0.068,
     "eye_tilt_deg": 0.0,
     "mouth": "none",
-    "res": 0.0085,
-    "res_back": 0.015,
+    "res": 0.0110,
+    "res_back": 0.020,
     "edge_res": 0.0050,
 }
 
 CENTRE = (0.0, -0.030)        # the record's centre: the nose bridge, below the eyes
 LABEL_R = 0.019               # centre label radius
 SPINDLE = (0.0025, 0.0045)    # spindle ring inner / outer radius
-GROOVES = [0.027 + 0.0125 * i for i in range(6)]   # groove ring radii from the centre (m)
-GROOVE_W = 0.0026
+GROOVES = [0.026 + 0.0075 * i for i in range(9)]   # groove ring radii from the centre (m)
+GROOVE_W = 0.0024
 EYE_CLEAR = 0.005             # grooves stop this far from an eye hole
 EDGE_CLEAR = 0.008            # and this far inside the outline (the lip sits there)
-STEP_DEG = 6.0
+STEP_DEG = 7.5
 
 
 def _clear(p: mask.Point2, outline: mask.Loop2, eyes: list[mask.Loop2]) -> bool:
@@ -76,7 +76,7 @@ def _grooves(kit: mask.MaskKit) -> None:
         if all(keep):
             outer = [_ring_pt(r + GROOVE_W / 2, i) for i in range(n)]
             inner = mask.oriented([_ring_pt(r - GROOVE_W / 2, i) for i in range(n)], False)
-            kit.plate(mask.oriented(outer, True), hi=0.0019, chamfer=0.0, holes=[inner], edge_res=0.004)
+            kit.plate(mask.oriented(outer, True), hi=0.0030, chamfer=0.0, holes=[inner], edge_res=0.004)
             continue
         start = keep.index(False)               # walk the ring from a cut so every run is contiguous
         run: list[mask.Point2] = []
@@ -86,7 +86,7 @@ def _grooves(kit: mask.MaskKit) -> None:
                 run.append(pts[j])
             if (not keep[j] or i == n) and run:
                 if len(run) >= 4:
-                    kit.plate(mask.resample(mask.strip(run, GROOVE_W, GROOVE_W), 0.005), hi=0.0019,
+                    kit.plate(mask.resample(mask.strip(run, GROOVE_W, GROOVE_W), 0.006), hi=0.0030,
                               chamfer=0.0, edge_res=0.003)
                 run = []
 
