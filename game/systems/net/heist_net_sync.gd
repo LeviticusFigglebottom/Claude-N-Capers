@@ -117,6 +117,8 @@ var _accum: float = 0.0
 var _keyframe_left: float = XFORM_KEYFRAME_S
 ## Server: transform sends so far (staggers the slow far-civilian rate by net id).
 var _xform_tick: int = 0
+## Client (P6): the snapshot interpolation buffer transforms go through (NetInterp).
+var _interp: NetInterp = null
 ## Client: last replicated captain state (see captain_state()).
 var _captain: Dictionary = {"present": false, "resistance": 0.0}
 ## Server: peers holding a replica of this heist, the only ones replicated to: the peers connected at begin(),
@@ -141,6 +143,14 @@ func _ready() -> void:
 	_runtime = HeistRuntime.of(self)
 	if Net.is_authority():
 		token = get_instance_id()
+		var rw: NetRewind = NetRewind.new()  # P6: hit claims of remote shooters checked over their screen lag
+		rw.name = NetRewind.NODE_NAME
+		add_child(rw)
+	else:
+		_interp = NetInterp.new()
+		_interp.name = NetInterp.NODE_NAME
+		_interp.setup(SYNC_HZ)
+		add_child(_interp)
 	if not Net.host_lost.is_connected(_on_server_disconnected):
 		Net.host_lost.connect(_on_server_disconnected)
 	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
@@ -542,7 +552,7 @@ func _send_xforms() -> void:
 func _flush_xforms(out: Dictionary, bytes: int) -> void:
 	last_xform_chunks += 1
 	last_xform_max_bytes = maxi(last_xform_max_bytes, bytes)
-	_send(&"_rpc_xforms", [out])
+	_send(&"_rpc_xforms", [out, _xform_tick])
 
 
 ## D-168: a calm civilian far from every crew member (sent at 1 / CIV_SLOW_DIV of the transform rate).
@@ -709,8 +719,11 @@ func _rpc_state(diffs: Dictionary, svc: Dictionary) -> void:
 
 
 @rpc("authority", "call_remote", "unreliable_ordered")
-func _rpc_xforms(xforms: Dictionary) -> void:
+func _rpc_xforms(xforms: Dictionary, tick: int) -> void:
 	if Net.is_authority():
+		return
+	if _interp != null and NetInterp.enabled:
+		_interp.push(xforms, tick)  # P6: rendered DELAY_S behind, interpolated (NetInterp)
 		return
 	for k: Variant in xforms:
 		var n: Node = Ids.lookup(int(k))

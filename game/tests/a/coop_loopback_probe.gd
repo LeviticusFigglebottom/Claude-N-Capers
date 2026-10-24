@@ -97,6 +97,17 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 			_rpc_report.rpc_id(1, "ack", {"cmd": cmd})
 		"hub_check":  # C4-03: the real safehouse on this client while the session is up
 			_hub_check(String(args.get("root_dir", "user://a_hub_client")))
+		"motion_start":  # P6: the rubber-banding metric on this client (MotionStats)
+			var old: Node = get_node_or_null(^"MotionStats")
+			if old != null:
+				old.free()
+			var ms: MotionStats = MotionStats.new()
+			ms.name = "MotionStats"
+			add_child(ms)
+			_rpc_report.rpc_id(1, "ack", {"cmd": cmd, "interp": NetInterp.enabled})
+		"motion_report":
+			var m: MotionStats = get_node_or_null(^"MotionStats") as MotionStats
+			_rpc_report.rpc_id(1, "motion", m.report() if m != null else {})
 		"quit":
 			get_tree().quit(0)
 

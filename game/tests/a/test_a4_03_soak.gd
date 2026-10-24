@@ -32,6 +32,7 @@ var _rt: HeistRuntime = null
 ## peer id -> kind -> data (the latest report)
 var _reports: Dictionary = {}
 var _parity: OfParity = null
+var _relay: LossyRelay = null
 
 
 func after_each() -> void:
@@ -49,6 +50,10 @@ func after_each() -> void:
 		_probe.queue_free()
 	_probe = null
 	_reports = {}
+	if _relay != null and is_instance_valid(_relay):
+		_relay.stop()
+		_relay.queue_free()
+	_relay = null
 	Net.leave()
 	await wait_frames(2)
 
@@ -122,6 +127,17 @@ func _soak(clients: int, heist_override: StringName = &"", skip_casing: bool = t
 	if port < 0:
 		fail("cannot open an ENet server on localhost")
 		return
+	# P6: CAPER_SOAK_RELAY="rtt_ms,loss_pct" puts a LossyRelay between the clients and the host (one-way rtt/2 +- 10 ms,
+	# loss both ways); CAPER_SOAK_NO_INTERP=1 runs the clients without NetInterp (the "before" numbers).
+	var join_port: int = port
+	var relay_env: PackedStringArray = OS.get_environment("CAPER_SOAK_RELAY").split(",", false)
+	if relay_env.size() == 2:
+		_relay = LossyRelay.new()
+		add_child(_relay)
+		join_port = _relay.start(0, port, float(relay_env[0]) * 0.5, 10.0, float(relay_env[1]) / 100.0, SEED)
+		assert_true(join_port > 0, "the lossy relay bound a port")
+		print("PERF soak relay: rtt %s ms, loss %s %% (port %d -> %d)" % [relay_env[0], relay_env[1], join_port, port])
+	var no_interp: bool = OS.get_environment("CAPER_SOAK_NO_INTERP") == "1"
 	_probe = PROBE.new()
 	_probe.name = PROBE.NODE_NAME
 	get_tree().root.add_child(_probe)
@@ -131,8 +147,8 @@ func _soak(clients: int, heist_override: StringName = &"", skip_casing: bool = t
 		(_reports[peer] as Dictionary)[kind] = data)
 	for i: int in clients:
 		var pid: int = OS.create_process(OS.get_executable_path(), PackedStringArray([
-			"--headless", "--path", ProjectSettings.globalize_path("res://"), CLIENT_SCENE, "--", "--port=%d" % port,
-			"--timeout=%d" % timeout_s]))
+			"--headless", "--path", ProjectSettings.globalize_path("res://"), CLIENT_SCENE, "--", "--port=%d" % join_port,
+			"--timeout=%d" % timeout_s] + (["--no-interp"] if no_interp else [])))
 		if pid <= 0:
 			fail("client %d could not be spawned" % i)
 			return
@@ -172,6 +188,8 @@ func _soak(clients: int, heist_override: StringName = &"", skip_casing: bool = t
 		i_peer += 1
 		_probe.rpc_id(p, &"_rpc_command", "soak_drive", {"seconds": soak_s, "seed": SEED + i_peer})
 	await wait_seconds(5.0)
+	for p: int in peers:
+		_probe.rpc_id(p, &"_rpc_command", "motion_start", {})
 	var mem0: Dictionary = await _memory(peers)
 	var desyncs: Array[String] = []
 	var rounds: int = 0
@@ -195,6 +213,13 @@ func _soak(clients: int, heist_override: StringName = &"", skip_casing: bool = t
 			if not d.is_empty():
 				desyncs.append("round %d peer %d: %s" % [rounds, p, "; ".join(d.slice(0, 4))])
 	var mem1: Dictionary = await _memory(peers)
+	for p: int in peers:
+		var mo: Dictionary = await _report(p, "motion_report", "motion")
+		print("PERF soak motion peer %d (interp %s): %.1f pops / NPC-min, %.1f jerks / NPC-min, max jump %.2f m, %.0f NPC-s moving" % [
+			p, not no_interp, float(mo.get("pops_per_npc_min", -1.0)), float(mo.get("jerks_per_npc_min", -1.0)),
+			float(mo.get("max_jump_m", -1.0)), float(mo.get("moving_npc_s", 0.0))])
+	if _relay != null:
+		print("PERF soak relay: %d forwarded, %d dropped" % [_relay.forwarded, _relay.dropped])
 	var npcs: int = _rt.npcs().size()
 	var bots: int = _rt.crew_members().filter(func(c: CrewController) -> bool: return c.is_ai).size()
 	print("PERF soak %s %.0f s, %d peers + %d bots, %d check rounds, %d NPCs at the end, loud %s, %d custody releases" % [
@@ -223,6 +248,15 @@ func _release_custody() -> int:
 
 
 ## Static memory per peer ("host" and each client peer id).
+## Client `peer`'s answer to probe command `cmd`, reported as `kind` ({} on a 15 s timeout).
+func _report(peer: int, cmd: String, kind: String) -> Dictionary:
+	if _reports.has(peer):
+		(_reports[peer] as Dictionary).erase(kind)
+	_probe.rpc_id(peer, &"_rpc_command", cmd, {})
+	await wait_until(func() -> bool: return (_reports.get(peer, {}) as Dictionary).has(kind), 15.0)
+	return (_reports.get(peer, {}) as Dictionary).get(kind, {}) as Dictionary
+
+
 func _memory(peers: Array[int]) -> Dictionary:
 	var out: Dictionary = {"host": OS.get_static_memory_usage()}
 	for p: int in peers:
