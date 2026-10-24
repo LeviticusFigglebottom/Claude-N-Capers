@@ -23843,6 +23843,7 @@ leaf_surface = &"metal"
 visual_scene = ExtResource("257_rt")
 metadata/kind = "door"
 metadata/swing_side = "back"
+metadata/access_sides = "front"
 
 [node name="BoothDoor" type="Node3D" parent="Gameplay/Doors" unique_id=103649 instance=ExtResource("254_rt")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 21, 0, -17)
@@ -23910,6 +23911,7 @@ leaf_surface = &"metal"
 visual_scene = ExtResource("257_rt")
 metadata/kind = "door"
 metadata/swing_side = "back"
+metadata/access_sides = "front"
 
 [node name="StairBDoor2" type="Node3D" parent="Gameplay/Doors" unique_id=103656 instance=ExtResource("254_rt")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 49, 3.5, -19)
@@ -23929,6 +23931,7 @@ leaf_surface = &"metal"
 visual_scene = ExtResource("257_rt")
 metadata/kind = "door"
 metadata/swing_side = "back"
+metadata/access_sides = "front"
 
 [node name="HeadHouseBDoor" type="Node3D" parent="Gameplay/Doors" unique_id=103658 instance=ExtResource("254_rt")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 49, 7, -19)

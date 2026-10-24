@@ -1,10 +1,14 @@
 ## door_access (all stages; G3, P r315: a door turned round put its interactable behind the wall and cut a stealth
 ## route): every active Door prefab's Interactable must be usable from each side it is meant to be used from, as the
 ## game resolves it (interaction_system.gd aimed_component / _has_los). Sides: the front (-Z, the UsePoint side)
-## always; the back (+Z) too unless the door is a push-bar fire exit (it opens only from the inside, the front).
-## Skipped: BARRED doors and shutters (the crew never operates them; barred_doors covers them), doors without an
-## Interactable. Per side: a stand point on the navmesh 0.5 / 0.8 / 1.1 m out along the door's normal (the nearest
-## navmesh point within NAV_TOL horizontally of the probe and at least 0.2 m out from the door's plane); from its eye
+## always; the back (+Z) too unless the door is a push-bar fire exit (it opens only from the inside, the front). A door
+## with meta access_sides = "front" (or "back") is checked from that side only: lift landing doors, whose back is the
+## shaft / the car (no navmesh by design; RT's LiftDoor*), and SL's gondola doors (their back is the cradle, a moving
+## deck the bake does not cover).
+## Skipped: BARRED doors and shutters (the crew never operates them; barred_doors covers them), hatches (meta kind
+## "hatch": a grate lying in the floor has no sides; GN's areaway), doors without an Interactable. Per side: a stand
+## point on the navmesh 0.5 / 0.8 / 1.1 m out along the door's normal (the nearest navmesh point within NAV_TOL
+## horizontally of the probe and at least 0.2 m out from the door's plane); from its eye
 ## (+EYE_H) the Interactable must lie within reach (InteractionTweak.reach_m + 0.35) and a ray on layer 1 to it may
 ## hit only the door's own colliders (its leaf, its frame). FAIL names the side and what blocked it.
 ## Limits: it proves a door is usable from both faces, not which face a route needs as its front (the UsePoint side NPCs
@@ -32,7 +36,8 @@ func run(ctx: LcContext) -> void:
 	var n_doors: int = 0
 	for n: Node in ctx.map.find_children("*", "", true, false):
 		var d: Door = n as Door
-		if d == null or not ctx.is_active(d) or d.lock == Door.Lock.BARRED or d.shutter:
+		if d == null or not ctx.is_active(d) or d.lock == Door.Lock.BARRED or d.shutter \
+				or LcUtil.meta_s(d, &"kind") == &"hatch":
 			continue
 		var comp: InteractableComponent = d.interactable
 		if comp == null:
@@ -41,8 +46,10 @@ func run(ctx: LcContext) -> void:
 		var normal: Vector3 = d.global_basis.z
 		normal.y = 0.0
 		normal = normal.normalized()
-		_check_side(ctx, d, comp, -normal, "front", reach)
-		if not d.push_bar:
+		var sides: String = String(LcUtil.meta_s(d, &"access_sides"))
+		if sides != "back":
+			_check_side(ctx, d, comp, -normal, "front", reach)
+		if not d.push_bar and sides != "front":
 			_check_side(ctx, d, comp, normal, "back", reach)
 	note("%d door(s) checked (reach %.2f m, eye %.1f m)" % [n_doors, reach, EYE_H])
 

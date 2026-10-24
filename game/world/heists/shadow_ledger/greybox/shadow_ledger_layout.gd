@@ -170,7 +170,7 @@ const DOORS: Array = [
 	["K4Door", "arch_door_single_t20", Vector3(26.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K5Door", "arch_door_single_t20", Vector3(30.5, F41, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["K1FacadeDoor", "arch_door_single_t40", Vector3(0.0, F41, 3.0), -90.0, "LOCKPICK", "OUTWARD", "gondola_west",
-		{"interaction_time_s": 8.0}],
+		{"interaction_time_s": 8.0, "access_sides": "front"}],
 	# L41 west.
 	["K8DoorN", "arch_door_single_t20", Vector3(2.0, F41, 7.5), 0.0, "NONE", "INWARD", "", {}],
 	["K8DoorE", "arch_door_single_t20", Vector3(10.5, F41, 12.0), -90.0, "NONE", "INWARD", "", {}],
@@ -207,7 +207,7 @@ const DOORS: Array = [
 	["StudyDoor", "arch_door_single_t20", Vector3(29.0, F42, 3.5), 90.0, "LOCKPICK", "INWARD", "study_door",
 		{"npc_auth": true, "interaction_time_s": 8.0}],
 	["StudyFacadeDoor", "arch_door_single_t40", Vector3(33.0, F42, 0.0), 180.0, "LOCKPICK", "OUTWARD", "gondola_north",
-		{"interaction_time_s": 8.0}],
+		{"interaction_time_s": 8.0, "access_sides": "front"}],
 	["LinenL42", "arch_door_single_t40", Vector3(12.0, F42, 9.0), 90.0, "NONE", "INWARD", "", {}],
 	["StairAL42", "arch_door_single_t40", Vector3(12.0, F42, 15.75), 90.0, "LOCKPICK", "INWARD", "stair_door",
 		{"npc_auth": true, "interaction_time_s": 8.0}],

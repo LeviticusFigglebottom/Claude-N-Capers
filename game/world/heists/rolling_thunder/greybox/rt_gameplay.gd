@@ -341,6 +341,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		metas["todo"] = String(extra["todo"])
 	if extra.has("opens_with"):   # the mission opens it with that event (the Tannery gate: the mixer's move)
 		metas["opens_with"] = String(extra["opens_with"])
+	if extra.has("access_sides"):   # levelcheck door_access: the sides the crew uses it from (the lift landing doors)
+		metas["access_sides"] = String(extra["access_sides"])
 	var it: Array = ["prefab", "door", nm, d[2], float(d[3]), props, null, metas, String(d[6])]
 	var inst: Node3D = place_prefab(parent, it)
 	if lock == "BARRED":   # D-073 / D-122: baked closed; the door's NavLink bridges it once open (OF bake_closed)

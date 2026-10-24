@@ -38422,6 +38422,7 @@ visual_scene = ExtResource("275_sl")
 objective_tag = &"gondola_west"
 metadata/kind = "door"
 metadata/swing_side = "front"
+metadata/access_sides = "front"
 
 [node name="K8DoorN" type="Node3D" parent="Gameplay/Doors" unique_id=104794 instance=ExtResource("267_sl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 3.6, 7.5)
@@ -38668,6 +38669,7 @@ visual_scene = ExtResource("275_sl")
 objective_tag = &"gondola_north"
 metadata/kind = "door"
 metadata/swing_side = "front"
+metadata/access_sides = "front"
 
 [node name="LinenL42" type="Node3D" parent="Gameplay/Doors" unique_id=104822 instance=ExtResource("267_sl")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 12, 8, 9)

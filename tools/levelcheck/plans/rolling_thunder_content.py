@@ -157,17 +157,17 @@ FRONT_YAW = {"N": 0.0, "W": 90.0, "S": 180.0, "E": -90.0}
 DOOR_SPECS: Dict[tuple, list] = {
     ("CP-G", "sta_street"): ["StairAStreetDoor", "NONE", "W", "steel", {}],
     ("CP-G", "sta_lobby"): ["StairALobbyDoorG", "NONE", "E", "steel", {}],
-    ("CP-G", "lf_door"): ["LiftDoorG", "NONE", "N", "liftgate", {"leaf": "metal"}],
+    ("CP-G", "lf_door"): ["LiftDoorG", "NONE", "N", "liftgate", {"leaf": "metal", "access_sides": "front"}],
     ("CP-G", "ab_door"): ["BoothDoor", "NONE", "E", "ivory", {"npc": ["staff_booth"]}],
     ("CP-G", "cwc_door"): ["CarParkWCDoor", "NONE", "N", "ivory", {}],
     ("CP-G", "cpl_door"): ["PlantDoor", "NONE", "N", "steel", {}],
     ("CP-G", "sb_door"): ["StairBDoorG", "NONE", "W", "steel", {}],
     ("CP-G", "fire_door"): ["CarParkFireDoor", "NONE", "W", "steel", {"push_bar": True}],
     ("CP-2", "sta_lobby"): ["StairALobbyDoor2", "NONE", "E", "steel", {}],
-    ("CP-2", "lf_door"): ["LiftDoor2", "NONE", "S", "liftgate", {"leaf": "metal"}],
+    ("CP-2", "lf_door"): ["LiftDoor2", "NONE", "S", "liftgate", {"leaf": "metal", "access_sides": "front"}],
     ("CP-2", "sb_door"): ["StairBDoor2", "NONE", "W", "steel", {}],
     ("CP-R", "hha_door"): ["HeadHouseADoor", "", "E", "steel", {}],  # player_perch slots build it
-    ("CP-R", "lf_door"): ["LiftDoorR", "NONE", "S", "liftgate", {"leaf": "metal"}],
+    ("CP-R", "lf_door"): ["LiftDoorR", "NONE", "S", "liftgate", {"leaf": "metal", "access_sides": "front"}],
     ("CP-R", "hhb_door"): ["HeadHouseBDoor", "NONE", "W", "steel", {}],  # always unlocked (the E3 route)
     ("DG", "front"): ["DinerFrontDoor", "NONE", "N", "glass", {}],
     ("DG", "side"): ["DinerSideDoor", "NONE", "W", "glass", {}],

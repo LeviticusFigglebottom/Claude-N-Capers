@@ -87,7 +87,10 @@ const REVIEW_CAMERAS: Array = [
 const DOORS: Array = [
 	["StairAStreetDoor", "CP-G", [16.0, 0.0, -46.0], 90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
 	["StairALobbyDoorG", "CP-G", [19.0, 0.0, -45.0], -90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
-	["LiftDoorG", "CP-G", [20.5, 0.0, -47.0], 0.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {"leaf": "metal"}],
+	[
+		"LiftDoorG", "CP-G", [20.5, 0.0, -47.0], 0.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8,
+		{"leaf": "metal", "access_sides": "front"},
+	],
 	[
 		"BoothDoor", "CP-G", [21.0, 0.0, -17.0], -90.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1,
 		{"npc": ["staff_booth"]},
@@ -100,10 +103,16 @@ const DOORS: Array = [
 		{"push_bar": true},
 	],
 	["StairALobbyDoor2", "CP-2", [19.0, 3.5, -45.0], -90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
-	["LiftDoor2", "CP-2", [20.5, 3.5, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {"leaf": "metal"}],
+	[
+		"LiftDoor2", "CP-2", [20.5, 3.5, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8,
+		{"leaf": "metal", "access_sides": "front"},
+	],
 	["StairBDoor2", "CP-2", [49.0, 3.5, -19.0], 90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
 	["HeadHouseADoor", "CP-R", [19.0, 7.0, -45.0], -90.0, "service", "", "prop_door_service_steel_t30", 1.1, {}],
-	["LiftDoorR", "CP-R", [20.5, 7.0, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {"leaf": "metal"}],
+	[
+		"LiftDoorR", "CP-R", [20.5, 7.0, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8,
+		{"leaf": "metal", "access_sides": "front"},
+	],
 	["HeadHouseBDoor", "CP-R", [49.0, 7.0, -19.0], 90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
 	["DinerFrontDoor", "DG", [18.5, 0.0, 14.0], 0.0, "double", "NONE", "prop_door_double_glass_t40", 1.8, {}],
 	["DinerSideDoor", "DG", [14.0, 0.0, 22.0], 90.0, "service", "NONE", "prop_door_service_ivory_t40", 1.1, {}],
