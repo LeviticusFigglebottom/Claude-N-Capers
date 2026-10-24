@@ -8,12 +8,13 @@ extends RefCounted
 ## alternate (every second row turned 180 deg), keep the asset's height]. The greybox Mesh goes, the collider stays.
 ## The bars: D's counters are 2 m units, customer side front (main bar east, east bar west, VIP bar north); the 7.0 m
 ## main bar takes three (1.17 scale), the 6.0 / 8.0 m bars tile exactly. The back bars are D's 7 m bottle wall (the
-## main and VIP bars) and a 2 m counter unit (the east bar's two short backs).
+## main and VIP bars) and a 2 m counter unit (the east bar's two short backs, turned so the plain service side
+## faces the bartender and the customer rail the wall: D's r312 dress review).
 const PROP_ART: Dictionary = {
 	"MainBarBack": ["prop_ah_back_bar", -90.0, 1, 1, false, true],
 	"MainBarCounter": ["prop_ah_bar_counter_2m", -90.0, 1, 3, false, true],
-	"EastBarBackN": ["prop_ah_bar_counter_2m", 90.0, 1, 1, false, true],
-	"EastBarBackS": ["prop_ah_bar_counter_2m", 90.0, 1, 1, false, true],
+	"EastBarBackN": ["prop_ah_bar_counter_2m", -90.0, 1, 1, false, true],
+	"EastBarBackS": ["prop_ah_bar_counter_2m", -90.0, 1, 1, false, true],
 	"EastBarCounter": ["prop_ah_bar_counter_2m", 90.0, 1, 3, false, true],
 	"VIPBarBack": ["prop_ah_back_bar", 0.0, 1, 1, false, true],
 	"VIPBarCounter": ["prop_ah_bar_counter_2m", 0.0, 4, 1, false, true],
