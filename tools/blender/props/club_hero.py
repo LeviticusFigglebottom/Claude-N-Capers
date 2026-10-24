@@ -19,7 +19,7 @@ their ceiling / hanging point with everything below z = 0.
   brass rail). Markers ``Seat0..2`` at the seat front, bottom (z 0), facing out (+Y).
 * ``prop_ah_booth_corner`` (BoothReserved, 1.6 x 1.6): an L banquette (backs on -Y and +X) round a pedestal table.
   Markers ``Seat0..3``.
-* ``prop_ah_mirror_ball``: a 0.5 m faceted mirror ball on a motor and drop rod under a brass ceiling rose. Marker
+* ``prop_ah_mirror_ball``: a 0.48 m faceted mirror ball (40 self-lit glint tiles) on a motor and drop rod under a brass ceiling rose. Marker
   ``Mount`` = the ceiling point (origin); the ball centre hangs 0.55 m below it.
 * ``prop_ah_truss_2m``: a 2 m black box truss (0.29 m square) with two moving-head fixture bodies hung under it.
   Markers ``LightSocket0..1`` at the heads' lenses, pointing down (C's SpotLights parent there); the origin is the
@@ -310,7 +310,16 @@ def _mirror_ball(k: Kit, p: dict) -> None:
     body.build()
     ball = k.obj("Ball")
     b = ball.part(bevel=0.0)
-    b.sphere(0.25, (0.0, 0.0, -0.55), "metal_grey", segs=24, rings=14)                   # silver tiles
+    b.sphere(0.24, (0.0, 0.0, -0.55), "metal_grey", segs=24, rings=14)                   # silver tiles
+    # D-165 dress review: a rough grey sphere 8 m up read as a dull disc under the club light, so a golden-spiral
+    # scatter of self-lit glint tiles (octahedra, inside the old 0.25 m bounds) sparkles under any light state
+    n = 40
+    for i in range(n):
+        zf = 1.0 - 2.0 * (i + 0.5) / n
+        rf, th = math.sqrt(1.0 - zf * zf), i * math.pi * (3.0 - math.sqrt(5.0))
+        c = 0.236
+        b.sphere(0.012, (c * rf * math.cos(th), c * rf * math.sin(th), -0.55 + c * zf), "emit_led_cold", segs=4,
+                 rings=2)
     ball.build(smooth_angle=5.0)                                                            # flat facets = tiles
     k.empty("Mount", (0.0, 0.0, 0.0))
 
