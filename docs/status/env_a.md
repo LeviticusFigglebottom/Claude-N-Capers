@@ -4,6 +4,14 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-68) DET root cause (P fix pending), calm ambient hints on clients, D-165 seated blend, AnimDriver -17% (2026-10-24)
+- det_loud_replay red with the NpcMotor change (held out of r317): a downed crew body (v=0) depenetrating out of two
+  overlapping police capsules (crew mask has LAYER_NPCS) is contact-order dependent. Fix sent to P (no NPC collision
+  while not mobile; verified locally 2/2); the motor rejoins with it (r318). DetTrace DET_PREC diagnostics (8738bf2d4).
+- Clients showed calm ambient NPCs standing (only the cuff hint replicated): "ah" now carries the calm resolved hint
+  (e196a5cac). AH loopback: lobby 58 / late joiner 54 bodies, 0 mismatches. D-165 SeatedBlend in the same commit.
+- AnimDriver tick ~17% cheaper (6a92973dc): AH calm 2.92 -> 2.44 ms, loud 3.81 -> 3.12.
+
 ### (-67) P6: churn soak green (staggered keyframe), AI CPU first pass (2026-10-24)
 - Drop-in / leave churn (a/test_p6_churn_soak, N=10 STAY=60, RT + AH, stealth + loud): departed peer erased from
   members / pending; the RT late-joiner stale cop fixed by a staggered transform keyframe (87ff71027); 0 desyncs.
