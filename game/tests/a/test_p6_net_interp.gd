@@ -114,3 +114,27 @@ func test_p6_rewind_accepts_a_remote_claim_where_the_client_saw_the_target() -> 
 	assert_false(CombatSystem._near_over_lag(stale, npc.head_position(), npc, remote, tol), "older than the window: no")
 	remote.is_ai = true
 	assert_false(CombatSystem._near_over_lag(seen, npc.head_position(), npc, remote, tol), "an AI shooter: the present only")
+
+
+## P6: the playout clock advances with the frame and eases toward its target, so a packet that arrives early (jitter,
+## a chunked batch) does not make render time jump; a big gap snaps.
+func test_p6_playout_clock_does_not_jump_on_an_early_packet() -> void:
+	var ni: NetInterp = NetInterp.new()
+	ni.setup(15.0)
+	add_child(ni)
+	ni.set_process(false)
+	ni.push({}, 30)
+	ni.advance_clock(0.0)
+	var t0: float = ni.render_time()
+	assert_near(t0, 30.0 / 15.0 - NetInterp.DELAY_S, 0.02, "starts DELAY_S behind the newest tick")
+	for i: int in 3:
+		ni.advance_clock(0.01)
+	var before: float = ni.render_time()
+	ni.push({}, 31)  # 30 ms after tick 30: a whole tick early
+	ni.advance_clock(0.01)
+	var step: float = ni.render_time() - before
+	assert_true(step > 0.0 and step < 0.012, "the clock moved one frame's worth (%.4f s), not the early tick's 0.03 s" % step)
+	ni.push({}, 60)  # two seconds of server time later (a hitch)
+	ni.advance_clock(0.01)
+	assert_near(ni.render_time(), 60.0 / 15.0 - NetInterp.DELAY_S, 0.03, "a gap > CLOCK_SNAP_S snaps")
+	ni.queue_free()

@@ -20,6 +20,9 @@ const SNAP_M: float = 3.0
 ## Past the newest sample (a lost / late packet) keep going along the last velocity this long at most (s), then hold:
 ## the lossy soak (120 ms / 5 %) showed hold-then-jump pops when a packet went missing.
 const EXTRAP_MAX_S: float = 0.15
+## Playout clock smoothing: ease toward the target over this time constant (s); snap when further off than CLOCK_SNAP_S.
+const CLOCK_EASE_S: float = 0.5
+const CLOCK_SNAP_S: float = 0.25
 
 ## Test switch (P6 before / after measurement): false = HeistNetSync applies transforms as they arrive.
 static var enabled: bool = true
@@ -34,6 +37,9 @@ var _sync_hz: float = 15.0
 ## Newest server time heard of, and the local clock (s) when it arrived.
 var _server_t: float = -1.0
 var _heard_at: float = 0.0
+## The playout clock (server time being rendered): advances with the frame and eases toward render_target(), so packet
+## arrival jitter does not make render time jump a few ms on every packet (the first soak: ~700 jerks / NPC-min).
+var _render_t: float = -1.0
 
 
 func setup(sync_hz: float) -> void:
@@ -85,14 +91,34 @@ static func interpolates(n: Node, x: Variant) -> bool:
 	return false
 
 
-## Server time being rendered now (s), or -1 before the first sample.
-func render_time() -> float:
+## Where the playout clock should be (s): DELAY_S behind the newest server time heard of, advanced by the local time
+## since it arrived (at most one send interval), or -1 before the first sample.
+func render_target() -> float:
 	if _server_t < 0.0:
 		return -1.0
 	return _server_t + minf(_now() - _heard_at, 1.0 / _sync_hz) - DELAY_S
 
 
-func _process(_delta: float) -> void:
+## Server time being rendered now (s), or -1 before the first sample.
+func render_time() -> float:
+	return _render_t
+
+
+## Advance the playout clock by `delta` and ease it toward render_target() (time constant CLOCK_EASE_S; snap when more
+## than CLOCK_SNAP_S off: a hitch or a long gap).
+func advance_clock(delta: float) -> void:
+	var target: float = render_target()
+	if target < 0.0:
+		return
+	if _render_t < 0.0 or absf(target - _render_t) > CLOCK_SNAP_S:
+		_render_t = target
+		return
+	_render_t += delta
+	_render_t += (target - _render_t) * minf(delta / CLOCK_EASE_S, 1.0)
+
+
+func _process(delta: float) -> void:
+	advance_clock(delta)
 	var rt: float = render_time()
 	if rt < 0.0 or _buf.is_empty():
 		return
