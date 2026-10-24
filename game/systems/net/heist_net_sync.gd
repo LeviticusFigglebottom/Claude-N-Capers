@@ -157,6 +157,15 @@ func _ready() -> void:
 		multiplayer.server_disconnected.connect(_on_server_disconnected)
 	if not Net.lobby_message.is_connected(_on_lobby_message):
 		Net.lobby_message.connect(_on_lobby_message)
+	if not multiplayer.peer_disconnected.is_connected(_on_peer_disconnected):
+		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+
+
+## Server (P6 churn soak): a peer that left is no member and has no pending queue any more (a re-join gets a fresh
+## late_bring_up; the leave used to keep it in _members for the rest of the heist).
+func _on_peer_disconnected(peer_id: int) -> void:
+	_members.erase(peer_id)
+	_pending.erase(peer_id)
 
 
 func _exit_tree() -> void:
@@ -166,6 +175,8 @@ func _exit_tree() -> void:
 		Net.lobby_message.disconnect(_on_lobby_message)
 	if multiplayer != null and multiplayer.server_disconnected.is_connected(_on_server_disconnected):
 		multiplayer.server_disconnected.disconnect(_on_server_disconnected)
+	if multiplayer != null and multiplayer.peer_disconnected.is_connected(_on_peer_disconnected):
+		multiplayer.peer_disconnected.disconnect(_on_peer_disconnected)
 
 
 func _on_server_disconnected() -> void:
