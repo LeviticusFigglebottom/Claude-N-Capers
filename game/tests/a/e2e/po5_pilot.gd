@@ -745,10 +745,10 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		q.exclude = [crew.get_rid()]
 		var hit: Dictionary = space.intersect_ray(q)
 		var ang: float = rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position()))
-		d.note("pilot: aimed %s, wanted %s (dist %.2f, angle %.1f deg, avail '%s', LOS ray hit %s at %s)" % [
+		d.note("pilot: aimed %s, wanted %s (dist %.2f, angle %.1f deg, avail '%s', LOS ray hit %s at %s, why '%s')" % [
 			aimed.get_path() if aimed != null else ^"<none>", comp.get_path(), crew.eye_position().distance_to(target),
 			ang, comp.availability(crew), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-",
-			_v(hit["position"]) if not hit.is_empty() else "-"])
+			_v(hit["position"]) if not hit.is_empty() else "-", isys.explain_miss(crew, comp)])
 	if no_blind_press and not await _aim_on(comp, target):
 		d.note("pilot: use %s (%s) NOT PRESSED: not aimed (a blind F press is a shout)" % [comp.get_path(), comp.kind])
 		return done.is_valid() and bool(done.call())
