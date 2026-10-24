@@ -52,6 +52,19 @@ const DRIFT_FROZEN: Array[int] = [
 ## PO-10: every motor in the tree, and the neighbour grid rebuilt once per physics frame.
 ## D-122: roles whose agents also path over Door.NAV_LAYER_BREACH links (they breach locked doors in loud).
 const BREACH_ROLES: Array[StringName] = [&"police", &"special"]
+## P6 #3: a body this close (beyond arrive distance) to its path's end counts as there (m).
+const NAV_END_SLACK_M: float = 0.3
+## P6 #3 (AH Cataclysm loud: ~97 ms a frame in path queries): brains re-target a moving crew member every tick, and each
+## new NavigationAgent3D.target_position is a synchronous path query over the whole navmesh. The agent's target follows
+## `target` only once it moved REPATH_M, or every REPATH_S; `target` itself (arrival, steering) stays exact.
+const REPATH_M: float = 0.75
+const REPATH_S: float = 0.5
+## P6 #3: an unreachable target (the path ends this far from it, flat m, or off its level) makes NavigationAgent3D
+## re-query every frame at the path's end (~100 ms a frame for the police at the cap with the crew off the navmesh). The
+## agent is pointed at the path's end instead and asked for the real target again every UNREACHABLE_RECHECK_S (or once
+## the target moved REPATH_M across: a target only moving up / down, e.g. falling, stays unreachable).
+const UNREACHABLE_M: float = 1.0
+const UNREACHABLE_RECHECK_S: float = 1.0
 static var _all: Array[NpcMotor] = []
 static var _grid: Dictionary = {}
 static var _grid_frame: int = -1
@@ -100,6 +113,11 @@ var mark_anchor: Vector3 = Vector3.INF
 
 var _body: CharacterBody3D = null
 var _agent: NavigationAgent3D = null
+## Physics frame of the last agent re-target (REPATH_S throttle).
+var _repath_frame: int = -1000000
+## The unreachable target the agent is parked on its path's end for (INF = none), and since which physics frame.
+var _proxy_for: Vector3 = Vector3.INF
+var _proxy_frame: int = -1000000
 var _door_check_left: float = 0.0
 var _door_ahead: Door = null
 var _door_point: Vector3 = Vector3.INF
@@ -167,13 +185,13 @@ func _exit_tree() -> void:
 
 
 func go_to(pos: Vector3, move_speed: float) -> void:
+	var fresh: bool = target == Vector3.INF  # a new order after stop(): path at once
 	target = pos
 	speed = move_speed
 	arrived = false
 	blocked_door = null
 	_door_check_left = 0.0
-	if _agent != null and _agent.is_inside_tree():
-		_agent.target_position = pos
+	_retarget_agent(fresh)
 
 
 func stop() -> void:
@@ -217,7 +235,51 @@ func target_on_level() -> bool:
 		return false
 	if absf(target.y - _body.global_position.y) <= arrive_dy:
 		return true
-	return _agent == null or not _agent.is_inside_tree() or _agent.is_navigation_finished()
+	return _agent == null or not _agent.is_inside_tree() or _nav_finished()
+
+
+## Whether the agent's path toward the target is done: no path, or this body within arrive distance of its end. Read off
+## the path get_next_path_position() keeps current each tick (it was NavigationAgent3D.is_navigation_finished(), whose
+## navigation update ran a synchronous path query for a target on another level: ~98 ms a frame on AH Cataclysm loud).
+func _nav_finished() -> bool:
+	var path: PackedVector3Array = _agent.get_current_navigation_path()
+	if path.is_empty():
+		return true
+	var end: Vector3 = path[path.size() - 1]
+	var reach: float = maxf(arrive_distance, _agent.target_desired_distance) + NAV_END_SLACK_M
+	return Vector2(end.x - _body.global_position.x, end.z - _body.global_position.z).length() <= reach \
+		and absf(end.y - _body.global_position.y) <= arrive_dy + NAV_END_SLACK_M
+
+
+## Point the agent at `target` when it moved REPATH_M since the agent's target, or REPATH_S passed (`force`: always).
+func _retarget_agent(force: bool = false) -> void:
+	if _agent == null or not _agent.is_inside_tree() or target == Vector3.INF or _agent.target_position == target:
+		return
+	var frame: int = Engine.get_physics_frames()
+	if not force and _proxy_for != Vector3.INF \
+			and Vector2(_proxy_for.x - target.x, _proxy_for.z - target.z).length() <= REPATH_M \
+			and frame - _proxy_frame < int(UNREACHABLE_RECHECK_S * Engine.physics_ticks_per_second):
+		return  # parked on the reachable end of the path to an unreachable target
+	_proxy_for = Vector3.INF
+	var due: bool = frame - _repath_frame >= int(REPATH_S * Engine.physics_ticks_per_second)
+	if force or due or _agent.target_position.distance_squared_to(target) > REPATH_M * REPATH_M:
+		_agent.target_position = target
+		_repath_frame = frame
+
+
+## The agent's fresh path toward `target` ends short of it (UNREACHABLE_M flat, or off its level): point the agent at
+## that end (no per-frame re-query), remembering the real target (_retarget_agent asks again later).
+func _park_if_unreachable() -> void:
+	if _proxy_for != Vector3.INF or target == Vector3.INF or _agent.target_position != target:
+		return
+	var path: PackedVector3Array = _agent.get_current_navigation_path()
+	var end: Vector3 = path[path.size() - 1] if not path.is_empty() else _body.global_position  # no path at all: stay
+	if not path.is_empty() and Vector2(end.x - target.x, end.z - target.z).length() <= UNREACHABLE_M \
+			and absf(end.y - target.y) <= arrive_dy + 0.5:
+		return
+	_agent.target_position = end
+	_proxy_for = target
+	_proxy_frame = Engine.get_physics_frames()
 
 
 func _physics_process(delta: float) -> void:
@@ -236,7 +298,9 @@ func _physics_step(delta: float) -> void:
 		_tick_rappel(delta)
 		return
 	var horiz: Vector3 = Vector3.ZERO
+	var fy: int = FrameProf.begin()
 	_tick_yield(delta, npc)
+	FrameProf.end(&"npc_motor.yield", fy)
 	if _yield_point != Vector3.INF:
 		var dy: Vector3 = _yield_point - _body.global_position
 		dy.y = 0.0
@@ -244,27 +308,42 @@ func _physics_step(delta: float) -> void:
 			horiz = dy.normalized() * Tweak.stealth().npc_yield_speed
 			_turn_toward(dy, delta)
 	elif not arrived and target != Vector3.INF:
-		if target_on_level() and (distance_to_target() <= arrive_distance or _target_crowded()):
+		var fc: int = FrameProf.begin()
+		var on_level: bool = target_on_level()
+		FrameProf.end(&"npc_motor.on_level", fc)
+		var fc2: int = FrameProf.begin()
+		var at_target: bool = on_level and (distance_to_target() <= arrive_distance or _target_crowded())
+		FrameProf.end(&"npc_motor.crowded", fc2)
+		if at_target:
 			var t: Vector3 = target
 			stop()
 			arrived_at.emit(t)
 		else:
 			var next: Vector3 = target
 			if _agent != null and _agent.is_inside_tree():
-				if _agent.target_position != target:
-					_agent.target_position = target
+				var fn: int = FrameProf.begin()
+				_retarget_agent()
 				var nav_next: Vector3 = _agent.get_next_path_position()
-				if nav_next.distance_to(_body.global_position) > 0.05 and not _agent.is_navigation_finished():
+				_park_if_unreachable()
+				FrameProf.end(&"npc_motor.nav_path", fn)
+				if nav_next.distance_to(_body.global_position) > 0.05 and not _nav_finished():
+					var fs: int = FrameProf.begin()
 					next = _steer_corner(nav_next)
+					FrameProf.end(&"npc_motor.steer_corner", fs)
 			var d: Vector3 = next - _body.global_position
 			d.y = 0.0
-			if _door_hold(delta):
+			var fd: int = FrameProf.begin()
+			var door_held: bool = _door_hold(delta)
+			FrameProf.end(&"npc_motor.door_hold", fd)
+			if door_held:
 				horiz = _breach_stand(delta)
 				if horiz == Vector3.INF and _door_point != Vector3.INF:
 					_turn_toward(_door_point - _body.global_position, delta)
 				horiz = Vector3.ZERO if horiz == Vector3.INF else horiz
 			elif d.length() > 0.001:
+				var fsep: int = FrameProf.begin()
 				horiz = _separate(d.normalized()) * speed
+				FrameProf.end(&"npc_motor.separate", fsep)
 				_turn_toward(d, delta)
 	else:
 		if holding():
@@ -288,7 +367,9 @@ func _physics_step(delta: float) -> void:
 		_body.velocity.y -= gravity * delta
 	else:
 		_body.velocity.y = minf(_body.velocity.y, 0.0)
+	var fm: int = FrameProf.begin()
 	_body.move_and_slide()
+	FrameProf.end(&"npc_motor.move_and_slide", fm)
 
 
 ## X-5: a held body with a mark_anchor slides straight onto it (horizontal, npc_mark_settle_speed, no physics: the
