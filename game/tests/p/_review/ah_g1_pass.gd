@@ -48,6 +48,10 @@ const STAFF_DOORS: Array = [
 ]
 const EAST_BAR_BEHIND: Vector3 = Vector3(25.2, 0.0, 12.0)
 const G20_IN: Vector3 = Vector3(27.0, 0.0, 12.0)
+## Route 2: the stage side of the backstage door (13, 0, 7) and G13 beyond it.
+const BACKSTAGE_DOOR: Vector3 = Vector3(13.0, 0.0, 7.0)
+const BACKSTAGE_FRONT: Vector3 = Vector3(13.0, 0.3, 8.3)
+const G13_IN: Vector3 = Vector3(13.0, 0.0, 5.2)
 ## Route 1 mask spot (C, r305 relay): the G22 staff stair half landing (enclosed core, no camera, no civilian route);
 ## G23 was dropped (the bartender's stock runs: no unseen window in 240 s).
 const MASK_SPOT: Vector3 = Vector3(34.5, 2.1, 7.8)
@@ -287,7 +291,8 @@ func _ah_stealth() -> bool:
 	if safe == null:
 		_row("office safe", "FAIL", "no Safe prefab", "C map")
 		return false
-	if not await _behind_east_bar():
+	var entered: bool = await _backstage() if _route() == 2 else await _behind_east_bar()
+	if not entered:
 		return false
 	var have_card: bool = await _keycard()
 	var have_code: bool = await _code_note(safe)
@@ -385,6 +390,32 @@ func _behind_east_bar() -> bool:
 		if not opened:
 			return false
 	return await _leg("into G20", [G20_IN], 0.5, 60.0)
+
+
+## --route=2 (afterhours.md Stealth routes 2, Backstage): up the stage step behind the speaker stack, the backstage
+## door (13, 0, 7) into G13 mid, as casing. Default route 1 (the east bar service door).
+func _route() -> int:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--route="):
+			return a.trim_prefix("--route=").to_int()
+	return 1
+
+
+func _backstage() -> bool:
+	if not await _leg("onto the stage, behind the speaker stack", [BACKSTAGE_FRONT], 0.5, 120.0):
+		return false
+	var door: Door = _door_near(BACKSTAGE_DOOR, 1.5)
+	if door != null and not door.is_open:
+		var why: StringName = _comp(door).availability(pilot.crew) if _comp(door) != null else &"none"
+		var opened: bool = await pilot.use(_comp(door), 20.0, func() -> bool: return door.is_open)
+		_row("backstage door (casing)", "PASS" if opened else "FAIL", "availability '%s', open %s" % [why, door.is_open],
+			"-" if opened else "C door / A casing rule")
+		if not opened:
+			return false
+	elif door == null:
+		_row("backstage door (casing)", "FAIL", "no Door within 1.5 m of %s" % Po5Pilot._v(BACKSTAGE_DOOR), "C map")
+		return false
+	return await _leg("into G13 (backstage)", [G13_IN], 0.5, 60.0)
 
 
 ## The nearest office keycard (any KeycardPickup slot the variant rolled), as casing.
