@@ -133,6 +133,11 @@ const DIRECT_PROPS: Array = [
 	["PassageLamp0", "prop_wall_lamp", Vector3(-0.2, 3.0, 10.0), 90.0, {}],
 	["PassageLamp1", "prop_wall_lamp", Vector3(-0.2, 3.0, 22.0), 90.0, {}],
 	["RoofLamp", "prop_wall_lamp_sodium", Vector3(30.0, 6.4, 6.8), 0.0, {}],
+	# exit signs over the hall's exits (the west fire exits, inner face x 0.2; the hall doors, inner face z 20.8)
+	["ExitHallFireN", "prop_exit_sign", Vector3(0.2, 2.36, 8.3), -90.0, {}],
+	["ExitHallFireS", "prop_exit_sign", Vector3(0.2, 2.36, 19.0), -90.0, {}],
+	["ExitHallDoorsW", "prop_exit_sign", Vector3(13.0, 2.36, 20.8), 0.0, {}],
+	["ExitHallDoorsE", "prop_exit_sign", Vector3(19.0, 2.36, 20.8), 0.0, {}],
 	# G6: the mirror ball over the dance floor and the truss along the stage front, from the hall roof (8.0); the 2.01 m
 	# units on a 2.12 m pitch (placed footprints keep 5 cm apart, _place_ext)
 	["MirrorBall", "prop_ah_mirror_ball", Vector3(14.0, 8.0, 12.5), 0.0, {}],
