@@ -5,7 +5,7 @@
 extends TestCase
 
 const HEISTS: Array[StringName] = [&"gallery_night", &"glasshouse", &"night_deposit", &"shadow_ledger",
-	&"dockside_burn", &"ostrander_federal"]
+	&"dockside_burn", &"ostrander_federal", &"rolling_thunder"]  # RT since D-169 (offered: no longer staged)
 const MIN_INSIDE: float = 0.7
 const INSIDE_KINDS: Array[StringName] = [&"room", &"building"]
 ## Names allowed outside the drawn plan. Empty since LEAD r304 (names stay inside; one with no clear spot inside is

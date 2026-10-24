@@ -267,7 +267,7 @@ points = Array[Dictionary]([{
 "slot": &"gear_cloak",
 "variant_group": &"gear_drop"
 },
-"pos": Vector2(22.9, 25.5)
+"pos": Vector2(21.5, 25.5)
 }, {
 "category": &"insider",
 "floor": 0,
