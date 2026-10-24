@@ -303,6 +303,10 @@ func _ah_stealth() -> bool:
 	if pilot.crew.global_position.y > 2.0 and not await _leg("back down the guest way to G20 (casing)",
 			[Vector3(8.0, UP, 26.0), Vector3(18.0, 0.0, 25.0), EAST_BAR_BEHIND, G20_IN], 0.8, 180.0):
 		return false
+	# The ground staff-stair door (34, 0, 14): open it from straight in front (STAFF_STAIR_GROUND), as a player would;
+	# an oblique stop beside it puts the wall edge between the eye and its interactable (r315 + C fix, 1.1 m off-axis).
+	if not await _staff_stair_door():
+		return false
 	if not await _go(MASK_SPOT, 0.6, 90.0):
 		_row("G22 half landing (mask spot)", "FAIL", "not reached", _owner_for(MASK_SPOT))
 		return false
@@ -390,6 +394,22 @@ func _behind_east_bar() -> bool:
 		if not opened:
 			return false
 	return await _leg("into G20", [G20_IN], 0.5, 60.0)
+
+
+## Open the ground staff-stair door from its front stand (no-op when already open or absent).
+func _staff_stair_door() -> bool:
+	var door: Door = _door_near(Vector3(34.0, 0.0, 14.0), 1.5)
+	if door == null or door.is_open:
+		return true
+	if not await _go(STAFF_STAIR_GROUND, 0.4, 90.0):
+		_row("staff stair door (G22, ground)", "FAIL", "front stand %s not reached" % Po5Pilot._v(STAFF_STAIR_GROUND),
+			_owner_for(STAFF_STAIR_GROUND))
+		return false
+	var why: StringName = _comp(door).availability(pilot.crew) if _comp(door) != null else &"none"
+	var opened: bool = await pilot.use(_comp(door), 20.0, func() -> bool: return door.is_open)
+	_row("staff stair door (G22, ground)", "PASS" if opened else "FAIL", "availability '%s', open %s, from the front stand" %
+		[why, door.is_open], "-" if opened else "C door / A casing rule")
+	return opened
 
 
 ## --route=2 (afterhours.md Stealth routes 2, Backstage): up the stage step behind the speaker stack, the backstage
