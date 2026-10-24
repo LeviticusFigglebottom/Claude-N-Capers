@@ -183,7 +183,18 @@ func _run() -> void:
 	if rt == null:
 		_finish()
 		return
-	await _frames(60)
+	# LEAD: is the start view the player's own first-person camera? 2 s of heist time after spawn: the viewport's
+	# current Camera3D vs the local crew's Head/Camera, its distance from the eye, and whether the body is visible.
+	var hs0: float = rt.heist_time_s
+	while rt.heist_time_s - hs0 < 2.0 and is_instance_valid(rt):
+		await _frames(5)
+	var me: CrewController = rt.crew_controller(Net.local_slot()) as CrewController
+	var cur: Camera3D = get_viewport().get_camera_3d()
+	var own: Camera3D = me.get_node_or_null(^"Head/Camera") as Camera3D if me != null else null
+	var d: float = cur.global_position.distance_to(me.eye_position()) if cur != null and me != null else -1.0
+	_row("start view is the player's own first-person camera", cur != null and cur == own and d < 0.3,
+		"current %s, own Head/Camera %s, %.2f m from the eye, own current %s" % [cur.get_path() if cur != null else
+		"none", own.get_path() if own != null else "none", d, own.current if own != null else false])
 	await _shot("in_heist_start")
 	var h0: float = rt.heist_time_s
 	while rt.heist_time_s - h0 < IN_HEIST_S and is_instance_valid(rt) and rt.phase != Enums.HeistPhase.ENDED:
