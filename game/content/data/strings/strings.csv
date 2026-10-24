@@ -3683,6 +3683,12 @@ item.mask.silent_partner.name,Silent Partner
 item.mask.silent_partner.desc,"A pale owl in mint and graphite. Earned by crews who walk the Ledger out without a single alarm."
 item.mask.dock_boss.name,Dock Boss
 item.mask.dock_boss.desc,"Blued steel with hazard stripes. Earned by crews who run the docks on Lethal."
+item.mask.velvet_rope.name,Velvet Rope
+item.mask.velvet_rope.desc,"Crimson lacquer with a gold rope sash. Earned by crews who clear Afterhours without a single body."
+item.mask.mirror_ball.name,Mirror Ball
+item.mask.mirror_ball.desc,"Mirrored facets that catch the dance-floor light. Earned by guests who case the Velvet and open the safe by its code."
+item.mask.house_lights.name,House Lights
+item.mask.house_lights.desc,"Neon magenta and cyan, the club at closing time. Earned by crews who clear Afterhours on Cataclysm."
 item.mask.grand_tourist.name,Grand Tourist
 item.mask.grand_tourist.desc,"A chrome fox with a souvenir from every job. Earned by finishing every heist."
 item.mask.thousand_yard.name,Thousand Yard

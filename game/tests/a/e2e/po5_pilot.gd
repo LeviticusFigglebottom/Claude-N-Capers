@@ -947,7 +947,10 @@ func open_door(door: Door) -> bool:
 	n = n.normalized()
 	if n.dot(crew.global_position - door.global_position) < 0.0:
 		n = -n
-	await goto(stand_point(comp.global_position + n * 0.8), 0.25, 8.0, false, false)
+	# r313 (AH seed 2: 7 STUCK in DoorOfficeDoorN's frame): standing in the doorway, the side test flips and the stand
+	# point lands behind the shut leaf. Within reach of the handle already: no walk.
+	if crew.eye_position().distance_to(comp.global_position) > Tweak.interaction().reach_m - 0.3:
+		await goto(stand_point(comp.global_position + n * 0.8), 0.25, 8.0, false, false)
 	var why: StringName = comp.availability(crew)
 	if why != InteractableComponent.BLOCK_NONE:
 		d.note("pilot: door %s (%s) blocked: %s" % [door.name, comp.kind, why])

@@ -93,6 +93,10 @@ const CLUB_LIGHT_ROWS: Array = [
 		true],
 	# the stage's house fill (P's G2 loud pass: the stage read dim purple in house lights), unshadowed (A's D-146 note)
 	["WorkStageFill", "omni", Vector3(13.0, 4.2, 9.2), Vector3.ZERO, Color(1.0, 0.92, 0.82), 3.0, 9.0, 0.0, false],
+	# the house state flat and even over the hall (doc: "every pool even"; B's r312 alarm frame still read purple on
+	# the velvet), unshadowed
+	["WorkFillW", "omni", Vector3(7.0, 6.0, 11.0), Vector3.ZERO, Color(0.95, 0.97, 1.0), 4.0, 12.0, 0.0, false],
+	["WorkFillE", "omni", Vector3(19.0, 6.0, 11.0), Vector3.ZERO, Color(0.95, 0.97, 1.0), 4.0, 12.0, 0.0, false],
 ]
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the closures' barriers and gates).
 const THIN_GROUPS: Array[String] = ["Closures"]
