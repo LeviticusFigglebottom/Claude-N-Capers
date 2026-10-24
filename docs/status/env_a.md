@@ -4,6 +4,14 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-65) AH perf with shadows (C lit G2), r310/r311 blockers, door prompts (2026-10-23)
+- D-146 on C's lit G2 25860084 (shadows on): PASS, worst total 2014 (rc_balcony loud, house: 261 main + 1753 shadow),
+  club max 991; main max 570. House state carries the shadow cost (6 shadowed spots). ah_perf_capture: C's review
+  cameras + --samples (llvmpipe lit ~20 s/frame).
+- r310 soak blocker: a stale snapshot reply taken as the of_state answer (flaky under load), test fix 3026fdba3.
+- Doors the crew never operates (barred / code / electronic / vault, no charges) are no target (a11bbd47); keypad /
+  reader e2e confirmed. Turret van = P's empty danger attacker (harness, fixed by P).
+
 ### (-64) D-168 net + threat term, balance guard, r309 blocker, door bouncer, cuff log + grace (2026-10-23)
 - D-168: MTU-sized _rpc_xforms chunks (<= 1100 B), far calm civilians at 1/3 rate, per-peer KIND_READY gate (82093e6b);
   AH soak re-check: 0 NetSync-not-found (was 14), 0 MTU warnings. Threat term + stickiness in PoliceBrain._pick_target
