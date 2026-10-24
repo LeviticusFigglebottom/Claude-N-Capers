@@ -103,6 +103,20 @@ func test_p6_drop_in_leave_churn() -> void:
 			var d: Array[String] = await _compare(p)
 			if not d.is_empty():
 				desyncs.append("round %d join, peer %d: %s" % [i, p, "; ".join(d.slice(0, 4))])
+				for line: String in d:  # diagnostics: what the host sends and what the client holds for that NPC
+					var m: RegExMatch = RegEx.create_from_string("npcs (\\d+)").search(line)
+					if m != null:
+						var nid: int = int(m.get_string(1))
+						var nn: Node = Ids.lookup(nid)
+						if _reports.has(p):
+							(_reports[p] as Dictionary).erase("npc_info")
+						_probe.rpc_id(p, &"_rpc_command", "npc_info", {"ids": [nid]})
+						await wait_until(func() -> bool: return (_reports.get(p, {}) as Dictionary).has("npc_info"), 10.0)
+						print("[CHURNDBG] client %d: %s" % [p, (_reports.get(p, {}) as Dictionary).get("npc_info", {})])
+						print("[CHURNDBG] npc %d tracked %s parent %s xform_of %s last %s announced %s cls %s" % [nid,
+							_rt.net_sync._tracked.has(nid), nn.get_parent().get_path() if nn != null else "?",
+							NetEntityCodec.xform_of(nn) if nn != null else "?", _rt.net_sync._last_xform.get(nid, "none"),
+							_rt.net_sync._announced.has(nn.get_instance_id()) if nn != null else "?", nn.get_class() if nn != null else "?"])
 		await _stay(stay_s)
 		var d2: Array[String] = await _compare(peer)
 		if not d2.is_empty():
