@@ -793,7 +793,8 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			if not is_instance_valid(comp):  # DB sweep 1001: a bot picked the bag up during the fight
 				break
 			# Re-aim before pressing again: an F press with the crosshair on a cop is a shout (ND attempts 15-18).
-			await face(_live(comp, target), 0.03, 1.0)
+			target = _live(comp, target)
+			await face(target, 0.03, 1.0)
 			if not is_instance_valid(comp) or (no_blind_press and not await _aim_on(comp, target)):
 				break
 			if isys.aimed_component(crew) == comp:
@@ -801,9 +802,9 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 				inp.press(&"interact")  # never re-press off target: F with nothing aimed is a shout
 			else:
 				var am: InteractableComponent = isys.aimed_component(crew)
-				d.note("pilot: use %s re-press skipped: aimed %s (dist %.2f, angle %.1f deg)" % [comp.kind,
+				d.note("pilot: use %s re-press skipped: aimed %s (dist %.2f, angle %.1f deg, why '%s')" % [comp.kind,
 					am.get_path() if am != null else ^"<none>", crew.eye_position().distance_to(target),
-					rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position()))])
+					rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position())), isys.explain_miss(crew, comp)])
 	inp.release(&"interact")
 	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)
