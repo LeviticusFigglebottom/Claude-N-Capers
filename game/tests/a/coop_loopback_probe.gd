@@ -120,6 +120,14 @@ func _rpc_command(cmd: String, args: Dictionary) -> void:
 				info[nid] = {"lookup": String(look.get_path()) if look != null else "", "lookup_cls": look.get_class() if look != null else "",
 					"holders": holders, "interp": NetInterp.enabled}
 			_rpc_report.rpc_id(1, "npc_info", info)
+		"anim_clips":  # D-165 hint replication: every NPC's AnimDriver clip on this replica (net id -> clip)
+			var clips: Dictionary = {}
+			if rt != null:
+				for n: Node in rt.npcs():
+					var ad: AnimDriver = AnimDriver.of(n)
+					if ad != null:
+						clips[NetIds.of(n)] = String(ad.clip)
+			_rpc_report.rpc_id(1, "anim_clips", clips)
 		"motion_report":
 			var m: MotionStats = get_node_or_null(^"MotionStats") as MotionStats
 			_rpc_report.rpc_id(1, "motion", m.report() if m != null else {})

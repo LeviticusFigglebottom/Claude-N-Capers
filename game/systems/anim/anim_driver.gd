@@ -124,7 +124,7 @@ const POSE_CLIPS: Array[StringName] = [
 ## stands the body still for them).
 const ACTION_CLIPS: Array[StringName] = [&"kick_charge", &"shield_bang", &"heal_ally"]
 ## D-116: held brain hints the host replicates to clients (NetEntityCodec NPC state "ah", stored in META_NET_HINT):
-## the police / guard cuff (interact_low). Every other hint stays host-only (clients use the alert-state fallbacks).
+## the police / guard cuff (interact_low), in any state. D-165: calm NPCs' ambient hints too (AmbientHints.net_hint).
 const NET_HINTS: Array[StringName] = [&"cuff"]
 const META_NET_HINT: StringName = &"net_anim_hint"
 ## Hints played once when the hint changes to them.
@@ -273,6 +273,8 @@ var loop_resume: LoopResume = null
 var turn: TurnInPlace = null
 ## D-116: a civilian's panic_start before its first cower* (CivPanic).
 var civ_panic: CivPanic = null
+## D-165: the `seated` skirt blend shape on the Outfit mesh (SeatedBlend).
+var seated_blend: SeatedBlend = null
 ## D-116 npc_oneshot (NetOneshot): client, seconds left of a one-shot the host sent (no turn clip starts meanwhile);
 ## the last one sent (host) / applied (client) as [clip, start_s, speed] (tests).
 var net_oneshot_left: float = 0.0
@@ -439,6 +441,7 @@ func _init() -> void:
 	loop_resume = LoopResume.new(self)
 	turn = TurnInPlace.new(self)
 	civ_panic = CivPanic.new(self)
+	seated_blend = SeatedBlend.new(self)
 
 
 func _ready() -> void:
@@ -484,6 +487,7 @@ func bind() -> bool:
 	_last_pos = Vector3.INF
 	_family_variants.clear()
 	_clip_known.clear()
+	seated_blend.reset()
 	_variant_family.clear()
 	if _crew != null and _crew.weapons != null and not _crew.weapons.equipped_changed.is_connected(_on_equipped):
 		_crew.weapons.equipped_changed.connect(_on_equipped)
@@ -561,7 +565,7 @@ func tick(delta: float) -> void:
 		var once: StringName = combat.hint_oneshot(hint)  # D-116: hit_react while staggered (L4.5) = stagger_<fam>
 		if ONESHOT_HINTS.has(hint) and not (once != hint and _oneshot == once and _oneshot_left > 0.0):
 			play_oneshot(once, -1.0, true)
-	_update_turn(delta, tw)
+	turn.update(delta, tw)
 	combat.update_door_kick(_npc)  # D-116: the loud breach of a locked door (door_kick_<fam>)
 	var want: StringName = civ_panic.apply(_choose_clip_tick(), delta)
 	if _npc != null and _npc.alive:
@@ -580,6 +584,7 @@ func tick(delta: float) -> void:
 	if crew_action != null:
 		crew_action.update_visuals(delta, tw)
 	held_visuals.update_bag(tw)
+	seated_blend.update(delta)
 	if hat_lift != null and is_instance_valid(hat_lift):
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
 		hat_lift.influence = move_toward(hat_lift.influence, lift_on, delta * tw.hard_hat_lift_rate)
@@ -1144,10 +1149,6 @@ func _update_velocity(delta: float, tw: AnimTweak) -> void:
 
 
 ## Turn in place (TurnInPlace: turn_*_45 / turn_l / turn_r at speed 1, the rig yaw at the clip's own rate).
-func _update_turn(delta: float, tw: AnimTweak) -> void:
-	turn.update(delta, tw)
-
-
 func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 	var full: String = _resolve(want)
 	if full == "":

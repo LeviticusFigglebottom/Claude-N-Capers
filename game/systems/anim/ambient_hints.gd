@@ -25,6 +25,23 @@ static func of_body(npc: NpcBase, combat: CombatClips) -> StringName:
 	return resolve(npc, combat, h if h is StringName else &"")  # D-111 dance pick, D-069 substitutions
 
 
+## D-165 (LEAD r317): the hint the host replicates in the NPC state "ah" (META_NET_HINT on clients): the held cuff
+## (D-116) and, while the NPC is calm, the hint the host's driver plays (dance pick, D-069 substitutions), so a client
+## shows the same dancers / seats / bar staff. Combat (`aim`) and one-shot hints, the alert states and a plain idle
+## (the client's default) stay host-only: clients use the alert-state fallbacks.
+static func net_hint(npc: NpcBase) -> StringName:
+	var b: Node = npc.get_node_or_null(^"Brain")
+	var raw: Variant = b.get(&"anim_hint") if b != null else null
+	var h: StringName = raw if raw is StringName else &""
+	if AnimDriver.NET_HINTS.has(h):
+		return h
+	if not npc.alive or npc.alert_state != Enums.AlertState.CALM or h == &"aim" or AnimDriver.ONESHOT_HINTS.has(h):
+		return &""
+	var d: AnimDriver = AnimDriver.of(npc)
+	var out: StringName = of_body(npc, d.combat) if d != null and d.combat != null else dance_pick(npc, h)
+	return &"" if out == &"idle" else out
+
+
 ## The hint AnimDriver plays for brain hint `h` of `npc`: a dance pick, then the per-NPC ambient substitutions.
 static func resolve(npc: NpcBase, combat: CombatClips, h: StringName) -> StringName:
 	return ambient_hint(npc, combat, dance_pick(npc, h))

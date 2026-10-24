@@ -214,7 +214,7 @@ static func _state_of(node: Node) -> Dictionary:
 		var brain: Node = npc.get_node_or_null(^"Brain")
 		var hint: Variant = brain.get(&"anim_hint") if brain != null else null
 		if hint is StringName:
-			st["ah"] = hint if AnimDriver.NET_HINTS.has(hint) else &""  # D-116: the cuff (interact_low) on clients
+			st["ah"] = AmbientHints.net_hint(npc)  # D-116 the cuff, D-165 calm ambient hints, on clients
 		var ca: Array = CorpseAnchor.net_value(npc)
 		if not ca.is_empty():
 			st["ca"] = ca  # D-121: the corpse's gameplay anchor + push direction (root, bag interaction, hitbox)
