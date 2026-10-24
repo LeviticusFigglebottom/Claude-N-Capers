@@ -1,0 +1,5 @@
+[AHP] ROW stealth | civilian start (D-065) | PASS | mode civilian at (15.0, 0.0, 26.6) | -
+[AHP] ROW stealth | gear (GearBag) -> casing | PASS | 3 s from the spawn, mode casing, at (22.4, 1.0, 25.5) | -
+[AHP] ROW stealth | behind the east bar | PASS | 5.5 s, 0 STUCK row(s) | -
+[AHP 643.4s t=12.7] pilot: aimed <none>, wanted /root/AhG1Pass/HeistRuntime/Afterhours/Gameplay/Doors/EastBarServiceDoor/Interactable (dist 1.50, angle 0.0 deg, avail '', LOS ray hit /root/AhG1Pass/HeistRuntime/Afterhours/Geometry/Building/Walls/WallsG/GZ10260_0_02 at (25.8, 1.1, 11.6), why 'no LOS'
+[AHP] ROW stealth | east bar service door (casing) | FAIL | availability '', open false | C door lock / A casing rule

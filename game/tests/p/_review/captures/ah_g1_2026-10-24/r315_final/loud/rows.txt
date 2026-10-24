@@ -1,0 +1,25 @@
+[AHP] ROW loud | civilian start (D-065) | PASS | mode civilian, 3 AI bots | -
+[AHP] ROW loud | gear (GearBag) -> casing | PASS | 3 s from the spawn, mode casing, at (22.4, 1.0, 25.5) | -
+[AHP] ROW loud | behind the east bar | PASS | 6.5 s, 0 STUCK row(s) | -
+[AHP 809.3s t=15.2] pilot: aimed <none>, wanted /root/AhG1Pass/HeistRuntime/Afterhours/Gameplay/Doors/EastBarServiceDoor/Interactable (dist 1.50, angle 0.0 deg, avail '', LOS ray hit /root/AhG1Pass/HeistRuntime/Afterhours/Geometry/Building/Walls/WallsG/GZ10260_0_02 at (25.8, 1.1, 11.6), why 'no LOS'
+[AHP 917.9s t=17.5] pilot: use EastBarServiceDoor (open_door) -> OK in 1.9 s
+[AHP] ROW loud | east bar service door (casing) | PASS | availability '', open true | -
+[AHP] ROW loud | into G20 | PASS | 1.3 s, 0 STUCK row(s) | -
+[AHP] ROW loud | keycard (Keycard, 40 m walk) | PASS | 14 s, peak 1.00 | -
+[AHP] ROW loud | the alarm (a burst in the hall) | PASS | loud true after 0.0 s, alarm 'guard_radio' | -
+[AHP] ROW loud | staff stair (G22) -> U6 | PASS | 15.6 s, 0 STUCK row(s) | -
+[AHP] ROW loud | office keycard door | PASS | reader true, open true | -
+[AHP] ROW loud | into the office (U9) | PASS | 2.2 s, 0 STUCK row(s) | -
+[AHP] ROW loud | safe by drill | PASS | opened true after 186 s heist time, 1 jam(s) fixed | -
+[AHP] ROW loud | cash in the open safe | PASS | 5 loot.cash_bricks bag(s) within 4 m | -
+[AHP] ROW loud | carry 1 (secured 1): safe -> van (SecureTolley) | PASS | bagged in 4 s, carried in 28 s, 0 STUCK row(s), secured true | -
+[AHP 3417.4s t=323.2] pilot: STUCK at (33.5, 4.2, 14.5) heading to (33.8, 4.2, 13.1); rays: h1.00:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_bulwark/Shield@(33.6, 5.2, 14.1), slide:/root/AhG1Pass/HeistRuntime/Afterhours/Gameplay/Doors/StaffStairDoorU/Visual/PropDoorServiceSteelT30/Model/Frame/Collision
+[AHP 3549.1s t=327.9] pilot: STUCK at (34.5, 4.2, 14.5) heading to (34.2, 4.2, 13.1); rays: h1.00:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_bulwark/Shield@(34.4, 5.2, 14.1), slide:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_bulwark/Shield@(34.3, 4.7, 14.2) n=(0.7, 0.0, 0.7), slide:/root/AhG1Pass/HeistRunt
+[AHP 3609.8s t=332.6] pilot: STUCK at (33.5, 4.2, 14.5) heading to (33.8, 4.2, 13.1); rays: h1.00:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_bulwark/Shield@(33.6, 5.2, 14.1), slide:/root/AhG1Pass/HeistRuntime/Afterhours/Gameplay/Doors/StaffStairDoorU/Visual/PropDoorServiceSteelT30/Model/Frame/Collision
+[AHP 3644.1s t=335.4] pilot: STUCK at (34.5, 4.2, 14.5) heading to (34.2, 4.2, 13.1); rays: h1.00:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_bulwark/Shield@(34.4, 5.2, 14.1), slide:/root/AhG1Pass/HeistRuntime/Afterhours/Gameplay/Doors/StaffStairDoorU/Visual/PropDoorServiceSteelT30/Model/Frame/Collision
+[AHP] ROW loud | carry 2 (secured 2): safe -> van (SecureTolley) | STUCK | bagged in 16 s, carried in 47 s, 4 STUCK row(s), secured true | C map
+[AHP 3928.3s t=359.7] pilot: STUCK at (35.0, 0.0, 12.3) heading to (35.1, 2.0, 9.4); rays: h0.05:/root/AhG1Pass/HeistRuntime/Afterhours/Geometry/Building/StairFlights/G22Flight1/Ramp@(35.0, 0.1, 12.1), h0.20:/root/AhG1Pass/HeistRuntime/Afterhours/Geometry/Building/StairFlights/G22Flight1/Ramp@(35.0,
+[AHP 4248.5s t=392.1] pilot: STUCK at (34.8, 2.1, 8.5) heading to (35.1, 2.0, 9.4); rays: h0.05:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police2@(34.9, 2.2, 8.9), h0.20:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police2@(34.9, 2.3, 8.8), h0.40:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police2@(34.9, 2.5, 
+[AHP] ROW loud | carry 3 (secured 3): safe -> van (SecureTolley) | STUCK | bagged in 18 s, carried in 30 s, 1 STUCK row(s), secured true | C map
+[AHP] ROW loud | van back (2nd FADE or 300 s after the first bag) | PASS | escape EscapeTolley:<Node3D#693217800286> at t=592 | -
+[AHP] ROW loud | escape (EscapeTolley) | PASS | reached true, escaping true | -
