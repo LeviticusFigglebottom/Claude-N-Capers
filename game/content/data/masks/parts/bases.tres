@@ -381,6 +381,20 @@ requires_model = true
 id = &"mask_base.bust"
 display_name = "Gallery Bust"
 
+[sub_resource type="Resource" id="Resource_ah_vinyl"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_vinyl/mask_base_vinyl.glb"
+requires_model = true
+id = &"mask_base.vinyl"
+display_name = "Vinyl"
+
+[sub_resource type="Resource" id="Resource_ah_disco"]
+script = ExtResource("2_1lydb")
+model_path = "res://assets/masks/mask_base_disco/mask_base_disco.glb"
+requires_model = true
+id = &"mask_base.disco"
+display_name = "Disco"
+
 [resource]
 script = ExtResource("3_7i1nk")
-entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx"), SubResource("Resource_req_skull"), SubResource("Resource_req_theatre"), SubResource("Resource_req_gasmask"), SubResource("Resource_req_demon"), SubResource("Resource_req_goalie"), SubResource("Resource_d3_ram"), SubResource("Resource_d3_stag"), SubResource("Resource_d3_cat"), SubResource("Resource_d3_boar"), SubResource("Resource_d3_serpent"), SubResource("Resource_d3_moth"), SubResource("Resource_d3_knight"), SubResource("Resource_d3_doll"), SubResource("Resource_d3_sunburst"), SubResource("Resource_d3_geo"), SubResource("Resource_d3_robot"), SubResource("Resource_d3_jester"), SubResource("Resource_d111_lion"), SubResource("Resource_d111_kraken"), SubResource("Resource_d111_shark"), SubResource("Resource_d111_pierrot"), SubResource("Resource_d111_welder"), SubResource("Resource_d111_wicker"), SubResource("Resource_d111_lucha"), SubResource("Resource_d111_signal"), SubResource("Resource_d4_vault_dial"), SubResource("Resource_d4_keystone"), SubResource("Resource_d4_bust"), SubResource("Resource_rt_road_cone"), SubResource("Resource_rt_ingot")])
+entries = Array[ExtResource("1_p6irn")]([SubResource("Resource_atdi0"), SubResource("Resource_g7e7x"), SubResource("Resource_kf764"), SubResource("Resource_nl776"), SubResource("Resource_w3ipx"), SubResource("Resource_req_skull"), SubResource("Resource_req_theatre"), SubResource("Resource_req_gasmask"), SubResource("Resource_req_demon"), SubResource("Resource_req_goalie"), SubResource("Resource_d3_ram"), SubResource("Resource_d3_stag"), SubResource("Resource_d3_cat"), SubResource("Resource_d3_boar"), SubResource("Resource_d3_serpent"), SubResource("Resource_d3_moth"), SubResource("Resource_d3_knight"), SubResource("Resource_d3_doll"), SubResource("Resource_d3_sunburst"), SubResource("Resource_d3_geo"), SubResource("Resource_d3_robot"), SubResource("Resource_d3_jester"), SubResource("Resource_d111_lion"), SubResource("Resource_d111_kraken"), SubResource("Resource_d111_shark"), SubResource("Resource_d111_pierrot"), SubResource("Resource_d111_welder"), SubResource("Resource_d111_wicker"), SubResource("Resource_d111_lucha"), SubResource("Resource_d111_signal"), SubResource("Resource_d4_vault_dial"), SubResource("Resource_d4_keystone"), SubResource("Resource_d4_bust"), SubResource("Resource_rt_road_cone"), SubResource("Resource_rt_ingot"), SubResource("Resource_ah_vinyl"), SubResource("Resource_ah_disco")])

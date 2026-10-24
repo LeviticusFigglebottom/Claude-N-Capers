@@ -71,7 +71,7 @@ func test_procedural_ids_are_unique_and_in_shader() -> void:
 		var proc: int = int((p as MaskPatternDef).procedural)
 		assert_false(seen.has(proc), "%s reuses procedural %d" % [p.id, proc])
 		seen[proc] = true
-	assert_eq(MaskPatternDef.Procedural.size(), 22)  # round 244: +6, RT-B1: +2 achievement-part fallbacks (append-only)
+	assert_eq(MaskPatternDef.Procedural.size(), 23)  # round 244: +6, RT-B1: +2, AH-B1: +1 achievement-part fallbacks
 	var code: String = (load(MaskComposer.SHADER_PATH) as Shader).code
 	for i: int in range(1, MaskPatternDef.Procedural.size()):
 		assert_true(code.contains("pattern == %d)" % i), "shader draws procedural %d" % i)

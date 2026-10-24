@@ -27,6 +27,7 @@
 [ext_resource type="Material" path="res://world/materials/char_mask_gilt_leaf.tres" id="d4m_gilt_leaf"]
 [ext_resource type="Material" path="res://world/materials/char_mask_armor_plate.tres" id="rtm_armor_plate"]
 [ext_resource type="Material" path="res://world/materials/char_mask_hi_vis.tres" id="rtm_hi_vis"]
+[ext_resource type="Material" path="res://world/materials/char_mask_sequin.tres" id="ahm_sequin"]
 
 [sub_resource type="Resource" id="Resource_jkanb"]
 script = ExtResource("3_ktq15")
@@ -295,6 +296,18 @@ uv_tile = 1.5
 id = &"mask_material.gilt_leaf"
 display_name = "Gilt Leaf"
 
+[sub_resource type="Resource" id="Resource_ah_sequin"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_sequin"
+library_material = ExtResource("ahm_sequin")
+metallic = 0.85
+roughness = 0.3
+detail_strength = 0.9
+uv_tile = 1.5
+detail_mean = 0.455
+id = &"mask_material.sequin"
+display_name = "Sequin"
+
 [resource]
 script = ExtResource("12_coas7")
-entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv"), SubResource("Resource_b415_porcelain"), SubResource("Resource_b415_ink_lacquer"), SubResource("Resource_b415_stipple"), SubResource("Resource_b502_weave"), SubResource("Resource_b502_anodized"), SubResource("Resource_b502_crown_gold"), SubResource("Resource_d4_limestone"), SubResource("Resource_d4_bronze"), SubResource("Resource_d4_oil_canvas"), SubResource("Resource_d4_container_rust"), SubResource("Resource_d4_velvet_case"), SubResource("Resource_d4_night_safe"), SubResource("Resource_d4_gilt_leaf"), SubResource("Resource_rt_armor_plate"), SubResource("Resource_rt_hi_vis")])
+entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv"), SubResource("Resource_b415_porcelain"), SubResource("Resource_b415_ink_lacquer"), SubResource("Resource_b415_stipple"), SubResource("Resource_b502_weave"), SubResource("Resource_b502_anodized"), SubResource("Resource_b502_crown_gold"), SubResource("Resource_d4_limestone"), SubResource("Resource_d4_bronze"), SubResource("Resource_d4_oil_canvas"), SubResource("Resource_d4_container_rust"), SubResource("Resource_d4_velvet_case"), SubResource("Resource_d4_night_safe"), SubResource("Resource_d4_gilt_leaf"), SubResource("Resource_rt_armor_plate"), SubResource("Resource_rt_hi_vis"), SubResource("Resource_ah_sequin")])
