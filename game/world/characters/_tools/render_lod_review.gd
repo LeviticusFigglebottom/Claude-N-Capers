@@ -8,6 +8,8 @@
 ## `-- --dists=2,10`: also one perspective strip per distance (lod_review_<tag>_<d>m.png): each character alone, seen
 ## from d metres at eye height 1.65 m with the pixel density of a 1080p 60-degree view, natural LOD selection.
 ## `-- --out=res://dir/`: write there instead of assets/characters/_review/.
+## `-- --back`: the --dists strips from behind (`_back`); `-- --no-mesh-lod`: with the renderer's automatic mesh LODs
+## (LOD1) off (`_nolod`), to tell LOD1 decimation from plain pixel size (e.g. the Corpsman's pack mark).
 extends SceneTree
 
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
@@ -20,6 +22,8 @@ var _ids: Array[String] = DEFAULT_IDS.duplicate()
 var _name: String = "lod_review"
 var _dists: Array[float] = []
 var _out: String = OUT_DIR
+var _back: bool = false
+var _no_mesh_lod: bool = false
 
 
 func _initialize() -> void:
@@ -33,6 +37,10 @@ func _initialize() -> void:
 				_dists.append(float(d))
 		elif arg.begins_with("--out="):
 			_out = arg.trim_prefix("--out=")
+		elif arg == "--back":
+			_back = true
+		elif arg == "--no-mesh-lod":
+			_no_mesh_lod = true
 	_run.call_deferred()
 
 
@@ -47,7 +55,7 @@ func _run() -> void:
 	far.save_png(_out + _name + "_30m.png")
 	for d: float in _dists:
 		var strip: Image = await _render_perspective(d)
-		strip.save_png(_out + "%s_%dm.png" % [_name, int(d)])
+		strip.save_png(_out + "%s_%dm%s%s.png" % [_name, int(d), "_back" if _back else "", "_nolod" if _no_mesh_lod else ""])
 	print("render_lod_review: wrote %s.png, %s_30m.png" % [_name, _name])
 	quit(0)
 
@@ -61,6 +69,8 @@ func _render_perspective(d: float) -> Image:
 	var strip: Image = Image.create(tile_w * scale * _ids.size(), tile_h * scale, false, Image.FORMAT_RGBA8)
 	for i: int in range(_ids.size()):
 		var vp: SubViewport = _lit_viewport(Vector2i(tile_w, tile_h), true)
+		if _no_mesh_lod:
+			vp.mesh_lod_threshold = 0.0
 		var packed: PackedScene = load("res://world/characters/%s/%s.tscn" % [_ids[i], _ids[i]]) as PackedScene
 		var ch: Node3D = packed.instantiate() as Node3D
 		vp.add_child(ch)
@@ -69,7 +79,7 @@ func _render_perspective(d: float) -> Image:
 		cam.near = 0.05
 		cam.far = 80.0
 		vp.add_child(cam)
-		cam.look_at_from_position(Vector3(0.0, 1.65, -d), Vector3(0.0, 0.95, 0.0), Vector3.UP)
+		cam.look_at_from_position(Vector3(0.0, 1.65, d if _back else -d), Vector3(0.0, 0.95, 0.0), Vector3.UP)
 		cam.current = true
 		for _f: int in range(6):
 			await process_frame

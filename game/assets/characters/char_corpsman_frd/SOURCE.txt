@@ -14,10 +14,10 @@ bones: 52
 faction: frd
 hat: white TAC helmet with the Corpsman mark (Headwear)
 medic_mark: original: red disc, white round-capped plus, thin white ring (not the Red Cross emblem)
-meshes: Body,Gear,Hair,Headwear,Outfit
+meshes: Body,Gear,Hair,Headwear,Marks,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
 tris: 34432
-tris_by_mesh: {"Body": 7188, "Gear": 5328, "Hair": 1728, "Headwear": 2924, "Outfit": 17264}
+tris_by_mesh: {"Body": 7188, "Gear": 4368, "Hair": 1728, "Headwear": 1644, "Marks": 2240, "Outfit": 17264}
 variant_of: corpsman
 visual_variant: frd

@@ -8,12 +8,12 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0861, 0.0965] (model [0.0000, 1.2562, 0.1143], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0783, -0.0857] (model [0.0000, 1.6098, -0.0741], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1723, 0.0494, 0.0403] (model [0.1723, 0.9701, 0.0427], Godot axes, rest pose)
-body_faces_culled: 2834
+body_faces_culled: 2798
 body_params: {"age": 0.5, "beard_shadow": 0.0, "build": 0.55, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.72, "lip": "char_lip_rose", "skin": 3}
 bones: 52
 look: Club patron: black satin knee dress with short sleeves, thin gold belt, heels, a wide gold cuff bracelet
 meshes: Body,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 23736
-tris_by_mesh: {"Body": 13076, "Hair": 1856, "Outfit": 8804}
+tris: 23808
+tris_by_mesh: {"Body": 13148, "Hair": 1856, "Outfit": 8804}
