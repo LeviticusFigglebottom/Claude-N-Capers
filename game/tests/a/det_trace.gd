@@ -84,8 +84,10 @@ func _on_physics_frame() -> void:
 			npc.health, mode, tgt_s])
 	for c: CrewController in rt.crew_members():
 		var h: CrewHealth = c.health
-		_add("crew %d %s hp=%.1f ar=%.1f dn=%d" % [c.slot, v3(c.global_position), h.health if h else -1.0,
-			h.armor if h else -1.0, h.downs_used if h else -1])
+		_add("crew %d %s hp=%.1f ar=%.1f dn=%d%s" % [c.slot, v3(c.global_position), h.health if h else -1.0,
+			h.armor if h else -1.0, h.downs_used if h else -1,
+			(" v=%s st=%d yaw=%.5f mv=%s" % [v3(c.velocity), c.crew_state, c.look_yaw, c.intent.move])
+				if OS.get_environment("DET_PREC") != "" else ""])
 
 
 func _on_spawned(npc: NpcBase) -> void:
