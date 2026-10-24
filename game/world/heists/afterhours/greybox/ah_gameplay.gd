@@ -295,8 +295,12 @@ func build_doors(parent: Node3D) -> void:
 ## padlock on the leaf: a BARRED gate / magazine door opened by lockpick 8 s or a placed saw, D-138), todo.
 func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary) -> Node3D:
 	var kind: String = String(d[4])
+	# outward: the leaf opens toward the front (the UsePoint / interactable side) instead of away from it. G3: the
+	# backstage, east-bar service and VIP staff doors open into their rooms this way; turning the door round instead
+	# moved its interactable behind the wall (P r315: stealth route 1 cut at the east bar)
+	var outward: bool = bool(extra.get("push_bar", false)) or bool(extra.get("outward", false))
 	var props: Dictionary = {"lock": "enum:" + lock, "width_m": float(d[7]),
-		"swing": "enum:" + ("DOUBLE" if kind == "double" else ("OUTWARD" if bool(extra.get("push_bar", false)) else "INWARD"))}
+		"swing": "enum:" + ("DOUBLE" if kind == "double" else ("OUTWARD" if outward else "INWARD"))}
 	if lock == "LOCKPICK":
 		props["interaction_time_s"] = LOCKPICK_S
 	if bool(extra.get("push_bar", false)):
@@ -313,7 +317,7 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 		props["leaf_surface"] = String(extra["leaf"])
 	if extra.has("height"):   # D-158: leaf collision as tall as the visual leaves (A's Door.height_m, env/a-core 75400478)
 		props["height_m"] = float(extra["height"])
-	var metas: Dictionary = {"kind": String(extra.get("kind", "door")), "swing_side": "back"}
+	var metas: Dictionary = {"kind": String(extra.get("kind", "door")), "swing_side": "front" if outward else "back"}
 	if bool(extra.get("push_bar", false)):
 		metas["fire_exit"] = true
 	if kind == "service":

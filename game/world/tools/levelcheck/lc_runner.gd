@@ -12,7 +12,7 @@ static func all_checks() -> Array[LcCheck]:
 	var out: Array[LcCheck] = [
 		LcCheckContractNodes.new(), LcCheckCameras.new(), LcCheckSecureZones.new(), LcCheckFloating.new(),
 		LcCheckClipping.new(), LcCheckOrientation.new(),
-		LcCheckScale.new(), LcCheckSlopes.new(), LcCheckNavmesh.new(), LcCheckBarredDoors.new(),
+		LcCheckScale.new(), LcCheckSlopes.new(), LcCheckNavmesh.new(), LcCheckBarredDoors.new(), LcCheckDoorAccess.new(),
 		LcCheckReachability.new(),
 		LcCheckWalkthrough.new(),
 		LcCheckPatrols.new(), LcCheckLasers.new(), LcCheckCameraSpine.new(), LcCheckCameraScreen.new(),
