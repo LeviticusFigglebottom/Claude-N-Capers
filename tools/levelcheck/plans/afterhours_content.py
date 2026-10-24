@@ -91,10 +91,10 @@ DOOR_SPECS: Dict[tuple, list] = {
     ("G", "fx_g13_w"): ["BackCorridorDoorW", "NONE", "E", "steel", {"push_bar": True}],
     ("G", "fx_g13_e"): ["BackCorridorDoorE", "NONE", "W", "steel", {"push_bar": True}],
     ("G", "rear_door"): ["RearDoor", "", "N", "steel", {"casing": True, "npc": NPC_STAFF}],
-    ("G", "d_backstage"): ["BackstageDoor", "NONE", "S", "steel", {"casing": True}],
+    ("G", "d_backstage"): ["BackstageDoor", "NONE", "N", "steel", {"casing": True}],
     ("G", "fx_hall_n"): ["HallFireExitN", "NONE", "E", "steel", {"guest": True, "push_bar": True}],
     ("G", "fx_hall_s"): ["HallFireExitS", "NONE", "E", "steel", {"guest": True, "push_bar": True}],
-    ("G", "d_east_bar"): ["EastBarServiceDoor", "NONE", "W", "steel", {"casing": True}],
+    ("G", "d_east_bar"): ["EastBarServiceDoor", "NONE", "E", "steel", {"casing": True}],
     ("G", "d_g23"): ["BarStoreDoor", "NONE", "W", "steel", {"casing": True}],
     ("G", "d_g22_g25"): ["StaffStairDoorG", "NONE", "S", "steel", {"casing": True}],
     ("G", "d_g20_g25"): ["StaffEntranceDoor", "NONE", "W", "ivory", {"casing": True}],
@@ -113,7 +113,7 @@ DOOR_SPECS: Dict[tuple, list] = {
     ("G", "dd_main_e"): ["MainDoorsE", "NONE", "S", "glass", {"guest": True}],
     ("U", "d_u10"): ["CountRoomDoor", "LOCKPICK", "S", "steel", {"npc": NPC_STAFF}],
     ("U", "d_u7"): ["StaffStairDoorU", "NONE", "S", "steel", {"casing": True}],
-    ("U", "d_vip_staff"): ["VIPStaffDoor", "LOCKPICK", "W", "walnut", {"npc": NPC_STAFF}],
+    ("U", "d_vip_staff"): ["VIPStaffDoor", "LOCKPICK", "E", "walnut", {"npc": NPC_STAFF}],
     ("U", "d_office"): ["OfficeDoor", "KEYCARD", "W", "walnut", {"tag": "office_door"}],
     ("U", "d_u12"): ["PrivateRoomDoor", "NONE", "N", "walnut", {}],
     ("U", "d_u5"): ["SecurityRoomDoor", "LOCKPICK", "E", "steel", {"npc": NPC_STAFF}],
@@ -261,7 +261,7 @@ def always() -> Dict[str, List[list]]:
         ("TillVIPBar", [18.0, U + BAR_TOP, 25.9], 0.0, 600, [18.0, U, 25.2]),
         ("TillBoxOffice", [22.4, BAR_TOP, 23.0], 0.0, 600, [23.3, 0.0, 23.0]),
         ("TipJarCloak", [22.4, BAR_TOP, 26.0], 0.0, 300, [23.3, 0.0, 26.0]),
-        ("BottleServiceU1", [9.6, U + 0.75, 19.5], 0.0, 800, [9.6, U, 18.6]),
+        ("BottleServiceU1", [9.6, U + 0.755, 19.5], 0.0, 800, [9.6, U, 18.6]),
         ("BottleServiceU2", [16.0, U + 0.45, 23.3], 0.0, 800, [16.0, U, 24.1]),
         ("DeskDrawerU9", [31.6, U + 0.75, 18.1], 0.0, 1200, [31.6, U, 19.3]),
     ]
@@ -281,7 +281,8 @@ def always() -> Dict[str, List[list]]:
             Pf("safe", "OfficeSafe", [33.5, U, 20.35], 0.0,
                {"size": "enum:LARGE", "methods": ["code", "drill"], "code_group": "office", "objective_tag": "safe",
                 "@contents": [["drill_point", "SafeDrill", [0.2, 1.0, -0.36],
-                               {"objective_tag": "safe_drill", "target": ".."}, 180.0]]},
+                               {"objective_tag": "safe_drill", "target": "..",
+                                "visual_path": "res://world/heists/glasshouse/art/gh_empty.tscn"}, 180.0]]},
                [33.5, U, 19.2], {}, "prop_safe_large"),
             # the door take: G26's drop safe (SMALL, drill / saw; saw 60 s), small loot x3 inside
             Pf("safe", "DropSafe", [28.0, 0.0, 27.45], 0.0,
@@ -309,7 +310,7 @@ def always() -> Dict[str, List[list]]:
                "prop_dumpster"),
             Pf("body_container", "DumpsterE", [24.0, 0.0, -0.85], 0.0, {"capacity": 2}, None, {"kind": "dumpster"},
                "prop_dumpster"),
-            Pf("body_container", "JanitorCart", [26.0, 0.0, 3.0], 180.0, {"capacity": 1}, None, {"kind": "cart"},
+            Pf("body_container", "JanitorCart", [26.0, 0.0, 3.35], 180.0, {"capacity": 1}, None, {"kind": "cart"},
                "prop_cart_hide"),
             Pf("body_container", "EventStoreCrate1", [35.2, 0.0, 24.5], 90.0, {"capacity": 1}, None, {"kind": "crate"},
                "prop_crate_hide"),
@@ -674,10 +675,14 @@ def _code(pos: list, yaw: float, use: list, mount: str = "", vis: str = "prop_no
                vis)]
 
 
-def _laser(pattern: str, props: Dict, width: float = 3.6, z: float = 23.0) -> list:
-    p = {"pattern": pattern, "size_m": [width, 2.2, 0.1], "objective_tag": "lasers"}
+def _laser(pattern: str, props: Dict, width: float = 3.3, z: float = 23.0, vis: str = "", h: float = 2.2) -> list:
+    # the beams span `width` (the catalog beam set's length); the builder adds a 0.15 m post past each end
+    # (ah_gameplay.gd _laser_rig; the static grid's south end is its bypass gap, no post), so the 3.3 m grids fill
+    # the private room's 3.6 m (z 21.2-24.8). Patterns: laser_grid.gd's static / sweeping / timed_off (G3: AH had
+    # written sweep / timed, which the prefab ran as static grids)
+    p = {"pattern": pattern, "size_m": [width, h, 0.1], "objective_tag": "lasers"}
     p.update(props)
-    return [Pf("laser_grid", "PrivateLasers", [34.3, U, z], 90.0, p, None, {}, "")]
+    return [Pf("laser_grid", "PrivateLasers", [34.3, U, z], 90.0, p, None, {}, vis)]
 
 
 def _rover(nm: str, graph: str, tag: str, pos: list) -> list:
@@ -717,9 +722,12 @@ def slot_content() -> Dict[str, List[list]]:
         "prod_green": [M("ProductGreen", [12.5, 1.0, 1.0], "product", "on the DJs' flight cases")],
         # on the floor in front of the shelving (x 35.1-35.7), behind the laser plane (x 34.3) (A r305: inside the shelf)
         "prod_private": [M("ProductPrivate", [34.75, U + 0.1, 23.0], "product", "in front of the shelving, behind the lasers")],
-        "lz_static": _laser("static", {"beam_count": 3}, 2.6, 22.5),   # the bypass: 1.0 m on the south side
-        "lz_sweep": _laser("sweep", {"period_s": 6.0, "sweep_beams": 1}),
-        "lz_timed": _laser("timed", {"period_s": 16.0, "off_s": 4.0}),
+        "lz_static": _laser("static", {"beam_count": 3}, 2.15, 22.425,
+                            "prop_laser_beams_h215x3"),   # the bypass: 1.25 m on the south side
+        "lz_sweep": _laser("sweeping", {"period_s": 6.0, "sweep_beams": 2},
+                           vis="prop_laser_beams_v260x2", h=2.6),   # the beam set's 2.6 m height
+        "lz_timed": _laser("timed_off", {"period_s": 16.0, "off_s": 4.0},
+                           vis="prop_laser_beams_h330x4"),
         "rover_floor": _rover("RoverFloor", "Foh", "guard_floor", FOH["Foyer"]),
         "rover_boh": _rover("RoverBoh", "Boh", "guard_boh", BOH["G13W"]),
         "rover_upper": _rover("RoverUpper", "Upper", "guard_upper", UPPER["U6E"]),

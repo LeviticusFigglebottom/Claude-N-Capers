@@ -107,7 +107,7 @@ const DOORS: Array = [
 		"RearDoor", "G", [35.0, 0.0, 0.0], 0.0, "service", "", "prop_door_service_steel_t40", 1.1,
 		{"casing": true, "npc": ["staff", "guard"]},
 	],
-	["BackstageDoor", "G", [13.0, 0.0, 7.0], 180.0, "service", "NONE", "prop_door_service_steel_t40", 1.1, {"casing": true}],
+	["BackstageDoor", "G", [13.0, 0.0, 7.0], 0.0, "service", "NONE", "prop_door_service_steel_t40", 1.1, {"casing": true}],
 	[
 		"HallFireExitN", "G", [0.0, 0.0, 8.3], -90.0, "double", "NONE", "prop_door_double_steel_t40", 1.8,
 		{"guest": true, "push_bar": true},
@@ -117,7 +117,7 @@ const DOORS: Array = [
 		{"guest": true, "push_bar": true},
 	],
 	[
-		"EastBarServiceDoor", "G", [26.0, 0.0, 11.0], 90.0, "service", "NONE", "prop_door_service_steel_t40", 1.1,
+		"EastBarServiceDoor", "G", [26.0, 0.0, 11.0], -90.0, "service", "NONE", "prop_door_service_steel_t40", 1.1,
 		{"casing": true},
 	],
 	["BarStoreDoor", "G", [28.0, 0.0, 10.0], 90.0, "service", "NONE", "prop_door_service_steel_t20", 1.1, {"casing": true}],
@@ -156,7 +156,7 @@ const DOORS: Array = [
 	],
 	["StaffStairDoorU", "U", [34.0, 4.2, 14.0], 180.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {"casing": true}],
 	[
-		"VIPStaffDoor", "U", [26.0, 4.2, 18.0], 90.0, "service", "LOCKPICK", "prop_door_service_walnut_t40", 1.1,
+		"VIPStaffDoor", "U", [26.0, 4.2, 18.0], -90.0, "service", "LOCKPICK", "prop_door_service_walnut_t40", 1.1,
 		{"npc": ["staff", "guard"]},
 	],
 	[
@@ -254,7 +254,13 @@ const ALWAYS: Dictionary = {
 				"methods": ["code", "drill"],
 				"code_group": "office",
 				"objective_tag": "safe",
-				"@contents": [["drill_point", "SafeDrill", [0.2, 1.0, -0.36], {"objective_tag": "safe_drill", "target": ".."}, 180.0]],
+				"@contents": [
+					[
+						"drill_point", "SafeDrill", [0.2, 1.0, -0.36],
+						{"objective_tag": "safe_drill", "target": "..", "visual_path": "res://world/heists/glasshouse/art/gh_empty.tscn"},
+						180.0,
+					],
+				],
 			},
 			[33.5, 4.2, 19.2], {}, "prop_safe_large",
 		],
@@ -293,7 +299,7 @@ const ALWAYS: Dictionary = {
 			[23.3, 0.0, 26.0], {}, "prop_cash_stack",
 		],
 		[
-			"prefab", "small_loot", "BottleServiceU1", [9.6, 4.95, 19.5], 0.0, {"loot_id": "loot.small_valuables", "value": 800},
+			"prefab", "small_loot", "BottleServiceU1", [9.6, 4.955, 19.5], 0.0, {"loot_id": "loot.small_valuables", "value": 800},
 			[9.6, 4.2, 18.6], {}, "prop_cash_stack",
 		],
 		[
@@ -345,7 +351,7 @@ const ALWAYS: Dictionary = {
 			"prop_dumpster",
 		],
 		[
-			"prefab", "body_container", "JanitorCart", [26.0, 0.0, 3.0], 180.0, {"capacity": 1}, null, {"kind": "cart"},
+			"prefab", "body_container", "JanitorCart", [26.0, 0.0, 3.35], 180.0, {"capacity": 1}, null, {"kind": "cart"},
 			"prop_cart_hide",
 		],
 		[
@@ -595,21 +601,23 @@ const SLOT_ITEMS: Dictionary = {
 	"prod_private": [["marker", "ProductPrivate", [34.75, 4.3, 23.0], 0.0, "product", "in front of the shelving, behind the lasers"]],
 	"lz_static": [
 		[
-			"prefab", "laser_grid", "PrivateLasers", [34.3, 4.2, 22.5], 90.0,
-			{"pattern": "static", "size_m": [2.6, 2.2, 0.1], "objective_tag": "lasers", "beam_count": 3}, null, {}, "",
+			"prefab", "laser_grid", "PrivateLasers", [34.3, 4.2, 22.425], 90.0,
+			{"pattern": "static", "size_m": [2.15, 2.2, 0.1], "objective_tag": "lasers", "beam_count": 3}, null, {},
+			"prop_laser_beams_h215x3",
 		],
 	],
 	"lz_sweep": [
 		[
 			"prefab", "laser_grid", "PrivateLasers", [34.3, 4.2, 23.0], 90.0,
-			{"pattern": "sweep", "size_m": [3.6, 2.2, 0.1], "objective_tag": "lasers", "period_s": 6.0, "sweep_beams": 1}, null, {},
-			"",
+			{"pattern": "sweeping", "size_m": [3.3, 2.6, 0.1], "objective_tag": "lasers", "period_s": 6.0, "sweep_beams": 2}, null,
+			{}, "prop_laser_beams_v260x2",
 		],
 	],
 	"lz_timed": [
 		[
 			"prefab", "laser_grid", "PrivateLasers", [34.3, 4.2, 23.0], 90.0,
-			{"pattern": "timed", "size_m": [3.6, 2.2, 0.1], "objective_tag": "lasers", "period_s": 16.0, "off_s": 4.0}, null, {}, "",
+			{"pattern": "timed_off", "size_m": [3.3, 2.2, 0.1], "objective_tag": "lasers", "period_s": 16.0, "off_s": 4.0}, null, {},
+			"prop_laser_beams_h330x4",
 		],
 	],
 	"rover_floor": [["spawn", "RoverFloor", "GUARD", [16.0, 0.0, 24.5], 0.0, ["guard", "guard_floor"], "", "Foh", ""]],

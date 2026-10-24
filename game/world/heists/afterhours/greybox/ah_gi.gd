@@ -43,8 +43,15 @@ const SHADOW_FIXTURES: Array[String] = ["Props/Dress/U9/DeskLamp_1"]
 ## `interior` (as RT's volumes): an interior volume drops the environment's ambient inside it, so every surface out of
 ## a fixture's cone went black (the LEAD's G2 review: scalloped black bands at the wall tops under black ceilings in the
 ## BOH rooms, the kit downlights' cone edges; gone with the volume hidden, unchanged without SSAO).
+## G3 (LEAD r313): three volumes, split inside the walls between the club and the BOH (z 7.0 the hall's north wall,
+## x 26.0 its east wall), so the hall's light no longer bleeds into the BOH corridors and the count room (the OF band
+## approach; one volume over all 37 m gave ~0.3 m cells, coarser than the 0.4 m walls).
 const GI_VOLUMES: Array = [
-	["VoxelGIClub", "afterhours_voxelgi_club.res", Vector3(-0.5, -0.3, -0.5), Vector3(36.5, 8.9, 28.5),
+	["VoxelGIClub", "afterhours_voxelgi_club.res", Vector3(-0.5, -0.3, 7.0), Vector3(26.0, 8.9, 28.5),
+		VoxelGI.SUBDIV_128, false],
+	["VoxelGIBackN", "afterhours_voxelgi_back_n.res", Vector3(-0.5, -0.3, -0.5), Vector3(36.5, 8.9, 7.0),
+		VoxelGI.SUBDIV_128, false],
+	["VoxelGIBackE", "afterhours_voxelgi_back_e.res", Vector3(26.0, -0.3, 7.0), Vector3(36.5, 8.9, 28.5),
 		VoxelGI.SUBDIV_128, false],
 ]
 

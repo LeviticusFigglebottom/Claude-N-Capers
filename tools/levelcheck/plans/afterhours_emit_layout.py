@@ -30,12 +30,13 @@ OUT_CONTENT = os.path.join(OUT_DIR, "afterhours_layout_content.gd")
 ROOM_KIT = {
     "G1": "club_foyer", "G2": "club_box_office", "G3a": "restroom_multi", "G3b": "restroom_multi", "G6": "club_hall",
     "G7": "club_lounge", "G10": "storage_bar_stock", "G11": "green_room", "G12": "break_room",
-    "G13": "corridor_service", "G14": "locker_room", "G15": "janitor_closet", "G16": "electrical_closet",
+    "G13": "corridor_service", "G14": "locker_room", "G15": "janitor_closet_of", "G16": "electrical_closet_ah",
     "G20": "corridor_service", "G21": "loading_bar", "G23": "storage_supplies", "G24": "door_team_room",
-    "G25": "staff_entrance", "G26": "count_room", "G27": "storage_supplies", "U1": "vip_balcony", "U2": "vip_lounge",
+    "G25": "staff_entrance", "G26": "count_room_cash", "G27": "storage_supplies", "U1": "vip_balcony",
+    "U2": "vip_lounge",
     "U4a": "restroom_multi", "U4b": "restroom_multi", "U5": "security_office", "U6": "corridor_office",
-    "U6b": "corridor_office", "U9": "office_manager", "U10": "count_room", "U12": "private_lounge",
-    "U13": "restroom_multi", "X1": "exterior_alley", "X1R": "exterior_alley", "X2": "exterior_street",
+    "U6b": "corridor_office", "U9": "office_manager_ah", "U10": "count_room_cash", "U12": "private_lounge",
+    "U13": "restroom_multi", "X1": "alley_ah", "X1R": "roof_ah", "X2": "street_ah",
 }
 PUBLIC = {"G1", "G3a", "G3b", "G6", "G7", "G8", "X1", "X2"}
 # Exterior volumes: [id, floor index, boxes [[x0, y0, z0, x1, y1, z1]]].

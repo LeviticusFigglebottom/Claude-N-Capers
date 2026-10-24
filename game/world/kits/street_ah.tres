@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"street_ah"
+purpose = &"exterior"
+required_items = Array[StringName]([&"street_lamp", &"bin_street", &"bollard"])
+optional_items = {
+&"barrier": 0.5,
+&"bollard": 2,
+&"bus_shelter": 0.3,
+&"car": 1.5,
+&"planter": 1
+}
+clutter_groups = {}
+min_density = 0.005
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"barrier", &"bin_street", &"bollard", &"bus_shelter", &"car", &"planter", &"stanchion", &"street_lamp", &"vehicle"])
+seed_salt = 26
+seed_id = &"exterior_street"
+counts = {
+&"bollard": Vector2i(3, 5),
+&"street_lamp": Vector2i(2, 3)
+}
+assets = {}
+ceiling = {}
+notes = "Afterhours (exterior), from exterior_street: AH X2 Marlin Ave / Tolley St / the smokers' passage: the shared street kit; the passage rope (a stanchion) and the escape van's secure zone stand alone."
