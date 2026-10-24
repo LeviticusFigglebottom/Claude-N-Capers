@@ -4,6 +4,13 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-22 update, D-153 handover; newest at top)
+### (-67) P6: churn soak green (staggered keyframe), AI CPU first pass (2026-10-24)
+- Drop-in / leave churn (a/test_p6_churn_soak, N=10 STAY=60, RT + AH, stealth + loud): departed peer erased from
+  members / pending; the RT late-joiner stale cop fixed by a staggered transform keyframe (87ff71027); 0 desyncs.
+- AI CPU (a/test_p6_ah_ai_perf, AH Cataclysm headless, wall per physics tick): calm 4.9 ms, loud at cap 6.6, crew
+  unreachable 19.8 -> 6.5 (npc_motor 132 -> 3.4 ms / frame). NpcMotor: throttled re-target, unreachable target parks
+  the agent on the path end, arrival from the path (4f25b69b5). Next: animation LOD (anim_driver tops calm).
+
 ### (-66) P6: client interpolation + claim window (D-170 pending), lossy soak numbers, aim / door harness, lasers (2026-10-24)
 - NetInterp (client, render-only: 0.1 s behind, lerp, <= 0.15 s extrapolation, snap > 3 m, smoothed playout clock) +
   NetRewind (server: a remote shooter's body / head claim also matches where the target was over DELAY + RTT/2 +
