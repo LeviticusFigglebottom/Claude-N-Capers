@@ -1,0 +1,30 @@
+{
+  "doc": "D-165 ENV D: per-look LOD2 (CrowdLod) brightness gain, linear, measured under the Velvet's floor light at 15 m by render_lod2_pop.gd --calibrate; read by crowd_lod.gd gain_for (assembler).",
+  "gain": {
+    "club_bartender": 1.12,
+    "club_bartender_b": 1.25,
+    "club_bartender_d": 1.06,
+    "club_bouncer_c": 1.15,
+    "club_bouncer_d": 1.09,
+    "club_bouncer_e": 1.19,
+    "club_dancer": 1.35,
+    "club_dancer_f": 1.08,
+    "club_dancer_h": 1.0,
+    "club_dancer_i": 1.16,
+    "club_dancer_l": 1.09,
+    "club_dj": 1.23,
+    "club_offduty_cop": 1.17,
+    "club_patron_b": 1.15,
+    "club_patron_c": 1.2,
+    "club_patron_d": 1.14,
+    "club_patron_f": 1.58,
+    "club_patron_h": 1.05,
+    "club_patron_i": 1.22,
+    "club_patron_j": 1.18,
+    "club_patron_k": 1.19,
+    "club_patron_l": 1.6,
+    "club_vip": 1.1,
+    "club_vip_e": 1.1,
+    "club_vip_f": 1.5
+  }
+}

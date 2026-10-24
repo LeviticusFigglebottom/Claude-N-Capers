@@ -512,7 +512,7 @@ func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scen
 		if FileAccess.file_exists(mesh_path):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(mesh_path))
 		return 0.0
-	var mesh: ArrayMesh = CrowdLod.build_mesh(meshes)
+	var mesh: ArrayMesh = CrowdLod.build_mesh(meshes, CrowdLod.gain_for(Spec.character_id(asset_id)))
 	if mesh == null:
 		_error("%s: no surface qualifies for the LOD2 mesh" % asset_id)
 		return 0.0

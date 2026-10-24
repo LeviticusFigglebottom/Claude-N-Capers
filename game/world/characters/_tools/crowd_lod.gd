@@ -58,6 +58,8 @@ const COVER_DOT: float = 0.3
 const COVER_TUCK_M: float = 0.02
 ## Spatial hash cell for the cover test (m).
 const COVER_CELL_M: float = 0.04
+## D-165: per-look LOD2 brightness gains (see gain_for)
+const GAIN_PATH: String = "res://world/characters/_layers/crowd_lod_gain.json"
 
 
 ## LOD2 switch distance for an asset (0.0 = no LOD2). `source` = CharacterSpec.read_source(SOURCE.txt).
@@ -202,9 +204,32 @@ static func material_color(mat: Material, cache: Dictionary) -> Color:
 	return c
 
 
+## D-165: per-look LOD2 brightness gain (crowd_lod_gain.json, written by render_lod2_pop.gd --calibrate): the
+## club_* looks are only ever seen under the Velvet's light, where the flat proxy read up to 35 % darker than the full
+## meshes (normal-mapped satin / shirt highlights a merged rough surface cannot show). 1.0 for every other look.
+
+
+static func gain_for(char_id: String) -> float:
+	if not FileAccess.file_exists(GAIN_PATH):
+		return 1.0
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(GAIN_PATH))
+	if not (data is Dictionary):
+		return 1.0
+	return float((data as Dictionary).get("gain", {}).get(char_id, 1.0))
+
+
+## `c` (sRGB) scaled by `gain` in linear light, clamped, snapped to 8 bits like material_color.
+static func _gained(c: Color, gain: float) -> Color:
+	if is_equal_approx(gain, 1.0):
+		return c
+	var l: Color = c.srgb_to_linear()
+	var o: Color = Color(minf(l.r * gain, 1.0), minf(l.g * gain, 1.0), minf(l.b * gain, 1.0)).linear_to_srgb()
+	return Color(snappedf(o.r, 1.0 / 255.0), snappedf(o.g, 1.0 / 255.0), snappedf(o.b, 1.0 / 255.0))
+
+
 ## The merged LOD2 mesh of `meshes` (null when nothing qualifies). Bone ids/weights are kept as the glb
 ## skin's (every character mesh shares one Skin), reduced to 4 influences per vertex.
-static func build_mesh(meshes: Array[MeshInstance3D]) -> ArrayMesh:
+static func build_mesh(meshes: Array[MeshInstance3D], gain: float = 1.0) -> ArrayMesh:
 	var verts: PackedVector3Array = PackedVector3Array()
 	var normals: PackedVector3Array = PackedVector3Array()
 	var colors: PackedColorArray = PackedColorArray()
@@ -228,7 +253,7 @@ static func build_mesh(meshes: Array[MeshInstance3D]) -> ArrayMesh:
 				mat = mi.get_surface_override_material(si)
 			if mat == null:
 				mat = mesh.surface_get_material(si)
-			var col: Color = material_color(mat, cache)
+			var col: Color = _gained(material_color(mat, cache), gain)
 			var arr: Array = mesh.surface_get_arrays(si)
 			var sv: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
 			var sn: PackedVector3Array = arr[Mesh.ARRAY_NORMAL]
