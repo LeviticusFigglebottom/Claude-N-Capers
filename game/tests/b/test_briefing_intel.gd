@@ -8,7 +8,7 @@ extends TestCase
 
 const SCENE: String = "res://content/ui/briefing/briefing_screen.tscn"
 const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
-	&"gallery_night", &"ostrander_federal"]  # OF since round 245 (offered)
+	&"gallery_night", &"ostrander_federal", &"rolling_thunder"]  # OF since round 245, RT since D-169 (offered)
 const DIFFICULTIES: Array[int] = [0, 1, 2, 3, 4, 5]
 
 var _strings: Dictionary = {}
@@ -235,6 +235,8 @@ func test_convoy_line_by_difficulty() -> void:
 		assert_eq(String(l.get("key", "")), want, "RT @%d convoy line" % diff)
 		assert_eq(String(l.get("text", "")), String(_strings.get(want, "?")), "RT @%d convoy text" % diff)
 	for id: StringName in HEISTS:
+		if id == &"rolling_thunder":
+			continue
 		assert_false(_by_id(BriefingIntel.lines(id, Enums.Difficulty.CATACLYSM, int(_def(id).mode))).has(&"convoy"),
 				"%s has no convoy line" % id)
 
