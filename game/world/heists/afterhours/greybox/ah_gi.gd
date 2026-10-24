@@ -56,6 +56,20 @@ const GI_VOLUMES: Array = [
 ]
 
 ## Rooms (purposes) without a reflection probe: the exteriors and the roof (sky), the stairs, the electrical and
+## The back of house off the club rig (G3, the LEAD's review: magenta / violet on the count room, the upper and east
+## corridors): the hall's unshadowed washes and fills reach through the walls, so these rooms' finishes and dressing
+## move from render layer 1 to CLUB_SKIP_LAYER, which every Lighting/ClubLights light's light_cull_mask leaves out (as
+## rt_gi.gd's SUN_SKIP_LAYER; their own fixtures still light them). [room id; the staff stair U7 is G22's volume]
+const CLUB_SKIP_ROOMS: Array[String] = ["G10", "G11", "G12", "G13", "G14", "G15", "G16", "G20", "G21", "G22", "G23",
+	"G24", "G25", "G26", "G27", "U5", "U6", "U6b", "U9", "U10", "U12", "U13"]
+const CLUB_SKIP_LAYER: int = 1 << 4
+## The LEAD's G3 step 2: a weak unshadowed fill under the ceiling (validate lights' fill rule: meta fill, energy <= 0.3)
+## in the rooms whose upper walls still scalloped under the panel cones in the G3 frames (16 U5, 24 G11, 25 G12,
+## 27 G24): [room id]. Neutral BOH white; range the room's half diagonal x 1.6.
+const CEILING_FILLS: Array[String] = ["U5", "G11", "G12", "G24"]
+const FILL_ENERGY: float = 0.29   # under the fill rule's 0.3 (float32 0.3 reads 0.30000001)
+const FILL_DROP: float = 0.35
+
 ## janitor closets (matte, small).
 const PROBE_SKIP: Array[String] = ["exterior", "roof", "stair", "elevator", "electrical", "janitor", "void"]
 
@@ -148,9 +162,12 @@ func build() -> void:
 	counts["voxelgi"] = voxel_gi(lighting, root)
 	counts["probes"] = reflection_probes(_holder(lighting, "ReflectionProbes", root), root)
 	counts["occluders"] = occluders(_holder(lighting, "Occluders", root), root)
+	counts["club_skip"] = club_skip(root)
+	counts["fills"] = ceiling_fills(_holder(lighting, "CeilingFills", root), root)
 	_render_budget_policy(lighting, root)
-	print("ah_gi: %d lamps off, %d shadowed fixtures, %d VoxelGI, %d reflection probes, %d occluders" % [
-		counts["lamps_off"], counts["shadowed"], counts["voxelgi"], counts["probes"], counts["occluders"]])
+	print("ah_gi: %d lamps off, %d shadowed fixtures, %d VoxelGI, %d reflection probes, %d occluders, %d club-skip rooms, %d fills"
+		% [counts["lamps_off"], counts["shadowed"], counts["voxelgi"], counts["probes"], counts["occluders"],
+		counts["club_skip"], counts["fills"]])
 
 
 static func _holder(parent: Node3D, nm: String, root: Node) -> Node3D:
@@ -231,16 +248,7 @@ func reflection_probes(parent: Node3D, root: Node) -> int:
 		var room: RoomVolume = rv as RoomVolume
 		if room == null or String(room.purpose) in PROBE_SKIP:
 			continue
-		var best: AABB = AABB()
-		var rxf: Transform3D = b.call(&"global_xform", room)
-		for c: Node in room.get_children():
-			var cs: CollisionShape3D = c as CollisionShape3D
-			if cs == null or not (cs.shape is BoxShape3D):
-				continue
-			var sz: Vector3 = (cs.shape as BoxShape3D).size
-			var bx: AABB = AABB(rxf * cs.position - sz * 0.5, sz)
-			if bx.size.x * bx.size.z > best.size.x * best.size.z:
-				best = bx
+		var best: AABB = _room_box(room)
 		if best.size == Vector3.ZERO:
 			continue
 		var probe: ReflectionProbe = ReflectionProbe.new()
@@ -254,6 +262,72 @@ func reflection_probes(parent: Node3D, root: Node) -> int:
 		probe.max_distance = maxf(probe.size.x, probe.size.z) * 1.5
 		parent.add_child(probe)
 		probe.owner = root
+		n += 1
+	return n
+
+
+## A room's largest box (world), from its colliders; AABB() when it has none.
+func _room_box(room: RoomVolume) -> AABB:
+	var best: AABB = AABB()
+	var rxf: Transform3D = b.call(&"global_xform", room)
+	for c: Node in room.get_children():
+		var cs: CollisionShape3D = c as CollisionShape3D
+		if cs == null or not (cs.shape is BoxShape3D):
+			continue
+		var sz: Vector3 = (cs.shape as BoxShape3D).size
+		var bx: AABB = AABB(rxf * cs.position - sz * 0.5, sz)
+		if bx.size.x * bx.size.z > best.size.x * best.size.z:
+			best = bx
+	return best
+
+
+## CLUB_SKIP_ROOMS off the club rig: each room's finish and its dressing (Props/Dress/<room>) move from layer 1 to
+## CLUB_SKIP_LAYER, and every ClubLights light leaves that layer out of its light_cull_mask. Returns the room count.
+func club_skip(root: Node) -> int:
+	var n: int = 0
+	for rid: String in CLUB_SKIP_ROOMS:
+		var fin: GeometryInstance3D = root.get_node_or_null("Geometry/Finish/Visual_R_" + rid) as GeometryInstance3D
+		if fin == null:
+			_err("club-skip finish Visual_R_%s missing" % rid)
+			continue
+		fin.layers = (fin.layers & ~1) | CLUB_SKIP_LAYER
+		var dress: Node = root.get_node_or_null("Props/Dress/" + rid)
+		if dress != null:
+			for g: Node in dress.find_children("*", "GeometryInstance3D", true, false):
+				var gi: GeometryInstance3D = g as GeometryInstance3D
+				gi.layers = (gi.layers & ~1) | CLUB_SKIP_LAYER
+		n += 1
+	for c: Node in root.get_node("Lighting/ClubLights").get_children():
+		if c is Light3D:
+			(c as Light3D).light_cull_mask = 0xFFFFFFFF & ~CLUB_SKIP_LAYER
+	return n
+
+
+## CEILING_FILLS: one weak unshadowed omni (meta fill) under each room's ceiling, centred. Returns the count.
+func ceiling_fills(parent: Node3D, root: Node) -> int:
+	var n: int = 0
+	for rid: String in CEILING_FILLS:
+		var room: RoomVolume = null
+		for rv: Node in root.get_node("Rooms").get_children():
+			if rv is RoomVolume and String((rv as RoomVolume).room_id) == rid:
+				room = rv as RoomVolume
+		var box: AABB = _room_box(room) if room != null else AABB()
+		if box.size == Vector3.ZERO:
+			_err("ceiling fill: room %s missing" % rid)
+			continue
+		var om: OmniLight3D = OmniLight3D.new()
+		om.name = "Fill" + rid
+		om.position = Vector3(box.get_center().x, box.end.y - FILL_DROP, box.get_center().z)
+		om.omni_range = Vector2(box.size.x, box.size.z).length() * 0.5 * 1.6
+		om.omni_attenuation = 1.0
+		om.light_energy = FILL_ENERGY
+		om.light_color = Color(0.95, 0.97, 1.0)
+		om.shadow_enabled = false
+		om.light_bake_mode = Light3D.BAKE_DISABLED
+		om.layers = 1 | VIEWMODEL_LIT_LAYER
+		om.set_meta(&"fill", true)
+		parent.add_child(om)
+		om.owner = root
 		n += 1
 	return n
 

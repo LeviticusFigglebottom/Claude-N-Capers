@@ -234,7 +234,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## lights: Lighting is deliberate
 
-- 215 lights, 232 fixture meshes
+- 219 lights, 232 fixture meshes
 
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
