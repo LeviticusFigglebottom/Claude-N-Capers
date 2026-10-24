@@ -4,7 +4,8 @@
 ## peer (no member, no D-168 pending queue), its crew member is an AI teammate again (CrewAiBrain back), the crew count and
 ## human slots are as before, and the host's memory stays flat.
 ## Env: CAPER_CHURN_MAP (default rolling_thunder), CAPER_CHURN_LOUD=1 (raise the alarm first), CAPER_CHURN_N (default 3),
-## CAPER_CHURN_STAY_S (default 15). The LEAD's soak: N=10, STAY=60 on RT and AH, stealth and loud.
+## CAPER_CHURN_STAY_S (default 15), CAPER_CHURN_NO_INTERP=1 (clients without NetInterp, to compare).
+## The LEAD's soak: N=10, STAY=60 on RT and AH, stealth and loud.
 extends TestCase
 
 const PROBE: GDScript = preload("res://tests/a/coop_loopback_probe.gd")
@@ -102,7 +103,7 @@ func test_p6_drop_in_leave_churn() -> void:
 			var d: Array[String] = await _compare(p)
 			if not d.is_empty():
 				desyncs.append("round %d join, peer %d: %s" % [i, p, "; ".join(d.slice(0, 4))])
-		await wait_seconds(stay_s)
+		await _stay(stay_s)
 		var d2: Array[String] = await _compare(peer)
 		if not d2.is_empty():
 			desyncs.append("round %d end, peer %d: %s" % [i, peer, "; ".join(d2.slice(0, 4))])
@@ -129,6 +130,18 @@ func test_p6_drop_in_leave_churn() -> void:
 	_probe.call(&"command", "quit", {})
 
 
+## Play on for `seconds`, releasing custody every 2 s: damage immunity does not stop kicks / tasers / cuffs, and a full
+## custody wipe would end the heist (a drop-in is then denied, as it should be).
+func _stay(seconds: float) -> void:
+	var t_end: int = Time.get_ticks_msec() + int(seconds * 1000.0)
+	while Time.get_ticks_msec() < t_end:
+		await wait_seconds(minf(2.0, float(t_end - Time.get_ticks_msec()) / 1000.0 + 0.01))
+		var cs: CustodySystem = CustodySystem.of(_rt)
+		for c: CrewController in _rt.crew_members():
+			if cs != null and c.crew_state == Enums.CrewState.CUSTODY:
+				cs.release(c.slot)
+
+
 ## Spawn a client that drops into the running heist; [slot, peer, pid] once joined, [] on failure.
 func _drop_in(svc: HeistDropIn, port: int, timeout_s: int) -> Array:
 	var joined: Array[int] = []
@@ -140,7 +153,8 @@ func _drop_in(svc: HeistDropIn, port: int, timeout_s: int) -> Array:
 	var before: PackedInt32Array = multiplayer.get_peers()
 	var pid: int = OS.create_process(OS.get_executable_path(), PackedStringArray([
 		"--headless", "--path", ProjectSettings.globalize_path("res://"), CLIENT_SCENE, "--",
-		"--port=%d" % port, "--timeout=%d" % timeout_s, "--join=dropin"]))
+		"--port=%d" % port, "--timeout=%d" % timeout_s, "--join=dropin"]
+		+ (["--no-interp"] if OS.get_environment("CAPER_CHURN_NO_INTERP") == "1" else [])))
 	if pid > 0:
 		_pids.append(pid)
 	var ok: bool = pid > 0 and await wait_until(func() -> bool: return not joined.is_empty() or not failed.is_empty(), 90.0)
