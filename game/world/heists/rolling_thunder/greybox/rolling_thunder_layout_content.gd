@@ -7,10 +7,10 @@ extends RefCounted
 
 ## PLAYER spawns: [name, spawn_tag ("" = default), position, yaw].
 const PLAYER_SPAWNS: Array = [
-	["PlayerPlaza1", "", [-24.0, 0.0, 17.5], -90.0],
-	["PlayerPlaza2", "", [-22.5, 0.0, 17.5], -90.0],
-	["PlayerPlaza3", "", [-21.0, 0.0, 17.5], -90.0],
-	["PlayerPlaza4", "", [-19.5, 0.0, 17.5], -90.0],
+	["PlayerPlaza1", "", [-19.5, 0.0, 17.5], -90.0],
+	["PlayerPlaza2", "", [-21.0, 0.0, 17.5], -90.0],
+	["PlayerPlaza3", "", [-22.5, 0.0, 17.5], -90.0],
+	["PlayerPlaza4", "", [-24.0, 0.0, 17.5], -90.0],
 	["PlayerCarPark1", "preplan_spawn_carpark", [23.5, 3.5, -45.5], 180.0],
 	["PlayerCarPark2", "preplan_spawn_carpark", [25.0, 3.5, -45.5], 180.0],
 	["PlayerCarPark3", "preplan_spawn_carpark", [26.5, 3.5, -45.5], 180.0],
