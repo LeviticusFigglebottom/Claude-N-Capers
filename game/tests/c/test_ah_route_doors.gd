@@ -58,23 +58,39 @@ func test_route_doors_face_their_routes() -> void:
 	var map: Node3D = (load(SCENE) as PackedScene).instantiate() as Node3D
 	add_child(map)
 	await wait_frames(1)
-	var rooms: Array[Node] = map.find_children("*", "RoomVolume", true, false)
 	for name: String in FRONT_ROOM:
 		var doors: Array[Node] = map.find_children(name, "Door", true, false)
 		assert_true(not doors.is_empty(), "door %s exists" % name)
 		for d: Node in doors:
-			var d3: Node3D = d as Node3D
-			var p: Vector3 = d3.global_position - d3.global_basis.z.normalized() * 0.8 + Vector3.UP
-			var got: StringName = &""
-			var best: float = INF
-			for r: Node in rooms:
-				var rv: RoomVolume = r as RoomVolume
-				if LcAreas.contains(rv, p, 0.01) and LcAreas.footprint(rv) < best:
-					best = LcAreas.footprint(rv)
-					got = StringName(rv.room_id)
-			assert_eq(got, FRONT_ROOM[name], "%s: its front (UsePoint / interactable side) faces %s" % [
-				map.get_path_to(d3), FRONT_ROOM[name]])
+			assert_eq(_front_room(map, d as Node3D), FRONT_ROOM[name], "%s: its front (UsePoint / interactable side) faces %s"
+				% [map.get_path_to(d), FRONT_ROOM[name]])
 	map.queue_free()
+
+
+## Mutation (the r315 break): EastBarServiceDoor turned 180 degrees faces the G20 corridor, which the lock catches.
+func test_mutation_r315_flip_is_caught() -> void:
+	var map: Node3D = (load(SCENE) as PackedScene).instantiate() as Node3D
+	var d: Node3D = map.find_child("EastBarServiceDoor", true, false) as Node3D
+	d.rotate_y(PI)
+	add_child(map)
+	await wait_frames(1)
+	var got: StringName = _front_room(map, d)
+	assert_true(got != FRONT_ROOM["EastBarServiceDoor"], "the flipped door's front leaves G6 (got %s)" % got)
+	assert_eq(got, &"G20", "the r315 flip faces the G20 corridor")
+	map.queue_free()
+
+
+## The room (smallest RoomVolume) 0.8 m in front of a door (its -Z, UsePoint side), 1 m up.
+static func _front_room(map: Node3D, d: Node3D) -> StringName:
+	var p: Vector3 = d.global_position - d.global_basis.z.normalized() * 0.8 + Vector3.UP
+	var got: StringName = &""
+	var best: float = INF
+	for r: Node in map.find_children("*", "RoomVolume", true, false):
+		var rv: RoomVolume = r as RoomVolume
+		if LcAreas.contains(rv, p, 0.01) and LcAreas.footprint(rv) < best:
+			best = LcAreas.footprint(rv)
+			got = StringName(rv.room_id)
+	return got
 
 
 func test_gear_slots_reachable_by_civilians() -> void:
