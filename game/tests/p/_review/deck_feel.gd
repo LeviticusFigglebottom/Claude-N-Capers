@@ -303,11 +303,17 @@ func _dk_veil() -> bool:
 	# Measure under fire: wait until the pilot's armor is broken (real pressure), not just enemies near; the
 	# before / inside windows are VEIL_WINDOW_S each (8 s was too short to see a hit at Hazardous).
 	await _fight(240.0, func() -> bool: return pilot.crew.health.armor <= 0.5 or _health() < _max_health() - 1.0)
-	# Damage taken from the hit log (armor regen hides it in a health + armor delta).
+	# Damage taken from the hit log (armor regen hides it in a health + armor delta). Both windows are as long as the
+	# cloud lives (smoke_duration_s less the throw and the settle) and stop early on a down, so they compare like
+	# with like: standing, the same length, before vs inside.
+	var sic: PerkComponent = PerkHooks.of(pilot.crew).component(&"perk.sicario")
+	var win: float = maxf(float(sic.params.get("smoke_duration_s", 10.0)) - 2.5 if sic != null else VEIL_WINDOW_S, 4.0)
+	var standing: Callable = func() -> bool: return pilot.crew.crew_state != Enums.CrewState.NORMAL
 	var d0: float = _pilot_damage()
 	var t0: float = rt.heist_time_s
-	await _fight(VEIL_WINDOW_S)
-	var out_dps: float = (_pilot_damage() - d0) / maxf(rt.heist_time_s - t0, 0.1)
+	await _fight(win, standing)
+	var t_out: float = rt.heist_time_s - t0
+	var out_dps: float = (_pilot_damage() - d0) / maxf(t_out, 0.1)
 	# A deck item is not usable while downed (PD2: the smoke bomb too): wait for the revive before G.
 	await wait_until(func() -> bool: return pilot.crew.crew_state == Enums.CrewState.NORMAL or _in_custody(), 90.0)
 	await pilot.face(pilot.crew.global_position + pilot.crew.global_transform.basis.z * -1.5 + Vector3.DOWN * 1.2, 0.05, 1.5)
@@ -319,12 +325,13 @@ func _dk_veil() -> bool:
 	var t1: float = rt.heist_time_s
 	var was_open: bool = _open
 	_open = false  # hold in the cloud: --open would walk the pilot out of it
-	await _fight(VEIL_WINDOW_S)
+	await _fight(win, func() -> bool: return standing.call() or not SmokeZones.in_smoke(pilot.crew))
 	_open = was_open
 	var in_dps: float = (_pilot_damage() - d1) / maxf(rt.heist_time_s - t1, 0.1)
 	var still_in: bool = SmokeZones.in_smoke(pilot.crew)
 	_row("smoke at the feet: in the cloud", "PASS" if in_cloud else "FAIL",
-		"in smoke %s (still at the end %s), damage/s before %.1f, inside %.1f" % [in_cloud, still_in, out_dps, in_dps],
+		"in smoke %s (still at the end %s), window %.1f s, damage/s before %.1f (%.1f s), inside %.1f (%.1f s)" % [
+			in_cloud, still_in, win, out_dps, t_out, in_dps, rt.heist_time_s - t1],
 		"A PerkSicario / SmokeZones")
 	_danger_rows("veil")
 	return in_cloud
@@ -391,10 +398,32 @@ func _dk_copycat() -> bool:
 		return false
 	await _fight(30.0)
 	await shot("copycat_fight")
-	await _fight(FIGHT_S)
 	var cc: PerkCopycat = PerkHooks.of(pilot.crew).component(PerkCopycat.KEY) as PerkCopycat
-	_row("Copycat live in a fight", "PASS" if cc != null else "FAIL", "kills %d, heals %s, reload kills %s, grace cd %.1f" % [
-		_kills, ", ".join(_heal_events), cc.reload_kills if cc != null else {}, cc.grace_cd if cc != null else 0.0],
-		"A PerkCopycat")
+	# Grace (sampled each second): every start of grace_left, the health when it started and the lowest health while
+	# it ran (health immunity: it must not drop).
+	var graces: Array[String] = []
+	var held: bool = true
+	var in_grace: bool = false
+	var g_h0: float = 0.0
+	var g_min: float = 0.0
+	var t_end: float = rt.heist_time_s + FIGHT_S * 2.0
+	while rt.heist_time_s < t_end and not _in_custody():
+		await _fight(1.0)
+		var on: bool = cc != null and cc.grace_left > 0.0
+		if on and not in_grace:
+			g_h0 = _health()
+			g_min = g_h0
+		elif on:
+			g_min = minf(g_min, _health())
+		elif in_grace:
+			graces.append("t=%.0f at %.0f/%.0f, min %.0f in grace" % [rt.heist_time_s, g_h0, _max_health(), g_min])
+			held = held and g_min >= g_h0 - 0.5
+		in_grace = on
+	_row("Copycat live in a fight", "PASS" if cc != null else "FAIL", "kills %d, heals %s, reload kills %s" % [
+		_kills, ", ".join(_heal_events), cc.reload_kills if cc != null else {}], "A PerkCopycat")
+	_row("grace: health immunity under fire", ("PASS" if held else "FAIL") if not graces.is_empty() else "NOTE",
+		"%d grace(s): %s" % [graces.size(), "; ".join(graces)] if not graces.is_empty() else
+		"no grace in %.0f s (health stayed above the threshold)" % (FIGHT_S * 2.0), "-" if held or graces.is_empty()
+		else "A PerkCopycat")
 	_danger_rows("copycat")
 	return cc != null
