@@ -17,7 +17,7 @@ const ROOMS: Array = [
 	["G14", "locker_room", 0, "locker_room", [[20.0, 0.0, 0.0, 25.0, 3.0, 5.0]]],
 	["G16", "electrical", 0, "electrical_closet", [[25.0, 0.0, 0.0, 27.0, 3.0, 2.0]]],
 	["G15", "janitor", 0, "janitor_closet", [[25.0, 0.0, 2.0, 27.0, 3.0, 5.0]]],
-	["G21", "loading", 0, "loading_bay", [[27.0, 0.0, 0.0, 36.0, 3.6, 5.0]]],
+	["G21", "loading", 0, "loading_bar", [[27.0, 0.0, 0.0, 36.0, 3.6, 5.0]]],
 	["G13", "corridor", 0, "corridor_service", [[0.0, 0.0, 5.0, 36.0, 3.0, 7.0]]],
 	["G6", "hall", 0, "club_hall", [[0.0, 0.0, 7.0, 26.0, 8.0, 15.0]]],
 	["G7", "bar", 0, "club_lounge", [[0.0, 0.0, 15.0, 26.0, 3.6, 21.0]]],

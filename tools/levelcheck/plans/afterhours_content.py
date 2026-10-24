@@ -467,7 +467,8 @@ def player_spawns() -> List[list]:
         out.append(["PlayerFoyer%d" % (i + 1), "", [x, 0.0, 26.6], 0.0])
     for i, x in enumerate([13.0, 14.5, 17.5, 19.0]):
         out.append(["PlayerVIP%d" % (i + 1), "preplan_spawn_vip", [x, U, 24.0], 0.0])
-    for i, x in enumerate([20.0, 21.5, 23.0, 24.5]):
+    # slot 0 at the front (east end, facing east), the crew behind it (P's r311 menu smoke on RT: no teammate's back)
+    for i, x in enumerate([24.5, 23.0, 21.5, 20.0]):
         out.append(["PlayerAlley%d" % (i + 1), "preplan_spawn_alley", [x, 0.0, -3.6], -90.0])
     return out
 
@@ -525,7 +526,7 @@ def review_cameras() -> List[list]:
         ["rc_private_room", "U12", [28.8, U + 1.7, 21.8], [35.5, U + 1.0, 24.0]],
         ["rc_count_room", "U10", [32.5, U + 1.7, 13.3], [26.5, U + 1.0, 10.5]],
         ["rc_upper_corridor", "U6b", [27.0, U + 1.7, 27.2], [27.0, U + 1.2, 16.5]],
-        ["rc_back_corridor", "G13", [0.8, 1.7, 6.0], [36.0, 1.2, 6.0]],
+        ["rc_back_corridor", "G13", [2.5, 1.7, 6.0], [36.0, 1.2, 6.0]],   # G2: off the unlit west end
         ["rc_east_corridor", "G20", [27.0, 1.7, 7.6], [27.0, 1.2, 20.5]],
         ["rc_stock_room", "G10", [6.5, 1.7, 4.5], [2.5, 1.0, 1.0]],
         ["rc_green_room", "G11", [13.5, 1.7, 4.5], [9.0, 1.0, 0.8]],

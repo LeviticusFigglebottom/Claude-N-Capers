@@ -826,7 +826,9 @@ def fixed_spawns() -> List[list]:
 def player_spawns() -> List[list]:
     """[name, spawn_tag, position, yaw]."""
     out = []
-    for i, x in enumerate([-24.0, -22.5, -21.0, -19.5]):
+    # slot 0 at the front of each line, the crew behind it relative to its facing (PD2 opens the view; P's r311 menu
+    # smoke: facing east from the west end, the first view was a teammate's back)
+    for i, x in enumerate([-19.5, -21.0, -22.5, -24.0]):
         out.append(["PlayerPlaza%d" % (i + 1), "", [x, 0.0, 17.5], -90.0])
     for i, x in enumerate([7.5, 9.0, 10.5, 12.0]):
         out.append(["PlayerCarPark%d" % (i + 1), "preplan_spawn_carpark", cp(x, 3.5, 4.5), 180.0])

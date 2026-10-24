@@ -65,6 +65,21 @@ const CLUB_LIGHT_ROWS: Array = [
 	["BarBackMain", "omni", Vector3(1.2, 2.2, 13.5), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
 	["BarBackVIP", "omni", Vector3(16.0, 6.4, 27.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
 	["BarBackEast", "omni", Vector3(25.0, 2.2, 11.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.2, 4.0, 0.0, false],
+	# club-state outlines (LEAD's G2 review: the hall read as a black void): violet / magenta washes up the hall walls
+	# (west over the bottle wall, east, the stage wall either side of the riser), the truss outlined, the bar fronts'
+	# LED strips (both states); all unshadowed (A's D-146 note)
+	["ClubWallW0", "omni", Vector3(0.7, 5.0, 9.0), Vector3.ZERO, Color(0.55, 0.25, 0.85), 2.2, 5.5, 0.0, false],
+	["ClubWallW1", "omni", Vector3(0.7, 5.0, 13.5), Vector3.ZERO, Color(0.97, 0.42, 0.83), 2.2, 5.5, 0.0, false],
+	["ClubWallE0", "omni", Vector3(25.3, 5.0, 8.5), Vector3.ZERO, Color(0.97, 0.42, 0.83), 2.2, 5.5, 0.0, false],
+	["ClubWallE1", "omni", Vector3(25.3, 5.0, 13.5), Vector3.ZERO, Color(0.55, 0.25, 0.85), 2.2, 5.5, 0.0, false],
+	["ClubWallN0", "omni", Vector3(4.0, 4.5, 7.7), Vector3.ZERO, Color(0.36, 0.29, 1.0), 2.0, 5.0, 0.0, false],
+	["ClubWallN1", "omni", Vector3(22.0, 4.5, 7.7), Vector3.ZERO, Color(0.36, 0.29, 1.0), 2.0, 5.0, 0.0, false],
+	["ClubTruss0", "omni", Vector3(12.0, 7.5, 10.6), Vector3.ZERO, Color(0.55, 0.25, 0.85), 1.2, 3.0, 0.0, false],
+	["ClubTruss1", "omni", Vector3(16.0, 7.5, 10.6), Vector3.ZERO, Color(0.97, 0.42, 0.83), 1.2, 3.0, 0.0, false],
+	["BarFrontMain0", "omni", Vector3(2.8, 0.35, 11.5), Vector3.ZERO, Color(1.0, 0.62, 0.32), 0.9, 2.5, 0.0, false],
+	["BarFrontMain1", "omni", Vector3(2.8, 0.35, 15.5), Vector3.ZERO, Color(1.0, 0.62, 0.32), 0.9, 2.5, 0.0, false],
+	["BarFrontEast0", "omni", Vector3(23.3, 0.35, 9.5), Vector3.ZERO, Color(1.0, 0.62, 0.32), 0.9, 2.5, 0.0, false],
+	["BarFrontEast1", "omni", Vector3(23.3, 0.35, 12.5), Vector3.ZERO, Color(1.0, 0.62, 0.32), 0.9, 2.5, 0.0, false],
 	["RailUp0", "omni", Vector3(3.0, 4.35, 15.45), Vector3.ZERO, Color(1.0, 0.66, 0.4), 1.5, 5.0, 0.0, false],
 	["RailUp1", "omni", Vector3(9.0, 4.35, 15.45), Vector3.ZERO, Color(1.0, 0.66, 0.4), 1.5, 5.0, 0.0, false],
 	["RailUp2", "omni", Vector3(15.0, 4.35, 15.45), Vector3.ZERO, Color(1.0, 0.66, 0.4), 1.5, 5.0, 0.0, false],

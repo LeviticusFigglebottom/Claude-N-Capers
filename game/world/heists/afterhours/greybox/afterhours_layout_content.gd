@@ -15,10 +15,10 @@ const PLAYER_SPAWNS: Array = [
 	["PlayerVIP2", "preplan_spawn_vip", [14.5, 4.2, 24.0], 0.0],
 	["PlayerVIP3", "preplan_spawn_vip", [17.5, 4.2, 24.0], 0.0],
 	["PlayerVIP4", "preplan_spawn_vip", [19.0, 4.2, 24.0], 0.0],
-	["PlayerAlley1", "preplan_spawn_alley", [20.0, 0.0, -3.6], -90.0],
-	["PlayerAlley2", "preplan_spawn_alley", [21.5, 0.0, -3.6], -90.0],
-	["PlayerAlley3", "preplan_spawn_alley", [23.0, 0.0, -3.6], -90.0],
-	["PlayerAlley4", "preplan_spawn_alley", [24.5, 0.0, -3.6], -90.0],
+	["PlayerAlley1", "preplan_spawn_alley", [24.5, 0.0, -3.6], -90.0],
+	["PlayerAlley2", "preplan_spawn_alley", [23.0, 0.0, -3.6], -90.0],
+	["PlayerAlley3", "preplan_spawn_alley", [21.5, 0.0, -3.6], -90.0],
+	["PlayerAlley4", "preplan_spawn_alley", [20.0, 0.0, -3.6], -90.0],
 ]
 ## POLICE spawns P1-P4 (doc Loud): [name, tag, position].
 const POLICE_SPAWNS: Array = [
@@ -71,7 +71,7 @@ const REVIEW_CAMERAS: Array = [
 	["rc_private_room", "U12", [28.8, 5.9, 21.8], [35.5, 5.2, 24.0]],
 	["rc_count_room", "U10", [32.5, 5.9, 13.3], [26.5, 5.2, 10.5]],
 	["rc_upper_corridor", "U6b", [27.0, 5.9, 27.2], [27.0, 5.4, 16.5]],
-	["rc_back_corridor", "G13", [0.8, 1.7, 6.0], [36.0, 1.2, 6.0]],
+	["rc_back_corridor", "G13", [2.5, 1.7, 6.0], [36.0, 1.2, 6.0]],
 	["rc_east_corridor", "G20", [27.0, 1.7, 7.6], [27.0, 1.2, 20.5]],
 	["rc_stock_room", "G10", [6.5, 1.7, 4.5], [2.5, 1.0, 1.0]],
 	["rc_green_room", "G11", [13.5, 1.7, 4.5], [9.0, 1.0, 0.8]],
