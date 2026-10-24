@@ -119,6 +119,42 @@ func aimed_component(crew: CrewController) -> InteractableComponent:
 	return best
 
 
+## Diagnostics (harness notes): why aimed_component(crew) does not return `c` ("" = it would, or another one scores
+## better). Mirrors the filters above, first failing one wins.
+func explain_miss(crew: CrewController, c: InteractableComponent) -> String:
+	if c == null or not is_instance_valid(c):
+		return "freed"
+	var tw: InteractionTweak = Tweak.interaction()
+	var eye: Vector3 = crew.eye_position()
+	var to: Vector3 = c.global_position - eye
+	var why: String = ""
+	if not c.is_inside_tree() or not c.is_in_group(G.INTERACTABLE):
+		why = "not in the interactable group"
+	elif not c.enabled:
+		why = "disabled"
+	elif not c.is_visible_in_tree():
+		why = "hidden (%s)" % _hidden_ancestor(c)
+	elif c.aim_filter.is_valid() and not c.aim_filter.call(crew):
+		why = "aim_filter"
+	elif to.length() - c.aim_radius_m > tw.reach_m + 0.35:
+		why = "out of reach %.2f" % to.length()
+	elif crew.aim_direction().angle_to(to) > maxf(deg_to_rad(tw.assist_cone_deg), atan2(0.3 + c.aim_radius_m, to.length())):
+		why = "outside the cone"
+	elif not _has_los(crew, eye, c):
+		why = "no LOS"
+	return why
+
+
+static func _hidden_ancestor(n: Node) -> String:
+	var cur: Node = n
+	while cur != null:
+		var n3: Node3D = cur as Node3D
+		if n3 != null and not n3.visible:
+			return String(cur.name)
+		cur = cur.get_parent()
+	return "?"
+
+
 func is_busy(comp: InteractableComponent, except_slot: int) -> bool:
 	for s: int in _sessions:
 		if s != except_slot and _sessions[s]["comp"] == comp:

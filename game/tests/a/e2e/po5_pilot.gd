@@ -736,6 +736,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			return false
 	if not is_instance_valid(comp):
 		return false
+	target = comp.global_position  # a loose bag may have rolled / slid since the walk began (LEAD r312 aim misses)
 	await face(target)
 	var isys: InteractionSystem = HeistRuntime.of(crew).interaction
 	var aimed: InteractableComponent = isys.aimed_component(crew)
@@ -745,10 +746,10 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		q.exclude = [crew.get_rid()]
 		var hit: Dictionary = space.intersect_ray(q)
 		var ang: float = rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position()))
-		d.note("pilot: aimed %s, wanted %s (dist %.2f, angle %.1f deg, avail '%s', LOS ray hit %s at %s)" % [
+		d.note("pilot: aimed %s, wanted %s (dist %.2f, angle %.1f deg, avail '%s', LOS ray hit %s at %s, why '%s')" % [
 			aimed.get_path() if aimed != null else ^"<none>", comp.get_path(), crew.eye_position().distance_to(target),
 			ang, comp.availability(crew), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-",
-			_v(hit["position"]) if not hit.is_empty() else "-"])
+			_v(hit["position"]) if not hit.is_empty() else "-", isys.explain_miss(crew, comp)])
 	if no_blind_press and not await _aim_on(comp, target):
 		d.note("pilot: use %s (%s) NOT PRESSED: not aimed (a blind F press is a shout)" % [comp.get_path(), comp.kind])
 		return done.is_valid() and bool(done.call())
@@ -756,7 +757,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	var cb: Callable = func(_c: Node) -> void: completed[0] = true
 	comp.completed.connect(cb)
 	if combat and await _clear_threats():  # S9.1: damage cancels a hold, so clear the area first like a player
-		await face(target, 0.03, 1.0)
+		await face(_live(comp, target), 0.03, 1.0)
 	# The target may be freed while clearing threats (a bag picked up, a door blown by someone else): the loop ends.
 	var kind: StringName = comp.kind if is_instance_valid(comp) else &""
 	if kind != &"":
@@ -771,13 +772,13 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		if comp.kind != &"answer_pager" and _hook_wanted():
 			inp.release(&"interact")
 			if await _run_hook():
-				await face(target, 0.03, 1.0)
+				await face(_live(comp, target), 0.03, 1.0)
 			if not is_instance_valid(comp):  # stores1001: a bot secured the bag during the re-aim
 				break
 			if no_blind_press and not await _aim_on(comp, target):
 				break
 			inp.press(&"interact")
-		steer_at(target)
+		steer_at(_live(comp, target))
 		await tick()
 		t += dt()
 		# Interrupted (a hit, S9.1, or a block needing a release): press again like a player would, but only
@@ -792,6 +793,14 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 			if not is_instance_valid(comp):  # DB sweep 1001: a bot picked the bag up during the fight
 				break
 			# Re-aim before pressing again: an F press with the crosshair on a cop is a shout (ND attempts 15-18).
+			target = _live(comp, target)
+			if not comp.enabled:  # a bot took the bag (carried: disabled) or it was secured: nothing to press
+				d.note("pilot: use %s target taken / disabled meanwhile: stop" % comp.kind)
+				break
+			if crew.eye_position().distance_to(target) > Tweak.interaction().reach_m + 0.3:
+				d.note("pilot: use %s target moved out of reach (%.2f m): walk again" % [comp.kind,
+					crew.eye_position().distance_to(target)])
+				break
 			await face(target, 0.03, 1.0)
 			if not is_instance_valid(comp) or (no_blind_press and not await _aim_on(comp, target)):
 				break
@@ -800,9 +809,9 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 				inp.press(&"interact")  # never re-press off target: F with nothing aimed is a shout
 			else:
 				var am: InteractableComponent = isys.aimed_component(crew)
-				d.note("pilot: use %s re-press skipped: aimed %s (dist %.2f, angle %.1f deg)" % [comp.kind,
+				d.note("pilot: use %s re-press skipped: aimed %s (dist %.2f, angle %.1f deg, why '%s')" % [comp.kind,
 					am.get_path() if am != null else ^"<none>", crew.eye_position().distance_to(target),
-					rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position()))])
+					rad_to_deg(crew.aim_direction().angle_to(target - crew.eye_position())), isys.explain_miss(crew, comp)])
 	inp.release(&"interact")
 	if is_instance_valid(comp) and comp.completed.is_connected(cb):
 		comp.completed.disconnect(cb)
@@ -835,9 +844,15 @@ func _aim_on(comp: InteractableComponent, target: Vector3) -> bool:
 			return false
 		if isys.aimed_component(crew) == comp:
 			return true
-		await face(target + Vector3(0.0, 0.05 * float(i % 3 - 1), 0.0), 0.02, 0.3)
+		await face(_live(comp, target) + Vector3(0.0, 0.05 * float(i % 3 - 1), 0.0), 0.02, 0.3)
 		await tick()
 	return is_instance_valid(comp) and isys.aimed_component(crew) == comp
+
+
+## Where to aim at `comp` now: its live position (a loose bag keeps settling, sliding or gets nudged by a bot after the
+## walk started; aiming at the old spot read "aimed <none>, angle 0" against the stale point), else `fallback`.
+static func _live(comp: InteractableComponent, fallback: Vector3) -> Vector3:
+	return comp.global_position if comp != null and is_instance_valid(comp) and comp.is_inside_tree() else fallback
 
 
 ## A closed door within 1.8 m in front of the crew (the pilot opens it like a player: aim + hold F). With the nav
