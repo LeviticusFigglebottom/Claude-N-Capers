@@ -16,7 +16,7 @@ hat: heavy helmet, visor up (Headwear)
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 32576
-tris_by_mesh: {"Body": 7240, "Gear": 4552, "Hair": 1200, "Headwear": 2576, "Outfit": 17008}
+tris: 33202
+tris_by_mesh: {"Body": 7240, "Gear": 4980, "Hair": 1200, "Headwear": 2774, "Outfit": 17008}
 variant_of: tac_heavy
 visual_variant: frd

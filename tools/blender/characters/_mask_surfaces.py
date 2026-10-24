@@ -1,5 +1,5 @@
 """Mask surface material kinds (D-ACH): stone, bronze, canvas, rust, velvet,
-crinkle, gilt; RT-D2: tread, hivis. Used by ``make_materials.py``.
+crinkle, gilt; RT-D2: tread, hivis; D-165 (Afterhours): sequin. Used by ``make_materials.py``.
 
 Grain for the achievement-reward ``MaskMaterialDef``s (``content/docs/masks.md``): the mask shader
 (``content/masks/mask_surface.gdshader``) keeps only the albedo *luminance* (divided by
@@ -18,7 +18,7 @@ from texgen import noise as nz
 from texgen import ops
 from texgen.materials.base import Ctx, Maps
 
-MASK_KINDS = ("stone", "bronze", "canvas", "rust", "velvet", "crinkle", "gilt", "tread", "hivis")
+MASK_KINDS = ("stone", "bronze", "canvas", "rust", "velvet", "crinkle", "gilt", "tread", "hivis", "sequin")
 
 
 def _wrap(d: np.ndarray) -> np.ndarray:
@@ -361,6 +361,50 @@ def hivis(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
                 ao_radii_m=(1 * px, 3 * px), ao_depth_m=1.0 * px, ao_strength=0.4)
 
 
+def sequin(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+    """Sewn sequins (Afterhours, "Bottle Service"): staggered rows of round metal discs (~9 mm, 14 per
+    tile), each tilted its own way so every disc catches the light at a different strength (the sparkle
+    reads in luminance and relief), a thin raised rim, the thread hole in the middle and dark thread
+    between the discs (rough, not metal). The colour comes from the pair; neutral grain."""
+    u, v, px = ctx.u, ctx.v, ctx.pixel_m
+    nx, ny = 14, 16
+    f1 = np.full(u.shape, 9.0)
+    cid = np.zeros(u.shape)
+    ndx = np.zeros(u.shape)
+    ndy = np.zeros(u.shape)
+    j0 = np.floor(v * ny)
+    for dj in (-1, 0, 1):
+        j = j0 + dj
+        off = 0.5 * np.mod(j, 2)
+        i0 = np.floor(u * nx - off)
+        for di in (-1, 0, 1):
+            i = i0 + di
+            dx = _wrap(u - (i + 0.5 + off) / nx) * nx
+            dy = _wrap(v - (j + 0.5) / ny) * nx
+            dd = np.sqrt(dx * dx + dy * dy)
+            near = dd < f1
+            f1 = np.where(near, dd, f1)
+            cid = np.where(near, np.mod(i, nx) * 31.0 + np.mod(j, ny) * 17.0, cid)
+            ndx = np.where(near, dx, ndx)
+            ndy = np.where(near, dy, ndy)
+    seed = ctx.s("tilt") % 997
+    hsh = lambda k: np.mod(np.sin(cid * (12.9898 + k) + seed) * 43758.5453, 1.0)   # noqa: E731
+    disc = 1.0 - ops.smoothstep(0.50, 0.56, f1)
+    rim = ops.smoothstep(0.40, 0.50, f1) * disc
+    hole = 1.0 - ops.smoothstep(0.05, 0.09, f1)
+    ang = 2 * np.pi * hsh(1.0)
+    slope = (ndx * np.cos(ang) + ndy * np.sin(ang)) * (0.4 + 0.6 * hsh(2.0))   # the disc's own tilt
+    facet = hsh(3.0)
+    tone = nz.fbm(u, v, 3, ctx.s("tone"), octaves=3)
+    lum = (0.30 * (facet - 0.5) + 0.12 * slope + 0.10 * rim - 0.30 * hole) * disc - 0.45 * (1.0 - disc) + 0.05 * tone
+    alb = ops.vary(base, lum, 1.0)
+    h = px * ((1.4 + 1.2 * slope + 0.5 * rim - 1.0 * hole) * disc)
+    rough = np.clip(r + 0.06 * (facet - 0.5) + 0.05 * rim + 0.55 * (1.0 - disc), 0.0, 1.0)
+    metal = met * disc * (1.0 - hole)
+    return Maps(alb, rough, metal, h, normal_strength=1.0,
+                ao_radii_m=(1 * px, 3 * px), ao_depth_m=1.5 * px, ao_strength=0.6)
+
+
 GENERATORS = {"stone": stone, "bronze": bronze, "canvas": canvas, "rust": rust,
               "velvet": velvet, "crinkle": crinkle, "gilt": gilt,
-              "tread": tread, "hivis": hivis}
+              "tread": tread, "hivis": hivis, "sequin": sequin}

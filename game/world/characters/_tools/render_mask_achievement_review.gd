@@ -21,6 +21,11 @@
 ## `-- --rt` (RT-D2, Rolling Thunder rewards) renders only rt_parts.png instead: row 1 the two bases (road_cone,
 ## ingot: front, 3/4, profile), row 2 the two materials on visage (armor_plate, hi_vis: front, 3/4, macro), row 3
 ## the two patterns (road_lines, tread) on visage, road_cone and ingot, row 4 the same at gameplay size (2 m).
+## `-- --ah` (D-165, Afterhours rewards) renders only ah_parts.png: row 1 the two bases (vinyl in black satin, disco in
+## sequin: front, 3/4, profile each), row 2 the sequin material on visage (front, 3/4, macro) and on disco / vinyl
+## (3/4), row 3 the three dressed masks at gameplay size (2 m).
+## `-- --ah-vinyl` renders only ah_vinyl.png: vinyl in glossy black (no grain) with the vinyl_label pattern, a deep
+## red label (front, 3/4, profile), a cream one (front), then both at gameplay size (2 m).
 extends Node
 
 const OUT_DIR: String = "res://assets/masks/_review/achievement_surfaces/"
@@ -43,6 +48,14 @@ const PATTERNS: Array[String] = ["guilloche", "vault_bolts", "acanthus", "facets
 const RT_CONE: String = "res://assets/masks/mask_base_road_cone/mask_base_road_cone.glb"
 const RT_INGOT: String = "res://assets/masks/mask_base_ingot/mask_base_ingot.glb"
 const RT_GOLD: Array = [&"char_mask_gilt_leaf", 1.0, 0.3, 0.0, 1.5, &"mask_colors.gilt_night", false]
+## --ah: the Afterhours reward parts (D-165)
+const AH_VINYL: String = "res://assets/masks/mask_base_vinyl/mask_base_vinyl.glb"
+const AH_DISCO: String = "res://assets/masks/mask_base_disco/mask_base_disco.glb"
+const AH_SEQUIN: Array = [&"char_mask_sequin", 0.85, 0.3, 0.9, 1.5, &"mask_colors.rose_cinder", false]
+const AH_BLACK: Array = [&"char_mask_night_safe", 0.0, 0.35, 0.6, 1.5, &"mask_colors.black_crown", false]
+## glossy black record (no grain) with a red / a cream label (colour B through the vinyl_label pattern)
+const AH_VINYL_RED: Array = [&"char_mask_lacquer_dark", 0.0, 0.18, 0.0, 1.5, &"mask_colors.ember_soot", true]
+const AH_VINYL_CREAM: Array = [&"char_mask_lacquer_dark", 0.0, 0.18, 0.0, 1.5, &"mask_colors.bone_ink", true]
 const TILE: Vector2i = Vector2i(360, 400)
 
 var _vp: SubViewport
@@ -74,7 +87,7 @@ func _run() -> void:
 		if not ResourceLoader.exists(pd.texture_path):
 			_fail("missing pattern texture %s" % pd.texture_path)
 		_register(MaskCatalog.PATTERN, pd)
-	for row: Array in MATERIALS:
+	for row: Array in MATERIALS + [AH_SEQUIN, AH_VINYL_RED]:
 		var md: MaskMaterialDef = MaskMaterialDef.new()
 		md.id = StringName("mask_material.review_" + String(row[0]))
 		md.material_id = row[0]
@@ -94,6 +107,14 @@ func _run() -> void:
 	var base: PackedScene = load(BASE_GLB) as PackedScene
 	if "--rt" in OS.get_cmdline_user_args():
 		await _rt_sheet(base, pairs)
+		get_tree().quit(1 if _errors > 0 else 0)
+		return
+	if "--ah-vinyl" in OS.get_cmdline_user_args():
+		await _ah_vinyl_sheet(pairs)
+		get_tree().quit(1 if _errors > 0 else 0)
+		return
+	if "--ah" in OS.get_cmdline_user_args():
+		await _ah_sheet(base, pairs)
 		get_tree().quit(1 if _errors > 0 else 0)
 		return
 	# materials sheet: 3 rows (3/4, front, macro) x 4 materials
@@ -157,6 +178,69 @@ func _rt_sheet(visage: PackedScene, pairs: Dictionary) -> void:
 			sheet.blit_rect(await _grab_gameplay(), Rect2i(Vector2i.ZERO, TILE), Vector2i(col * TILE.x, 3 * TILE.y))
 			col += 1
 	_save(sheet, "rt_parts.png")
+
+
+## D-165: the Afterhours reward parts on one sheet (see the header).
+func _ah_sheet(visage: PackedScene, pairs: Dictionary) -> void:
+	var vinyl: PackedScene = load(AH_VINYL) as PackedScene
+	var disco: PackedScene = load(AH_DISCO) as PackedScene
+	if vinyl == null or disco == null:
+		_fail("missing AH base glb")
+		return
+	var sheet: Image = Image.create(TILE.x * 6, TILE.y * 3, false, Image.FORMAT_RGBA8)
+	var views: Array = [[0.40, 0.0, 0.0, 34.0], [0.45, 35.0, 12.0, 34.0], [0.45, 80.0, 5.0, 34.0]]
+	var col: int = 0
+	for pair: Array in [[vinyl, AH_BLACK], [disco, RT_GOLD]]:
+		_show(_def(pair[0], pair[1], pairs, &"mask_pattern.review_solid"))
+		for v: Array in views:
+			sheet.blit_rect(await _grab(float(v[0]), float(v[1]), float(v[2]), float(v[3])),
+				Rect2i(Vector2i.ZERO, TILE), Vector2i(col * TILE.x, 0))
+			col += 1
+	col = 0
+	_show(_def(visage, AH_SEQUIN, pairs, &"mask_pattern.review_solid"))
+	for v: Array in [[0.40, 0.0, 0.0, 30.0], [0.45, 35.0, 12.0, 30.0], [0.13, 20.0, 5.0, 30.0]]:
+		sheet.blit_rect(await _grab(float(v[0]), float(v[1]), float(v[2]), float(v[3])),
+			Rect2i(Vector2i.ZERO, TILE), Vector2i(col * TILE.x, TILE.y))
+		col += 1
+	for pair: Array in [[disco, AH_SEQUIN], [vinyl, AH_BLACK], [visage, AH_SEQUIN]]:
+		_show(_def(pair[0], pair[1], pairs, &"mask_pattern.review_solid"))
+		if col < 6:
+			sheet.blit_rect(await _grab(0.42, 20.0, 6.0, 32.0), Rect2i(Vector2i.ZERO, TILE),
+				Vector2i(col * TILE.x, TILE.y))
+			col += 1
+	col = 0
+	for pair: Array in [[vinyl, AH_BLACK], [disco, AH_SEQUIN], [visage, AH_SEQUIN]]:
+		_show(_def(pair[0], pair[1], pairs, &"mask_pattern.review_solid"))
+		sheet.blit_rect(await _grab_gameplay(), Rect2i(Vector2i.ZERO, TILE), Vector2i(col * TILE.x, 2 * TILE.y))
+		col += 1
+	_save(sheet, "ah_parts.png")
+
+
+## D-165: the Vinyl re-shoot (see the header).
+func _ah_vinyl_sheet(pairs: Dictionary) -> void:
+	var vinyl: PackedScene = load(AH_VINYL) as PackedScene
+	var label: MaskPatternDef = MaskPatternDef.new()
+	label.id = &"mask_pattern.review_vinyl_label"
+	label.texture_path = "res://assets/masks/patterns/tex_mask_pattern_vinyl_label.png"
+	if vinyl == null or not ResourceLoader.exists(label.texture_path):
+		_fail("missing vinyl glb or label pattern")
+		return
+	_register(MaskCatalog.PATTERN, label)
+	var sheet: Image = Image.create(TILE.x * 6, TILE.y, false, Image.FORMAT_RGBA8)
+	var col: int = 0
+	_show(_def(vinyl, AH_VINYL_RED, pairs, label.id))
+	for v: Array in [[0.40, 0.0, 0.0, 34.0], [0.45, 35.0, 12.0, 34.0], [0.45, 80.0, 5.0, 34.0]]:
+		sheet.blit_rect(await _grab(float(v[0]), float(v[1]), float(v[2]), float(v[3])), Rect2i(Vector2i.ZERO, TILE),
+			Vector2i(col * TILE.x, 0))
+		col += 1
+	_show(_def(vinyl, AH_VINYL_CREAM, pairs, label.id))
+	sheet.blit_rect(await _grab(0.40, 0.0, 0.0, 34.0), Rect2i(Vector2i.ZERO, TILE), Vector2i(col * TILE.x, 0))
+	col += 1
+	for row: Array in [AH_VINYL_RED, AH_VINYL_CREAM]:
+		_show(_def(vinyl, row, pairs, label.id))
+		sheet.blit_rect(await _grab_gameplay(), Rect2i(Vector2i.ZERO, TILE), Vector2i(col * TILE.x, 0))
+		col += 1
+	_save(sheet, "ah_vinyl.png")
 
 
 func _def(base: PackedScene, row: Array, pairs: Dictionary, pattern: StringName) -> MaskDef:

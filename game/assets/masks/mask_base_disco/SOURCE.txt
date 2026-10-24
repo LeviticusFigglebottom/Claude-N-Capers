@@ -1,0 +1,13 @@
+asset: mask_base_disco
+script: tools/blender/masks/base_disco.py
+params: {"bottom": -0.112, "brow": 0.6, "cheek": 0.8, "coverage": "full", "edge_res": 0.005, "eye_height": 0.021, "eye_shape": "round", "eye_spacing": 0.068, "eye_tilt_deg": 0.0, "eye_width": 0.03, "jaw": 0.8, "jaw_taper": 0.18, "mouth": "open", "mouth_height": 0.012, "mouth_v": -0.07, "mouth_width": 0.022, "nose": 0.6, "res": 0.0085, "res_back": 0.015, "side_arc": 0.102, "top": 0.102}
+seed: 3137101536  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_disco
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+fit: crew face envelope (_crew_face_envelope.json), clearance 3.0 mm, max lift 53.7 mm
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 3998
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.0833 m, z -0.1120..0.1010 m

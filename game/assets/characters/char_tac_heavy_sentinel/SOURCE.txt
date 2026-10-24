@@ -5,7 +5,7 @@ seed: 3545401525  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_tac_heavy_sentinel
 edit policy: generated file, never edit by hand; change the script and rebuild
-attach_Back: bone chest, local [0.0000, 0.0940, 0.1648] (model [0.0000, 1.3365, 0.1838], Godot axes, rest pose)
+attach_Back: bone chest, local [0.0000, 0.0940, 0.1645] (model [0.0000, 1.3365, 0.1836], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0833, -0.0912] (model [0.0000, 1.7128, -0.0789], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1363, 0.0732, 0.1618] (model [0.1363, 1.0469, 0.1653], Godot axes, rest pose)
 body_faces_culled: 5794
@@ -16,7 +16,7 @@ hat: heavy helmet, visor up (Headwear)
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31936
-tris_by_mesh: {"Body": 7240, "Gear": 4232, "Hair": 1200, "Headwear": 2256, "Outfit": 17008}
+tris: 32562
+tris_by_mesh: {"Body": 7240, "Gear": 4660, "Hair": 1200, "Headwear": 2454, "Outfit": 17008}
 variant_of: tac_heavy
 visual_variant: sentinel

@@ -477,6 +477,20 @@ def tread(n: int) -> np.ndarray:
     return m
 
 
+def vinyl_label(n: int) -> np.ndarray:
+    """Record label for mask_base_vinyl (D-165 "Dead Air"): drawn in that base's own UV bounds (x +-0.0852 m,
+    z -0.1106..0.0971 m, mask_base_vinyl/SOURCE.txt) so the disc lands on its raised centre label (r 19 mm, 30 mm
+    below the eye line): a B paper label with a thin A print ring and the A spindle hole; the record is A."""
+    t = (np.arange(n) + 0.5) / n
+    u, v = np.meshgrid(t, t, indexing="xy")
+    x, y, px = (u - 0.5) * 0.1704, v * 0.2077, 0.1704 / n
+    r = np.sqrt(x * x + (y - (0.0971 + 0.030)) ** 2)
+    m = cover(r - 0.0185, px)
+    m = m * (1.0 - line(r - 0.0125, 0.0012, px))
+    m = m * (1.0 - cover(r - 0.0030, px))
+    return m
+
+
 PATTERNS = {
     "guilloche": (guilloche, "banknote guilloche rosette: two 12-lobed interlaced ring families round "
                              "the nose bridge (UV 0.5, 0.42), a 36-wave lathe-work band between two rings, "
@@ -501,6 +515,8 @@ PATTERNS = {
                                "45 degree hatched box on the chin"),
     "tread": (tread, "tyre tread band run down the face (~10 cm wide): solid centre rib, directional V blocks "
                      "with sipes, square shoulder blocks on a half-step pitch; A outside the band"),
+    "vinyl_label": (vinyl_label, "record label for mask_base_vinyl (its own UV bounds): a B paper disc (r 18.5 mm) "
+                                 "on the raised centre label, a thin A print ring and the A spindle hole; A record"),
 }
 
 

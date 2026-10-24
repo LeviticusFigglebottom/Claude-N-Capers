@@ -42,6 +42,8 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     # RT-D2 achievement mask materials (Rolling Thunder)
     "char_mask_armor_plate": ("#8C8E91", 0.45, 1.0, "tread"),      # diamond-tread truck floor steel
     "char_mask_hi_vis": ("#D9733A", 0.40, 0.0, "hivis"),          # retroreflective safety sheeting
+    # D-165 Afterhours achievement mask material
+    "char_mask_sequin": ("#B9B4AC", 0.24, 1.0, "sequin"),         # sewn metal sequins on dark thread
     # crew (heist suits)
     "char_suit_dark": ("#2A2C31", 0.78, 0.0, "cloth"),
     "char_suit_navy": ("#232B3B", 0.78, 0.0, "cloth"),
