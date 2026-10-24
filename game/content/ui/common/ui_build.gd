@@ -46,6 +46,8 @@ const LABEL_SCRIM_PAD: Vector2 = Vector2(6, 2)
 ## r266: the status scrim (vitals captions, a teammate's Downed / In custody line): text that must read on a bright
 ## scene (white galleries, limestone, dawn) needs more than the 45% name scrim to keep a 3:1 fill.
 const LABEL_SCRIM_STRONG_ALPHA: float = 0.75
+## hud_bar(): the dark rim around a HUD bar, in px.
+const HUD_BAR_RIM_PX: float = 1.5
 
 
 ## The r249 label scrim as a StyleBoxFlat (Label "normal" style, or ObjectiveMarkers.draw_style_box).
@@ -290,6 +292,18 @@ static func panel(child: Control, variation: StringName = &"") -> PanelContainer
 		p.theme_type_variation = variation
 	p.add_child(child)
 	return p
+
+
+## A HUD bar over the 3D view: bar() with a dark rim drawn just outside it (LEAD r312 AH G2 read: a full pale bar over
+## the lit foyer's pale wall had no edge; the rim frames it full or empty). The rim is the track's expand margin, so
+## the bar keeps its size and layout.
+static func hud_bar(color: Color, min_size: Vector2) -> ProgressBar:
+	var b: ProgressBar = bar(color, min_size)
+	var sb: StyleBoxFlat = (theme().get_stylebox(&"background", &"ProgressBar") as StyleBoxFlat).duplicate() as StyleBoxFlat
+	sb.bg_color = Color(LABEL_SCRIM_COLOR, LABEL_SCRIM_STRONG_ALPHA)
+	sb.set_expand_margin_all(HUD_BAR_RIM_PX)
+	b.add_theme_stylebox_override(&"background", sb)
+	return b
 
 
 static func bar(color: Color, min_size: Vector2 = Vector2(240, 14)) -> ProgressBar:

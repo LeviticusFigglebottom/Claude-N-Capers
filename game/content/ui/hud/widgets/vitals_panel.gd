@@ -24,10 +24,10 @@ func build() -> void:
 	state_label.add_theme_color_override(&"font_color", tweak.low_health_color)
 	v.add_child(state_label)
 	armor_label = _row(v, &"ui.hud.armor")
-	armor_bar = UiBuild.bar(tweak.armor_color, Vector2(300, 4))
+	armor_bar = UiBuild.hud_bar(tweak.armor_color, Vector2(300, 4))
 	v.add_child(armor_bar)
 	health_label = _row(v, &"ui.hud.health")
-	health_bar = UiBuild.bar(tweak.health_color, Vector2(300, 6))
+	health_bar = UiBuild.hud_bar(tweak.health_color, Vector2(300, 6))
 	v.add_child(health_bar)
 	segment_ticks = Control.new()
 	segment_ticks.mouse_filter = Control.MOUSE_FILTER_IGNORE
