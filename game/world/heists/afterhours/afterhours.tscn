@@ -10929,7 +10929,6 @@ metadata/kind = &"desk_lamp"
 metadata/fixture = true
 
 [node name="Lamp" parent="Props/Dress/U9/DeskLamp_1/Model" index="0" unique_id=101407]
-layers = 16
 cast_shadow = 0
 visibility_range_end = 16.0
 visibility_range_end_margin = 1.6
@@ -12304,6 +12303,8 @@ script = ExtResource("213_ah")
 
 [node name="ClubLights" type="Node3D" parent="Lighting" unique_id=101716]
 script = ExtResource("214_ah")
+skip_roots = Array[NodePath]([NodePath("../../Props/Dress/G10"), NodePath("../../Props/Dress/G11"), NodePath("../../Props/Dress/G12"), NodePath("../../Props/Dress/G13"), NodePath("../../Props/Dress/G14"), NodePath("../../Props/Dress/G15"), NodePath("../../Props/Dress/G16"), NodePath("../../Props/Dress/G20"), NodePath("../../Props/Dress/G21"), NodePath("../../Props/Dress/G23"), NodePath("../../Props/Dress/G24"), NodePath("../../Props/Dress/G25"), NodePath("../../Props/Dress/G26"), NodePath("../../Props/Dress/G27"), NodePath("../../Props/Dress/U5"), NodePath("../../Props/Dress/U6"), NodePath("../../Props/Dress/U6b"), NodePath("../../Props/Dress/U9"), NodePath("../../Props/Dress/U10"), NodePath("../../Props/Dress/U12"), NodePath("../../Props/Dress/U13")])
+skip_layer = 16
 
 [node name="ClubWashW" type="SpotLight3D" parent="Lighting/ClubLights" unique_id=101717]
 transform = Transform3D(-0.9961299, -0.07942157, 0.03765034, 0, 0.42836133, 0.90360755, -0.08789388, 0.9001105, -0.4267035, 10.8, 7.2, 10.6)

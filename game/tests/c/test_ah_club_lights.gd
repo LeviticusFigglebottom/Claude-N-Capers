@@ -68,3 +68,25 @@ func test_alarm_brings_the_house_up() -> void:
 	for l: Light3D in _lights(cl, "Club"):
 		assert_false(l.visible, "after the alarm: %s hidden" % l.name)
 	map.queue_free()
+
+
+## G3: the back of house is off the rig (ah_gi.gd club_skip): every light leaves CLUB_SKIP_LAYER out of its cull mask,
+## and at _ready the BOH dressing (inside prop instances) moves onto that layer, off layer 1.
+func test_back_of_house_is_off_the_rig() -> void:
+	var map: Node = (load(SCENE) as PackedScene).instantiate()
+	add_child(map)
+	await wait_frames(1)
+	var cl: Node = _club_lights(map)
+	var skip: int = int(cl.get(&"skip_layer"))
+	assert_true(skip != 0, "ClubLights has a skip layer")
+	for l: Node in cl.get_children():
+		if l is Light3D:
+			assert_eq((l as Light3D).light_cull_mask & skip, 0, "%s leaves the BOH layer out" % l.name)
+	var dress: Node = map.get_node_or_null("Props/Dress/U10")
+	assert_true(dress != null, "U10 (the count room) is dressed")
+	var meshes: Array[Node] = dress.find_children("*", "GeometryInstance3D", true, false) if dress != null else []
+	assert_true(not meshes.is_empty(), "U10's dressing has meshes")
+	for g: Node in meshes:
+		var gi: GeometryInstance3D = g as GeometryInstance3D
+		assert_true(gi.layers & skip != 0 and gi.layers & 1 == 0, "%s is on the BOH layer only" % map.get_path_to(gi))
+	map.queue_free()

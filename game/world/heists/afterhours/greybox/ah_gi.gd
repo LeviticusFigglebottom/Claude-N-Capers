@@ -281,10 +281,13 @@ func _room_box(room: RoomVolume) -> AABB:
 	return best
 
 
-## CLUB_SKIP_ROOMS off the club rig: each room's finish and its dressing (Props/Dress/<room>) move from layer 1 to
-## CLUB_SKIP_LAYER, and every ClubLights light leaves that layer out of its light_cull_mask. Returns the room count.
+## CLUB_SKIP_ROOMS off the club rig: each room's finish moves from layer 1 to CLUB_SKIP_LAYER now and its dressing
+## (Props/Dress/<room>) at runtime (ClubLights.skip_roots); every ClubLights light leaves that layer out of its
+## light_cull_mask. Returns the room count.
 func club_skip(root: Node) -> int:
 	var n: int = 0
+	var cl: Node = root.get_node("Lighting/ClubLights")
+	var skip: Array[NodePath] = []
 	for rid: String in CLUB_SKIP_ROOMS:
 		var fin: GeometryInstance3D = root.get_node_or_null("Geometry/Finish/Visual_R_" + rid) as GeometryInstance3D
 		if fin == null:
@@ -293,11 +296,13 @@ func club_skip(root: Node) -> int:
 		fin.layers = (fin.layers & ~1) | CLUB_SKIP_LAYER
 		var dress: Node = root.get_node_or_null("Props/Dress/" + rid)
 		if dress != null:
-			for g: Node in dress.find_children("*", "GeometryInstance3D", true, false):
-				var gi: GeometryInstance3D = g as GeometryInstance3D
-				gi.layers = (gi.layers & ~1) | CLUB_SKIP_LAYER
+			skip.append(cl.get_path_to(dress))
 		n += 1
-	for c: Node in root.get_node("Lighting/ClubLights").get_children():
+	# the dressing's meshes sit inside prop instances (a saved scene drops their layer overrides): ClubLights moves
+	# them at _ready
+	cl.set(&"skip_roots", skip)
+	cl.set(&"skip_layer", CLUB_SKIP_LAYER)
+	for c: Node in cl.get_children():
 		if c is Light3D:
 			(c as Light3D).light_cull_mask = 0xFFFFFFFF & ~CLUB_SKIP_LAYER
 	return n
