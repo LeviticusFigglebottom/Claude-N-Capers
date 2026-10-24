@@ -229,7 +229,8 @@ def stairs() -> Tuple[List[list], List[list]]:
 
 def shell_boxes() -> List[list]:
     return [
-        ["Stage", "Riser", [7.0, 0.0, 7.2], [19.0, 0.3, 10.0], "floor"],
+        # 3 cm off the stage wall (z 7.2): its back face showed through the backstage door, coplanar with the frame
+        ["Stage", "Riser", [7.0, 0.0, 7.23], [19.0, 0.3, 10.0], "floor"],
         # the U-stairs' spine walls: the well between the two flights is closed floor to floor (scale: guards)
         ["Stairs", "G8Spine", [r3(G8_CLEAR[0] + 1.5), 0.0, r3(26.0 - RUN)], [r3(G8_CLEAR[2] - 1.5), 4.2, 26.0], "wall"],
         ["Stairs", "G22Spine", [r3(G22_CLEAR[0] + 1.2), 0.0, r3(12.0 - RUN)], [r3(G22_CLEAR[2] - 1.2), 4.2, 12.0],
@@ -259,7 +260,14 @@ def site_boxes() -> List[list]:
         # offices (east), the Corliss Hotel, the diner and apartments (south, across Marlin Ave)
         ["Neighbours", "Hallam", [-20.0, 0.0, 0.0], [-3.0, 8.0, 28.2], "wall_ext"],
         ["Neighbours", "KestonRow", [-12.0, 0.0, -24.0], [36.2, 10.0, -6.2], "wall_ext"],
+        # the alley's west end past the gate and Keston Row's west block (G3 bounds: the BOH roof looked west-north-west
+        # down the alley into the void)
+        ["Neighbours", "AlleyEndW", [-30.0, 0.0, -6.2], [-20.2, 10.0, 0.0], "wall_ext"],
+        ["Neighbours", "KestonWest", [-32.0, 0.0, -24.0], [-12.0, 10.0, -6.2], "wall_ext"],
         ["Neighbours", "OfficesE", [48.0, 0.0, -24.0], [64.0, 16.0, 28.0], "wall_ext"],
+        # Keston Row's corner block closing the view up Tolley St past the street-end barrier (G3 bounds: the BOH roof
+        # looked north-east into the void)
+        ["Neighbours", "KestonCorner", [36.2, 0.0, -40.0], [48.0, 12.0, -30.2], "wall_ext"],
         ["Neighbours", "Corliss", [-20.0, 0.0, 48.0], [20.0, 18.0, 56.0], "wall_ext"],
         ["Neighbours", "AllNightDiner", [20.0, 0.0, 48.0], [36.0, 6.0, 56.0], "wall_ext"],
         ["Neighbours", "Apartments", [36.0, 0.0, 48.0], [64.0, 15.0, 56.0], "wall_ext"],
@@ -282,7 +290,9 @@ def nav_cull() -> List[list]:
         ["HallRoof", [0.0, 7.0, 26.0, 21.0], 8.8, 2.0], ["FrontRoof", [0.0, 21.0, 26.0, 28.0], 8.0, 2.0],
         ["EastRoof", [26.0, 7.0, 36.0, 28.0], 8.0, 2.0], ["Marquee", [11.0, 28.2, 23.0, 31.0], 4.0, 2.0],
         ["Hallam", [-20.0, 0.0, -3.0, 28.2], 8.0, 3.0], ["KestonRow", [-12.0, -24.0, 36.2, -6.2], 10.0, 3.0],
-        ["OfficesE", [48.0, -24.0, 64.0, 28.0], 16.0, 3.0], ["Corliss", [-20.0, 48.0, 20.0, 56.0], 18.0, 3.0],
+        ["OfficesE", [48.0, -24.0, 64.0, 28.0], 16.0, 3.0], ["KestonCorner", [36.2, -40.0, 48.0, -30.2], 12.0, 3.0],
+        ["AlleyEndW", [-30.0, -6.2, -20.2, 0.0], 10.0, 3.0], ["KestonWest", [-32.0, -24.0, -12.0, -6.2], 10.0, 3.0],
+        ["Corliss", [-20.0, 48.0, 20.0, 56.0], 18.0, 3.0],
         ["AllNightDiner", [20.0, 48.0, 36.0, 56.0], 6.0, 3.0], ["Apartments", [36.0, 48.0, 64.0, 56.0], 15.0, 3.0],
         ["WorksVanW", [-19.0, 41.0, -17.0, 46.0], 2.4, 2.0], ["NightBusE", [61.0, 33.0, 63.6, 45.0], 3.4, 2.0],
         ["RefuseTruck", [38.0, -19.0, 46.0, -17.0], 3.4, 2.0],
