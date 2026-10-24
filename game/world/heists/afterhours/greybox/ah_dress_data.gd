@@ -134,6 +134,8 @@ const DIRECT_PROPS: Array = [
 	["PassageLamp0", "prop_wall_lamp", Vector3(-0.2, 3.0, 10.0), 90.0, {}],
 	["PassageLamp1", "prop_wall_lamp", Vector3(-0.2, 3.0, 22.0), 90.0, {}],
 	["RoofLamp", "prop_wall_lamp_sodium", Vector3(30.0, 6.4, 6.8), 0.0, {}],
+	# G13's west end (the kit's grid starts further east: the back-corridor shot opened on an unlit stretch)
+	["CorridorG13West", "prop_ceiling_panel_neutral", Vector3(2.0, 3.0, 6.0), 0.0, {}],
 	# exit signs over the hall's exits (the west fire exits, inner face x 0.2; the hall doors, inner face z 20.8)
 	["ExitHallFireN", "prop_exit_sign", Vector3(0.2, 2.36, 8.3), -90.0, {}],
 	["ExitHallFireS", "prop_exit_sign", Vector3(0.2, 2.36, 19.0), -90.0, {}],
