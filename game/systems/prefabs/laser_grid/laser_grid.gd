@@ -25,6 +25,7 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/laser_grid/laser
 const PATTERN_STATIC: StringName = &"static"
 const PATTERN_SWEEPING: StringName = &"sweeping"
 const PATTERN_TIMED_OFF: StringName = &"timed_off"
+const PATTERNS: Array[StringName] = [PATTERN_STATIC, PATTERN_SWEEPING, PATTERN_TIMED_OFF]
 
 ## &"static", &"sweeping" or &"timed_off" (S9.10).
 @export var pattern: StringName = &"static"
@@ -63,6 +64,9 @@ func _start_enabled() -> bool:
 
 
 func _prefab_ready() -> void:
+	if not PATTERNS.has(pattern):
+		# LEAD r314 (C 10f91e29: AH wrote "sweep" / "timed", which silently ran as a static grid): loud, not a fallback.
+		Log.error(LOG_CHANNEL, "%s: unknown laser pattern '%s' (one of %s); running static" % [get_path(), pattern, PATTERNS])
 	ZoneUtil.size_box_zone(trigger, size_m)
 	trigger.collision_layer = LAYER_TRIGGERS
 	trigger.collision_mask = LAYER_PLAYERS

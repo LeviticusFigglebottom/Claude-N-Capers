@@ -125,3 +125,18 @@ func test_gn_set_enabled_switches_a_grid_off_and_on() -> void:
 	var ok: bool = await wait_until(func() -> bool: return g.tripped, 1.0)
 	assert_true(ok, "the switched-on grid trips")
 	assert_has(_alarms, &"laser", "alarm_raised(&\"laser\")")
+
+
+## LEAD r314 (C 10f91e29: AH's slots wrote "sweep" / "timed", which LaserGrid silently ran as static grids): an unknown
+## pattern is a logged error naming it, not a silent fallback; the three known ones are not.
+func test_r314_unknown_pattern_is_an_error() -> void:
+	Log.capture = true
+	Log.captured.clear()
+	_grid(Vector3(0, 0, -6), &"sweep")
+	for p: StringName in LaserGrid.PATTERNS:
+		_grid(Vector3(4, 0, -6), p)
+	await wait_physics_frames(2)
+	Log.capture = false
+	var errs: Array = Log.captured.filter(func(l: String) -> bool: return l.begins_with("[ERROR]") and l.contains("laser pattern"))
+	assert_eq(errs.size(), 1, "one error, for 'sweep' only: %s" % [errs])
+	assert_true(errs.size() == 1 and String(errs[0]).contains("'sweep'"), "the error names the bad pattern")
