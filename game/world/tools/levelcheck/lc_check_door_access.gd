@@ -7,6 +7,8 @@
 ## navmesh point within NAV_TOL horizontally of the probe and at least 0.2 m out from the door's plane); from its eye
 ## (+EYE_H) the Interactable must lie within reach (InteractionTweak.reach_m + 0.35) and a ray on layer 1 to it may
 ## hit only the door's own colliders (its leaf, its frame). FAIL names the side and what blocked it.
+## Limits: it proves a door is usable from both faces, not which face a route needs as its front (the UsePoint side NPCs
+## and P's harness walk to); that intent is per heist (Afterhours: test_ah_route_doors.gd FRONT_ROOM).
 class_name LcCheckDoorAccess
 extends LcCheck
 

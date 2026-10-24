@@ -18,6 +18,13 @@ const CASING: Array[String] = ["EastBarServiceDoor", "BarStoreDoor", "StaffRoomD
 const GUEST_ROOMS: Array[StringName] = [&"G1", &"G3a", &"G3b", &"G6", &"G7", &"U1", &"U2", &"U4a", &"U4b", &"X1", &"X2"]
 const REACH_M: float = 2.0
 const EYE_M: float = 1.4
+## The room each route door's front faces: its UsePoint and interactable side, the side its route (and P's harness)
+## comes from. P r315: G3 turned EastBarServiceDoor round to make it swing into the bar, which put its UsePoint in the
+## corridor and cut stealth route 1; a door that must open the other way swings OUTWARD instead (ah_gameplay.gd door).
+const FRONT_ROOM: Dictionary = {"EastBarServiceDoor": &"G6", "BarStoreDoor": &"G20", "StaffRoomDoor": &"G13",
+	"DoorTeamRoomDoor": &"G25", "StaffEntranceDoor": &"G20", "StaffStairDoorG": &"G25", "StaffStairDoorU": &"U6",
+	"BackstageDoor": &"G6", "GreenRoomDoor": &"G13", "LoadingDoor": &"G13", "EventStoreDoor": &"G24", "RearDoor": &"X1",
+	"VIPStaffDoor": &"U1"}
 ## Masked-only: neither flag.
 const MASKED: Array[String] = ["OfficeDoor", "CountRoomDoor", "VIPStaffDoor", "StockRoomDoor", "ElectricalDoor",
 	"DoorOfficeDoorN", "DoorOfficeDoorW", "SecurityRoomDoor", "StaffStreetDoor"]
@@ -45,6 +52,29 @@ func test_route_door_flags() -> void:
 	if not has_civ:
 		print("  (Door has no civilian_allowed export yet: the guest-door civilian check waits on ENV A)")
 	map.free()
+
+
+func test_route_doors_face_their_routes() -> void:
+	var map: Node3D = (load(SCENE) as PackedScene).instantiate() as Node3D
+	add_child(map)
+	await wait_frames(1)
+	var rooms: Array[Node] = map.find_children("*", "RoomVolume", true, false)
+	for name: String in FRONT_ROOM:
+		var doors: Array[Node] = map.find_children(name, "Door", true, false)
+		assert_true(not doors.is_empty(), "door %s exists" % name)
+		for d: Node in doors:
+			var d3: Node3D = d as Node3D
+			var p: Vector3 = d3.global_position - d3.global_basis.z.normalized() * 0.8 + Vector3.UP
+			var got: StringName = &""
+			var best: float = INF
+			for r: Node in rooms:
+				var rv: RoomVolume = r as RoomVolume
+				if LcAreas.contains(rv, p, 0.01) and LcAreas.footprint(rv) < best:
+					best = LcAreas.footprint(rv)
+					got = StringName(rv.room_id)
+			assert_eq(got, FRONT_ROOM[name], "%s: its front (UsePoint / interactable side) faces %s" % [
+				map.get_path_to(d3), FRONT_ROOM[name]])
+	map.queue_free()
 
 
 func test_gear_slots_reachable_by_civilians() -> void:
