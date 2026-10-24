@@ -128,6 +128,11 @@ const DIRECT_PROPS: Array = [
 	["StoolVIP9", "prop_stool_teller", Vector3(19.7, 4.2, 25.0), 180.0, {}],
 	# the alley: a sodium lamp over the loading door (the north facade's outer face, z -0.2; the roller x 29.5-32.5)
 	["AlleyLamp", "prop_wall_lamp_sodium", Vector3(33.4, 3.4, -0.2), 0.0, {}],
+	# the smokers' passage (the club's west facade, outer face x -0.2; the fire exits) and the BOH roof (the hall's north
+	# wall over the roof, outer face z 6.8): the G2 review's black frames
+	["PassageLamp0", "prop_wall_lamp", Vector3(-0.2, 3.0, 10.0), 90.0, {}],
+	["PassageLamp1", "prop_wall_lamp", Vector3(-0.2, 3.0, 22.0), 90.0, {}],
+	["RoofLamp", "prop_wall_lamp_sodium", Vector3(30.0, 6.4, 6.8), 0.0, {}],
 	# G6: the mirror ball over the dance floor and the truss along the stage front, from the hall roof (8.0); the 2.01 m
 	# units on a 2.12 m pitch (placed footprints keep 5 cm apart, _place_ext)
 	["MirrorBall", "prop_ah_mirror_ball", Vector3(14.0, 8.0, 12.5), 0.0, {}],

@@ -55,14 +55,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 628 props checked
+- 632 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_alley/EscapeAlley` @ (25.00, 0.00, -3.60): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_tolley/EscapeTolley` @ (40.00, 0.00, 22.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 628 props, 44 doors checked
+- 632 props, 44 doors checked
 
 - WARN `Props/MapBuilt/RollerShutter` @ (31.00, 0.00, 0.00): door has no Leaf node; swing arc not checked
 
@@ -117,7 +117,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 345 x 329 columns (0.25 m), 69736 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 345 x 329 columns (0.25 m), 69743 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
@@ -132,7 +132,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomG14` | 51 | 51 | 100% |
 | `Rooms/RoomG16` | 3 | 3 | 100% |
 | `Rooms/RoomG15` | 6 | 6 | 100% |
-| `Rooms/RoomG21` | 95 | 95 | 100% |
+| `Rooms/RoomG21` | 85 | 85 | 100% |
 | `Rooms/RoomG13` | 138 | 138 | 100% |
 | `Rooms/RoomG6` | 561 | 561 | 100% |
 | `Rooms/RoomG7` | 452 | 452 | 100% |
@@ -209,7 +209,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 194 interior key light(s) in 30 room(s); 0 lack `viewmodel_lit`
+- 200 interior key light(s) in 31 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
