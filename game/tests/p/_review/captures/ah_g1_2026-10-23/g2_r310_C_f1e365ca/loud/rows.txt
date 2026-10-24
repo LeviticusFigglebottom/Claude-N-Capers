@@ -1,0 +1,19 @@
+[AHP] ROW loud | civilian start (D-065) | PASS | mode civilian, 3 AI bots | -
+[AHP] ROW loud | gear (GearBag) -> casing | PASS | 3 s from the spawn, mode casing, at (22.4, 1.0, 25.5) | -
+[AHP] ROW loud | behind the east bar | PASS | 6.7 s, 0 STUCK row(s) | -
+[AHP] ROW loud | east bar service door (casing) | PASS | availability '', open true | -
+[AHP] ROW loud | into G20 | PASS | 1.0 s, 0 STUCK row(s) | -
+[AHP] ROW loud | keycard (Keycard, 41 m walk) | PASS | 14 s, peak 1.00 | -
+[AHP] ROW loud | the alarm (a burst in the hall) | PASS | loud true after 0.0 s, alarm 'guard_radio' | -
+[AHP] ROW loud | staff stair (G22) -> U6 | PASS | 16.2 s, 0 STUCK row(s) | -
+[AHP] ROW loud | office keycard door | PASS | reader true, open true | -
+[AHP] ROW loud | into the office (U9) | PASS | 2.2 s, 0 STUCK row(s) | -
+[AHP] ROW loud | safe by drill | PASS | opened true after 186 s heist time, 1 jam(s) fixed | -
+[AHP] ROW loud | cash in the open safe | PASS | 5 loot.cash_bricks bag(s) within 4 m | -
+[AHP 3270.0s t=268.4] pilot: STUCK at (27.1, 4.2, 17.7) heading to (27.6, 4.4, 16.0); rays: vel=(0.6, 0.0, -2.3) floor=true state=0
+[AHP] ROW loud | carry 1 (secured 1): safe -> van (SecureTolley) | STUCK | bagged in 4 s, carried in 23 s, 1 STUCK row(s), secured true | C map
+[AHP] ROW loud | carry 2 (secured 2): safe -> van (SecureTolley) | PASS | bagged in 16 s, carried in 31 s, 0 STUCK row(s), secured true | -
+[AHP 4215.0s t=364.7] pilot: STUCK at (33.9, 3.1, 10.1) heading to (33.9, 2.4, 8.8); rays: h0.05:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police7@(33.9, 3.1, 9.7), h0.20:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police7@(33.9, 3.3, 9.7), h0.40:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police7@(33.9, 3.5,
+[AHP 4243.5s t=369.3] pilot: STUCK at (35.1, 2.1, 9.0) heading to (35.1, 0.3, 12.2); rays: h0.05:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police11@(35.1, 2.1, 9.4), h0.20:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police11@(35.1, 2.3, 9.4), h0.40:/root/AhG1Pass/HeistRuntime/Dynamic/Npc_police11@(35.1, 2
+[AHP] ROW loud | carry 3 (secured 3): safe -> van (SecureTolley) | STUCK | bagged in 16 s, carried in 29 s, 2 STUCK row(s), secured true | C map
+Killed

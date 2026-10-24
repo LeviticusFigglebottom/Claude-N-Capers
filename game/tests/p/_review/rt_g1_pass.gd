@@ -1592,10 +1592,12 @@ func _on_blown_hit(victim: int, attacker: int, info: Dictionary) -> void:
 	if not _crew_ids.has(victim):
 		return
 	var who: String = _observer_name(attacker).rstrip("0123456789_")
-	var apos: Vector3 = Vector3.INF
-	for n: Node in rt.npcs():
-		if NetIds.of(n) == attacker:
-			apos = (n as Node3D).global_position
+	var src: Node3D = Ids.lookup(attacker) as Node3D  # A: turret vans and other non-NPC sources too
+	var apos: Vector3 = src.global_position if src != null else Vector3.INF
+	if src == null:
+		for n: Node in rt.npcs():
+			if NetIds.of(n) == attacker:
+				apos = (n as Node3D).global_position
 	var key: String = "%s|slot %d" % [who, int(_crew_ids[victim])]
 	var row: Dictionary = _hits.get(key, {"n": 0, "dmg": 0.0, "dist": 0.0, "at": PackedStringArray()})
 	row["n"] = int(row["n"]) + 1
