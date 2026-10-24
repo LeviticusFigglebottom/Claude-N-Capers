@@ -17,7 +17,7 @@ func build() -> void:
 	add_child(UiBuild.panel(h, UiBuild.HUD_PANEL))
 	label = UiBuild.label(&"ui.hud.stamina", UiBuild.HUD)
 	h.add_child(label)
-	bar = UiBuild.bar(tweak.stamina_color, Vector2(220, 8))
+	bar = UiBuild.hud_bar(tweak.stamina_color, Vector2(220, 8))
 	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	h.add_child(bar)
 

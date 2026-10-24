@@ -86,9 +86,9 @@ func _panel(m: Dictionary) -> PanelContainer:
 	v.add_child(name_row)
 	name_labels[slot] = name_label
 	paired_labels[slot] = paired
-	var armor_bar: ProgressBar = UiBuild.bar(tweak.armor_color, Vector2(160, 3))
+	var armor_bar: ProgressBar = UiBuild.hud_bar(tweak.armor_color, Vector2(160, 3))
 	v.add_child(armor_bar)
-	var health_bar: ProgressBar = UiBuild.bar(tweak.health_color, Vector2(160, 5))
+	var health_bar: ProgressBar = UiBuild.hud_bar(tweak.health_color, Vector2(160, 5))
 	v.add_child(health_bar)
 	# r266 B top-3 #1: the status line (Downed / In custody / Last down) sits on the label scrim, as the name does: red on
 	# a bright scene measured 1.99:1 fill. Hidden when empty, so no empty scrim shows.
