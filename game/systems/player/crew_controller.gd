@@ -464,6 +464,10 @@ func _simulate(delta: float) -> void:
 	if _head != null:
 		_head.rotation = Vector3(look_pitch, 0.0, 0.0)
 	var mobile: bool = crew_state == Enums.CrewState.NORMAL or crew_state == Enums.CrewState.SWAN_SONG
+	# A's det_loud_replay: a downed / cuffed / tased body's move_and_slide (v = 0) depenetrated from overlapping police
+	# capsules, so cops shoved it about 0.13 m a tick, in contact order (nondeterministic). PD2: cops don't push a downed
+	# heister; NPCs never collide with crew, so only the crew side masks them out, and only while not mobile.
+	collision_mask = COLLISION_MASK_WORLD if mobile else COLLISION_MASK_WORLD & ~NpcBase.LAYER_NPCS
 	var casing: bool = is_casing()
 	# S1.1: no crouch/sprint/jump while casing.
 	if casing and mobile:
