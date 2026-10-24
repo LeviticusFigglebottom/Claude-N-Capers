@@ -13,6 +13,9 @@ const BAKE_DEPTH: float = 0.3
 const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", "hack_terminal"]
 ## Minimum width of a thin body in the nav bake (see _nav_thick).
 const RIG_NAV_MIN: float = 0.2
+## The laser posts' depth along the grid and the catalog emitter column over them (OF's, SL-2).
+const LASER_POST_D: float = 0.15
+const LASER_COLUMN: String = "prop_laser_emitter_column"
 ## [node, property, names] bound once everything is built (targets).
 var _binds: Array[Array] = []
 
@@ -132,7 +135,10 @@ func _content(host: Node3D, c: Array) -> void:
 	if c.size() > 4:   # optional yaw in the host's frame (a drill spot on the door face turns into it, GH's pattern)
 		inst.basis = yaw_basis(float(c[4]))
 	for k: Variant in (c[3] as Dictionary):
-		set_prop(inst, String(k), c[3][k])
+		if String(k) == "visual_path":   # a scene for the prefab's visual_scene (an empty one where the host shows it)
+			inst.set(&"visual_scene", load(String(c[3][k])))
+		else:
+			set_prop(inst, String(k), c[3][k])
 	inst.set_meta(&"kind", String(c[0]))
 	inst.set_meta(&"inside", true)
 	host.add_child(inst)
@@ -356,12 +362,43 @@ func build_variants(variants: Node3D) -> void:
 		vs.set_meta(&"room", String(row[3]))
 		add(groups[g2], vs)
 		for it: Array in LC.SLOT_ITEMS.get(sid, []):
-			build_item(vs, it)
+			if String(it[0]) == "prefab" and String(it[1]) == "laser_grid":
+				_laser_rig(vs, it)
+			else:
+				build_item(vs, it)
 		if LC.SLOT_DOORS.has(sid):
 			for nm: String in LC.SLOT_DOORS[sid]:
 				for d: Array in LC.DOORS:
 					if String(d[0]) == nm:
 						door(vs, d, nm, String(LC.SLOT_DOORS[sid][nm]), d[8])
+
+
+## A laser grid (yaw 90: its local X along -z) between its emitter / receiver posts, as OF's vault grid: each post a
+## 0.12 x 2.7 x 0.15 collider just past the beams' ends under the catalog emitter column (lens turned to the other
+## post; the static grid's south end is its bypass gap, so only the emitter); the grid hangs off its emitter post (G3
+## validate final: the beams-only visual floated on its own).
+func _laser_rig(vs: Node3D, it: Array) -> void:
+	var c: Vector3 = v3(it[3])
+	var half: float = float((it[5] as Dictionary)["size_m"][0]) * 0.5
+	var post0: Node3D = vs
+	var ends: int = 1 if String((it[5] as Dictionary)["pattern"]) == "static" else 2   # the static grid's +z end: the gap
+	for i: int in range(ends):
+		var z: float = c.z + (half + LASER_POST_D * 0.5) * (-1.0 if i == 0 else 1.0)
+		var post: StaticBody3D = _box_row(vs, ["box", "LaserPost%d" % i, [c.x, c.y, z], [0.12, 2.7, LASER_POST_D], 0.0,
+			"laser_emitter", true, "trim", {}])
+		var mesh: Node = post.get_node_or_null(^"Mesh")
+		if mesh != null:
+			post.remove_child(mesh)
+			mesh.free()
+		var ps: PackedScene = catalog_scene(LASER_COLUMN)
+		if ps != null:
+			var column: Node3D = ps.instantiate() as Node3D
+			column.name = "Column"
+			column.basis = yaw_basis(-90.0 if i == 0 else 90.0)
+			add(post, column)
+		if i == 0:
+			post0 = post
+	place_prefab(post0, it)
 
 
 # --- Always-present content, NPCs, patrols, tactical ------------------------------------------------

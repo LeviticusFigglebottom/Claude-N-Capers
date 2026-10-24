@@ -11,6 +11,8 @@
 # the hall doors, the back corridor rooms and the G24 door team from the VIP lounge. The staff wing's doors are reached
 # only through G22 (doc Stealth routes 1-2: the front of house never opens onto the staff side upstairs).
 PlayerAlley4 Gameplay/Doors/BackstageDoor/UsePoint
+PlayerAlley3 Gameplay/Doors/BackstageDoor/UsePoint
+PlayerAlley3 Gameplay/Doors/GreenRoomDoor/UsePoint
 PlayerAlley4 Gameplay/Doors/GreenRoomDoor/UsePoint
 PlayerAlley4 Gameplay/Doors/LockerRoomDoor/UsePoint
 PlayerAlley4 Gameplay/Doors/StaffRoomDoor/UsePoint

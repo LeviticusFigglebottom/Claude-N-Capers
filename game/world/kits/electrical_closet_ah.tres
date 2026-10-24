@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"electrical_closet_ah"
+purpose = &"electrical"
+required_items = Array[StringName]([&"breaker_panel", &"light_fixture"])
+optional_items = {
+&"box": 1,
+&"shelving": 0.5
+}
+clutter_groups = {}
+min_density = 0.5
+max_density = 2.5
+min_props = 3
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 12
+seed_id = &"electrical_closet"
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"shelving": PackedStringArray("prop_shelving_parts")
+}
+ceiling = {"prop_fluorescent": 2}
+notes = "Afterhours (electrical), from electrical_closet: AH G16 the club's electrical closet: the breaker panel and stock boxes; no IT rack (the club's network is the security room's, U5), and the 2 x 2 m closet is the door's swing."

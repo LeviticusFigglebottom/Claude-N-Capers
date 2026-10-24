@@ -88,6 +88,53 @@ VARIANTS = {
             "the map's.",
         },
     ),
+    "electrical_closet_ah": (
+        "electrical_closet",
+        "electrical",
+        {
+            "required": ["breaker_panel", "light_fixture"],
+            "notes": "AH G16 the club's electrical closet: the breaker panel and stock boxes; no IT rack (the club's "
+            "network is the security room's, U5), and the 2 x 2 m closet is the door's swing.",
+        },
+    ),
+    "office_manager_ah": (
+        "office_manager",
+        "manager_office",
+        {
+            "notes": "AH U9 Crale's office: the shared manager's office under the room's purpose (G3 validate final); "
+            "the desk is the map's (OfficeDesk), the shadowed desk lamp the kit's.",
+        },
+    ),
+    "alley_ah": (
+        "exterior_alley",
+        "exterior",
+        {
+            "lone_ok_add": ["ladder"],
+            "notes": "AH X1 service alley: the condensers, pallets and bottle crates are direct props "
+            "(ah_dress_data.gd DIRECT_PROPS, clear of the escape run); the drop ladder stands alone under the "
+            "roof edge.",
+        },
+    ),
+    "roof_ah": (
+        "exterior_roof_tower",
+        "exterior",
+        {
+            "required": ["ahu", "hvac", "wall_lamp"],
+            "optional": {"hvac": 2, "ahu": 1},
+            "min_props": 6,
+            "notes": "AH X1R the BOH roof: two air handlers and the condensers against the upper wing's north wall "
+            "(direct props), the sodium lamp over the flank route.",
+        },
+    ),
+    "street_ah": (
+        "exterior_street",
+        "exterior",
+        {
+            "lone_ok_add": ["stanchion", "vehicle"],
+            "notes": "AH X2 Marlin Ave / Tolley St / the smokers' passage: the shared street kit; the passage rope "
+            "(a stanchion) and the escape van's secure zone stand alone.",
+        },
+    ),
 }
 
 # The club's new kits (front of house), assembled from the library and ENV D's prop_ah_*.

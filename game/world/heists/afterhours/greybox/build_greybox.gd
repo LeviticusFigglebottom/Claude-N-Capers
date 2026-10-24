@@ -24,6 +24,7 @@ const AUDIO_BUILDER: String = "res://world/audio/map_audio_builder.gd"
 const CUE_EMITTER: String = "res://world/audio/cue_emitter.gd"
 const CLUB_SOUND: String = "res://world/heists/afterhours/club_sound.gd"
 const CLUB_LIGHTS: String = "res://world/heists/afterhours/club_lights.gd"
+const FIXTURE_MAT: String = "res://world/materials/alu_anodized_black.tres"
 const AH_GI: GDScript = preload("res://world/heists/afterhours/greybox/ah_gi.gd")
 const ENV_SCRIPT: String = "res://world/lighting/heist_world_environment.gd"
 ## The hall (G6): ClubSound's position (the emitters sit on it).
@@ -64,7 +65,7 @@ const CLUB_LIGHT_ROWS: Array = [
 		false],
 	["BarBackMain", "omni", Vector3(1.2, 2.2, 13.5), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
 	["BarBackVIP", "omni", Vector3(16.0, 6.4, 27.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.6, 5.0, 0.0, true],
-	["BarBackEast", "omni", Vector3(25.0, 2.2, 11.0), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.2, 4.0, 0.0, false],
+	["BarBackEast", "omni", Vector3(25.6, 2.2, 9.1), Vector3.ZERO, Color(1.0, 0.72, 0.45), 1.2, 4.0, 0.0, false],
 	# club-state outlines (LEAD's G2 review: the hall read as a black void): violet / magenta washes up the hall walls
 	# (west over the bottle wall, east, the stage wall either side of the riser), the truss outlined, the bar fronts'
 	# LED strips (both states); all unshadowed (A's D-146 note)
@@ -98,8 +99,50 @@ const CLUB_LIGHT_ROWS: Array = [
 	["WorkFillW", "omni", Vector3(7.0, 6.0, 11.0), Vector3.ZERO, Color(0.95, 0.97, 1.0), 4.0, 12.0, 0.0, false],
 	["WorkFillE", "omni", Vector3(19.0, 6.0, 11.0), Vector3.ZERO, Color(0.95, 0.97, 1.0), 4.0, 12.0, 0.0, false],
 ]
+## The rig's housings (_club_fixture): light name -> [mount ("" = stands on the floor), the mount face's direction
+## (into the wall / up), [from, to] boxes (world; the first carries the pivot: its face on the wall or roof, or its
+## base)]. Wall faces: the hall's west 0.2, east 25.8, north 7.2, the bar fronts 2.5 / 23.6; the hall roof's underside
+## 8.0 (boxes stop 1 cm short). The wall washes on short arms, the bar-front LED strips, the rail uplights on the
+## balcony floor, the work lights and the mirror-ball pin spot on the roof, the fills as pendants (stem first). The
+## main and VIP back-bar lights' fixture is D's bottle wall ("art": that node).
+const CLUB_FIXTURES: Dictionary = {
+	"ClubWallW0": ["wall", Vector3.LEFT, [Vector3(0.205, 4.94, 8.94), Vector3(0.78, 5.06, 9.06)]],
+	"ClubWallW1": ["wall", Vector3.LEFT, [Vector3(0.205, 4.94, 13.44), Vector3(0.78, 5.06, 13.56)]],
+	"ClubWallE0": ["wall", Vector3.RIGHT, [Vector3(25.22, 4.94, 8.44), Vector3(25.795, 5.06, 8.56)]],
+	"ClubWallE1": ["wall", Vector3.RIGHT, [Vector3(25.22, 4.94, 13.44), Vector3(25.795, 5.06, 13.56)]],
+	"ClubWallN0": ["wall", Vector3.FORWARD, [Vector3(3.94, 4.44, 7.205), Vector3(4.06, 4.56, 7.78)]],
+	"ClubWallN1": ["wall", Vector3.FORWARD, [Vector3(21.94, 4.44, 7.205), Vector3(22.06, 4.56, 7.78)]],
+	"BarBackEast": ["wall", Vector3.RIGHT, [Vector3(25.745, 2.15, 8.6), Vector3(25.795, 2.25, 9.6)]],
+	"BarFrontMain0": ["wall", Vector3.LEFT, [Vector3(2.505, 0.3, 10.5), Vector3(2.555, 0.4, 12.5)]],
+	"BarFrontMain1": ["wall", Vector3.LEFT, [Vector3(2.505, 0.3, 14.5), Vector3(2.555, 0.4, 16.5)]],
+	"BarFrontEast0": ["wall", Vector3.RIGHT, [Vector3(23.545, 0.3, 8.5), Vector3(23.595, 0.4, 10.5)]],
+	"BarFrontEast1": ["wall", Vector3.RIGHT, [Vector3(23.545, 0.3, 11.5), Vector3(23.595, 0.4, 13.5)]],
+	"RailUp0": ["", Vector3.ZERO, [Vector3(2.9, 4.2, 15.35), Vector3(3.1, 4.3, 15.55)]],
+	"RailUp1": ["", Vector3.ZERO, [Vector3(8.9, 4.2, 15.35), Vector3(9.1, 4.3, 15.55)]],
+	"RailUp2": ["", Vector3.ZERO, [Vector3(14.9, 4.2, 15.35), Vector3(15.1, 4.3, 15.55)]],
+	"RailUp3": ["", Vector3.ZERO, [Vector3(20.9, 4.2, 15.35), Vector3(21.1, 4.3, 15.55)]],
+	"WorkNW": ["ceiling", Vector3.UP, [Vector3(5.85, 7.75, 9.35), Vector3(6.15, 7.99, 9.65)]],
+	"WorkNE": ["ceiling", Vector3.UP, [Vector3(19.85, 7.75, 9.35), Vector3(20.15, 7.99, 9.65)]],
+	"WorkSW": ["ceiling", Vector3.UP, [Vector3(7.85, 7.75, 13.35), Vector3(8.15, 7.99, 13.65)]],
+	"WorkSE": ["ceiling", Vector3.UP, [Vector3(18.85, 7.75, 13.35), Vector3(19.15, 7.99, 13.65)]],
+	"WorkFillW": ["ceiling", Vector3.UP, [Vector3(6.99, 6.1, 10.99), Vector3(7.01, 7.99, 11.01)],
+		[Vector3(6.9, 5.9, 10.9), Vector3(7.1, 6.1, 11.1)]],
+	"WorkFillE": ["ceiling", Vector3.UP, [Vector3(18.99, 6.1, 10.99), Vector3(19.01, 7.99, 11.01)],
+		[Vector3(18.9, 5.9, 10.9), Vector3(19.1, 6.1, 11.1)]],
+	"WorkStageFill": ["ceiling", Vector3.UP, [Vector3(12.99, 4.3, 9.19), Vector3(13.01, 7.99, 9.21)],
+		[Vector3(12.9, 4.1, 9.1), Vector3(13.1, 4.3, 9.3)]],
+	"ClubMirrorBall": ["ceiling", Vector3.UP, [Vector3(3.99, 7.7, 17.99), Vector3(4.01, 7.99, 18.01)],
+		[Vector3(3.9, 7.5, 17.9), Vector3(4.1, 7.7, 18.1)]],
+	"BarBackMain": ["art", "Props/MapBuilt/MainBarBack/Visual"],
+	"BarBackVIP": ["art", "Props/MapBuilt/VIPBarBack/Visual"],
+}
+## The rig lights that hang in the stage-front truss (their fixture).
+const TRUSS_LIT: Array[String] = ["ClubWashW", "ClubWashC", "ClubWashE", "ClubKeyDJ", "ClubTruss0", "ClubTruss1"]
 ## Site groups whose thin bodies (< 2 nav cells) are widened in the bake (the closures' barriers and gates).
 const THIN_GROUPS: Array[String] = ["Closures"]
+
+
+var _fixture_mat: BaseMaterial3D = null
 
 
 func _initialize() -> void:
@@ -231,6 +274,7 @@ func _build_club_lights(lighting: Node3D) -> void:
 	var cl: Node3D = node3d("ClubLights")
 	cl.set_script(load(CLUB_LIGHTS))
 	add(lighting, cl)
+	var fixtures: Node3D = add(lighting, node3d("ClubFixtures")) as Node3D
 	for r: Array in CLUB_LIGHT_ROWS:
 		var l: Light3D = null
 		if String(r[1]) == "spot":
@@ -252,10 +296,65 @@ func _build_club_lights(lighting: Node3D) -> void:
 		l.light_color = r[4]
 		l.light_energy = float(r[5])
 		l.shadow_enabled = bool(r[8])
-		l.light_bake_mode = Light3D.BAKE_DYNAMIC  # doc GI: the house switch re-lights GI without a re-bake
+		# doc GI: the shadowed key / work lights re-light GI on the house switch (DYNAMIC); the unshadowed accents
+		# inject nothing (an unshadowed light reaches the GI through the walls: G3, the BOH colour bleed)
+		l.light_bake_mode = Light3D.BAKE_DYNAMIC if bool(r[8]) else Light3D.BAKE_DISABLED
 		l.layers = 1 | VIEWMODEL_LIT_LAYER
 		l.visible = not String(r[0]).begins_with("Work")   # the default state is club
 		add(cl, l)
+		_club_fixture(fixtures, l)
+
+
+## A rig light's housing (validate final: every light has a fixture), a sibling under `Lighting/ClubFixtures` so it
+## stays in both states (club_lights.gd toggles the lights only): CLUB_FIXTURES' black anodised boxes, carrying the
+## light, its pivot on the mount face (+Z into a wall); no shadow (the light sits in or against it). The truss lights
+## hang in TrussStage* (fixtures themselves, ah_dress_data.gd DIRECT_PROPS).
+func _club_fixture(parent: Node3D, l: Light3D) -> void:
+	if String(l.name) in TRUSS_LIT:
+		return
+	var row: Array = CLUB_FIXTURES.get(String(l.name), [])
+	if row.is_empty():
+		push_error("afterhours: club light %s has no CLUB_FIXTURES row" % l.name)
+		return
+	if String(row[0]) == "art":
+		var art: Node = map_root.get_node_or_null(NodePath(String(row[1])))
+		if art == null:
+			push_error("afterhours: club light %s: fixture %s missing" % [l.name, row[1]])
+		else:
+			art.set_meta(&"fixture", true)
+		return
+	if _fixture_mat == null:
+		var m: BaseMaterial3D = (load(FIXTURE_MAT) as BaseMaterial3D).duplicate() as BaseMaterial3D
+		m.resource_name = "ah_tri_fixture"
+		m.uv1_triplanar = true
+		m.uv1_world_triplanar = true
+		m.uv1_scale = Vector3.ONE * 0.5
+		_fixture_mat = m
+	var dir: Vector3 = row[1]
+	var first: AABB = AABB((row[2] as Array)[0], (row[2] as Array)[1] - (row[2] as Array)[0])
+	var pivot: Vector3 = first.get_center() + (dir * first.size * 0.5) if dir != Vector3.ZERO \
+		else Vector3(first.get_center().x, first.position.y, first.get_center().z)
+	var head: Node3D = Node3D.new()
+	head.name = "Fixture" + String(l.name)
+	if String(row[0]) == "wall":
+		head.basis = Basis.looking_at(-dir, Vector3.UP)   # +Z into the wall
+	head.position = pivot
+	head.set_meta(&"fixture", true)
+	head.set_meta(&"kind", "light_fixture")
+	if String(row[0]) != "":
+		head.set_meta(&"mount", String(row[0]))
+	add(parent, head)
+	for k: int in range(2, row.size()):
+		var bb: AABB = AABB((row[k] as Array)[0], (row[k] as Array)[1] - (row[k] as Array)[0])
+		var bx: BoxMesh = BoxMesh.new()
+		bx.size = bb.size
+		var mi: MeshInstance3D = MeshInstance3D.new()
+		mi.name = "Box%d" % (k - 2)
+		mi.mesh = bx
+		mi.material_override = _fixture_mat
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mi.transform = head.transform.affine_inverse() * Transform3D(Basis.IDENTITY, bb.get_center())   # Lighting at the origin
+		add(head, mi)
 
 
 ## D-117 `Audio` node (as the other heists): the CuePlayer, the afterhours MusicDirector and the BOH / street beds
