@@ -41,6 +41,9 @@ const OVERLAY: Dictionary = {
 }
 
 var _cam: Camera3D
+var _heist: String = ""
+## The review crowd (meta stage_crowd), built once and shown only for those shots.
+var _crowd: Node3D = null
 var _map: HeistMap
 var _ctx: LcContext
 var _bp_shell: ShaderMaterial = null
@@ -53,6 +56,7 @@ func _ready() -> void:
 func _main() -> void:
 	var args: Dictionary = preload("res://world/tools/validate_level.gd").parse_args(OS.get_cmdline_user_args())
 	var heist: String = String(args.get("heist", ""))
+	_heist = heist
 	var stage: String = String(args.get("stage", "g1"))
 	var scene_path: String = String(args.get("scene", ""))
 	if scene_path == "":
@@ -181,6 +185,55 @@ func _stage_convoy(id: String) -> void:
 	await get_tree().process_frame
 
 
+## A review camera's meta `stage_crowd` (any value): ENV D's character visuals stand on the map's tagged spawns (outside
+## Variants), dealt round-robin per tag from NpcVisuals' heist tag table, each playing its spawn's idle activity clip
+## (AnimDriver.HINT_CLIPS; a deterministic phase per figure), so a crowd shot shows the night's crowd (LEAD G3: the
+## hall shots read empty). Review only: no NPCs, brains or nav; hidden for the other shots.
+func _stage_crowd() -> void:
+	var tw: NpcVisualTweak = NpcVisuals.tweak()
+	if tw == null:
+		return
+	var table: Dictionary = (tw.tag_characters as Dictionary).duplicate()
+	if tw.heist_tag_characters.get(StringName(_heist)) is Dictionary:
+		table.merge(tw.heist_tag_characters[StringName(_heist)] as Dictionary, true)
+	_crowd = Node3D.new()
+	_crowd.name = "ReviewCrowd"
+	_map.add_child(_crowd)
+	var dealt: Dictionary = {}
+	var placed: int = 0
+	for sp: Node in _map.find_children("*", "SpawnPoint", true, false):
+		var p: SpawnPoint = sp as SpawnPoint
+		if p == null or String(_map.get_path_to(p)).begins_with("Variants"):
+			continue
+		var ids: Array = []
+		var tag: StringName = &""
+		for t: StringName in p.tags:
+			if table.has(t):
+				ids = Array(table[t]) if table[t] is Array else [table[t]]
+				tag = t
+				break
+		if ids.is_empty():
+			continue
+		var k: int = int(dealt.get(tag, 0))
+		dealt[tag] = k + 1
+		var ps: PackedScene = load(NpcVisuals.scene_path(String(ids[k % ids.size()]))) as PackedScene
+		if ps == null:
+			continue
+		var fig: Node3D = ps.instantiate() as Node3D
+		_crowd.add_child(fig)
+		fig.global_transform = p.global_transform
+		var ap: AnimationPlayer = fig.find_child("AnimationPlayer", true, false) as AnimationPlayer
+		if ap != null:
+			var clip: String = "%s/%s" % [AnimDriver.LIBRARY, AnimDriver.HINT_CLIPS.get(p.idle_activity, &"idle")]
+			if not ap.has_animation(clip):
+				clip = "%s/idle" % AnimDriver.LIBRARY
+			if ap.has_animation(clip):
+				ap.play(clip)
+				ap.seek(fmod(float(placed) * 0.37, maxf(ap.current_animation_length, 0.01)), true)
+		placed += 1
+	print("  staged a review crowd of %d figure(s)" % placed)
+
+
 ## True when `eyes` is empty (every probe) or one eye is inside the probe's box grown by PROBE_NEAR_M.
 static func _probe_near(rp: ReflectionProbe, eyes: Array[Vector3]) -> bool:
 	if eyes.is_empty():
@@ -243,6 +296,10 @@ func _render_shots(out_dir: String, warm: int, filt: PackedStringArray, label: S
 		_apply_camera(n)
 		if n.has_meta(&"stage_convoy"):
 			await _stage_convoy(String(n.get_meta(&"stage_convoy")))
+		if n.has_meta(&"stage_crowd") and _crowd == null:
+			_stage_crowd()
+		if _crowd != null:
+			_crowd.visible = n.has_meta(&"stage_crowd")
 		var lights: Node = _map.get_node_or_null("Lighting/ClubLights")
 		if lights != null and lights.has_method(&"set_state"):
 			lights.call(&"set_state", StringName(String(n.get_meta(&"club_lights", "club"))))

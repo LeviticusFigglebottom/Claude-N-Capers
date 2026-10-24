@@ -56,6 +56,17 @@ func test_mutation_missing_required_item_fails_density() -> void:
 	_expect_fail(res, "density", "requires a `chair`")
 
 
+func test_mutation_unknown_laser_pattern_fails_lasers() -> void:
+	# G3 (AH): a grid written "sweep" ran as a static grid; the lasers check names an unknown pattern
+	var res: Dictionary = await _validate(GOOD, "greybox", func(m: HeistMap) -> void:
+		var g: Node3D = (load("res://systems/prefabs/laser_grid/laser_grid.tscn") as PackedScene).instantiate() as Node3D
+		g.name = "BadLasers"
+		g.set(&"pattern", &"sweep")
+		g.set_meta(&"bypass", false)
+		m.get_node("Gameplay").add_child(g), false, ["lasers"])
+	_expect_fail(res, "lasers", "unknown laser pattern `sweep`")
+
+
 func test_mutation_off_wall_picture_fails_floating() -> void:
 	var res: Dictionary = await _validate(GOOD, "greybox", func(m: HeistMap) -> void:
 		(m.get_node("Props/PictureA") as Node3D).position.x += 0.05, false, ["floating"])
