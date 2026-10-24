@@ -2876,6 +2876,7 @@ item.mask_material.night_safe.name,Night Safe
 item.mask_material.gilt_leaf.name,Gilt Leaf
 item.mask_material.armor_plate.name,Armor Plate
 item.mask_material.hi_vis.name,Hi-Vis
+item.mask_material.sequin.name,Sequin
 item.mask.ledger_regent.name,Ledger Regent
 item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by crews who have retired the top of the ladder ten times."
 item.mask.last_word.name,The Last Word
@@ -3674,6 +3675,9 @@ item.mask_base.welder.name,Welder
 item.mask_base.vault_dial.name,Combination
 item.mask_base.road_cone.name,Pylon
 item.mask_base.ingot.name,Ingot
+item.mask_base.vinyl.name,Vinyl
+item.mask_base.disco.name,Disco
+item.mask_pattern.vinyl_label.name,Label
 item.mask_base.keystone.name,Keystone
 item.mask_base.bust.name,Gallery Bust
 item.mask_base.wicker.name,Wicker
@@ -3683,6 +3687,8 @@ item.mask.silent_partner.name,Silent Partner
 item.mask.silent_partner.desc,"A pale owl in mint and graphite. Earned by crews who walk the Ledger out without a single alarm."
 item.mask.dock_boss.name,Dock Boss
 item.mask.dock_boss.desc,"Blued steel with hazard stripes. Earned by crews who run the docks on Lethal."
+item.mask.dead_air.name,Dead Air
+item.mask.dead_air.desc,"A black record with a red label. Earned by crews who clear Afterhours without answering a pager."
 item.mask.velvet_rope.name,Velvet Rope
 item.mask.velvet_rope.desc,"Crimson lacquer with a gold rope sash. Earned by crews who clear Afterhours without a single body."
 item.mask.mirror_ball.name,Mirror Ball

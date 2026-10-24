@@ -204,6 +204,15 @@ scale = 6.0
 id = &"mask_pattern.stencil"
 display_name = "Stencil"
 
+[sub_resource type="Resource" id="Resource_ah_vinyl_label"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_vinyl_label"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_vinyl_label.png"
+procedural = 22
+scale = 1.0
+id = &"mask_pattern.vinyl_label"
+display_name = "Label"
+
 [resource]
 script = ExtResource("3_j0gmk")
-entries = Array[ExtResource("1_0tqkf")]([SubResource("Resource_o1gxy"), SubResource("Resource_67ef6"), SubResource("Resource_4f7mj"), SubResource("Resource_phs65"), SubResource("Resource_ca77l"), SubResource("Resource_8wpff"), SubResource("Resource_xk0rb"), SubResource("Resource_sawdh"), SubResource("Resource_b415_scales"), SubResource("Resource_b415_circuit"), SubResource("Resource_b415_prowl"), SubResource("Resource_b415_halftone"), SubResource("Resource_b415_crackle"), SubResource("Resource_b415_starburst"), SubResource("Resource_d4_guilloche"), SubResource("Resource_d4_vault_bolts"), SubResource("Resource_d4_acanthus"), SubResource("Resource_d4_facets"), SubResource("Resource_d4_time_lock_dial"), SubResource("Resource_d4_stencil"), SubResource("Resource_rt_road_lines"), SubResource("Resource_rt_tread")])
+entries = Array[ExtResource("1_0tqkf")]([SubResource("Resource_o1gxy"), SubResource("Resource_67ef6"), SubResource("Resource_4f7mj"), SubResource("Resource_phs65"), SubResource("Resource_ca77l"), SubResource("Resource_8wpff"), SubResource("Resource_xk0rb"), SubResource("Resource_sawdh"), SubResource("Resource_b415_scales"), SubResource("Resource_b415_circuit"), SubResource("Resource_b415_prowl"), SubResource("Resource_b415_halftone"), SubResource("Resource_b415_crackle"), SubResource("Resource_b415_starburst"), SubResource("Resource_d4_guilloche"), SubResource("Resource_d4_vault_bolts"), SubResource("Resource_d4_acanthus"), SubResource("Resource_d4_facets"), SubResource("Resource_d4_time_lock_dial"), SubResource("Resource_d4_stencil"), SubResource("Resource_rt_road_lines"), SubResource("Resource_rt_tread"), SubResource("Resource_ah_vinyl_label")])

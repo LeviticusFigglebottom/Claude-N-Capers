@@ -209,6 +209,13 @@ float tread(vec2 uv, float s, float w) {
 	return band * (1.0 - edge_w(abs(v - 0.5) - 0.22, w * s));
 }
 
+// AH-B1 vinyl_label: a record's centre label, a disc at the nose bridge with a spindle hole (as D's
+// tex_mask_pattern_vinyl_label off mask_base_vinyl).
+float vinyl_label(vec2 uv, float w) {
+	float r = length(uv - vec2(0.5, 0.45));
+	return (1.0 - edge_w(r - 0.12, w)) * edge_w(r - 0.015, w);
+}
+
 float pattern_mask(vec2 uv) {
 	float s = pattern_scale;
 	// AA half width in uv units, taken here in uniform control flow (see edge_w).
@@ -257,6 +264,8 @@ float pattern_mask(vec2 uv) {
 		return road_lines(uv, s, aa);
 	} else if (pattern == 21) {
 		return tread(uv, s, aa);
+	} else if (pattern == 22) {
+		return vinyl_label(uv, aa);
 	}
 	return 0.0;
 }
