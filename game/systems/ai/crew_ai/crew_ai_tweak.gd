@@ -23,6 +23,10 @@ extends Resource
 @export var unstack_m: float = 0.7
 ## P PO-pass: a bot (waiting at the van or idle) steps out of a human's personal radius (m) ◇.
 @export var personal_radius_m: float = 0.6
+## LEAD r311 (P's RT smoke: a casing bot idled 1 m dead ahead of the player for a minute): a waiting / idle bot inside a
+## human's view (within view_clear_deg of his aim, closer than view_clear_m) steps sideways out of it ◇.
+@export var view_clear_m: float = 1.5
+@export var view_clear_deg: float = 30.0
 ## P PO-pass: in transit a bot keeps this gap (m) behind a moving teammate ahead on its line (single file
 ## through doors and corridors) ◇. Lower slots lead, so two bots never wait on each other.
 @export var trail_gap_m: float = 1.0

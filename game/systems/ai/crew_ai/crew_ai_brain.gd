@@ -755,7 +755,28 @@ func _personal_space_dir() -> Vector3:
 			d = _crew.global_basis.x
 			dist = 0.01
 		away += d.normalized() * (tweak.personal_radius_m - dist)
-	return away.normalized() if away.length() > 0.0001 else Vector3.ZERO
+	return away.normalized() if away.length() > 0.0001 else _view_clear_dir()
+
+
+## LEAD r311: sideways out of a human's view when this bot stands in front of him (within view_clear_m and
+## view_clear_deg of his aim, same floor), toward the side it already leans to; else ZERO.
+func _view_clear_dir() -> Vector3:
+	for c: CrewController in _rt.crew_members():
+		if c == _crew or c.is_ai or c.crew_state != Enums.CrewState.NORMAL:
+			continue
+		var to: Vector3 = _crew.global_position - c.global_position
+		if absf(to.y) >= 1.0:
+			continue
+		to.y = 0.0
+		var fwd: Vector3 = c.aim_direction()
+		fwd.y = 0.0
+		if to.length() >= tweak.view_clear_m or to.length() < 0.01 or fwd.length() < 0.01:
+			continue
+		if rad_to_deg(fwd.angle_to(to)) >= tweak.view_clear_deg:
+			continue
+		var side: Vector3 = fwd.normalized().cross(Vector3.UP)  # his right
+		return side if side.dot(to) >= 0.0 else -side
+	return Vector3.ZERO
 
 
 ## True when a lower-slot AI teammate is moving ahead on our line within trail_gap_m (same floor).

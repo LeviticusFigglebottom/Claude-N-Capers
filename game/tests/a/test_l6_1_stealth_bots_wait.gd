@@ -78,3 +78,32 @@ func test_l6_1_bot_steps_out_of_a_humans_personal_radius() -> void:
 		if not loud:  # loud, the unstack sends it back to its formation slot (follow_min_m out)
 			assert_true(moved < 1.5, "%s: a short step (%.2f m)" % [tag, moved])
 			assert_eq(CrewAiBrain.of(bot).mode, CrewAiBrain.Mode.STEALTH_WAIT, "still waiting at the van")
+
+
+## LEAD r311 (P's RT smoke: a casing bot idled 1 m dead ahead of the player for the first minute): a waiting bot that the
+## player faces from closer than view_clear_m steps sideways out of his view cone, a short step, still waiting.
+func test_r311_waiting_bot_steps_out_of_the_players_view() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 4403, Enums.Difficulty.ROUTINE, self, {"map_packed": ATestMaps.basic(0, 0)})
+	await wait_physics_frames(3)
+	var bot: CrewController = _bots()[0]
+	var tw: CrewAiTweak = CrewAiBrain.of(bot).tweak
+	var at: Vector3 = bot.global_position
+	var leader: CrewController = _rt.crew_controller(0) as CrewController
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, at + Vector3(0.05, 0.0, 1.0)))  # 1 m behind it, looking at it (-Z)
+	leader.look_yaw = 0.0
+	leader.look_pitch = 0.0
+	var in_view: Callable = func() -> bool:
+		var to: Vector3 = bot.global_position - leader.global_position
+		to.y = 0.0
+		var fwd: Vector3 = leader.aim_direction()
+		fwd.y = 0.0
+		return to.length() < tw.view_clear_m and rad_to_deg(fwd.angle_to(to)) < tw.view_clear_deg
+	assert_true(in_view.call(), "starts dead ahead at 1 m")
+	var clear: bool = await wait_until(func() -> bool: return not in_view.call(), 3.0)
+	assert_true(clear, "stepped out of the player's view")
+	var moved: float = Vector2(bot.global_position.x - at.x, bot.global_position.z - at.z).length()
+	assert_true(moved < 1.5, "a short sideways step (%.2f m)" % moved)
+	assert_eq(CrewAiBrain.of(bot).mode, CrewAiBrain.Mode.STEALTH_WAIT, "still waiting at the van")
+	var p: Vector3 = bot.global_position
+	await wait_seconds(1.0)
+	assert_true(bot.global_position.distance_to(p) < 0.2, "and settles there (no jitter on the cone edge)")
