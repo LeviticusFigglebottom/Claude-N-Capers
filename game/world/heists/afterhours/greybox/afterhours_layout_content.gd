@@ -15,10 +15,10 @@ const PLAYER_SPAWNS: Array = [
 	["PlayerVIP2", "preplan_spawn_vip", [14.5, 4.2, 24.0], 0.0],
 	["PlayerVIP3", "preplan_spawn_vip", [17.5, 4.2, 24.0], 0.0],
 	["PlayerVIP4", "preplan_spawn_vip", [19.0, 4.2, 24.0], 0.0],
-	["PlayerAlley1", "preplan_spawn_alley", [20.0, 0.0, -3.6], -90.0],
-	["PlayerAlley2", "preplan_spawn_alley", [21.5, 0.0, -3.6], -90.0],
-	["PlayerAlley3", "preplan_spawn_alley", [23.0, 0.0, -3.6], -90.0],
-	["PlayerAlley4", "preplan_spawn_alley", [24.5, 0.0, -3.6], -90.0],
+	["PlayerAlley1", "preplan_spawn_alley", [24.5, 0.0, -3.6], -90.0],
+	["PlayerAlley2", "preplan_spawn_alley", [23.0, 0.0, -3.6], -90.0],
+	["PlayerAlley3", "preplan_spawn_alley", [21.5, 0.0, -3.6], -90.0],
+	["PlayerAlley4", "preplan_spawn_alley", [20.0, 0.0, -3.6], -90.0],
 ]
 ## POLICE spawns P1-P4 (doc Loud): [name, tag, position].
 const POLICE_SPAWNS: Array = [

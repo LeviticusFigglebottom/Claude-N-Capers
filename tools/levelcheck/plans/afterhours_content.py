@@ -467,7 +467,8 @@ def player_spawns() -> List[list]:
         out.append(["PlayerFoyer%d" % (i + 1), "", [x, 0.0, 26.6], 0.0])
     for i, x in enumerate([13.0, 14.5, 17.5, 19.0]):
         out.append(["PlayerVIP%d" % (i + 1), "preplan_spawn_vip", [x, U, 24.0], 0.0])
-    for i, x in enumerate([20.0, 21.5, 23.0, 24.5]):
+    # slot 0 at the front (east end, facing east), the crew behind it (P's r311 menu smoke on RT: no teammate's back)
+    for i, x in enumerate([24.5, 23.0, 21.5, 20.0]):
         out.append(["PlayerAlley%d" % (i + 1), "preplan_spawn_alley", [x, 0.0, -3.6], -90.0])
     return out
 
