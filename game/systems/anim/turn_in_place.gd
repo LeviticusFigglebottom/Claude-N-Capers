@@ -100,7 +100,9 @@ func update(delta: float, tw: AnimTweak) -> void:
 		_step(body_yaw, delta, tw)
 	_d._prev_body_yaw = body_yaw
 	if _d.rig != null:
-		_d.rig.rotation.y = _d._rig_base_yaw + wrapf(_d._visual_yaw - body_yaw, -PI, PI)
+		var y: float = _d._rig_base_yaw + wrapf(_d._visual_yaw - body_yaw, -PI, PI)
+		if y != _d.rig.rotation.y:  # P6 #3: an unchanged write still dirties the whole rig's transforms
+			_d.rig.rotation.y = y
 
 
 func _step(body_yaw: float, delta: float, tw: AnimTweak) -> void:

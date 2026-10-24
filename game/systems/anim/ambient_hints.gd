@@ -7,6 +7,24 @@ extends RefCounted
 const VIP_GUARD_TAG: StringName = &"guard_vip"
 
 
+## AnimDriver's hint for `npc`: on the host the brain's anim_hint (a non-empty `Surrender` component hint wins),
+## resolved; on a client only the NET_HINTS the host replicates (NetEntityCodec NPC state "ah" -> META_NET_HINT).
+static func of_body(npc: NpcBase, combat: CombatClips) -> StringName:
+	if not Net.is_authority():
+		var nh: Variant = npc.get_meta(AnimDriver.META_NET_HINT, &"")
+		return nh if nh is StringName else &""
+	var s: Node = npc.get_node_or_null(^"Surrender")
+	if s != null:
+		var sh: Variant = s.get(&"anim_hint")
+		if sh is StringName and sh != &"":
+			return sh
+	var b: Node = npc.get_node_or_null(^"Brain")
+	if b == null:
+		return &""
+	var h: Variant = b.get(&"anim_hint")
+	return resolve(npc, combat, h if h is StringName else &"")  # D-111 dance pick, D-069 substitutions
+
+
 ## The hint AnimDriver plays for brain hint `h` of `npc`: a dance pick, then the per-NPC ambient substitutions.
 static func resolve(npc: NpcBase, combat: CombatClips, h: StringName) -> StringName:
 	return ambient_hint(npc, combat, dance_pick(npc, h))

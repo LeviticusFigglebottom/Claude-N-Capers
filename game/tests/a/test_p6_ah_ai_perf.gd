@@ -17,6 +17,8 @@ var _rt: HeistRuntime = null
 
 func after_each() -> void:
 	FrameProf.enabled = false
+	AnimLod.allow_headless = false
+	AnimLod.invalidate()
 	if _rt != null and is_instance_valid(_rt):
 		_rt.teardown()
 	_rt = null
@@ -33,6 +35,11 @@ func test_p6_afterhours_cataclysm_ai_cpu() -> void:
 		Modifiers.set_source(slot, &"perf.immune", {&"defense.damage_taken_mult": 0.0})  # crew stay at their spawns, on the map
 	await wait_physics_frames(120)
 	var calm: Dictionary = await _measure("calm")
+	AnimLod.allow_headless = true  # what a player's machine runs: the D-132 LOD against the local camera
+	_ensure_camera()
+	var calm_lod: Dictionary = await _measure("calm_lod")
+	print("PERF ah calm_lod bands: %s" % _bands())
+	AnimLod.allow_headless = false
 	_rt.stealth.raise_alarm(&"perf", 0)
 	await wait_physics_frames(60)
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
@@ -46,6 +53,8 @@ func test_p6_afterhours_cataclysm_ai_cpu() -> void:
 	var unreach: Dictionary = await _measure("loud_unreachable")
 	assert_true(float(unreach["tick_ms"]) < BUDGET_LOUD_TICK_MS, "loud, crew unreachable: wall per physics tick %.2f ms < %.0f" % [
 		unreach["tick_ms"], BUDGET_LOUD_TICK_MS])
+	assert_true(float(calm_lod["tick_ms"]) <= float(calm["tick_ms"]) * 1.1 + 0.5, "the LOD never costs more: %.2f vs %.2f ms" % [
+		calm_lod["tick_ms"], calm["tick_ms"]])
 	assert_true(float(calm["tick_ms"]) < BUDGET_CALM_TICK_MS, "calm: wall per physics tick %.2f ms < %.0f" % [calm["tick_ms"],
 		BUDGET_CALM_TICK_MS])
 	assert_true(float(loud["tick_ms"]) < BUDGET_LOUD_TICK_MS, "loud: wall per physics tick %.2f ms < %.0f" % [loud["tick_ms"],
@@ -56,11 +65,13 @@ func _measure(tag: String) -> Dictionary:
 	FrameProf.enabled = true
 	FrameProf.totals.clear()
 	var proc: float = 0.0
+	var f0: int = Time.get_ticks_usec()
 	for _i: int in SAMPLE_FRAMES:
 		FrameProf.reset_frame()
 		await get_tree().process_frame
 		proc += Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
-	var top: String = _top_totals(10)
+	var frame_ms: float = (Time.get_ticks_usec() - f0) / 1000.0 / SAMPLE_FRAMES
+	var top: String = _top_totals(24)
 	FrameProf.enabled = false
 	var hz: int = Engine.physics_ticks_per_second
 	var steps: int = Engine.max_physics_steps_per_frame
@@ -75,10 +86,31 @@ func _measure(tag: String) -> Dictionary:
 	Engine.max_physics_steps_per_frame = steps
 	var civs: int = _rt.npcs(&"civilian").size()
 	var npcs: int = _rt.npcs().size()
-	print("PERF ah %s: %d NPCs (%d civilians) | wall per physics tick %.2f ms | process avg %.2f ms" % [tag, npcs, civs,
-		tick_ms, proc / SAMPLE_FRAMES])
+	print("PERF ah %s: %d NPCs (%d civilians) | wall per physics tick %.2f ms | process avg %.2f ms | wall per frame %.2f ms" \
+		% [tag, npcs, civs, tick_ms, proc / SAMPLE_FRAMES, frame_ms])
 	print("PERF ah %s per-system ms/frame: %s" % [tag, top])
 	return {"tick_ms": tick_ms, "npcs": npcs}
+
+
+## The local player's camera if the runtime made one, else one at slot 0's eyes looking along its spawn.
+func _ensure_camera() -> void:
+	if get_viewport().get_camera_3d() == null:
+		var c: Node3D = _rt.crew_controller(0) as Node3D
+		var cam: Camera3D = Camera3D.new()
+		_rt.add_child(cam)
+		cam.global_transform = c.global_transform.translated(Vector3(0, 1.65, 0)) if c != null else Transform3D.IDENTITY
+		cam.current = true
+	AnimLod.invalidate()
+
+
+func _bands() -> Dictionary:
+	var n: Dictionary = {}
+	for npc: Node in _rt.npcs():
+		var d: AnimDriver = AnimDriver.of(npc)
+		if d != null and d.lod != null:
+			var k: String = AnimLod.Band.keys()[d.lod.band]
+			n[k] = int(n.get(k, 0)) + 1
+	return n
 
 
 func _fill_to_cap(dir: AssaultDirector) -> void:

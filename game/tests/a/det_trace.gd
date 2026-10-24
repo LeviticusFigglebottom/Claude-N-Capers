@@ -55,6 +55,9 @@ func _add(s: String) -> void:
 
 
 static func v3(p: Vector3) -> String:
+	if OS.get_environment("DET_PREC") != "":  # diagnostics: more decimals (the first sub-cm divergence)
+		var f: String = "%%.%sf" % OS.get_environment("DET_PREC")
+		return "(%s,%s,%s)" % [f % p.x, f % p.y, f % p.z]
 	return "(%.2f,%.2f,%.2f)" % [p.x, p.y, p.z]
 
 

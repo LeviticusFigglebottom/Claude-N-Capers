@@ -210,12 +210,10 @@ func _set_manual(on: bool) -> void:
 
 
 func _select(tw: AnimTweak, frame: int) -> Band:
-	if exempt(tw):
-		return Band.FULL
 	var test_view: bool = not view_override.is_empty()
 	if _headless < 0:
 		_headless = 1 if DisplayServer.get_name() == "headless" else 0
-	if not test_view and not allow_headless and _headless == 1:
+	if (not test_view and not allow_headless and _headless == 1) or exempt(tw):
 		return Band.FULL
 	var center: Vector3 = _d._body.global_position + Vector3(0.0, tw.anim_lod_center_y_m, 0.0)
 	_refresh_view(frame)

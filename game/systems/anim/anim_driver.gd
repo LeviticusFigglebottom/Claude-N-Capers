@@ -347,6 +347,11 @@ var _turning_left: float = 0.0
 var _sel_clip: StringName = &""
 var _sel_rev: int = 0
 var _sel_cached_rev: int = -1
+## P6 #3: _hint() (asked ~8 times a tick) resolved once inside tick(); _has_clip answers per bound player.
+var _in_tick: bool = false
+var _hint_cached: bool = false
+var _hint_value: StringName = &""
+var _clip_known: Dictionary[StringName, bool] = {}
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
@@ -478,6 +483,7 @@ func bind() -> bool:
 	_prev_body_yaw = _visual_yaw
 	_last_pos = Vector3.INF
 	_family_variants.clear()
+	_clip_known.clear()
 	_variant_family.clear()
 	if _crew != null and _crew.weapons != null and not _crew.weapons.equipped_changed.is_connected(_on_equipped):
 		_crew.weapons.equipped_changed.connect(_on_equipped)
@@ -505,22 +511,24 @@ func bind() -> bool:
 
 func _process(delta: float) -> void:
 	var fp: int = FrameProf.begin()
-	_process_step(delta)
-	FrameProf.end(&"anim_driver", fp)
-
-
-func _process_step(delta: float) -> void:
 	step_lod(delta, Engine.get_process_frames())
+	FrameProf.end(&"anim_driver", fp)
 
 
 ## D-132: one process frame through AnimLod: on its due frames the driver ticks with the banked time and the player
 ## samples it (FULL band: every frame, as before). Tests drive it with simulated frame numbers.
 func step_lod(delta: float, frame: int) -> void:
+	var fl: int = FrameProf.begin()
 	var dt: float = lod.step(delta, frame)
+	FrameProf.end(&"anim_driver.lod", fl)
 	if dt < 0.0:
 		return
+	fl = FrameProf.begin()
 	tick(dt)
+	FrameProf.end(&"anim_driver.tick", fl)
+	fl = FrameProf.begin()
 	lod.after_tick()
+	FrameProf.end(&"anim_driver.advance", fl)
 
 
 ## Advance one presentation frame (tests call it directly).
@@ -531,6 +539,8 @@ func tick(delta: float) -> void:
 		return  # PO6-19: the ragdoll owns the pose (paused player, baked skeleton, rig yaw kept)
 	delta = maxf(delta, 0.0001)
 	_sel_cached_rev = -1  # a new tick: choose afresh
+	_in_tick = true
+	_hint_cached = false
 	loop_resume.step(delta)
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
@@ -574,6 +584,7 @@ func tick(delta: float) -> void:
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
 		hat_lift.influence = move_toward(hat_lift.influence, lift_on, delta * tw.hard_hat_lift_rate)
 		hat_lift.active = hat_lift.influence > 0.0
+	_in_tick = false
 
 
 ## v1.21 crew-state transitions, from the replicated crew_state (so every peer plays them):
@@ -1036,24 +1047,14 @@ func _aiming() -> bool:
 	return gunner != null and gunner.engaging
 
 
-## The brain's anim_hint (a non-empty `Surrender` component hint wins) on the host; on a client only the NET_HINTS
-## the host replicates (NetEntityCodec NPC state "ah" -> META_NET_HINT).
+## The brain's anim_hint (AmbientHints.of_body; resolved once per tick, P6 #3).
 func _hint() -> StringName:
 	if _npc == null:
 		return &""
-	if not Net.is_authority():
-		var nh: Variant = _npc.get_meta(META_NET_HINT, &"")
-		return nh if nh is StringName else &""
-	var s: Node = _body.get_node_or_null(^"Surrender")
-	if s != null:
-		var sh: Variant = s.get(&"anim_hint")
-		if sh is StringName and sh != &"":
-			return sh
-	var b: Node = _body.get_node_or_null(^"Brain")
-	if b == null:
-		return &""
-	var h: Variant = b.get(&"anim_hint")
-	return AmbientHints.resolve(_npc, combat, h if h is StringName else &"")  # D-111 dance pick, D-069 substitutions
+	if not (_in_tick and _hint_cached):
+		_hint_value = AmbientHints.of_body(_npc, combat)
+		_hint_cached = _in_tick
+	return _hint_value
 
 
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
@@ -1423,7 +1424,11 @@ func fire_clip() -> StringName:
 
 
 func _has_clip(c: StringName) -> bool:
-	return player != null and player.has_animation("%s/%s" % [LIBRARY, c])
+	if player == null:
+		return false
+	if not _clip_known.has(c):
+		_clip_known[c] = player.has_animation("%s/%s" % [LIBRARY, c])
+	return _clip_known[c]
 
 
 ## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
