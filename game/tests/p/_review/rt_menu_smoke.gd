@@ -197,8 +197,14 @@ func _run() -> void:
 		"none", own.get_path() if own != null else "none", d, own.current if own != null else false])
 	await _shot("in_heist_start")
 	var h0: float = rt.heist_time_s
-	while rt.heist_time_s - h0 < IN_HEIST_S and is_instance_valid(rt) and rt.phase != Enums.HeistPhase.ENDED:
+	var next_note: float = 10.0
+	var w0: int = Time.get_ticks_msec()
+	while is_instance_valid(rt) and rt.heist_time_s - h0 < IN_HEIST_S and rt.phase != Enums.HeistPhase.ENDED:
 		await _frames(30)
+		if is_instance_valid(rt) and rt.heist_time_s - h0 >= next_note:
+			print("[RTM] heist +%.0f s (wall %.0f s), phase %s" % [rt.heist_time_s - h0,
+				(Time.get_ticks_msec() - w0) / 1000.0, Enums.HeistPhase.keys()[rt.phase]])
+			next_note += 10.0
 	var c: CrewController = rt.crew_controller(Net.local_slot()) as CrewController if is_instance_valid(rt) else null
 	_row("a minute in", is_instance_valid(rt) and rt.phase != Enums.HeistPhase.ENDED and c != null,
 		"heist time %.0f s, phase %s, mode %s, wants_capture %s" % [rt.heist_time_s if is_instance_valid(rt) else -1.0,
