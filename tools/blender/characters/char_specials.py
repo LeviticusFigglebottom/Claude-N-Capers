@@ -294,7 +294,37 @@ def tac_heavy(kit) -> None:
     pauldrons(kit, ARMOR, accent, size=1.3, lift=1.7, trim_scale=0.92, arm_mat=accent)
     _helm, hh = big_helmet(kit, ARMOR, gap=0.05, cup_r=0.048)
     visor(kit, hh, down=False, frame="polymer_black")
+    _silhouette_accent(kit, hh, accent)
     kit.notes["hat"] = "heavy helmet, visor up (Headwear)"
+
+
+def _silhouette_accent(kit, helm_hull: Hull, accent: str) -> None:
+    """D-165 dark-map read: the near-black heavy vanished from behind past ~30 m (the white pauldrons only carry the
+    front and sides). A light band round the sides and back of the helmet, below the flipped-up visor, and two
+    reflective stripes across the upper back of the armour, in the pauldron accent (faction-neutral: no lettering)."""
+    fit, k = kit.fit, kit.k
+    c = fit.head_centre()
+    z = fit.eye_centre().z + 0.035 * k
+    path = []
+    for i in range(25):                                   # 70 degrees either side of straight back
+        az = math.radians(70.0 + 220.0 * i / 24)
+        d = Vector((math.sin(az), math.cos(az), 0.0))
+        hit = helm_hull.cast(Vector((c.x, c.y, z)) + d * 0.3, -d, 0.3)
+        path.append(hit[0] if hit[0] is not None else Vector((c.x, c.y, z)) + d * 0.12 * k)
+    band = Mesh()
+    o.strip(band, helm_hull, path, 0.016 * k, 0.003 * k, accent, closed=False, segs_across=1, chamfer=0.002 * k,
+            side_hint=o.UP, cast_back=0.05, weights=sg.HEAD_W)
+    kit.add_head(band)
+    cy = fit.ring_centre("chest").y
+    hull = kit.hull()
+    anchor = p5._back_hit(hull, 0.0, 1.26 * k, cy - 0.14 * k)       # rigid to the chest, like a stamp
+    m = Mesh()
+    for dz in (0.020, -0.020):                            # two stripes across the carrier back, each cast per cm
+        z0 = (1.26 + dz) * k
+        path = [p5._back_hit(hull, -0.13 * k + 0.26 * k * i / 26, z0, cy - 0.14 * k) for i in range(27)]
+        o.strip(m, hull, path, 0.011 * k, 0.0025 * k, accent, side_hint=o.UP, segs_across=1, chamfer=0.001 * k,
+                cast_back=0.05, anchor=anchor)
+    kit.add_gear(m)
 
 
 def duty_body(kit) -> None:

@@ -10,6 +10,8 @@
 ## `-- --out=res://dir/`: write there instead of assets/characters/_review/.
 ## `-- --back`: the --dists strips from behind (`_back`); `-- --no-mesh-lod`: with the renderer's automatic mesh LODs
 ## (LOD1) off (`_nolod`), to tell LOD1 decimation from plain pixel size (e.g. the Corpsman's pack mark).
+## `-- --dark`: the --dists strips on a dark-map stage (`_dark`: near-black blue-grey background, dim cool ambient,
+## one weak overhead key), for the 30 m silhouette rule on dark maps.
 extends SceneTree
 
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
@@ -24,6 +26,7 @@ var _dists: Array[float] = []
 var _out: String = OUT_DIR
 var _back: bool = false
 var _no_mesh_lod: bool = false
+var _dark: bool = false
 
 
 func _initialize() -> void:
@@ -41,6 +44,8 @@ func _initialize() -> void:
 			_back = true
 		elif arg == "--no-mesh-lod":
 			_no_mesh_lod = true
+		elif arg == "--dark":
+			_dark = true
 	_run.call_deferred()
 
 
@@ -55,7 +60,8 @@ func _run() -> void:
 	far.save_png(_out + _name + "_30m.png")
 	for d: float in _dists:
 		var strip: Image = await _render_perspective(d)
-		strip.save_png(_out + "%s_%dm%s%s.png" % [_name, int(d), "_back" if _back else "", "_nolod" if _no_mesh_lod else ""])
+		var suffix: String = ("_back" if _back else "") + ("_nolod" if _no_mesh_lod else "") + ("_dark" if _dark else "")
+		strip.save_png(_out + "%s_%dm%s.png" % [_name, int(d), suffix])
 	print("render_lod_review: wrote %s.png, %s_30m.png" % [_name, _name])
 	quit(0)
 
@@ -102,14 +108,18 @@ func _lit_viewport(size: Vector2i, msaa: bool) -> SubViewport:
 	var env: WorldEnvironment = WorldEnvironment.new()
 	env.environment = Environment.new()
 	env.environment.background_mode = Environment.BG_COLOR
-	env.environment.background_color = Color(0.62, 0.63, 0.65)
+	env.environment.background_color = Color(0.06, 0.065, 0.08) if _dark else Color(0.62, 0.63, 0.65)
 	env.environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.environment.ambient_light_color = Color(0.55, 0.56, 0.6)
-	env.environment.ambient_light_energy = 0.6
+	env.environment.ambient_light_color = Color(0.35, 0.38, 0.48) if _dark else Color(0.55, 0.56, 0.6)
+	env.environment.ambient_light_energy = 0.35 if _dark else 0.6
 	env.environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	vp.add_child(env)
 	root.add_child(vp)
-	for r: Array in [[Vector3(-35.0, 155.0, 0.0), 1.3], [Vector3(-15.0, -150.0, 0.0), 0.45], [Vector3(-25.0, 15.0, 0.0), 0.8]]:
+	var lights: Array = [[Vector3(-35.0, 155.0, 0.0), 1.3], [Vector3(-15.0, -150.0, 0.0), 0.45],
+		[Vector3(-25.0, 15.0, 0.0), 0.8]]
+	if _dark:
+		lights = [[Vector3(-70.0, 170.0, 0.0), 0.45]]
+	for r: Array in lights:
 		var l: DirectionalLight3D = DirectionalLight3D.new()
 		l.rotation_degrees = r[0]
 		l.light_energy = r[1]
