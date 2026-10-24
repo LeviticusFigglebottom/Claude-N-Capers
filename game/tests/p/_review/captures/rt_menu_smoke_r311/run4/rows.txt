@@ -1,0 +1,21 @@
+[RTM] ROW profile stash for the broker (stated shortcut) | NOTE | stash $50000
+[RTM] ROW main menu: All Stations | PASS | 'ALL STATIONS' at (324.0, 676.0) (window (162.0, 338.0)), visible false, disabled false
+[RTM] ROW stations: the Board | PASS | '' at (277.0, 322.0) (window (139.0, 161.0)), visible false, disabled false
+[RTM] ROW Rolling Thunder pin on the Board | NOTE | not pinned this hour: pins ["night_deposit", "ostrander_federal", "gallery_night", "gallery_night", "gallery_night", "glasshouse", "shadow_ledger", "gallery_night"]; broker instead
+[RTM] ROW open the broker | PASS | 'Contract Broker' at (1535.0, 523.0) (window (767.0, 262.0)), visible true, disabled false
+[RTM] ROW RT in the broker's heist list | PASS | pool 7 heists, RT index 5
+[RTM] ROW broker: Buy | PASS | 'Buy Contract' at (1535.0, 855.0) (window (767.0, 428.0)), visible false, disabled false
+[RTM] ROW briefing for Rolling Thunder | PASS | heist rolling_thunder, difficulty 0
+[RTM] ROW briefing: Continue | PASS | 'Continue' at (1712.0, 1005.0) (window (856.0, 503.0)), visible false, disabled false
+[RTM] ROW pre-planning: Confirm | PASS | 'Confirm plan' at (1712.0, 1001.0) (window (856.0, 500.0)), visible false, disabled false
+[RTM] ROW loadout: Launch | PASS | 'Start Heist' at (1696.0, 989.0) (window (848.0, 495.0)), visible false, disabled false
+[RTM] ROW the heist is up | PASS | runtime HeistRuntime:<Node#1369440266839>, heist rolling_thunder
+[RTM] ROW start view is the player's own first-person camera | PASS | current /root/HeistRuntime/Dynamic/Crew0/Head/Camera, own Head/Camera /root/HeistRuntime/Dynamic/Crew0/Head/Camera, 0.00 m from the eye, own current true
+[RTM] heist +12 s (wall 843 s), phase CASING
+[RTM] heist +24 s (wall 1684 s), phase CASING
+[RTM] heist +32 s (wall 2259 s), phase CASING
+[RTM] heist +44 s (wall 3108 s), phase CASING
+[RTM] heist +52 s (wall 3671 s), phase CASING
+[RTM] heist +64 s (wall 4515 s), phase CASING
+[RTM] ROW a minute in | PASS | heist time 70 s, phase CASING, mode casing, wants_capture true
+[RTM] RESULT PASS
