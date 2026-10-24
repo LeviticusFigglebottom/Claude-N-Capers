@@ -1,18 +1,20 @@
 ## P6 rubber-banding metric (test only, never shipped): on a client, every rendered frame, the replicated NPCs' on-screen
 ## motion. A pop is a frame jump > POP_M that is not a teleport (> SNAP_M); a jerk is a frame-to-frame velocity change
-## faster than JERK_MPS2 (no NPC accelerates like that: it is a correction / a late packet). Rates per NPC-minute of
-## motion, so runs of different length and crowd size compare. Added to the tree by LoopbackProbe ("motion_start").
+## of more than JERK_DV (a stop-start / correction no walking or running NPC makes between two frames). Rates per
+## NPC-minute on screen (alive and replicated), so runs of different length and crowd size compare.
+## Added to the tree by LoopbackProbe ("motion_start").
 class_name MotionStats
 extends Node
 
 const POP_M: float = 0.25
 const SNAP_M: float = 3.0
-const JERK_MPS2: float = 40.0
+const JERK_DV: float = 2.0
 ## A frame with less flat motion than this is "still" (not counted as moving time).
 const STILL_M: float = 0.002
 
 var frames: int = 0
 var moving_s: float = 0.0
+var present_s: float = 0.0
 var pops: int = 0
 var jerks: int = 0
 var max_jump_m: float = 0.0
@@ -41,6 +43,7 @@ func _process(delta: float) -> void:
 		step.y = 0.0
 		_last[id] = p
 		var d: float = step.length()
+		present_s += delta
 		if d > SNAP_M:
 			_vel.erase(id)  # a teleport / warp, not a rubber band
 			continue
@@ -50,7 +53,7 @@ func _process(delta: float) -> void:
 			pops += 1
 		max_jump_m = maxf(max_jump_m, d if d <= SNAP_M else 0.0)
 		var v: Vector3 = step / delta
-		if _vel.has(id) and (v - _vel[id]).length() / delta > JERK_MPS2 and (d > STILL_M or _vel[id].length() * delta > STILL_M):
+		if _vel.has(id) and (v - _vel[id]).length() > JERK_DV:
 			jerks += 1
 		_vel[id] = v
 	for id: int in _last.keys():
@@ -60,6 +63,6 @@ func _process(delta: float) -> void:
 
 
 func report() -> Dictionary:
-	var npc_min: float = maxf(moving_s / 60.0, 0.0001)
-	return {"frames": frames, "moving_npc_s": moving_s, "pops": pops, "jerks": jerks, "max_jump_m": max_jump_m,
-		"pops_per_npc_min": float(pops) / npc_min, "jerks_per_npc_min": float(jerks) / npc_min}
+	var npc_min: float = maxf(present_s / 60.0, 0.0001)
+	return {"frames": frames, "moving_npc_s": moving_s, "present_npc_s": present_s, "pops": pops, "jerks": jerks,
+		"max_jump_m": max_jump_m, "pops_per_npc_min": float(pops) / npc_min, "jerks_per_npc_min": float(jerks) / npc_min}

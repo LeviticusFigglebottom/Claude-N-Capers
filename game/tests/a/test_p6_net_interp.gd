@@ -1,6 +1,6 @@
 ## P6 co-op hardening (LEAD r313): client snapshot interpolation (NetInterp). Samples stamped with the server's send
-## tick are rendered DELAY_S behind the newest server time: lerped between the two around it, held past the newest
-## (no extrapolation), snapped on a teleport, late chunks ignored; the local crew member, corpses and carried bags are
+## tick are rendered DELAY_S behind the newest server time: lerped between the two around it, extrapolated at most
+## EXTRAP_MAX_S past the newest, snapped on a teleport, late chunks ignored; the local crew member, corpses and carried bags are
 ## never buffered.
 extends TestCase
 
@@ -14,12 +14,16 @@ func after_each() -> void:
 	await wait_frames(2)
 
 
-func test_p6_sample_at_lerps_holds_and_clamps() -> void:
+func test_p6_sample_at_lerps_extrapolates_and_clamps() -> void:
 	var a: Transform3D = Transform3D(Basis.IDENTITY, Vector3(0, 0, 0))
 	var b: Transform3D = Transform3D(Basis(Vector3.UP, PI / 2.0), Vector3(2, 0, 0))
 	var buf: Array = [[1.0, a], [1.2, b]]
 	assert_eq(NetInterp.sample_at(buf, 0.5), a, "before the first sample: the first")
-	assert_eq(NetInterp.sample_at(buf, 2.0), b, "after the last: held (no extrapolation)")
+	var ext: Transform3D = NetInterp.sample_at(buf, 1.25) as Transform3D
+	assert_true(ext.origin.distance_to(Vector3(2.5, 0, 0)) < 0.001, "just past the last: extrapolated along it (%s)" % ext.origin)
+	var cap: Transform3D = NetInterp.sample_at(buf, 2.0) as Transform3D
+	var cap_x: float = 2.0 + 2.0 * NetInterp.EXTRAP_MAX_S / 0.2
+	assert_true(cap.origin.distance_to(Vector3(cap_x, 0, 0)) < 0.001, "long past: capped at EXTRAP_MAX_S, then held (%s)" % cap.origin)
 	var mid: Transform3D = NetInterp.sample_at(buf, 1.1) as Transform3D
 	assert_true(mid.origin.distance_to(Vector3(1, 0, 0)) < 0.001, "halfway: halfway (%s)" % mid.origin)
 	assert_near(mid.basis.get_euler().y, PI / 4.0, 0.01, "rotation slerped halfway")

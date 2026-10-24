@@ -17,6 +17,9 @@ const DELAY_S: float = 0.1
 const MAX_SAMPLES: int = 8
 ## A move longer than this between two samples is a teleport: snap, do not slide (m).
 const SNAP_M: float = 3.0
+## Past the newest sample (a lost / late packet) keep going along the last velocity this long at most (s), then hold:
+## the lossy soak (120 ms / 5 %) showed hold-then-jump pops when a packet went missing.
+const EXTRAP_MAX_S: float = 0.15
 
 ## Test switch (P6 before / after measurement): false = HeistNetSync applies transforms as they arrive.
 static var enabled: bool = true
@@ -111,7 +114,8 @@ func _process(_delta: float) -> void:
 
 
 ## The transform at server time `t` from samples `b` ([[time, xform], ...], oldest first): the oldest before the
-## first sample, the newest after the last (held, no extrapolation), else a lerp of the two around it.
+## first sample, a lerp of the two around it, past the newest: extrapolated along the last segment for at most
+## EXTRAP_MAX_S, then held.
 static func sample_at(b: Array, t: float) -> Variant:
 	if t <= float((b[0] as Array)[0]):
 		return (b[0] as Array)[1]
@@ -121,7 +125,25 @@ static func sample_at(b: Array, t: float) -> Variant:
 			var s0: Array = b[i - 1]
 			var span: float = maxf(float(s1[0]) - float(s0[0]), 0.0001)
 			return lerp_xform(s0[1], s1[1], (t - float(s0[0])) / span)
-	return (b[b.size() - 1] as Array)[1]
+	var last: Array = b[b.size() - 1]
+	if b.size() < 2:
+		return last[1]
+	var prev: Array = b[b.size() - 2]
+	var span: float = maxf(float(last[0]) - float(prev[0]), 0.0001)
+	var over: float = minf(t - float(last[0]), EXTRAP_MAX_S)
+	return _extrapolate(prev[1], last[1], over / span)
+
+
+## `b` moved on past itself by `k` segment lengths of a -> b (position only; rotation / look held).
+static func _extrapolate(a: Variant, b: Variant, k: float) -> Variant:
+	if a is Transform3D and b is Transform3D:
+		var tb: Transform3D = b
+		return Transform3D(tb.basis, tb.origin + (tb.origin - (a as Transform3D).origin) * k)
+	if a is Array and b is Array:
+		var bb: Array = (b as Array).duplicate()
+		bb[0] = (bb[0] as Vector3) + ((bb[0] as Vector3) - ((a as Array)[0] as Vector3)) * k
+		return bb
+	return b
 
 
 ## Lerp two transforms of the same kind: Transform3D (position + rotation slerp) or the crew array
