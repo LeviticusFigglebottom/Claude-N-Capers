@@ -1,7 +1,7 @@
 """Afterhours kits (AH-C2, D-147 reuse-first). Imported by _kits.py, which writes every kit .tres.
 
 The room list (docs/design/heists/afterhours.md; tools/levelcheck/plans/afterhours_emit_layout.py ROOM_KIT) names 13
-kits. Rooms whose shared kit already fits keep it (G21 loading_bay, G23 storage_supplies); the rest are AH kits:
+kits. Rooms whose shared kit already fits keep it (G23 storage_supplies); the rest are AH kits:
 purpose variants of shared kits (the OF / RT way: validate_level density wants the kit's purpose to be its room's,
 `seed_id` = the base id) and new club kits for the front of house. The club's set pieces (bars, booths, the stage, the
 DJ booth, the VIP sofa) are map-built G1 boxes with ENV D's prop_ah_* art (ah_dress_data.gd PROP_ART); these kits add
@@ -37,6 +37,19 @@ VARIANTS = {
             "assets_add": {"crate": ["prop_ah_crates"], "shelving": ["prop_shelving_boxes"]},
             "min_props": 6,
             "notes": "AH G10 bar stock room: bottle crates, boxed stock on shelving; the stock cage is the map's.",
+        },
+    ),
+    "loading_bar": (
+        "loading_bay",
+        "loading",
+        {
+            "required": ["pallet", "crate", "shelving", "dolly", "light_fixture"],
+            "optional": {"box": 1.2, "pallet": 0.8, "fire_extinguisher": 1},
+            "assets_add": {"light_fixture": ["prop_fluorescent"], "crate": ["prop_ah_crates"]},
+            "ceiling": {"prop_fluorescent": 3.0},
+            "notes": "AH G21 loading bay: BOH fluorescents on a 3 m grid (doc zones: 5000 K), bottle crates, pallets, "
+            "a dolly; the keg rack and the bottle bank are the map's. (The shared loading_bay has no fixture: the "
+            "G2 review's loading shot was black.)",
         },
     ),
     "staff_entrance": (

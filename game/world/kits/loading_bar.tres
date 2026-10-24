@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"loading_bar"
+purpose = &"loading"
+required_items = Array[StringName]([&"pallet", &"crate", &"shelving", &"dolly", &"light_fixture"])
+optional_items = {
+&"box": 1.2,
+&"fire_extinguisher": 1,
+&"pallet": 0.8
+}
+clutter_groups = {}
+min_density = 0.12
+max_density = 0.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"pallet", &"crate", &"shelving", &"dolly", &"coat_rail", &"vehicle", &"fire_extinguisher"])
+seed_salt = 4801
+seed_id = &"loading_bay"
+counts = {
+&"bag": Vector2i(2, 3),
+&"pallet": Vector2i(2, 2)
+}
+assets = {
+&"bag": PackedStringArray("prop_bag_floor"),
+&"crate": PackedStringArray("prop_ah_crates"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet_loaded"),
+&"shelving": PackedStringArray("prop_shelving_parts")
+}
+ceiling = {"prop_fluorescent": 3}
+notes = "Afterhours (loading), from loading_bay: AH G21 loading bay: BOH fluorescents on a 3 m grid (doc zones: 5000 K), bottle crates, pallets, a dolly; the keg rack and the bottle bank are the map's. (The shared loading_bay has no fixture: the G2 review's loading shot was black.)"

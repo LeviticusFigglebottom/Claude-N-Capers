@@ -10,16 +10,16 @@
 # office, its reader / safe / drill, the U5 security room, U10, U12 and U13 from below; the G1 / G2 / G26 front block,
 # the hall doors, the back corridor rooms and the G24 door team from the VIP lounge. The staff wing's doors are reached
 # only through G22 (doc Stealth routes 1-2: the front of house never opens onto the staff side upstairs).
-PlayerAlley1 Gameplay/Doors/BackstageDoor/UsePoint
-PlayerAlley1 Gameplay/Doors/GreenRoomDoor/UsePoint
-PlayerAlley1 Gameplay/Doors/LockerRoomDoor/UsePoint
-PlayerAlley1 Gameplay/Doors/StaffRoomDoor/UsePoint
-PlayerAlley2 Gameplay/Doors/LockerRoomDoor/UsePoint
-PlayerAlley2 Gameplay/Doors/StaffRoomDoor/UsePoint
-PlayerAlley3 Gameplay/Doors/ElectricalDoor/UsePoint
+PlayerAlley4 Gameplay/Doors/BackstageDoor/UsePoint
+PlayerAlley4 Gameplay/Doors/GreenRoomDoor/UsePoint
+PlayerAlley4 Gameplay/Doors/LockerRoomDoor/UsePoint
+PlayerAlley4 Gameplay/Doors/StaffRoomDoor/UsePoint
 PlayerAlley3 Gameplay/Doors/LockerRoomDoor/UsePoint
 PlayerAlley3 Gameplay/Doors/StaffRoomDoor/UsePoint
-PlayerAlley4 Gameplay/Doors/ElectricalDoor/UsePoint
+PlayerAlley2 Gameplay/Doors/ElectricalDoor/UsePoint
+PlayerAlley2 Gameplay/Doors/LockerRoomDoor/UsePoint
+PlayerAlley2 Gameplay/Doors/StaffRoomDoor/UsePoint
+PlayerAlley1 Gameplay/Doors/ElectricalDoor/UsePoint
 PlayerFoyer1 Gameplay/Doors/SecurityRoomDoor/UsePoint
 PlayerFoyer1 Gameplay/Doors/StaffWCDoor/UsePoint
 PlayerFoyer1 Gameplay/Loot/BottleServiceU2/UsePoint

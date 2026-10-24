@@ -8,12 +8,13 @@ extends RefCounted
 ## alternate (every second row turned 180 deg), keep the asset's height]. The greybox Mesh goes, the collider stays.
 ## The bars: D's counters are 2 m units, customer side front (main bar east, east bar west, VIP bar north); the 7.0 m
 ## main bar takes three (1.17 scale), the 6.0 / 8.0 m bars tile exactly. The back bars are D's 7 m bottle wall (the
-## main and VIP bars) and a 2 m counter unit (the east bar's two short backs).
+## main and VIP bars) and a 2 m counter unit (the east bar's two short backs, turned so the plain service side
+## faces the bartender and the customer rail the wall: D's r312 dress review).
 const PROP_ART: Dictionary = {
 	"MainBarBack": ["prop_ah_back_bar", -90.0, 1, 1, false, true],
 	"MainBarCounter": ["prop_ah_bar_counter_2m", -90.0, 1, 3, false, true],
-	"EastBarBackN": ["prop_ah_bar_counter_2m", 90.0, 1, 1, false, true],
-	"EastBarBackS": ["prop_ah_bar_counter_2m", 90.0, 1, 1, false, true],
+	"EastBarBackN": ["prop_ah_bar_counter_2m", -90.0, 1, 1, false, true],
+	"EastBarBackS": ["prop_ah_bar_counter_2m", -90.0, 1, 1, false, true],
 	"EastBarCounter": ["prop_ah_bar_counter_2m", 90.0, 1, 3, false, true],
 	"VIPBarBack": ["prop_ah_back_bar", 0.0, 1, 1, false, true],
 	"VIPBarCounter": ["prop_ah_bar_counter_2m", 0.0, 4, 1, false, true],
@@ -128,6 +129,18 @@ const DIRECT_PROPS: Array = [
 	["StoolVIP9", "prop_stool_teller", Vector3(19.7, 4.2, 25.0), 180.0, {}],
 	# the alley: a sodium lamp over the loading door (the north facade's outer face, z -0.2; the roller x 29.5-32.5)
 	["AlleyLamp", "prop_wall_lamp_sodium", Vector3(33.4, 3.4, -0.2), 0.0, {}],
+	# the smokers' passage (the club's west facade, outer face x -0.2; the fire exits) and the BOH roof (the hall's north
+	# wall over the roof, outer face z 6.8): the G2 review's black frames
+	["PassageLamp0", "prop_wall_lamp", Vector3(-0.2, 3.0, 10.0), 90.0, {}],
+	["PassageLamp1", "prop_wall_lamp", Vector3(-0.2, 3.0, 22.0), 90.0, {}],
+	["RoofLamp", "prop_wall_lamp_sodium", Vector3(30.0, 6.4, 6.8), 0.0, {}],
+	# G13's west end (the kit's grid starts further east: the back-corridor shot opened on an unlit stretch)
+	["CorridorG13West", "prop_ceiling_panel_neutral", Vector3(2.0, 3.0, 6.0), 0.0, {}],
+	# exit signs over the hall's exits (the west fire exits, inner face x 0.2; the hall doors, inner face z 20.8)
+	["ExitHallFireN", "prop_exit_sign", Vector3(0.2, 2.36, 8.3), -90.0, {}],
+	["ExitHallFireS", "prop_exit_sign", Vector3(0.2, 2.36, 19.0), -90.0, {}],
+	["ExitHallDoorsW", "prop_exit_sign", Vector3(13.0, 2.36, 20.8), 0.0, {}],
+	["ExitHallDoorsE", "prop_exit_sign", Vector3(19.0, 2.36, 20.8), 0.0, {}],
 	# G6: the mirror ball over the dance floor and the truss along the stage front, from the hall roof (8.0); the 2.01 m
 	# units on a 2.12 m pitch (placed footprints keep 5 cm apart, _place_ext)
 	["MirrorBall", "prop_ah_mirror_ball", Vector3(14.0, 8.0, 12.5), 0.0, {}],

@@ -1758,3 +1758,6 @@ All D-115 gates are met (docs/process/heist_completion.md):
 - **Cast:** D's in-map reads in both phases; the seated escorts are holstered and grip the new wheel (2877b00f, 2af75541).
 - **Ghost gate:** n/a (loud-forced, D-158).
 B pushes the RT un-hide patch (rt_unhide_D160) now; it lands in the next round. **Afterhours stays the active build (D-165).**
+- (Amendment 2026-10-24, LEAD) Un-hidden in round 311 (9f82f912f). P's windowed main-menu smoke on r311 PASS with real clicks: main menu →
+  Board → Contract Broker → briefing → pre-planning → loadout → Start Heist → first-person start → a minute in (env/p-play 647caebe6). Cosmetic
+  follow-ups: crew spawn lines (C 3fe9a5d6) and casing bots idling in front of the player (A).
