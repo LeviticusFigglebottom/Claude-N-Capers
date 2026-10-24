@@ -103,7 +103,7 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	if absf(dist - float(hit.get("distance", dist))) > tw.claim_distance_tolerance_m:
 		return {}
 	var body: CharacterBody3D = target as CharacterBody3D
-	if body != null and pos.distance_to(target_center(body)) > tw.claim_target_tolerance_m:
+	if body != null and not _near_over_lag(pos, target_center(body), body, shooter, tw.claim_target_tolerance_m):
 		return {}
 	if not has_los(shooter, origin, pos, [shooter, target]):
 		return {}
@@ -231,7 +231,7 @@ static func validate_head_zones(shooter: CrewController, origin: Vector3, hits: 
 		var npc: NpcBase = _claimed_target(shooter, origin, d) as NpcBase if shooter != null else null
 		if npc != null:
 			var pos: Vector3 = d.get("position", origin)
-			if pos.distance_to(npc.head_position()) > tol:
+			if not _near_over_lag(pos, npc.head_position(), npc, shooter, tol):
 				d["zone"] = Enums.HitZone.BODY
 		out.append(d)
 	return out
@@ -379,6 +379,15 @@ static func falloff_mult(stats: WeaponStats, distance: float) -> float:
 
 
 ## Centre of mass of a character node (NPC or crew) for claim tolerance and NPC aim.
+## P6: `pos` within `tol` of `point` (a spot on `target` now), or of where that spot was on a remote `shooter`'s
+## screen (NetRewind: its interpolation delay + half its round trip); host / AI shooters use the present only.
+static func _near_over_lag(pos: Vector3, point: Vector3, target: Node3D, shooter: CrewController, tol: float) -> bool:
+	for off: Vector3 in NetRewind.offsets_for(target, shooter):
+		if pos.distance_to(point + off) <= tol:
+			return true
+	return false
+
+
 static func target_center(target: Node3D) -> Vector3:
 	return target.global_position + Vector3(0.0, 0.9, 0.0)
 
